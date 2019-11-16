@@ -1,0 +1,13 @@
+{
+  "parent": "xercamod:item/item_gold_warhammer",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 0, 90, -30 ],
+      "translation": [ 0.00, 2, 0 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, 90, -30 ],
+      "translation": [ 0.00, 2, 0 ]
+    }
+  }
+}

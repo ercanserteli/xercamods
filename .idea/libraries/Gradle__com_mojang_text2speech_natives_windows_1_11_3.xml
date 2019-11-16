@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.mojang:text2speech:natives-windows:1.11.3">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mojang/text2speech/1.11.3/c0b242c0091be5acbf303263c7eeeaedd70544c7/text2speech-1.11.3-natives-windows.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mojang/text2speech/1.11.3/772a37dd77417571e6f119a8d306f0c14c2ee410/text2speech-1.11.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

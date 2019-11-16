@@ -1,0 +1,131 @@
+---- Minecraft Crash Report ----
+// Who set us up the TNT?
+
+Time: 04.07.2019 20:13
+Description: keyPressed event handler
+
+java.lang.IllegalArgumentException: Invalid message xerca.xercamusic.common.packets.MusicUpdatePacket
+	at net.minecraftforge.fml.network.simple.IndexedMessageCodec.build(IndexedMessageCodec.java:131) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.network.simple.SimpleChannel.encodeMessage(SimpleChannel.java:68) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.network.simple.SimpleChannel.toBuffer(SimpleChannel.java:76) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.network.simple.SimpleChannel.toVanillaPacket(SimpleChannel.java:107) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.network.simple.SimpleChannel.sendTo(SimpleChannel.java:87) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.network.simple.SimpleChannel.sendToServer(SimpleChannel.java:82) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at xerca.xercamusic.client.GuiMusicSheet.onGuiClosed(GuiNote.java:719) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.displayGuiScreen(Minecraft.java:771) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.gui.GuiScreen.close(GuiScreen.java:95) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.gui.GuiScreen.keyPressed(GuiScreen.java:78) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at xerca.xercamusic.client.GuiMusicSheet.keyPressed(GuiNote.java:556) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.KeyboardListener.lambda$onKeyEvent$4(KeyboardListener.java:283) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.gui.GuiScreen.runOrMakeCrashReport(GuiScreen.java:508) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.KeyboardListener.onKeyEvent(KeyboardListener.java:274) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at org.lwjgl.glfw.GLFWKeyCallbackI.callback(GLFWKeyCallbackI.java:37) ~[lwjgl-glfw-3.1.6.jar:build 14] {}
+	at org.lwjgl.system.JNI.invokeV(Native Method) ~[lwjgl-3.1.6.jar:build 14] {}
+	at org.lwjgl.glfw.GLFW.glfwPollEvents(GLFW.java:3029) ~[lwjgl-glfw-3.1.6.jar:build 14] {}
+	at net.minecraft.client.MainWindow.update(MainWindow.java:284) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:896) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.run(Minecraft.java:399) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.client.main.Main.main(Main.java:117) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_181] {}
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_181] {}
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_181] {}
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_181] {}
+	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:55) ~[forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:19) [modlauncher-2.1.1.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:32) [modlauncher-2.1.1.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:50) [modlauncher-2.1.1.jar:?] {}
+	at cpw.mods.modlauncher.Launcher.run(Launcher.java:59) [modlauncher-2.1.1.jar:?] {}
+	at cpw.mods.modlauncher.Launcher.main(Launcher.java:44) [modlauncher-2.1.1.jar:?] {}
+	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:98) [forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-recomp.jar:?] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Client thread
+Stacktrace:
+	at net.minecraftforge.fml.network.simple.IndexedMessageCodec.build(IndexedMessageCodec.java:131)
+	at net.minecraftforge.fml.network.simple.SimpleChannel.encodeMessage(SimpleChannel.java:68)
+	at net.minecraftforge.fml.network.simple.SimpleChannel.toBuffer(SimpleChannel.java:76)
+	at net.minecraftforge.fml.network.simple.SimpleChannel.toVanillaPacket(SimpleChannel.java:107)
+	at net.minecraftforge.fml.network.simple.SimpleChannel.sendTo(SimpleChannel.java:87)
+	at net.minecraftforge.fml.network.simple.SimpleChannel.sendToServer(SimpleChannel.java:82)
+	at xerca.xercamusic.client.GuiMusicSheet.onGuiClosed(GuiNote.java:719)
+	at net.minecraft.client.Minecraft.displayGuiScreen(Minecraft.java:771)
+	at net.minecraft.client.gui.GuiScreen.close(GuiScreen.java:95)
+	at net.minecraft.client.gui.GuiScreen.keyPressed(GuiScreen.java:78)
+	at xerca.xercamusic.client.GuiMusicSheet.keyPressed(GuiNote.java:556)
+	at net.minecraft.client.KeyboardListener.lambda$onKeyEvent$4(KeyboardListener.java:283)
+
+-- Affected screen --
+Details:
+	Screen name: xerca.xercamusic.client.GuiMusicSheet
+Stacktrace:
+	at net.minecraft.client.gui.GuiScreen.runOrMakeCrashReport(GuiScreen.java:508)
+	at net.minecraft.client.KeyboardListener.onKeyEvent(KeyboardListener.java:274)
+	at org.lwjgl.glfw.GLFWKeyCallbackI.callback(GLFWKeyCallbackI.java:37)
+	at org.lwjgl.system.JNI.invokeV(Native Method)
+	at org.lwjgl.glfw.GLFW.glfwPollEvents(GLFW.java:3029)
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 1 total; [EntityPlayerSP['Dev'/65, l='MpServer', x=-97.35, y=4.00, z=63.43]]
+	Chunk stats: MultiplayerChunkCache: 575, 575
+	Level seed: 0
+	Level generator: ID 01 - flat, ver 0. Features enabled: false
+	Level generator options: {}
+	Level spawn location: World: (-96,4,64), Chunk: (at 0,0,0 in -6,4; contains blocks -96,0,64 to -81,255,79), Region: (-1,0; contains chunks -32,0 to -1,31, blocks -512,0,0 to -1,255,511)
+	Level time: 1628 game time, 1628 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: false
+	Forced entities: 107 total; [EntitySlime['Slime'/95513, l='MpServer', x=-89.99, y=4.00, z=109.46], EntitySlime['Slime'/476699, l='MpServer', x=-65.37, y=4.00, z=91.58], EntitySlime['Slime'/1750279, l='MpServer', x=-91.62, y=4.17, z=16.36], EntityCow['Cow'/539690, l='MpServer', x=-70.43, y=4.00, z=43.79], EntityCow['Cow'/539691, l='MpServer', x=-67.81, y=4.00, z=57.49], EntityCow['Cow'/539692, l='MpServer', x=-78.17, y=4.00, z=54.48], EntitySlime['Slime'/1474610, l='MpServer', x=-73.44, y=4.78, z=27.85], EntityCow['Cow'/539693, l='MpServer', x=-64.70, y=4.00, z=50.81], EntitySlime['Slime'/1819966, l='MpServer', x=-42.74, y=5.25, z=104.66], EntitySheep['Sheep'/539681, l='MpServer', x=-97.50, y=4.00, z=109.50], EntitySlime['Slime'/1105465, l='MpServer', x=-32.30, y=4.00, z=10.25], EntitySheep['Sheep'/539683, l='MpServer', x=-93.50, y=4.00, z=110.50], EntitySheep['Sheep'/539684, l='MpServer', x=-95.31, y=4.00, z=108.81], EntityCow['Cow'/539685, l='MpServer', x=-97.06, y=4.00, z=112.06], EntitySlime['Slime'/1600311, l='MpServer', x=-43.72, y=4.00, z=4.55], EntitySlime['Slime'/1964338, l='MpServer', x=-94.75, y=4.72, z=6.47], EntitySlime['Slime'/1553703, l='MpServer', x=-101.54, y=4.00, z=18.30], EntityPlayerSP['Dev'/65, l='MpServer', x=-97.35, y=4.00, z=63.43], EntityChicken['Chicken'/539710, l='MpServer', x=-38.50, y=4.00, z=38.50], EntitySlime['Slime'/1414691, l='MpServer', x=-176.17, y=4.00, z=89.64], EntityChicken['Chicken'/539711, l='MpServer', x=-37.50, y=4.00, z=39.50], EntitySlime['Slime'/1745959, l='MpServer', x=-73.72, y=4.00, z=74.39], EntitySlime['Slime'/1238572, l='MpServer', x=-49.62, y=4.00, z=114.16], EntitySlime['Slime'/1943641, l='MpServer', x=-107.87, y=4.00, z=132.69], EntityPig['Pig'/539725, l='MpServer', x=-150.50, y=4.00, z=124.50], EntitySlime['Slime'/1943640, l='MpServer', x=-108.12, y=4.14, z=132.18], EntityPig['Pig'/539726, l='MpServer', x=-148.50, y=4.00, z=124.50], EntityPig['Pig'/539727, l='MpServer', x=-150.50, y=4.00, z=122.50], EntityChicken['Chicken'/539712, l='MpServer', x=-36.50, y=4.00, z=42.50], EntityChicken['Chicken'/539713, l='MpServer', x=-33.50, y=4.00, z=41.50], EntitySlime['Slime'/1651024, l='MpServer', x=-97.68, y=4.12, z=-0.34], EntitySlime['Slime'/1055066, l='MpServer', x=-39.94, y=4.00, z=103.89], EntitySheep['Sheep'/539737, l='MpServer', x=-172.50, y=4.00, z=73.50], EntitySheep['Sheep'/539738, l='MpServer', x=-170.50, y=4.00, z=70.50], EntitySheep['Sheep'/539739, l='MpServer', x=-166.50, y=4.00, z=67.50], EntitySheep['Sheep'/539740, l='MpServer', x=-165.50, y=4.00, z=66.50], EntitySlime['Slime'/1882699, l='MpServer', x=-44.16, y=4.00, z=107.00], EntityPig['Pig'/539728, l='MpServer', x=-145.50, y=4.00, z=121.50], EntitySlime['Slime'/66392, l='MpServer', x=-58.81, y=4.00, z=74.23], EntityCow['Cow'/539752, l='MpServer', x=-131.86, y=4.00, z=20.68], EntityHorse['Horse'/539753, l='MpServer', x=-44.28, y=4.00, z=113.15], EntityHorse['Horse'/539754, l='MpServer', x=-46.50, y=4.00, z=115.50], EntityCow['Cow'/539756, l='MpServer', x=-47.18, y=4.00, z=108.20], EntityCow['Cow'/539757, l='MpServer', x=-32.17, y=4.00, z=103.46], EntitySlime['Slime'/432236, l='MpServer', x=-98.54, y=4.00, z=32.30], EntityCow['Cow'/539749, l='MpServer', x=-144.50, y=4.00, z=18.50], EntityCow['Cow'/539750, l='MpServer', x=-133.77, y=4.00, z=25.18], EntityCow['Cow'/539751, l='MpServer', x=-140.50, y=4.00, z=21.50], EntitySlime['Slime'/1266300, l='MpServer', x=-59.82, y=4.00, z=80.68], EntityHorse['Horse'/539768, l='MpServer', x=-94.50, y=4.00, z=7.71], EntitySheep['Sheep'/539771, l='MpServer', x=-93.50, y=4.00, z=14.50], EntitySlime['Slime'/954744, l='MpServer', x=-125.64, y=4.00, z=21.08], EntitySlime['Slime'/125562, l='MpServer', x=-95.26, y=4.00, z=126.90], EntityHorse['Horse'/539766, l='MpServer', x=-98.70, y=4.00, z=11.61], EntitySlime['Slime'/495224, l='MpServer', x=-103.00, y=4.00, z=34.15], EntityHorse['Horse'/539767, l='MpServer', x=-98.00, y=4.00, z=9.16], EntitySlime['Slime'/487303, l='MpServer', x=-66.35, y=4.00, z=94.15], EntitySlime['Slime'/1836956, l='MpServer', x=-36.19, y=5.00, z=103.89], EntitySlime['Slime'/1756827, l='MpServer', x=-34.74, y=4.08, z=109.00], EntitySlime['Slime'/1097619, l='MpServer', x=-44.56, y=4.00, z=33.12], EntitySlime['Slime'/1914005, l='MpServer', x=-37.03, y=4.00, z=107.69], EntitySlime['Slime'/109196, l='MpServer', x=-100.20, y=4.00, z=53.72], EntitySlime['Slime'/150416, l='MpServer', x=-96.87, y=4.00, z=107.30], EntitySlime['Slime'/333715, l='MpServer', x=-85.15, y=5.25, z=110.22], EntitySlime['Slime'/1346953, l='MpServer', x=-99.64, y=4.50, z=21.19], EntitySlime['Slime'/1137586, l='MpServer', x=-26.68, y=4.17, z=18.87], EntitySheep['Sheep'/539566, l='MpServer', x=-162.28, y=4.00, z=140.83], EntityChicken['Chicken'/539576, l='MpServer', x=-176.50, y=4.00, z=134.50], EntityPig['Pig'/539592, l='MpServer', x=-156.50, y=4.00, z=110.50], EntitySheep['Sheep'/539584, l='MpServer', x=-176.50, y=4.00, z=72.50], EntitySlime['Slime'/180427, l='MpServer', x=-46.67, y=4.52, z=126.29], EntityPig['Pig'/539585, l='MpServer', x=-69.50, y=4.00, z=30.50], EntityPig['Pig'/539586, l='MpServer', x=-67.50, y=4.00, z=29.50], EntitySlime['Slime'/1264601, l='MpServer', x=-56.75, y=4.00, z=105.61], EntityPig['Pig'/539587, l='MpServer', x=-66.72, y=4.00, z=31.54], EntityPig['Pig'/539588, l='MpServer', x=-72.01, y=4.00, z=28.52], EntityPig['Pig'/539589, l='MpServer', x=-149.50, y=4.00, z=109.50], EntitySlime['Slime'/651204, l='MpServer', x=-115.18, y=4.00, z=125.34], EntityPig['Pig'/539590, l='MpServer', x=-153.50, y=4.00, z=110.50], EntityPig['Pig'/539591, l='MpServer', x=-153.50, y=4.00, z=108.50], EntitySlime['Slime'/1565638, l='MpServer', x=-97.60, y=4.00, z=14.10], EntitySheep['Sheep'/539614, l='MpServer', x=-135.50, y=4.00, z=-2.50], EntitySheep['Sheep'/539615, l='MpServer', x=-131.50, y=4.00, z=-2.50], EntitySlime['Slime'/1237189, l='MpServer', x=-96.57, y=5.10, z=9.13], EntityCow['Cow'/539624, l='MpServer', x=-145.50, y=4.00, z=37.50], EntityCow['Cow'/539625, l='MpServer', x=-149.50, y=4.00, z=37.50], EntityCow['Cow'/539626, l='MpServer', x=-155.37, y=4.00, z=28.80], EntityPig['Pig'/539627, l='MpServer', x=-93.23, y=4.00, z=135.79], EntityPig['Pig'/539628, l='MpServer', x=-90.50, y=4.00, z=138.50], EntitySlime['Slime'/1465842, l='MpServer', x=-38.59, y=5.17, z=12.88], EntityPig['Pig'/539629, l='MpServer', x=-96.44, y=4.00, z=140.32], EntityPig['Pig'/539630, l='MpServer', x=-88.54, y=4.00, z=139.94], EntitySheep['Sheep'/539631, l='MpServer', x=-38.50, y=4.00, z=25.50], EntitySheep['Sheep'/539616, l='MpServer', x=-131.50, y=4.00, z=1.50], EntityPig['Pig'/539618, l='MpServer', x=-134.50, y=4.00, z=-3.50], EntitySlime['Slime'/1844721, l='MpServer', x=-105.68, y=4.00, z=138.62], EntitySlime['Slime'/124398, l='MpServer', x=-56.70, y=4.27, z=72.33], EntityCow['Cow'/539623, l='MpServer', x=-147.50, y=4.00, z=35.50], EntitySlime['Slime'/98545, l='MpServer', x=-90.41, y=4.67, z=71.27], EntitySheep['Sheep'/539640, l='MpServer', x=-58.57, y=4.00, z=101.73], EntitySheep['Sheep'/539641, l='MpServer', x=-58.73, y=4.00, z=109.35], EntitySheep['Sheep'/539642, l='MpServer', x=-64.28, y=4.00, z=109.35], EntitySheep['Sheep'/539632, l='MpServer', x=-37.40, y=4.00, z=26.20], EntitySlime['Slime'/1747170, l='MpServer', x=-27.18, y=4.00, z=103.25], EntitySheep['Sheep'/539633, l='MpServer', x=-37.50, y=4.00, z=18.50], EntitySheep['Sheep'/539634, l='MpServer', x=-40.50, y=4.00, z=18.50], EntitySheep['Sheep'/539639, l='MpServer', x=-57.50, y=4.00, z=110.50]]
+	Retry entities: 0 total; []
+	Server brand: forge
+	Server type: Integrated singleplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.fillCrashReport(WorldClient.java:429)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:1764)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:411)
+	at net.minecraft.client.main.Main.main(Main.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:55)
+	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:19)
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:32)
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:50)
+	at cpw.mods.modlauncher.Launcher.run(Launcher.java:59)
+	at cpw.mods.modlauncher.Launcher.main(Launcher.java:44)
+	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:98)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.13.2
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_181, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 190136152 bytes (181 MB) / 1240465408 bytes (1183 MB) up to 1895825408 bytes (1808 MB)
+	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
+	FML: New FML!
+	Loaded coremods (and transformers): Nothing
+	Launched Version: MOD_DEV
+	LWJGL: 3.1.6 build 14
+	OpenGL: GeForce GTX 1060 6GB/PCIe/SSE2 GL version 4.6.0 NVIDIA 430.86, NVIDIA Corporation
+	GL Caps: Using GL 1.3 multitexturing.
+Using GL 1.3 texture combiners.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Shaders are available because OpenGL 2.1 is supported.
+VBOs are available because OpenGL 1.5 is supported.
+
+	Using VBOs: Yes
+	Is Modded: Definitely; Client brand changed to 'forge'
+	Type: Client (map_client.txt)
+	Resource Packs: 
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	CPU: 4x Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz

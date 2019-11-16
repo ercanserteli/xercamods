@@ -1,0 +1,8 @@
+
+#General settings
+[general]
+	#Enable Warhammer
+	warhammer = true
+	#Enable Grab Hook
+	grab_hook = true
+

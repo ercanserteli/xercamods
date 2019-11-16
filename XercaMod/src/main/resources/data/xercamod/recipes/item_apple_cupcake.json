@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "cupcake",
+    "pattern": [
+        "sas",
+        "mem",
+        "www"
+    ],
+    "key": {"a": {"item": "minecraft:apple"}, "s": {"item": "minecraft:sugar"}, "e": {"item": "minecraft:egg"}, "w": {"item": "minecraft:wheat"}, "m": {"item": "minecraft:milk_bucket"}},
+    "result": {"item": "xercamod:item_apple_cupcake", "count": 6}
+}
+        

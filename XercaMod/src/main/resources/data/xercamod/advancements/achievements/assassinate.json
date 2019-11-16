@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "xercamod:item_knife"
+    },
+    "title": {
+      "translate": "advancements.xercamod.achievements.sneaky.title"
+    },
+    "description": {
+      "translate": "advancements.xercamod.achievements.sneaky.description"
+    }
+  },
+  "parent": "xercamod:achievements/root",
+  "criteria": {
+    "iron": {
+      "trigger": "assassinate"
+    }
+  }
+}

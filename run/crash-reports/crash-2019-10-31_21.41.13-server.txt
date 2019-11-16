@@ -1,0 +1,87 @@
+---- Minecraft Crash Report ----
+// Don't be sad, have a hug! <3
+
+Time: 19/10/31 21:41
+Description: Exception ticking world
+
+java.lang.ArithmeticException: / by zero
+	at net.minecraft.world.TrackedEntity.tick(TrackedEntity.java:95) ~[?:?] {}
+	at net.minecraft.world.server.ChunkManager.tickEntityTracker(ChunkManager.java:987) ~[?:?] {}
+	at net.minecraft.world.server.ServerChunkProvider.func_217220_m(ServerChunkProvider.java:385) ~[?:?] {pl:accesstransformer:B}
+	at net.minecraft.world.server.ServerChunkProvider.tick(ServerChunkProvider.java:323) ~[?:?] {pl:accesstransformer:B}
+	at net.minecraft.world.server.ServerWorld.tick(ServerWorld.java:312) ~[?:?] {}
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:865) ~[?:?] {pl:accesstransformer:B}
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:800) ~[?:?] {pl:accesstransformer:B}
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:118) ~[?:?] {pl:runtimedistcleaner:A}
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:646) [?:?] {pl:accesstransformer:B}
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_171] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Server thread
+Stacktrace:
+	at net.minecraft.world.TrackedEntity.tick(TrackedEntity.java:95)
+	at net.minecraft.world.server.ChunkManager.tickEntityTracker(ChunkManager.java:987)
+	at net.minecraft.world.server.ServerChunkProvider.func_217220_m(ServerChunkProvider.java:385)
+	at net.minecraft.world.server.ServerChunkProvider.tick(ServerChunkProvider.java:323)
+	at net.minecraft.world.server.ServerWorld.tick(ServerWorld.java:312)
+
+-- Affected level --
+Details:
+	All players: 0 total; []
+	Chunk stats: ServerChunkCache: 2025
+	Level dimension: DimensionType{minecraft:overworld}
+	Level name: Paint flat
+	Level seed: 3256546325939059975
+	Level generator: ID 01 - flat, ver 0. Features enabled: false
+	Level generator options: {}
+	Level spawn location: World: (-176,4,-240), Chunk: (at 0,0,0 in -11,-15; contains blocks -176,0,-240 to -161,255,-225), Region: (-1,-1; contains chunks -32,-32 to -1,-1, blocks -512,0,-512 to -1,255,-1)
+	Level time: 102578 game time, 2101 day time
+	Level storage version: 0x04ABD - Anvil
+	Level weather: Rain time: 31005 (now: false), thunder time: 53638 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: true
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:865)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:800)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:118)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:646)
+	at java.lang.Thread.run(Thread.java:748)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.14.4
+	Minecraft Version ID: 1.14.4
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_171, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 244894616 bytes (233 MB) / 1040711680 bytes (992 MB) up to 1895825408 bytes (1808 MB)
+	CPUs: 4
+	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
+	ModLauncher: 3.2.0+60+b86c1d4
+	ModLauncher launch target: fmluserdevclient
+	ModLauncher naming: mcp
+	ModLauncher services: 
+		/eventbus-1.0.0-service.jar eventbus PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar object_holder_definalize PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar runtime_enum_extender PLUGINSERVICE 
+		/accesstransformers-1.0.0-shadowed.jar accesstransformer PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar capability_inject_definalize PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar runtimedistcleaner PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar fml TRANSFORMATIONSERVICE 
+	FML: 28.1
+	Forge: net.minecraftforge:28.1.0
+	FML Language Providers: 
+		javafml@28.1
+		minecraft@1
+	Mod List: 
+		forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar Forge {forge@28.1.0 DONE}
+		xercamusic-1.14.4-1.3-deobf.jar Xerca's Music Mod {xercamusic@NONE DONE}
+		main Joy of Painting {xercapaint@NONE DONE}
+		client-extra.jar Minecraft {minecraft@1.14.4 DONE}
+	Player Count: 0 / 8; []
+	Data Packs: vanilla, mod:xercapaint (incompatible), mod:xercamusic, mod:forge
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'forge'

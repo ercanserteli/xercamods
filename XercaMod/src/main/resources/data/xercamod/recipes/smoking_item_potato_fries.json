@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smoking",
+    
+    "ingredient": [
+        {"item": "xercamod:item_potato_slices"}
+    ],
+    "result": "xercamod:item_potato_fries",
+    "experience": 0.2,
+    "cookingtime": 100
+}
+        

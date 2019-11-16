@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "s",
+        "d"
+    ],
+    "key": {"s": {"item": "xercamod:item_sprinkles"}, "d": {"item": "xercamod:item_donut"}},
+    "result": {"item": "xercamod:item_fancy_donut"}
+}
+        

@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "#s#",
+        " s ",
+        " s "
+    ],
+    "key": {"#": {"tag": "minecraft:planks"}, "s": {"item": "minecraft:stick"}},
+    "result": {"item": "xercamod:item_gavel"}
+}
+        

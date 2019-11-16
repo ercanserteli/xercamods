@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    "group": "pro_badge",
+    "ingredients": [{"item": "minecraft:gold_nugget"}, {"item": "minecraft:dandelion", "data": 0}],
+    "result": {"item": "xercamod:item_prosecutor_badge"}
+}
+        

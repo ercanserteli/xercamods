@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smoking",
+    
+    "ingredient": [
+        {"item": "xercamod:item_raw_chicken_patty"}
+    ],
+    "result": "xercamod:item_cooked_chicken_patty",
+    "experience": 0.15,
+    "cookingtime": 100
+}
+        

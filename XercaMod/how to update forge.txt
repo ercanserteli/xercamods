@@ -1,0 +1,4 @@
+open build.gradle
+update version at dependencies{ minecraft }
+can also mcp mappings
+import gradle, refresh gradle

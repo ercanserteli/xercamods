@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "minecraft:potato"}, {"item": "xercamod:item_knife", "data": 32767}],
+    "result": {"item": "xercamod:item_potato_slices", "count": 2}
+}
+        

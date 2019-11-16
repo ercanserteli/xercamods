@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smoking",
+    
+    "ingredient": [
+        {"item": "xercamod:item_raw_schnitzel"}
+    ],
+    "result": "xercamod:item_cooked_schnitzel",
+    "experience": 0.2,
+    "cookingtime": 100
+}
+        

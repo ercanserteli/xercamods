@@ -1,0 +1,145 @@
+---- Minecraft Crash Report ----
+// Daisy, daisy...
+
+Time: 19/10/27 19:49
+Description: Rendering entity in world
+
+java.lang.NullPointerException: Rendering entity in world
+	at xerca.xercapaint.client.RenderEntityCanvas.getMapRendererInstance(RenderEntityCanvas.java:63) ~[main/:?] {pl:runtimedistcleaner:A}
+	at xerca.xercapaint.client.RenderEntityCanvas.doRender(RenderEntityCanvas.java:43) ~[main/:?] {pl:runtimedistcleaner:A}
+	at xerca.xercapaint.client.RenderEntityCanvas.doRender(RenderEntityCanvas.java:24) ~[main/:?] {pl:runtimedistcleaner:A}
+	at net.minecraft.client.renderer.entity.EntityRendererManager.renderEntity(EntityRendererManager.java:370) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at net.minecraft.client.renderer.entity.EntityRendererManager.renderEntityStatic(EntityRendererManager.java:359) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at net.minecraft.client.renderer.WorldRenderer.renderEntities(WorldRenderer.java:552) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:runtimedistcleaner:A}
+	at net.minecraft.client.renderer.GameRenderer.updateCameraAndRender(GameRenderer.java:728) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at net.minecraft.client.renderer.GameRenderer.renderWorld(GameRenderer.java:655) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at net.minecraft.client.renderer.GameRenderer.updateCameraAndRender(GameRenderer.java:509) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:922) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.run(Minecraft.java:384) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at net.minecraft.client.main.Main.main(Main.java:128) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {pl:runtimedistcleaner:A}
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_171] {}
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_171] {}
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_171] {}
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_171] {}
+	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:55) ~[forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:37) [modlauncher-3.2.0.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:50) [modlauncher-3.2.0.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:68) [modlauncher-3.2.0.jar:?] {}
+	at cpw.mods.modlauncher.Launcher.run(Launcher.java:80) [modlauncher-3.2.0.jar:?] {}
+	at cpw.mods.modlauncher.Launcher.main(Launcher.java:65) [modlauncher-3.2.0.jar:?] {}
+	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:101) [forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar:?] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Client thread
+Stacktrace:
+	at xerca.xercapaint.client.RenderEntityCanvas.getMapRendererInstance(RenderEntityCanvas.java:63)
+	at xerca.xercapaint.client.RenderEntityCanvas.doRender(RenderEntityCanvas.java:43)
+	at xerca.xercapaint.client.RenderEntityCanvas.doRender(RenderEntityCanvas.java:24)
+
+-- Entity being rendered --
+Details:
+	Entity Type: xercapaint:canvas (xerca.xercapaint.common.entity.EntityCanvas)
+	Entity ID: 3
+	Entity Name: entity.xercapaint.canvas
+	Entity's Exact location: -41.50, 73.50, 17.03
+	Entity's Block location: World: (-42,73,17), Chunk: (at 6,4,1 in -3,1; contains blocks -48,0,16 to -33,255,31), Region: (-1,0; contains chunks -32,0 to -1,31, blocks -512,0,0 to -1,255,511)
+	Entity's Momentum: 0.00, 0.00, 0.00
+	Entity's Passengers: []
+	Entity's Vehicle: ~~ERROR~~ NullPointerException: null
+
+-- Renderer details --
+Details:
+	Assigned renderer: xerca.xercapaint.client.RenderEntityCanvas@57be9aa4
+	Location: 2.43,-0.12,2.58 - World: (2,-1,2), Chunk: (at 2,-1,2 in 0,0; contains blocks 0,0,0 to 15,255,15), Region: (0,0; contains chunks 0,0 to 31,31, blocks 0,0,0 to 511,255,511)
+	Rotation: 90.0
+	Delta: 0.38000107
+Stacktrace:
+	at net.minecraft.client.renderer.entity.EntityRendererManager.renderEntity(EntityRendererManager.java:370)
+	at net.minecraft.client.renderer.entity.EntityRendererManager.renderEntityStatic(EntityRendererManager.java:359)
+	at net.minecraft.client.renderer.WorldRenderer.renderEntities(WorldRenderer.java:552)
+	at net.minecraft.client.renderer.GameRenderer.updateCameraAndRender(GameRenderer.java:728)
+	at net.minecraft.client.renderer.GameRenderer.renderWorld(GameRenderer.java:655)
+
+-- Affected level --
+Details:
+	All players: 1 total; [ClientPlayerEntity['Dev'/233, l='MpServer', x=-43.93, y=72.00, z=14.45]]
+	Chunk stats: Client Chunk Cache: 729, 420
+	Level dimension: DimensionType{minecraft:overworld}
+	Level name: MpServer
+	Level seed: 0
+	Level generator: ID 00 - default, ver 1. Features enabled: false
+	Level generator options: {}
+	Level spawn location: World: (-32,64,39), Chunk: (at 0,4,7 in -2,2; contains blocks -32,0,32 to -17,255,47), Region: (-1,0; contains chunks -32,0 to -1,31, blocks -512,0,0 to -1,255,511)
+	Level time: 104296 game time, 104296 day time
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: false
+	Server brand: forge
+	Server type: Integrated singleplayer server
+Stacktrace:
+	at net.minecraft.client.world.ClientWorld.fillCrashReport(ClientWorld.java:425)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:1821)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:400)
+	at net.minecraft.client.main.Main.main(Main.java:128)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:55)
+	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:37)
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:50)
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:68)
+	at cpw.mods.modlauncher.Launcher.run(Launcher.java:80)
+	at cpw.mods.modlauncher.Launcher.main(Launcher.java:65)
+	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:101)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.14.4
+	Minecraft Version ID: 1.14.4
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_171, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 323197232 bytes (308 MB) / 946864128 bytes (903 MB) up to 1895825408 bytes (1808 MB)
+	CPUs: 4
+	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
+	ModLauncher: 3.2.0+60+b86c1d4
+	ModLauncher launch target: fmluserdevclient
+	ModLauncher naming: mcp
+	ModLauncher services: 
+		/eventbus-1.0.0-service.jar eventbus PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar object_holder_definalize PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar runtime_enum_extender PLUGINSERVICE 
+		/accesstransformers-1.0.0-shadowed.jar accesstransformer PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar capability_inject_definalize PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar runtimedistcleaner PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar fml TRANSFORMATIONSERVICE 
+	FML: 28.1
+	Forge: net.minecraftforge:28.1.0
+	FML Language Providers: 
+		javafml@28.1
+		minecraft@1
+	Mod List: 
+		forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar Forge {forge@28.1.0 DONE}
+		xercamusic-1.14.4-1.3-deobf.jar Xerca's Music Mod {xercamusic@NONE DONE}
+		main Joy of Painting {xercapaint@NONE DONE}
+		client-extra.jar Minecraft {minecraft@1.14.4 DONE}
+	Launched Version: MOD_DEV
+	LWJGL: 3.2.2 build 10
+	OpenGL: GeForce GTX 1060 6GB/PCIe/SSE2 GL version 4.6.0 NVIDIA 440.97, NVIDIA Corporation
+	GL Caps: Using GL 1.3 multitexturing.
+Using GL 1.3 texture combiners.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Shaders are available because OpenGL 2.1 is supported.
+VBOs are available because OpenGL 1.5 is supported.
+
+	Using VBOs: Yes
+	Is Modded: Definitely; Client brand changed to 'forge'
+	Type: Client (map_client.txt)
+	Resource Packs: 
+	Current Language: English (US)
+	CPU: 4x Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz

@@ -1,0 +1,101 @@
+---- Minecraft Crash Report ----
+// Hi. I'm Minecraft, and I'm a crashaholic.
+
+Time: 19/10/27 22:56
+Description: Ticking entity
+
+java.lang.IllegalStateException: Unable to get CCW facing of down
+	at net.minecraft.util.Direction.rotateYCCW(Direction.java:239) ~[?:?] {}
+	at net.minecraft.entity.item.HangingEntity.onValidSurface(HangingEntity.java:124) ~[?:?] {}
+	at net.minecraft.entity.item.HangingEntity.tick(HangingEntity.java:106) ~[?:?] {}
+	at net.minecraft.world.server.ServerWorld.updateEntity(ServerWorld.java:602) ~[?:?] {}
+	at net.minecraft.world.World.func_217390_a(World.java:734) ~[?:?] {pl:accesstransformer:B}
+	at net.minecraft.world.server.ServerWorld.tick(ServerWorld.java:397) ~[?:?] {}
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:865) ~[?:?] {pl:accesstransformer:B}
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:800) ~[?:?] {pl:accesstransformer:B}
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:118) ~[?:?] {pl:runtimedistcleaner:A}
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:646) [?:?] {pl:accesstransformer:B}
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_171] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Server thread
+Stacktrace:
+	at net.minecraft.util.Direction.rotateYCCW(Direction.java:239)
+	at net.minecraft.entity.item.HangingEntity.onValidSurface(HangingEntity.java:124)
+	at net.minecraft.entity.item.HangingEntity.tick(HangingEntity.java:106)
+	at net.minecraft.world.server.ServerWorld.updateEntity(ServerWorld.java:602)
+
+-- Entity being ticked --
+Details:
+	Entity Type: xercapaint:canvas (xerca.xercapaint.common.entity.EntityCanvas)
+	Entity ID: 14
+	Entity Name: entity.xercapaint.canvas
+	Entity's Exact location: -33.50, 73.50, 22.03
+	Entity's Block location: World: (-34,73,22), Chunk: (at 14,4,6 in -3,1; contains blocks -48,0,16 to -33,255,31), Region: (-1,0; contains chunks -32,0 to -1,31, blocks -512,0,0 to -1,255,511)
+	Entity's Momentum: 0.00, 0.00, 0.00
+	Entity's Passengers: []
+	Entity's Vehicle: ~~ERROR~~ NullPointerException: null
+Stacktrace:
+	at net.minecraft.world.World.func_217390_a(World.java:734)
+	at net.minecraft.world.server.ServerWorld.tick(ServerWorld.java:397)
+
+-- Affected level --
+Details:
+	All players: 1 total; [ServerPlayerEntity['Dev'/234, l='Paint world', x=-36.72, y=72.00, z=19.58]]
+	Chunk stats: ServerChunkCache: 2114
+	Level dimension: DimensionType{minecraft:overworld}
+	Level name: Paint world
+	Level seed: 2649969337365113515
+	Level generator: ID 00 - default, ver 1. Features enabled: true
+	Level generator options: {}
+	Level spawn location: World: (-32,64,39), Chunk: (at 0,4,7 in -2,2; contains blocks -32,0,32 to -17,255,47), Region: (-1,0; contains chunks -32,0 to -1,31, blocks -512,0,0 to -1,255,511)
+	Level time: 131089 game time, 131089 day time
+	Level storage version: 0x04ABD - Anvil
+	Level weather: Rain time: 1673 (now: false), thunder time: 92792 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: true
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:865)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:800)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:118)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:646)
+	at java.lang.Thread.run(Thread.java:748)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.14.4
+	Minecraft Version ID: 1.14.4
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_171, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 525245416 bytes (500 MB) / 1091567616 bytes (1041 MB) up to 1895825408 bytes (1808 MB)
+	CPUs: 4
+	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
+	ModLauncher: 3.2.0+60+b86c1d4
+	ModLauncher launch target: fmluserdevclient
+	ModLauncher naming: mcp
+	ModLauncher services: 
+		/eventbus-1.0.0-service.jar eventbus PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar object_holder_definalize PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar runtime_enum_extender PLUGINSERVICE 
+		/accesstransformers-1.0.0-shadowed.jar accesstransformer PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar capability_inject_definalize PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar runtimedistcleaner PLUGINSERVICE 
+		/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-launcher.jar fml TRANSFORMATIONSERVICE 
+	FML: 28.1
+	Forge: net.minecraftforge:28.1.0
+	FML Language Providers: 
+		javafml@28.1
+		minecraft@1
+	Mod List: 
+		forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar Forge {forge@28.1.0 DONE}
+		xercamusic-1.14.4-1.3-deobf.jar Xerca's Music Mod {xercamusic@NONE DONE}
+		main Joy of Painting {xercapaint@NONE DONE}
+		client-extra.jar Minecraft {minecraft@1.14.4 DONE}
+	Player Count: 1 / 8; [ServerPlayerEntity['Dev'/234, l='Paint world', x=-36.72, y=72.00, z=19.58]]
+	Data Packs: vanilla, mod:xercapaint (incompatible), mod:xercamusic, mod:forge
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'forge'

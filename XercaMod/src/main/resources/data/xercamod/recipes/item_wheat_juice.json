@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercamod:item_glass"}, {"item": "minecraft:wheat"}, {"item": "minecraft:wheat"}],
+    "result": {"item": "xercamod:item_wheat_juice"}
+}
+        

@@ -1,0 +1,6 @@
+{
+  "parent": "xercamusic:block/block_metronome",
+  "textures": {
+    "front": "xercamusic:block/metronome_face8"
+  }
+}

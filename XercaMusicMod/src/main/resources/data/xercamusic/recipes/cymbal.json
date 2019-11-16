@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " g ",
+        "gig",
+        " g "
+    ],
+    "key": {"g": {"item": "minecraft:gold_ingot"}, "i": {"item": "minecraft:iron_ingot"}},
+    "result": {"item": "xercamusic:cymbal"}
+}
+        

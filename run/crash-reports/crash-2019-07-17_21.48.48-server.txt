@@ -1,0 +1,39 @@
+---- Minecraft Crash Report ----
+// Would you like a cupcake?
+
+Time: 17.07.2019 21:48
+Description: Exception in server tick loop
+
+net.minecraftforge.fml.StartupQuery$AbortedException: null
+	at net.minecraftforge.fml.StartupQuery.abort(StartupQuery.java:70) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraftforge.registries.GameData.injectSnapshot(GameData.java:747) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.FMLWorldPersistenceHook.readData(FMLWorldPersistenceHook.java:125) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.WorldPersistenceHooks.lambda$handleWorldDataLoad$1(WorldPersistenceHooks.java:47) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at java.util.ArrayList.forEach(ArrayList.java:1257) ~[?:1.8.0_181] {}
+	at net.minecraftforge.fml.WorldPersistenceHooks.handleWorldDataLoad(WorldPersistenceHooks.java:47) ~[?:?] {pl:eventbus:A,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.world.storage.SaveFormatOld.getWorldData(SaveFormatOld.java:106) ~[?:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.world.storage.SaveHandler.loadWorldInfo(SaveHandler.java:116) ~[?:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.server.integrated.IntegratedServer.loadAllWorlds(IntegratedServer.java:69) ~[?:?] {pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.server.integrated.IntegratedServer.init(IntegratedServer.java:99) ~[?:?] {pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:595) [?:?] {pl:accesstransformer:B,pl:object_holder_definalize:A,pl:runtime_enum_extender:A,pl:capability_inject_definalize:A,pl:runtimedistcleaner:A}
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- System Details --
+Details:
+	Minecraft Version: 1.13.2
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_181, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 669044072 bytes (638 MB) / 1080557568 bytes (1030 MB) up to 1895825408 bytes (1808 MB)
+	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
+	FML: New FML!
+	Loaded coremods (and transformers): Nothing
+	Profiler Position: N/A (disabled)
+	Player Count: 0 / 8; []
+	Data Packs: 
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'forge'

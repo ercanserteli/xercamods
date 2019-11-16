@@ -1,0 +1,93 @@
+{
+  "xercamusic:achievements/become_musician": {
+    "criteria": {
+      "iron": "2019-09-11 18:08:22 +0300"
+    },
+    "done": true
+  },
+  "xercamusic:achievements/root": {
+    "criteria": {
+      "crafting_table": "2019-09-11 17:45:10 +0300"
+    },
+    "done": true
+  },
+  "minecraft:husbandry/root": {
+    "criteria": {
+      "consumed_item": "2019-09-11 18:02:46 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/dark_oak_boat": {
+    "criteria": {
+      "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2019-09-11 18:07:41 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/birch_boat": {
+    "criteria": {
+      "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "xercamod:achievements/diabetes2": {
+    "criteria": {
+      "item_fancy_donut": "2019-09-11 18:02:46 +0300"
+    },
+    "done": false
+  },
+  "minecraft:recipes/misc/red_dye_from_poppy": {
+    "criteria": {
+      "has_red_flower": "2019-09-11 18:00:23 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/acacia_boat": {
+    "criteria": {
+      "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/oak_boat": {
+    "criteria": {
+      "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "xercamod:achievements/root": {
+    "criteria": {
+      "crafting_table": "2019-09-11 17:45:10 +0300"
+    },
+    "done": true
+  },
+  "xercamod:achievements/diabetes": {
+    "criteria": {
+      "tea_madness": "2019-09-11 18:06:41 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/jungle_boat": {
+    "criteria": {
+      "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/spruce_boat": {
+    "criteria": {
+      "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:forest": "2019-09-11 17:44:45 +0300"
+    },
+    "done": false
+  },
+  "DataVersion": 1976
+}

@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:forge:1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-recomp.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3/forge-1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.13.2-25.0.219_mapped_snapshot_20180921-1.13/forge-1.13.2-25.0.219_mapped_snapshot_20180921-1.13-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.13.2-25.0.219_mapped_snapshot_20190719-1.14.3/forge-1.13.2-25.0.219_mapped_snapshot_20190719-1.14.3-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.14.4-28.0.100_mapped_snapshot_20190719-1.14.3/forge-1.14.4-28.0.100_mapped_snapshot_20190719-1.14.3-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.14.4-28.0.104_mapped_snapshot_20190719-1.14.3/forge-1.14.4-28.0.104_mapped_snapshot_20190719-1.14.3-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.14.4-28.0.73_mapped_snapshot_20190829-1.14.3/forge-1.14.4-28.0.73_mapped_snapshot_20190829-1.14.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

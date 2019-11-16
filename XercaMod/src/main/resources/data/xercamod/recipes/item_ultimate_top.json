@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " b ",
+        "ttt",
+        " c "
+    ],
+    "key": {"b": {"item": "xercamod:item_bun"}, "c": {"item": "xercamod:item_cooked_chicken_patty"}, "t": {"item": "xercamod:item_tomato_slices"}},
+    "result": {"item": "xercamod:item_ultimate_top"}
+}
+        

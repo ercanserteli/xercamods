@@ -1,0 +1,44 @@
+{
+  "variants": {
+    "facing=south,has_instrument=false,has_music=false,powering=false": { "model": "xercamusic:block/music_box_empty" },
+    "facing=west,has_instrument=false,has_music=false,powering=false": { "model": "xercamusic:block/music_box_empty", "y": 90 },
+    "facing=north,has_instrument=false,has_music=false,powering=false": { "model": "xercamusic:block/music_box_empty", "y": 180 },
+    "facing=east,has_instrument=false,has_music=false,powering=false": { "model": "xercamusic:block/music_box_empty", "y": 270 },
+
+    "facing=south,has_instrument=true,has_music=false,powering=false": { "model": "xercamusic:block/music_box_ins" },
+    "facing=west,has_instrument=true,has_music=false,powering=false": { "model": "xercamusic:block/music_box_ins", "y": 90 },
+    "facing=north,has_instrument=true,has_music=false,powering=false": { "model": "xercamusic:block/music_box_ins", "y": 180 },
+    "facing=east,has_instrument=true,has_music=false,powering=false": { "model": "xercamusic:block/music_box_ins", "y": 270 },
+
+    "facing=south,has_instrument=false,has_music=true,powering=false": { "model": "xercamusic:block/music_box_note" },
+    "facing=west,has_instrument=false,has_music=true,powering=false": { "model": "xercamusic:block/music_box_note", "y": 90 },
+    "facing=north,has_instrument=false,has_music=true,powering=false": { "model": "xercamusic:block/music_box_note", "y": 180 },
+    "facing=east,has_instrument=false,has_music=true,powering=false": { "model": "xercamusic:block/music_box_note", "y": 270 },
+
+    "facing=south,has_instrument=true,has_music=true,powering=false": { "model": "xercamusic:block/music_box_ins_note" },
+    "facing=west,has_instrument=true,has_music=true,powering=false": { "model": "xercamusic:block/music_box_ins_note", "y": 90 },
+    "facing=north,has_instrument=true,has_music=true,powering=false": { "model": "xercamusic:block/music_box_ins_note", "y": 180 },
+    "facing=east,has_instrument=true,has_music=true,powering=false": { "model": "xercamusic:block/music_box_ins_note", "y": 270 },
+
+
+    "facing=south,has_instrument=false,has_music=false,powering=true": { "model": "xercamusic:block/music_box_empty_on" },
+    "facing=west,has_instrument=false,has_music=false,powering=true": { "model": "xercamusic:block/music_box_empty_on", "y": 90 },
+    "facing=north,has_instrument=false,has_music=false,powering=true": { "model": "xercamusic:block/music_box_empty_on", "y": 180 },
+    "facing=east,has_instrument=false,has_music=false,powering=true": { "model": "xercamusic:block/music_box_empty_on", "y": 270 },
+
+    "facing=south,has_instrument=true,has_music=false,powering=true": { "model": "xercamusic:block/music_box_ins_on" },
+    "facing=west,has_instrument=true,has_music=false,powering=true": { "model": "xercamusic:block/music_box_ins_on", "y": 90 },
+    "facing=north,has_instrument=true,has_music=false,powering=true": { "model": "xercamusic:block/music_box_ins_on", "y": 180 },
+    "facing=east,has_instrument=true,has_music=false,powering=true": { "model": "xercamusic:block/music_box_ins_on", "y": 270 },
+
+    "facing=south,has_instrument=false,has_music=true,powering=true": { "model": "xercamusic:block/music_box_note_on" },
+    "facing=west,has_instrument=false,has_music=true,powering=true": { "model": "xercamusic:block/music_box_note_on", "y": 90 },
+    "facing=north,has_instrument=false,has_music=true,powering=true": { "model": "xercamusic:block/music_box_note_on", "y": 180 },
+    "facing=east,has_instrument=false,has_music=true,powering=true": { "model": "xercamusic:block/music_box_note_on", "y": 270 },
+
+    "facing=south,has_instrument=true,has_music=true,powering=true": { "model": "xercamusic:block/music_box_ins_note_on" },
+    "facing=west,has_instrument=true,has_music=true,powering=true": { "model": "xercamusic:block/music_box_ins_note_on", "y": 90 },
+    "facing=north,has_instrument=true,has_music=true,powering=true": { "model": "xercamusic:block/music_box_ins_note_on", "y": 180 },
+    "facing=east,has_instrument=true,has_music=true,powering=true": { "model": "xercamusic:block/music_box_ins_note_on", "y": 270 }
+  }
+}

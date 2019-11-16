@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "xercamusic:music_sheet"
+    },
+    "title": {
+      "translate": "advancements.xercamusic.achievements.musician.title"
+    },
+    "description": {
+      "translate": "advancements.xercamusic.achievements.musician.description"
+    }
+  },
+  "parent": "xercamusic:achievements/root",
+  "criteria": {
+    "iron": {
+      "trigger": "become_musician"
+    }
+  }
+}

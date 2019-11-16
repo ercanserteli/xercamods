@@ -1,0 +1,54 @@
+---- Minecraft Crash Report ----
+// Surprise! Haha. Well, this is awkward.
+
+Time: 19/09/11 17:34
+Description: Exception in server tick loop
+
+net.minecraftforge.fml.LoadingFailedException: null
+	at net.minecraftforge.fml.ModLoader.dispatchAndHandleError(ModLoader.java:198) ~[?:?] {}
+	at net.minecraftforge.fml.ModLoader.lambda$gatherAndInitializeMods$24(ModLoader.java:186) ~[?:?] {}
+	at net.minecraftforge.registries.GameData.fireRegistryEvents(GameData.java:969) ~[?:?] {}
+	at net.minecraftforge.fml.ModLoader.gatherAndInitializeMods(ModLoader.java:186) ~[?:?] {}
+	at net.minecraftforge.fml.server.ServerModLoader.begin(ServerModLoader.java:45) ~[?:?] {}
+	at net.minecraft.server.dedicated.DedicatedServer.init(DedicatedServer.java:124) ~[?:?] {pl:accesstransformer:B}
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:622) [?:?] {pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- System Details --
+Details:
+	Minecraft Version: 1.14.4
+	Minecraft Version ID: 1.14.4
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_181, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 462456872 bytes (441 MB) / 934805504 bytes (891 MB) up to 1895825408 bytes (1808 MB)
+	CPUs: 4
+	JVM Flags: 0 total; 
+	ModLauncher: 3.2.0+60+b86c1d4
+	ModLauncher launch target: fmluserdevserver
+	ModLauncher naming: mcp
+	ModLauncher services: 
+		/eventbus-1.0.0-service.jar eventbus PLUGINSERVICE 
+		/forge-1.14.4-28.0.104_mapped_snapshot_20190719-1.14.3-launcher.jar object_holder_definalize PLUGINSERVICE 
+		/forge-1.14.4-28.0.104_mapped_snapshot_20190719-1.14.3-launcher.jar runtime_enum_extender PLUGINSERVICE 
+		/accesstransformers-1.0.0-shadowed.jar accesstransformer PLUGINSERVICE 
+		/forge-1.14.4-28.0.104_mapped_snapshot_20190719-1.14.3-launcher.jar capability_inject_definalize PLUGINSERVICE 
+		/forge-1.14.4-28.0.104_mapped_snapshot_20190719-1.14.3-launcher.jar runtimedistcleaner PLUGINSERVICE 
+		/forge-1.14.4-28.0.104_mapped_snapshot_20190719-1.14.3-launcher.jar fml TRANSFORMATIONSERVICE 
+	FML: 28.0
+	Forge: net.minecraftforge:28.0.104
+	FML Language Providers: 
+		javafml@28.0
+		minecraft@1
+	Mod List: 
+		forge-1.14.4-28.0.104_mapped_snapshot_20190719-1.14.3-recomp.jar Forge {forge@28.0.100 LOAD_REGISTRIES}
+		xercamusic-1.14.4-1.0-deobf.jar Xerca's Music Mod {xercamusic@NONE LOAD_REGISTRIES}
+		main Xerca Mod {xercamod@NONE ERROR}
+		client-extra.jar Minecraft {minecraft@1.14.4 LOAD_REGISTRIES}
+	Data Packs: 
+	Is Modded: Definitely; Server brand changed to 'forge'
+	Type: Dedicated Server (map_server.txt)

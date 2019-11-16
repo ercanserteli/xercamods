@@ -1,0 +1,36 @@
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml" #mandatory
+
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+loaderVersion="[25,)" #mandatory (24 is current forge version)
+
+# A file name (in the root of the mod JAR) containing a logo for display
+logoFile="logo.png" #optional
+
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]] #mandatory
+
+# The modid of the mod
+modId="xercapaint" #mandatory
+
+# The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
+version="${file.jarVersion}" #mandatory
+#version="${file.jarVersion}" #mandatory
+
+displayURL="https://ercanserteli.com/joy-of-painting/" #optional
+
+ # A display name for the mod
+displayName="Joy of Painting" #mandatory
+
+# A text field displayed in the mod UI
+credits="" #optional
+
+# A text field displayed in the mod UI
+authors="xerca" #optional
+
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+This mod lets you craft a blank canvas and a palette, with which you can paint your own pictures and hang them on a wall like the vanilla paintings.
+
+Let your creativity roam free or paint memes and experience the joy of painting.
+'''

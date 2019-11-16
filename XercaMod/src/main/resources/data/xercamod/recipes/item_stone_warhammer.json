@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "tst",
+        " s ",
+        " s "
+    ],
+    "key": {"s": {"item": "minecraft:stick"}, "t": {"item": "minecraft:cobblestone"}},
+    "result": {"item": "xercamod:item_stone_warhammer"}
+}
+        

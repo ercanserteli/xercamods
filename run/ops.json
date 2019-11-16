@@ -1,0 +1,20 @@
+[
+  {
+    "uuid": "770668fb-c351-357c-99ff-6bf097800337",
+    "name": "hede",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  },
+  {
+    "uuid": "78c7b9a5-ab1a-3e2e-b965-f65301d865f3",
+    "name": "xerca",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  },
+  {
+    "uuid": "380df991-f603-344c-a090-369bad2a924a",
+    "name": "Dev",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  }
+]

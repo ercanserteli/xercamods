@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smelting",
+    
+    "ingredient": [
+        {"item": "xercamod:item_raw_sausage"}
+    ],
+    "result": "xercamod:item_cooked_sausage",
+    "experience": 0.2,
+    "cookingtime": 200
+}
+        

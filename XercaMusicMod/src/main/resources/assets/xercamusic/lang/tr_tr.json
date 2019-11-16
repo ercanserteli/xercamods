@@ -1,0 +1,35 @@
+{
+  "itemGroup.music_tab": "Müzik",
+
+  "item.xercamusic.music_sheet": "Müzik Kağıdı",
+  "item.xercamusic.guitar": "Gitar",
+  "item.xercamusic.flute": "Flüt",
+  "item.xercamusic.banjo": "Banjo",
+  "item.xercamusic.drum": "Davul",
+  "item.xercamusic.lyre": "Lir",
+  "item.xercamusic.saxophone": "Saksofon",
+  "item.xercamusic.god": "Tanrının sesi",
+  "item.xercamusic.sansula": "Sansula",
+  "item.xercamusic.tubular_bell": "Chimes",
+  "item.xercamusic.violin": "Keman",
+  "item.xercamusic.xylophone": "Ksilofon",
+  "item.xercamusic.cello": "Çello",
+  "item.xercamusic.drum_kit": "Taşınabilir Bateri",
+  "item.xercamusic.cymbal": "Büyük Zil",
+
+  "block.xercamusic.block_metronome": "Metronom",
+  "block.xercamusic.music_box": "Müzik Kutusu",
+
+  "note.byAuthor": "%1$s tarafından",
+  "note.signButton": "İmzala",
+  "note.editTitle": "Müziğe isim koy:",
+  "note.finalizeButton": "İmzalayıp kapat",
+  "note.finalizeWarning": "Dikkat! Müziği imzaladıktan sonra değiştiremezsin.",
+  "note.generation.0": "Orijinal",
+  "note.generation.1": "Kopya",
+  "note.generation.2": "Torrentlenmiş",
+  "note.upButton": "▲",
+  "note.downButton": "▼",
+  "note.startPreviewButton": "►",
+  "note.stopPreviewButton": "■"
+}

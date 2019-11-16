@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component>
+  <configuration default="false" factoryName="Application" name="runClient" singleton="false" type="Application">
+    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.userdev.LaunchTesting"/>
+    <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=SCAN,REGISTRIES,REGISTRYDUMP -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump &quot;-Dos.name=Windows 10&quot; -Dos.version=10.0"/>
+    <option name="PROGRAM_PARAMETERS" value=""/>
+    <option name="WORKING_DIRECTORY" value="C:\Users\xerca\Desktop\Mine Mods\XercaMod\run"/>
+    <module name="XercaMod_main"/>
+    <envs>
+      <env name="MOD_CLASSES" value="xercamod%%C:\Users\xerca\Desktop\Mine Mods\XercaMod\build\resources\main;xercamod%%C:\Users\xerca\Desktop\Mine Mods\XercaMod\build\classes\java\main"/>
+      <env name="MCP_MAPPINGS" value="snapshot_20190719-1.14.3"/>
+      <env name="MCP_VERSION" value="20190829.143755"/>
+      <env name="FORGE_VERSION" value="28.1.0"/>
+      <env name="assetIndex" value="1.14"/>
+      <env name="assetDirectory" value="C:\Users\xerca\.gradle\caches\forge_gradle\assets"/>
+      <env name="nativesDirectory" value="C:\Users\xerca\Desktop\Mine Mods\XercaMod\build\natives"/>
+      <env name="FORGE_GROUP" value="net.minecraftforge"/>
+      <env name="target" value="fmluserdevclient"/>
+      <env name="MC_VERSION" value="1.14.4"/>
+    </envs>
+    <method v="2">
+      <option enabled="true" name="Make"/>
+      <option enabled="true" externalProjectPath="$PROJECT_DIR$" name="Gradle.BeforeRunTask" tasks=":prepareRunClient"/>
+    </method>
+  </configuration>
+</component>

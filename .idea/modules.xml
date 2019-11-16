@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Mine Mods.iml" filepath="$PROJECT_DIR$/.idea/Mine Mods.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaMod.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaMod.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaMod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaMod.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaMod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaMod.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaMusicMod.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaMusicMod.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaMusicMod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaMusicMod.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaMusicMod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaMusicMod.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaPaintMod.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaPaintMod.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaPaintMod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaPaintMod.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XercaPaintMod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/XercaPaintMod.test.iml" />
+    </modules>
+  </component>
+</project>

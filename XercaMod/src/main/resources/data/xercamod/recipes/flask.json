@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " l ",
+        "lel",
+        " l "
+    ],
+    "key": {"e": {"item": "minecraft:ender_eye"}, "l": {"item": "minecraft:leather"}},
+    "result": {"item": "xercamod:flask"}
+}
+        

@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercamod:item/enderflask_overlay",
+    "layer1": "xercamod:item/enderflask_main"
+  }
+}

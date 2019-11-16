@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "cushion",
+    "pattern": [
+        "#",
+        "f",
+        "#"
+    ],
+    "key": {"f": {"item": "minecraft:feather"}, "#": {"item": "minecraft:cyan_wool"}},
+    "result": {"item": "xercamod:cyan_cushion", "count": 1}
+}
+        

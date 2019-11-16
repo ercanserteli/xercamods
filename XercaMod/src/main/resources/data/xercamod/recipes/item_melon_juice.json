@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercamod:item_glass"}, {"item": "minecraft:melon"}],
+    "result": {"item": "xercamod:item_melon_juice"}
+}
+        
