@@ -1,0 +1,22 @@
+{
+    "textures": {
+        "particle": "xercamod:block/pie_side",
+        "bottom": "xercamod:block/pie_bottom",
+        "top": "xercamod:block/pie_top",
+        "side": "xercamod:block/pie_side",
+        "inside": "xercamod:block/pie_inner"
+    },
+    "elements": [
+        {   "from": [ 3, 0, 1 ],
+            "to": [ 15, 8, 15 ],
+            "faces": {
+                "down":  { "texture": "#bottom", "cullface": "down" },
+                "up":    { "texture": "#top" },
+                "north": { "texture": "#side" },
+                "south": { "texture": "#side" },
+                "west":  { "texture": "#inside" },
+                "east":  { "texture": "#side" }
+            }
+        }
+    ]
+}

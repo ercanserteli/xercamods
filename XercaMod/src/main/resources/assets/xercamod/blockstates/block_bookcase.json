@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "books=0": { "model": "xercamod:block/bookcase_0"},
+        "books=1": { "model": "xercamod:block/bookcase_1"},
+        "books=2": { "model": "xercamod:block/bookcase_2"},
+        "books=3": { "model": "xercamod:block/bookcase_3"},
+        "books=4": { "model": "xercamod:block/bookcase_4"},
+        "books=5": { "model": "xercamod:block/bookcase_5"},
+        "books=6": { "model": "xercamod:block/bookcase_6"}
+    }
+}

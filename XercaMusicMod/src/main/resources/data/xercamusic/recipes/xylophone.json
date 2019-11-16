@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "sss",
+        "ppp"
+    ],
+    "key": {"s": {"item": "minecraft:stick"}, "p": {"tag": "minecraft:planks"}},
+    "result": {"item": "xercamusic:xylophone"}
+}
+        

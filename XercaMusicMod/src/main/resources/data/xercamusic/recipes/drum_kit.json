@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "c c",
+        "ddd"
+    ],
+    "key": {"c": {"item": "xercamusic:cymbal"}, "d": {"item": "xercamusic:drum"}},
+    "result": {"item": "xercamusic:drum_kit"}
+}
+        

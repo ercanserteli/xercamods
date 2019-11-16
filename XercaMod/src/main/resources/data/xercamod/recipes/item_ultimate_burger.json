@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " t ",
+        " e ",
+        " b "
+    ],
+    "key": {"b": {"item": "xercamod:item_ultimate_bottom"}, "t": {"item": "xercamod:item_ultimate_top"}, "e": {"item": "xercamod:item_bun"}},
+    "result": {"item": "xercamod:item_ultimate_burger"}
+}
+        

@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "minecraft:paper"}, {"item": "minecraft:cyan_dye"}, {"item": "minecraft:magenta_dye"}, {"item": "minecraft:yellow_dye"}],
+    "result": {"item": "xercamod:item_confetti", "count": 12}
+}
+        

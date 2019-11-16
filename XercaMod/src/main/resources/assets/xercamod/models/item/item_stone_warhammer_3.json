@@ -1,0 +1,13 @@
+{
+  "parent": "xercamod:item/item_stone_warhammer",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 0, 90, 30 ],
+      "translation": [ 0, 4.5, 4 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, 90, 30 ],
+      "translation": [ 0, 4.5, 2.5 ]
+    }
+  }
+}

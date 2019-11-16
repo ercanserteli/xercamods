@@ -1,0 +1,10 @@
+{
+  "itemGroup.paint_tab": "Paint",
+
+  "item.xercapaint.item_palette": "Palette",
+  "item.xercapaint.item_canvas": "Canvas",
+  "item.xercapaint.item_canvas_large": "Large Canvas",
+
+  "palette.basic_count": "%1$s basic colors",
+  "palette.custom_count": "%1$s custom colors"
+}

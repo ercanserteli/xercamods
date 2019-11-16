@@ -1,0 +1,124 @@
+{
+  "tomato_splash": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:tomato_splash"
+      }
+    ]
+  },
+  "sneak_hit": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:sneak_hit1"
+      },
+      {
+        "name": "xercamod:sneak_hit2"
+      },
+      {
+        "name": "xercamod:sneak_hit3"
+      },
+      {
+        "name": "xercamod:sneak_hit4"
+      }
+    ]
+  },
+  "crack": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:crack1"
+      },
+      {
+        "name": "xercamod:crack2"
+      },
+      {
+        "name": "xercamod:crack3"
+      },
+      {
+        "name": "xercamod:crack4"
+      }
+    ]
+  },
+  "gavel": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:gavel"
+      }
+    ]
+  },
+  "objection": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:objection"
+      }
+    ]
+  },
+  "hammer": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:hammer"
+      }
+    ]
+  },
+  "hook_chain": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:hook_chain"
+      }
+    ]
+  },
+  "hook_impact": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:hook_impact"
+      }
+    ]
+  },
+  "big_burp": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:big_burp"
+      }
+    ]
+  },
+  "yahoo": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:yahoo"
+      }
+    ]
+  },
+  "scary": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:scary"
+      }
+    ]
+  },
+  "confetti": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:confetti"
+      }
+    ]
+  },
+  "stomp": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:stomp"
+      }
+    ]
+  }
+}

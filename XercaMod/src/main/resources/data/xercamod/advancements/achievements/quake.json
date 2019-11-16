@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "xercamod:item_iron_warhammer"
+    },
+    "title": {
+      "translate": "advancements.xercamod.achievements.quake.title"
+    },
+    "description": {
+      "translate": "advancements.xercamod.achievements.quake.description"
+    }
+  },
+  "parent": "xercamod:achievements/root",
+  "criteria": {
+    "iron": {
+      "trigger": "quake"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "cupcake",
+    "pattern": [
+        "s",
+        "c"
+    ],
+    "key": {"s": {"item": "xercamod:item_sprinkles"}, "c": {"item": "xercamod:item_apple_cupcake"}},
+    "result": {"item": "xercamod:item_fancy_apple_cupcake"}
+}
+        

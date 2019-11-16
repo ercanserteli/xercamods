@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "xercamusic:guitar"
+    },
+    "title": {
+      "translate": "advancements.xercamusic.achievements.root.title"
+    },
+    "description": {
+      "translate": "advancements.xercamusic.achievements.root.description"
+    },
+    "background": "xercamusic:textures/item/instruments/lyre.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {}
+    }
+  }
+}

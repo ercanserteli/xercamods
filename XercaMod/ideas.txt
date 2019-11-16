@@ -1,0 +1,10 @@
+Future ideas:
+
+- Redstonela ilgili bir block?
+- sushi
+- secret golden donut?
+- bıçağa enchantment:
+    - yankesicilik
+    - zehir
+    - ekstra stealth damage
+	

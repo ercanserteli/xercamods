@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " s ",
+        "pip",
+        " p "
+    ],
+    "key": {"p": {"item": "minecraft:dark_oak_planks"}, "s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:string"}},
+    "result": {"item": "xercamusic:cello"}
+}
+        

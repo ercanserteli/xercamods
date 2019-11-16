@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "  s",
+        " b ",
+        "s  "
+    ],
+    "key": {"b": {"item": "minecraft:cooked_beef"}, "s": {"item": "minecraft:stick"}},
+    "result": {"item": "xercamod:item_shish_kebab", "count": 2}
+}
+        

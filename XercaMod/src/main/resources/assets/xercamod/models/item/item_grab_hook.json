@@ -1,0 +1,14 @@
+{
+    "parent": "item/handheld_rod",
+    "textures": {
+        "layer0": "xercamod:item/grab_hook"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "xercamod:cast": 1
+            },
+            "model": "xercamod:item/item_grab_hook_empty"
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "xercamusic:block/music_box",
+  "textures": {
+    "top": "xercamusic:block/music_box_full_top",
+    "front": "xercamusic:block/music_box_full_side"
+  }
+}

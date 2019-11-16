@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "ultimate_bottom",
+    "pattern": [
+        "nmn",
+        " p ",
+        " b "
+    ],
+    "key": {"p": {"item": "xercamod:item_cooked_patty"}, "b": {"item": "xercamod:item_bun"}, "m": {"item": "minecraft:brown_mushroom"}, "n": {"item": "minecraft:red_mushroom"}},
+    "result": {"item": "xercamod:item_ultimate_bottom"}
+}
+        
