@@ -150,11 +150,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             final float xOffset = facing.getXOffset();
             final float zOffset = facing.getZOffset();
             final float yOffset = -1.0f;
-            if(wScale == 1.0f && hScale == 1.0f){
-                GlStateManager.translated(x + zOffset*0.5d, y + yOffset*0.5f, z - xOffset*0.5d);
-            }else{
-                GlStateManager.translated(x + zOffset, y + yOffset, z - xOffset);
-            }
+            GlStateManager.translated(x + zOffset*0.5d*wScale, y + yOffset*0.5d*hScale, z - xOffset*0.5d*wScale);
 
             GlStateManager.rotatef(180.0F - yaw, 0.0F, 1.0F, 0.0F);
 //            GlStateManager.disableLighting();

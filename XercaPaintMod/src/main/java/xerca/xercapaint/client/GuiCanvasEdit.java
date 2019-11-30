@@ -25,15 +25,16 @@ public class GuiCanvasEdit extends BasePalette {
     private static final ResourceLocation noteGuiTextures = new ResourceLocation(XercaPaint.MODID, "textures/gui/palette.png");
     private int canvasX = 240;
     private int canvasY = 40;
-    private int canvasWidth = 160;
-    private int canvasHeight = 160;
+    private int canvasWidth;
+    private int canvasHeight;
     private final int brushMeterX = 420;
     private final int brushMeterY = 120;
     private int canvasPixelScale;
     private int canvasPixelWidth;
     private int canvasPixelHeight;
     private int brushSize = 0;
-    private boolean undoUpToDate = true;
+    private boolean touchedCanvas = false;
+    private boolean undoStarted = false;
 
     private final PlayerEntity editingPlayer;
 
@@ -71,6 +72,11 @@ public class GuiCanvasEdit extends BasePalette {
         this.canvasPixelWidth = CanvasType.getWidth(canvasType);
         this.canvasPixelHeight = CanvasType.getHeight(canvasType);
         int canvasPixelArea = canvasPixelHeight*canvasPixelWidth;
+        this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
+        this.canvasHeight = this.canvasPixelHeight * this.canvasPixelScale;
+        if(canvasType.equals(CanvasType.LONG)){
+            this.canvasY += 40;
+        }
 
         this.editingPlayer = player;
         if (canvasTag != null && !canvasTag.isEmpty()) {
@@ -194,9 +200,9 @@ public class GuiCanvasEdit extends BasePalette {
         // Draw the canvas
         for(int i=0; i<canvasPixelHeight; i++){
             for(int j=0; j<canvasPixelWidth; j++){
-                int x = canvasX + i* canvasPixelScale;
-                int y = canvasY + j* canvasPixelScale;
-                fill(x, y, x+ canvasPixelScale, y+ canvasPixelScale, getPixelAt(i, j));
+                int y = canvasY + i* canvasPixelScale;
+                int x = canvasX + j* canvasPixelScale;
+                fill(x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
             }
         }
 
@@ -304,12 +310,15 @@ public class GuiCanvasEdit extends BasePalette {
         int mouseX = (int)Math.floor(posX);
         int mouseY = (int)Math.floor(posY);
 
-        if(inCanvas(mouseX, mouseY)){
-            if(undoStack.size() >= maxUndoLength){
-                undoStack.removeLast();
-            }
-            undoStack.push(pixels.clone());
+        undoStarted = true;
+        touchedCanvas = false;
+        if(undoStack.size() >= maxUndoLength){
+            undoStack.removeLast();
+        }
+        undoStack.push(pixels.clone());
 
+        if(inCanvas(mouseX, mouseY)){
+            touchedCanvas = true;
             setPixelsAt(mouseX, mouseY, currentColor, brushSize);
             dirty = true;
         }
@@ -325,6 +334,10 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public boolean mouseReleased(double posX, double posY, int mouseButton) {
+        if(undoStarted && !touchedCanvas){
+            undoStarted = false;
+            undoStack.removeFirst();
+        }
         return super.mouseReleased(posX, posY, mouseButton);
     }
 
@@ -335,6 +348,7 @@ public class GuiCanvasEdit extends BasePalette {
         int mouseX = (int)Math.floor(posX);
         int mouseY = (int)Math.floor(posY);
         if(inCanvas(mouseX, mouseY)){
+            touchedCanvas = true;
             setPixelsAt(mouseX, mouseY, currentColor, brushSize);
             dirty = true;
         }

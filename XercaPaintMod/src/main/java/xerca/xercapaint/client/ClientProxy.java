@@ -41,7 +41,7 @@ public class ClientProxy extends Proxy {
 
         if(heldItem.getItem() instanceof ItemCanvas){
             if(offhandItem.isEmpty()){
-                Minecraft.getInstance().displayGuiScreen(new GuiCanvasView(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas")));
+                Minecraft.getInstance().displayGuiScreen(new GuiCanvasView(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }else if(offhandItem.getItem() instanceof ItemPalette){
                 Minecraft.getInstance().displayGuiScreen(new GuiCanvasEdit(Minecraft.getInstance().player,
                         heldItem.getTag(), offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
