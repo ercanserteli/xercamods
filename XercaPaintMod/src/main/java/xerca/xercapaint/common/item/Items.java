@@ -46,7 +46,9 @@ public final class Items {
             event.getRegistry().registerAll(
                     new ItemPalette("item_palette"),
                     new ItemCanvas("item_canvas", CanvasType.SMALL),
-                    new ItemCanvas("item_canvas_large", CanvasType.LARGE)
+                    new ItemCanvas("item_canvas_large", CanvasType.LARGE),
+                    new ItemCanvas("item_canvas_long", CanvasType.LONG),
+                    new ItemCanvas("item_canvas_tall", CanvasType.TALL)
             );
         }
     }
