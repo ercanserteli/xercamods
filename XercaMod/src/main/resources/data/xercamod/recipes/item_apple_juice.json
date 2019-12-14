@@ -1,6 +1,6 @@
 
 {
-    "type": "minecraft:crafting_shapeless",
+    "type": "xercamod:crafting_condition_shapeless_food",
     
     "ingredients": [{"item": "xercamod:item_glass"}, {"item": "minecraft:apple"}],
     "result": {"item": "xercamod:item_apple_juice"}

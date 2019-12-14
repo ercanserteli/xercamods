@@ -1,6 +1,6 @@
 
 {
-    "type": "minecraft:crafting_shapeless",
+    "type": "xercamod:crafting_condition_shapeless_food",
     
     "ingredients": [{"item": "xercamod:item_glass"}, {"item": "minecraft:carrot"}],
     "result": {"item": "xercamod:item_carrot_juice"}

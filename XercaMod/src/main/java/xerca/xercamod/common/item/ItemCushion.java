@@ -1,21 +1,18 @@
 package xerca.xercamod.common.item;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.item.*;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import xerca.xercamod.common.Config;
+import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.BlockCushion;
 import xerca.xercamod.common.entity.EntityCushion;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemCushion extends Item {
@@ -66,5 +63,14 @@ public class ItemCushion extends Item {
                 return ActionResultType.FAIL;
             }
         }
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if(!Config.CUSHION_ENABLE.get()){
+            return;
+        }
+        super.fillItemGroup(group, items);
     }
 }

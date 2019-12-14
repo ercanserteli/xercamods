@@ -4,6 +4,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,14 +13,17 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import xerca.xercamod.common.Config;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemFlask extends Item {
@@ -164,5 +168,14 @@ public class ItemFlask extends Item {
     @OnlyIn(Dist.CLIENT)
     public boolean hasEffect(ItemStack stack) {
         return super.hasEffect(stack) || (hasMilk || !PotionUtils.getEffectsFromStack(stack).isEmpty());
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if(!Config.ENDER_FLASK_ENABLE.get()){
+            return;
+        }
+        super.fillItemGroup(group, items);
     }
 }

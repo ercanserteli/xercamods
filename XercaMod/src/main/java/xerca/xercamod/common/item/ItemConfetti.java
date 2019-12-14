@@ -4,18 +4,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.packets.ConfettiParticlePacket;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 
 public class ItemConfetti extends Item {
@@ -39,5 +38,14 @@ public class ItemConfetti extends Item {
             heldItem.shrink(1);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if(!Config.CONFETTI_ENABLE.get()){
+            return;
+        }
+        super.fillItemGroup(group, items);
     }
 }

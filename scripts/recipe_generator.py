@@ -58,8 +58,8 @@ class Recipe:
 
 
 class ShapedRecipe(Recipe):
-    def __init__(self, pattern, result, key, discover_item=None, group="", folder=""):
-        super().__init__("minecraft:crafting_shaped", group, discover_item, folder)
+    def __init__(self, pattern, result, key, discover_item=None, group="", folder="", type="minecraft:crafting_shaped"):
+        super().__init__(type, group, discover_item, folder)
         self.pattern = pattern
         self.key = key
         self.result = result
@@ -85,8 +85,8 @@ class ShapedRecipe(Recipe):
 
 
 class ShapelessRecipe(Recipe):
-    def __init__(self, ingredients, result, discover_item=None, group="", folder=""):
-        super().__init__("minecraft:crafting_shapeless", group, discover_item, folder)
+    def __init__(self, ingredients, result, discover_item=None, group="", folder="", type="minecraft:crafting_shapeless"):
+        super().__init__(type, group, discover_item, folder)
         self.ingredients = ingredients
         self.result = result
 

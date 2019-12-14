@@ -6,18 +6,17 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.entity.EntityHook;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ItemGrabHook extends FishingRodItem {
 
@@ -56,5 +55,15 @@ public class ItemGrabHook extends FishingRodItem {
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
         return enchantment.type == EnchantmentType.BREAKABLE || enchantment == Items.ENCHANTMENT_GRAPPLING;
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+//        XercaMod.LOGGER.warn("GRAB_HOOK_ENABLE: " + Config.GRAB_HOOK_ENABLE.get());
+        if(!Config.GRAB_HOOK_ENABLE.get()){
+            return;
+        }
+        super.fillItemGroup(group, items);
     }
 }
