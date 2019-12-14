@@ -45,7 +45,15 @@ class EventHandler {
         // Adding XercaMod seeds to the loot table of grass
         if (event.getName().equals(grass))
         {
-            event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass"))).build());
+            if(Config.TEA_ENABLE.get() && Config.FOOD_ENABLE.get()){
+                event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass"))).build());
+            }
+            else if(!Config.TEA_ENABLE.get() && Config.FOOD_ENABLE.get()){
+                event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass_tomato_only"))).build());
+            }
+            else if(Config.TEA_ENABLE.get() && !Config.FOOD_ENABLE.get()){
+                event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass_tea_only"))).build());
+            }
         }
     }
 }

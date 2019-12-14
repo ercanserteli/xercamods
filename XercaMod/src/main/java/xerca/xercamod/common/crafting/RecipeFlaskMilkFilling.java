@@ -1,42 +1,48 @@
-package xerca.xercamod.common.item.crafting;
+package xerca.xercamod.common.crafting;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.MilkBucketItem;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistries;
+import xerca.xercamod.common.Config;
+import xerca.xercamod.common.item.ItemFlask;
 import xerca.xercamod.common.item.Items;
 
-public class RecipeTeaFilling extends SpecialRecipe {
-    public RecipeTeaFilling(ResourceLocation p_i48170_1_) {
+public class RecipeFlaskMilkFilling extends SpecialRecipe {
+    public RecipeFlaskMilkFilling(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
 
     /**
      * Used to check if a recipe matches current crafting inventory
      */
+    @Override
     public boolean matches(CraftingInventory inv, World worldIn) {
+        if(!Config.ENDER_FLASK_ENABLE.get()){
+            return false;
+        }
+
         int i = 0;
-        ItemStack teapotStack = ItemStack.EMPTY;
-        ItemStack bucketStack = ItemStack.EMPTY;
+        ItemStack flaskStack = ItemStack.EMPTY;
 
         for(int j = 0; j < inv.getSizeInventory(); ++j) {
             ItemStack itemstack = inv.getStackInSlot(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ITEM_TEAPOT) {
-                    if (!teapotStack.isEmpty()) {
+                if (itemstack.getItem() instanceof ItemFlask) {
+                    if (!flaskStack.isEmpty()) {
                         return false;
                     }
-                    teapotStack = itemstack;
-                }else if (itemstack.getItem() == net.minecraft.item.Items.WATER_BUCKET) {
-                    if (!bucketStack.isEmpty()) {
+                    flaskStack = itemstack;
+                    if(!PotionUtils.getPotionFromItem(flaskStack).equals(Potions.EMPTY)){
                         return false;
                     }
-                    bucketStack = itemstack;
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
+                    if (!(itemstack.getItem() instanceof MilkBucketItem)) {
                         return false;
                     }
 
@@ -45,32 +51,34 @@ public class RecipeTeaFilling extends SpecialRecipe {
             }
         }
 
-        return !teapotStack.isEmpty() && !bucketStack.isEmpty() && i > 0;
+        return !flaskStack.isEmpty() && i > 0 && (ItemFlask.getCharges(flaskStack) + i) <= ItemFlask.maxCharges;
     }
 
     /**
      * Returns an Item that is the result of this recipe
      */
+    @Override
     public ItemStack getCraftingResult(CraftingInventory inv) {
+        if(!Config.ENDER_FLASK_ENABLE.get()){
+            return ItemStack.EMPTY;
+        }
+
         int i = 0;
-        ItemStack teapotStack = ItemStack.EMPTY;
-        ItemStack bucketStack = ItemStack.EMPTY;
+        ItemStack flaskStack = ItemStack.EMPTY;
 
         for(int j = 0; j < inv.getSizeInventory(); ++j) {
             ItemStack itemstack = inv.getStackInSlot(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ITEM_TEAPOT) {
-                    if (!teapotStack.isEmpty()) {
+                if (itemstack.getItem() instanceof ItemFlask) {
+                    if (!flaskStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    teapotStack = itemstack;
-                }else if (itemstack.getItem() == net.minecraft.item.Items.WATER_BUCKET) {
-                    if (!bucketStack.isEmpty()) {
+                    flaskStack = itemstack;
+                    if(!PotionUtils.getPotionFromItem(flaskStack).equals(Potions.EMPTY)){
                         return ItemStack.EMPTY;
                     }
-                    bucketStack = itemstack;
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
+                    if (!(itemstack.getItem() instanceof MilkBucketItem)) {
                         return ItemStack.EMPTY;
                     }
 
@@ -78,24 +86,25 @@ public class RecipeTeaFilling extends SpecialRecipe {
                 }
             }
         }
-
-        if (!teapotStack.isEmpty() && !bucketStack.isEmpty() && i > 0) {
-            String str = Items.ITEM_FULL_TEAPOT_1.getRegistryName().toString();
-            str = str.substring(0, str.length() - 1) + i;
-            return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(str)));
+        int oldCharges = ItemFlask.getCharges(flaskStack);
+        if (!flaskStack.isEmpty() && i > 0 && (oldCharges + i) <= ItemFlask.maxCharges) {
+            ItemStack resultStack = new ItemStack(Items.FLASK_MILK);
+            ItemFlask.setCharges(resultStack, oldCharges + i);
+            return resultStack;
         } else {
             return ItemStack.EMPTY;
         }
     }
 
     public IRecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_TEA_FILLING;
+        return Items.CRAFTING_SPECIAL_FLASK_MILK_FILLING;
     }
+
 
     /**
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
     public boolean canFit(int width, int height) {
-        return width >= 2 && height >= 2;
+        return width >= 3 && height >= 3;
     }
 }

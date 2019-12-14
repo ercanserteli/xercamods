@@ -6,7 +6,10 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.entity.EntityConfettiBall;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ItemConfettiBall extends Item {
 
@@ -33,5 +36,14 @@ public class ItemConfettiBall extends Item {
             worldIn.addEntity(entityball);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if(!Config.CONFETTI_ENABLE.get()){
+            return;
+        }
+        super.fillItemGroup(group, items);
     }
 }

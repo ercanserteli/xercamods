@@ -1,43 +1,45 @@
-package xerca.xercamod.common.item.crafting;
+package xerca.xercamod.common.crafting;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MilkBucketItem;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import xerca.xercamod.common.item.ItemFlask;
+import net.minecraftforge.registries.ForgeRegistries;
+import xerca.xercamod.common.Config;
+import xerca.xercamod.common.item.ItemTeacup;
 import xerca.xercamod.common.item.Items;
 
-public class RecipeFlaskMilkFilling extends SpecialRecipe {
-    public RecipeFlaskMilkFilling(ResourceLocation p_i48170_1_) {
+public class RecipeTeaSugaring extends SpecialRecipe {
+    public RecipeTeaSugaring(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
 
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    @Override
     public boolean matches(CraftingInventory inv, World worldIn) {
+        if(!Config.TEA_ENABLE.get()){
+            return false;
+        }
+
         int i = 0;
-        ItemStack flaskStack = ItemStack.EMPTY;
+        ItemStack teacupStack = ItemStack.EMPTY;
+        ItemTeacup teacup = null;
 
         for(int j = 0; j < inv.getSizeInventory(); ++j) {
             ItemStack itemstack = inv.getStackInSlot(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() instanceof ItemFlask) {
-                    if (!flaskStack.isEmpty()) {
+                if (itemstack.getItem() instanceof ItemTeacup) {
+                    if (!teacupStack.isEmpty()) {
                         return false;
                     }
-                    flaskStack = itemstack;
-                    if(!PotionUtils.getPotionFromItem(flaskStack).equals(Potions.EMPTY)){
-                        return false;
-                    }
+
+                    teacupStack = itemstack;
+                    teacup = (ItemTeacup) itemstack.getItem();
                 } else {
-                    if (!(itemstack.getItem() instanceof MilkBucketItem)) {
+                    if (itemstack.getItem() != net.minecraft.item.Items.SUGAR || i >= 6) {
                         return false;
                     }
 
@@ -46,30 +48,33 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
             }
         }
 
-        return !flaskStack.isEmpty() && i > 0 && (ItemFlask.getCharges(flaskStack) + i) <= ItemFlask.maxCharges;
+        return !teacupStack.isEmpty() && teacup != null && i > 0 && (teacup.getSugarAmount() + i) <= 6;
     }
 
     /**
      * Returns an Item that is the result of this recipe
      */
-    @Override
     public ItemStack getCraftingResult(CraftingInventory inv) {
+        if(!Config.TEA_ENABLE.get()){
+            return ItemStack.EMPTY;
+        }
+
         int i = 0;
-        ItemStack flaskStack = ItemStack.EMPTY;
+        ItemStack teacupStack = ItemStack.EMPTY;
+        ItemTeacup teacup = null;
 
         for(int j = 0; j < inv.getSizeInventory(); ++j) {
             ItemStack itemstack = inv.getStackInSlot(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() instanceof ItemFlask) {
-                    if (!flaskStack.isEmpty()) {
+                if (itemstack.getItem() instanceof ItemTeacup) {
+                    if (!teacupStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    flaskStack = itemstack;
-                    if(!PotionUtils.getPotionFromItem(flaskStack).equals(Potions.EMPTY)){
-                        return ItemStack.EMPTY;
-                    }
+
+                    teacupStack = itemstack;
+                    teacup = (ItemTeacup) itemstack.getItem();
                 } else {
-                    if (!(itemstack.getItem() instanceof MilkBucketItem)) {
+                    if (itemstack.getItem() != net.minecraft.item.Items.SUGAR || i >= 6) {
                         return ItemStack.EMPTY;
                     }
 
@@ -77,20 +82,19 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
                 }
             }
         }
-        int oldCharges = ItemFlask.getCharges(flaskStack);
-        if (!flaskStack.isEmpty() && i > 0 && (oldCharges + i) <= ItemFlask.maxCharges) {
-            ItemStack resultStack = new ItemStack(Items.FLASK_MILK);
-            ItemFlask.setCharges(resultStack, oldCharges + i);
-            return resultStack;
+
+        if (!teacupStack.isEmpty() && teacup != null && i >= 1 && (teacup.getSugarAmount() + i) <= 6) {
+            String str = teacup.getRegistryName().toString();
+            str = str.substring(0, str.length() - 1) + (teacup.getSugarAmount() + i);
+            return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(str)));
         } else {
             return ItemStack.EMPTY;
         }
     }
 
     public IRecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_FLASK_MILK_FILLING;
+        return Items.CRAFTING_SPECIAL_TEA_SUGARING;
     }
-
 
     /**
      * Used to determine if this recipe can fit in a grid of the given width/height

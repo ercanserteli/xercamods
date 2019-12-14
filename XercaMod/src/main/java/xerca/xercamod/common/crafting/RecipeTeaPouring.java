@@ -1,4 +1,4 @@
-package xerca.xercamod.common.item.crafting;
+package xerca.xercamod.common.crafting;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -8,6 +8,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemTeapot;
 import xerca.xercamod.common.item.Items;
 
@@ -20,6 +21,10 @@ public class RecipeTeaPouring extends SpecialRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     public boolean matches(CraftingInventory inv, World worldIn) {
+        if(!Config.TEA_ENABLE.get()){
+            return false;
+        }
+
         int i = 0;
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemTeapot teapot = null;
@@ -54,6 +59,10 @@ public class RecipeTeaPouring extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     public ItemStack getCraftingResult(CraftingInventory inv) {
+        if(!Config.TEA_ENABLE.get()){
+            return ItemStack.EMPTY;
+        }
+
         int i = 0;
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemTeapot teapot = null;

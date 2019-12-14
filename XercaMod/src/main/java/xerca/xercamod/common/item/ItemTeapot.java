@@ -2,14 +2,18 @@ package xerca.xercamod.common.item;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import xerca.xercamod.common.Config;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemTeapot extends Item {
@@ -42,5 +46,14 @@ public class ItemTeapot extends Item {
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
         return false;
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if(!Config.TEA_ENABLE.get()){
+            return;
+        }
+        super.fillItemGroup(group, items);
     }
 }

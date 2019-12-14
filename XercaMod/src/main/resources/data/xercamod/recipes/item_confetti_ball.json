@@ -1,6 +1,6 @@
 
 {
-    "type": "minecraft:crafting_shaped",
+    "type": "xercamod:crafting_condition_shaped_confetti",
     
     "pattern": [
         " c ",

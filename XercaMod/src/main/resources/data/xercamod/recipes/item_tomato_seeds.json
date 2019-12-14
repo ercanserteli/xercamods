@@ -1,6 +1,6 @@
 
 {
-    "type": "minecraft:crafting_shapeless",
+    "type": "xercamod:crafting_condition_shapeless_food",
     
     "ingredients": [{"item": "xercamod:item_tomato"}],
     "result": {"item": "xercamod:item_tomato_seeds"}

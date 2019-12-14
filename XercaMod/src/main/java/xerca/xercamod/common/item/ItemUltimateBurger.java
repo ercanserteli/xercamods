@@ -7,11 +7,14 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.SoundEvents;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 class ItemUltimateBurger extends Item {
 
@@ -31,5 +34,14 @@ class ItemUltimateBurger extends Item {
             }
         }
         return entityLiving.onFoodEaten(worldIn, stack);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if(!Config.FOOD_ENABLE.get()){
+            return;
+        }
+        super.fillItemGroup(group, items);
     }
 }

@@ -6,9 +6,11 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.entity.EntityTomato;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ItemTomato extends Item {
     public ItemTomato() {
@@ -37,4 +39,12 @@ public class ItemTomato extends Item {
         return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
     }
 
+    @Override
+    @ParametersAreNonnullByDefault
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if(!Config.FOOD_ENABLE.get()){
+            return;
+        }
+        super.fillItemGroup(group, items);
+    }
 }

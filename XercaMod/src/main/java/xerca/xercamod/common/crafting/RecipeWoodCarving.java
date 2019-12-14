@@ -1,4 +1,4 @@
-package xerca.xercamod.common.item.crafting;
+package xerca.xercamod.common.crafting;
 
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.inventory.CraftingInventory;
@@ -8,6 +8,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.item.ItemKnife;
 import xerca.xercamod.common.item.Items;
@@ -23,6 +24,10 @@ public class RecipeWoodCarving extends SpecialRecipe {
      */
     @Override
     public boolean matches(CraftingInventory inv, World worldIn) {
+        if(!Config.CARVED_WOOD_ENABLE.get()){
+            return false;
+        }
+
         int invSize = inv.getSizeInventory();
         if(invSize != 4 && invSize != 9){
             return false;
@@ -59,6 +64,10 @@ public class RecipeWoodCarving extends SpecialRecipe {
     }
 
     private ItemStack getResultItem(Item logType, int difX, int difY){
+        if(!Config.CARVED_WOOD_ENABLE.get()){
+            return ItemStack.EMPTY;
+        }
+
         Item resultItem;
         if(logType == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem()){
             if(difX == -1 && difY == -1){
