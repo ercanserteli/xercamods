@@ -193,5 +193,12 @@
   "enchantment.xercamod.enchantment_quick": "Legerity",
   "enchantment.xercamod.enchantment_quake": "Quake",
   "enchantment.xercamod.enchantment_grappling": "Grappling",
-  "enchantment.xercamod.enchantment_uppercut": "Uppercut"
+  "enchantment.xercamod.enchantment_uppercut": "Uppercut",
+
+  "enchantment.xercamod.enchantment_heavy.desc": "Warhammer enchantment. Increases the maximum pull time, but also adds more damage and knock back.",
+  "enchantment.xercamod.enchantment_maim.desc": "Warhammer enchantment. Cripples your opponent on hit, applying a Slow effect.",
+  "enchantment.xercamod.enchantment_quick.desc": "Warhammer enchantment. Lets you pull the hammer faster while hitting with the same power.",
+  "enchantment.xercamod.enchantment_quake.desc": "Warhammer enchantment. Allows you to target the ground. When you hit the ground, all mobs around the target point are damaged according to their proximity and knocked back from that point.",
+  "enchantment.xercamod.enchantment_grappling.desc": "Grap hook enchantment. Allows you to target blocks and launch yourself towards the block as a grappling hook.",
+  "enchantment.xercamod.enchantment_uppercut.desc": "Warhammer enchantment. Adds a “knock up” component to the Warhammer, launching the target upwards."
 }
