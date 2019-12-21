@@ -13,16 +13,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import java.util.function.Supplier;
+
 public class RecipeConditionShapeless extends ShapelessRecipe {
-    private final ForgeConfigSpec.BooleanValue condition;
+    private final Supplier<Boolean> condition;
     private IRecipeSerializer serializer;
 
-    public RecipeConditionShapeless(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn, NonNullList<Ingredient> recipeItemsIn, ForgeConfigSpec.BooleanValue condition) {
+    public RecipeConditionShapeless(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn, NonNullList<Ingredient> recipeItemsIn, Supplier<Boolean> condition) {
         super(idIn, groupIn, recipeOutputIn, recipeItemsIn);
         this.condition = condition;
     }
 
-    public RecipeConditionShapeless(ShapelessRecipe shapedRecipe, ForgeConfigSpec.BooleanValue condition, IRecipeSerializer serializer){
+    public RecipeConditionShapeless(ShapelessRecipe shapedRecipe, Supplier<Boolean> condition, IRecipeSerializer serializer){
         super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getRecipeOutput(), shapedRecipe.getIngredients());
         this.condition = condition;
         this.serializer = serializer;
@@ -58,9 +60,9 @@ public class RecipeConditionShapeless extends ShapelessRecipe {
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeConditionShapeless> {
         private static final ShapelessRecipe.Serializer shapelessSerializer = new ShapelessRecipe.Serializer();
-        private final ForgeConfigSpec.BooleanValue condition;
+        private final Supplier<Boolean> condition;
 
-        public Serializer(ForgeConfigSpec.BooleanValue condition){
+        public Serializer(Supplier<Boolean> condition){
             this.condition = condition;
         }
 

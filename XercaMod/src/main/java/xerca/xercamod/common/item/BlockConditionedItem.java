@@ -8,10 +8,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Supplier;
 
 public class BlockConditionedItem extends BlockItem {
-    private final ForgeConfigSpec.BooleanValue condition;
-    public BlockConditionedItem(Block blockIn, Properties properties, ForgeConfigSpec.BooleanValue condition) {
+    private final Supplier<Boolean> condition;
+    public BlockConditionedItem(Block blockIn, Properties properties, Supplier<Boolean> condition) {
         super(blockIn, properties);
         this.condition = condition;
     }

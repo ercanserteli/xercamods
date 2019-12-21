@@ -15,16 +15,18 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.Items;
 
+import java.util.function.Supplier;
+
 public class RecipeConditionShaped extends ShapedRecipe {
-    private final ForgeConfigSpec.BooleanValue condition;
+    private final Supplier<Boolean> condition;
     private IRecipeSerializer serializer;
 
-    public RecipeConditionShaped(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn, ForgeConfigSpec.BooleanValue condition) {
+    public RecipeConditionShaped(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn, Supplier<Boolean> condition) {
         super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
         this.condition = condition;
     }
 
-    public RecipeConditionShaped(ShapedRecipe shapedRecipe, ForgeConfigSpec.BooleanValue condition, IRecipeSerializer serializer){
+    public RecipeConditionShaped(ShapedRecipe shapedRecipe, Supplier<Boolean> condition, IRecipeSerializer serializer){
         super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getRecipeOutput());
         this.condition = condition;
         this.serializer = serializer;
@@ -60,9 +62,9 @@ public class RecipeConditionShaped extends ShapedRecipe {
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeConditionShaped> {
         private static final ShapedRecipe.Serializer shapedSerializer = new ShapedRecipe.Serializer();
-        private final ForgeConfigSpec.BooleanValue condition;
+        private final Supplier<Boolean> condition;
 
-        public Serializer(ForgeConfigSpec.BooleanValue condition){
+        public Serializer(Supplier<Boolean> condition){
             this.condition = condition;
         }
 

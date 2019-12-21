@@ -208,7 +208,7 @@ public class ItemWarhammer extends Item {
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 //        XercaMod.LOGGER.warn("WARHAMMER_ENABLE: " + Config.WARHAMMER_ENABLE.get());
-        if(!Config.WARHAMMER_ENABLE.get()){
+        if(!Config.isWarhammerEnabled()){
             return;
         }
         super.fillItemGroup(group, items);

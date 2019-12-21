@@ -5,12 +5,14 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.Proxy;
 import xerca.xercamod.common.XercaMod;
@@ -61,6 +63,12 @@ public class ClientProxy extends Proxy {
                     Minecraft.getInstance().getSoundHandler().play(new HookSound(hook, false));
                 }
             }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+            XercaMod.LOGGER.debug("ClientLoggedOut Event");
+            Config.bakeConfig();
         }
     }
 }

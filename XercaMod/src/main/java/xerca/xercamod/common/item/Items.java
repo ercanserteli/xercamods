@@ -120,7 +120,7 @@ public final class Items {
     }
 
     static Item makeFoodItem(String name, Food food){
-        Item item = new ItemConditioned(new Item.Properties().group(ItemGroup.FOOD).food(food), Config.FOOD_ENABLE);
+        Item item = new ItemConditioned(new Item.Properties().group(ItemGroup.FOOD).food(food), Config::isFoodEnabled);
         item.setRegistryName(name);
         return item;
     }
@@ -144,21 +144,21 @@ public final class Items {
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeFlaskMilkFilling::new).setRegistryName(XercaMod.MODID + ":crafting_special_flask_milk_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeWoodCarving::new).setRegistryName(     XercaMod.MODID + ":crafting_special_wood_carving"));
 
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.WARHAMMER_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_warhammer"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config.GRAB_HOOK_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_grab_hook"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.CUSHION_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_cushion"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.TEA_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_tea"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config.TEA_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_tea"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.FOOD_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_food"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config.FOOD_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_food"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.ENDER_FLASK_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_ender_flask"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.CONFETTI_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_confetti"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config.CONFETTI_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_confetti"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.COURTROOM_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_courtroom"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config.COURTROOM_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_courtroom"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.CARVED_WOOD_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_carved_wood"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.LEATHER_STRAW_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_leather_straw"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config.BOOKCASE_ENABLE).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_bookcase"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isWarhammerEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_warhammer"));
+            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isGrabHookEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_grab_hook"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isCushionEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_cushion"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isTeaEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_tea"));
+            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isTeaEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_tea"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_food"));
+            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_food"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isEnderFlaskEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_ender_flask"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isConfettiEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_confetti"));
+            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isConfettiEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_confetti"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isCourtroomEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_courtroom"));
+            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isCourtroomEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_courtroom"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isCarvedWoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_carved_wood"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isLeatherStrawEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_leather_straw"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isBookcaseEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_bookcase"));
         }
 
         @SubscribeEvent
@@ -167,8 +167,8 @@ public final class Items {
             Item glass = new ItemGlass();
 
             event.getRegistry().registerAll(
-                    new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config.COINS_ENABLE).setRegistryName("item_golden_coin_1"),
-                    new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config.COINS_ENABLE).setRegistryName("item_golden_coin_5"),
+                    new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_1"),
+                    new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_5"),
                     new ItemGrabHook(),
                     new ItemWarhammer("item_diamond_warhammer", ItemTier.DIAMOND),
                     new ItemWarhammer("item_gold_warhammer", ItemTier.GOLD),
@@ -205,14 +205,14 @@ public final class Items {
                     new ItemTeacup(5),
                     new ItemTeacup(6),
                     new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_teapot"),
-                    new BlockNamedConditionedItem(Blocks.BLOCK_TEA_PLANT, new Item.Properties().group(Items.teaTab), Config.TEA_ENABLE).setRegistryName("item_tea_seeds"),
+                    new BlockNamedConditionedItem(Blocks.BLOCK_TEA_PLANT, new Item.Properties().group(Items.teaTab), Config::isTeaEnabled).setRegistryName("item_tea_seeds"),
                     new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_tea_dried"),
                     new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_tea_leaf"),
 
                     new ItemKnife(),
                     glass,
                     new ItemTomato(),
-                    new BlockNamedConditionedItem(Blocks.BLOCK_TOMATO_PLANT, new Item.Properties().group(ItemGroup.MATERIALS), Config.FOOD_ENABLE).setRegistryName("item_tomato_seeds"),
+                    new BlockNamedConditionedItem(Blocks.BLOCK_TOMATO_PLANT, new Item.Properties().group(ItemGroup.MATERIALS), Config::isFoodEnabled).setRegistryName("item_tomato_seeds"),
                     new ItemGoldenCupcake(),
                     makeFoodItem( "item_apple_cupcake", Foods.APPLE_CUPCAKE),
                     makeFoodItem( "item_pumpkin_cupcake", Foods.PUMPKIN_CUPCAKE),
@@ -278,26 +278,26 @@ public final class Items {
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.WHITE_CUSHION).setRegistryName("white_cushion"),
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.YELLOW_CUSHION).setRegistryName("yellow_cushion"),
 
-                    new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties().group(ItemGroup.FOOD), Config.FOOD_ENABLE).setRegistryName("item_apple_pie"),
-                    new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.LEATHER_STRAW_ENABLE).setRegistryName("item_block_leather"),
-                    new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.LEATHER_STRAW_ENABLE).setRegistryName("item_block_straw"),
-                    new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().group(ItemGroup.DECORATIONS), Config.BOOKCASE_ENABLE).setRegistryName("item_bookcase"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_oak_1"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_oak_2"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_oak_3"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_oak_4"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_oak_5"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_oak_6"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_oak_7"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_oak_8"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_birch_1"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_birch_2"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_birch_3"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_birch_4"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_birch_5"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_birch_6"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_birch_7"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config.CARVED_WOOD_ENABLE).setRegistryName("carved_birch_8"),
+                    new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties().group(ItemGroup.FOOD), Config::isFoodEnabled).setRegistryName("item_apple_pie"),
+                    new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
+                    new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isLeatherStrawEnabled).setRegistryName("item_block_straw"),
+                    new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().group(ItemGroup.DECORATIONS), Config::isBookcaseEnabled).setRegistryName("item_bookcase"),
+                    new BlockConditionedItem(Blocks.CARVED_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_1"),
+                    new BlockConditionedItem(Blocks.CARVED_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_2"),
+                    new BlockConditionedItem(Blocks.CARVED_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_3"),
+                    new BlockConditionedItem(Blocks.CARVED_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_4"),
+                    new BlockConditionedItem(Blocks.CARVED_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_5"),
+                    new BlockConditionedItem(Blocks.CARVED_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_6"),
+                    new BlockConditionedItem(Blocks.CARVED_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_7"),
+                    new BlockConditionedItem(Blocks.CARVED_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_8"),
+                    new BlockConditionedItem(Blocks.CARVED_BIRCH_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_1"),
+                    new BlockConditionedItem(Blocks.CARVED_BIRCH_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_2"),
+                    new BlockConditionedItem(Blocks.CARVED_BIRCH_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_3"),
+                    new BlockConditionedItem(Blocks.CARVED_BIRCH_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_4"),
+                    new BlockConditionedItem(Blocks.CARVED_BIRCH_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_5"),
+                    new BlockConditionedItem(Blocks.CARVED_BIRCH_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_6"),
+                    new BlockConditionedItem(Blocks.CARVED_BIRCH_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_7"),
+                    new BlockConditionedItem(Blocks.CARVED_BIRCH_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_8"),
 
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true)

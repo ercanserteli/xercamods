@@ -24,7 +24,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
      */
     @Override
     public boolean matches(CraftingInventory inv, World worldIn) {
-        if(!Config.CARVED_WOOD_ENABLE.get()){
+        if(!Config.isCarvedWoodEnabled()){
             return false;
         }
 
@@ -64,7 +64,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
     }
 
     private ItemStack getResultItem(Item logType, int difX, int difY){
-        if(!Config.CARVED_WOOD_ENABLE.get()){
+        if(!Config.isCarvedWoodEnabled()){
             return ItemStack.EMPTY;
         }
 

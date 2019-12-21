@@ -24,7 +24,7 @@ public class RecipeFlaskFilling extends SpecialRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     public boolean matches(CraftingInventory inv, World worldIn) {
-        if(!Config.ENDER_FLASK_ENABLE.get()){
+        if(!Config.isEnderFlaskEnabled()){
             return false;
         }
 
@@ -71,7 +71,7 @@ public class RecipeFlaskFilling extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     public ItemStack getCraftingResult(CraftingInventory inv) {
-        if(!Config.ENDER_FLASK_ENABLE.get()){
+        if(!Config.isEnderFlaskEnabled()){
             return ItemStack.EMPTY;
         }
 

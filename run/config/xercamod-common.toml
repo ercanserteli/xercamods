@@ -2,27 +2,27 @@
 #General settings
 [general]
 	#Enable Tea
-	tea = true
+	tea = false
 	#Enable Confetti
-	confetti = true
+	confetti = false
 	#Enable Warhammer
-	warhammer = true
+	warhammer = false
 	#Enable Cushion
 	cushion = true
 	#Enable Courtroom Items
-	courtroom = true
+	courtroom = false
 	#Enable Golden Coins
-	coins = true
+	coins = false
 	#Enable Grab Hook
-	grab_hook = true
+	grab_hook = false
 	#Enable Bookcase
-	bookcase = true
+	bookcase = false
 	#Enable Ender Flask
-	flask = true
+	flask = false
 	#Enable Leather and Straw Blocks
-	leather_straw = true
+	leather_straw = false
 	#Enable Food
-	food = true
+	food = false
 	#Enable Carved Wood
 	carved_wood = true
 

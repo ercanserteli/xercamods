@@ -41,7 +41,7 @@ public class ItemConfettiBall extends Item {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if(!Config.CONFETTI_ENABLE.get()){
+        if(!Config.isConfettiEnabled()){
             return;
         }
         super.fillItemGroup(group, items);

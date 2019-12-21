@@ -23,7 +23,7 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
      */
     @Override
     public boolean matches(CraftingInventory inv, World worldIn) {
-        if(!Config.ENDER_FLASK_ENABLE.get()){
+        if(!Config.isEnderFlaskEnabled()){
             return false;
         }
 
@@ -59,7 +59,7 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
      */
     @Override
     public ItemStack getCraftingResult(CraftingInventory inv) {
-        if(!Config.ENDER_FLASK_ENABLE.get()){
+        if(!Config.isEnderFlaskEnabled()){
             return ItemStack.EMPTY;
         }
 

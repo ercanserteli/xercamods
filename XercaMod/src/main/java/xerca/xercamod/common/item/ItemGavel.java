@@ -40,7 +40,7 @@ public class ItemGavel extends Item {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if(!Config.COURTROOM_ENABLE.get()){
+        if(!Config.isCourtroomEnabled()){
             return;
         }
         super.fillItemGroup(group, items);

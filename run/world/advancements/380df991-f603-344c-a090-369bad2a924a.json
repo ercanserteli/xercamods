@@ -264,12 +264,6 @@
     },
     "done": true
   },
-  "xercamusic:achievements/root": {
-    "criteria": {
-      "crafting_table": "2019-09-11 17:52:16 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/transportation/dark_oak_boat": {
     "criteria": {
       "in_water": "2019-09-11 17:56:18 +0300"

@@ -1,15 +1,21 @@
 package xerca.xercamod.common;
 
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.TableLootEntry;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.FMLLoginWrapper;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
+import net.minecraftforge.fml.network.PacketDistributor;
 import xerca.xercamod.common.item.Items;
+import xerca.xercamod.common.packets.ConfigSyncPacket;
 
 @Mod.EventBusSubscriber(modid = XercaMod.MODID)
 class EventHandler {
@@ -45,15 +51,23 @@ class EventHandler {
         // Adding XercaMod seeds to the loot table of grass
         if (event.getName().equals(grass))
         {
-            if(Config.TEA_ENABLE.get() && Config.FOOD_ENABLE.get()){
+            if(Config.isTeaEnabled() && Config.isFoodEnabled()){
                 event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass"))).build());
             }
-            else if(!Config.TEA_ENABLE.get() && Config.FOOD_ENABLE.get()){
+            else if(!Config.isTeaEnabled() && Config.isFoodEnabled()){
                 event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass_tomato_only"))).build());
             }
-            else if(Config.TEA_ENABLE.get() && !Config.FOOD_ENABLE.get()){
+            else if(Config.isTeaEnabled()){
                 event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass_tea_only"))).build());
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        XercaMod.LOGGER.debug("PlayerLoggedIn Event");
+        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) event.getPlayer();
+        ConfigSyncPacket pack = Config.makePacket();
+        XercaMod.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> serverPlayer), pack);
     }
 }

@@ -26,7 +26,7 @@ public class ItemDrink extends ItemContainedFood {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if(!Config.FOOD_ENABLE.get()){
+        if(!Config.isFoodEnabled()){
             return;
         }
         super.fillItemGroup(group, items);
