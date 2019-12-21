@@ -61,7 +61,7 @@ public class ItemGrabHook extends FishingRodItem {
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 //        XercaMod.LOGGER.warn("GRAB_HOOK_ENABLE: " + Config.GRAB_HOOK_ENABLE.get());
-        if(!Config.GRAB_HOOK_ENABLE.get()){
+        if(!Config.isGrabHookEnabled()){
             return;
         }
         super.fillItemGroup(group, items);

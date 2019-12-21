@@ -173,7 +173,7 @@ public class ItemFlask extends Item {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if(!Config.ENDER_FLASK_ENABLE.get()){
+        if(!Config.isEnderFlaskEnabled()){
             return;
         }
         super.fillItemGroup(group, items);

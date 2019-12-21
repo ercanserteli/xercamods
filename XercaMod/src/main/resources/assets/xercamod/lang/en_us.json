@@ -200,5 +200,7 @@
   "enchantment.xercamod.enchantment_quick.desc": "Warhammer enchantment. Lets you pull the hammer faster while hitting with the same power.",
   "enchantment.xercamod.enchantment_quake.desc": "Warhammer enchantment. Allows you to target the ground. When you hit the ground, all mobs around the target point are damaged according to their proximity and knocked back from that point.",
   "enchantment.xercamod.enchantment_grappling.desc": "Grap hook enchantment. Allows you to target blocks and launch yourself towards the block as a grappling hook.",
-  "enchantment.xercamod.enchantment_uppercut.desc": "Warhammer enchantment. Adds a “knock up” component to the Warhammer, launching the target upwards."
+  "enchantment.xercamod.enchantment_uppercut.desc": "Warhammer enchantment. Adds a “knock up” component to the Warhammer, launching the target upwards.",
+
+  "entity.xercamod.cushion": "Cushion"
 }

@@ -95,7 +95,7 @@ public class ItemTeacup extends Item {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if(!Config.TEA_ENABLE.get()){
+        if(!Config.isTeaEnabled()){
             return;
         }
         super.fillItemGroup(group, items);

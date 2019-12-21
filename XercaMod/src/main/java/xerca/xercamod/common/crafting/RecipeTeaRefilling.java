@@ -20,7 +20,7 @@ public class RecipeTeaRefilling extends SpecialRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     public boolean matches(CraftingInventory inv, World worldIn) {
-        if(!Config.TEA_ENABLE.get()){
+        if(!Config.isTeaEnabled()){
             return false;
         }
 
@@ -58,7 +58,7 @@ public class RecipeTeaRefilling extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     public ItemStack getCraftingResult(CraftingInventory inv) {
-        if(!Config.TEA_ENABLE.get()){
+        if(!Config.isTeaEnabled()){
             return ItemStack.EMPTY;
         }
 

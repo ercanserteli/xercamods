@@ -68,7 +68,7 @@ public class ItemCushion extends Item {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if(!Config.CUSHION_ENABLE.get()){
+        if(!Config.isCushionEnabled()){
             return;
         }
         super.fillItemGroup(group, items);
