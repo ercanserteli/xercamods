@@ -62,6 +62,7 @@ public class EnchantmentUppercut extends Enchantment {
      */
     @Override
     public boolean canApply(ItemStack stack) {
-        return stack.canApplyAtEnchantingTable(this);
+        //return stack.canApplyAtEnchantingTable(this);
+        return this.canApplyAtEnchantingTable(stack);
     }
 }

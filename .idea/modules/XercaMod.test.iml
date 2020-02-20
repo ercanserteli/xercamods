@@ -7,15 +7,15 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="XercaMod.main" />
-    <orderEntry type="library" name="Gradle: net.minecraftforge:forge:1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3" level="project" />
-    <orderEntry type="library" name="Gradle: net.minecraftforge:forge:launcher:1.14.4-28.1.0_mapped_snapshot_20190719-1.14.3" level="project" />
+    <orderEntry type="library" name="Gradle: net.minecraftforge:forge:1.14.4-28.2.0_mapped_snapshot_20190719-1.14.3" level="project" />
+    <orderEntry type="library" name="Gradle: net.minecraftforge:forge:launcher:1.14.4-28.2.0_mapped_snapshot_20190719-1.14.3" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraft:client:extra:1.14.4" level="project" />
-    <orderEntry type="library" name="Gradle: net.minecraftforge:accesstransformers:shadowed:1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.minecraftforge:accesstransformers:shadowed:1.0.1-milestone.0.1+94458e7" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraftforge:eventbus:service:1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraftforge:coremods:1.0.0" level="project" />
-    <orderEntry type="library" name="Gradle: net.minecraftforge:forgespi:1.3.0" level="project" />
-    <orderEntry type="library" name="Gradle: cpw.mods:modlauncher:3.2.0" level="project" />
-    <orderEntry type="library" name="Gradle: cpw.mods:modlauncher:api:3.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.minecraftforge:forgespi:1.5.0" level="project" />
+    <orderEntry type="library" name="Gradle: cpw.mods:modlauncher:4.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: cpw.mods:modlauncher:api:4.1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.2" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraftforge:mergetool:api:1.0.9" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraft:mappings_snapshot:zip:20190719-1.14.3" level="project" />
