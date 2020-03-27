@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xerca.xercapaint.common.CanvasType;
+import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.Items;
 
 import javax.annotation.Nullable;
@@ -71,8 +72,19 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
             if(canvasType == CanvasType.SMALL){
                 canvasItem = new ItemStack(Items.ITEM_CANVAS);
             }
-            else{
+            else if(canvasType == CanvasType.LARGE){
                 canvasItem = new ItemStack(Items.ITEM_CANVAS_LARGE);
+
+            }
+            else if(canvasType == CanvasType.LONG){
+                canvasItem = new ItemStack(Items.ITEM_CANVAS_LONG);
+
+            }
+            else if(canvasType == CanvasType.TALL){
+                canvasItem = new ItemStack(Items.ITEM_CANVAS_TALL);
+            }else{
+                XercaPaint.LOGGER.error("Invalid canvas type");
+                return;
             }
             canvasItem.setTag(this.canvasNBT.copy());
             this.entityDropItem(canvasItem);

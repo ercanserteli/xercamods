@@ -19,8 +19,6 @@ public class GuiPalette extends BasePalette {
 
     @Override
     public void init() {
-        // Hide mouse cursor
-//        GLFW.glfwSetInputMode(this.getMinecraft().mainWindow.getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
     @Override
@@ -38,11 +36,11 @@ public class GuiPalette extends BasePalette {
     private void renderCursor(int mouseX, int mouseY){
         if(isCarryingColor){
             carriedColor.setGLColor();
-            blit(mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, brushSpriteSize, brushSpriteSize);
+            blit(mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
 
         }else if(isCarryingWater){
             waterColor.setGLColor();
-            blit(mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, brushSpriteSize, brushSpriteSize);
+            blit(mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
         }
     }
 

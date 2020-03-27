@@ -8,5 +8,6 @@
   "item.xercapaint.item_canvas_tall": "Tall Canvas",
 
   "palette.basic_count": "%1$s basic colors",
-  "palette.custom_count": "%1$s custom colors"
+  "palette.custom_count": "%1$s custom colors",
+  "palette.empty": "Empty palette"
 }

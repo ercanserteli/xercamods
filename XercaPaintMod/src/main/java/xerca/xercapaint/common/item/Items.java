@@ -19,6 +19,8 @@ public final class Items {
     public static final ItemPalette ITEM_PALETTE = null;
     public static final ItemCanvas ITEM_CANVAS = null;
     public static final ItemCanvas ITEM_CANVAS_LARGE = null;
+    public static final ItemCanvas ITEM_CANVAS_LONG = null;
+    public static final ItemCanvas ITEM_CANVAS_TALL = null;
 
     public static final IRecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = null;
     public static final IRecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_FILLING = null;
