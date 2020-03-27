@@ -88,8 +88,8 @@
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.lwjgl:lwjgl-openal:natives-windows:3.2.2" level="project" />
     <orderEntry type="library" name="Gradle: com.mojang:text2speech:1.11.3" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.plexus:plexus-utils:3.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.jline:jline-reader:3.12.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.lwjgl:lwjgl-opengl:natives-windows:3.2.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jline:jline-reader:3.12.1" level="project" />
     <orderEntry type="library" name="Gradle: org.jline:jline-terminal:3.12.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.lwjgl:lwjgl-glfw:natives-windows:3.2.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.lwjgl:lwjgl-stb:natives-windows:3.2.2" level="project" />

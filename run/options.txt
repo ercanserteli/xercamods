@@ -1,4 +1,4 @@
-version:1976
+version:2230
 autoJump:false
 autoSuggestions:true
 chatColors:true
@@ -16,6 +16,8 @@ showSubtitles:false
 touchscreen:false
 fullscreen:false
 bobView:true
+toggleCrouch:false
+toggleSprint:false
 mouseSensitivity:0.5
 fov:0.0
 gamma:0.0
@@ -55,6 +57,7 @@ tutorialStep:none
 mouseWheelSensitivity:1.0
 rawMouseInput:true
 glDebugVerbosity:1
+skipMultiplayerWarning:false
 key_key.attack:key.mouse.left
 key_key.use:key.mouse.right
 key_key.forward:key.keyboard.w
@@ -88,7 +91,7 @@ key_key.hotbar.6:key.keyboard.6
 key_key.hotbar.7:key.keyboard.7
 key_key.hotbar.8:key.keyboard.8
 key_key.hotbar.9:key.keyboard.9
-soundCategory_master:0.0
+soundCategory_master:1.0
 soundCategory_music:0.0
 soundCategory_record:1.0
 soundCategory_weather:1.0

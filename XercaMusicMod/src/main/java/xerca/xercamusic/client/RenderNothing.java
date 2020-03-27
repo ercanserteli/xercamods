@@ -15,11 +15,7 @@ class RenderNothing extends EntityRenderer {
     }
 
     @Override
-    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTick) {
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(Entity entity) {
+    public ResourceLocation getEntityTexture(Entity entity) {
         return null;
     }
 
