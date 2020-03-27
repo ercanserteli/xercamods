@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:eventbus:service:2.0.0-milestone.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/eventbus/2.0.0-milestone.1/ef0e4a7c15c8eadb7e94233ee7b1d7b98841c752/eventbus-2.0.0-milestone.1-service.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/eventbus/2.0.0-milestone.1/75cc8b20be8b5b7a4754c0fbb3c1b9722b0ec067/eventbus-2.0.0-milestone.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

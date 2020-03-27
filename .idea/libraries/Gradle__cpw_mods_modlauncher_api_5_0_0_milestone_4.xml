@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: cpw.mods:modlauncher:api:5.0.0-milestone.4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/modlauncher/5.0.0-milestone.4/f402f7938bc347745b6c4106c04f3763ff300c77/modlauncher-5.0.0-milestone.4-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cpw.mods/modlauncher/5.0.0-milestone.4/1856fb0a14c83a9237b455a914d5644b8a31e01b/modlauncher-5.0.0-milestone.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:forgespi:2.0.0-milestone.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/forgespi/2.0.0-milestone.1/fbfcafacae7a5adaf23c34a0ed08ac5b54d4c79/forgespi-2.0.0-milestone.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/forgespi/2.0.0-milestone.1/8b40f16e910e1cceda3437b529055f3fc518ff94/forgespi-2.0.0-milestone.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

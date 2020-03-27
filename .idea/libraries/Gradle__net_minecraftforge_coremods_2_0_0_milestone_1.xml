@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:coremods:2.0.0-milestone.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/coremods/2.0.0-milestone.1/610df322bd810fff462b9fed9d3faa8a4ab4b37f/coremods-2.0.0-milestone.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/coremods/2.0.0-milestone.1/dec20cc71864b1a9ea731008c0b93344985c5858/coremods-2.0.0-milestone.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

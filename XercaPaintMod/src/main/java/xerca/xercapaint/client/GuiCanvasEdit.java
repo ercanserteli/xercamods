@@ -186,7 +186,7 @@ public class GuiCanvasEdit extends BasePalette {
     @Override
     public void init() {
         // Hide mouse cursor
-        GLFW.glfwSetInputMode(this.getMinecraft().mainWindow.getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
     @Override
