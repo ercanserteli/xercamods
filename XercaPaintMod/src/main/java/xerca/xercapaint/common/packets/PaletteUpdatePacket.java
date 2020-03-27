@@ -1,15 +1,15 @@
 package xerca.xercapaint.common.packets;
 
 import net.minecraft.network.PacketBuffer;
-import xerca.xercapaint.client.GuiCanvasEdit;
+import xerca.xercapaint.common.PaletteUtil;
 
 import java.util.Arrays;
 
 public class PaletteUpdatePacket {
-    private GuiCanvasEdit.CustomColor[] paletteColors;
+    private PaletteUtil.CustomColor[] paletteColors;
     private boolean messageIsValid;
 
-    public PaletteUpdatePacket(GuiCanvasEdit.CustomColor[] paletteColors) {
+    public PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) {
         this.paletteColors = Arrays.copyOfRange(paletteColors, 0, 12);
     }
 
@@ -18,7 +18,7 @@ public class PaletteUpdatePacket {
     }
 
     public static void encode(PaletteUpdatePacket pkt, PacketBuffer buf) {
-        for(GuiCanvasEdit.CustomColor color : pkt.paletteColors){
+        for(PaletteUtil.CustomColor color : pkt.paletteColors){
             color.writeToBuffer(buf);
         }
     }
@@ -26,9 +26,9 @@ public class PaletteUpdatePacket {
     public static PaletteUpdatePacket decode(PacketBuffer buf) {
         PaletteUpdatePacket result = new PaletteUpdatePacket();
         try {
-            result.paletteColors = new GuiCanvasEdit.CustomColor[12];
+            result.paletteColors = new PaletteUtil.CustomColor[12];
             for(int i=0; i<result.paletteColors.length; i++){
-                result.paletteColors[i] = new GuiCanvasEdit.CustomColor(buf);
+                result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
             }
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
@@ -38,7 +38,7 @@ public class PaletteUpdatePacket {
         return result;
     }
 
-    public GuiCanvasEdit.CustomColor[] getPaletteColors() {
+    public PaletteUtil.CustomColor[] getPaletteColors() {
         return paletteColors;
     }
 
