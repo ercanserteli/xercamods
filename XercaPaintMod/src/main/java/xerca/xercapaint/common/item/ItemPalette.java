@@ -81,5 +81,8 @@ public class ItemPalette extends Item {
                 }
             }
         }
+        else{
+            tooltip.add(new TranslationTextComponent("palette.empty").applyTextStyle(TextFormatting.GRAY));
+        }
     }
 }

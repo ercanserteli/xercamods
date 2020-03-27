@@ -1,16 +1,4 @@
 {
-  "xercamusic:achievements/become_musician": {
-    "criteria": {
-      "iron": "2019-09-11 18:08:22 +0300"
-    },
-    "done": true
-  },
-  "xercamusic:achievements/root": {
-    "criteria": {
-      "crafting_table": "2019-09-11 17:45:10 +0300"
-    },
-    "done": true
-  },
   "minecraft:husbandry/root": {
     "criteria": {
       "consumed_item": "2019-09-11 18:02:46 +0300"
@@ -35,15 +23,21 @@
     },
     "done": true
   },
-  "xercamod:achievements/diabetes2": {
+  "xercapaint:recipes/item_canvas_large": {
     "criteria": {
-      "item_fancy_donut": "2019-09-11 18:02:46 +0300"
+      "has_item": "2020-03-27 13:46:42 +0300"
     },
-    "done": false
+    "done": true
   },
   "minecraft:recipes/misc/red_dye_from_poppy": {
     "criteria": {
       "has_red_flower": "2019-09-11 18:00:23 +0300"
+    },
+    "done": true
+  },
+  "xercapaint:recipes/item_canvas_long": {
+    "criteria": {
+      "has_item": "2020-03-27 13:46:42 +0300"
     },
     "done": true
   },
@@ -59,21 +53,15 @@
     },
     "done": true
   },
-  "xercamod:achievements/root": {
-    "criteria": {
-      "crafting_table": "2019-09-11 17:45:10 +0300"
-    },
-    "done": true
-  },
-  "xercamod:achievements/diabetes": {
-    "criteria": {
-      "tea_madness": "2019-09-11 18:06:41 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/transportation/jungle_boat": {
     "criteria": {
       "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "xercapaint:recipes/item_canvas_tall": {
+    "criteria": {
+      "has_item": "2020-03-27 13:46:42 +0300"
     },
     "done": true
   },

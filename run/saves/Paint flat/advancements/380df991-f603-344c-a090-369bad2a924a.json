@@ -11,12 +11,6 @@
     },
     "done": true
   },
-  "xercamusic:achievements/root": {
-    "criteria": {
-      "crafting_table": "2019-10-27 22:57:37 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/misc/composter": {
     "criteria": {
       "has_wooden_fences": "2019-11-13 14:21:42 +0300"

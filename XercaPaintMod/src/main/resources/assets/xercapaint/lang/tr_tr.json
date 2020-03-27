@@ -8,5 +8,6 @@
   "item.xercapaint.item_canvas_tall": "Uzun Tuval",
 
   "palette.basic_count": "%1$s temel renk",
-  "palette.custom_count": "%1$s özel renk"
+  "palette.custom_count": "%1$s özel renk",
+  "palette.empty": "Boş palet"
 }

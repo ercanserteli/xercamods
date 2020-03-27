@@ -19,6 +19,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityCanvas;
 
 import javax.annotation.Nullable;
@@ -74,7 +75,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             this.loadedCanvases.put(textureData.getString("name"), instance);
         }else{
             int currentVersion = textureData.getInt("v");
-            if(instance.version != currentVersion){
+            if(instance.version < currentVersion){
                 instance.updateCanvasTexture(textureData);
             }
         }
@@ -131,6 +132,12 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             this.version = textureData.getInt("v");
 
             int[] pixels = textureData.getIntArray("pixels");
+
+            if(pixels.length < height*width){
+                XercaPaint.LOGGER.warn("Pixels array length (" + pixels.length + ") is smaller than canvas area (" + height*width + ")");
+                return;
+            }
+
             for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
                     int k = j + i * width;

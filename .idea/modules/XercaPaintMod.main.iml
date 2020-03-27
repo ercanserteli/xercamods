@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="XercaPaintMod:main" external.linked.project.path="$MODULE_DIR$/../../XercaPaintMod" external.root.project.path="$MODULE_DIR$/../../XercaPaintMod" external.system.id="GRADLE" external.system.module.group="xerca.xercapaint" external.system.module.type="sourceSet" external.system.module.version="1.14.4-1.0" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="XercaPaintMod:main" external.linked.project.path="$MODULE_DIR$/../../XercaPaintMod" external.root.project.path="$MODULE_DIR$/../../XercaPaintMod" external.system.id="GRADLE" external.system.module.group="xerca.xercapaint" external.system.module.type="sourceSet" external.system.module.version="1.14.4-1.1" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="minecraft" name="Minecraft">
+      <configuration>
+        <autoDetectTypes>
+          <platformType>FORGE</platformType>
+          <platformType>MCP</platformType>
+        </autoDetectTypes>
+      </configuration>
+    </facet>
+  </component>
+  <component name="McpModuleSettings">
+    <option name="srgType" value="SRG" />
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/../../XercaPaintMod/build/classes/java/main" />
     <exclude-output />
@@ -66,8 +79,8 @@
     <orderEntry type="library" name="Gradle: org.lwjgl:lwjgl-opengl:3.2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl:lwjgl-glfw:3.2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl:lwjgl-stb:3.2.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.lwjgl:lwjgl:3.2.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.lwjgl:lwjgl-jemalloc:natives-windows:3.2.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.lwjgl:lwjgl:3.2.2" level="project" />
     <orderEntry type="library" name="Gradle: com.mojang:text2speech:1.11.3" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.plexus:plexus-utils:3.1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.lwjgl:lwjgl-openal:natives-windows:3.2.2" level="project" />
