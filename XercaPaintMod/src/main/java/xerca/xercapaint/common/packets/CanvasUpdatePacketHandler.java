@@ -4,12 +4,13 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.network.NetworkEvent;
-import xerca.xercapaint.client.GuiCanvasEdit;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.Items;
 
 import java.util.function.Supplier;
+
+import static xerca.xercapaint.common.PaletteUtil.writeCustomColorArrayToNBT;
 
 public class CanvasUpdatePacketHandler {
     public static void handle(final CanvasUpdatePacket message, Supplier<NetworkEvent.Context> ctx) {
@@ -49,7 +50,7 @@ public class CanvasUpdatePacketHandler {
 
             if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
                 CompoundNBT paletteComp = palette.getOrCreateTag();
-                GuiCanvasEdit.writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
+                writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
             }
 
             XercaPaint.LOGGER.debug("Handling canvas update: Name: " + msg.getName() + " V: " + msg.getVersion());

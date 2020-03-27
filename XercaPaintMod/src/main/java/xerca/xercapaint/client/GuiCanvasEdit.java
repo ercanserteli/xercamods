@@ -10,6 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercapaint.common.CanvasType;
+import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.packets.CanvasUpdatePacket;
 
@@ -104,13 +105,13 @@ public class GuiCanvasEdit extends BasePalette {
         return this.pixels[y*canvasPixelWidth + x];
     }
 
-    private void setPixelAt(int x, int y, Color color){
+    private void setPixelAt(int x, int y, PaletteUtil.Color color){
         if(x >= 0 && y >= 0 && x < canvasPixelWidth && y < canvasPixelHeight){
             this.pixels[y*canvasPixelWidth + x] = color.rgbVal();
         }
     }
 
-    private void setPixelsAt(int mouseX, int mouseY, Color color, int brushSize){
+    private void setPixelsAt(int mouseX, int mouseY, PaletteUtil.Color color, int brushSize){
         int x, y;
         final int pixelHalf = canvasPixelScale/2;
         switch (brushSize){
@@ -372,40 +373,5 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    public static class Color {
-        public int r, g, b;
-
-        public Color(int r, int g, int b) {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-
-        public Color(int rgb) {
-            this.r = (rgb >> 16) & 0xFF;
-            this.g = (rgb >> 8) & 0xFF;
-            this.b = rgb & 0xFF;
-        }
-
-        public int rgbVal() {
-            int val = r;
-            val = (val << 8) + g;
-            val = (val << 8) + b;
-            val += 0xFF000000;
-            return val;
-        }
-
-        public int bgrVal() {
-            int val = b;
-            val = (val << 8) + g;
-            val = (val << 8) + r;
-            val += 0xFF000000;
-            return val;
-        }
-
-        public void setGLColor(){
-            GlStateManager.color4f(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
-        }
-    }
 
 }
