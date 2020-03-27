@@ -1,21 +1,22 @@
 package xerca.xercapaint.client;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -41,17 +42,17 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityCanvas entity) {
+    public ResourceLocation getEntityTexture(EntityCanvas entity) {
         return getMapRendererInstance(entity).location;
     }
 
     @Override
-    public void doRender(EntityCanvas entity, double x, double y, double z, float yaw, float partialTick) {
+    public void render(EntityCanvas entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         CompoundNBT tag = entity.getCanvasNBT();
         if(tag != null && tag.contains("name") ){
-            getMapRendererInstance(entity).render(x, y, z, yaw, partialTick, entity.getHorizontalFacing());
+            getMapRendererInstance(entity).render(entity, entityYaw, matrixStackIn, bufferIn, entity.getHorizontalFacing());
         }
-        super.doRender(entity, x, y, z, yaw, partialTick);
+        super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
 
@@ -149,77 +150,73 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             canvasTexture.updateDynamicTexture();
         }
 
-        public void render(double x, double y, double z, float yaw, float partialTick, Direction facing) {
+        public void render(EntityCanvas canvas, float yaw, MatrixStack ms, IRenderTypeBuffer buffer, Direction facing) {
             final float wScale = width/16.0f;
             final float hScale = height/16.0f;
+            final double x = canvas.getPosX();
+            final double y = canvas.getPosY();
+            final double z = canvas.getPosZ();
 
-            GlStateManager.pushMatrix();
+            IVertexBuilder vb = buffer.getBuffer(RenderType.getEntitySolid(this.location));
+
+            ms.push();
             final float xOffset = facing.getXOffset();
             final float zOffset = facing.getZOffset();
             final float yOffset = -1.0f;
-            GlStateManager.translated(x + zOffset*0.5d*wScale, y + yOffset*0.5d*hScale, z - xOffset*0.5d*wScale);
-
-            GlStateManager.rotatef(180.0F - yaw, 0.0F, 1.0F, 0.0F);
-//            GlStateManager.disableLighting();
-            GlStateManager.enableRescaleNormal();
+            ms.translate(zOffset*0.5d*wScale, yOffset*0.5d*hScale, -xOffset*0.5d*wScale);
+            ms.rotate(Vector3f.YP.rotationDegrees( 180-yaw));
 
             float f = 1.0f/32.0f;
-            GlStateManager.scalef(f, f, f);
+            ms.scale(f, f, f);
 
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
             textureManager.bindTexture(location);
-            GlStateManager.disableAlphaTest();
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
 
+            int lightmap = WorldRenderer.getCombinedLight(canvas.world, new BlockPos(x, y, z));
+
+            Matrix4f m = ms.getLast().getMatrix();
+            Matrix3f mn = ms.getLast().getNormal();
             // Draw the front
-//            bufferbuilder.pos(0.0D, 32.0D*hScale, -1.0D).tex(1.0D, 0.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
-//            bufferbuilder.pos(32.0D*wScale, 32.0D*hScale, -1.0D).tex(0.0D, 0.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
-//            bufferbuilder.pos(32.0D*wScale, 0.0D, -1.0D).tex(0.0D, 1.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
-//            bufferbuilder.pos(0.0D, 0.0D, -1.0D).tex(1.0D, 1.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
-            bufferbuilder.pos(0.0D, 32.0D*hScale, -1.0D).tex(1.0D, 0.0D).normal(xOffset, 0.0F, zOffset).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 32.0D*hScale, -1.0D).tex(0.0D, 0.0D).normal(xOffset, 0.0F, zOffset).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 0.0D, -1.0D).tex(0.0D, 1.0D).normal(xOffset, 0.0F, zOffset).endVertex();
-            bufferbuilder.pos(0.0D, 0.0D, -1.0D).tex(1.0D, 1.0D).normal(xOffset, 0.0F, zOffset).endVertex();
-            tessellator.draw();
+            vb.pos(m, 0.0F, 32.0F*hScale, -1.0F).color(255, 255, 255, 255).tex(1.0F, 0.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, 0.0F, zOffset).endVertex();
+            vb.pos(m,32.0F*wScale, 32.0F*hScale, -1.0F).color(255, 255, 255, 255).tex(0.0F, 0.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, 0.0F, zOffset).endVertex();
+            vb.pos(m,32.0F*wScale, 0.0F, -1.0F).color(255, 255, 255, 255).tex(0.0F, 1.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, 0.0F, zOffset).endVertex();
+            vb.pos(m,0.0F, 0.0F, -1.0F).color(255, 255, 255, 255).tex(1.0F, 1.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, 0.0F, zOffset).endVertex();
 
+            vb = buffer.getBuffer(RenderType.getEntitySolid(backLocation));
             // Draw the back and sides
-            final double sideWidth = 1.0D/16.0D;
-            bufferbuilder = tessellator.getBuffer();
+            final float sideWidth = 1.0F/16.0F;
             textureManager.bindTexture(backLocation);
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-            bufferbuilder.pos(0.0D, 0.0D, 1.0F).tex(0.0D, 0.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 0.0D, 1.0F).tex(1.0D, 0.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 32.0D*hScale, 1.0F).tex(1.0D, 1.0D).endVertex();
-            bufferbuilder.pos(0.0D, 32.0D*hScale, 1.0F).tex(0.0D, 1.0D).endVertex();
+            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0D, 1.0F, 1.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0D, 0.0F, 1.0F, lightmap, xOffset, 0, zOffset);
 
             // Sides
-            bufferbuilder.pos(0.0D, 0.0D, 1.0F).tex(sideWidth, 0.0D).endVertex();
-            bufferbuilder.pos(0.0D, 32.0D*hScale, 1.0F).tex(sideWidth, 1.0D).endVertex();
-            bufferbuilder.pos(0.0D, 32.0D*hScale, -1.0F).tex(0.0D, 1.0D).endVertex();
-            bufferbuilder.pos(0.0D, 0.0D, -1.0F).tex(0.0D, 0.0D).endVertex();
+            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0D, sideWidth, 1.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, -1.0D, 0.0F, 1.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, lightmap, xOffset, 0, zOffset);
 
-            bufferbuilder.pos(0.0D, 32.0D*hScale, 1.0F).tex(0.0D, 0.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 32.0D*hScale, 1.0F).tex(1.0D, 0.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 32.0D*hScale, -1.0F).tex(1.0D, sideWidth).endVertex();
-            bufferbuilder.pos(0.0D, 32.0D*hScale, -1.0F).tex(0.0D, sideWidth).endVertex();
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0F, 0.0F, 0.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0F, 1.0F, 0.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, -1.0F, 1.0F, sideWidth, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, -1.0F, 0.0F, sideWidth, lightmap, xOffset, 0, zOffset);
 
-            bufferbuilder.pos(32.0D*wScale, 0.0D, -1.0F).tex(0.0D, 0.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 32.0D*hScale, -1.0F).tex(0.0D, 1.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 32.0D*hScale, 1.0F).tex(sideWidth, 1.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 0.0D, 1.0F).tex(sideWidth, 0.0D).endVertex();
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, -1.0F, 0.0F, 0.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, -1.0F, 0.0F, 1.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0F, sideWidth, 1.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, sideWidth, 0.0F, lightmap, xOffset, 0, zOffset);
 
-            bufferbuilder.pos(0.0D, 0.0D, -1.0F).tex(0.0D, 1.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 0.0D, -1.0F).tex(1.0D, 1.0D).endVertex();
-            bufferbuilder.pos(32.0D*wScale, 0.0D, 1.0F).tex(1.0D, 1.0D-sideWidth).endVertex();
-            bufferbuilder.pos(0.0D, 0.0D, 1.0F).tex(0.0D, 1.0D-sideWidth).endVertex();
+            addVertex(vb, m, mn, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, -1.0F, 1.0F, 1.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, 1.0F, 1.0F-sideWidth, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F-sideWidth, lightmap, xOffset, 0, zOffset);
 
-            tessellator.draw();
-            GlStateManager.enableAlphaTest();
+            ms.pop();
+        }
 
-//            GlStateManager.enableLighting();
-            GlStateManager.disableRescaleNormal();
-            GlStateManager.popMatrix();
+        private void addVertex(IVertexBuilder vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
+        {
+            vb.pos(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).tex(tx, ty).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOff, yOff, zOff).endVertex();
         }
 
         public void close() {

@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import xerca.xercapaint.common.Proxy;
 import xerca.xercapaint.common.XercaPaint;
+import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityCanvas;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
@@ -23,7 +24,7 @@ public class ClientProxy extends Proxy {
 
     @Override
     public void init() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityCanvas.class, new RenderEntityCanvas.RenderEntityCanvasFactory());
+        RenderingRegistry.registerEntityRenderingHandler(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
     }
 
     @Override

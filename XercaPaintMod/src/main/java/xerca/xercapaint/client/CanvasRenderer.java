@@ -119,10 +119,10 @@ public class CanvasRenderer implements AutoCloseable {
 //        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
             GlStateManager.disableAlphaTest();
             bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-            bufferbuilder.pos(0.0D, 128.0D, (double) -0.01F).tex(0.0D, 1.0D).endVertex();
-            bufferbuilder.pos(128.0D, 128.0D, (double) -0.01F).tex(1.0D, 1.0D).endVertex();
-            bufferbuilder.pos(128.0D, 0.0D, (double) -0.01F).tex(1.0D, 0.0D).endVertex();
-            bufferbuilder.pos(0.0D, 0.0D, (double) -0.01F).tex(0.0D, 0.0D).endVertex();
+            bufferbuilder.pos(0.0D, 128.0D, (double) -0.01F).tex(0.0F, 1.0F).endVertex();
+            bufferbuilder.pos(128.0D, 128.0D, (double) -0.01F).tex(1.0F, 1.0F).endVertex();
+            bufferbuilder.pos(128.0D, 0.0D, (double) -0.01F).tex(1.0F, 0.0F).endVertex();
+            bufferbuilder.pos(0.0D, 0.0D, (double) -0.01F).tex(0.0F, 0.0F).endVertex();
             tessellator.draw();
             GlStateManager.enableAlphaTest();
 //        GlStateManager.disableBlend();
