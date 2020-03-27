@@ -38,7 +38,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         this.instrument = (ItemInstrument) body.getHeldItemMainhand().getItem();
         this.note = body.getHeldItemOffhand();
         this.mTime = 0;
-        this.setPosition(body.posX, body.posY, body.posZ);
+        this.setPosition(body.getPosX(), body.getPosY(), body.getPosZ());
         if (note.hasTag() && note.getTag().contains("music")) {
             CompoundNBT comp = note.getTag();
             music = comp.getByteArray("music");
@@ -91,7 +91,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         this.instrument = (ItemInstrument) body.getHeldItemMainhand().getItem();
         this.note = body.getHeldItemOffhand();
         this.mTime = 0;
-        this.setPosition(body.posX, body.posY, body.posZ);
+        this.setPosition(body.getPosX(), body.getPosY(), body.getPosZ());
         if (note.hasTag() && note.getTag().contains("music")) {
             CompoundNBT comp = note.getTag();
             music = comp.getByteArray("music");
@@ -121,7 +121,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             }
         }
         super.tick();
-        this.setPosition(body.posX, body.posY, body.posZ);
+        this.setPosition(body.getPosX(), body.getPosY(), body.getPosZ());
         if (this.world.isRemote) {
             if(mPause == 0){
                 System.err.println("EntityMusicSpirit mPause is 0! THIS SHOULD NOT HAPPEN!");
@@ -137,8 +137,8 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
                     if(instrument.shouldCutOff && lastPlayed != null){
                         lastPlayed.stopSound();
                     }
-                    lastPlayed = XercaMusic.proxy.playNote(instrument.getSound(music[mTime] - 1), posX, posY + 0.5d, posZ);
-                    this.world.addParticle(ParticleTypes.NOTE, posX, posY + 2.2D, posZ, (music[mTime] -1) / 24.0D, 0.0D, 0.0D);
+                    lastPlayed = XercaMusic.proxy.playNote(instrument.getSound(music[mTime] - 1), getPosX(), getPosY() + 0.5d, getPosZ());
+                    this.world.addParticle(ParticleTypes.NOTE, getPosX(), getPosY() + 2.2D, getPosZ(), (music[mTime] -1) / 24.0D, 0.0D, 0.0D);
 
                 }
                 mTime++;

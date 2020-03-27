@@ -9,6 +9,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import xerca.xercamusic.common.Proxy;
 import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicEndedPacket;
@@ -16,7 +17,7 @@ import xerca.xercamusic.common.packets.MusicEndedPacket;
 public class ClientProxy implements Proxy {
 
     public void preInit() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityMusicSpirit.class, new RenderNothingFactory());
+        RenderingRegistry.registerEntityRenderingHandler(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
     }
 
     public void init() {

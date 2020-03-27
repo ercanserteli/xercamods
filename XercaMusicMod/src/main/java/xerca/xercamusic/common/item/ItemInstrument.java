@@ -36,7 +36,7 @@ public class ItemInstrument extends Item {
         if(musicSpirits.size() == 0){
             worldIn.addEntity(new EntityMusicSpirit(worldIn, playerIn));
         }
-        else{
+        else if(canStop){
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
         }
     }
