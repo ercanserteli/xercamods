@@ -74,16 +74,16 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         float f3 = MathHelper.sin(-yaw * ((float)Math.PI / 180F) - (float)Math.PI);
         float f4 = -MathHelper.cos(-pitch * ((float)Math.PI / 180F));
         float f5 = MathHelper.sin(-pitch * ((float)Math.PI / 180F));
-        double x = this.angler.posX;// - (double)f3 * 0.3D;
-        double y = this.angler.posY + (double)this.angler.getEyeHeight();
-        double z = this.angler.posZ;// - (double)f2 * 0.3D;
+        double x = this.angler.getPosX();// - (double)f3 * 0.3D;
+        double y = this.angler.getPosY() + (double)this.angler.getEyeHeight();
+        double z = this.angler.getPosZ();// - (double)f2 * 0.3D;
         this.setLocationAndAngles(x, y, z, yaw, pitch);
         Vec3d vec3d = new Vec3d((double)(-f3), -(f5 / f4), (double)(-f2));
         double length = vec3d.length();
         vec3d = vec3d.scale(speed/length);
         this.setMotion(vec3d);
         this.rotationYaw = (float)(MathHelper.atan2(vec3d.x, vec3d.z) * (double)(180F / (float)Math.PI));
-        this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)MathHelper.sqrt(func_213296_b(vec3d))) * (double)(180F / (float)Math.PI));
+        this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)MathHelper.sqrt(this.getDistanceSq(vec3d))) * (double)(180F / (float)Math.PI));
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
     }
@@ -130,7 +130,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private boolean checkCollision() {
-        RayTraceResult raytraceresult = ProjectileHelper.func_221267_a(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), (p_213856_1_) -> !p_213856_1_.isSpectator() && (p_213856_1_.canBeCollidedWith() || p_213856_1_ instanceof ItemEntity) && (p_213856_1_ != this.angler || this.ticksInAir >= 5), RayTraceContext.BlockMode.COLLIDER, true);
+        RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), (p_213856_1_) -> !p_213856_1_.isSpectator() && (p_213856_1_.canBeCollidedWith() || p_213856_1_ instanceof ItemEntity) && (p_213856_1_ != this.angler || this.ticksInAir >= 5), RayTraceContext.BlockMode.COLLIDER, true);
         if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
             if (raytraceresult.getType() == RayTraceResult.Type.ENTITY) {
                 Entity caught = ((EntityRayTraceResult) raytraceresult).getEntity();
@@ -181,10 +181,8 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             }
             //}
 
-            this.posX = this.caughtEntity.posX;
             double height = (double) this.caughtEntity.getHeight() + 0.5d;
-            this.posY = this.caughtEntity.getBoundingBox().minY + height * 0.8D;
-            this.posZ = this.caughtEntity.posZ;
+            this.setPosition(caughtEntity.getPosX(), caughtEntity.getBoundingBox().minY + height * 0.8D, caughtEntity.getPosZ());
             return;
         }
         this.caughtEntity = null;
@@ -281,7 +279,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         }
 
         this.move(MoverType.SELF, this.getMotion());
-        this.setPosition(this.posX, this.posY, this.posZ);
+        this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
     }
 
     private void setReturning() {
@@ -315,9 +313,9 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private void func_184527_k() {
-        double d0 = this.angler.posX - this.posX;
-        double d1 = this.angler.posY - this.posY;
-        double d2 = this.angler.posZ - this.posZ;
+        double d0 = this.angler.getPosX() - this.getPosX();
+        double d1 = this.angler.getPosY() - this.getPosY();
+        double d2 = this.angler.getPosZ() - this.getPosZ();
         double d3 = (double) MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
         double d4 = 0.1D;
         this.caughtEntity.addVelocity(d0 * d4, d1 * d4 + (double) MathHelper.sqrt(d3) * 0.08D, d2 * d4);

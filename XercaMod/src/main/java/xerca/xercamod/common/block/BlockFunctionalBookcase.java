@@ -11,6 +11,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -46,15 +47,15 @@ public class BlockFunctionalBookcase extends Block {
 
     // Called when the block is right clicked
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (worldIn.isRemote) return true;
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (worldIn.isRemote) return ActionResultType.SUCCESS;
 
         if (player instanceof ServerPlayerEntity)
         {
             final TileEntityFunctionalBookcase tileEntity = (TileEntityFunctionalBookcase)worldIn.getTileEntity(pos);
             NetworkHooks.openGui((ServerPlayerEntity) player, tileEntity, pos);
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
