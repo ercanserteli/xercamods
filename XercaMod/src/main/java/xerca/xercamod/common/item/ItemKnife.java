@@ -38,13 +38,13 @@ public class ItemKnife extends Item {
     @Override
     public boolean hitEntity(ItemStack stack, LivingEntity e1, LivingEntity e2) {
         float damage = 0.0F;
-        if (e2.isSneaking() && MathHelper.abs(MathHelper.wrapDegrees(e1.rotationYaw) - MathHelper.wrapDegrees(e2.rotationYaw)) < 65.0F) {
+        if (e2.isSteppingCarefully() && MathHelper.abs(MathHelper.wrapDegrees(e1.rotationYaw) - MathHelper.wrapDegrees(e2.rotationYaw)) < 65.0F) {
             if(!e1.world.isRemote){
                 SAnimateHandPacket packetOut = new SAnimateHandPacket(e1, 4);
                 ((ServerWorld)e1.world).getChunkProvider().sendToTrackingAndSelf(e2, packetOut);
 
             }
-            e2.world.playSound(null, e1.posX, e1.posY + 0.5d, e1.posZ, SoundEvents.SNEAK_HIT, SoundCategory.PLAYERS, 1.0f, e2.world.rand.nextFloat() * 0.2F + 0.8F);
+            e2.world.playSound(null, e1.getPosX(), e1.getPosY() + 0.5d, e1.getPosZ(), SoundEvents.SNEAK_HIT, SoundCategory.PLAYERS, 1.0f, e2.world.rand.nextFloat() * 0.2F + 0.8F);
 
             damage += 8.0F;
             PlayerEntity player = (PlayerEntity) e2;

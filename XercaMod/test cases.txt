@@ -1,8 +1,9 @@
 Warhammer:
     - Warhammer can be pulled using right click. On release, it hurts and pushes the target
-    - Stone warhammer has a 3D model
+    - Warhammer have a 3D model
     - Gold warhammer pushes the most
-    - Warhammer can be enchanted with unbreakable
+    - Warhammer has 5 unique enchantments + unbreakable
+    - Test enchantments' effects and getting them on enchanting table
 
 Knife:
     - Knife can be used to cut food, remains on the crafting table with an increased damage value
@@ -14,6 +15,7 @@ Food:
     - Rotten burger gives increases the player's hunger and applies poison
     - Ultimate burger applies the saturation effect
     - Ultimate burger is very big
+    - Apple pie can be placed on the ground
 
 Tea:
     - Tea seeds drop from grass.
@@ -60,23 +62,7 @@ Grab hook:
     - While pulling the target, the target can go through blocks
     - After use, grab hooks enters cooldown
     - Grab hook plays meat hook sounds when flying and catching a target
-
-Music:
-    - When an instrument is used, it makes a sound with a random pitch
-    - When an empty note is used, the music gui opens
-    - In the music gui, user can type notes using mouse or keyboard
-    - Changing the BPM changes the tempo of the music
-    - Preview button plays the music to the player with the lyre sounds
-    - Exiting the GUI saves the music
-    - Mouse wheel changes current octave
-    - Right mouse button moves the cursor
-    - Deleting the latest note changes the music's length to the new latest note
-    - When sign button is pressed, user can enter a title
-    - When a music is signed, it becomes glowing, its name changes to the title, its author and originality is shown below its name
-    - When a music is signed, it cannot be modified
-    - A signed note and an empty note can be used to produce a copy unless it is pirated. Original note remains after copying.
-    - When an instrument in the main hand is used with a note in the other hand, the music is played to all nearby players with that instrument's sound
-    - Music particles are emitted from the player's head whenever a note is struck
+    - Grab hook can be enchanted with Grappling to work as a grappling hook
 
 Creative tabs:
     - Music tab includes instruments and note
@@ -112,3 +98,29 @@ Golden cupcake:
             * A skeleton with Herobrine's head and wielding a random instrument is spawned
             * A zombie with the player's head and wielding two knifes is spawned
 
+Cushion:
+    - There is a cushion for all 16 colors in the decorative blocks creative tab and they can be crafted
+    - Players can sit on the cushion
+    - Cushion falls slowly if nothing is under it
+
+Ender flask:
+    - Ender flask is in potions creative tab and can be crafted
+    - Ender flask can be filled with potions using crafting
+    - Ender flask's eye glows with the color of the potion inside
+
+Music:
+    - When an instrument is used, it makes a sound with a random pitch
+    - When an empty note is used, the music gui opens
+    - In the music gui, user can type notes using mouse or keyboard
+    - Changing the BPM changes the tempo of the music
+    - Preview button plays the music to the player with the lyre sounds
+    - Exiting the GUI saves the music
+    - Mouse wheel changes current octave
+    - Right mouse button moves the cursor
+    - Deleting the latest note changes the music's length to the new latest note
+    - When sign button is pressed, user can enter a title
+    - When a music is signed, it becomes glowing, its name changes to the title, its author and originality is shown below its name
+    - When a music is signed, it cannot be modified
+    - A signed note and an empty note can be used to produce a copy unless it is pirated. Original note remains after copying.
+    - When an instrument in the main hand is used with a note in the other hand, the music is played to all nearby players with that instrument's sound
+    - Music particles are emitted from the player's head whenever a note is struck

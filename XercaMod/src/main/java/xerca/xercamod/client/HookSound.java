@@ -48,9 +48,9 @@ class HookSound extends TickableSound {
             return;
         }
 
-        x = (float) theHook.posX;
-        y = (float) theHook.posY;
-        z = (float) theHook.posZ;
+        x = (float) theHook.getPosX();
+        y = (float) theHook.getPosY();
+        z = (float) theHook.getPosZ();
     }
 
     @Override

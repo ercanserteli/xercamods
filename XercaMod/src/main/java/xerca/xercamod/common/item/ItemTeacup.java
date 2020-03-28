@@ -72,7 +72,7 @@ public class ItemTeacup extends Item {
                 PlayerInventory inv = ((PlayerEntity)(entityLiving)).inventory;
                 if(inv.storeItemStack(container) == -1 && inv.getFirstEmptyStack() == -1){
                     if(!worldIn.isRemote) {
-                        worldIn.addEntity(new ItemEntity(worldIn, entityLiving.posX, entityLiving.posY, entityLiving.posZ, container));
+                        worldIn.addEntity(new ItemEntity(worldIn, entityLiving.getPosX(), entityLiving.getPosY(), entityLiving.getPosZ(), container));
                     }
                 }else{
                     inv.addItemStackToInventory(container);
