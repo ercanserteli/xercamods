@@ -43,9 +43,11 @@ public class CanvasUpdatePacketHandler {
             comp.putIntArray("pixels", msg.getPixels());
             comp.putString("name", msg.getName());
             comp.putInt("v", msg.getVersion());
+            comp.putInt("generation", 0);
             if (msg.getSigned()) {
                 comp.putString("author", pl.getName().getString());
                 comp.putString("title", msg.getTitle().trim());
+                comp.putInt("generation", 1);
             }
 
             if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {

@@ -11,7 +11,10 @@
     </facet>
   </component>
   <component name="McpModuleSettings">
-    <option name="srgType" value="SRG" />
+    <option name="mappingFile" value="E:\Mine\Mine Mods\XercaMod\build\createMcpToSrg\output.tsrg" />
+    <option name="mcpVersion" value="snapshot_20200225-1.15.1" />
+    <option name="minecraftVersion" value="1.15.2" />
+    <option name="srgType" value="TSRG" />
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output-test url="file://$MODULE_DIR$/../../XercaMod/build/classes/java/test" />

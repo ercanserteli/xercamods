@@ -1,11 +1,15 @@
 package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -18,13 +22,12 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
+import static org.lwjgl.glfw.GLFW.*;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCanvasEdit extends BasePalette {
     private static final ResourceLocation noteGuiTextures = new ResourceLocation(XercaPaint.MODID, "textures/gui/palette.png");
-    private int canvasX = 240;
+    private int canvasX; // = 240;
     private int canvasY = 40;
     private int canvasWidth;
     private int canvasHeight;
@@ -36,6 +39,11 @@ public class GuiCanvasEdit extends BasePalette {
     private int brushSize = 0;
     private boolean touchedCanvas = false;
     private boolean undoStarted = false;
+    private boolean gettingSigned;
+    private Button buttonSign;
+    private Button buttonCancel;
+    private Button buttonFinalize;
+    private int updateCount;
 
     private final PlayerEntity editingPlayer;
 
@@ -66,8 +74,8 @@ public class GuiCanvasEdit extends BasePalette {
 
     protected GuiCanvasEdit(PlayerEntity player, CompoundNBT canvasTag, CompoundNBT paletteTag, ITextComponent title, CanvasType canvasType) {
         super(title, paletteTag);
-        paletteX = 40;
-        paletteY = 40;
+        updateCount = 0;
+
         this.canvasType = canvasType;
         this.canvasPixelScale = canvasType == CanvasType.SMALL ? 10 : 5;
         this.canvasPixelWidth = CanvasType.getWidth(canvasType);
@@ -185,18 +193,71 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public void init() {
+        final int padding = 40;
+        final int paletteCanvasX = (this.width - (paletteWidth + canvasWidth + padding)) / 2;
+        canvasX = paletteCanvasX + paletteWidth + padding;
+
+        paletteX = paletteCanvasX;
+        paletteY = 40;
+
         // Hide mouse cursor
         GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+        int x = canvasX;
+        int y = canvasY + canvasHeight + 10;
+        this.buttonSign = this.addButton(new Button( x, y, 98, 20, I18n.format("canvas.signButton"), button -> {
+            if (!isSigned) {
+                gettingSigned = true;
+                updateButtons();
+
+                GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
+        }));
+        this.buttonFinalize = this.addButton(new Button( canvasX - 100, 100, 98, 20, I18n.format("canvas.finalizeButton"), button -> {
+            if (!isSigned) {
+                dirty = true;
+                isSigned = true;
+                if(minecraft != null){
+                    minecraft.displayGuiScreen(null);
+                }
+            }
+
+        }));
+        this.buttonCancel = this.addButton(new Button( canvasX - 100, 130, 98, 20, I18n.format("gui.cancel"), button -> {
+            if (!isSigned) {
+                gettingSigned = false;
+                updateButtons();
+
+                GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+            }
+        }));
+
+        updateButtons();
+    }
+
+    private void updateButtons() {
+        if (!this.isSigned) {
+            this.buttonSign.visible = !this.gettingSigned;
+            this.buttonCancel.visible = this.gettingSigned;
+            this.buttonFinalize.visible = this.gettingSigned;
+            this.buttonFinalize.active = !this.canvasTitle.trim().isEmpty();
+        }
     }
 
     @Override
     public void tick() {
+        ++this.updateCount;
         super.tick();
     }
 
     @Override
     public void render(int mouseX, int mouseY, float f) {
-        super.render(mouseX, mouseY, f);
+        if(!gettingSigned) {
+            super.render(mouseX, mouseY, f);
+        }
+        else {
+            super.superRender(mouseX, mouseY, f);
+        }
 
         // Draw the canvas
         for(int i=0; i<canvasPixelHeight; i++){
@@ -208,16 +269,21 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         // Draw brush meter
-        for(int i=0; i<4; i++){
-            int y = brushMeterY + i*brushSpriteSize;
-            fill(brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
-        }
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        blit(brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
-        blit(brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
+        if(!gettingSigned){
+            for(int i=0; i<4; i++){
+                int y = brushMeterY + i*brushSpriteSize;
+                fill(brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
+            }
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            blit(brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
+            blit(brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
 
-        // Draw brush and outline
-        renderCursor(mouseX, mouseY);
+            // Draw brush and outline
+            renderCursor(mouseX, mouseY);
+        }
+        else{
+            drawSigning();
+        }
     }
 
     private void renderCursor(int mouseX, int mouseY){
@@ -277,22 +343,85 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
+    private void drawSigning() {
+        int i = canvasX;
+        int j = canvasY;
+
+        fill(i + 10, j + 10, i + 150, j + 150, 0xFFEEEEEE);
+        String s = this.canvasTitle;
+
+        if (!this.isSigned) {
+            if (this.updateCount / 6 % 2 == 0) {
+                s = s + "" + TextFormatting.BLACK + "_";
+            } else {
+                s = s + "" + TextFormatting.GRAY + "_";
+            }
+        }
+        String s1 = I18n.format("canvas.editTitle");
+        int k = this.font.getStringWidth(s1);
+        this.font.drawString(s1, i + 26 + (116 - k) / 2.0f, j + 16 + 16, 0);
+        int l = this.font.getStringWidth(s);
+        this.font.drawString(s, i + 26 + (116 - l) / 2.0f, j + 48, 0);
+        String s2 = I18n.format("canvas.byAuthor", this.editingPlayer.getName().getString());
+        int i1 = this.font.getStringWidth(s2);
+        this.font.drawString(TextFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2, j + 48 + 10, 0);
+        String s3 = I18n.format("canvas.finalizeWarning");
+        this.font.drawSplitString(s3, i + 26, j + 80, 116, 0);
+    }
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers){
-        if(keyCode == GLFW.GLFW_KEY_Z && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
-            if(undoStack.size() > 0){
-                pixels = undoStack.pop();
+        if (this.gettingSigned) {
+            switch (keyCode) {
+                case GLFW.GLFW_KEY_BACKSPACE:
+                    if (!this.canvasTitle.isEmpty()) {
+                        this.canvasTitle = this.canvasTitle.substring(0, this.canvasTitle.length() - 1);
+                        this.updateButtons();
+                    }
+                    break;
+                case GLFW.GLFW_KEY_ENTER:
+                    if (!this.canvasTitle.isEmpty()) {
+                        dirty = true;
+                        this.isSigned = true;
+                        this.minecraft.displayGuiScreen(null);
+                    }
+                    break;
+                default:
+                    break;
             }
             return true;
         }
-        else{
-            return super.keyPressed(keyCode, scanCode, modifiers);
+        else {
+            if (keyCode == GLFW.GLFW_KEY_Z && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
+                if (undoStack.size() > 0) {
+                    pixels = undoStack.pop();
+                }
+                return true;
+            } else {
+                return super.keyPressed(keyCode, scanCode, modifiers);
+            }
         }
     }
 
     @Override
+    public boolean charTyped(char typedChar, int something) {
+        super.charTyped(typedChar, something);
+
+        if (!this.isSigned) {
+            if (this.gettingSigned) {
+                if (this.canvasTitle.length() < 16 && SharedConstants.isAllowedCharacter(typedChar)) {
+                    this.canvasTitle = this.canvasTitle + typedChar;
+                    this.updateButtons();
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean mouseScrolled(double x, double y, double scroll) {
-        if (scroll != 0.d) {
+        if (!gettingSigned && scroll != 0.d) {
             //System.out.println("wheel: "+wheelState);
             final int maxBrushSize = 3;
             brushSize += scroll > 0 ? 1 : -1;
@@ -306,8 +435,10 @@ public class GuiCanvasEdit extends BasePalette {
     // Mouse button 0: left, 1: right
     @Override
     public boolean mouseClicked(double posX, double posY, int mouseButton) {
-//        int mouseX = (int)Math.round(posX);
-//        int mouseY = (int)Math.round(posY);
+        if(gettingSigned){
+            return super.superMouseClicked(posX, posY, mouseButton);
+        }
+
         int mouseX = (int)Math.floor(posX);
         int mouseY = (int)Math.floor(posY);
 
@@ -335,6 +466,10 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public boolean mouseReleased(double posX, double posY, int mouseButton) {
+        if(gettingSigned){
+            return super.superMouseReleased(posX, posY, mouseButton);
+        }
+
         if(undoStarted && !touchedCanvas){
             undoStarted = false;
             undoStack.removeFirst();
@@ -344,6 +479,10 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        if(gettingSigned){
+            return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        }
+
 //        int mouseX = (int)Math.round(posX);
 //        int mouseY = (int)Math.round(posY);
         int mouseX = (int)Math.floor(posX);
