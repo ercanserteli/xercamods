@@ -58,7 +58,7 @@ public class CanvasUpdatePacket {
             int area = CanvasType.getHeight(result.canvasType)*CanvasType.getWidth(result.canvasType);
             result.pixels = buf.readVarIntArray(area);
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
+            System.err.println("Exception while reading CanvasUpdatePacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

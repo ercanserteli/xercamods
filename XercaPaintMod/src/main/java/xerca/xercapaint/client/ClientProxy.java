@@ -42,19 +42,26 @@ public class ClientProxy extends Proxy {
         }
 
         if(heldItem.getItem() instanceof ItemCanvas){
-            if(offhandItem.isEmpty()){
+            CompoundNBT tag = heldItem.getTag();
+            if(offhandItem.isEmpty() || (tag != null && tag.getInt("generation") > 0)){
                 minecraft.displayGuiScreen(new GuiCanvasView(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }else if(offhandItem.getItem() instanceof ItemPalette){
                 minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
-                        heldItem.getTag(), offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
+                        tag, offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }
         }
         else if(heldItem.getItem() instanceof ItemPalette){
             if(offhandItem.isEmpty()){
                 minecraft.displayGuiScreen(new GuiPalette(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_palette")));
             }else if(offhandItem.getItem() instanceof ItemCanvas){
-                minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
-                        offhandItem.getTag(), heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
+                CompoundNBT tag = offhandItem.getTag();
+                if(tag != null && tag.getInt("generation") > 0){
+                    minecraft.displayGuiScreen(new GuiCanvasView(offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
+                }
+                else{
+                    minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
+                            tag, heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
+                }
             }
         }
     }
