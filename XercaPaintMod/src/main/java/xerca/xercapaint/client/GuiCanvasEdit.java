@@ -450,9 +450,7 @@ public class GuiCanvasEdit extends BasePalette {
         undoStack.push(pixels.clone());
 
         if(inCanvas(mouseX, mouseY)){
-            touchedCanvas = true;
-            setPixelsAt(mouseX, mouseY, currentColor, brushSize);
-            dirty = true;
+            clickedCanvas(mouseX, mouseY, mouseButton);
         }
 
         if(inBrushMeter(mouseX, mouseY)){
@@ -462,6 +460,17 @@ public class GuiCanvasEdit extends BasePalette {
             }
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    private void clickedCanvas(int mouseX, int mouseY, int mouseButton){
+        touchedCanvas = true;
+        if(mouseButton == GLFW_MOUSE_BUTTON_LEFT){
+            setPixelsAt(mouseX, mouseY, currentColor, brushSize);
+        }else if(mouseButton == GLFW_MOUSE_BUTTON_RIGHT){
+            // "Erase" with right click
+            setPixelsAt(mouseX, mouseY, PaletteUtil.Color.WHITE, brushSize);
+        }
+        dirty = true;
     }
 
     @Override
@@ -483,14 +492,10 @@ public class GuiCanvasEdit extends BasePalette {
             return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
         }
 
-//        int mouseX = (int)Math.round(posX);
-//        int mouseY = (int)Math.round(posY);
         int mouseX = (int)Math.floor(posX);
         int mouseY = (int)Math.floor(posY);
         if(inCanvas(mouseX, mouseY)){
-            touchedCanvas = true;
-            setPixelsAt(mouseX, mouseY, currentColor, brushSize);
-            dirty = true;
+            clickedCanvas(mouseX, mouseY, mouseButton);
         }
         return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }

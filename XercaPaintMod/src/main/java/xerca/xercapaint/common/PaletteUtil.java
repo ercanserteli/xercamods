@@ -8,6 +8,8 @@ public class PaletteUtil {
     final public static PaletteUtil.Color emptinessColor = new PaletteUtil.Color(255, 236, 229);
 
     public static class Color {
+        public static Color WHITE = new Color(0xFFFFFFFF);
+
         public int r, g, b;
 
         public Color(int r, int g, int b) {
