@@ -35,24 +35,25 @@ public class ClientProxy extends Proxy {
     public void showCanvasGui(PlayerEntity player){
         final ItemStack heldItem = player.getHeldItemMainhand();
         final ItemStack offhandItem = player.getHeldItemOffhand();
+        final Minecraft minecraft = Minecraft.getInstance();
 
-        if(heldItem.isEmpty()){
+        if(heldItem.isEmpty() || (minecraft.player != null && !minecraft.player.getGameProfile().getId().equals(player.getGameProfile().getId()))){
             return;
         }
 
         if(heldItem.getItem() instanceof ItemCanvas){
             if(offhandItem.isEmpty()){
-                Minecraft.getInstance().displayGuiScreen(new GuiCanvasView(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
+                minecraft.displayGuiScreen(new GuiCanvasView(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }else if(offhandItem.getItem() instanceof ItemPalette){
-                Minecraft.getInstance().displayGuiScreen(new GuiCanvasEdit(Minecraft.getInstance().player,
+                minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
                         heldItem.getTag(), offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }
         }
         else if(heldItem.getItem() instanceof ItemPalette){
             if(offhandItem.isEmpty()){
-                Minecraft.getInstance().displayGuiScreen(new GuiPalette(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_palette")));
+                minecraft.displayGuiScreen(new GuiPalette(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_palette")));
             }else if(offhandItem.getItem() instanceof ItemCanvas){
-                Minecraft.getInstance().displayGuiScreen(new GuiCanvasEdit(Minecraft.getInstance().player,
+                minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
                         offhandItem.getTag(), heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
             }
         }
