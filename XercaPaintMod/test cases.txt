@@ -9,3 +9,5 @@
 * Check canvas gui without palette
 * Check crafting canvases
 * Check crafting and filling palettes
+* Signing, cancel during signing
+* Copying
