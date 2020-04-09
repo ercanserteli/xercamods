@@ -20,16 +20,10 @@ import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
 public class ClientProxy extends Proxy {
-    private static CanvasRenderer canvasRenderer;
 
     @Override
     public void init() {
         RenderingRegistry.registerEntityRenderingHandler(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
-    }
-
-    @Override
-    public void updateCanvas(CompoundNBT data) {
-        canvasRenderer.updateMapTexture(data);
     }
 
     public void showCanvasGui(PlayerEntity player){
@@ -71,23 +65,6 @@ public class ClientProxy extends Proxy {
     static class ModBusSubscriber{
         @SubscribeEvent
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
-        }
-    }
-
-    @Mod.EventBusSubscriber(modid = XercaPaint.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    static class ForgeBusSubscriber {
-        @SubscribeEvent
-        public static void renderItemInFrameEvent(RenderItemInFrameEvent ev) {
-            if(ev.getItem().getItem() == Items.ITEM_CANVAS){
-                if(canvasRenderer == null){
-                    // Can't put this in setup handler because it needs to be in the main thread
-                    canvasRenderer = new CanvasRenderer(Minecraft.getInstance().textureManager);
-                }
-
-                ev.setCanceled(true);
-
-                canvasRenderer.renderCanvas(ev.getItem().getTag());
-            }
         }
     }
 }

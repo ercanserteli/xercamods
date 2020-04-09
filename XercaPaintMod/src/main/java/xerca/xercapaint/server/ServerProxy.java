@@ -12,11 +12,6 @@ public class ServerProxy extends Proxy {
     }
 
     @Override
-    public void updateCanvas(CompoundNBT data) {
-
-    }
-
-    @Override
     public void showCanvasGui(PlayerEntity player) {
 
     }
