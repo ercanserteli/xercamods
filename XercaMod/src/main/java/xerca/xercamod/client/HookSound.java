@@ -19,7 +19,7 @@ class HookSound extends TickableSound {
 
     public HookSound(EntityHook hook, boolean isReturning) {
         super(SoundEvents.HOOK_CHAIN, SoundCategory.PLAYERS);
-        volume = 0.8f;
+        volume = 1.0f;
         pitch = 1.0F;
         theHook = hook;
         this.isReturning = isReturning;
