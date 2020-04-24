@@ -28,6 +28,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.ItemTeapot;
 import xerca.xercamod.common.item.Items;
 
@@ -75,6 +76,8 @@ public class BlockTeapot extends Block {
         if (player instanceof ServerPlayerEntity)
         {
             if(player.getHeldItemMainhand().getItem() == Items.ITEM_TEACUP && state.get(TEA_AMOUNT) > 0){
+                worldIn.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.TEA_POUR, SoundCategory.PLAYERS, 1.0F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
+
                 player.getHeldItemMainhand().shrink(1);
                 player.addItemStackToInventory(new ItemStack(Items.ITEM_FULL_TEACUP_0));
 

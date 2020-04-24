@@ -120,5 +120,13 @@
         "name": "xercamod:stomp"
       }
     ]
+  },
+  "tea_pour": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:tea_pour"
+      }
+    ]
   }
 }
