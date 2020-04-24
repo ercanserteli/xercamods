@@ -1,4 +1,21 @@
 {
+  "item.xercamod.baked_rice_pudding": "Baked Rice Pudding",
+  "item.xercamod.sweet_berry_juice": "Sweet Berry Juice",
+  "item.xercamod.rice_pudding": "Rice Pudding",
+  "item.xercamod.sweet_berry_cupcake_fancy": "Fancy Sweet Berry Cupcake",
+  "item.xercamod.sweet_berry_cupcake": "Sweet Berry Cupcake",
+  "item.xercamod.ender_cupcake": "Chorus Cupcake",
+  "item.xercamod.sashimi": "Sashimi",
+  "item.xercamod.oyakodon": "Oyakodon",
+  "item.xercamod.beef_donburi": "Beef bowl",
+  "item.xercamod.egg_sushi": "Egg sushi",
+  "item.xercamod.nigiri_sushi": "Nigiri sushi",
+  "item.xercamod.omurice": "Omurice",
+  "item.xercamod.sake": "Sake",
+  "item.xercamod.riceball": "Riceball",
+  "item.xercamod.sushi": "Maki Sushi",
+  "item.xercamod.cooked_rice": "Cooked rice",
+
   "item.xercamod.item_apple_cupcake": "Apple Cupcake",
   "item.xercamod.item_pumpkin_cupcake": "Pumpkin Cupcake",
   "item.xercamod.item_cocoa_cupcake": "Cocoa Cupcake",
@@ -54,6 +71,7 @@
   "item.xercamod.item_glass": "Glass",
   "item.xercamod.item_tomato": "Tomato",
   "item.xercamod.item_tomato_seeds": "Tomato Seeds",
+  "item.xercamod.item_rice_seeds": "Rice",
   "item.xercamod.item_tea_leaf": "Tea Leaf",
   "item.xercamod.item_chocolate": "Chocolate",
   "item.xercamod.item_tea_dried": "Dried Tea",
@@ -87,10 +105,13 @@
   "item.xercamod.item_golden_coin_1": "1 Golden Coin",
   "item.xercamod.item_golden_coin_5": "5 Golden Coins",
 
+  "block.xercamod.block_teapot": "Teapot",
   "block.xercamod.block_apple_pie": "Apple Pie",
+  "block.xercamod.block_sweet_berry_pie": "Sweet berry pie",
   "block.xercamod.block_leather": "Leather Block",
   "block.xercamod.block_straw": "Straw Block",
   "block.xercamod.block_bookcase": "Bookcase",
+  "block.xercamod.block_bookcase.name": "Bookcase",
 
   "container.xercamod.bookcase": "Bookcase",
 
@@ -194,6 +215,8 @@
   "enchantment.xercamod.enchantment_quake": "Quake",
   "enchantment.xercamod.enchantment_grappling": "Grappling",
   "enchantment.xercamod.enchantment_uppercut": "Uppercut",
+  "enchantment.xercamod.enchantment_poison": "Venomous",
+  "enchantment.xercamod.enchantment_stealth": "Silent killer",
 
   "enchantment.xercamod.enchantment_heavy.desc": "Warhammer enchantment. Increases the maximum pull time, but also adds more damage and knock back.",
   "enchantment.xercamod.enchantment_maim.desc": "Warhammer enchantment. Cripples your opponent on hit, applying a Slow effect.",
@@ -201,6 +224,8 @@
   "enchantment.xercamod.enchantment_quake.desc": "Warhammer enchantment. Allows you to target the ground. When you hit the ground, all mobs around the target point are damaged according to their proximity and knocked back from that point.",
   "enchantment.xercamod.enchantment_grappling.desc": "Grap hook enchantment. Allows you to target blocks and launch yourself towards the block as a grappling hook.",
   "enchantment.xercamod.enchantment_uppercut.desc": "Warhammer enchantment. Adds a “knock up” component to the Warhammer, launching the target upwards.",
+  "enchantment.xercamod.enchantment_poison.desc": "Knife enchantment. Poisons the opponent on hit.",
+  "enchantment.xercamod.enchantment_stealth.desc": "Knife enchantment. Increases the bonus damage on stealthy back stabs.",
 
   "entity.xercamod.cushion": "Cushion"
 }

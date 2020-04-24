@@ -1,4 +1,21 @@
 {
+  "item.xercamod.baked_rice_pudding": "Fırın sütlac",
+  "item.xercamod.sweet_berry_juice": "Tatlı Orman Meyveleri suyu",
+  "item.xercamod.rice_pudding": "Sütlaç",
+  "item.xercamod.sweet_berry_cupcake_fancy": "Süslü Tatlı Orman Meyveli Küçük Kek",
+  "item.xercamod.sweet_berry_cupcake": "Tatlı Orman Meyveli Küçük Kek",
+  "item.xercamod.ender_cupcake": "Nakaratlı Küçük Kek",
+  "item.xercamod.sashimi": "Saşimi",
+  "item.xercamod.oyakodon": "Analı kızlı",
+  "item.xercamod.beef_donburi": "Dana kasesi",
+  "item.xercamod.egg_sushi": "Yumurta suşi",
+  "item.xercamod.nigiri_sushi": "Nigiri suşi",
+  "item.xercamod.omurice": "Pilavlı omlet",
+  "item.xercamod.sake": "Sake",
+  "item.xercamod.riceball": "Pirinc topu",
+  "item.xercamod.sushi": "Maki Suşi",
+  "item.xercamod.cooked_rice": "Pilav",
+
   "item.xercamod.item_apple_cupcake": "Elmalı Küçük Kek",
   "item.xercamod.item_pumpkin_cupcake": "Balkabaklı Küçük Kek",
   "item.xercamod.item_cocoa_cupcake": "Kakaolu Küçük Kek",
@@ -53,6 +70,7 @@
   "item.xercamod.item_glass": "Bardak",
   "item.xercamod.item_tomato": "Domates",
   "item.xercamod.item_tomato_seeds": "Domates Çekirdeği",
+  "item.xercamod.item_rice_seeds": "Pirinç",
   "item.xercamod.item_tea_leaf": "Çay Yaprağı",
   "item.xercamod.item_chocolate": "Çikolata",
   "item.xercamod.item_tea_dried": "Kurutulmus Çay",
@@ -86,10 +104,12 @@
   "item.xercamod.item_golden_coin_1": "1 Altın Sikke",
   "item.xercamod.item_golden_coin_5": "5 Altın Sikke",
 
+  "block.xercamod.block_teapot": "Çaydanlık",
   "block.xercamod.block_apple_pie": "Elmalı Turta",
   "block.xercamod.block_leather": "Deri Bloğu",
   "block.xercamod.block_straw": "Hasır Bloğu",
   "block.xercamod.block_bookcase": "Kitaplık",
+  "block.xercamod.block_bookcase.name": "Kitaplık",
 
   "block.xercamod.carved_oak_1": "Oyulmuş Meşe",
   "block.xercamod.carved_oak_2": "Oyulmuş Meşe",
@@ -145,5 +165,7 @@
   "enchantment.xercamod.enchantment_quick": "Seri",
   "enchantment.xercamod.enchantment_quake": "Deprem",
   "enchantment.xercamod.enchantment_grappling": "Tutucu",
-  "enchantment.xercamod.enchantment_uppercut": "Uçurgan"
+  "enchantment.xercamod.enchantment_uppercut": "Uçurgan",
+  "enchantment.xercamod.enchantment_poison": "Zehirli",
+  "enchantment.xercamod.enchantment_stealth": "Sessiz katil"
 }

@@ -30,11 +30,12 @@ class EventHandler {
                 || result == Items.CARVED_OAK_7 || result == Items.CARVED_OAK_8 || result == Items.CARVED_BIRCH_1
                 || result == Items.CARVED_BIRCH_2 || result == Items.CARVED_BIRCH_3 || result == Items.CARVED_BIRCH_4
                 || result == Items.CARVED_BIRCH_5 || result == Items.CARVED_BIRCH_6 || result == Items.CARVED_BIRCH_7
-                || result == Items.CARVED_BIRCH_8) {
+                || result == Items.CARVED_BIRCH_8 || result == Items.SASHIMI) {
             for (int i = 0; i < ev.getInventory().getSizeInventory(); ++i) {
                 ItemStack item = ev.getInventory().getStackInSlot(i);
                 if (item.getItem() == Items.ITEM_KNIFE) {
                     ItemStack newItem = new ItemStack(Items.ITEM_KNIFE, 2);
+                    newItem.setTag(item.getTag());
                     newItem.setDamage(item.getDamage() + 1);
                     ev.getInventory().setInventorySlotContents(i, newItem);
                     break;

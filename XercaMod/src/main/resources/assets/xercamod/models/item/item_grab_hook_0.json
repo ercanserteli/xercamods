@@ -1,0 +1,11 @@
+{
+  "parent": "xercamod:item/item_grab_hook",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 0, 90, 45 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, 90, 45 ]
+    }
+  }
+}

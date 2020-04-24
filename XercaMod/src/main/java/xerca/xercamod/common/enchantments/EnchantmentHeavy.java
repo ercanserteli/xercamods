@@ -41,7 +41,7 @@ public class EnchantmentHeavy extends Enchantment {
      */
     @Override
     public boolean canApplyTogether(Enchantment ench) {
-        return !(ench instanceof EnchantmentQuick);
+        return super.canApplyTogether(ench) && !(ench instanceof EnchantmentQuick);
     }
 
     /**
@@ -62,7 +62,6 @@ public class EnchantmentHeavy extends Enchantment {
      */
     @Override
     public boolean canApply(ItemStack stack) {
-        //return stack.canApplyAtEnchantingTable(this);
         return this.canApplyAtEnchantingTable(stack);
     }
 }

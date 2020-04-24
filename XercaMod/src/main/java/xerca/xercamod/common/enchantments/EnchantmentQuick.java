@@ -21,7 +21,7 @@ public class EnchantmentQuick extends Enchantment {
     }
 
     /**
-     * Returns the maximum value of enchantability nedded on the enchantment level passed.
+     * Returns the maximum value of enchantability needed on the enchantment level passed.
      */
     @Override
     public int getMaxEnchantability(int enchantmentLevel) {
@@ -37,11 +37,11 @@ public class EnchantmentQuick extends Enchantment {
     }
 
     /**
-     * Determines if the enchantment passed can be applyied together with this enchantment.
+     * Determines if the enchantment passed can be applied together with this enchantment.
      */
     @Override
     public boolean canApplyTogether(Enchantment ench) {
-        return !(ench instanceof EnchantmentHeavy);
+        return super.canApplyTogether(ench) && !(ench instanceof EnchantmentHeavy);
     }
 
     /**
@@ -62,7 +62,6 @@ public class EnchantmentQuick extends Enchantment {
      */
     @Override
     public boolean canApply(ItemStack stack) {
-        //return stack.canApplyAtEnchantingTable(this);
         return this.canApplyAtEnchantingTable(stack);
     }
 }

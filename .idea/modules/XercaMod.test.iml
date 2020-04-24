@@ -26,8 +26,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="XercaMod.main" />
-    <orderEntry type="library" name="Gradle: net.minecraftforge:forge:1.15.2-31.1.27_mapped_snapshot_20200225-1.15.1" level="project" />
-    <orderEntry type="library" name="Gradle: net.minecraftforge:forge:launcher:1.15.2-31.1.27_mapped_snapshot_20200225-1.15.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.minecraftforge:forge:1.15.2-31.1.46_mapped_snapshot_20200225-1.15.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.minecraftforge:forge:launcher:1.15.2-31.1.46_mapped_snapshot_20200225-1.15.1" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraft:client:extra:1.15.2" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraftforge:accesstransformers:shadowed:2.0.4" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraftforge:eventbus:service:2.0.0-milestone.1" level="project" />
