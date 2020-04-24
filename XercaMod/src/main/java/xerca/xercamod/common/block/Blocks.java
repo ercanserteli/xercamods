@@ -12,9 +12,12 @@ import xerca.xercamod.common.XercaMod;
 
 @ObjectHolder(XercaMod.MODID)
 public class Blocks {
+    public static final BlockTeapot BLOCK_TEAPOT = null;
     public static final BlockTeaPlant BLOCK_TEA_PLANT = null;
     public static final BlockTomatoPlant BLOCK_TOMATO_PLANT = null;
+    public static final BlockRicePlant BLOCK_RICE_PLANT = null;
     public static final BlockApplePie BLOCK_APPLE_PIE = null;
+    public static final BlockSweetBerryPie BLOCK_SWEET_BERRY_PIE = null;
     public static final Block BLOCK_LEATHER = null;
     public static final Block BLOCK_STRAW = null;
     public static final Block BLOCK_BOOKCASE = null;
@@ -56,9 +59,12 @@ public class Blocks {
         @SubscribeEvent
         public static void registerBlocks(final RegistryEvent.Register<Block> event) {
             event.getRegistry().registerAll(
+                    new BlockTeapot(),
                     new BlockTeaPlant(),
                     new BlockTomatoPlant(),
+                    new BlockRicePlant(),
                     new BlockApplePie(),
+                    new BlockSweetBerryPie(),
                     new Block(Block.Properties.create(Material.WOOL).sound(SoundType.CLOTH).hardnessAndResistance(1.0f)).setRegistryName("block_leather"),
                     new Block(Block.Properties.create(Material.LEAVES).sound(SoundType.PLANT).hardnessAndResistance(0.8f)).setRegistryName("block_straw"),
                     new BlockFunctionalBookcase(),

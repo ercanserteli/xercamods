@@ -19,6 +19,22 @@ import xerca.xercamod.common.crafting.*;
 
 @ObjectHolder(XercaMod.MODID)
 public final class Items {
+    public static final Item BAKED_RICE_PUDDING = null;
+    public static final Item SWEET_BERRY_JUICE = null;
+    public static final Item RICE_PUDDING = null;
+    public static final Item SWEET_BERRY_CUPCAKE_FANCY = null;
+    public static final Item SWEET_BERRY_CUPCAKE = null;
+    public static final Item ENDER_CUPCAKE = null;
+    public static final Item SASHIMI = null;
+    public static final Item OYAKODON = null;
+    public static final Item BEEF_DONBURI = null;
+    public static final Item EGG_SUSHI = null;
+    public static final Item NIGIRI_SUSHI = null;
+    public static final Item OMURICE = null;
+    public static final Item SAKE = null;
+    public static final Item RICEBALL = null;
+    public static final Item SUSHI = null;
+    public static final Item COOKED_RICE = null;
     public static final ItemGrabHook ITEM_GRAB_HOOK = null;
     public static final ItemWarhammer ITEM_DIAMOND_WARHAMMER = null;
     public static final ItemWarhammer ITEM_GOLD_WARHAMMER = null;
@@ -27,7 +43,7 @@ public final class Items {
     public static final ItemConfettiBall ITEM_CONFETTI_BALL = null;
     public static final ItemConfetti ITEM_CONFETTI = null;
     public static final ItemBadge ITEM_PROSECUTOR_BADGE = null;
-    public static final ItemBadge item_attorney_badge = null;
+    public static final ItemBadge ITEM_ATTORNEY_BADGE = null;
     public static final Item ITEM_TEACUP = null;
     public static final ItemTeacup ITEM_FULL_TEACUP_0 = null;
     public static final ItemTeacup ITEM_FULL_TEACUP_1 = null;
@@ -38,6 +54,13 @@ public final class Items {
     public static final ItemTeacup ITEM_FULL_TEACUP_6 = null;
 
     public static final ItemTeapot ITEM_FULL_TEAPOT_1 = null;
+    public static final ItemTeapot ITEM_HOT_TEAPOT_1 = null;
+    public static final ItemTeapot ITEM_HOT_TEAPOT_2 = null;
+    public static final ItemTeapot ITEM_HOT_TEAPOT_3 = null;
+    public static final ItemTeapot ITEM_HOT_TEAPOT_4 = null;
+    public static final ItemTeapot ITEM_HOT_TEAPOT_5 = null;
+    public static final ItemTeapot ITEM_HOT_TEAPOT_6 = null;
+    public static final ItemTeapot ITEM_HOT_TEAPOT_7 = null;
     public static final Item ITEM_TEAPOT = null;
     public static final Item ITEM_TEA_SEEDS = null;
     public static final Item ITEM_TEA_DRIED = null;
@@ -50,6 +73,7 @@ public final class Items {
     public static final ItemGlass ITEM_GLASS = null;
     public static final ItemTomato ITEM_TOMATO = null;
     public static final Item ITEM_TOMATO_SEEDS = null;
+    public static final Item ITEM_RICE_SEEDS = null;
     public static final ItemGavel ITEM_GAVEL = null;
 
     public static final Item ITEM_TOMATO_SLICES = null;
@@ -96,6 +120,8 @@ public final class Items {
     public static final Item CARVED_BIRCH_7 = null;
     public static final Item CARVED_BIRCH_8 = null;
 
+    public static final Enchantment ENCHANTMENT_STEALTH = null;
+    public static final Enchantment ENCHANTMENT_POISON = null;
     public static final Enchantment ENCHANTMENT_HEAVY = null;
     public static final Enchantment ENCHANTMENT_MAIM = null;
     public static final Enchantment ENCHANTMENT_QUICK = null;
@@ -121,6 +147,12 @@ public final class Items {
 
     static Item makeFoodItem(String name, Food food){
         Item item = new ItemConditioned(new Item.Properties().group(ItemGroup.FOOD).food(food), Config::isFoodEnabled);
+        item.setRegistryName(name);
+        return item;
+    }
+
+    static Item makeContainedFoodItem(String name, Food food, Item container){
+        Item item = new ItemConditionedContainedFood(new Item.Properties().group(ItemGroup.FOOD).food(food), container);
         item.setRegistryName(name);
         return item;
     }
@@ -181,22 +213,22 @@ public final class Items {
                     new ItemGavel(),
 
                     new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_teacup"),
-                    new ItemTeapot(0, true),
-                    new ItemTeapot(1, true),
-                    new ItemTeapot(2, true),
-                    new ItemTeapot(3, true),
-                    new ItemTeapot(4, true),
-                    new ItemTeapot(5, true),
-                    new ItemTeapot(6, true),
-                    new ItemTeapot(7, true),
-                    new ItemTeapot(0, false),
-                    new ItemTeapot(1, false),
-                    new ItemTeapot(2, false),
-                    new ItemTeapot(3, false),
-                    new ItemTeapot(4, false),
-                    new ItemTeapot(5, false),
-                    new ItemTeapot(6, false),
-                    new ItemTeapot(7, false),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 0, true),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 1, true),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 2, true),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 3, true),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 4, true),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 5, true),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 6, true),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 7, true),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 0, false),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 1, false),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 2, false),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 3, false),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 4, false),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 5, false),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 6, false),
+                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 7, false),
                     new ItemTeacup(0),
                     new ItemTeacup(1),
                     new ItemTeacup(2),
@@ -213,6 +245,7 @@ public final class Items {
                     glass,
                     new ItemTomato(),
                     new BlockNamedConditionedItem(Blocks.BLOCK_TOMATO_PLANT, new Item.Properties().group(ItemGroup.MATERIALS), Config::isFoodEnabled).setRegistryName("item_tomato_seeds"),
+                    new BlockNamedConditionedItem(Blocks.BLOCK_RICE_PLANT, new Item.Properties().group(ItemGroup.MATERIALS), Config::isFoodEnabled).setRegistryName("item_rice_seeds"),
                     new ItemGoldenCupcake(),
                     makeFoodItem( "item_apple_cupcake", Foods.APPLE_CUPCAKE),
                     makeFoodItem( "item_pumpkin_cupcake", Foods.PUMPKIN_CUPCAKE),
@@ -236,6 +269,7 @@ public final class Items {
                     makeFoodItem("item_ultimate_bottom", Foods.ULTIMATE_BOTTOM),
                     makeFoodItem("item_ultimate_top", Foods.ULTIMATE_TOP),
                     new ItemUltimateBurger(),
+                    new ItemEnderCupcake(),
                     makeFoodItem( "item_rotten_burger", Foods.ROTTEN_BURGER),
                     makeFoodItem("item_raw_sausage", Foods.RAW_SAUSAGE),
                     makeFoodItem("item_cooked_sausage", Foods.COOKED_SAUSAGE),
@@ -260,6 +294,21 @@ public final class Items {
                     makeDrinkItem("item_wheat_juice", Foods.WHEAT_JUICE, glass),
                     makeDrinkItem("item_glass_of_milk", Foods.GLASS_OF_MILK, glass),
                     makeDrinkItem("item_glass_of_water", Foods.GLASS_OF_WATER, glass),
+                    makeDrinkItem("sweet_berry_juice", Foods.SWEET_BERRY_JUICE, glass),
+                    makeDrinkItem("sake", Foods.SAKE, glass),
+                    makeContainedFoodItem("oyakodon", Foods.OYAKODON, net.minecraft.item.Items.BOWL),
+                    makeContainedFoodItem("beef_donburi", Foods.BEEF_DONBURI, net.minecraft.item.Items.BOWL),
+                    makeFoodItem("egg_sushi", Foods.EGG_SUSHI),
+                    makeFoodItem("nigiri_sushi", Foods.NIGIRI_SUSHI),
+                    makeFoodItem("omurice", Foods.OMURICE),
+                    makeFoodItem("riceball", Foods.RICEBALL),
+                    makeFoodItem("sushi", Foods.SUSHI),
+                    makeFoodItem("cooked_rice", Foods.COOKED_RICE),
+                    makeFoodItem("sashimi", Foods.SASHIMI),
+                    makeContainedFoodItem("rice_pudding", Foods.RICE_PUDDING, net.minecraft.item.Items.BOWL),
+                    makeContainedFoodItem("baked_rice_pudding", Foods.BAKED_RICE_PUDDING, net.minecraft.item.Items.BOWL),
+                    makeFoodItem("sweet_berry_cupcake_fancy", Foods.SWEET_BERRY_CUPCAKE_FANCY),
+                    makeFoodItem("sweet_berry_cupcake", Foods.SWEET_BERRY_CUPCAKE),
 
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),
@@ -279,6 +328,7 @@ public final class Items {
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.YELLOW_CUSHION).setRegistryName("yellow_cushion"),
 
                     new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties().group(ItemGroup.FOOD), Config::isFoodEnabled).setRegistryName("item_apple_pie"),
+                    new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties().group(ItemGroup.FOOD), Config::isFoodEnabled).setRegistryName("sweet_berry_pie"),
                     new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
                     new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isLeatherStrawEnabled).setRegistryName("item_block_straw"),
                     new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().group(ItemGroup.DECORATIONS), Config::isBookcaseEnabled).setRegistryName("item_bookcase"),
@@ -313,7 +363,9 @@ public final class Items {
                     new EnchantmentQuick(Enchantment.Rarity.COMMON, EquipmentSlotType.MAINHAND),
                     new EnchantmentQuake(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
                     new EnchantmentGrappling(Enchantment.Rarity.VERY_RARE, EquipmentSlotType.MAINHAND),
-                    new EnchantmentUppercut(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND)
+                    new EnchantmentUppercut(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentPoison(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentStealth(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND)
             );
         }
     }

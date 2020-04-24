@@ -1,7 +1,7 @@
 
 {
     "type": "xercamod:crafting_condition_shaped_food",
-    "group": "cupcake",
+    "group": "fancy_cupcake",
     "pattern": [
         "s",
         "c"

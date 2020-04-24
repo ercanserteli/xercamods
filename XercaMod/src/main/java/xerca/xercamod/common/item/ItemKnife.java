@@ -2,6 +2,9 @@ package xerca.xercamod.common.item;
 
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -12,7 +15,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTier;
 import net.minecraft.network.play.server.SAnimateHandPacket;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -27,6 +33,8 @@ import xerca.xercamod.common.packets.KnifeAttackPacket;
 import javax.annotation.Nonnull;
 
 public class ItemKnife extends Item {
+
+    private static final float defaultBonus = 8.0f;
     private static final float weaponDamage = 2.0f;
     private static final int maxDamage = 240;
 
@@ -46,7 +54,12 @@ public class ItemKnife extends Item {
             }
             e2.world.playSound(null, e1.getPosX(), e1.getPosY() + 0.5d, e1.getPosZ(), SoundEvents.SNEAK_HIT, SoundCategory.PLAYERS, 1.0f, e2.world.rand.nextFloat() * 0.2F + 0.8F);
 
-            damage += 8.0F;
+            float bonus = defaultBonus;
+            if(stack.isEnchanted()){
+                bonus += EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_STEALTH, stack)*2;
+            }
+
+            damage += bonus;
             PlayerEntity player = (PlayerEntity) e2;
             DamageSource damagesource = DamageSource.causePlayerDamage(player);
             e1.attackEntityFrom(damagesource, damage);
@@ -55,6 +68,13 @@ public class ItemKnife extends Item {
             }
         }
         stack.damageItem(1, e2, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
+
+        if(stack.isEnchanted()){
+            int poison = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_POISON, stack);
+            if(poison > 0){
+                e1.addPotionEffect(new EffectInstance(Effects.POISON, 30 + 30 * poison, poison - 1));
+            }
+        }
 
         return true;
     }
@@ -96,5 +116,18 @@ public class ItemKnife extends Item {
     public boolean hasContainerItem(ItemStack stack)
     {
         return stack.getItem() == this;
+    }
+
+    @Override
+    public int getItemEnchantability()
+    {
+        return ItemTier.IRON.getEnchantability();
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
+    {
+        return enchantment.type == EnchantmentType.BREAKABLE || enchantment == Items.ENCHANTMENT_POISON
+                || enchantment == Items.ENCHANTMENT_STEALTH;
     }
 }

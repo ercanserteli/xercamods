@@ -58,8 +58,9 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         this.isReturning = false;
     }
 
-    public EntityHook(World worldIn, PlayerEntity hooker, ItemStack rod) {
+    public EntityHook(World worldIn, PlayerEntity hooker, ItemStack rod, float pullAmount) {
         this(worldIn);
+        this.speed *= pullAmount;
         this.isReturning = false;
         this.angler = hooker;
         if(rod.getItem() == Items.ITEM_GRAB_HOOK){
