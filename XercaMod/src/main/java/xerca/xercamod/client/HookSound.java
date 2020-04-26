@@ -1,6 +1,7 @@
 package xerca.xercamod.client;
 
 import net.minecraft.client.audio.TickableSound;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,9 +49,12 @@ class HookSound extends TickableSound {
             return;
         }
 
-        x = (float) theHook.getPosX();
-        y = (float) theHook.getPosY();
-        z = (float) theHook.getPosZ();
+        final PlayerEntity angler = theHook.getAngler();
+        if(angler != null){
+            x = (float) angler.getPosX();
+            y = (float) angler.getPosY();
+            z = (float) angler.getPosZ();
+        }
     }
 
     @Override

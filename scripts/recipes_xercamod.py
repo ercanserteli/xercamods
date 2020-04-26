@@ -123,7 +123,7 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:item_glass'}, {'item': 'xercamod:item_rice_seeds'}, {'item': 'xercamod:item_rice_seeds'}], {'item': 'xercamod:sake'}, {'item': 'xercamod:item_rice_seeds'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:cooked_beef'}, {'item': 'minecraft:bowl'}], {'item': 'xercamod:beef_donburi'}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:cooked_chicken'}, {'item': 'minecraft:bowl'}, {'item': 'xercamod:item_fried_egg'}], {'item': 'xercamod:oyakodon'}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
-    ShapelessRecipe([{'item': 'xercamod:item_rice_seeds'}, {'item': 'minecraft:sugar'}, {'item': 'minecraft:bowl'}, {'item': 'minecraft:milk_bucket'}], {'item': 'xercamod:rice_pudding'}, {'item': 'xercamod:rice_seeds'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:item_rice_seeds'}, {'item': 'minecraft:sugar'}, {'item': 'minecraft:bowl'}, {'item': 'minecraft:milk_bucket'}], {'item': 'xercamod:rice_pudding'}, {'item': 'xercamod:item_rice_seeds'}, "", type="xercamod:crafting_condition_shapeless_food"),
 ]
 
 cooking_recipes = [
@@ -173,4 +173,5 @@ all_recipes = [r for l in [shaped_recipes, shapeless_recipes, cooking_recipes, s
 
 
 # generate_recipe_code_from_files("xercamod")
+clean_recipe_jsons("xercamod")
 generate_recipe_jsons(all_recipes, "xercamod")
