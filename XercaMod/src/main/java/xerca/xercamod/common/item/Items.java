@@ -128,6 +128,8 @@ public final class Items {
     public static final Enchantment ENCHANTMENT_QUAKE = null;
     public static final Enchantment ENCHANTMENT_GRAPPLING = null;
     public static final Enchantment ENCHANTMENT_UPPERCUT = null;
+    public static final Enchantment ENCHANTMENT_TURBO_GRAB = null;
+    public static final Enchantment ENCHANTMENT_GENTLE_GRAB = null;
 
     public static TeaCreativeTab teaTab;
 
@@ -151,8 +153,8 @@ public final class Items {
         return item;
     }
 
-    static Item makeContainedFoodItem(String name, Food food, Item container){
-        Item item = new ItemConditionedContainedFood(new Item.Properties().group(ItemGroup.FOOD).food(food), container);
+    static Item makeContainedFoodItem(String name, Food food, Item container, int stackSize){
+        Item item = new ItemConditionedContainedFood(new Item.Properties().group(ItemGroup.FOOD).food(food), container, stackSize);
         item.setRegistryName(name);
         return item;
     }
@@ -296,8 +298,8 @@ public final class Items {
                     makeDrinkItem("item_glass_of_water", Foods.GLASS_OF_WATER, glass),
                     makeDrinkItem("sweet_berry_juice", Foods.SWEET_BERRY_JUICE, glass),
                     makeDrinkItem("sake", Foods.SAKE, glass),
-                    makeContainedFoodItem("oyakodon", Foods.OYAKODON, net.minecraft.item.Items.BOWL),
-                    makeContainedFoodItem("beef_donburi", Foods.BEEF_DONBURI, net.minecraft.item.Items.BOWL),
+                    makeContainedFoodItem("oyakodon", Foods.OYAKODON, net.minecraft.item.Items.BOWL, 16),
+                    makeContainedFoodItem("beef_donburi", Foods.BEEF_DONBURI, net.minecraft.item.Items.BOWL, 16),
                     makeFoodItem("egg_sushi", Foods.EGG_SUSHI),
                     makeFoodItem("nigiri_sushi", Foods.NIGIRI_SUSHI),
                     makeFoodItem("omurice", Foods.OMURICE),
@@ -305,8 +307,8 @@ public final class Items {
                     makeFoodItem("sushi", Foods.SUSHI),
                     makeFoodItem("cooked_rice", Foods.COOKED_RICE),
                     makeFoodItem("sashimi", Foods.SASHIMI),
-                    makeContainedFoodItem("rice_pudding", Foods.RICE_PUDDING, net.minecraft.item.Items.BOWL),
-                    makeContainedFoodItem("baked_rice_pudding", Foods.BAKED_RICE_PUDDING, net.minecraft.item.Items.BOWL),
+                    makeContainedFoodItem("rice_pudding", Foods.RICE_PUDDING, net.minecraft.item.Items.BOWL, 16),
+                    makeContainedFoodItem("baked_rice_pudding", Foods.BAKED_RICE_PUDDING, net.minecraft.item.Items.BOWL, 16),
                     makeFoodItem("sweet_berry_cupcake_fancy", Foods.SWEET_BERRY_CUPCAKE_FANCY),
                     makeFoodItem("sweet_berry_cupcake", Foods.SWEET_BERRY_CUPCAKE),
 
@@ -365,7 +367,9 @@ public final class Items {
                     new EnchantmentGrappling(Enchantment.Rarity.VERY_RARE, EquipmentSlotType.MAINHAND),
                     new EnchantmentUppercut(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
                     new EnchantmentPoison(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentStealth(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND)
+                    new EnchantmentStealth(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentTurboGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentGentleGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND)
             );
         }
     }

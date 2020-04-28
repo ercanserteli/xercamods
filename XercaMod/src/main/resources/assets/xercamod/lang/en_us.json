@@ -216,16 +216,20 @@
   "enchantment.xercamod.enchantment_grappling": "Grappling",
   "enchantment.xercamod.enchantment_uppercut": "Uppercut",
   "enchantment.xercamod.enchantment_poison": "Venomous",
-  "enchantment.xercamod.enchantment_stealth": "Silent killer",
+  "enchantment.xercamod.enchantment_stealth": "Silent Killer",
+  "enchantment.xercamod.enchantment_turbo_grab": "Turbo",
+  "enchantment.xercamod.enchantment_gentle_grab": "Gentle Grab",
 
   "enchantment.xercamod.enchantment_heavy.desc": "Warhammer enchantment. Increases the maximum pull time, but also adds more damage and knock back.",
   "enchantment.xercamod.enchantment_maim.desc": "Warhammer enchantment. Cripples your opponent on hit, applying a Slow effect.",
   "enchantment.xercamod.enchantment_quick.desc": "Warhammer enchantment. Lets you pull the hammer faster while hitting with the same power.",
   "enchantment.xercamod.enchantment_quake.desc": "Warhammer enchantment. Allows you to target the ground. When you hit the ground, all mobs around the target point are damaged according to their proximity and knocked back from that point.",
-  "enchantment.xercamod.enchantment_grappling.desc": "Grap hook enchantment. Allows you to target blocks and launch yourself towards the block as a grappling hook.",
+  "enchantment.xercamod.enchantment_grappling.desc": "Grab hook enchantment. Allows you to target blocks and launch yourself towards the block as a grappling hook.",
   "enchantment.xercamod.enchantment_uppercut.desc": "Warhammer enchantment. Adds a “knock up” component to the Warhammer, launching the target upwards.",
   "enchantment.xercamod.enchantment_poison.desc": "Knife enchantment. Poisons the opponent on hit.",
   "enchantment.xercamod.enchantment_stealth.desc": "Knife enchantment. Increases the bonus damage on stealthy back stabs.",
+  "enchantment.xercamod.enchantment_turbo_grab.desc": "Grab hook enchantment. Increases the speed and distance of the hook.",
+  "enchantment.xercamod.enchantment_gentle_grab.desc": "Grab hook enchantment. Pulls the target without causing damage.",
 
   "entity.xercamod.cushion": "Cushion"
 }

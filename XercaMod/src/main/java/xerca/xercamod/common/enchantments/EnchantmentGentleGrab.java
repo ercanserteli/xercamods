@@ -4,12 +4,12 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import xerca.xercamod.common.item.ItemKnife;
+import xerca.xercamod.common.item.ItemGrabHook;
 
-public class EnchantmentPoison extends Enchantment {
-    public EnchantmentPoison(Rarity rarityIn, EquipmentSlotType... slots) {
+public class EnchantmentGentleGrab extends Enchantment {
+    public EnchantmentGentleGrab(Rarity rarityIn, EquipmentSlotType... slots) {
         super(rarityIn, EnchantmentType.WEAPON, slots);
-        this.setRegistryName("enchantment_poison");
+        this.setRegistryName("enchantment_gentle_grab");
     }
 
     /**
@@ -17,15 +17,15 @@ public class EnchantmentPoison extends Enchantment {
      */
     @Override
     public int getMinEnchantability(int enchantmentLevel) {
-        return 15 + (enchantmentLevel - 1) * 9;
+        return  18;
     }
 
     /**
-     * Returns the maximum value of enchantability needed on the enchantment level passed.
+     * Returns the maximum value of enchantability nedded on the enchantment level passed.
      */
     @Override
     public int getMaxEnchantability(int enchantmentLevel) {
-        return super.getMinEnchantability(enchantmentLevel) + 30;
+        return 50;
     }
 
     /**
@@ -33,7 +33,7 @@ public class EnchantmentPoison extends Enchantment {
      */
     @Override
     public int getMaxLevel() {
-        return 3;
+        return 1;
     }
 
     /**
@@ -44,7 +44,7 @@ public class EnchantmentPoison extends Enchantment {
      */
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack) {
-        return stack.getItem() instanceof ItemKnife;
+        return stack.getItem() instanceof ItemGrabHook;
     }
     /**
      * This applies specifically to applying at the enchanting table. The other method {@link #canApply(ItemStack)}

@@ -128,7 +128,7 @@ shapeless_recipes = [
 
 cooking_recipes = [
     CookingRecipe("minecraft:smelting", {'item': 'xercamod:rice_pudding'}, "xercamod:baked_rice_pudding", 0.2, 250, {'item': 'xercamod:rice_pudding'}, ""),
-    CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_raw_chicken_patty'}, "xercamod:item_cooked_chicken_patty", 0.15, 200, {'item': 'xercamod:item_raw_chicken_patty'}, ""),
+    CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_raw_chicken_patty'}, "xercamod:item_cooked_chicken_patty", 0.2, 200, {'item': 'xercamod:item_raw_chicken_patty'}, ""),
     CookingRecipe("minecraft:smelting", {'item': 'minecraft:egg'}, "xercamod:item_fried_egg", 0.2, 200, {'item': 'minecraft:egg'}, ""),
     CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_raw_patty'}, "xercamod:item_cooked_patty", 0.2, 200, {'item': 'xercamod:item_raw_patty'}, ""),
     CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_potato_slices'}, "xercamod:item_potato_fries", 0.2, 200, {'item': 'xercamod:item_potato_slices'}, ""),
