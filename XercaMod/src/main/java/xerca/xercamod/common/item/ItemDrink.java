@@ -12,10 +12,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 
-public class ItemDrink extends ItemContainedFood {
+public class ItemDrink extends ItemStackableContainedFood {
 
     public ItemDrink(Properties properties, Item container) {
-        super(properties, container);
+        super(properties, container, 16);
     }
 
     @Override

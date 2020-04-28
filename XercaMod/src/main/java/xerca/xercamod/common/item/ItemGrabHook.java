@@ -56,21 +56,6 @@ public class ItemGrabHook extends FishingRodItem {
         });
     }
 
-//    @Nonnull
-//    @Override
-//    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-//        final ItemStack heldItem = playerIn.getHeldItem(hand);
-//        playerIn.getCooldownTracker().setCooldown(this, 40);
-//        heldItem.damageItem(1, playerIn, (p) -> p.sendBreakAnimation(hand));
-//        if (!worldIn.isRemote) {
-//            worldIn.addEntity(new EntityHook(worldIn, playerIn, heldItem));
-//        }
-//
-//        playerIn.swingArm(hand);
-//
-//        return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
-//    }
-
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {

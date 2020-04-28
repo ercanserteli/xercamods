@@ -17,7 +17,7 @@ public class Foods {
     public static Food EGG_SUSHI = makeFood(6, 0.7f, false).build();
     public static Food NIGIRI_SUSHI = makeFood(3, 0.7f, true).build();
     public static Food OMURICE = makeFood(10, 1.0f, false).build();
-    public static Food SAKE = makeFood(3, 0.6f, false).build();
+    public static Food SAKE = makeFood(3, 0.6f, false).effect(new EffectInstance(Effects.NAUSEA, 280, 1), 0.8f).build();
     public static Food RICEBALL = makeFood(3, 0.7f, false).build();
     public static Food SUSHI = makeFood(4, 0.7f, true).build();
     public static Food COOKED_RICE = makeFood(4, 0.7f, false).build();
@@ -64,7 +64,7 @@ public class Foods {
     public static Food MELON_JUICE = makeFood(3, 0.6f, false).build();
     public static Food PUMPKIN_JUICE = makeFood(3, 0.6f, false).build();
     public static Food TOMATO_JUICE = makeFood(3, 0.6f, false).build();
-    public static Food WHEAT_JUICE = makeFood(3, 0.6f, false).build();
+    public static Food WHEAT_JUICE = makeFood(3, 0.6f, false).effect(new EffectInstance(Effects.NAUSEA, 180, 0), 0.3f).build();
     public static Food GLASS_OF_MILK = makeFood(3, 0.6f, false).build();
     public static Food GLASS_OF_WATER = makeFood(0, 0.5f, false).setAlwaysEdible().build();
     public static Food TEACUP0 = makeFood(0, 0.3f, false).setAlwaysEdible().effect(new EffectInstance(Effects.HASTE, 1200, 1), 1.0f).build();

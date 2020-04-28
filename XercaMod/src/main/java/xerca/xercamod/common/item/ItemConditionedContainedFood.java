@@ -8,10 +8,10 @@ import xerca.xercamod.common.Config;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class ItemConditionedContainedFood extends ItemContainedFood {
+public class ItemConditionedContainedFood extends ItemStackableContainedFood {
 
-    public ItemConditionedContainedFood(Properties properties, Item container) {
-        super(properties, container);
+    public ItemConditionedContainedFood(Properties properties, Item container, int stackSize) {
+        super(properties, container, stackSize);
     }
 
     @Override
