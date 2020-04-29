@@ -2,7 +2,7 @@
 {
     "type": "xercamod:crafting_condition_shapeless_food",
     
-    "ingredients": [{"item": "xercamod:item_rice_seeds"}, {"item": "minecraft:sugar"}, {"item": "minecraft:bowl"}, {"item": "minecraft:milk_bucket"}],
+    "ingredients": [{"item": "xercamod:cooked_rice"}, {"item": "minecraft:sugar"}, {"item": "minecraft:bowl"}, {"item": "minecraft:milk_bucket"}],
     "result": {"item": "xercamod:rice_pudding"}
 }
         
