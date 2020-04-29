@@ -1,5 +1,6 @@
 {
   "credit": "Made with Blockbench",
+  "parent": "xercamod:item/3d_item",
   "textures": {
     "0": "xercamod:item/stone_hammer",
     "particle": "xercamod:item/stone_hammer"
