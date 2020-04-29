@@ -1,9 +1,11 @@
 {
   "credit": "Made with Blockbench",
+  "parent": "xercamod:item/3d_item",
   "textures": {
     "0": "xercamod:item/gold_hammer",
     "particle": "xercamod:item/gold_hammer"
   },
+  "gui_light": "front",
   "elements": [
     {
       "from": [7, 0, 7],
