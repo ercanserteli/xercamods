@@ -1,0 +1,42 @@
+{
+  "itemGroup.music_tab": "音乐",
+
+  "item.xercamusic.music_sheet": "乐谱",
+  "item.xercamusic.guitar": "吉他",
+  "item.xercamusic.flute": "长笛",
+  "item.xercamusic.banjo": "班卓琴",
+  "item.xercamusic.drum": "鼓",
+  "item.xercamusic.lyre": "七弦竖琴",
+  "item.xercamusic.item_cello": "大提琴",
+  "item.xercamusic.saxophone": "萨克斯",
+  "item.xercamusic.god": "上帝之音",
+  "item.xercamusic.sansula": "拇指琴",
+  "item.xercamusic.tubular_bell": "编钟",
+  "item.xercamusic.violin": "小提琴",
+  "item.xercamusic.xylophone": "木琴",
+  "item.xercamusic.cello": "大提琴",
+  "item.xercamusic.drum_kit": "迷你架子鼓",
+  "item.xercamusic.cymbal": "铙钹",
+
+  "block.xercamusic.block_metronome": "节拍器",
+  "block.xercamusic.music_box": "音乐盒",
+
+  "advancements.xercamusic.achievements.root.title": "Xerca式音乐",
+  "advancements.xercamusic.achievements.root.description": "Music!",
+  "advancements.xercamusic.achievements.musician.title": "音乐家",
+  "advancements.xercamusic.achievements.musician.description": "创作你的第一部作品",
+
+  "note.byAuthor": "by %1$s",
+  "note.signButton": "签署",
+  "note.editTitle": "定义乐曲名称:",
+  "note.finalizeButton": "签署并关闭",
+  "note.finalizeWarning": "注意！一旦你签署了乐谱，它将不可被再次编辑!",
+  "note.generation.0": "原谱",
+  "note.generation.1": "复刻",
+  "note.generation.2": "盗版",
+  "note.upButton": "▲",
+  "note.downButton": "▼",
+  "note.startPreviewButton": "►",
+  "note.stopPreviewButton": "■",
+  "note.hideNeighborsButton": "N"
+}
