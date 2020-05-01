@@ -119,6 +119,14 @@ public final class Items {
     public static final Item CARVED_BIRCH_6 = null;
     public static final Item CARVED_BIRCH_7 = null;
     public static final Item CARVED_BIRCH_8 = null;
+    public static final Item CARVED_DARK_OAK_1 = null;
+    public static final Item CARVED_DARK_OAK_2 = null;
+    public static final Item CARVED_DARK_OAK_3 = null;
+    public static final Item CARVED_DARK_OAK_4 = null;
+    public static final Item CARVED_DARK_OAK_5 = null;
+    public static final Item CARVED_DARK_OAK_6 = null;
+    public static final Item CARVED_DARK_OAK_7 = null;
+    public static final Item CARVED_DARK_OAK_8 = null;
 
     public static final Enchantment ENCHANTMENT_STEALTH = null;
     public static final Enchantment ENCHANTMENT_POISON = null;
@@ -350,6 +358,14 @@ public final class Items {
                     new BlockConditionedItem(Blocks.CARVED_BIRCH_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_6"),
                     new BlockConditionedItem(Blocks.CARVED_BIRCH_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_7"),
                     new BlockConditionedItem(Blocks.CARVED_BIRCH_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_8"),
+                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_1"),
+                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_2"),
+                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_3"),
+                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_4"),
+                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_5"),
+                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_6"),
+                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_7"),
+                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_8"),
 
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true)
