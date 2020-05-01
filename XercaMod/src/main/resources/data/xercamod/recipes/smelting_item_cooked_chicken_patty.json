@@ -6,7 +6,7 @@
         {"item": "xercamod:item_raw_chicken_patty"}
     ],
     "result": "xercamod:item_cooked_chicken_patty",
-    "experience": 0.15,
+    "experience": 0.2,
     "cookingtime": 200
 }
         

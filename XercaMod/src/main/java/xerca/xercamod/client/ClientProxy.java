@@ -37,6 +37,7 @@ public class ClientProxy extends Proxy {
 
             RenderTypeLookup.setRenderLayer(Blocks.BLOCK_TEA_PLANT, RenderType.getCutout());
             RenderTypeLookup.setRenderLayer(Blocks.BLOCK_TOMATO_PLANT, RenderType.getCutout());
+            RenderTypeLookup.setRenderLayer(Blocks.BLOCK_RICE_PLANT, RenderType.getCutout());
         }
 
         @SubscribeEvent

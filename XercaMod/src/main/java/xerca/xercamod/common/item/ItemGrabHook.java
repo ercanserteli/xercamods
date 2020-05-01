@@ -34,21 +34,74 @@ public class ItemGrabHook extends FishingRodItem {
                 return tag.getBoolean("cast") ? 1.0F : 0.0F;//);
             }
         });
+
+        this.addPropertyOverride(new ResourceLocation("pull"), new IItemPropertyGetter() {
+            @OnlyIn(Dist.CLIENT)
+            @Override
+            public float call(@Nonnull ItemStack stack, World worldIn, LivingEntity entityIn) {
+                if (entityIn == null) {
+                    return 0.0F;
+                } else {
+                    ItemStack itemstack = entityIn.getActiveItemStack();
+                    return ((itemstack.getItem() instanceof ItemGrabHook)) ? (float) (stack.getUseDuration() - entityIn.getItemInUseCount()) / (20.0F) : 0.0F;
+                }
+            }
+        });
+        this.addPropertyOverride(new ResourceLocation("pulling"), new IItemPropertyGetter() {
+            @OnlyIn(Dist.CLIENT)
+            @Override
+            public float call(@Nonnull ItemStack stack, World worldIn, LivingEntity entityIn) {
+                return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
+            }
+        });
     }
 
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
         final ItemStack heldItem = playerIn.getHeldItem(hand);
-        playerIn.getCooldownTracker().setCooldown(this, 40);
-        heldItem.damageItem(1, playerIn, (p) -> p.sendBreakAnimation(hand));
-        if (!worldIn.isRemote) {
-            worldIn.addEntity(new EntityHook(worldIn, playerIn, heldItem));
-        }
-
-        playerIn.swingArm(hand);
-
+        playerIn.setActiveHand(hand);
         return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+    }
+
+    @Override
+    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
+        float useSeconds = (this.getUseDuration(stack) - timeLeft) / 20.0f;
+        if(useSeconds > 1.f) useSeconds = 1.f;
+
+        if(useSeconds > 0.1f && entityLiving instanceof PlayerEntity){
+            PlayerEntity playerIn = (PlayerEntity) entityLiving;
+            Hand hand;
+            if(playerIn.getHeldItemMainhand().getItem() instanceof ItemGrabHook){
+                hand = Hand.MAIN_HAND;
+            }
+            else if(playerIn.getHeldItemOffhand().getItem() instanceof ItemGrabHook){
+                hand = Hand.OFF_HAND;
+            }
+            else{
+                return;
+            }
+
+            final ItemStack heldItem = playerIn.getHeldItem(hand);
+            playerIn.getCooldownTracker().setCooldown(this, 40);
+            heldItem.damageItem(1, playerIn, (p) -> p.sendBreakAnimation(hand));
+            if (!worldIn.isRemote) {
+                worldIn.addEntity(new EntityHook(worldIn, playerIn, heldItem, useSeconds));
+            }
+
+            playerIn.swingArm(hand);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public UseAction getUseAction(ItemStack stack) {
+        return UseAction.BOW;
+    }
+
+    @Override
+    public int getUseDuration(ItemStack stack) {
+        return 72000;
     }
 
     @Override

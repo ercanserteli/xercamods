@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @NonnullDefault
-public class ItemTeacup extends Item {
+public class ItemTeacup extends ItemStackableContainedFood {
     private final int sugarAmount;
 
     public ItemTeacup(int sugarAmount) {
@@ -34,7 +34,7 @@ public class ItemTeacup extends Item {
               sugarAmount == 3 ? (new Item.Properties()).food(Foods.TEACUP3) :
               sugarAmount == 4 ? (new Item.Properties()).food(Foods.TEACUP4) :
               sugarAmount == 5 ? (new Item.Properties()).food(Foods.TEACUP5) :
-                                 (new Item.Properties()).food(Foods.TEACUP6));
+                                 (new Item.Properties()).food(Foods.TEACUP6), Items.ITEM_TEACUP, 64);
         this.sugarAmount = sugarAmount;
         this.setRegistryName("item_full_teacup_" + sugarAmount);
     }
@@ -57,28 +57,6 @@ public class ItemTeacup extends Item {
             tooltip.add(new StringTextComponent(this.sugarAmount + " sugar"));
         } else {
             tooltip.add(new StringTextComponent(this.sugarAmount + " sugars"));
-        }
-    }
-
-    @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-        super.onItemUseFinish(stack, worldIn, entityLiving);
-        ItemStack container = new ItemStack(Items.ITEM_TEACUP);
-        if(stack.getCount() == 0){
-            return container;
-        }
-        else{
-            if(entityLiving instanceof PlayerEntity){
-                PlayerInventory inv = ((PlayerEntity)(entityLiving)).inventory;
-                if(inv.storeItemStack(container) == -1 && inv.getFirstEmptyStack() == -1){
-                    if(!worldIn.isRemote) {
-                        worldIn.addEntity(new ItemEntity(worldIn, entityLiving.getPosX(), entityLiving.getPosY(), entityLiving.getPosZ(), container));
-                    }
-                }else{
-                    inv.addItemStackToInventory(container);
-                }
-            }
-            return stack;
         }
     }
 

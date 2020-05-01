@@ -1,5 +1,12 @@
 from sys import argv
 
+mod_id = ""
+mod_id_to_folder = {
+    "xercamod": "XercaMod",
+    "xercamusic": "XercaMusicMod",
+    "xercapaint": "XercaPaintMod"
+}
+
 
 def camelize(und):
     i = und.find("_")
@@ -19,7 +26,7 @@ def spacelize(und):
     return out
 
 
-def add_item(mod_id, item_name, eng_name, tur_name, item_class="Item", tex_folder=""):
+def add_item(mod_id, item_name, eng_name, tur_name, item_class="Item", tex_folder="", is_food=False):
     if tex_folder != "":
         tex_folder = tex_folder + "/"
     eng_name = spacelize(eng_name)
@@ -27,7 +34,7 @@ def add_item(mod_id, item_name, eng_name, tur_name, item_class="Item", tex_folde
     is_pure = item_class == "Item"
     is_instrument = item_class == "ItemInstrument"
 
-    add_items_entry(mod_id, item_name, item_class, is_pure)
+    add_items_entry(mod_id, item_name, item_class, is_pure, is_food)
     add_models_entry(mod_id, item_name, is_instrument, tex_folder)
 
     add_lang_entry(mod_id, item_name, "en_us", eng_name)
@@ -37,9 +44,29 @@ def add_item(mod_id, item_name, eng_name, tur_name, item_class="Item", tex_folde
         add_sound_json_entry(mod_id, item_name)
         add_sound_events_entry(mod_id, item_name)
 
+    if is_food:
+        add_food_entry(mod_id, item_name)
+
+
+def add_food_entry(mod_id, item_name):
+    food_name = item_name.upper()
+    if item_name[:5] == "item_":
+        food_name = food_name[5:]
+    with open(f'../{mod_id_to_folder[mod_id]}\\src\\main\\java\\xerca\\{mod_id}\\common\\item\\Foods.java', 'r+', encoding="utf8") as f:
+        text = f.read()
+
+        line_find = "public class Foods {"
+        i = text.find(line_find) + len(line_find) + 2
+        line = f'public static Food {food_name} = makeFood(6, 0.7f, false).build();\n    '
+        text = text[:i] + line + text[i:]
+
+        f.seek(0)
+        f.write(text)
+        f.truncate()
+
 
 def add_lang_entry(mod_id, item_name, lang_id, trans_name):
-    with open(f"src\\main\\resources\\assets\\{mod_id}\\lang\\{lang_id}.json", 'r+', encoding="utf8") as f:
+    with open(f"../{mod_id_to_folder[mod_id]}\\src\\main\\resources\\assets\\{mod_id}\\lang\\{lang_id}.json", 'r+', encoding="utf8") as f:
         text = f.read()
 
         i = 2
@@ -51,8 +78,8 @@ def add_lang_entry(mod_id, item_name, lang_id, trans_name):
         f.truncate()
 
 
-def add_items_entry(mod_id, item_name, item_class, is_pure):
-    with open(f'src\\main\\java\\xerca\\{mod_id}\\common\\item\\Items.java', 'r+') as f:
+def add_items_entry(mod_id, item_name, item_class, is_pure, is_food):
+    with open(f'../{mod_id_to_folder[mod_id]}\\src\\main\\java\\xerca\\{mod_id}\\common\\item\\Items.java', 'r+') as f:
         n_items = f.read()
 
         # Object holder
@@ -66,10 +93,16 @@ def add_items_entry(mod_id, item_name, item_class, is_pure):
         id1 = n_items.find(line_find) + len(line_find) + 2
         line_find = "event.getRegistry().registerAll("
         id2 = n_items.find(line_find, id1) + len(line_find) + 2
-        if is_pure:
-            line = f'makeItem("{item_name}"),\n\t'
+        if is_food:
+            food_name = item_name.upper()
+            if item_name[:5] == "item_":
+                food_name = food_name[5:]
+            line = f'makeFoodItem("{item_name}", Foods.{food_name}),\n\t'
         else:
-            line = f'new {item_class}("{item_name}"),'
+            if is_pure:
+                line = f'makeItem("{item_name}"),\n\t'
+            else:
+                line = f'new {item_class}("{item_name}"),'
         n_items = n_items[:id2] + line + n_items[id2:]
 
         f.seek(0)
@@ -79,7 +112,7 @@ def add_items_entry(mod_id, item_name, item_class, is_pure):
 
 def add_models_entry(mod_id, item_name, is_instrument, tex_folder):
     # Model json
-    file_name = f"src\\main\\resources\\assets\\{mod_id}\\models\\item\\{item_name}.json"
+    file_name = f"../{mod_id_to_folder[mod_id]}\\src\\main\\resources\\assets\\{mod_id}\\models\\item\\{item_name}.json"
     with open(file_name, 'w') as f:
         text = """
 {{
@@ -92,7 +125,7 @@ def add_models_entry(mod_id, item_name, is_instrument, tex_folder):
 
 
 def add_sound_json_entry(mod_id, item_name):
-    with open(f"src\\main\\resources\\assets\\{mod_id}\\sounds.json", 'r+', encoding="utf8") as f:
+    with open(f"../{mod_id_to_folder[mod_id]}\\src\\main\\resources\\assets\\{mod_id}\\sounds.json", 'r+', encoding="utf8") as f:
         text = f.read()
 
         i = text.rfind("}") - 1
@@ -107,7 +140,7 @@ def add_sound_json_entry(mod_id, item_name):
 
 
 def add_sound_events_entry(mod_id, item_name):
-    with open(f'src\\main\\java\\xerca\\{mod_id}\\common\\SoundEvents.java', 'r+') as f:
+    with open(f'../{mod_id_to_folder[mod_id]}\\src\\main\\java\\xerca\\{mod_id}\\common\\SoundEvents.java', 'r+') as f:
         text = f.read()
 
         line_find = "// Instrument SoundEvents declaration"

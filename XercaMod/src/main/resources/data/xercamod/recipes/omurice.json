@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_food",
+    
+    "ingredients": [{"item": "xercamod:cooked_rice"}, {"item": "xercamod:item_fried_egg"}],
+    "result": {"item": "xercamod:omurice"}
+}
+        
