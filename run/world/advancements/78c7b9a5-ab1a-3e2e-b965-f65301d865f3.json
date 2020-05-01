@@ -1,4 +1,22 @@
 {
+  "minecraft:recipes/transportation/acacia_boat": {
+    "criteria": {
+      "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/oak_boat": {
+    "criteria": {
+      "in_water": "2019-09-11 18:07:52 +0300"
+    },
+    "done": true
+  },
+  "xercamod:achievements/root": {
+    "criteria": {
+      "crafting_table": "2020-04-28 16:04:39 +0300"
+    },
+    "done": true
+  },
   "minecraft:husbandry/root": {
     "criteria": {
       "consumed_item": "2019-09-11 18:02:46 +0300"
@@ -23,45 +41,9 @@
     },
     "done": true
   },
-  "xercapaint:recipes/item_canvas_large": {
-    "criteria": {
-      "has_item": "2020-03-27 13:46:42 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/misc/red_dye_from_poppy": {
-    "criteria": {
-      "has_red_flower": "2019-09-11 18:00:23 +0300"
-    },
-    "done": true
-  },
-  "xercapaint:recipes/item_canvas_long": {
-    "criteria": {
-      "has_item": "2020-03-27 13:46:42 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/transportation/acacia_boat": {
-    "criteria": {
-      "in_water": "2019-09-11 18:07:52 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/transportation/oak_boat": {
-    "criteria": {
-      "in_water": "2019-09-11 18:07:52 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/transportation/jungle_boat": {
     "criteria": {
       "in_water": "2019-09-11 18:07:52 +0300"
-    },
-    "done": true
-  },
-  "xercapaint:recipes/item_canvas_tall": {
-    "criteria": {
-      "has_item": "2020-03-27 13:46:42 +0300"
     },
     "done": true
   },
@@ -77,5 +59,11 @@
     },
     "done": false
   },
-  "DataVersion": 1976
+  "minecraft:recipes/misc/red_dye_from_poppy": {
+    "criteria": {
+      "has_red_flower": "2019-09-11 18:00:23 +0300"
+    },
+    "done": true
+  },
+  "DataVersion": 2230
 }

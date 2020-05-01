@@ -1,10 +1,10 @@
 {
     "textures": {
-        "particle": "xercamod:block/pie_side",
-        "bottom": "xercamod:block/pie_bottom",
-        "top": "xercamod:block/pie_top",
-        "side": "xercamod:block/pie_side",
-        "inside": "xercamod:block/pie_inner"
+        "particle": "xercamod:block/apple_pie_side",
+        "bottom": "xercamod:block/apple_pie_bottom",
+        "top": "xercamod:block/apple_pie_top",
+        "side": "xercamod:block/apple_pie_side",
+        "inside": "xercamod:block/apple_pie_inner"
     },
     "elements": [
         {   "from": [ 11, 0, 1 ],

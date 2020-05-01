@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_food",
+    
+    "ingredients": [{"item": "xercamod:cooked_rice"}, {"item": "minecraft:dried_kelp"}],
+    "result": {"item": "xercamod:riceball", "count": 2}
+}
+        

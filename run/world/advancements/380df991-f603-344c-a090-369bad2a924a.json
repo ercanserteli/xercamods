@@ -11,21 +11,33 @@
     },
     "done": true
   },
+  "xercamod:recipes/cushion/light_blue_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/combat/leather_chestplate": {
     "criteria": {
       "has_leather": "2019-10-18 16:16:43 +0300"
     },
     "done": true
   },
-  "minecraft:recipes/building_blocks/stone_stairs_from_stone_stonecutting": {
+  "xercamod:recipes/cushion/cyan_cushion": {
     "criteria": {
-      "has_stone": "2019-10-21 14:41:29 +0300"
+      "has_item": "2020-04-28 15:22:16 +0300"
     },
     "done": true
   },
-  "xercapaint:recipes/item_canvas_large": {
+  "xercamod:recipes/cushion/magenta_cushion": {
     "criteria": {
-      "has_item": "2020-03-22 23:48:43 +0300"
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_stairs_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2019-10-21 14:41:29 +0300"
     },
     "done": true
   },
@@ -41,9 +53,15 @@
     },
     "done": true
   },
-  "xercapaint:recipes/item_canvas_long": {
+  "xercamod:achievements/root": {
     "criteria": {
-      "has_item": "2020-03-22 23:48:43 +0300"
+      "crafting_table": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/cushion/yellow_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
     },
     "done": true
   },
@@ -53,15 +71,21 @@
     },
     "done": true
   },
+  "minecraft:recipes/combat/leather_helmet": {
+    "criteria": {
+      "has_leather": "2019-10-18 16:16:43 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/food/cooked_beef": {
     "criteria": {
       "has_beef": "2019-10-18 16:16:43 +0300"
     },
     "done": true
   },
-  "minecraft:recipes/combat/leather_helmet": {
+  "xercamod:recipes/cushion/green_cushion": {
     "criteria": {
-      "has_leather": "2019-10-18 16:16:43 +0300"
+      "has_item": "2020-04-28 15:22:16 +0300"
     },
     "done": true
   },
@@ -96,6 +120,12 @@
     },
     "done": true
   },
+  "xercamod:recipes/cushion/orange_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/building_blocks/stone_slab_from_stone_stonecutting": {
     "criteria": {
       "has_stone": "2019-10-21 14:41:29 +0300"
@@ -108,9 +138,9 @@
     },
     "done": true
   },
-  "minecraft:recipes/misc/bone_meal_from_bone_block": {
+  "xercamod:recipes/cushion/light_gray_cushion": {
     "criteria": {
-      "has_at_least_9_bonemeal": "2019-09-11 17:59:43 +0300"
+      "has_item": "2020-04-28 15:22:16 +0300"
     },
     "done": true
   },
@@ -123,6 +153,12 @@
   "minecraft:recipes/transportation/acacia_boat": {
     "criteria": {
       "in_water": "2019-09-11 17:56:18 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/cushion/pink_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
     },
     "done": true
   },
@@ -216,6 +252,18 @@
     },
     "done": true
   },
+  "xercamod:recipes/cushion/lime_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/cushion/gray_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/food/cooked_beef_from_smoking": {
     "criteria": {
       "has_beef": "2019-10-18 16:16:43 +0300"
@@ -225,6 +273,24 @@
   "minecraft:recipes/food/cooked_chicken_from_campfire_cooking": {
     "criteria": {
       "has_chicken": "2019-10-18 16:16:36 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/item_sprinkles": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/cushion/purple_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/cushion/brown_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
     },
     "done": true
   },
@@ -246,9 +312,21 @@
     },
     "done": true
   },
+  "xercamod:recipes/cushion/red_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/misc/gold_nugget_from_smelting": {
     "criteria": {
       "has_golden_hoe": "2019-09-11 17:57:34 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/cushion/black_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
     },
     "done": true
   },
@@ -276,15 +354,15 @@
     },
     "done": true
   },
-  "minecraft:recipes/food/cooked_mutton": {
+  "xercamod:recipes/cushion/blue_cushion": {
     "criteria": {
-      "has_mutton": "2019-10-18 16:17:30 +0300"
+      "has_item": "2020-04-28 15:22:16 +0300"
     },
     "done": true
   },
-  "xercapaint:recipes/item_canvas_tall": {
+  "minecraft:recipes/food/cooked_mutton": {
     "criteria": {
-      "has_item": "2020-03-22 23:48:43 +0300"
+      "has_mutton": "2019-10-18 16:17:30 +0300"
     },
     "done": true
   },
@@ -294,17 +372,17 @@
     },
     "done": true
   },
-  "minecraft:recipes/building_blocks/bone_block": {
-    "criteria": {
-      "has_at_least_9_bonemeal": "2019-09-11 17:59:43 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/combat/leather_leggings": {
     "criteria": {
       "has_leather": "2019-10-18 16:16:43 +0300"
     },
     "done": true
   },
-  "DataVersion": 1976
+  "xercamod:recipes/cushion/white_cushion": {
+    "criteria": {
+      "has_item": "2020-04-28 15:22:16 +0300"
+    },
+    "done": true
+  },
+  "DataVersion": 2230
 }

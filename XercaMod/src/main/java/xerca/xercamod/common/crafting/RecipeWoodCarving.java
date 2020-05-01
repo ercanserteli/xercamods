@@ -48,7 +48,9 @@ public class RecipeWoodCarving extends SpecialRecipe {
                         knifeX = x;
                         knifeY = y;
                         knifeFound = true;
-                    } else if(itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem() || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()) {
+                    } else if(itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()) {
                         if(logFound){
                             return false;
                         }
@@ -127,6 +129,35 @@ public class RecipeWoodCarving extends SpecialRecipe {
                 return ItemStack.EMPTY;
             }
         }
+        else if(logType == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()){
+            if(difX == -1 && difY == -1){
+                resultItem = Blocks.CARVED_DARK_OAK_1.asItem();
+            }
+            else if(difX == 0 && difY == -1){
+                resultItem = Blocks.CARVED_DARK_OAK_2.asItem();
+            }
+            else if(difX == 1 && difY == -1){
+                resultItem = Blocks.CARVED_DARK_OAK_3.asItem();
+            }
+            else if(difX == -1 && difY == 0){
+                resultItem = Blocks.CARVED_DARK_OAK_4.asItem();
+            }
+            else if(difX == 1 && difY == 0){
+                resultItem = Blocks.CARVED_DARK_OAK_5.asItem();
+            }
+            else if(difX == -1 && difY == 1){
+                resultItem = Blocks.CARVED_DARK_OAK_6.asItem();
+            }
+            else if(difX == 0 && difY == 1){
+                resultItem = Blocks.CARVED_DARK_OAK_7.asItem();
+            }
+            else if(difX == 1 && difY == 1){
+                resultItem = Blocks.CARVED_DARK_OAK_8.asItem();
+            }
+            else{
+                return ItemStack.EMPTY;
+            }
+        }
         else{
             return ItemStack.EMPTY;
         }
@@ -160,7 +191,9 @@ public class RecipeWoodCarving extends SpecialRecipe {
                         knifeX = x;
                         knifeY = y;
                         knifeFound = true;
-                    } else if(itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem() || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()) {
+                    } else if(itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()) {
                         if(logFound){
                             return ItemStack.EMPTY;
                         }
