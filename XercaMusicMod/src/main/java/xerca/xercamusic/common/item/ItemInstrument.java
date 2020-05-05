@@ -9,6 +9,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
@@ -20,10 +21,17 @@ public class ItemInstrument extends Item {
     private SoundEvent[] sounds;
     public boolean shouldCutOff;
 
-    ItemInstrument(String name, boolean shouldCutOff) {
+    private final int instrumentId;
+
+    ItemInstrument(String name, boolean shouldCutOff, int instrumentId) {
         super(new Properties().group(Items.musicTab));
         this.setRegistryName(name);
         this.shouldCutOff = shouldCutOff;
+        this.instrumentId = instrumentId;
+    }
+
+    public int getInstrumentId() {
+        return instrumentId;
     }
 
     public SoundEvent getSound(int i) {
@@ -55,9 +63,10 @@ public class ItemInstrument extends Item {
                 playMusic(worldIn, playerIn, true);
             }
         } else {
-            int note = (int)(worldIn.rand.nextGaussian()*8 + 24);//.nextInt(48)
-            note = Math.max(0, Math.min(47, note));
-            worldIn.playSound(playerIn, playerIn.getPosition(), sounds[note], SoundCategory.PLAYERS, 3.0f, 1.0f);
+            XercaMusic.proxy.showInstrumentGui();
+//            int note = (int)(worldIn.rand.nextGaussian()*8 + 24);//.nextInt(48)
+//            note = Math.max(0, Math.min(47, note));
+//            worldIn.playSound(playerIn, playerIn.getPosition(), sounds[note], SoundCategory.PLAYERS, 3.0f, 1.0f);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
     }

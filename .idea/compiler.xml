@@ -2,10 +2,13 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="XercaMod" target="1.8" />
       <module name="XercaMod.main" target="1.8" />
       <module name="XercaMod.test" target="1.8" />
+      <module name="XercaMusicMod" target="1.8" />
       <module name="XercaMusicMod.main" target="1.8" />
       <module name="XercaMusicMod.test" target="1.8" />
+      <module name="XercaPaintMod" target="1.8" />
       <module name="XercaPaintMod.api" target="1.8" />
       <module name="XercaPaintMod.main" target="1.8" />
       <module name="XercaPaintMod.test" target="1.8" />

@@ -961,7 +961,6 @@ public class GuiMusicSheet extends Screen {
     @Override
     public void removed() {
         if (dirty) {
-            System.out.println("GUINote Sending update packet");
             MusicUpdatePacket pack = new MusicUpdatePacket(music, length, pause, isSigned, noteTitle, (byte)previewInstrument, prevInsLocked);
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
         }
