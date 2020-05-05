@@ -18,4 +18,6 @@ public interface Proxy {
 
     void showMusicGui();
 
+    void showInstrumentGui();
+
 }
