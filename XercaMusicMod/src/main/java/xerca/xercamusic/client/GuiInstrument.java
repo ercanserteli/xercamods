@@ -22,12 +22,16 @@ public class GuiInstrument extends Screen {
     private int guiBaseX = 45;
     private int guiBaseY = 80;
     private int pushedButton = -1;
+    private int currentKeyboardOctave = 0;
 
     private static final int guiHeight = 105;
     private static final int guiWidth = 401;
     private static final int guiMarginWidth = 7;
     private static final int guiNoteWidth = 8;
     private static final int guiOctaveWidth = guiNoteWidth * 12 + 1;
+    private static final int guiOctaveHighlightY = 111;
+    private static final int guiOctaveHighlightWidth = 98;
+    private static final int guiOctaveHighlightHeight = 92;
 
     private final PlayerEntity player;
     private final ItemInstrument instrument;
@@ -69,6 +73,10 @@ public class GuiInstrument extends Screen {
             int y = guiBaseY + 11;
             blit(x, y, this.getBlitOffset(), 402, 11, 7, 82, 512, 512);
         }
+
+        int octaveHighlightX = guiBaseX + guiMarginWidth + currentKeyboardOctave * guiOctaveWidth - 1;
+        int octaveHighlightY = guiBaseY + 3;
+        blit(octaveHighlightX, octaveHighlightY, this.getBlitOffset(), 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
     }
 
     @Override
@@ -123,6 +131,24 @@ public class GuiInstrument extends Screen {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers){
         setFocused(null);
         super.keyPressed(keyCode, scanCode, modifiers);
+
+        if (scanCode >= 16 && scanCode <= 27) {
+            int playNote = scanCode - 16 + 12 * currentKeyboardOctave;
+
+            if(playNote >= 0 && playNote < 48 && pushedButton != playNote){
+                playSound(playNote);
+                pushedButton = playNote;
+            }
+        }
+        if (scanCode >= 30 && scanCode <= 33) {
+            currentKeyboardOctave = scanCode - 30;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers){
+        pushedButton = -1;
         return true;
     }
 
