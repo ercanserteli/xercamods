@@ -1,69 +1,53 @@
 {
-  "minecraft:recipes/transportation/acacia_boat": {
+  "xercamod:achievements/shoot_hook": {
     "criteria": {
-      "in_water": "2019-09-11 18:07:52 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/transportation/oak_boat": {
-    "criteria": {
-      "in_water": "2019-09-11 18:07:52 +0300"
+      "shot_tomato": "2020-05-10 00:04:00 +0300"
     },
     "done": true
   },
   "xercamod:achievements/root": {
     "criteria": {
-      "crafting_table": "2020-04-28 16:04:39 +0300"
+      "crafting_table": "2020-05-10 00:03:56 +0300"
     },
     "done": true
   },
-  "minecraft:husbandry/root": {
+  "minecraft:recipes/building_blocks/polished_granite_stairs": {
     "criteria": {
-      "consumed_item": "2019-09-11 18:02:46 +0300"
+      "has_polished_granite": "2020-05-10 12:21:12 +0300"
     },
     "done": true
   },
-  "minecraft:recipes/transportation/dark_oak_boat": {
+  "minecraft:recipes/building_blocks/polished_granite_stairs_from_polished_granite_stonecutting": {
     "criteria": {
-      "in_water": "2019-09-11 18:07:52 +0300"
+      "has_polished_granite": "2020-05-10 12:21:12 +0300"
     },
     "done": true
   },
-  "minecraft:recipes/decorations/chest": {
+  "minecraft:recipes/building_blocks/polished_granite_slab": {
     "criteria": {
-      "has_lots_of_items": "2019-09-11 18:07:41 +0300"
+      "has_polished_granite": "2020-05-10 12:21:12 +0300"
     },
     "done": true
   },
-  "minecraft:recipes/transportation/birch_boat": {
+  "minecraft:adventure/root": {
     "criteria": {
-      "in_water": "2019-09-11 18:07:52 +0300"
+      "killed_something": "2020-05-10 12:09:04 +0300"
     },
     "done": true
   },
-  "minecraft:recipes/transportation/jungle_boat": {
+  "minecraft:recipes/building_blocks/polished_granite_slab_from_polished_granite_stonecutting": {
     "criteria": {
-      "in_water": "2019-09-11 18:07:52 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/transportation/spruce_boat": {
-    "criteria": {
-      "in_water": "2019-09-11 18:07:52 +0300"
+      "has_polished_granite": "2020-05-10 12:21:12 +0300"
     },
     "done": true
   },
   "minecraft:adventure/adventuring_time": {
     "criteria": {
-      "minecraft:forest": "2019-09-11 17:44:45 +0300"
+      "minecraft:forest": "2020-05-10 12:11:39 +0300",
+      "minecraft:wooded_hills": "2020-05-09 23:42:27 +0300",
+      "minecraft:plains": "2020-05-10 12:09:53 +0300"
     },
     "done": false
-  },
-  "minecraft:recipes/misc/red_dye_from_poppy": {
-    "criteria": {
-      "has_red_flower": "2019-09-11 18:00:23 +0300"
-    },
-    "done": true
   },
   "DataVersion": 2230
 }
