@@ -186,6 +186,8 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             if (v.length() > 2) {
                 v = v.normalize().scale(speed);
                 this.caughtEntity.setMotion(v);
+                this.caughtEntity.velocityChanged = true;
+                this.caughtEntity.isAirBorne = true;
             } else {
                 this.remove();
                 return;
@@ -207,6 +209,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             v = v.normalize().scale(speed);
             this.angler.setMotion(v);
 
+            this.angler.noClip = true;
             this.angler.isAirBorne = true;
             this.angler.velocityChanged = true;
         } else {
