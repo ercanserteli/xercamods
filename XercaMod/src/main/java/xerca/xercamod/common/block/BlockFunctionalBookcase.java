@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -92,6 +93,14 @@ public class BlockFunctionalBookcase extends Block {
     @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
+    }
+
+    public boolean hasComparatorInputOverride(BlockState state) {
+        return true;
+    }
+
+    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
+        return (int)(15.0f * (((float)blockState.get(BOOK_AMOUNT)) / 6.0f));
     }
 }
 

@@ -1,25 +1,19 @@
 {
-  "xercamod:achievements/shoot_hook": {
+  "xercamod:recipes/stripped_spruce_log": {
     "criteria": {
-      "shot_tomato": "2020-05-10 00:04:00 +0300"
+      "has_item": "2020-05-15 19:02:46 +0300"
     },
     "done": true
   },
-  "xercamod:achievements/root": {
+  "minecraft:recipes/redstone/oak_fence_gate": {
     "criteria": {
-      "crafting_table": "2020-05-10 00:03:56 +0300"
+      "has_planks": "2020-05-15 19:26:27 +0300"
     },
     "done": true
   },
-  "minecraft:recipes/building_blocks/polished_granite_stairs": {
+  "minecraft:recipes/redstone/lectern": {
     "criteria": {
-      "has_polished_granite": "2020-05-10 12:21:12 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/polished_granite_stairs_from_polished_granite_stonecutting": {
-    "criteria": {
-      "has_polished_granite": "2020-05-10 12:21:12 +0300"
+      "has_book": "2020-05-15 19:26:57 +0300"
     },
     "done": true
   },
@@ -29,15 +23,57 @@
     },
     "done": true
   },
-  "minecraft:adventure/root": {
+  "minecraft:recipes/building_blocks/acacia_planks": {
     "criteria": {
-      "killed_something": "2020-05-10 12:09:04 +0300"
+      "has_logs": "2020-05-15 19:02:41 +0300"
     },
     "done": true
   },
-  "minecraft:recipes/building_blocks/polished_granite_slab_from_polished_granite_stonecutting": {
+  "minecraft:recipes/tools/compass": {
+    "criteria": {
+      "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/stripped_jungle_log": {
+    "criteria": {
+      "has_item": "2020-05-15 19:02:46 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/stripped_oak_log": {
+    "criteria": {
+      "has_item": "2020-05-15 19:02:46 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/oak_button": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/writable_book": {
+    "criteria": {
+      "has_book": "2020-05-15 19:26:57 +0300"
+    },
+    "done": true
+  },
+  "xercamod:achievements/root": {
+    "criteria": {
+      "crafting_table": "2020-05-10 00:03:56 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/polished_granite_stairs_from_polished_granite_stonecutting": {
     "criteria": {
       "has_polished_granite": "2020-05-10 12:21:12 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stripped_dark_oak_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:03:08 +0300"
     },
     "done": true
   },
@@ -48,6 +84,258 @@
       "minecraft:plains": "2020-05-10 12:09:53 +0300"
     },
     "done": false
+  },
+  "minecraft:recipes/misc/charcoal": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:35 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/crafting_table": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "xercamod:achievements/shoot_hook": {
+    "criteria": {
+      "shot_tomato": "2020-05-10 00:04:00 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/spruce_planks": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:36 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/polished_granite_stairs": {
+    "criteria": {
+      "has_polished_granite": "2020-05-10 12:21:12 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stripped_acacia_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:03:08 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/stripped_acacia_log": {
+    "criteria": {
+      "has_item": "2020-05-15 19:02:46 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/redstone_torch": {
+    "criteria": {
+      "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2020-05-15 19:03:08 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_stairs": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/barrel": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/dark_oak_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:38 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/acacia_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:41 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/oak_door": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/stick": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:adventure/root": {
+    "criteria": {
+      "killed_something": "2020-05-10 12:09:04 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/spruce_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:36 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/item_bookcase": {
+    "criteria": {
+      "has_the_recipe": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_planks": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:35 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/item_gavel": {
+    "criteria": {
+      "has_item": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/tools/clock": {
+    "criteria": {
+      "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/dark_oak_planks": {
+    "criteria": {
+      "has_logs": "2020-05-15 19:02:38 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/polished_granite_slab_from_polished_granite_stonecutting": {
+    "criteria": {
+      "has_polished_granite": "2020-05-10 12:21:12 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/bookshelf": {
+    "criteria": {
+      "has_book": "2020-05-15 19:26:57 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/birch_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:40 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stripped_oak_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:03:08 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/redstone_block": {
+    "criteria": {
+      "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/piston": {
+    "criteria": {
+      "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/oak_pressure_plate": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/birch_planks": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:40 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stripped_spruce_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:03:08 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/stripped_dark_oak_log": {
+    "criteria": {
+      "has_item": "2020-05-15 19:02:46 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/note_block": {
+    "criteria": {
+      "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:35 +0300"
+    },
+    "done": true
+  },
+  "minecraft:story/root": {
+    "criteria": {
+      "crafting_table": "2020-05-15 19:02:49 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/oak_fence": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/dropper": {
+    "criteria": {
+      "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/stripped_birch_log": {
+    "criteria": {
+      "has_item": "2020-05-15 19:02:46 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/oak_sign": {
+    "criteria": {
+      "has_oak_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stripped_birch_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:03:08 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/oak_trapdoor": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_slab": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
   },
   "DataVersion": 2230
 }

@@ -119,6 +119,23 @@ public class ItemKnife extends Item {
     }
 
     @Override
+    public ItemStack getContainerItem(ItemStack itemStack) {
+        ItemStack ret = new ItemStack(this);
+        ret.setTag(itemStack.getTag());
+
+        ret.setDamage(itemStack.getDamage() + 1);
+        if(ret.getDamage() >= ret.getMaxDamage()){
+            return ItemStack.EMPTY;
+        }
+
+        // This one works with unbreaking but client is desynchronized, causing visual glitches
+//        if(ret.attemptDamageItem(1, random, null)){
+//            return ItemStack.EMPTY;
+//        }
+        return ret;
+    }
+
+    @Override
     public int getItemEnchantability()
     {
         return ItemTier.IRON.getEnchantability();

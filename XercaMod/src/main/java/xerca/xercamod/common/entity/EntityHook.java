@@ -198,7 +198,6 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             return;
         }
         this.caughtEntity = null;
-
     }
 
     private void pullUser() {
@@ -248,7 +247,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         } else {
             ItemStack itemstack = this.angler.getHeldItemMainhand();
 
-            if (age > 100 || !this.angler.isAlive() || itemstack.getItem() != Items.ITEM_GRAB_HOOK || this.getDistanceSq(this.angler) > 4096.0D) {
+            if (age > 80 || !this.angler.isAlive() || itemstack.getItem() != Items.ITEM_GRAB_HOOK || this.getDistanceSq(this.angler) > 4096.0D) {
                 this.remove();
                 this.angler.fishingBobber = null;
                 return;
@@ -316,24 +315,6 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         this.inGround = tagCompund.getByte("inGround") == 1;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
-        if (id == 31 && this.world.isRemote && this.caughtEntity instanceof PlayerEntity && ((PlayerEntity) this.caughtEntity).isUser()) {
-            this.func_184527_k();
-        }
-
-        super.handleStatusUpdate(id);
-    }
-
-    private void func_184527_k() {
-        double d0 = this.angler.getPosX() - this.getPosX();
-        double d1 = this.angler.getPosY() - this.getPosY();
-        double d2 = this.angler.getPosZ() - this.getPosZ();
-        double d3 = (double) MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
-        double d4 = 0.1D;
-        this.caughtEntity.addVelocity(d0 * d4, d1 * d4 + (double) MathHelper.sqrt(d3) * 0.08D, d2 * d4);
-    }
-
     /**
      * Will get destroyed next tick.
      */
@@ -354,6 +335,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
         buffer.writeInt(angler != null ? angler.getEntityId() : -1);
+        buffer.writeDouble(speed);
     }
 
     @Override
@@ -363,5 +345,6 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         if (ent instanceof PlayerEntity) {
             angler = (PlayerEntity) ent;
         }
+        this.speed = additionalData.readDouble();
     }
 }

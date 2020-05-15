@@ -122,7 +122,7 @@ public class XercaMod {
     private void processIMC(final InterModProcessEvent event)
     {
         List<InterModComms.IMCMessage> list = event.getIMCStream().collect(Collectors.toList());//.map(m->m.getMessageSupplier().get())
-        LOGGER.info("Got IMC {}", list);
+        LOGGER.debug("Got IMC {}", list);
         for(InterModComms.IMCMessage msg : list){
             if(msg.getMethod().equals("send_note")){
                 Object result = msg.getMessageSupplier().get();
