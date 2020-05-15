@@ -84,6 +84,7 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
         int i = getBookAmount();
         BlockState st = Blocks.BLOCK_BOOKCASE.getDefaultState().with(BlockFunctionalBookcase.BOOK_AMOUNT, i);
         this.world.setBlockState(this.pos, st);
+        this.world.updateComparatorOutputLevel(this.pos, st.getBlock());
         this.markDirty();
     }
 

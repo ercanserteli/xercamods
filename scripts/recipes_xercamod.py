@@ -124,6 +124,13 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:cooked_beef'}, {'item': 'minecraft:bowl'}], {'item': 'xercamod:beef_donburi'}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:cooked_chicken'}, {'item': 'minecraft:bowl'}, {'item': 'xercamod:item_fried_egg'}], {'item': 'xercamod:oyakodon'}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:sugar'}, {'item': 'minecraft:bowl'}, {'item': 'minecraft:milk_bucket'}], {'item': 'xercamod:rice_pudding'}, {'item': 'xercamod:item_rice_seeds'}, "", type="xercamod:crafting_condition_shapeless_food"),
+
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:acacia_log'}], {'item': 'minecraft:stripped_acacia_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:birch_log'}], {'item': 'minecraft:stripped_birch_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:dark_oak_log'}], {'item': 'minecraft:stripped_dark_oak_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:jungle_log'}], {'item': 'minecraft:stripped_jungle_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:oak_log'}], {'item': 'minecraft:stripped_oak_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:spruce_log'}], {'item': 'minecraft:stripped_spruce_log'}, {'item': 'xercamod:item_knife'}, ""),
 ]
 
 cooking_recipes = [

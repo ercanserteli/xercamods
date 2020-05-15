@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercamod:item_knife", "data": 32767}, {"item": "minecraft:acacia_log"}],
+    "result": {"item": "minecraft:stripped_acacia_log"}
+}
+        
