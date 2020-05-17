@@ -22,7 +22,7 @@ public class GuiInstrument extends Screen {
     private int guiBaseX = 45;
     private int guiBaseY = 80;
     private int pushedButton = -1;
-    private int currentKeyboardOctave = 0;
+    private int currentKeyboardOctave = 2;
 
     private static final int guiHeight = 105;
     private static final int guiWidth = 401;
