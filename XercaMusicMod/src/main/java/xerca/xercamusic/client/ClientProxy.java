@@ -11,6 +11,7 @@ import xerca.xercamusic.common.Proxy;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
+import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicEndedPacket;
 
@@ -29,6 +30,14 @@ public class ClientProxy implements Proxy {
         ItemStack heldItem = player.getHeldItemMainhand();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet){
             Minecraft.getInstance().displayGuiScreen(new GuiMusicSheet(player, heldItem.getTag(), new TranslationTextComponent("item.xercamusic.music_sheet")));
+        }
+    }
+
+    public void showInstrumentGui(){
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemInstrument){
+            Minecraft.getInstance().displayGuiScreen(new GuiInstrument(player, (ItemInstrument) heldItem.getItem(), new TranslationTextComponent("item.xercamusic.instrument_gui")));
         }
     }
 
