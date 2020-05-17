@@ -16,7 +16,7 @@
     <option name="minecraftVersion" value="1.15.2" />
     <option name="srgType" value="TSRG" />
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+  <component name="NewModuleRootManager">
     <output-test url="file://$MODULE_DIR$/../../XercaMod/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../XercaMod/src/test">
@@ -39,8 +39,6 @@
     <orderEntry type="library" name="Gradle: net.minecraftforge:mergetool:api:1.0.9" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraft:mappings_snapshot:zip:20200225-1.15.1" level="project" />
     <orderEntry type="library" name="Gradle: org.ow2.asm:asm-commons:7.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.ow2.asm:asm-util:6.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.ow2.asm:asm-analysis:7.2" level="project" />
     <orderEntry type="library" name="Gradle: org.ow2.asm:asm-tree:7.2" level="project" />
     <orderEntry type="library" name="Gradle: org.ow2.asm:asm:7.2" level="project" />
     <orderEntry type="library" name="Gradle: cpw.mods:grossjava9hacks:1.1.0" level="project" />
@@ -93,11 +91,13 @@
     <orderEntry type="library" name="Gradle: com.mojang:text2speech:1.11.3" level="project" />
     <orderEntry type="library" name="Gradle: com.mojang:text2speech:natives-windows:1.11.3" level="project" />
     <orderEntry type="library" name="Gradle: org.antlr:antlr4-runtime:4.7.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.ow2.asm:asm-util:6.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.ow2.asm:asm-analysis:7.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.plexus:plexus-utils:3.2.1" level="project" />
     <orderEntry type="library" name="Gradle: org.jline:jline-reader:3.12.1" level="project" />
     <orderEntry type="library" name="Gradle: net.java.jinput:jinput-platform:natives-linux:2.0.5" level="project" />
-    <orderEntry type="library" name="Gradle: net.java.jinput:jinput-platform:natives-windows:2.0.5" level="project" />
     <orderEntry type="library" name="Gradle: net.java.jinput:jinput-platform:natives-osx:2.0.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.codehaus.plexus:plexus-utils:3.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.java.jinput:jinput-platform:natives-windows:2.0.5" level="project" />
     <orderEntry type="library" name="Gradle: org.jline:jline-terminal:3.12.1" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="XercaMod.main" />
