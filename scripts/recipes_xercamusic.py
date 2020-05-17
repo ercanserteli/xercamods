@@ -11,7 +11,7 @@ recipes = [
     ShapedRecipe([' s ', 'pip', ' p '], {'item': 'xercamusic:guitar'}, {'p': {'item': 'minecraft:oak_planks'}, 's': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:string'}}, {'item': 'minecraft:oak_planks'}, ""),
     ShapedRecipe(['sis', ' s '], {'item': 'xercamusic:lyre'}, {'s': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:string'}}, {'item': 'minecraft:stick'}, ""),
     ShapedRecipe(['www', 'wew', 'wrw'], {'item': 'xercamusic:music_box'}, {'e': {'item': 'minecraft:gold_ingot'}, 'r': {'item': 'minecraft:redstone'}, 'w': {'tag': 'minecraft:planks'}}, {'tag': 'minecraft:planks'}, ""),
-    ShapedRecipe([' i ', 'ppp'], {'item': 'xercamusic:sansula'}, {'i': {'item': 'minecraft:iron_ingot'}, 'p': {'tag': 'minecraft:planks'}}, {'item': 'minecraft:iron_ingot'}, ""),
+    ShapedRecipe(['iii', 'ppp'], {'item': 'xercamusic:sansula'}, {'i': {'item': 'minecraft:iron_nugget'}, 'p': {'tag': 'minecraft:planks'}}, {'item': 'minecraft:iron_nugget'}, ""),
     ShapedRecipe(['  g', 'g g', ' g '], {'item': 'xercamusic:saxophone'}, {'g': {'item': 'minecraft:gold_ingot'}}, {'item': 'minecraft:gold_ingot'}, ""),
     ShapedRecipe(['sss', 'g g'], {'item': 'xercamusic:tubular_bell'}, {'s': {'item': 'minecraft:stick'}, 'g': {'item': 'minecraft:gold_ingot'}}, {'item': 'minecraft:gold_ingot'}, ""),
     ShapedRecipe([' s ', 'pip', ' p '], {'item': 'xercamusic:violin'}, {'p': {'item': 'minecraft:spruce_planks'}, 's': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:string'}}, {'item': 'minecraft:spruce_planks'}, ""),
