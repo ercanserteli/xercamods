@@ -51,9 +51,9 @@ class HookSound extends TickableSound {
 
         final PlayerEntity angler = theHook.getAngler();
         if(angler != null){
-            x = (float) angler.getPosX();
-            y = (float) angler.getPosY();
-            z = (float) angler.getPosZ();
+            x = (float) angler.getPosition().getX();
+            y = (float) angler.getPosition().getY();
+            z = (float) angler.getPosition().getZ();
         }
     }
 

@@ -82,9 +82,9 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         float f3 = MathHelper.sin(-yaw * ((float)Math.PI / 180F) - (float)Math.PI);
         float f4 = -MathHelper.cos(-pitch * ((float)Math.PI / 180F));
         float f5 = MathHelper.sin(-pitch * ((float)Math.PI / 180F));
-        double x = this.angler.getPosX();// - (double)f3 * 0.3D;
-        double y = this.angler.getPosY() + (double)this.angler.getEyeHeight();
-        double z = this.angler.getPosZ();// - (double)f2 * 0.3D;
+        double x = this.angler.getPosition().getX();// - (double)f3 * 0.3D;
+        double y = this.angler.getPosition().getY() + (double)this.angler.getEyeHeight();
+        double z = this.angler.getPosition().getZ();// - (double)f2 * 0.3D;
         this.setLocationAndAngles(x, y, z, yaw, pitch);
         Vec3d vec3d = new Vec3d((double)(-f3), -(f5 / f4), (double)(-f2));
         double length = vec3d.length();
@@ -194,7 +194,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             }
 
             double height = (double) this.caughtEntity.getHeight() + 0.5d;
-            this.setPosition(caughtEntity.getPosX(), caughtEntity.getBoundingBox().minY + height * 0.8D, caughtEntity.getPosZ());
+            this.setPosition(caughtEntity.getPosition().getX(), caughtEntity.getBoundingBox().minY + height * 0.8D, caughtEntity.getPosition().getZ());
             return;
         }
         this.caughtEntity = null;
@@ -291,7 +291,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         }
 
         this.move(MoverType.SELF, this.getMotion());
-        this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+        this.setPosition(this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ());
     }
 
     private void setReturning() {

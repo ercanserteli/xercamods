@@ -66,7 +66,7 @@ public class HammerAttackPacketHandler {
             double bonusVelY = (uppercutLevel * 0.25) * pull;
 
             float pitch = (2.0f / (damage + heavyLevel));
-            pl.world.playSound(null, target.getPosX(), target.getPosY() + 0.5d, target.getPosZ(), SoundEvents.HAMMER, SoundCategory.PLAYERS, 1.0f, pl.world.rand.nextFloat() * 0.1F + 0.4F + pitch);
+            pl.world.playSound(null, target.getPosition().getX(), target.getPosition().getY() + 0.5d, target.getPosition().getZ(), SoundEvents.HAMMER, SoundCategory.PLAYERS, 1.0f, pl.world.rand.nextFloat() * 0.1F + 0.4F + pitch);
             st.damageItem(1, pl, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
             if(target instanceof LivingEntity){
                 LivingEntity targetLiving = (LivingEntity) target;

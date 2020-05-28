@@ -21,7 +21,7 @@ public class ItemBadge extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
         final ItemStack heldItem = playerIn.getHeldItem(hand);
-        worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.OBJECTION, SoundCategory.PLAYERS, 1.0f, worldIn.rand.nextFloat() * 0.2F + 0.8F);
+        worldIn.playSound(playerIn, playerIn.getPosition().getX(), playerIn.getPosition().getY(), playerIn.getPosition().getZ(), SoundEvents.OBJECTION, SoundCategory.PLAYERS, 1.0f, worldIn.rand.nextFloat() * 0.2F + 0.8F);
         playerIn.getCooldownTracker().setCooldown(this, 20);
         return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
     }

@@ -6,14 +6,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -24,7 +22,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,8 +29,6 @@ import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.ItemTeapot;
 import xerca.xercamod.common.item.Items;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -70,13 +65,13 @@ public class BlockTeapot extends Block {
 
     // Called when the block is right clicked
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (worldIn.isRemote) return ActionResultType.SUCCESS;
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (worldIn.isRemote) return true;
 
         if (player instanceof ServerPlayerEntity)
         {
             if(player.getHeldItemMainhand().getItem() == Items.ITEM_TEACUP && state.get(TEA_AMOUNT) > 0){
-                worldIn.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.TEA_POUR, SoundCategory.PLAYERS, 1.0F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
+                worldIn.playSound(null, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), SoundEvents.TEA_POUR, SoundCategory.PLAYERS, 1.0F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
 
                 player.getHeldItemMainhand().shrink(1);
                 player.addItemStackToInventory(new ItemStack(Items.ITEM_FULL_TEACUP_0));
@@ -84,7 +79,7 @@ public class BlockTeapot extends Block {
                 worldIn.setBlockState(pos, state.with(TEA_AMOUNT, state.get(TEA_AMOUNT) - 1));
             }
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Override
