@@ -61,7 +61,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     public void tick(){
         super.tick();
         move(MoverType.SELF, new Vec3d(0, -0.16, 0));
-        setBoundingBox(new AxisAlignedBB(getPosX() - 0.5, getPosY(), getPosZ() - 0.5, getPosX() + 0.5, getPosY() + getHeight(), getPosZ() + 0.5));
+        setBoundingBox(new AxisAlignedBB(getPosition().getX() - 0.5, getPosition().getY(), getPosition().getZ() - 0.5, getPosition().getX() + 0.5, getPosition().getY() + getHeight(), getPosition().getZ() + 0.5));
     }
 
 
@@ -157,7 +157,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public boolean processInitialInteract(PlayerEntity player, Hand hand) {
-        if (player.isSteppingCarefully()) {
+        if (player.isSneaking()) {
             return false;
         } else {
             if (!this.world.isRemote) {

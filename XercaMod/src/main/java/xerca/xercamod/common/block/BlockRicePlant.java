@@ -10,6 +10,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import xerca.xercamod.common.item.Items;
 
@@ -52,11 +53,11 @@ class BlockRicePlant extends CropsBlock implements IGrowable {
 
     @Override
     public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-        return isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos.down()) && (worldIn.getLightSubtracted(pos, 0) >= 8 || worldIn.canSeeSky(pos)) && super.isValidPosition(state, worldIn, pos);
+        return isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos.down()) && (worldIn.getLightSubtracted(pos, 0) >= 8 || worldIn.canBlockSeeSky(pos)) && super.isValidPosition(state, worldIn, pos);
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, World worldIn, BlockPos pos, Random rand) {
         if(!isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos.down())){
             worldIn.destroyBlock(pos, true);
         }

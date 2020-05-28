@@ -48,15 +48,15 @@ public class BlockFunctionalBookcase extends Block {
 
     // Called when the block is right clicked
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (worldIn.isRemote) return ActionResultType.SUCCESS;
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (worldIn.isRemote) return true;
 
         if (player instanceof ServerPlayerEntity)
         {
             final TileEntityFunctionalBookcase tileEntity = (TileEntityFunctionalBookcase)worldIn.getTileEntity(pos);
             NetworkHooks.openGui((ServerPlayerEntity) player, tileEntity, pos);
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Override

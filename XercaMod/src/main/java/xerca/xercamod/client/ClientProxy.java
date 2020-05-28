@@ -2,8 +2,6 @@ package xerca.xercamod.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.Entity;
 import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +16,6 @@ import xerca.xercamod.common.Config;
 import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.Proxy;
 import xerca.xercamod.common.XercaMod;
-import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.entity.*;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.tile_entity.XercaTileEntities;
@@ -30,14 +27,11 @@ public class ClientProxy extends Proxy {
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
             ScreenManager.registerFactory(XercaTileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, GuiFunctionalBookcase::new);
 
-            RenderingRegistry.registerEntityRenderingHandler(Entities.TOMATO, new RenderTomatoFactory());
-            RenderingRegistry.registerEntityRenderingHandler(Entities.CONFETTI_BALL, new RenderConfettiBallFactory());
-            RenderingRegistry.registerEntityRenderingHandler(Entities.HOOK, new RenderHookFactory());
-            RenderingRegistry.registerEntityRenderingHandler(Entities.CUSHION, new RenderCushionFactory());
+            RenderingRegistry.registerEntityRenderingHandler(EntityTomato.class, new RenderTomatoFactory());
+            RenderingRegistry.registerEntityRenderingHandler(EntityConfettiBall.class, new RenderConfettiBallFactory());
+            RenderingRegistry.registerEntityRenderingHandler(EntityHook.class, new RenderHookFactory());
+            RenderingRegistry.registerEntityRenderingHandler(EntityCushion.class, new RenderCushionFactory());
 
-            RenderTypeLookup.setRenderLayer(Blocks.BLOCK_TEA_PLANT, RenderType.getCutout());
-            RenderTypeLookup.setRenderLayer(Blocks.BLOCK_TOMATO_PLANT, RenderType.getCutout());
-            RenderTypeLookup.setRenderLayer(Blocks.BLOCK_RICE_PLANT, RenderType.getCutout());
         }
 
         @SubscribeEvent

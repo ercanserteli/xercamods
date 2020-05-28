@@ -13,7 +13,7 @@ import xerca.xercamod.common.XercaMod;
 
 import java.awt.*;
 
-import static net.minecraftforge.fml.client.gui.GuiUtils.drawTexturedModalRect;
+import static net.minecraftforge.fml.client.config.GuiUtils.drawTexturedModalRect;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiFunctionalBookcase extends ContainerScreen<ContainerFunctionalBookcase> {

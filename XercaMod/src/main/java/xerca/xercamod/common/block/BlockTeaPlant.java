@@ -46,7 +46,7 @@ public class BlockTeaPlant extends CropsBlock implements IGrowable {
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, World worldIn, BlockPos pos, Random rand) {
         if (rand.nextInt(3) != 0) {
             super.tick(state, worldIn, pos, rand);
         }

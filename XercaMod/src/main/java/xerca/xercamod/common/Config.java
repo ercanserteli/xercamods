@@ -90,7 +90,7 @@ public class Config {
     }
 
     @SubscribeEvent
-    public static void onReload(final ModConfig.Reloading configEvent) {
+    public static void onReload(final ModConfig.ConfigReloading configEvent) {
         XercaMod.LOGGER.debug("Config reload event");
 //        System.out.println(COMMON_CONFIG.getValues());
         Config.bakeConfig();
