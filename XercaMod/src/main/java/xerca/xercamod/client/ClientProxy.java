@@ -42,9 +42,11 @@ public class ClientProxy extends Proxy {
 
         @SubscribeEvent
         public static void handleItemColors(ColorHandlerEvent.Item event) {
-            event.getItemColors().register(
-                    (itemStack, colorIndex) -> colorIndex > 0 ? -1 : PotionUtils.getColor(itemStack), Items.FLASK
-            );
+            if(Items.FLASK != null){
+                event.getItemColors().register(
+                        (itemStack, colorIndex) -> colorIndex > 0 ? -1 : PotionUtils.getColor(itemStack), Items.FLASK
+                );
+            }
         }
     }
 
