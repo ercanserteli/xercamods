@@ -33,7 +33,7 @@ public class ItemStackableContainedFood extends Item {
                 PlayerInventory inv = ((PlayerEntity)(entityLiving)).inventory;
                 if(inv.storeItemStack(containerStack) == -1 && inv.getFirstEmptyStack() == -1){
                     if(!worldIn.isRemote) {
-                        worldIn.addEntity(new ItemEntity(worldIn, entityLiving.getPosition().getX(), entityLiving.getPosition().getY(), entityLiving.getPosition().getZ(), containerStack));
+                        worldIn.addEntity(new ItemEntity(worldIn, entityLiving.posX, entityLiving.posY, entityLiving.posZ, containerStack));
                     }
                 }else{
                     inv.addItemStackToInventory(containerStack);

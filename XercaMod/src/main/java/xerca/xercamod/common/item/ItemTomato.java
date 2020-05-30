@@ -29,7 +29,7 @@ public class ItemTomato extends Item {
             heldItem.shrink(1);
         }
 
-        worldIn.playSound(playerIn, playerIn.getPosition().getX(), playerIn.getPosition().getY(), playerIn.getPosition().getZ(), SoundEvents.ENTITY_SNOWBALL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (worldIn.rand.nextFloat() * 0.4F + 0.8F));
+        worldIn.playSound(playerIn, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_SNOWBALL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (worldIn.rand.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
             EntityTomato entitytomato = new EntityTomato(worldIn, playerIn);

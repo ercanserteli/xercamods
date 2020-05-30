@@ -71,7 +71,7 @@ public class BlockTeapot extends Block {
         if (player instanceof ServerPlayerEntity)
         {
             if(player.getHeldItemMainhand().getItem() == Items.ITEM_TEACUP && state.get(TEA_AMOUNT) > 0){
-                worldIn.playSound(null, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), SoundEvents.TEA_POUR, SoundCategory.PLAYERS, 1.0F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
+                worldIn.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.TEA_POUR, SoundCategory.PLAYERS, 1.0F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
 
                 player.getHeldItemMainhand().shrink(1);
                 player.addItemStackToInventory(new ItemStack(Items.ITEM_FULL_TEACUP_0));

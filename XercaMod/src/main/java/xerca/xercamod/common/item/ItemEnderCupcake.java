@@ -29,14 +29,14 @@ class ItemEnderCupcake extends Item {
     public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entity) {
         ItemStack lvt_4_1_ = super.onItemUseFinish(stack, world, entity);
         if (!world.isRemote) {
-            double lvt_5_1_ = entity.getPosition().getX();
-            double lvt_7_1_ = entity.getPosition().getY();
-            double lvt_9_1_ = entity.getPosition().getZ();
+            double lvt_5_1_ = entity.posX;
+            double lvt_7_1_ = entity.posY;
+            double lvt_9_1_ = entity.posZ;
 
             for(int lvt_11_1_ = 0; lvt_11_1_ < 16; ++lvt_11_1_) {
-                double x = entity.getPosition().getX() + (entity.getRNG().nextDouble() - 0.5D) * 8.0D;
-                double y = MathHelper.clamp(entity.getPosition().getY() + (double)(entity.getRNG().nextInt(8) - 4), 0.0D, (world.getActualHeight() - 1));
-                double z = entity.getPosition().getZ() + (entity.getRNG().nextDouble() - 0.5D) * 8.0D;
+                double x = entity.posX + (entity.getRNG().nextDouble() - 0.5D) * 8.0D;
+                double y = MathHelper.clamp(entity.posY + (double)(entity.getRNG().nextInt(8) - 4), 0.0D, (world.getActualHeight() - 1));
+                double z = entity.posZ + (entity.getRNG().nextDouble() - 0.5D) * 8.0D;
                 if (entity.isPassenger()) {
                     entity.stopRiding();
                 }

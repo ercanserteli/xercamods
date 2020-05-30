@@ -52,7 +52,7 @@ public class ItemKnife extends Item {
                 ((ServerWorld)e1.world).getChunkProvider().sendToTrackingAndSelf(e2, packetOut);
 
             }
-            e2.world.playSound(null, e1.getPosition().getX(), e1.getPosition().getY() + 0.5d, e1.getPosition().getZ(), SoundEvents.SNEAK_HIT, SoundCategory.PLAYERS, 1.0f, e2.world.rand.nextFloat() * 0.2F + 0.8F);
+            e2.world.playSound(null, e1.posX, e1.posY + 0.5d, e1.posZ, SoundEvents.SNEAK_HIT, SoundCategory.PLAYERS, 1.0f, e2.world.rand.nextFloat() * 0.2F + 0.8F);
 
             float bonus = defaultBonus;
             if(stack.isEnchanted()){
