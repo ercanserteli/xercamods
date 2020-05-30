@@ -55,7 +55,7 @@ public class EntityConfettiBall extends ProjectileItemEntity {
     protected void onImpact(RayTraceResult result) {
         spawnConfetti(result.getHitVec());
         if (!this.world.isRemote) {
-            this.world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.CRACK, SoundCategory.PLAYERS, 2.0f, this.rand.nextFloat() * 0.4F + 0.8F);
+            this.world.playSound(null, this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ(), SoundEvents.CRACK, SoundCategory.PLAYERS, 2.0f, this.rand.nextFloat() * 0.4F + 0.8F);
             this.remove();
         }
     }
@@ -70,16 +70,16 @@ public class EntityConfettiBall extends ProjectileItemEntity {
         super.tick();
         if(this.ticksExisted % 4 == 0){
             if(!this.world.isRemote){
-                this.world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.CRACK, SoundCategory.PLAYERS, 2.0f, this.rand.nextFloat() * 0.4F + 0.8F);
+                this.world.playSound(null, this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ(), SoundEvents.CRACK, SoundCategory.PLAYERS, 2.0f, this.rand.nextFloat() * 0.4F + 0.8F);
             }
             else{
-                spawnConfetti(this.posX, this.posY, this.posZ);
+                spawnConfetti(this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ());
             }
         }
     }
 
     @Override
-    protected Item func_213885_i() {
+    protected Item getDefaultItem() {
         return Items.ITEM_CONFETTI_BALL;
     }
 

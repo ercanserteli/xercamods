@@ -31,6 +31,7 @@ import xerca.xercamod.common.item.Items;
 
 public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     private static final DataParameter<Integer> cau_ent = EntityDataManager.<Integer>createKey(EntityHook.class, DataSerializers.VARINT);
+    private static final double DEFAULT_SPEED = 1.5D;
     private int xTile;
     private int yTile;
     private int zTile;
@@ -41,7 +42,9 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     public Entity caughtEntity;
     public boolean isReturning;
     public boolean hasGrappling = false;
-    private double speed = 1.5D;
+    public int turboLevel = 0;
+    public boolean hasGentle = false;
+    private double speed;
     private ItemStack rod = ItemStack.EMPTY;
 
 
@@ -58,32 +61,37 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         this.isReturning = false;
     }
 
-    public EntityHook(World worldIn, PlayerEntity hooker, ItemStack rod) {
+    public EntityHook(World worldIn, PlayerEntity hooker, ItemStack rod, float pullAmount) {
         this(worldIn);
+
         this.isReturning = false;
         this.angler = hooker;
         if(rod.getItem() == Items.ITEM_GRAB_HOOK){
             this.rod = rod;
             this.rod.getOrCreateTag().putBoolean("cast", true);
             hasGrappling = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_GRAPPLING, this.rod) > 0;
+            hasGentle = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_GENTLE_GRAB, this.rod) > 0;
+            turboLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_TURBO_GRAB, this.rod);
         }
 
+        double speedMultiplier = (turboLevel * 0.25 + 1);
+        this.speed = DEFAULT_SPEED * speedMultiplier * pullAmount;
         float pitch = this.angler.rotationPitch;
         float yaw = this.angler.rotationYaw;
         float f2 = MathHelper.cos(-yaw * ((float)Math.PI / 180F) - (float)Math.PI);
         float f3 = MathHelper.sin(-yaw * ((float)Math.PI / 180F) - (float)Math.PI);
         float f4 = -MathHelper.cos(-pitch * ((float)Math.PI / 180F));
         float f5 = MathHelper.sin(-pitch * ((float)Math.PI / 180F));
-        double x = this.angler.posX;// - (double)f3 * 0.3D;
-        double y = this.angler.posY + (double)this.angler.getEyeHeight();
-        double z = this.angler.posZ;// - (double)f2 * 0.3D;
+        double x = this.angler.getPosition().getX();// - (double)f3 * 0.3D;
+        double y = this.angler.getPosition().getY() + (double)this.angler.getEyeHeight();
+        double z = this.angler.getPosition().getZ();// - (double)f2 * 0.3D;
         this.setLocationAndAngles(x, y, z, yaw, pitch);
         Vec3d vec3d = new Vec3d((double)(-f3), -(f5 / f4), (double)(-f2));
         double length = vec3d.length();
         vec3d = vec3d.scale(speed/length);
         this.setMotion(vec3d);
         this.rotationYaw = (float)(MathHelper.atan2(vec3d.x, vec3d.z) * (double)(180F / (float)Math.PI));
-        this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)MathHelper.sqrt(func_213296_b(vec3d))) * (double)(180F / (float)Math.PI));
+        this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)MathHelper.sqrt(this.getDistanceSq(vec3d))) * (double)(180F / (float)Math.PI));
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
     }
@@ -130,7 +138,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private boolean checkCollision() {
-        RayTraceResult raytraceresult = ProjectileHelper.func_221267_a(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), (p_213856_1_) -> !p_213856_1_.isSpectator() && (p_213856_1_.canBeCollidedWith() || p_213856_1_ instanceof ItemEntity) && (p_213856_1_ != this.angler || this.ticksInAir >= 5), RayTraceContext.BlockMode.COLLIDER, true);
+        RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), (p_213856_1_) -> !p_213856_1_.isSpectator() && (p_213856_1_.canBeCollidedWith() || p_213856_1_ instanceof ItemEntity) && (p_213856_1_ != this.angler || this.ticksInAir >= 5), RayTraceContext.BlockMode.COLLIDER, true);
         if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
             if (raytraceresult.getType() == RayTraceResult.Type.ENTITY) {
                 Entity caught = ((EntityRayTraceResult) raytraceresult).getEntity();
@@ -138,17 +146,20 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
                     return false;
                 }
                 // Hit an entity
-                this.world.playSound(null, this.getPosition(), SoundEvents.HOOK_IMPACT, SoundCategory.PLAYERS, 1.0f, 1.0f);
-
                 this.caughtEntity = caught;
                 this.getDataManager().set(cau_ent, this.caughtEntity.getEntityId() + 1);
                 this.caughtEntity = caught;
 
-                this.caughtEntity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.angler), 3);
+                if(!hasGentle){
+                    world.playSound(null, this.getPosition(), SoundEvents.HOOK_IMPACT, SoundCategory.PLAYERS, 1.0f, world.rand.nextFloat() * 0.2F + 0.9F);
 
-                if(!this.caughtEntity.isAlive()){
-                    this.remove();
-                    return true;
+                    caughtEntity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.angler), 3);
+                    if(!this.caughtEntity.isAlive()){
+                        this.remove();
+                        return true;
+                    }
+                }else{
+                    world.playSound(null, this.getPosition(), SoundEvents.HOOK_IMPACT, SoundCategory.PLAYERS, 0.6f, world.rand.nextFloat() * 0.2F + 1.5f);
                 }
 
                 this.caughtEntity.noClip = true;
@@ -175,20 +186,18 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             if (v.length() > 2) {
                 v = v.normalize().scale(speed);
                 this.caughtEntity.setMotion(v);
+                this.caughtEntity.velocityChanged = true;
+                this.caughtEntity.isAirBorne = true;
             } else {
                 this.remove();
                 return;
             }
-            //}
 
-            this.posX = this.caughtEntity.posX;
             double height = (double) this.caughtEntity.getHeight() + 0.5d;
-            this.posY = this.caughtEntity.getBoundingBox().minY + height * 0.8D;
-            this.posZ = this.caughtEntity.posZ;
+            this.setPosition(caughtEntity.getPosition().getX(), caughtEntity.getBoundingBox().minY + height * 0.8D, caughtEntity.getPosition().getZ());
             return;
         }
         this.caughtEntity = null;
-
     }
 
     private void pullUser() {
@@ -199,6 +208,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             v = v.normalize().scale(speed);
             this.angler.setMotion(v);
 
+            this.angler.noClip = true;
             this.angler.isAirBorne = true;
             this.angler.velocityChanged = true;
         } else {
@@ -237,7 +247,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         } else {
             ItemStack itemstack = this.angler.getHeldItemMainhand();
 
-            if (age > 100 || !this.angler.isAlive() || itemstack.getItem() != Items.ITEM_GRAB_HOOK || this.getDistanceSq(this.angler) > 4096.0D) {
+            if (age > 80 || !this.angler.isAlive() || itemstack.getItem() != Items.ITEM_GRAB_HOOK || this.getDistanceSq(this.angler) > 4096.0D) {
                 this.remove();
                 this.angler.fishingBobber = null;
                 return;
@@ -281,7 +291,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         }
 
         this.move(MoverType.SELF, this.getMotion());
-        this.setPosition(this.posX, this.posY, this.posZ);
+        this.setPosition(this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ());
     }
 
     private void setReturning() {
@@ -305,24 +315,6 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         this.inGround = tagCompund.getByte("inGround") == 1;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
-        if (id == 31 && this.world.isRemote && this.caughtEntity instanceof PlayerEntity && ((PlayerEntity) this.caughtEntity).isUser()) {
-            this.func_184527_k();
-        }
-
-        super.handleStatusUpdate(id);
-    }
-
-    private void func_184527_k() {
-        double d0 = this.angler.posX - this.posX;
-        double d1 = this.angler.posY - this.posY;
-        double d2 = this.angler.posZ - this.posZ;
-        double d3 = (double) MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
-        double d4 = 0.1D;
-        this.caughtEntity.addVelocity(d0 * d4, d1 * d4 + (double) MathHelper.sqrt(d3) * 0.08D, d2 * d4);
-    }
-
     /**
      * Will get destroyed next tick.
      */
@@ -343,6 +335,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
         buffer.writeInt(angler != null ? angler.getEntityId() : -1);
+        buffer.writeDouble(speed);
     }
 
     @Override
@@ -352,5 +345,6 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         if (ent instanceof PlayerEntity) {
             angler = (PlayerEntity) ent;
         }
+        this.speed = additionalData.readDouble();
     }
 }

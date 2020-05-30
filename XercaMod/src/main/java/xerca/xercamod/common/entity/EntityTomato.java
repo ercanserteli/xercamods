@@ -67,13 +67,13 @@ public class EntityTomato extends ProjectileItemEntity {
         if (id == 3)
         {
             for (int j = 0; j < 8; ++j) {
-                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO)), this.posX, this.posY, this.posZ, ((double) this.rand.nextFloat() - 0.5D) * 0.28D, ((double) this.rand.nextFloat() - 0.3D) * 0.28D, ((double) this.rand.nextFloat() - 0.5D) * 0.28D);
+                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO)), this.getPosition().getX(), this.getPosition().getY(), this.getPosition().getZ(), ((double) this.rand.nextFloat() - 0.5D) * 0.28D, ((double) this.rand.nextFloat() - 0.3D) * 0.28D, ((double) this.rand.nextFloat() - 0.5D) * 0.28D);
             }
         }
     }
 
     @Override
-    protected Item func_213885_i() {
+    protected Item getDefaultItem() {
         return Items.ITEM_TOMATO;
     }
 

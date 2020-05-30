@@ -1,6 +1,5 @@
-
 {
-    "parent": "item/handheld",
+  "parent": "xercamusic:item/instrument",
     "textures": {
         "layer0": "xercamusic:item/instruments/cymbal"
     }

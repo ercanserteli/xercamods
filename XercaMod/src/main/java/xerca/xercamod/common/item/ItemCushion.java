@@ -53,7 +53,7 @@ public class ItemCushion extends Item {
                         float f = (float) MathHelper.floor((MathHelper.wrapDegrees(context.getPlacementYaw() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
                         entityCushion.setLocationAndAngles(d0 + 0.5D, d1, d2 + 0.5D, f, 0.0F);
                         world.addEntity(entityCushion);
-                        world.playSound(null, entityCushion.posX, entityCushion.posY, entityCushion.posZ, SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.BLOCKS, 0.75F, 0.8F);
+                        world.playSound(null, entityCushion.getPosition().getX(), entityCushion.getPosition().getY(), entityCushion.getPosition().getZ(), SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.BLOCKS, 0.75F, 0.8F);
                     }
 
                     itemstack.shrink(1);

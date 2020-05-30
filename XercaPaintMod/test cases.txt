@@ -1,0 +1,13 @@
+* Get all items in the creative tab and use
+* Mix colors using only palette, check if synchronized
+* Put palette on off-hand and try drawing on canvas, check if synchronized
+* Put on wall in all 4 angles
+* Test other canvas sizes in the same way
+* Check sides and backs of canvas entities
+* Check if breaking its anchor block drops the correct item
+* Check if breaking drops the correct item in survival
+* Check canvas gui without palette
+* Check crafting canvases
+* Check crafting and filling palettes
+* Signing, cancel during signing
+* Copying

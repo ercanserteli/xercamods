@@ -4,7 +4,10 @@ from recipe_generator import *
 
 shaped_recipes = [
     ShapedRecipe([' l ', 'lel', ' l '], {'item': 'xercamod:flask'}, {'e': {'item': 'minecraft:ender_eye'}, 'l': {'item': 'minecraft:leather'}}, {'item': 'minecraft:ender_eye'}, "", type="xercamod:crafting_condition_shaped_ender_flask"),
+    ShapedRecipe(['www', 'mem', 'sas'], {'item': 'xercamod:ender_cupcake', 'count': 6}, {'a': {'item': 'minecraft:chorus_fruit'}, 's': {'item': 'minecraft:sugar'}, 'e': {'item': 'minecraft:egg'}, 'w': {'item': 'minecraft:wheat'}, 'm': {'item': 'minecraft:milk_bucket'}}, {'item': 'minecraft:chorus_fruit'}, "", type="xercamod:crafting_condition_shaped_food"),
+    ShapedRecipe(['sas', 'mem', 'www'], {'item': 'xercamod:sweet_berry_cupcake', 'count': 6}, {'a': {'item': 'minecraft:sweet_berries'}, 's': {'item': 'minecraft:sugar'}, 'e': {'item': 'minecraft:egg'}, 'w': {'item': 'minecraft:wheat'}, 'm': {'item': 'minecraft:milk_bucket'}}, {'item': 'minecraft:sweet_berries'}, "cupcake", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe(['sas', 'mem', 'www'], {'item': 'xercamod:item_apple_cupcake', 'count': 6}, {'a': {'item': 'minecraft:apple'}, 's': {'item': 'minecraft:sugar'}, 'e': {'item': 'minecraft:egg'}, 'w': {'item': 'minecraft:wheat'}, 'm': {'item': 'minecraft:milk_bucket'}}, {'item': 'minecraft:apple'}, "cupcake", type="xercamod:crafting_condition_shaped_food"),
+    ShapedRecipe(['ADA', 'BEB', 'CCC'], {'item': 'xercamod:sweet_berry_pie'}, {'A': {'item': 'minecraft:sweet_berries'}, 'B': {'item': 'minecraft:sugar'}, 'C': {'item': 'minecraft:wheat'}, 'D': {'item': 'minecraft:milk_bucket'}, 'E': {'item': 'minecraft:egg'}}, {'item': 'minecraft:sweet_berries'}, "", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe(['ADA', 'BEB', 'CCC'], {'item': 'xercamod:item_apple_pie'}, {'A': {'item': 'minecraft:apple'}, 'B': {'item': 'minecraft:sugar'}, 'C': {'item': 'minecraft:wheat'}, 'D': {'item': 'minecraft:milk_bucket'}, 'E': {'item': 'minecraft:egg'}}, {'item': 'minecraft:apple'}, "", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe(['lll', 'lll', 'lll'], {'item': 'xercamod:item_block_leather'}, {'l': {'item': 'minecraft:leather'}}, {'item': 'minecraft:leather'}, "", type="xercamod:crafting_condition_shaped_leather_straw"),
     ShapedRecipe(['lll', 'lll', 'lll'], {'item': 'xercamod:item_block_straw'}, {'l': {'item': 'minecraft:sugar_cane'}}, {'item': 'minecraft:sugar_cane'}, "", type="xercamod:crafting_condition_shaped_leather_straw"),
@@ -20,9 +23,10 @@ shaped_recipes = [
     ShapedRecipe([' b ', 'yyy', ' b '], {'item': 'xercamod:item_daisy_sandwich', 'count': 3}, {'b': {'item': 'minecraft:bread'}, 'y': {'item': 'minecraft:oxeye_daisy'}}, {'item': 'minecraft:oxeye_daisy'}, "", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe(['tst', ' s ', ' s '], {'item': 'xercamod:item_diamond_warhammer'}, {'s': {'item': 'minecraft:stick'}, 't': {'item': 'minecraft:diamond'}}, {'item': 'minecraft:diamond'}, "", type="xercamod:crafting_condition_shaped_warhammer"),
     ShapedRecipe(['sws', 'wxw', 'sws'], {'item': 'xercamod:item_donut', 'count': 4}, {'s': {'item': 'minecraft:sugar'}, 'w': {'item': 'minecraft:wheat'}, 'x': {'item': 'minecraft:milk_bucket'}}, {'item': 'minecraft:wheat'}, "", type="xercamod:crafting_condition_shaped_food"),
-    ShapedRecipe(['s', 'c'], {'item': 'xercamod:item_fancy_apple_cupcake'}, {'s': {'item': 'xercamod:item_sprinkles'}, 'c': {'item': 'xercamod:item_apple_cupcake'}}, {'item': 'xercamod:item_sprinkles'}, "cupcake", type="xercamod:crafting_condition_shaped_food"),
+    ShapedRecipe(['s', 'c'], {'item': 'xercamod:sweet_berry_cupcake_fancy'}, {'s': {'item': 'xercamod:item_sprinkles'}, 'c': {'item': 'xercamod:sweet_berry_cupcake'}}, {'item': 'xercamod:item_sprinkles'}, "fancy_cupcake", type="xercamod:crafting_condition_shaped_food"),
+    ShapedRecipe(['s', 'c'], {'item': 'xercamod:item_fancy_apple_cupcake'}, {'s': {'item': 'xercamod:item_sprinkles'}, 'c': {'item': 'xercamod:item_apple_cupcake'}}, {'item': 'xercamod:item_sprinkles'}, "fancy_cupcake", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe(['s', 'd'], {'item': 'xercamod:item_fancy_donut'}, {'s': {'item': 'xercamod:item_sprinkles'}, 'd': {'item': 'xercamod:item_donut'}}, {'item': 'xercamod:item_sprinkles'}, "", type="xercamod:crafting_condition_shaped_food"),
-    ShapedRecipe(['s', 'c'], {'item': 'xercamod:item_fancy_pumpkin_cupcake'}, {'s': {'item': 'xercamod:item_sprinkles'}, 'c': {'item': 'xercamod:item_pumpkin_cupcake'}}, {'item': 'xercamod:item_sprinkles'}, "cupcake", type="xercamod:crafting_condition_shaped_food"),
+    ShapedRecipe(['s', 'c'], {'item': 'xercamod:item_fancy_pumpkin_cupcake'}, {'s': {'item': 'xercamod:item_sprinkles'}, 'c': {'item': 'xercamod:item_pumpkin_cupcake'}}, {'item': 'xercamod:item_sprinkles'}, "fancy_cupcake", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe(['b', 'h', 'b'], {'item': 'xercamod:item_fish_bread', 'count': 2}, {'b': {'item': 'minecraft:bread'}, 'h': {'item': 'minecraft:cooked_cod'}}, {'item': 'minecraft:cooked_cod'}, "", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe(['#s#', ' s ', ' s '], {'item': 'xercamod:item_gavel'}, {'#': {'tag': 'minecraft:planks'}, 's': {'item': 'minecraft:stick'}}, {'tag': 'minecraft:planks'}, "", type="xercamod:crafting_condition_shaped_courtroom"),
     ShapedRecipe(['c c', ' c '], {'item': 'xercamod:item_glass', 'count': 3}, {'c': {'item': 'minecraft:glass_pane'}}, {'item': 'minecraft:glass_pane'}, "", type="xercamod:crafting_condition_shaped_food"),
@@ -63,9 +67,30 @@ shaped_recipes = [
     ShapedRecipe(['#', 'f', '#'], {'item': 'xercamod:red_cushion', 'count': 1}, {'f': {'item': 'minecraft:feather'}, '#': {'item': 'minecraft:red_wool'}}, {'item': 'minecraft:feather'}, "cushion", "cushion", type="xercamod:crafting_condition_shaped_cushion"),
     ShapedRecipe(['#', 'f', '#'], {'item': 'xercamod:white_cushion', 'count': 1}, {'f': {'item': 'minecraft:feather'}, '#': {'item': 'minecraft:white_wool'}}, {'item': 'minecraft:feather'}, "cushion", "cushion", type="xercamod:crafting_condition_shaped_cushion"),
     ShapedRecipe(['#', 'f', '#'], {'item': 'xercamod:yellow_cushion', 'count': 1}, {'f': {'item': 'minecraft:feather'}, '#': {'item': 'minecraft:yellow_wool'}}, {'item': 'minecraft:feather'}, "cushion", "cushion", type="xercamod:crafting_condition_shaped_cushion"),
+
+    # Carved wood - didn't work because of mirroring
+    # ShapedRecipe(['w ', ' k'], {'item': 'xercamod:carved_oak_1', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['w', 'k'], {'item': 'xercamod:carved_oak_2', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe([' w', 'k '], {'item': 'xercamod:carved_oak_3', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['wk'], {'item': 'xercamod:carved_oak_4', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['kw'], {'item': 'xercamod:carved_oak_5', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe([' k', 'w '], {'item': 'xercamod:carved_oak_6', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['k', 'w'], {'item': 'xercamod:carved_oak_7', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['k ', ' w'], {'item': 'xercamod:carved_oak_8', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+
+    # ShapedRecipe(['w ', ' k'], {'item': 'xercamod:carved_birch_1', 'count': 1}, {'w': {'item': 'minecraft:stripped_birch_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_birch", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['w', 'k'], {'item': 'xercamod:carved_birch_2', 'count': 1}, {'w': {'item': 'minecraft:stripped_birch_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_birch", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe([' w', 'k '], {'item': 'xercamod:carved_birch_3', 'count': 1}, {'w': {'item': 'minecraft:stripped_birch_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_birch", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['wk'], {'item': 'xercamod:carved_birch_4', 'count': 1}, {'w': {'item': 'minecraft:stripped_birch_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_birch", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['kw'], {'item': 'xercamod:carved_birch_5', 'count': 1}, {'w': {'item': 'minecraft:stripped_birch_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_birch", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe([' k', 'w '], {'item': 'xercamod:carved_birch_6', 'count': 1}, {'w': {'item': 'minecraft:stripped_birch_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_birch", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['k', 'w'], {'item': 'xercamod:carved_birch_7', 'count': 1}, {'w': {'item': 'minecraft:stripped_birch_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_birch", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+    # ShapedRecipe(['k ', ' w'], {'item': 'xercamod:carved_birch_8', 'count': 1}, {'w': {'item': 'minecraft:stripped_birch_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_birch", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
+
 ]
 
 shapeless_recipes = [
+    ShapelessRecipe([{'item': 'xercamod:item_glass'}, {'item': 'minecraft:sweet_berries'}], {'item': 'xercamod:sweet_berry_juice'}, {'item': 'xercamod:item_glass'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_glass'}, {'item': 'minecraft:apple'}], {'item': 'xercamod:item_apple_juice'}, {'item': 'xercamod:item_glass'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'minecraft:gold_nugget'}, {'item': 'minecraft:cookie'}], {'item': 'xercamod:item_attorney_badge'}, {'item': 'minecraft:gold_nugget'}, "", type="xercamod:crafting_condition_shapeless_courtroom"),
     ShapelessRecipe([{'item': 'minecraft:bread'}, {'item': 'xercamod:item_knife', 'data': 32767}], {'item': 'xercamod:item_bun', 'count': 2}, {'item': 'minecraft:bread'}, "", type="xercamod:crafting_condition_shapeless_food"),
@@ -88,10 +113,29 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:item_tomato'}], {'item': 'xercamod:item_tomato_seeds'}, {'item': 'xercamod:item_tomato'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_tomato'}, {'item': 'xercamod:item_knife', 'data': 32767}], {'item': 'xercamod:item_tomato_slices', 'count': 3}, {'item': 'xercamod:item_tomato'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_glass'}, {'item': 'minecraft:wheat'}, {'item': 'minecraft:wheat'}], {'item': 'xercamod:item_wheat_juice'}, {'item': 'xercamod:item_glass'}, "", type="xercamod:crafting_condition_shapeless_food"),
+
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:salmon'}], {'item': 'xercamod:sashimi', 'count': 2}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:dried_kelp'}], {'item': 'xercamod:riceball', 'count': 2}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:dried_kelp'}, {'item': 'xercamod:sashimi'}], {'item': 'xercamod:sushi', 'count': 2}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'xercamod:sashimi'}], {'item': 'xercamod:nigiri_sushi'}, {'item': 'xercamod:cooked_rice', 'count': 2}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'xercamod:item_fried_egg'}], {'item': 'xercamod:omurice'}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'xercamod:item_fried_egg'}, {'item': 'minecraft:dried_kelp'}], {'item': 'xercamod:egg_sushi', 'count': 2}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:item_glass'}, {'item': 'xercamod:item_rice_seeds'}, {'item': 'xercamod:item_rice_seeds'}], {'item': 'xercamod:sake'}, {'item': 'xercamod:item_rice_seeds'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:cooked_beef'}, {'item': 'minecraft:bowl'}], {'item': 'xercamod:beef_donburi'}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:cooked_chicken'}, {'item': 'minecraft:bowl'}, {'item': 'xercamod:item_fried_egg'}], {'item': 'xercamod:oyakodon'}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:sugar'}, {'item': 'minecraft:bowl'}, {'item': 'minecraft:milk_bucket'}], {'item': 'xercamod:rice_pudding'}, {'item': 'xercamod:item_rice_seeds'}, "", type="xercamod:crafting_condition_shapeless_food"),
+
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:acacia_log'}], {'item': 'minecraft:stripped_acacia_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:birch_log'}], {'item': 'minecraft:stripped_birch_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:dark_oak_log'}], {'item': 'minecraft:stripped_dark_oak_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:jungle_log'}], {'item': 'minecraft:stripped_jungle_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:oak_log'}], {'item': 'minecraft:stripped_oak_log'}, {'item': 'xercamod:item_knife'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:spruce_log'}], {'item': 'minecraft:stripped_spruce_log'}, {'item': 'xercamod:item_knife'}, ""),
 ]
 
 cooking_recipes = [
-    CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_raw_chicken_patty'}, "xercamod:item_cooked_chicken_patty", 0.15, 200, {'item': 'xercamod:item_raw_chicken_patty'}, ""),
+    CookingRecipe("minecraft:smelting", {'item': 'xercamod:rice_pudding'}, "xercamod:baked_rice_pudding", 0.2, 250, {'item': 'xercamod:rice_pudding'}, ""),
+    CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_raw_chicken_patty'}, "xercamod:item_cooked_chicken_patty", 0.2, 200, {'item': 'xercamod:item_raw_chicken_patty'}, ""),
     CookingRecipe("minecraft:smelting", {'item': 'minecraft:egg'}, "xercamod:item_fried_egg", 0.2, 200, {'item': 'minecraft:egg'}, ""),
     CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_raw_patty'}, "xercamod:item_cooked_patty", 0.2, 200, {'item': 'xercamod:item_raw_patty'}, ""),
     CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_potato_slices'}, "xercamod:item_potato_fries", 0.2, 200, {'item': 'xercamod:item_potato_slices'}, ""),
@@ -105,6 +149,7 @@ cooking_recipes = [
     CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_full_teapot_5'}, "xercamod:item_hot_teapot_5", 0.3, 300, {'item': 'xercamod:item_full_teapot_5'}, "hot_teapot"),
     CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_full_teapot_6'}, "xercamod:item_hot_teapot_6", 0.35, 350, {'item': 'xercamod:item_full_teapot_6'}, "hot_teapot"),
     CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_full_teapot_7'}, "xercamod:item_hot_teapot_7", 0.4, 400, {'item': 'xercamod:item_full_teapot_7'}, "hot_teapot"),
+    CookingRecipe("minecraft:smelting", {'item': 'xercamod:item_rice_seeds'}, "xercamod:cooked_rice", 0.2, 200, {'item': 'xercamod:item_rice_seeds'}, ""),
 ]
 
 special_recipes = [
@@ -135,4 +180,5 @@ all_recipes = [r for l in [shaped_recipes, shapeless_recipes, cooking_recipes, s
 
 
 # generate_recipe_code_from_files("xercamod")
+clean_recipe_jsons("xercamod")
 generate_recipe_jsons(all_recipes, "xercamod")

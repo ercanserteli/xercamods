@@ -16,10 +16,7 @@ import xerca.xercamod.common.Config;
 import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.Proxy;
 import xerca.xercamod.common.XercaMod;
-import xerca.xercamod.common.entity.EntityConfettiBall;
-import xerca.xercamod.common.entity.EntityCushion;
-import xerca.xercamod.common.entity.EntityHook;
-import xerca.xercamod.common.entity.EntityTomato;
+import xerca.xercamod.common.entity.*;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.tile_entity.XercaTileEntities;
 
@@ -34,6 +31,7 @@ public class ClientProxy extends Proxy {
             RenderingRegistry.registerEntityRenderingHandler(EntityConfettiBall.class, new RenderConfettiBallFactory());
             RenderingRegistry.registerEntityRenderingHandler(EntityHook.class, new RenderHookFactory());
             RenderingRegistry.registerEntityRenderingHandler(EntityCushion.class, new RenderCushionFactory());
+
         }
 
         @SubscribeEvent

@@ -1,6 +1,6 @@
 
 {
-    "type": "minecraft:crafting_shaped",
+    "type": "xercapaint:crafting_tagless_shaped",
     
     "pattern": [
         "cc",

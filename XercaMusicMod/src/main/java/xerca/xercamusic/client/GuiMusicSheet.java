@@ -369,7 +369,7 @@ public class GuiMusicSheet extends Screen {
         }else{
             noteSound = SoundEvents.harp_mcs[note];
         }
-        NoteSound sound = XercaMusic.proxy.playNote(noteSound, editingPlayer.posX, editingPlayer.posY, editingPlayer.posZ);
+        NoteSound sound = XercaMusic.proxy.playNote(noteSound, editingPlayer.getPosX(), editingPlayer.getPosY(), editingPlayer.getPosZ());
 
         if(neighborId >= 0 && neighborId < neighborLastPlayeds.size()){
             neighborLastPlayeds.set(neighborId, sound);
@@ -727,13 +727,13 @@ public class GuiMusicSheet extends Screen {
 
     private void encodeToClipboard(){
         String encodeBytes = Base64.getEncoder().encodeToString(Arrays.copyOfRange(music, editCursor, editCursorEnd + 1));
-        GLFW.glfwSetClipboardString(Minecraft.getInstance().mainWindow.getHandle(), encodeBytes);
+        GLFW.glfwSetClipboardString(Minecraft.getInstance().getMainWindow().getHandle(), encodeBytes);
 
         editCursorEnd = editCursor;
     }
 
     private void decodeFromClipboard(){
-        String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().mainWindow.getHandle());
+        String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getMainWindow().getHandle());
         if(encodedMusic != null && !encodedMusic.isEmpty()){
             byte[] musicPiece;
             try { // Try because this can fail with weird clipboard content
@@ -961,7 +961,6 @@ public class GuiMusicSheet extends Screen {
     @Override
     public void removed() {
         if (dirty) {
-            System.out.println("GUINote Sending update packet");
             MusicUpdatePacket pack = new MusicUpdatePacket(music, length, pause, isSigned, noteTitle, (byte)previewInstrument, prevInsLocked);
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
         }

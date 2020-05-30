@@ -1,13 +1,13 @@
 package xerca.xercapaint.common.packets;
 
 import net.minecraft.network.PacketBuffer;
-import xerca.xercapaint.client.GuiCanvasEdit;
 import xerca.xercapaint.common.CanvasType;
+import xerca.xercapaint.common.PaletteUtil;
 
 import java.util.Arrays;
 
 public class CanvasUpdatePacket {
-    private GuiCanvasEdit.CustomColor[] paletteColors;
+    private PaletteUtil.CustomColor[] paletteColors;
     private int[] pixels;
     private boolean signed;
     private String title;
@@ -16,7 +16,7 @@ public class CanvasUpdatePacket {
     private int version;
     private boolean messageIsValid;
 
-    public CanvasUpdatePacket(int[] pixels, boolean signed, String title, String name, int version, GuiCanvasEdit.CustomColor[] paletteColors, CanvasType canvasType) {
+    public CanvasUpdatePacket(int[] pixels, boolean signed, String title, String name, int version, PaletteUtil.CustomColor[] paletteColors, CanvasType canvasType) {
         this.paletteColors = Arrays.copyOfRange(paletteColors, 0, 12);
         this.signed = signed;
         this.title = title;
@@ -32,7 +32,7 @@ public class CanvasUpdatePacket {
     }
 
     public static void encode(CanvasUpdatePacket pkt, PacketBuffer buf) {
-        for(GuiCanvasEdit.CustomColor color : pkt.paletteColors){
+        for(PaletteUtil.CustomColor color : pkt.paletteColors){
             color.writeToBuffer(buf);
         }
         buf.writeByte(pkt.canvasType.ordinal());
@@ -46,9 +46,9 @@ public class CanvasUpdatePacket {
     public static CanvasUpdatePacket decode(PacketBuffer buf) {
         CanvasUpdatePacket result = new CanvasUpdatePacket();
         try {
-            result.paletteColors = new GuiCanvasEdit.CustomColor[12];
+            result.paletteColors = new PaletteUtil.CustomColor[12];
             for(int i=0; i<result.paletteColors.length; i++){
-                result.paletteColors[i] = new GuiCanvasEdit.CustomColor(buf);
+                result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
             }
             result.canvasType = CanvasType.fromByte(buf.readByte());
             result.version = buf.readInt();
@@ -58,7 +58,7 @@ public class CanvasUpdatePacket {
             int area = CanvasType.getHeight(result.canvasType)*CanvasType.getWidth(result.canvasType);
             result.pixels = buf.readVarIntArray(area);
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
+            System.err.println("Exception while reading CanvasUpdatePacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;
@@ -69,7 +69,7 @@ public class CanvasUpdatePacket {
         return pixels;
     }
 
-    public GuiCanvasEdit.CustomColor[] getPaletteColors() {
+    public PaletteUtil.CustomColor[] getPaletteColors() {
         return paletteColors;
     }
 

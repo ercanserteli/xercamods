@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 from enum import Enum
 
 mod_id = ""
@@ -184,13 +185,27 @@ def generate_json(main_dir, json_string, r):
 
     file_dir = "{}/{}.json".format(folder_dir, r.get_name())
 
-    if os.path.exists(file_dir):
+    while os.path.exists(file_dir):
         with open(file_dir, "r") as f:
             if f.read() != json_string:
-                file_dir = "{}/{}_alt.json".format(folder_dir, r.get_name())
+                file_dir = "{}_alt.json".format(os.path.splitext(file_dir)[0])
+            else:
+                break
 
     with open(file_dir, "w") as f:
         f.write(json_string)
+
+
+def clean_recipe_jsons(mod_id_input):
+    global mod_id
+    mod_id = mod_id_input
+    recipe_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipes"
+    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancements/recipes"
+
+    shutil.rmtree(recipe_main_dir)
+    os.makedirs(recipe_main_dir)
+    shutil.rmtree(adv_main_dir)
+    os.makedirs(adv_main_dir)
 
 
 def generate_recipe_jsons(recipes, mod_id_input):

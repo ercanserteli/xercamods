@@ -37,14 +37,6 @@ public class EnchantmentQuake extends Enchantment {
     }
 
     /**
-     * Determines if the enchantment passed can be applyied together with this enchantment.
-     */
-    @Override
-    public boolean canApplyTogether(Enchantment ench) {
-        return true/*!(ench instanceof EnchantmentDamage)*/;
-    }
-
-    /**
      * This applies specifically to applying at the enchanting table. The other method {@link #canApply(ItemStack)}
      * applies for <i>all possible</i> enchantments.
      * @param stack
@@ -62,6 +54,6 @@ public class EnchantmentQuake extends Enchantment {
      */
     @Override
     public boolean canApply(ItemStack stack) {
-        return stack.canApplyAtEnchantingTable(this);
+        return this.canApplyAtEnchantingTable(stack);
     }
 }

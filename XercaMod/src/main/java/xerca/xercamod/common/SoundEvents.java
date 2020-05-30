@@ -22,6 +22,7 @@ public class SoundEvents {
     public final static SoundEvent CRACK = null;
     public final static SoundEvent CONFETTI = null;
     public final static SoundEvent STOMP = null;
+    public final static SoundEvent TEA_POUR = null;
 
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = new ResourceLocation(XercaMod.MODID, soundName);
@@ -46,7 +47,8 @@ public class SoundEvents {
                     createSoundEvent("scary"),
                     createSoundEvent("crack"),
                     createSoundEvent("confetti"),
-                    createSoundEvent("stomp")
+                    createSoundEvent("stomp"),
+                    createSoundEvent("tea_pour")
             );
         }
     }

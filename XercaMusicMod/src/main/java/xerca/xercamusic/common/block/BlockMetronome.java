@@ -63,9 +63,9 @@ public class BlockMetronome extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (worldIn.isRemote) {
-            return true;
+            return ActionResultType.SUCCESS;
         } else {
             worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundCategory.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
@@ -78,12 +78,12 @@ public class BlockMetronome extends Block {
             if(!note.isEmpty() && note.hasTag()){
                 int pause = note.getTag().getInt("pause");
                 setBpm(state, worldIn, pos, ItemMusicSheet.pauseToBPMLevel[pause]);
-                return true;
+                return ActionResultType.SUCCESS;
             }
             else{
                 state = state.cycle(BPM);
                 worldIn.setBlockState(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
     }
