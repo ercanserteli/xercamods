@@ -10,6 +10,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/XercaMod" />
     <file type="web" url="file://$PROJECT_DIR$/XercaMusicMod" />
+    <file type="web" url="file://$PROJECT_DIR$/XercaPaintMod" />
   </component>
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />

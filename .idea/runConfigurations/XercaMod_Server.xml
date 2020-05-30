@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="XercaMod Server" type="Application" factoryName="Application" folderName="XercaMod" singleton="false">
+    <envs>
+      <env name="MOD_CLASSES" value="xercamod%%$PROJECT_DIR$/XercaMod\build\resources\main;xercamod%%$PROJECT_DIR$/XercaMod\build\classes\java\main" />
+      <env name="MCP_MAPPINGS" value="snapshot_20200225-1.15.1" />
+      <env name="MCP_VERSION" value="20200414.225201" />
+      <env name="FORGE_VERSION" value="31.1.46" />
+      <env name="FORGE_GROUP" value="net.minecraftforge" />
+      <env name="target" value="fmluserdevserver" />
+      <env name="MC_VERSION" value="1.15.2" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.userdev.LaunchTesting" />
+    <module name="XercaMod.main" />
+    <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=SCAN,REGISTRIES,REGISTRYDUMP" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="false" tasks=":prepareRunServer" externalProjectPath="$PROJECT_DIR$/XercaMod" vmOptions="" scriptParameters="" />
+    </method>
+  </configuration>
+</component>

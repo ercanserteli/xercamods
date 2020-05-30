@@ -113,6 +113,12 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:item_tomato'}], {'item': 'xercamod:item_tomato_seeds'}, {'item': 'xercamod:item_tomato'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_tomato'}, {'item': 'xercamod:item_knife', 'data': 32767}], {'item': 'xercamod:item_tomato_slices', 'count': 3}, {'item': 'xercamod:item_tomato'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_glass'}, {'item': 'minecraft:wheat'}, {'item': 'minecraft:wheat'}], {'item': 'xercamod:item_wheat_juice'}, {'item': 'xercamod:item_glass'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:item_block_straw'}], {'item': 'minecraft:sugar_cane', 'count': 9}, {'item': 'xercamod:item_block_straw'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_block_leather'}], {'item': 'minecraft:leather', 'count': 9}, {'item': 'xercamod:item_block_leather'}, ""),
+    ShapelessRecipe([{'item': 'minecraft:gold_nugget'}], {'item': 'xercamod:item_golden_coin_5', 'count': 2}, {'item': 'minecraft:gold_nugget'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_golden_coin_5'}], {'item': 'xercamod:item_golden_coin_1', 'count': 5}, {'item': 'xercamod:item_golden_coin_5'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_golden_coin_5'}, {'item': 'xercamod:item_golden_coin_5'}], {'item': 'minecraft:gold_nugget'}, {'item': 'xercamod:item_golden_coin_5'}, ""),
+    ShapelessRecipe([{'item': 'xercamod:item_golden_coin_1'}, {'item': 'xercamod:item_golden_coin_1'}, {'item': 'xercamod:item_golden_coin_1'}, {'item': 'xercamod:item_golden_coin_1'}, {'item': 'xercamod:item_golden_coin_1'}], {'item': 'xercamod:item_golden_coin_5'}, {'item': 'xercamod:item_golden_coin_1'}, ""),
 
     ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:salmon'}], {'item': 'xercamod:sashimi', 'count': 2}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:cooked_rice'}, {'item': 'minecraft:dried_kelp'}], {'item': 'xercamod:riceball', 'count': 2}, {'item': 'xercamod:cooked_rice'}, "", type="xercamod:crafting_condition_shapeless_food"),

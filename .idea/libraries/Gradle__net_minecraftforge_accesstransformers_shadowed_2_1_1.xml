@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:accesstransformers:shadowed:2.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/accesstransformers/2.1.1/1d1e439ef345ab5fd76df679de70a0c35f03bf4a/accesstransformers-2.1.1-shadowed.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/accesstransformers/2.1.1/c71c342554f6f9c23224b8b3fc33eea9305b119c/accesstransformers-2.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
