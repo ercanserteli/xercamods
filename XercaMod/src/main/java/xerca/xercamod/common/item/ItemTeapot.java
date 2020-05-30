@@ -47,6 +47,7 @@ public class ItemTeapot extends BlockItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         tooltip.add(new StringTextComponent("Tea amount: " + teaAmount));
+        tooltip.add(new StringTextComponent(isHot ? "Hot" : "Cold"));
     }
 
     @Override
