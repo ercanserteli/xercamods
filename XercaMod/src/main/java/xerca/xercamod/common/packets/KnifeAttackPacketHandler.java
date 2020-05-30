@@ -41,6 +41,6 @@ public class KnifeAttackPacketHandler {
             return;
         }
         st.getItem().hitEntity(st, (LivingEntity) target, pl);
-        target.attackEntityFrom(DamageSource.causePlayerDamage(pl), (float) pl.getAttributes().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getValue());
+        target.attackEntityFrom(DamageSource.causePlayerDamage(pl), 3.0f);
     }
 }

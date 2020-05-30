@@ -34,7 +34,7 @@ public class QuakeParticlePacketHandler {
             Vec3d particlePos = new Vec3d(posX, posY, posZ);
             Vec3d particleVel = particlePos.subtract(centerPos).normalize().scale(0.15);
 
-            world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, particleVel.x, 0.02, particleVel.z);
+            world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, particleVel.x, 0.01, particleVel.z);
         }
     }
 }
