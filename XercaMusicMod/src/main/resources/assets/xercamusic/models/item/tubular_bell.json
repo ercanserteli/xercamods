@@ -1,5 +1,5 @@
 {
-  "parent": "xercamusic:item/instrument",
+    "parent": "item/handheld",
     "textures": {
         "layer0": "xercamusic:item/instruments/tubular_bell"
     }

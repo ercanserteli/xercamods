@@ -118,14 +118,8 @@ public abstract class BasePalette extends Screen {
         }
     }
 
-    protected void superRender(int mouseX, int mouseY, float f) {
-        super.render(mouseX, mouseY, f);
-    }
-
     @Override
     public void render(int mouseX, int mouseY, float f) {
-        super.render(mouseX, mouseY, f);
-
         Minecraft.getInstance().getTextureManager().bindTexture(noteGuiTextures);
 
         // Draw basic colors
@@ -153,18 +147,6 @@ public abstract class BasePalette extends Screen {
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         blit(paletteX, paletteY, 0, 0, paletteWidth, paletteHeight);
-    }
-
-    protected boolean superMouseClicked(double posX, double posY, int mouseButton){
-        return super.mouseClicked(posX, posY, mouseButton);
-    }
-
-    protected boolean superMouseReleased(double posX, double posY, int mouseButton){
-        return super.mouseReleased(posX, posY, mouseButton);
-    }
-
-    protected boolean superMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY){
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }
 
     // Mouse button 0: left, 1: right

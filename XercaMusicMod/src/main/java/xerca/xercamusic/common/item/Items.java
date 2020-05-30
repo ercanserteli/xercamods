@@ -62,20 +62,20 @@ public final class Items {
             musicTab = new MusicCreativeTab();
 
             instruments = new ItemInstrument[]{
-                    new ItemInstrument("guitar", false, 0),
-                    new ItemInstrument("lyre", false, 1),
-                    new ItemInstrument("banjo", false, 2),
-                    new ItemInstrument("drum", false, 3),
-                    new ItemInstrument("cymbal", false, 4),
-                    new ItemInstrument("drum_kit", false, 5),
-                    new ItemInstrument("xylophone", false, 6),
-                    new ItemInstrument("tubular_bell", false, 7),
-                    new ItemInstrument("sansula", false, 8),
-                    new ItemInstrument("violin", true, 9),
-                    new ItemInstrument("cello", true, 10),
-                    new ItemInstrument("flute", true, 11),
-                    new ItemInstrument("saxophone", true, 12),
-                    new ItemInstrument("god", false, 13),
+                    new ItemInstrument("guitar", false),
+                    new ItemInstrument("lyre", false),
+                    new ItemInstrument("banjo", false),
+                    new ItemInstrument("drum", false),
+                    new ItemInstrument("cymbal", false),
+                    new ItemInstrument("drum_kit", false),
+                    new ItemInstrument("xylophone", false),
+                    new ItemInstrument("tubular_bell", false),
+                    new ItemInstrument("sansula", false),
+                    new ItemInstrument("violin", true),
+                    new ItemInstrument("cello", true),
+                    new ItemInstrument("flute", true),
+                    new ItemInstrument("saxophone", true),
+                    new ItemInstrument("god", false),
             };
 
             event.getRegistry().registerAll(instruments);

@@ -1,7 +1,6 @@
 package xerca.xercapaint.client;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,7 +11,7 @@ import java.util.Arrays;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCanvasView extends Screen {
-    private int canvasX; // = 140;
+    private int canvasX = 140;
     private int canvasY = 40;
     private int canvasWidth;
     private int canvasHeight;
@@ -27,7 +26,6 @@ public class GuiCanvasView extends Screen {
     private String canvasTitle = "";
     private String name = "";
     private int version = 0;
-    private int generation = 0;
 
     protected GuiCanvasView(CompoundNBT canvasTag, ITextComponent title, CanvasType canvasType) {
         super(title);
@@ -39,6 +37,12 @@ public class GuiCanvasView extends Screen {
         int canvasPixelArea = canvasPixelHeight*canvasPixelWidth;
         this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
         this.canvasHeight = this.canvasPixelHeight * this.canvasPixelScale;
+        if(canvasType.equals(CanvasType.LONG)){
+            this.canvasY += 40;
+        }
+        if(canvasType.equals(CanvasType.TALL)){
+            this.canvasX += 40;
+        }
 
         if (canvasTag != null && !canvasTag.isEmpty()) {
             int[] nbtPixels = canvasTag.getIntArray("pixels");
@@ -46,19 +50,10 @@ public class GuiCanvasView extends Screen {
             this.canvasTitle = canvasTag.getString("title");
             this.name = canvasTag.getString("name");
             this.version = canvasTag.getInt("v");
-            this.generation = canvasTag.getInt("generation");
 
             this.pixels =  Arrays.copyOfRange(nbtPixels, 0, canvasPixelArea);
         } else {
             this.isSigned = false;
-        }
-    }
-
-    @Override
-    public void init() {
-        canvasX = (this.width - canvasWidth) / 2;
-        if(canvasType.equals(CanvasType.LONG)){
-            canvasY += 40;
         }
     }
 
@@ -79,24 +74,6 @@ public class GuiCanvasView extends Screen {
                 int y = canvasY + i*canvasPixelScale;
                 fill(x, y, x+canvasPixelScale, y+canvasPixelScale, getPixelAt(j, i));
             }
-        }
-        
-        if(generation > 0 && !canvasTitle.isEmpty()){
-            String title = canvasTitle + " " + I18n.format("canvas.byAuthor", authorName);
-            String gen = "(" + I18n.format("canvas.generation." + (generation - 1)) + ")";
-
-            int titleWidth = this.font.getStringWidth(title);
-            int genWidth = this.font.getStringWidth(gen);
-
-            float titleX = (canvasX + (canvasWidth - titleWidth) / 2.0f);
-            float genX = (canvasX + (canvasWidth - genWidth) / 2.0f);
-            float minX = Math.min(genX, titleX);
-            float maxX = Math.max(genX + genWidth, titleX + titleWidth);
-
-            fill((int)(minX - 10), canvasY - 30, (int)(maxX + 10), canvasY - 4, 0xFFEEEEEE);
-
-            this.font.drawString(title, titleX, canvasY - 25, 0xFF111111);
-            this.font.drawString(gen, genX, canvasY - 14, 0xFF444444);
         }
     }
 }

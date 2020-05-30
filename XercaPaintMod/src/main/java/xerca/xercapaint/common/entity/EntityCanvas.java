@@ -92,9 +92,9 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     public void tick() {
-        this.prevPosX = this.getPosX();
-        this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
         if (this.tickCounter1++ == 50 && !this.world.isRemote) {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.onValidSurface()) {

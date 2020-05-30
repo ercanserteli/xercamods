@@ -5,5 +5,6 @@ import net.minecraft.nbt.CompoundNBT;
 
 public abstract class Proxy {
     public abstract void init();
+    public abstract void updateCanvas(CompoundNBT data);
     public abstract void showCanvasGui(PlayerEntity player);
 }

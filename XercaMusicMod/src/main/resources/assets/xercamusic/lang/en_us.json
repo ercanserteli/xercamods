@@ -35,8 +35,5 @@
   "note.generation.1": "Copy of original",
   "note.generation.2": "Copy of copy",
   "note.upButton": "▲",
-  "note.downButton": "▼",
-  "note.startPreviewButton": "►",
-  "note.stopPreviewButton": "■",
-  "note.hideNeighborsButton": "N"
+  "note.downButton": "▼"
 }

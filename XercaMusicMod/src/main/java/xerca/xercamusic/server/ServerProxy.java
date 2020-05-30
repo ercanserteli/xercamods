@@ -33,9 +33,4 @@ public class ServerProxy implements Proxy {
     public void showMusicGui() {
 
     }
-
-    @Override
-    public void showInstrumentGui() {
-
-    }
 }

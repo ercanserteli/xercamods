@@ -9,15 +9,5 @@
 
   "palette.basic_count": "%1$s temel renk",
   "palette.custom_count": "%1$s özel renk",
-  "palette.empty": "Boş palet",
-
-  "canvas.empty": "Boş tuval",
-  "canvas.byAuthor": "%1$s tarafından",
-  "canvas.signButton": "İmzala",
-  "canvas.editTitle": "Müziğe isim koy:",
-  "canvas.finalizeButton": "İmzalayıp kapat",
-  "canvas.finalizeWarning": "Dikkat! Müziği imzaladıktan sonra değiştiremezsin.",
-  "canvas.generation.0": "Orijinal",
-  "canvas.generation.1": "Kopya",
-  "canvas.generation.2": "Korsan"
+  "palette.empty": "Boş palet"
 }

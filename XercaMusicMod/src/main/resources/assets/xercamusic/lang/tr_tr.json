@@ -16,15 +16,9 @@
   "item.xercamusic.cello": "Çello",
   "item.xercamusic.drum_kit": "Taşınabilir Bateri",
   "item.xercamusic.cymbal": "Büyük Zil",
-  "item.xercamusic.item_cello": "Çello",
 
   "block.xercamusic.block_metronome": "Metronom",
   "block.xercamusic.music_box": "Müzik Kutusu",
-
-  "advancements.xercamusic.achievements.root.title": "XercaMusic",
-  "advancements.xercamusic.achievements.root.description": "Müzik",
-  "advancements.xercamusic.achievements.musician.title": "Müzisyen",
-  "advancements.xercamusic.achievements.musician.description": "İlk parçanı bestele",
 
   "note.byAuthor": "%1$s tarafından",
   "note.signButton": "İmzala",
@@ -33,10 +27,9 @@
   "note.finalizeWarning": "Dikkat! Müziği imzaladıktan sonra değiştiremezsin.",
   "note.generation.0": "Orijinal",
   "note.generation.1": "Kopya",
-  "note.generation.2": "Korsan",
+  "note.generation.2": "Torrentlenmiş",
   "note.upButton": "▲",
   "note.downButton": "▼",
   "note.startPreviewButton": "►",
-  "note.stopPreviewButton": "■",
-  "note.hideNeighborsButton": "N"
+  "note.stopPreviewButton": "■"
 }

@@ -14,7 +14,7 @@ import static xerca.xercamusic.common.XercaMusic.Null;
 
 @ObjectHolder(XercaMusic.MODID)
 public class Entities {
-    public static final EntityType<EntityMusicSpirit> MUSIC_SPIRIT = Null();
+    public static final EntityType<?> MUSIC_SPIRIT = Null();
 
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {

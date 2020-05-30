@@ -13,7 +13,6 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -118,20 +117,20 @@ public class BlockMusicBox extends HorizontalBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack heldItem = player.getHeldItem(hand);
         if (heldItem.getItem() == Items.MUSIC_SHEET || heldItem.getItem() instanceof ItemInstrument) {
-            return ActionResultType.PASS;
+            return false;
         }
         if (hit.getFace() == Direction.UP && state.get(HAS_MUSIC)) {
             ejectItem(worldIn, pos, state, true, false);
-            return ActionResultType.SUCCESS;
+            return true;
         } else if (hit.getFace() == state.get(HORIZONTAL_FACING).getOpposite() && state.get(HAS_INSTRUMENT)) {
             worldIn.playEvent(null, 1006, pos, 0); //play door open sound
             ejectItem(worldIn, pos, state, false, false);
-            return ActionResultType.SUCCESS;
+            return true;
         }
-        return ActionResultType.PASS;
+        return false;
     }
 
     @Override
