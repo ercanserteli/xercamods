@@ -61,6 +61,30 @@ public class Blocks {
     public static final Block CARVED_DARK_OAK_6 = null;
     public static final Block CARVED_DARK_OAK_7 = null;
     public static final Block CARVED_DARK_OAK_8 = null;
+    public static final Block CARVED_ACACIA_1 = null;
+    public static final Block CARVED_ACACIA_2 = null;
+    public static final Block CARVED_ACACIA_3 = null;
+    public static final Block CARVED_ACACIA_4 = null;
+    public static final Block CARVED_ACACIA_5 = null;
+    public static final Block CARVED_ACACIA_6 = null;
+    public static final Block CARVED_ACACIA_7 = null;
+    public static final Block CARVED_ACACIA_8 = null;
+    public static final Block CARVED_JUNGLE_1 = null;
+    public static final Block CARVED_JUNGLE_2 = null;
+    public static final Block CARVED_JUNGLE_3 = null;
+    public static final Block CARVED_JUNGLE_4 = null;
+    public static final Block CARVED_JUNGLE_5 = null;
+    public static final Block CARVED_JUNGLE_6 = null;
+    public static final Block CARVED_JUNGLE_7 = null;
+    public static final Block CARVED_JUNGLE_8 = null;
+    public static final Block CARVED_SPRUCE_1 = null;
+    public static final Block CARVED_SPRUCE_2 = null;
+    public static final Block CARVED_SPRUCE_3 = null;
+    public static final Block CARVED_SPRUCE_4 = null;
+    public static final Block CARVED_SPRUCE_5 = null;
+    public static final Block CARVED_SPRUCE_6 = null;
+    public static final Block CARVED_SPRUCE_7 = null;
+    public static final Block CARVED_SPRUCE_8 = null;
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
@@ -115,7 +139,31 @@ public class Blocks {
                     new BlockCarvedLog("carved_dark_oak_5"),
                     new BlockCarvedLog("carved_dark_oak_6"),
                     new BlockCarvedLog("carved_dark_oak_7"),
-                    new BlockCarvedLog("carved_dark_oak_8")
+                    new BlockCarvedLog("carved_dark_oak_8"),
+                    new BlockCarvedLog("carved_acacia_1", true),
+                    new BlockCarvedLog("carved_acacia_2", true),
+                    new BlockCarvedLog("carved_acacia_3", true),
+                    new BlockCarvedLog("carved_acacia_4", true),
+                    new BlockCarvedLog("carved_acacia_5", true),
+                    new BlockCarvedLog("carved_acacia_6", true),
+                    new BlockCarvedLog("carved_acacia_7", true),
+                    new BlockCarvedLog("carved_acacia_8", true),
+                    new BlockCarvedLog("carved_jungle_1"),
+                    new BlockCarvedLog("carved_jungle_2"),
+                    new BlockCarvedLog("carved_jungle_3"),
+                    new BlockCarvedLog("carved_jungle_4"),
+                    new BlockCarvedLog("carved_jungle_5"),
+                    new BlockCarvedLog("carved_jungle_6"),
+                    new BlockCarvedLog("carved_jungle_7"),
+                    new BlockCarvedLog("carved_jungle_8"),
+                    new BlockCarvedLog("carved_spruce_1"),
+                    new BlockCarvedLog("carved_spruce_2"),
+                    new BlockCarvedLog("carved_spruce_3"),
+                    new BlockCarvedLog("carved_spruce_4"),
+                    new BlockCarvedLog("carved_spruce_5"),
+                    new BlockCarvedLog("carved_spruce_6"),
+                    new BlockCarvedLog("carved_spruce_7"),
+                    new BlockCarvedLog("carved_spruce_8")
             );
         }
     }

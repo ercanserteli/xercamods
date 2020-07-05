@@ -33,7 +33,7 @@ renderClouds:true
 resourcePacks:[]
 incompatibleResourcePacks:[]
 lastServer:
-lang:en_au
+lang:en_us
 chatVisibility:0
 chatOpacity:1.0
 textBackgroundOpacity:0.5

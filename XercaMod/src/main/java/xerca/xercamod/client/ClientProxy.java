@@ -38,6 +38,14 @@ public class ClientProxy extends Proxy {
             RenderTypeLookup.setRenderLayer(Blocks.BLOCK_TEA_PLANT, RenderType.getCutout());
             RenderTypeLookup.setRenderLayer(Blocks.BLOCK_TOMATO_PLANT, RenderType.getCutout());
             RenderTypeLookup.setRenderLayer(Blocks.BLOCK_RICE_PLANT, RenderType.getCutout());
+            RenderTypeLookup.setRenderLayer(Blocks.CARVED_ACACIA_1, RenderType.getCutoutMipped());
+            RenderTypeLookup.setRenderLayer(Blocks.CARVED_ACACIA_2, RenderType.getCutoutMipped());
+            RenderTypeLookup.setRenderLayer(Blocks.CARVED_ACACIA_3, RenderType.getCutoutMipped());
+            RenderTypeLookup.setRenderLayer(Blocks.CARVED_ACACIA_4, RenderType.getCutoutMipped());
+            RenderTypeLookup.setRenderLayer(Blocks.CARVED_ACACIA_5, RenderType.getCutoutMipped());
+            RenderTypeLookup.setRenderLayer(Blocks.CARVED_ACACIA_6, RenderType.getCutoutMipped());
+            RenderTypeLookup.setRenderLayer(Blocks.CARVED_ACACIA_7, RenderType.getCutoutMipped());
+            RenderTypeLookup.setRenderLayer(Blocks.CARVED_ACACIA_8, RenderType.getCutoutMipped());
         }
 
         @SubscribeEvent

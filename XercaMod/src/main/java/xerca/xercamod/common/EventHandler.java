@@ -26,7 +26,7 @@ class EventHandler {
     public static void craftEvent(PlayerEvent.ItemCraftedEvent ev) {
         Item result = ev.getCrafting().getItem();
         // Handling knife usage in recipes
-        if (result == Items.ITEM_GRAB_HOOK) {
+        if (result == Items.ITEM_GRAB_HOOK || result == Items.ITEM_KNIFE) {
             for (int i = 0; i < ev.getInventory().getSizeInventory(); ++i) {
                 ItemStack item = ev.getInventory().getStackInSlot(i);
                 if (item.getItem() == Items.ITEM_KNIFE) {

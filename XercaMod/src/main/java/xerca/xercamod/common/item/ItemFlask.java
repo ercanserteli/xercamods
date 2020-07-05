@@ -148,6 +148,7 @@ public class ItemFlask extends Item {
      * allows items to add custom lines of information to the mouseover description
      */
     @OnlyIn(Dist.CLIENT)
+    @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if(hasMilk){
             tooltip.add(new StringTextComponent("Calcium for your bones"));
@@ -166,6 +167,7 @@ public class ItemFlask extends Item {
      * the glint for enchanted items. Of course, that is unnecessary if the overwritten version always returns true.
      */
     @OnlyIn(Dist.CLIENT)
+    @Override
     public boolean hasEffect(ItemStack stack) {
         return super.hasEffect(stack) || (hasMilk || !PotionUtils.getEffectsFromStack(stack).isEmpty());
     }
