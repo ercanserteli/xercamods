@@ -139,7 +139,7 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
                 return;
             }
             if (age % mPause == 0) {
-                if (mTime == mLength) {
+                if (mTime >= mLength) {
                     //System.out.println("music bitti!");
                     age = 0;
                     mTime = 0;
@@ -159,7 +159,7 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
                     return;
                 }
 
-                if(world.isRemote){
+                if(world.isRemote && mTime < music.length){
                     if (music[mTime] != 0 && music[mTime] <= 48) {
 
                         if(instrument.shouldCutOff && lastPlayed != null){
