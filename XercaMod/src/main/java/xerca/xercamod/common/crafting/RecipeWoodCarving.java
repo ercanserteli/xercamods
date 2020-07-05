@@ -50,7 +50,11 @@ public class RecipeWoodCarving extends SpecialRecipe {
                         knifeFound = true;
                     } else if(itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem()
                             || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()) {
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_ACACIA_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()
+                    ) {
                         if(logFound){
                             return false;
                         }
@@ -158,6 +162,93 @@ public class RecipeWoodCarving extends SpecialRecipe {
                 return ItemStack.EMPTY;
             }
         }
+        else if(logType == net.minecraft.block.Blocks.STRIPPED_ACACIA_LOG.asItem()){
+            if(difX == -1 && difY == -1){
+                resultItem = Blocks.CARVED_ACACIA_1.asItem();
+            }
+            else if(difX == 0 && difY == -1){
+                resultItem = Blocks.CARVED_ACACIA_2.asItem();
+            }
+            else if(difX == 1 && difY == -1){
+                resultItem = Blocks.CARVED_ACACIA_3.asItem();
+            }
+            else if(difX == -1 && difY == 0){
+                resultItem = Blocks.CARVED_ACACIA_4.asItem();
+            }
+            else if(difX == 1 && difY == 0){
+                resultItem = Blocks.CARVED_ACACIA_5.asItem();
+            }
+            else if(difX == -1 && difY == 1){
+                resultItem = Blocks.CARVED_ACACIA_6.asItem();
+            }
+            else if(difX == 0 && difY == 1){
+                resultItem = Blocks.CARVED_ACACIA_7.asItem();
+            }
+            else if(difX == 1 && difY == 1){
+                resultItem = Blocks.CARVED_ACACIA_8.asItem();
+            }
+            else{
+                return ItemStack.EMPTY;
+            }
+        }
+        else if(logType == net.minecraft.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()){
+            if(difX == -1 && difY == -1){
+                resultItem = Blocks.CARVED_JUNGLE_1.asItem();
+            }
+            else if(difX == 0 && difY == -1){
+                resultItem = Blocks.CARVED_JUNGLE_2.asItem();
+            }
+            else if(difX == 1 && difY == -1){
+                resultItem = Blocks.CARVED_JUNGLE_3.asItem();
+            }
+            else if(difX == -1 && difY == 0){
+                resultItem = Blocks.CARVED_JUNGLE_4.asItem();
+            }
+            else if(difX == 1 && difY == 0){
+                resultItem = Blocks.CARVED_JUNGLE_5.asItem();
+            }
+            else if(difX == -1 && difY == 1){
+                resultItem = Blocks.CARVED_JUNGLE_6.asItem();
+            }
+            else if(difX == 0 && difY == 1){
+                resultItem = Blocks.CARVED_JUNGLE_7.asItem();
+            }
+            else if(difX == 1 && difY == 1){
+                resultItem = Blocks.CARVED_JUNGLE_8.asItem();
+            }
+            else{
+                return ItemStack.EMPTY;
+            }
+        }
+        else if(logType == net.minecraft.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()){
+            if(difX == -1 && difY == -1){
+                resultItem = Blocks.CARVED_SPRUCE_1.asItem();
+            }
+            else if(difX == 0 && difY == -1){
+                resultItem = Blocks.CARVED_SPRUCE_2.asItem();
+            }
+            else if(difX == 1 && difY == -1){
+                resultItem = Blocks.CARVED_SPRUCE_3.asItem();
+            }
+            else if(difX == -1 && difY == 0){
+                resultItem = Blocks.CARVED_SPRUCE_4.asItem();
+            }
+            else if(difX == 1 && difY == 0){
+                resultItem = Blocks.CARVED_SPRUCE_5.asItem();
+            }
+            else if(difX == -1 && difY == 1){
+                resultItem = Blocks.CARVED_SPRUCE_6.asItem();
+            }
+            else if(difX == 0 && difY == 1){
+                resultItem = Blocks.CARVED_SPRUCE_7.asItem();
+            }
+            else if(difX == 1 && difY == 1){
+                resultItem = Blocks.CARVED_SPRUCE_8.asItem();
+            }
+            else{
+                return ItemStack.EMPTY;
+            }
+        }
         else{
             return ItemStack.EMPTY;
         }
@@ -193,7 +284,11 @@ public class RecipeWoodCarving extends SpecialRecipe {
                         knifeFound = true;
                     } else if(itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem()
                             || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()) {
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_ACACIA_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()
+                    ) {
                         if(logFound){
                             return ItemStack.EMPTY;
                         }

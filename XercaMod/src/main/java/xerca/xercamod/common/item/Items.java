@@ -1,5 +1,6 @@
 package xerca.xercamod.common.item;
 
+import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
@@ -127,6 +128,30 @@ public final class Items {
     public static final Item CARVED_DARK_OAK_6 = null;
     public static final Item CARVED_DARK_OAK_7 = null;
     public static final Item CARVED_DARK_OAK_8 = null;
+    public static final Item CARVED_ACACIA_1 = null;
+    public static final Item CARVED_ACACIA_2 = null;
+    public static final Item CARVED_ACACIA_3 = null;
+    public static final Item CARVED_ACACIA_4 = null;
+    public static final Item CARVED_ACACIA_5 = null;
+    public static final Item CARVED_ACACIA_6 = null;
+    public static final Item CARVED_ACACIA_7 = null;
+    public static final Item CARVED_ACACIA_8 = null;
+    public static final Item CARVED_JUNGLE_1 = null;
+    public static final Item CARVED_JUNGLE_2 = null;
+    public static final Item CARVED_JUNGLE_3 = null;
+    public static final Item CARVED_JUNGLE_4 = null;
+    public static final Item CARVED_JUNGLE_5 = null;
+    public static final Item CARVED_JUNGLE_6 = null;
+    public static final Item CARVED_JUNGLE_7 = null;
+    public static final Item CARVED_JUNGLE_8 = null;
+    public static final Item CARVED_SPRUCE_1 = null;
+    public static final Item CARVED_SPRUCE_2 = null;
+    public static final Item CARVED_SPRUCE_3 = null;
+    public static final Item CARVED_SPRUCE_4 = null;
+    public static final Item CARVED_SPRUCE_5 = null;
+    public static final Item CARVED_SPRUCE_6 = null;
+    public static final Item CARVED_SPRUCE_7 = null;
+    public static final Item CARVED_SPRUCE_8 = null;
 
     public static final Enchantment ENCHANTMENT_STEALTH = null;
     public static final Enchantment ENCHANTMENT_POISON = null;
@@ -342,30 +367,54 @@ public final class Items {
                     new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
                     new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isLeatherStrawEnabled).setRegistryName("item_block_straw"),
                     new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().group(ItemGroup.DECORATIONS), Config::isBookcaseEnabled).setRegistryName("item_bookcase"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_1"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_2"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_3"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_4"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_5"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_6"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_7"),
-                    new BlockConditionedItem(Blocks.CARVED_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_oak_8"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_1"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_2"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_3"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_4"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_5"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_6"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_7"),
-                    new BlockConditionedItem(Blocks.CARVED_BIRCH_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_birch_8"),
-                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_1"),
-                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_2"),
-                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_3"),
-                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_4"),
-                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_5"),
-                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_6"),
-                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_7"),
-                    new BlockConditionedItem(Blocks.CARVED_DARK_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isCarvedWoodEnabled).setRegistryName("carved_dark_oak_8"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_oak_1"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_oak_2"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_oak_3"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_oak_4"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_oak_5"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_oak_6"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_oak_7"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_oak_8"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_birch_1"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_birch_2"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_birch_3"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_birch_4"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_birch_5"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_birch_6"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_birch_7"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_birch_8"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_dark_oak_1"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_dark_oak_2"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_dark_oak_3"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_dark_oak_4"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_dark_oak_5"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_dark_oak_6"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_dark_oak_7"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_dark_oak_8"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_acacia_1"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_acacia_2"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_acacia_3"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_acacia_4"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_acacia_5"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_acacia_6"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_acacia_7"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_acacia_8"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_jungle_1"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_jungle_2"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_jungle_3"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_jungle_4"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_jungle_5"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_jungle_6"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_jungle_7"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_jungle_8"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_spruce_1"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_spruce_2"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_spruce_3"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_spruce_4"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_spruce_5"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_spruce_6"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_spruce_7"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_spruce_8"),
 
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true)

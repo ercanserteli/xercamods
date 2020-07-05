@@ -1,0 +1,9 @@
+{
+  "parent": "xercamod:block/carved_wood/carved_acacia",
+  "textures": {
+    "north": "xercamod:block/carved_wood/carved_acacia_7a",
+    "south": "xercamod:block/carved_wood/carved_acacia_7c",
+    "west":  "xercamod:block/carved_wood/carved_acacia_7b",
+    "east":  "xercamod:block/carved_wood/carved_acacia_7d"
+  }
+}
