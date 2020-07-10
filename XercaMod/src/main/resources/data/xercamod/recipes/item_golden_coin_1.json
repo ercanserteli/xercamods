@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercamod:item_golden_coin_5"}],
+    "result": {"item": "xercamod:item_golden_coin_1", "count": 5}
+}
+        

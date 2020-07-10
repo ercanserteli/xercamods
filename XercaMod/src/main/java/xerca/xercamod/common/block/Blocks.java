@@ -12,6 +12,7 @@ import xerca.xercamod.common.XercaMod;
 
 @ObjectHolder(XercaMod.MODID)
 public class Blocks {
+    public static final BlockDoner BLOCK_DONER = null;
     public static final BlockTeapot BLOCK_TEAPOT = null;
     public static final BlockTeaPlant BLOCK_TEA_PLANT = null;
     public static final BlockTomatoPlant BLOCK_TOMATO_PLANT = null;
@@ -91,6 +92,7 @@ public class Blocks {
         @SubscribeEvent
         public static void registerBlocks(final RegistryEvent.Register<Block> event) {
             event.getRegistry().registerAll(
+                    new BlockDoner(),
                     new BlockTeapot(),
                     new BlockTeaPlant(),
                     new BlockTomatoPlant(),

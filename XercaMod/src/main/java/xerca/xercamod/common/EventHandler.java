@@ -1,5 +1,6 @@
 package xerca.xercamod.common;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -8,6 +9,7 @@ import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.TableLootEntry;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -63,5 +65,13 @@ class EventHandler {
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) event.getPlayer();
         ConfigSyncPacket pack = Config.makePacket();
         XercaMod.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> serverPlayer), pack);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRightClickedBlock(PlayerInteractEvent.RightClickBlock event) {
+        if(event.getWorld().getBlockState(event.getPos()).getBlock() == Blocks.IRON_BARS &&
+           event.getPlayer().getHeldItem(event.getHand()).getItem() == net.minecraft.item.Items.MUTTON){
+            event.getWorld().setBlockState(event.getPos(), xerca.xercamod.common.block.Blocks.BLOCK_DONER.getDefaultState());
+        }
     }
 }

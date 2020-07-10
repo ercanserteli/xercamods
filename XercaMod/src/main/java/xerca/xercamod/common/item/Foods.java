@@ -5,6 +5,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 
 public class Foods {
+    public static Food DONER_SLICE = makeFood(6, 0.9f, false).build();
     public static Food BAKED_RICE_PUDDING = makeFood(10, 1.1f, false).build();
     public static Food SWEET_BERRY_JUICE = makeFood(6, 0.7f, false).build();
     public static Food RICE_PUDDING = makeFood(8, 0.6f, false).build();

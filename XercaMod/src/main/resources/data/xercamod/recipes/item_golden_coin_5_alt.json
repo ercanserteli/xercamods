@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercamod:item_golden_coin_1"}, {"item": "xercamod:item_golden_coin_1"}, {"item": "xercamod:item_golden_coin_1"}, {"item": "xercamod:item_golden_coin_1"}, {"item": "xercamod:item_golden_coin_1"}],
+    "result": {"item": "xercamod:item_golden_coin_5"}
+}
+        

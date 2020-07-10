@@ -1,0 +1,8 @@
+{
+	"textures": {
+		"bar": "block/iron_bars",
+		"raw": "xercamod:block/doner_raw",
+		"cooked": "xercamod:block/doner_cooked",
+		"particle": "block/iron_bars"
+	}
+}

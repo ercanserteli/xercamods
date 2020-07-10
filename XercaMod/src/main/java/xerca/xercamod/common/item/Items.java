@@ -20,6 +20,7 @@ import xerca.xercamod.common.crafting.*;
 
 @ObjectHolder(XercaMod.MODID)
 public final class Items {
+    public static final Item DONER_SLICE = null;
     public static final Item BAKED_RICE_PUDDING = null;
     public static final Item SWEET_BERRY_JUICE = null;
     public static final Item RICE_PUDDING = null;
@@ -344,6 +345,7 @@ public final class Items {
                     makeContainedFoodItem("baked_rice_pudding", Foods.BAKED_RICE_PUDDING, net.minecraft.item.Items.BOWL, 16),
                     makeFoodItem("sweet_berry_cupcake_fancy", Foods.SWEET_BERRY_CUPCAKE_FANCY),
                     makeFoodItem("sweet_berry_cupcake", Foods.SWEET_BERRY_CUPCAKE),
+                    makeFoodItem("doner_slice", Foods.DONER_SLICE),
 
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),
