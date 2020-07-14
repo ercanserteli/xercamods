@@ -128,5 +128,30 @@
         "name": "xercamod:tea_pour"
       }
     ]
+  },
+  "sizzle": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "xercamod:sizzle1"
+      },
+      {
+        "name": "xercamod:sizzle2"
+      },
+      {
+        "name": "xercamod:sizzle3"
+      },
+      {
+        "name": "xercamod:sizzle4"
+      }
+    ]
+  },
+  "big_sizzle": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:big_sizzle"
+      }
+    ]
   }
 }
