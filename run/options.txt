@@ -94,7 +94,7 @@ key_key.hotbar.9:key.keyboard.9
 soundCategory_master:0.48509935
 soundCategory_music:0.0
 soundCategory_record:1.0
-soundCategory_weather:1.0
+soundCategory_weather:0.0
 soundCategory_block:1.0
 soundCategory_hostile:0.0
 soundCategory_neutral:0.0
