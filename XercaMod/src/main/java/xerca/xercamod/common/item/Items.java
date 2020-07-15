@@ -1,12 +1,14 @@
 package xerca.xercamod.common.item;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.util.IItemProvider;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -206,6 +208,15 @@ public final class Items {
         return item;
     }
 
+    static void registerCompostable(float chance, IItemProvider itemIn) {
+        ComposterBlock.CHANCES.put(itemIn.asItem(), chance);
+    }
+
+    public static void registerCompostables() {
+        registerCompostable(0.3f, ITEM_TEA_SEEDS);
+        registerCompostable(0.3f, ITEM_TOMATO_SEEDS);
+        registerCompostable(0.3f, ITEM_RICE_SEEDS);
+    }
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
