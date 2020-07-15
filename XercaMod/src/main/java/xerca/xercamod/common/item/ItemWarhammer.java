@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -89,7 +90,9 @@ public class ItemWarhammer extends Item {
     {
         return enchantment.type == EnchantmentType.BREAKABLE || enchantment == Items.ENCHANTMENT_HEAVY ||
                 enchantment == Items.ENCHANTMENT_QUAKE ||  enchantment == Items.ENCHANTMENT_MAIM ||
-                enchantment == Items.ENCHANTMENT_QUICK ||enchantment == Items.ENCHANTMENT_UPPERCUT;
+                enchantment == Items.ENCHANTMENT_QUICK ||enchantment == Items.ENCHANTMENT_UPPERCUT ||
+                enchantment == Enchantments.SMITE || enchantment == Enchantments.BANE_OF_ARTHROPODS ||
+                enchantment == Enchantments.LOOTING;
     }
 
     @Override
@@ -207,7 +210,6 @@ public class ItemWarhammer extends Item {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-//        XercaMod.LOGGER.warn("WARHAMMER_ENABLE: " + Config.WARHAMMER_ENABLE.get());
         if(!Config.isWarhammerEnabled()){
             return;
         }

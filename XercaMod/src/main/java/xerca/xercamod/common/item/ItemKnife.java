@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -44,15 +45,15 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity e1, LivingEntity e2) {
+    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         float damage = 0.0F;
-        if (e2.isSteppingCarefully() && MathHelper.abs(MathHelper.wrapDegrees(e1.rotationYaw) - MathHelper.wrapDegrees(e2.rotationYaw)) < 65.0F) {
-            if(!e1.world.isRemote){
-                SAnimateHandPacket packetOut = new SAnimateHandPacket(e1, 4);
-                ((ServerWorld)e1.world).getChunkProvider().sendToTrackingAndSelf(e2, packetOut);
+        if (attacker.isSteppingCarefully() && MathHelper.abs(MathHelper.wrapDegrees(target.rotationYaw) - MathHelper.wrapDegrees(attacker.rotationYaw)) < 65.0F) {
+            if(!target.world.isRemote){
+                SAnimateHandPacket packetOut = new SAnimateHandPacket(target, 4);
+                ((ServerWorld)target.world).getChunkProvider().sendToTrackingAndSelf(attacker, packetOut);
 
             }
-            e2.world.playSound(null, e1.getPosX(), e1.getPosY() + 0.5d, e1.getPosZ(), SoundEvents.SNEAK_HIT, SoundCategory.PLAYERS, 1.0f, e2.world.rand.nextFloat() * 0.2F + 0.8F);
+            attacker.world.playSound(null, target.getPosX(), target.getPosY() + 0.5d, target.getPosZ(), SoundEvents.SNEAK_HIT, SoundCategory.PLAYERS, 1.0f, attacker.world.rand.nextFloat() * 0.2F + 0.8F);
 
             float bonus = defaultBonus;
             if(stack.isEnchanted()){
@@ -60,19 +61,19 @@ public class ItemKnife extends Item {
             }
 
             damage += bonus;
-            PlayerEntity player = (PlayerEntity) e2;
+            PlayerEntity player = (PlayerEntity) attacker;
             DamageSource damagesource = DamageSource.causePlayerDamage(player);
-            e1.attackEntityFrom(damagesource, damage);
-            if(e1.getHealth() <= 0f) {
+            target.attackEntityFrom(damagesource, damage);
+            if(target.getHealth() <= 0f) {
                 Triggers.ASSASSINATE.trigger((ServerPlayerEntity) player);
             }
         }
-        stack.damageItem(1, e2, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
+        stack.damageItem(1, attacker, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
 
         if(stack.isEnchanted()){
             int poison = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_POISON, stack);
             if(poison > 0){
-                e1.addPotionEffect(new EffectInstance(Effects.POISON, 30 + 30 * poison, poison - 1));
+                target.addPotionEffect(new EffectInstance(Effects.POISON, 30 + 30 * poison, poison - 1));
             }
         }
 
@@ -145,6 +146,7 @@ public class ItemKnife extends Item {
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
         return enchantment.type == EnchantmentType.BREAKABLE || enchantment == Items.ENCHANTMENT_POISON
-                || enchantment == Items.ENCHANTMENT_STEALTH;
+                || enchantment == Items.ENCHANTMENT_STEALTH || enchantment == Enchantments.SMITE ||
+                enchantment == Enchantments.BANE_OF_ARTHROPODS || enchantment == Enchantments.LOOTING;
     }
 }
