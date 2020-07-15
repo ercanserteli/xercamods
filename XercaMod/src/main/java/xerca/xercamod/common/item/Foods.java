@@ -5,7 +5,14 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 
 public class Foods {
-    public static Food DONER_SLICE = makeFood(6, 0.9f, false).build();
+    public static Food YOGHURT = makeFood(4, 0.5f, false).build();
+    public static Food AYRAN = makeFood(4, 0.5f, false).setAlwaysEdible().build();
+    public static Food HONEYBERRY_YOGHURT = makeFood(12, 1.0f, false).build();
+    public static Food HONEY_CUPCAKE = makeFood(6, 0.7f, false).build();
+    public static Food DONER_WRAP = makeFood(9, 1.2f, true).build();
+    public static Food CHUBBY_DONER = makeFood(12, 1.4f, true).build();
+    public static Food ALEXANDER = makeFood(16, 1.6f, true).build();
+    public static Food DONER_SLICE = makeFood(6, 0.9f, true).build();
     public static Food BAKED_RICE_PUDDING = makeFood(10, 1.1f, false).build();
     public static Food SWEET_BERRY_JUICE = makeFood(6, 0.7f, false).build();
     public static Food RICE_PUDDING = makeFood(8, 0.6f, false).build();

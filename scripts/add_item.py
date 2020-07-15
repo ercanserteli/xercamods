@@ -57,7 +57,7 @@ def add_food_entry(mod_id, item_name):
 
         line_find = "public class Foods {"
         i = text.find(line_find) + len(line_find) + 2
-        line = f'public static Food {food_name} = makeFood(6, 0.7f, false).build();\n    '
+        line = f'public static Food {food_name} = makeFood(6, 0.7f, false).build();\n'
         text = text[:i] + line + text[i:]
 
         f.seek(0)
@@ -85,7 +85,7 @@ def add_items_entry(mod_id, item_name, item_class, is_pure, is_food):
         # Object holder
         line_find = "public final class Items {"
         i = n_items.find(line_find) + len(line_find) + 2
-        line = f'public static final {item_class} {item_name.upper()} = null;\n    '
+        line = f'public static final {item_class} {item_name.upper()} = null;\n'
         n_items = n_items[:i] + line + n_items[i:]
 
         # Register

@@ -30,7 +30,7 @@ fancyGraphics:true
 ao:2
 biomeBlendRadius:2
 renderClouds:true
-resourcePacks:[]
+resourcePacks:["vanilla","mod_resources"]
 incompatibleResourcePacks:[]
 lastServer:
 lang:en_us

@@ -1,0 +1,9 @@
+{
+  "parent": "xercamod:block/terracotta_tiles/terratile_inverted_stairs",
+  "textures": {
+    "bottom": "xercamod:block/terracotta_tiles/orange_terracottatiles_top",
+    "top": "xercamod:block/terracotta_tiles/orange_terracottatiles_top",
+    "side": "xercamod:block/terracotta_tiles/orange_terracottatiles_side",
+    "front": "xercamod:block/terracotta_tiles/orange_terracottatiles_front"
+  }
+}
