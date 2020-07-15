@@ -94,6 +94,8 @@ public class XercaMod {
                 return new EntityConfettiBall(worldIn, position.getX(), position.getY(), position.getZ());
             }
         });
+
+        Items.registerCompostables();
     }
 
     private void registerTriggers() {
