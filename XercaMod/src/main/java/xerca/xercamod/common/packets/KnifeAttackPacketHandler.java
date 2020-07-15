@@ -1,12 +1,16 @@
 package xerca.xercamod.common.packets;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.fml.network.NetworkEvent;
+import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.item.Items;
 
 import java.util.function.Supplier;
@@ -31,16 +35,23 @@ public class KnifeAttackPacketHandler {
 
     private static void processMessage(KnifeAttackPacket msg, ServerPlayerEntity pl) {
         Entity target = pl.world.getEntityByID(msg.getTargetId());
-        ItemStack st;
-        if (pl.getHeldItemMainhand().getItem() == Items.ITEM_KNIFE)
-            st = pl.getHeldItemMainhand();
-        else if (pl.getHeldItemOffhand().getItem() == Items.ITEM_KNIFE) {
-            st = pl.getHeldItemOffhand();
-        } else {
-            System.out.println("No knife at hand!");
+        ItemStack st = pl.getHeldItemOffhand();;
+        if (st.getItem() != Items.ITEM_KNIFE) {
+            XercaMod.LOGGER.warn("No knife at offhand!");
             return;
         }
-        st.getItem().hitEntity(st, (LivingEntity) target, pl);
-        target.attackEntityFrom(DamageSource.causePlayerDamage(pl), 3.0f);
+        if (target instanceof LivingEntity) {
+            st.getItem().hitEntity(st, (LivingEntity) target, pl);
+            float enchantBonus = EnchantmentHelper.getModifierForCreature(st, ((LivingEntity) target).getCreatureAttribute());
+            target.attackEntityFrom(DamageSource.causePlayerDamage(pl), 3.0f + enchantBonus);
+            if(enchantBonus > 0.0f){
+                pl.onEnchantmentCritical(target);
+                pl.world.playSound(null, pl.getPosX(), pl.getPosY(), pl.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, pl.getSoundCategory(), 1.0F, 1.0F);
+            }
+            else {
+                pl.world.playSound(null, pl.getPosX(), pl.getPosY(), pl.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_WEAK, pl.getSoundCategory(), 1.0F, 1.0F);
+            }
+        }
+
     }
 }

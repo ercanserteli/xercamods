@@ -15,6 +15,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xerca.xercamod.common.SoundEvents;
+import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.item.ItemWarhammer;
 import xerca.xercamod.common.item.Items;
 
@@ -70,6 +71,9 @@ public class HammerAttackPacketHandler {
             st.damageItem(1, pl, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
             if(target instanceof LivingEntity){
                 LivingEntity targetLiving = (LivingEntity) target;
+                float enchantBonus = EnchantmentHelper.getModifierForCreature(st, targetLiving.getCreatureAttribute());
+//              XercaMod.LOGGER.warn("Enchantment bonus damage: " + enchantBonus);
+                damage += enchantBonus;
                 targetLiving.attackEntityFrom(DamageSource.causePlayerDamage(pl), damage);
 
                 int maimLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_MAIM, st);
