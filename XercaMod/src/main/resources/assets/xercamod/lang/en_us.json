@@ -1,5 +1,12 @@
 {
-"item.xercamod.doner_slice": "Slice of Doner",
+  "item.xercamod.item_yoghurt": "Yoghurt",
+  "item.xercamod.item_honeyberry_yoghurt": "Honey sweetberry yoghurt",
+  "item.xercamod.item_honey_cupcake": "Honey cupcake",
+  "item.xercamod.item_doner_wrap": "Doner wrap",
+  "item.xercamod.item_chubby_doner": "Chubby doner",
+  "item.xercamod.item_alexander": "Alexander Kebab",
+  "item.xercamod.item_ayran": "Ayran",
+  "item.xercamod.doner_slice": "Leaf Doner",
   "item.xercamod.baked_rice_pudding": "Baked Rice Pudding",
   "item.xercamod.sweet_berry_juice": "Sweet Berry Juice",
   "item.xercamod.rice_pudding": "Rice Pudding",
@@ -193,6 +200,10 @@
   "block.xercamod.carved_spruce_6": "Carved Spruce",
   "block.xercamod.carved_spruce_7": "Carved Spruce",
   "block.xercamod.carved_spruce_8": "Carved Spruce",
+
+  "block.xercamod.orange_terratile": "Orange Terracotta Tile",
+  "block.xercamod.orange_terratile_slab": "Orange Terracotta Tile Slab",
+  "block.xercamod.orange_terratile_stairs": "Orange Terracotta Tile Stairs",
 
   "item.xercamod.flask": "Ender Flask",
   "item.xercamod.flask_milk": "Ender Flask of Milk",

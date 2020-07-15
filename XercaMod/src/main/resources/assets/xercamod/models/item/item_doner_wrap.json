@@ -2,6 +2,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "xercamod:item/leaf_doner"
+        "layer0": "xercamod:item/doner_wrap"
     }
 }

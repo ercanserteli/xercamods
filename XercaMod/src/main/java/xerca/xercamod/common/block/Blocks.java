@@ -1,8 +1,8 @@
 package xerca.xercamod.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -87,6 +87,10 @@ public class Blocks {
     public static final Block CARVED_SPRUCE_7 = null;
     public static final Block CARVED_SPRUCE_8 = null;
 
+    public static final BlockTerracottaTile ORANGE_TERRATILE = null;
+    public static final BlockTerracottaTileSlab ORANGE_TERRATILE_SLAB = null;
+    public static final StairsBlock ORANGE_TERRATILE_STAIRS = null;
+
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
@@ -165,7 +169,11 @@ public class Blocks {
                     new BlockCarvedLog("carved_spruce_5"),
                     new BlockCarvedLog("carved_spruce_6"),
                     new BlockCarvedLog("carved_spruce_7"),
-                    new BlockCarvedLog("carved_spruce_8")
+                    new BlockCarvedLog("carved_spruce_8"),
+
+                    new BlockTerracottaTile().setRegistryName("orange_terratile"),
+                    new BlockTerracottaTileSlab().setRegistryName("orange_terratile_slab"),
+                    new StairsBlock(() -> ORANGE_TERRATILE.getDefaultState(), Block.Properties.create(Material.ROCK).hardnessAndResistance(1.5f).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE)).setRegistryName("orange_terratile_stairs")
             );
         }
     }

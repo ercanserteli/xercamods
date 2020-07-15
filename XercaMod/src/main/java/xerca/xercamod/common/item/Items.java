@@ -20,6 +20,13 @@ import xerca.xercamod.common.crafting.*;
 
 @ObjectHolder(XercaMod.MODID)
 public final class Items {
+    public static final Item ITEM_YOGHURT = null;
+    public static final Item ITEM_HONEYBERRY_YOGHURT = null;
+    public static final Item ITEM_HONEY_CUPCAKE = null;
+    public static final Item ITEM_DONER_WRAP = null;
+    public static final Item ITEM_CHUBBY_DONER = null;
+    public static final Item ITEM_ALEXANDER = null;
+    public static final Item ITEM_AYRAN = null;
     public static final Item DONER_SLICE = null;
     public static final Item BAKED_RICE_PUDDING = null;
     public static final Item SWEET_BERRY_JUICE = null;
@@ -188,7 +195,7 @@ public final class Items {
     }
 
     static Item makeContainedFoodItem(String name, Food food, Item container, int stackSize){
-        Item item = new ItemConditionedContainedFood(new Item.Properties().group(ItemGroup.FOOD).food(food), container, stackSize);
+        Item item = new ItemConditionedContainedFood(new Item.Properties().group(ItemGroup.FOOD).food(food).containerItem(container), container, stackSize);
         item.setRegistryName(name);
         return item;
     }
@@ -331,6 +338,7 @@ public final class Items {
                     makeDrinkItem("item_glass_of_milk", Foods.GLASS_OF_MILK, glass),
                     makeDrinkItem("item_glass_of_water", Foods.GLASS_OF_WATER, glass),
                     makeDrinkItem("sweet_berry_juice", Foods.SWEET_BERRY_JUICE, glass),
+                    makeDrinkItem("item_ayran", Foods.AYRAN, glass),
                     makeDrinkItem("sake", Foods.SAKE, glass),
                     makeContainedFoodItem("oyakodon", Foods.OYAKODON, net.minecraft.item.Items.BOWL, 16),
                     makeContainedFoodItem("beef_donburi", Foods.BEEF_DONBURI, net.minecraft.item.Items.BOWL, 16),
@@ -346,6 +354,12 @@ public final class Items {
                     makeFoodItem("sweet_berry_cupcake_fancy", Foods.SWEET_BERRY_CUPCAKE_FANCY),
                     makeFoodItem("sweet_berry_cupcake", Foods.SWEET_BERRY_CUPCAKE),
                     makeFoodItem("doner_slice", Foods.DONER_SLICE),
+                    makeContainedFoodItem("item_yoghurt", Foods.YOGHURT, net.minecraft.item.Items.BUCKET, 16),
+                    makeContainedFoodItem("item_honeyberry_yoghurt", Foods.HONEYBERRY_YOGHURT, net.minecraft.item.Items.BOWL, 16),
+                    makeFoodItem("item_honey_cupcake", Foods.HONEY_CUPCAKE),
+                    makeFoodItem("item_doner_wrap", Foods.DONER_WRAP),
+                    makeFoodItem("item_chubby_doner", Foods.CHUBBY_DONER),
+                    makeContainedFoodItem("item_alexander", Foods.ALEXANDER, net.minecraft.item.Items.BOWL, 16),
 
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
                     new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),
@@ -417,6 +431,10 @@ public final class Items {
                     new CarvedWoodItem(Blocks.CARVED_SPRUCE_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_spruce_6"),
                     new CarvedWoodItem(Blocks.CARVED_SPRUCE_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_spruce_7"),
                     new CarvedWoodItem(Blocks.CARVED_SPRUCE_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_spruce_8"),
+
+                    new BlockItem(Blocks.ORANGE_TERRATILE, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName("orange_terratile"),
+                    new BlockItem(Blocks.ORANGE_TERRATILE_SLAB, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName("orange_terratile_slab"),
+                    new BlockItem(Blocks.ORANGE_TERRATILE_STAIRS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName("orange_terratile_stairs"),
 
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true)
