@@ -96,6 +96,7 @@ public class XercaMod {
         });
 
         Items.registerCompostables();
+        DecoCreativeTab.initItemList();
     }
 
     private void registerTriggers() {

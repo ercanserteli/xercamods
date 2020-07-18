@@ -1,0 +1,10 @@
+
+{
+  "parent": "xercamod:block/terracotta_tiles/terratile_inner_stairs",
+  "textures": {
+    "bottom": "xercamod:block/terracotta_tiles/blue_terra_cotta_tiles_top_inner",
+    "top": "xercamod:block/terracotta_tiles/blue_terra_cotta_tiles_top_inner",
+    "side": "xercamod:block/terracotta_tiles/blue_terra_cotta_tiles_side",
+    "front": "xercamod:block/terracotta_tiles/blue_terra_cotta_tiles_front"
+  }
+}

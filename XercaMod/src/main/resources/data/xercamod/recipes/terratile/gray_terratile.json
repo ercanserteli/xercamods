@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "terratile",
+    "pattern": [
+        "tt",
+        "tt"
+    ],
+    "key": {"t": {"item": "minecraft:gray_terracotta"}},
+    "result": {"item": "xercamod:gray_terratile", "count": 4}
+}
+        

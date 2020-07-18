@@ -159,6 +159,31 @@ class SpecialRecipe(Recipe):
         return self.type.split("crafting_special_", 1)[1]
 
 
+class StonecuttingRecipe(Recipe):
+    def __init__(self, ingredient, result, count, group="", folder="", type="minecraft:stonecutting"):
+        super().__init__(type, group, None, folder)
+        self.ingredient = ingredient
+        self.count = count
+        self.result = result
+
+    def produce_recipe_json(self):
+        # group_line = '"group": "{}",'.format(self.group) if self.group else ""
+        template = """
+{{
+    "type": "{type}",
+    "ingredient": {{
+        "item": "{ingredient}"
+    }},
+    "result": "{result}",
+    "count": {count}
+}}
+        """
+        return template.format(type=self.type, ingredient=self.ingredient, count=self.count, result=self.result).replace("'", '"')
+
+    def get_name(self):
+        return self.result.split(":", 1)[1] + "_from_" + self.ingredient.split(":", 1)[1] + "_stonecutting"
+
+
 def write_recipe_adv_root_json():
     content = """{
   "criteria": {

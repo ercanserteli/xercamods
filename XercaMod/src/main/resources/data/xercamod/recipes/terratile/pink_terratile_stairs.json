@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "t  ",
+        "tt ",
+        "ttt"
+    ],
+    "key": {"t": {"item": "xercamod:pink_terratile"}},
+    "result": {"item": "xercamod:pink_terratile_stairs", "count": 4}
+}
+        

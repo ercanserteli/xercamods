@@ -73,9 +73,59 @@ shaped_recipes = [
     ShapedRecipe(['#', 'f', '#'], {'item': 'xercamod:yellow_cushion', 'count': 1}, {'f': {'item': 'minecraft:feather'}, '#': {'item': 'minecraft:yellow_wool'}}, {'item': 'minecraft:feather'}, "cushion", "cushion", type="xercamod:crafting_condition_shaped_cushion"),
 
     # Terracotta tiles
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:black_terratile', 'count': 4}, {'t': {'item': 'minecraft:black_terracotta'}}, {'item': 'minecraft:black_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:blue_terratile', 'count': 4}, {'t': {'item': 'minecraft:blue_terracotta'}}, {'item': 'minecraft:blue_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:brown_terratile', 'count': 4}, {'t': {'item': 'minecraft:brown_terracotta'}}, {'item': 'minecraft:brown_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:cyan_terratile', 'count': 4}, {'t': {'item': 'minecraft:cyan_terracotta'}}, {'item': 'minecraft:cyan_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:gray_terratile', 'count': 4}, {'t': {'item': 'minecraft:gray_terracotta'}}, {'item': 'minecraft:gray_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:green_terratile', 'count': 4}, {'t': {'item': 'minecraft:green_terracotta'}}, {'item': 'minecraft:green_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:light_blue_terratile', 'count': 4}, {'t': {'item': 'minecraft:light_blue_terracotta'}}, {'item': 'minecraft:light_blue_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:light_gray_terratile', 'count': 4}, {'t': {'item': 'minecraft:light_gray_terracotta'}}, {'item': 'minecraft:light_gray_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:lime_terratile', 'count': 4}, {'t': {'item': 'minecraft:lime_terracotta'}}, {'item': 'minecraft:lime_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:magenta_terratile', 'count': 4}, {'t': {'item': 'minecraft:magenta_terracotta'}}, {'item': 'minecraft:magenta_terracotta'}, "terratile", "terratile"),
     ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:orange_terratile', 'count': 4}, {'t': {'item': 'minecraft:orange_terracotta'}}, {'item': 'minecraft:orange_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:pink_terratile', 'count': 4}, {'t': {'item': 'minecraft:pink_terracotta'}}, {'item': 'minecraft:pink_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:purple_terratile', 'count': 4}, {'t': {'item': 'minecraft:purple_terracotta'}}, {'item': 'minecraft:purple_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:red_terratile', 'count': 4}, {'t': {'item': 'minecraft:red_terracotta'}}, {'item': 'minecraft:red_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:white_terratile', 'count': 4}, {'t': {'item': 'minecraft:white_terracotta'}}, {'item': 'minecraft:white_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:yellow_terratile', 'count': 4}, {'t': {'item': 'minecraft:yellow_terracotta'}}, {'item': 'minecraft:yellow_terracotta'}, "terratile", "terratile"),
+    ShapedRecipe(['tt', 'tt'], {'item': 'xercamod:terratile', 'count': 4}, {'t': {'item': 'minecraft:terracotta'}}, {'item': 'minecraft:terracotta'}, "terratile", "terratile"),
+
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:black_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:black_terratile'}}, {'item': 'xercamod:black_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:blue_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:blue_terratile'}}, {'item': 'xercamod:blue_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:brown_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:brown_terratile'}}, {'item': 'xercamod:brown_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:cyan_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:cyan_terratile'}}, {'item': 'xercamod:cyan_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:gray_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:gray_terratile'}}, {'item': 'xercamod:gray_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:green_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:green_terratile'}}, {'item': 'xercamod:green_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:light_blue_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:light_blue_terratile'}}, {'item': 'xercamod:light_blue_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:light_gray_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:light_gray_terratile'}}, {'item': 'xercamod:light_gray_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:lime_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:lime_terratile'}}, {'item': 'xercamod:lime_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:magenta_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:magenta_terratile'}}, {'item': 'xercamod:magenta_terratile'}, "", "terratile"),
     ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:orange_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:orange_terratile'}}, {'item': 'xercamod:orange_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:pink_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:pink_terratile'}}, {'item': 'xercamod:pink_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:purple_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:purple_terratile'}}, {'item': 'xercamod:purple_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:red_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:red_terratile'}}, {'item': 'xercamod:red_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:white_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:white_terratile'}}, {'item': 'xercamod:white_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:yellow_terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:yellow_terratile'}}, {'item': 'xercamod:yellow_terratile'}, "", "terratile"),
+    ShapedRecipe(['t  ', 'tt ', 'ttt'], {'item': 'xercamod:terratile_stairs', 'count': 4}, {'t': {'item': 'xercamod:terratile'}}, {'item': 'xercamod:terratile'}, "", "terratile"),
+
+    ShapedRecipe(['ttt'], {'item': 'xercamod:black_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:black_terratile'}}, {'item': 'xercamod:black_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:blue_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:blue_terratile'}}, {'item': 'xercamod:blue_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:brown_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:brown_terratile'}}, {'item': 'xercamod:brown_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:cyan_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:cyan_terratile'}}, {'item': 'xercamod:cyan_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:gray_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:gray_terratile'}}, {'item': 'xercamod:gray_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:green_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:green_terratile'}}, {'item': 'xercamod:green_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:light_blue_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:light_blue_terratile'}}, {'item': 'xercamod:light_blue_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:light_gray_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:light_gray_terratile'}}, {'item': 'xercamod:light_gray_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:lime_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:lime_terratile'}}, {'item': 'xercamod:lime_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:magenta_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:magenta_terratile'}}, {'item': 'xercamod:magenta_terratile'}, "", "terratile"),
     ShapedRecipe(['ttt'], {'item': 'xercamod:orange_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:orange_terratile'}}, {'item': 'xercamod:orange_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:pink_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:pink_terratile'}}, {'item': 'xercamod:pink_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:purple_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:purple_terratile'}}, {'item': 'xercamod:purple_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:red_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:red_terratile'}}, {'item': 'xercamod:red_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:white_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:white_terratile'}}, {'item': 'xercamod:white_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:yellow_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:yellow_terratile'}}, {'item': 'xercamod:yellow_terratile'}, "", "terratile"),
+    ShapedRecipe(['ttt'], {'item': 'xercamod:terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:terratile'}}, {'item': 'xercamod:terratile'}, "", "terratile"),
 
     # Carved wood - didn't work because of mirroring
     # ShapedRecipe(['w ', ' k'], {'item': 'xercamod:carved_oak_1', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
@@ -171,6 +221,62 @@ special_recipes = [
     SpecialRecipe("xercamod:crafting_special_wood_carving", None, ""),
 ]
 
+stonecutting_recipes = [
+    StonecuttingRecipe("xercamod:black_terratile", "xercamod:black_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:blue_terratile", "xercamod:blue_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:brown_terratile", "xercamod:brown_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:cyan_terratile", "xercamod:cyan_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:gray_terratile", "xercamod:gray_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:green_terratile", "xercamod:green_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:light_blue_terratile", "xercamod:light_blue_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:light_gray_terratile", "xercamod:light_gray_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:lime_terratile", "xercamod:lime_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:magenta_terratile", "xercamod:magenta_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:orange_terratile", "xercamod:orange_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:pink_terratile", "xercamod:pink_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:purple_terratile", "xercamod:purple_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:red_terratile", "xercamod:red_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:white_terratile", "xercamod:white_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:yellow_terratile", "xercamod:yellow_terratile_slab", 2, "", "terratile"),
+    StonecuttingRecipe("xercamod:terratile", "xercamod:terratile_slab", 2, "", "terratile"),
+
+    StonecuttingRecipe("xercamod:black_terratile", "xercamod:black_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:blue_terratile", "xercamod:blue_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:brown_terratile", "xercamod:brown_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:cyan_terratile", "xercamod:cyan_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:gray_terratile", "xercamod:gray_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:green_terratile", "xercamod:green_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:light_blue_terratile", "xercamod:light_blue_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:light_gray_terratile", "xercamod:light_gray_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:lime_terratile", "xercamod:lime_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:magenta_terratile", "xercamod:magenta_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:orange_terratile", "xercamod:orange_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:pink_terratile", "xercamod:pink_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:purple_terratile", "xercamod:purple_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:red_terratile", "xercamod:red_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:white_terratile", "xercamod:white_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:yellow_terratile", "xercamod:yellow_terratile_stairs", 1, "", "terratile"),
+    StonecuttingRecipe("xercamod:terratile", "xercamod:terratile_stairs", 1, "", "terratile"),
+
+    StonecuttingRecipe("minecraft:black_terracotta", "xercamod:black_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:blue_terracotta", "xercamod:blue_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:brown_terracotta", "xercamod:brown_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:cyan_terracotta", "xercamod:cyan_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:gray_terracotta", "xercamod:gray_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:green_terracotta", "xercamod:green_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:light_blue_terracotta", "xercamod:light_blue_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:light_gray_terracotta", "xercamod:light_gray_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:lime_terracotta", "xercamod:lime_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:magenta_terracotta", "xercamod:magenta_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:orange_terracotta", "xercamod:orange_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:pink_terracotta", "xercamod:pink_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:purple_terracotta", "xercamod:purple_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:red_terracotta", "xercamod:red_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:white_terracotta", "xercamod:white_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:yellow_terracotta", "xercamod:yellow_terratile", 1, "", "terratile"),
+    StonecuttingRecipe("minecraft:terracotta", "xercamod:terratile", 1, "", "terratile"),
+]
+
 campfire_recipes = []
 smoker_recipes = []
 
@@ -185,7 +291,7 @@ for r in cooking_recipes:
     smoker_recipe.cooking_time = int(smoker_recipe.cooking_time*0.5)
     smoker_recipes.append(smoker_recipe)
 
-all_recipes = [r for l in [shaped_recipes, shapeless_recipes, cooking_recipes, special_recipes, campfire_recipes, smoker_recipes] for r in l]
+all_recipes = [r for l in [shaped_recipes, shapeless_recipes, cooking_recipes, special_recipes, campfire_recipes, smoker_recipes, stonecutting_recipes] for r in l]
 
 
 # generate_recipe_code_from_files("xercamod")

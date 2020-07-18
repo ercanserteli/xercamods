@@ -14,8 +14,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 import xerca.xercamod.common.Config;
+import xerca.xercamod.common.DecoCreativeTab;
 import xerca.xercamod.common.TeaCreativeTab;
 import xerca.xercamod.common.XercaMod;
+import xerca.xercamod.common.block.BlockTerracottaTile;
+import xerca.xercamod.common.block.BlockTerracottaTileSlab;
+import xerca.xercamod.common.block.BlockTerracottaTileStairs;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.enchantments.*;
 import xerca.xercamod.common.crafting.*;
@@ -114,6 +118,9 @@ public final class Items {
     public static final ItemFlask FLASK = null;
     public static final ItemFlask FLASK_MILK = null;
 
+    public static final Item ITEM_BLOCK_LEATHER = null;
+    public static final Item ITEM_BLOCK_STRAW = null;
+
     public static final Item CARVED_OAK_1 = null;
     public static final Item CARVED_OAK_2 = null;
     public static final Item CARVED_OAK_3 = null;
@@ -163,6 +170,58 @@ public final class Items {
     public static final Item CARVED_SPRUCE_7 = null;
     public static final Item CARVED_SPRUCE_8 = null;
 
+    public static final Item BLACK_TERRATILE = null;
+    public static final Item BLUE_TERRATILE = null;
+    public static final Item BROWN_TERRATILE = null;
+    public static final Item CYAN_TERRATILE = null;
+    public static final Item GRAY_TERRATILE = null;
+    public static final Item GREEN_TERRATILE = null;
+    public static final Item LIGHT_BLUE_TERRATILE = null;
+    public static final Item LIGHT_GRAY_TERRATILE = null;
+    public static final Item LIME_TERRATILE = null;
+    public static final Item MAGENTA_TERRATILE = null;
+    public static final Item ORANGE_TERRATILE = null;
+    public static final Item PINK_TERRATILE = null;
+    public static final Item PURPLE_TERRATILE = null;
+    public static final Item RED_TERRATILE = null;
+    public static final Item WHITE_TERRATILE = null;
+    public static final Item YELLOW_TERRATILE = null;
+    public static final Item TERRATILE = null;
+    public static final Item BLACK_TERRATILE_SLAB = null;
+    public static final Item BLUE_TERRATILE_SLAB = null;
+    public static final Item BROWN_TERRATILE_SLAB = null;
+    public static final Item CYAN_TERRATILE_SLAB = null;
+    public static final Item GRAY_TERRATILE_SLAB = null;
+    public static final Item GREEN_TERRATILE_SLAB = null;
+    public static final Item LIGHT_BLUE_TERRATILE_SLAB = null;
+    public static final Item LIGHT_GRAY_TERRATILE_SLAB = null;
+    public static final Item LIME_TERRATILE_SLAB = null;
+    public static final Item MAGENTA_TERRATILE_SLAB = null;
+    public static final Item ORANGE_TERRATILE_SLAB = null;
+    public static final Item PINK_TERRATILE_SLAB = null;
+    public static final Item PURPLE_TERRATILE_SLAB = null;
+    public static final Item RED_TERRATILE_SLAB = null;
+    public static final Item WHITE_TERRATILE_SLAB = null;
+    public static final Item YELLOW_TERRATILE_SLAB = null;
+    public static final Item TERRATILE_SLAB = null;
+    public static final Item BLACK_TERRATILE_STAIRS = null;
+    public static final Item BLUE_TERRATILE_STAIRS = null;
+    public static final Item BROWN_TERRATILE_STAIRS = null;
+    public static final Item CYAN_TERRATILE_STAIRS = null;
+    public static final Item GRAY_TERRATILE_STAIRS = null;
+    public static final Item GREEN_TERRATILE_STAIRS = null;
+    public static final Item LIGHT_BLUE_TERRATILE_STAIRS = null;
+    public static final Item LIGHT_GRAY_TERRATILE_STAIRS = null;
+    public static final Item LIME_TERRATILE_STAIRS = null;
+    public static final Item MAGENTA_TERRATILE_STAIRS = null;
+    public static final Item ORANGE_TERRATILE_STAIRS = null;
+    public static final Item PINK_TERRATILE_STAIRS = null;
+    public static final Item PURPLE_TERRATILE_STAIRS = null;
+    public static final Item RED_TERRATILE_STAIRS = null;
+    public static final Item WHITE_TERRATILE_STAIRS = null;
+    public static final Item YELLOW_TERRATILE_STAIRS = null;
+    public static final Item TERRATILE_STAIRS = null;
+
     public static final Enchantment ENCHANTMENT_STEALTH = null;
     public static final Enchantment ENCHANTMENT_POISON = null;
     public static final Enchantment ENCHANTMENT_HEAVY = null;
@@ -175,6 +234,7 @@ public final class Items {
     public static final Enchantment ENCHANTMENT_GENTLE_GRAB = null;
 
     public static TeaCreativeTab teaTab;
+    public static DecoCreativeTab decoTab;
 
     public static final IRecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING =            null;
     public static final IRecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING =              null;
@@ -250,6 +310,7 @@ public final class Items {
         @SubscribeEvent
         public static void registerItems(final RegistryEvent.Register<Item> event) {
             teaTab = new TeaCreativeTab();
+            decoTab = new DecoCreativeTab();
             Item glass = new ItemGlass();
 
             event.getRegistry().registerAll(
@@ -372,85 +433,134 @@ public final class Items {
                     makeFoodItem("item_chubby_doner", Foods.CHUBBY_DONER),
                     makeContainedFoodItem("item_alexander", Foods.ALEXANDER, net.minecraft.item.Items.BOWL, 16),
 
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.BROWN_CUSHION).setRegistryName("brown_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.CYAN_CUSHION).setRegistryName("cyan_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.GRAY_CUSHION).setRegistryName("gray_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.GREEN_CUSHION).setRegistryName("green_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.LIGHT_BLUE_CUSHION).setRegistryName("light_blue_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.LIGHT_GRAY_CUSHION).setRegistryName("light_gray_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.LIME_CUSHION).setRegistryName("lime_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.MAGENTA_CUSHION).setRegistryName("magenta_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.ORANGE_CUSHION).setRegistryName("orange_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.PINK_CUSHION).setRegistryName("pink_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.PURPLE_CUSHION).setRegistryName("purple_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.RED_CUSHION).setRegistryName("red_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.WHITE_CUSHION).setRegistryName("white_cushion"),
-                    new ItemCushion(new Item.Properties().group(ItemGroup.DECORATIONS), Blocks.YELLOW_CUSHION).setRegistryName("yellow_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.BROWN_CUSHION).setRegistryName("brown_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.CYAN_CUSHION).setRegistryName("cyan_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.GRAY_CUSHION).setRegistryName("gray_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.GREEN_CUSHION).setRegistryName("green_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.LIGHT_BLUE_CUSHION).setRegistryName("light_blue_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.LIGHT_GRAY_CUSHION).setRegistryName("light_gray_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.LIME_CUSHION).setRegistryName("lime_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.MAGENTA_CUSHION).setRegistryName("magenta_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.ORANGE_CUSHION).setRegistryName("orange_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.PINK_CUSHION).setRegistryName("pink_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.PURPLE_CUSHION).setRegistryName("purple_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.RED_CUSHION).setRegistryName("red_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.WHITE_CUSHION).setRegistryName("white_cushion"),
+                    new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.YELLOW_CUSHION).setRegistryName("yellow_cushion"),
 
                     new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties().group(ItemGroup.FOOD), Config::isFoodEnabled).setRegistryName("item_apple_pie"),
                     new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties().group(ItemGroup.FOOD), Config::isFoodEnabled).setRegistryName("sweet_berry_pie"),
-                    new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
-                    new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), Config::isLeatherStrawEnabled).setRegistryName("item_block_straw"),
+                    new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().group(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
+                    new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().group(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_straw"),
                     new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().group(ItemGroup.DECORATIONS), Config::isBookcaseEnabled).setRegistryName("item_bookcase"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_oak_1"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_oak_2"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_oak_3"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_oak_4"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_oak_5"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_oak_6"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_oak_7"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_oak_8"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_birch_1"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_birch_2"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_birch_3"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_birch_4"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_birch_5"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_birch_6"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_birch_7"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_birch_8"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_dark_oak_1"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_dark_oak_2"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_dark_oak_3"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_dark_oak_4"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_dark_oak_5"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_dark_oak_6"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_dark_oak_7"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_dark_oak_8"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_acacia_1"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_acacia_2"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_acacia_3"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_acacia_4"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_acacia_5"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_acacia_6"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_acacia_7"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_acacia_8"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_jungle_1"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_jungle_2"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_jungle_3"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_jungle_4"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_jungle_5"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_jungle_6"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_jungle_7"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_jungle_8"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_1, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 1).setRegistryName("carved_spruce_1"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_2, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 2).setRegistryName("carved_spruce_2"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_3, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 3).setRegistryName("carved_spruce_3"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_4, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 4).setRegistryName("carved_spruce_4"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_5, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 5).setRegistryName("carved_spruce_5"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_6, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 6).setRegistryName("carved_spruce_6"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_7, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 7).setRegistryName("carved_spruce_7"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_8, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS), 8).setRegistryName("carved_spruce_8"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_1, new Item.Properties().group(Items.decoTab), 1).setRegistryName("carved_oak_1"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_2, new Item.Properties().group(Items.decoTab), 2).setRegistryName("carved_oak_2"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_3, new Item.Properties().group(Items.decoTab), 3).setRegistryName("carved_oak_3"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_4, new Item.Properties().group(Items.decoTab), 4).setRegistryName("carved_oak_4"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_5, new Item.Properties().group(Items.decoTab), 5).setRegistryName("carved_oak_5"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_6, new Item.Properties().group(Items.decoTab), 6).setRegistryName("carved_oak_6"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_7, new Item.Properties().group(Items.decoTab), 7).setRegistryName("carved_oak_7"),
+                    new CarvedWoodItem(Blocks.CARVED_OAK_8, new Item.Properties().group(Items.decoTab), 8).setRegistryName("carved_oak_8"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_1, new Item.Properties().group(Items.decoTab), 1).setRegistryName("carved_birch_1"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_2, new Item.Properties().group(Items.decoTab), 2).setRegistryName("carved_birch_2"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_3, new Item.Properties().group(Items.decoTab), 3).setRegistryName("carved_birch_3"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_4, new Item.Properties().group(Items.decoTab), 4).setRegistryName("carved_birch_4"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_5, new Item.Properties().group(Items.decoTab), 5).setRegistryName("carved_birch_5"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_6, new Item.Properties().group(Items.decoTab), 6).setRegistryName("carved_birch_6"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_7, new Item.Properties().group(Items.decoTab), 7).setRegistryName("carved_birch_7"),
+                    new CarvedWoodItem(Blocks.CARVED_BIRCH_8, new Item.Properties().group(Items.decoTab), 8).setRegistryName("carved_birch_8"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_1, new Item.Properties().group(Items.decoTab), 1).setRegistryName("carved_dark_oak_1"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_2, new Item.Properties().group(Items.decoTab), 2).setRegistryName("carved_dark_oak_2"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_3, new Item.Properties().group(Items.decoTab), 3).setRegistryName("carved_dark_oak_3"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_4, new Item.Properties().group(Items.decoTab), 4).setRegistryName("carved_dark_oak_4"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_5, new Item.Properties().group(Items.decoTab), 5).setRegistryName("carved_dark_oak_5"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_6, new Item.Properties().group(Items.decoTab), 6).setRegistryName("carved_dark_oak_6"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_7, new Item.Properties().group(Items.decoTab), 7).setRegistryName("carved_dark_oak_7"),
+                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_8, new Item.Properties().group(Items.decoTab), 8).setRegistryName("carved_dark_oak_8"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_1, new Item.Properties().group(Items.decoTab), 1).setRegistryName("carved_acacia_1"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_2, new Item.Properties().group(Items.decoTab), 2).setRegistryName("carved_acacia_2"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_3, new Item.Properties().group(Items.decoTab), 3).setRegistryName("carved_acacia_3"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_4, new Item.Properties().group(Items.decoTab), 4).setRegistryName("carved_acacia_4"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_5, new Item.Properties().group(Items.decoTab), 5).setRegistryName("carved_acacia_5"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_6, new Item.Properties().group(Items.decoTab), 6).setRegistryName("carved_acacia_6"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_7, new Item.Properties().group(Items.decoTab), 7).setRegistryName("carved_acacia_7"),
+                    new CarvedWoodItem(Blocks.CARVED_ACACIA_8, new Item.Properties().group(Items.decoTab), 8).setRegistryName("carved_acacia_8"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_1, new Item.Properties().group(Items.decoTab), 1).setRegistryName("carved_jungle_1"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_2, new Item.Properties().group(Items.decoTab), 2).setRegistryName("carved_jungle_2"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_3, new Item.Properties().group(Items.decoTab), 3).setRegistryName("carved_jungle_3"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_4, new Item.Properties().group(Items.decoTab), 4).setRegistryName("carved_jungle_4"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_5, new Item.Properties().group(Items.decoTab), 5).setRegistryName("carved_jungle_5"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_6, new Item.Properties().group(Items.decoTab), 6).setRegistryName("carved_jungle_6"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_7, new Item.Properties().group(Items.decoTab), 7).setRegistryName("carved_jungle_7"),
+                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_8, new Item.Properties().group(Items.decoTab), 8).setRegistryName("carved_jungle_8"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_1, new Item.Properties().group(Items.decoTab), 1).setRegistryName("carved_spruce_1"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_2, new Item.Properties().group(Items.decoTab), 2).setRegistryName("carved_spruce_2"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_3, new Item.Properties().group(Items.decoTab), 3).setRegistryName("carved_spruce_3"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_4, new Item.Properties().group(Items.decoTab), 4).setRegistryName("carved_spruce_4"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_5, new Item.Properties().group(Items.decoTab), 5).setRegistryName("carved_spruce_5"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_6, new Item.Properties().group(Items.decoTab), 6).setRegistryName("carved_spruce_6"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_7, new Item.Properties().group(Items.decoTab), 7).setRegistryName("carved_spruce_7"),
+                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_8, new Item.Properties().group(Items.decoTab), 8).setRegistryName("carved_spruce_8"),
 
-                    new BlockItem(Blocks.ORANGE_TERRATILE, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName("orange_terratile"),
-                    new BlockItem(Blocks.ORANGE_TERRATILE_SLAB, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName("orange_terratile_slab"),
-                    new BlockItem(Blocks.ORANGE_TERRATILE_STAIRS, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName("orange_terratile_stairs"),
+                    new BlockItem(Blocks.BLACK_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("black_terratile"),
+                    new BlockItem(Blocks.BLUE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("blue_terratile"),
+                    new BlockItem(Blocks.BROWN_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("brown_terratile"),
+                    new BlockItem(Blocks.CYAN_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("cyan_terratile"),
+                    new BlockItem(Blocks.GRAY_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("gray_terratile"),
+                    new BlockItem(Blocks.GREEN_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("green_terratile"),
+                    new BlockItem(Blocks.LIGHT_BLUE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("light_blue_terratile"),
+                    new BlockItem(Blocks.LIGHT_GRAY_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("light_gray_terratile"),
+                    new BlockItem(Blocks.LIME_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("lime_terratile"),
+                    new BlockItem(Blocks.MAGENTA_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("magenta_terratile"),
+                    new BlockItem(Blocks.ORANGE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("orange_terratile"),
+                    new BlockItem(Blocks.PINK_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("pink_terratile"),
+                    new BlockItem(Blocks.PURPLE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("purple_terratile"),
+                    new BlockItem(Blocks.RED_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("red_terratile"),
+                    new BlockItem(Blocks.WHITE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("white_terratile"),
+                    new BlockItem(Blocks.YELLOW_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("yellow_terratile"),
+                    new BlockItem(Blocks.TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile"),
+
+                    new BlockItem(Blocks.BLACK_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("black_terratile_slab"),
+                    new BlockItem(Blocks.BLUE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("blue_terratile_slab"),
+                    new BlockItem(Blocks.BROWN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("brown_terratile_slab"),
+                    new BlockItem(Blocks.CYAN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("cyan_terratile_slab"),
+                    new BlockItem(Blocks.GRAY_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("gray_terratile_slab"),
+                    new BlockItem(Blocks.GREEN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("green_terratile_slab"),
+                    new BlockItem(Blocks.LIGHT_BLUE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("light_blue_terratile_slab"),
+                    new BlockItem(Blocks.LIGHT_GRAY_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("light_gray_terratile_slab"),
+                    new BlockItem(Blocks.LIME_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("lime_terratile_slab"),
+                    new BlockItem(Blocks.MAGENTA_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("magenta_terratile_slab"),
+                    new BlockItem(Blocks.ORANGE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("orange_terratile_slab"),
+                    new BlockItem(Blocks.PINK_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("pink_terratile_slab"),
+                    new BlockItem(Blocks.PURPLE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("purple_terratile_slab"),
+                    new BlockItem(Blocks.RED_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("red_terratile_slab"),
+                    new BlockItem(Blocks.WHITE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("white_terratile_slab"),
+                    new BlockItem(Blocks.YELLOW_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("yellow_terratile_slab"),
+                    new BlockItem(Blocks.TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile_slab"),
+
+                    new BlockItem(Blocks.BLACK_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("black_terratile_stairs"),
+                    new BlockItem(Blocks.BLUE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("blue_terratile_stairs"),
+                    new BlockItem(Blocks.BROWN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("brown_terratile_stairs"),
+                    new BlockItem(Blocks.CYAN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("cyan_terratile_stairs"),
+                    new BlockItem(Blocks.GRAY_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("gray_terratile_stairs"),
+                    new BlockItem(Blocks.GREEN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("green_terratile_stairs"),
+                    new BlockItem(Blocks.LIGHT_BLUE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("light_blue_terratile_stairs"),
+                    new BlockItem(Blocks.LIGHT_GRAY_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("light_gray_terratile_stairs"),
+                    new BlockItem(Blocks.LIME_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("lime_terratile_stairs"),
+                    new BlockItem(Blocks.MAGENTA_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("magenta_terratile_stairs"),
+                    new BlockItem(Blocks.ORANGE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("orange_terratile_stairs"),
+                    new BlockItem(Blocks.PINK_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("pink_terratile_stairs"),
+                    new BlockItem(Blocks.PURPLE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("purple_terratile_stairs"),
+                    new BlockItem(Blocks.RED_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("red_terratile_stairs"),
+                    new BlockItem(Blocks.WHITE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("white_terratile_stairs"),
+                    new BlockItem(Blocks.YELLOW_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("yellow_terratile_stairs"),
+                    new BlockItem(Blocks.TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile_stairs"),
 
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true)
             );
-
         }
 
         @SubscribeEvent

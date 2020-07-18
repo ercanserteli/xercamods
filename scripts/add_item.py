@@ -65,12 +65,12 @@ def add_food_entry(mod_id, item_name):
         f.truncate()
 
 
-def add_lang_entry(mod_id, item_name, lang_id, trans_name):
+def add_lang_entry(mod_id, item_name, lang_id, trans_name, prefix="item"):
     with open(f"../{mod_id_to_folder[mod_id]}\\src\\main\\resources\\assets\\{mod_id}\\lang\\{lang_id}.json", 'r+', encoding="utf8") as f:
         text = f.read()
 
         i = 2
-        line = f'"item.{mod_id}.{item_name}": "{trans_name}",\n'
+        line = f'"{prefix}.{mod_id}.{item_name}": "{trans_name}",\n'
 
         text = text[:i] + line + text[i:]
         f.seek(0)
@@ -97,10 +97,10 @@ def add_items_entry(mod_id, item_name, item_class, is_pure, is_food):
             food_name = item_name.upper()
             if item_name[:5] == "item_":
                 food_name = food_name[5:]
-            line = f'makeFoodItem("{item_name}", Foods.{food_name}),\n\t'
+            line = f'makeFoodItem("{item_name}", Foods.{food_name}),\n'
         else:
             if is_pure:
-                line = f'makeItem("{item_name}"),\n\t'
+                line = f'makeItem("{item_name}"),\n'
             else:
                 line = f'new {item_class}("{item_name}"),'
         n_items = n_items[:id2] + line + n_items[id2:]
