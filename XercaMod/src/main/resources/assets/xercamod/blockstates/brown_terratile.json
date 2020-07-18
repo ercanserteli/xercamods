@@ -1,0 +1,20 @@
+
+{
+  "variants": {
+    "facing=north": {
+      "model": "xercamod:block/terracotta_tiles/brown_terratile"
+    },
+    "facing=south": {
+      "model": "xercamod:block/terracotta_tiles/brown_terratile",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "xercamod:block/terracotta_tiles/brown_terratile",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "xercamod:block/terracotta_tiles/brown_terratile",
+      "y": 90
+    }
+  }
+}

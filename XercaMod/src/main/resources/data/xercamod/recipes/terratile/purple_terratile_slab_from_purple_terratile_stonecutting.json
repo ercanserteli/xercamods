@@ -1,0 +1,10 @@
+
+{
+    "type": "minecraft:stonecutting",
+    "ingredient": {
+        "item": "xercamod:purple_terratile"
+    },
+    "result": "xercamod:purple_terratile_slab",
+    "count": 2
+}
+        

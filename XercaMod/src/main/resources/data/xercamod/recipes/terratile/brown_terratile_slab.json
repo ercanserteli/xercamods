@@ -1,0 +1,11 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "ttt"
+    ],
+    "key": {"t": {"item": "xercamod:brown_terratile"}},
+    "result": {"item": "xercamod:brown_terratile_slab", "count": 6}
+}
+        

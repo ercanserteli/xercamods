@@ -1,0 +1,9 @@
+
+{
+  "parent": "xercamod:block/terracotta_tiles/terratile",
+  "textures": {
+    "top": "xercamod:block/terracotta_tiles/yellow_terra_cotta_tiles_top",
+    "front": "xercamod:block/terracotta_tiles/yellow_terra_cotta_tiles_front",
+    "side": "xercamod:block/terracotta_tiles/yellow_terra_cotta_tiles_side"
+  }
+}
