@@ -24,6 +24,7 @@ public class DecoCreativeTab extends ItemGroup {
         orderedItems = Arrays.asList(
                 Items.ITEM_BLOCK_LEATHER,
                 Items.ITEM_BLOCK_STRAW,
+                Items.ROPE,
 
                 Items.BLACK_CUSHION,
                 Items.BLUE_CUSHION,
