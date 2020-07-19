@@ -222,6 +222,8 @@ public final class Items {
     public static final Item YELLOW_TERRATILE_STAIRS = null;
     public static final Item TERRATILE_STAIRS = null;
 
+    public static final Item ROPE = null;
+
     public static final Enchantment ENCHANTMENT_STEALTH = null;
     public static final Enchantment ENCHANTMENT_POISON = null;
     public static final Enchantment ENCHANTMENT_HEAVY = null;
@@ -559,7 +561,9 @@ public final class Items {
                     new BlockItem(Blocks.TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile_stairs"),
 
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
-                    new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true)
+                    new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true),
+
+                    new BlockItem(Blocks.ROPE, new Item.Properties().group(Items.decoTab)).setRegistryName("rope")
             );
         }
 

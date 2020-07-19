@@ -189,6 +189,8 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:jungle_log'}], {'item': 'minecraft:stripped_jungle_log'}, {'item': 'xercamod:item_knife'}, ""),
     ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:oak_log'}], {'item': 'minecraft:stripped_oak_log'}, {'item': 'xercamod:item_knife'}, ""),
     ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:spruce_log'}], {'item': 'minecraft:stripped_spruce_log'}, {'item': 'xercamod:item_knife'}, ""),
+
+    ShapelessRecipe([{'item': 'minecraft:string'}, {'item': 'minecraft:string'}, {'item': 'minecraft:string'}], {'item': 'xercamod:rope'}, {'item': 'minecraft:string'}, ""),
 ]
 
 cooking_recipes = [

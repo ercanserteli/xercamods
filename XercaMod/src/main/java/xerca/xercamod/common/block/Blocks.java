@@ -141,6 +141,9 @@ public class Blocks {
     public static final BlockTerracottaTileStairs YELLOW_TERRATILE_STAIRS = null;
     public static final BlockTerracottaTileStairs TERRATILE_STAIRS = null;
 
+    public static final BlockRope ROPE = null;
+
+
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
@@ -273,7 +276,9 @@ public class Blocks {
                     new BlockTerracottaTileStairs(() -> RED_TERRATILE.getDefaultState()).setRegistryName("red_terratile_stairs"),
                     new BlockTerracottaTileStairs(() -> WHITE_TERRATILE.getDefaultState()).setRegistryName("white_terratile_stairs"),
                     new BlockTerracottaTileStairs(() -> YELLOW_TERRATILE.getDefaultState()).setRegistryName("yellow_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> TERRATILE.getDefaultState()).setRegistryName("terratile_stairs")
+                    new BlockTerracottaTileStairs(() -> TERRATILE.getDefaultState()).setRegistryName("terratile_stairs"),
+
+                    new BlockRope().setRegistryName("rope")
             );
         }
     }
