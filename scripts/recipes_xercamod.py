@@ -52,6 +52,12 @@ shaped_recipes = [
     ShapedRecipe([' b ', 'ttt', ' c '], {'item': 'xercamod:item_ultimate_top'}, {'b': {'item': 'xercamod:item_bun'}, 'c': {'item': 'xercamod:item_cooked_chicken_patty'}, 't': {'item': 'xercamod:item_tomato_slices'}}, {'item': 'xercamod:item_bun'}, "", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe([' wd', 'wdw', 'dw '], {'item': 'xercamod:item_doner_wrap', 'count': 4}, {'d': {'item': 'xercamod:doner_slice'}, 'w': {'item': 'minecraft:wheat'}}, {'item': 'xercamod:doner_slice'}, "", type="xercamod:crafting_condition_shaped_food"),
     ShapedRecipe([' b ', 'tdp', ' b '], {'item': 'xercamod:item_chubby_doner'}, {'b': {'item': 'xercamod:item_bun'}, 't': {'item': 'xercamod:item_tomato_slices'}, 'd': {'item': 'xercamod:doner_slice'}, 'p': {'item': 'xercamod:item_potato_fries'}}, {'item': 'xercamod:doner_slice'}, "", type="xercamod:crafting_condition_shaped_food"),
+    ShapedRecipe(['iis', ' s ', 's  '], {'item': 'xercamod:wooden_scythe'}, {'i': {'tag': 'minecraft:planks'}, 's': {'item': 'minecraft:stick'}}, {'tag': 'minecraft:planks'}, "xercamod:crafting_condition_shaped_scythe"),
+    ShapedRecipe(['iis', ' s ', 's  '], {'item': 'xercamod:stone_scythe'}, {'i': {'item': 'minecraft:cobblestone'}, 's': {'item': 'minecraft:stick'}}, {'item': 'minecraft:cobblestone'}, "xercamod:crafting_condition_shaped_scythe"),
+    ShapedRecipe(['iis', ' s ', 's  '], {'item': 'xercamod:iron_scythe'}, {'i': {'item': 'minecraft:iron_ingot'}, 's': {'item': 'minecraft:stick'}}, {'item': 'minecraft:iron_ingot'}, "xercamod:crafting_condition_shaped_scythe"),
+    ShapedRecipe(['iis', ' s ', 's  '], {'item': 'xercamod:golden_scythe'}, {'i': {'item': 'minecraft:gold_ingot'}, 's': {'item': 'minecraft:stick'}}, {'item': 'minecraft:gold_ingot'}, "xercamod:crafting_condition_shaped_scythe"),
+    ShapedRecipe(['iis', ' s ', 's  '], {'item': 'xercamod:diamond_scythe'}, {'i': {'item': 'minecraft:diamond'}, 's': {'item': 'minecraft:stick'}}, {'item': 'minecraft:diamond'}, "xercamod:crafting_condition_shaped_scythe"),
+    ShapedRecipe([' ip', 'ipi', 'pi '], {'item': 'xercamod:spyglass'}, {'i': {'item': 'minecraft:gold_ingot'}, 'p': {'item': 'minecraft:glass_pane'}}, {'item': 'minecraft:gold_ingot'}, "xercamod:crafting_condition_shaped_spyglass"),
 
 
     # Cushion

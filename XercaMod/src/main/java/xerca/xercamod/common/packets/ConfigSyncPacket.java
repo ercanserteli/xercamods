@@ -16,10 +16,12 @@ public class ConfigSyncPacket {
     public boolean leatherStraw;
     public boolean bookcase;
     public boolean coins;
+    public boolean scythe;
+    public boolean spyglass;
 
     public ConfigSyncPacket(boolean grabHook, boolean warhammer, boolean cushion, boolean tea, boolean food,
                             boolean confetti, boolean enderFlask, boolean courtroom, boolean carvedWood,
-                            boolean leatherStraw, boolean bookcase, boolean coins
+                            boolean leatherStraw, boolean bookcase, boolean coins, boolean scythe, boolean spyglass
     ) {
         this.grabHook = grabHook;
         this.warhammer = warhammer;
@@ -33,6 +35,8 @@ public class ConfigSyncPacket {
         this.leatherStraw = leatherStraw;
         this.bookcase = bookcase;
         this.coins = coins;
+        this.scythe = scythe;
+        this.spyglass = spyglass;
     }
 
     public ConfigSyncPacket() {
@@ -54,6 +58,8 @@ public class ConfigSyncPacket {
             result.leatherStraw = buf.readBoolean();
             result.bookcase = buf.readBoolean();
             result.coins = buf.readBoolean();
+            result.scythe = buf.readBoolean();
+            result.spyglass = buf.readBoolean();
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading ConfigSyncPacket: " + ioe);
             return null;
@@ -75,6 +81,8 @@ public class ConfigSyncPacket {
         buf.writeBoolean(pkt.leatherStraw);
         buf.writeBoolean(pkt.bookcase);
         buf.writeBoolean(pkt.coins);
+        buf.writeBoolean(pkt.scythe);
+        buf.writeBoolean(pkt.spyglass);
     }
 
     public boolean isMessageValid() {

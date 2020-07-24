@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "xercamod:crafting_condition_shaped_scythe",
+    "pattern": [
+        "iis",
+        " s ",
+        "s  "
+    ],
+    "key": {"i": {"tag": "minecraft:planks"}, "s": {"item": "minecraft:stick"}},
+    "result": {"item": "xercamod:wooden_scythe"}
+}
+        

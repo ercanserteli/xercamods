@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "xercamod:crafting_condition_shaped_spyglass",
+    "pattern": [
+        " ip",
+        "ipi",
+        "pi "
+    ],
+    "key": {"i": {"item": "minecraft:gold_ingot"}, "p": {"item": "minecraft:glass_pane"}},
+    "result": {"item": "xercamod:spyglass"}
+}
+        

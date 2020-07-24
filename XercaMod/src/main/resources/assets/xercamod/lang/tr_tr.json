@@ -1,4 +1,11 @@
 {
+  "item.xercamod.spyglass": "Dürbün",
+  "item.xercamod.wooden_scythe": "Tahta Tırpan",
+  "item.xercamod.stone_scythe": "Taş Tırpan",
+  "item.xercamod.iron_scythe": "Demir Tırpan",
+  "item.xercamod.golden_scythe": "Altın Tırpan",
+  "item.xercamod.diamond_scythe": "Elmas Tırpan",
+
   "item.xercamod.item_yoghurt": "Yoğurt",
   "item.xercamod.item_honeyberry_yoghurt": "Ballı tatlı orman meyveli yoğurt",
   "item.xercamod.item_honey_cupcake": "Ballı küçük kek",
@@ -261,5 +268,6 @@
   "enchantment.xercamod.enchantment_grappling": "Tutucu",
   "enchantment.xercamod.enchantment_uppercut": "Uçurgan",
   "enchantment.xercamod.enchantment_poison": "Zehirli",
-  "enchantment.xercamod.enchantment_stealth": "Sessiz katil"
+  "enchantment.xercamod.enchantment_stealth": "Sessiz katil",
+  "enchantment.xercamod.enchantment_guillotine": "Giyotin"
 }
