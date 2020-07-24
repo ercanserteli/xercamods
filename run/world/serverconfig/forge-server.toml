@@ -14,6 +14,8 @@
 	removeErroringEntities = false
 	#Set this to true to check the entire entity's collision bounding box for ladders instead of just the block they are in. Causes noticeable differences in mechanics so default is vanilla behavior. Default: false.
 	fullBoundingBoxLadders = false
+	#Fix advancement loading to use a proper topological sort. This may have visibility side-effects and can thus be turned off if needed for data-pack compatibility.
+	fixAdvancementLoading = true
 	#Log cascading chunk generation issues during terrain population.
 	logCascadingWorldGeneration = true
 	#Vanilla will treat crafting recipes using empty tags as air, and allow you to craft with nothing in that slot. This changes empty tags to use BARRIER as the item. To prevent crafting with air.

@@ -30,6 +30,8 @@ public class Config {
     private static ForgeConfigSpec.BooleanValue LEATHER_STRAW_ENABLE;
     private static ForgeConfigSpec.BooleanValue BOOKCASE_ENABLE;
     private static ForgeConfigSpec.BooleanValue COINS_ENABLE;
+    private static ForgeConfigSpec.BooleanValue SCYTHE_ENABLE;
+    private static ForgeConfigSpec.BooleanValue SPYGLASS_ENABLE;
 
     private static boolean grabHookEnabled;
     private static boolean warhammerEnabled;
@@ -43,6 +45,8 @@ public class Config {
     private static boolean leatherStrawEnabled;
     private static boolean bookcaseEnabled;
     private static boolean coinsEnabled;
+    private static boolean scytheEnabled;
+    private static boolean spyglassEnabled;
 
     static {
 
@@ -60,6 +64,8 @@ public class Config {
         LEATHER_STRAW_ENABLE = COMMON_BUILD.comment("Enable Leather and Straw Blocks").define("leather_straw", true);
         BOOKCASE_ENABLE = COMMON_BUILD.comment("Enable Bookcase").define("bookcase", true);
         COINS_ENABLE = COMMON_BUILD.comment("Enable Golden Coins").define("coins", true);
+        SCYTHE_ENABLE = COMMON_BUILD.comment("Enable Scythe").define("scythe", true);
+        SPYGLASS_ENABLE = COMMON_BUILD.comment("Enable Spyglass").define("spyglass", true);
 
         COMMON_BUILD.pop();
 
@@ -110,6 +116,8 @@ public class Config {
         leatherStrawEnabled = LEATHER_STRAW_ENABLE.get();
         bookcaseEnabled = BOOKCASE_ENABLE.get();
         coinsEnabled = COINS_ENABLE.get();
+        scytheEnabled = SCYTHE_ENABLE.get();
+        spyglassEnabled = SPYGLASS_ENABLE.get();
     }
 
     public static void syncWithPacket(ConfigSyncPacket packet){
@@ -127,13 +135,15 @@ public class Config {
             leatherStrawEnabled =  packet.leatherStraw;
             bookcaseEnabled =  packet.bookcase;
             coinsEnabled =  packet.coins;
+            scytheEnabled =  packet.scythe;
+            spyglassEnabled =  packet.spyglass;
         }
     }
 
     public static ConfigSyncPacket makePacket(){
         return new ConfigSyncPacket(grabHookEnabled, warhammerEnabled, cushionEnabled, teaEnabled,
                 foodEnabled, confettiEnabled, enderFlaskEnabled, courtroomEnabled, carvedWoodEnabled,
-                leatherStrawEnabled, bookcaseEnabled, coinsEnabled
+                leatherStrawEnabled, bookcaseEnabled, coinsEnabled, scytheEnabled, spyglassEnabled
         );
     }
 
@@ -183,5 +193,13 @@ public class Config {
 
     public static boolean isCoinsEnabled() {
         return coinsEnabled;
+    }
+
+    public static boolean isScytheEnabled() {
+        return scytheEnabled;
+    }
+
+    public static boolean isSpyglassEnabled() {
+        return spyglassEnabled;
     }
 }

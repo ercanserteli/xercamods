@@ -1,4 +1,11 @@
 {
+  "item.xercamod.spyglass": "Spyglass",
+  "item.xercamod.wooden_scythe": "Wooden Scythe",
+  "item.xercamod.stone_scythe": "Stone Scythe",
+  "item.xercamod.iron_scythe": "Iron Scythe",
+  "item.xercamod.golden_scythe": "Golden Scythe",
+  "item.xercamod.diamond_scythe": "Diamond Scythe",
+
   "item.xercamod.item_yoghurt": "Yoghurt",
   "item.xercamod.item_honeyberry_yoghurt": "Honey sweetberry yoghurt",
   "item.xercamod.item_honey_cupcake": "Honey cupcake",
@@ -133,7 +140,7 @@
   "item.xercamod.item_confetti_ball": "Confetti Ball",
   "item.xercamod.item_stone_warhammer": "Stone Warhammer",
   "item.xercamod.item_iron_warhammer": "Iron Warhammer",
-  "item.xercamod.item_gold_warhammer": "Gold Warhammer",
+  "item.xercamod.item_gold_warhammer": "Golden Warhammer",
   "item.xercamod.item_diamond_warhammer": "Diamond Warhammer",
   "item.xercamod.item_grab_hook": "Grab Hook",
 
@@ -313,6 +320,7 @@
   "enchantment.xercamod.enchantment_stealth": "Silent Killer",
   "enchantment.xercamod.enchantment_turbo_grab": "Turbo",
   "enchantment.xercamod.enchantment_gentle_grab": "Gentle Grab",
+  "enchantment.xercamod.enchantment_guillotine": "Guillotine",
 
   "enchantment.xercamod.enchantment_heavy.desc": "Warhammer enchantment. Increases the maximum pull time, but also adds more damage and knock back.",
   "enchantment.xercamod.enchantment_maim.desc": "Warhammer enchantment. Cripples your opponent on hit, applying a Slow effect.",
@@ -324,6 +332,25 @@
   "enchantment.xercamod.enchantment_stealth.desc": "Knife enchantment. Increases the bonus damage on stealthy back stabs.",
   "enchantment.xercamod.enchantment_turbo_grab.desc": "Grab hook enchantment. Increases the speed and distance of the hook.",
   "enchantment.xercamod.enchantment_gentle_grab.desc": "Grab hook enchantment. Pulls the target without causing damage.",
+  "enchantment.xercamod.enchantment_guillotine.desc": "Scythe enchantment. Adds the ability to decapitate on the killing blow.",
 
-  "entity.xercamod.cushion": "Cushion"
+  "entity.xercamod.cushion": "Cushion",
+
+  "xercamod.head.cow": "Cow Head",
+  "xercamod.head.iron_golem": "Iron Golem Head",
+  "xercamod.head.ocelot": "Ocelot Head",
+  "xercamod.head.blaze": "Blaze Head",
+  "xercamod.head.pig": "Pig Head",
+  "xercamod.head.slime": "Slime Head",
+  "xercamod.head.villager": "Villager Head",
+  "xercamod.head.cave_spider": "Cave Spider Head",
+  "xercamod.head.enderman": "Enderman Head",
+  "xercamod.head.magma_cube": "Magma Cube Head",
+  "xercamod.head.zombie_pigman": "Zombie Pigman Head",
+  "xercamod.head.spider": "Spider Head",
+  "xercamod.head.chicken": "Chicken Head",
+  "xercamod.head.ghast": "Ghast Head",
+  "xercamod.head.mooshroom": "Mooshroom Head",
+  "xercamod.head.sheep": "Sheep Head",
+  "xercamod.head.squid": "Squid Head"
 }

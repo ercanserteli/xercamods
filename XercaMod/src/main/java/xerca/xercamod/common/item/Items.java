@@ -1,12 +1,10 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.event.RegistryEvent;
@@ -17,15 +15,13 @@ import xerca.xercamod.common.Config;
 import xerca.xercamod.common.DecoCreativeTab;
 import xerca.xercamod.common.TeaCreativeTab;
 import xerca.xercamod.common.XercaMod;
-import xerca.xercamod.common.block.BlockTerracottaTile;
-import xerca.xercamod.common.block.BlockTerracottaTileSlab;
-import xerca.xercamod.common.block.BlockTerracottaTileStairs;
 import xerca.xercamod.common.block.Blocks;
-import xerca.xercamod.common.enchantments.*;
 import xerca.xercamod.common.crafting.*;
+import xerca.xercamod.common.enchantments.*;
 
 @ObjectHolder(XercaMod.MODID)
 public final class Items {
+    public static final ItemSpyglass SPYGLASS = null;
     public static final Item ITEM_YOGHURT = null;
     public static final Item ITEM_HONEYBERRY_YOGHURT = null;
     public static final Item ITEM_HONEY_CUPCAKE = null;
@@ -224,6 +220,12 @@ public final class Items {
 
     public static final Item ROPE = null;
 
+    public static final ItemScythe WOODEN_SCYTHE = null;
+    public static final ItemScythe STONE_SCYTHE = null;
+    public static final ItemScythe IRON_SCYTHE = null;
+    public static final ItemScythe GOLDEN_SCYTHE = null;
+    public static final ItemScythe DIAMOND_SCYTHE = null;
+
     public static final Enchantment ENCHANTMENT_STEALTH = null;
     public static final Enchantment ENCHANTMENT_POISON = null;
     public static final Enchantment ENCHANTMENT_HEAVY = null;
@@ -234,6 +236,7 @@ public final class Items {
     public static final Enchantment ENCHANTMENT_UPPERCUT = null;
     public static final Enchantment ENCHANTMENT_TURBO_GRAB = null;
     public static final Enchantment ENCHANTMENT_GENTLE_GRAB = null;
+    public static final Enchantment ENCHANTMENT_GUILLOTINE = null;
 
     public static TeaCreativeTab teaTab;
     public static DecoCreativeTab decoTab;
@@ -292,6 +295,8 @@ public final class Items {
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeFlaskMilkFilling::new).setRegistryName(XercaMod.MODID + ":crafting_special_flask_milk_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeWoodCarving::new).setRegistryName(     XercaMod.MODID + ":crafting_special_wood_carving"));
 
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isSpyglassEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_spyglass"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isScytheEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_scythe"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isWarhammerEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_warhammer"));
             event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isGrabHookEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_grab_hook"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isCushionEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_cushion"));
@@ -316,6 +321,7 @@ public final class Items {
             Item glass = new ItemGlass();
 
             event.getRegistry().registerAll(
+                    new ItemSpyglass().setRegistryName("spyglass"),
                     new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_1"),
                     new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_5"),
                     new ItemGrabHook(),
@@ -563,7 +569,13 @@ public final class Items {
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true),
 
-                    new BlockItem(Blocks.ROPE, new Item.Properties().group(Items.decoTab)).setRegistryName("rope")
+                    new BlockItem(Blocks.ROPE, new Item.Properties().group(Items.decoTab)).setRegistryName("rope"),
+
+                    new ItemScythe(ItemTier.WOOD, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("wooden_scythe"),
+                    new ItemScythe(ItemTier.STONE, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("stone_scythe"),
+                    new ItemScythe(ItemTier.IRON, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("iron_scythe"),
+                    new ItemScythe(ItemTier.GOLD, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("golden_scythe"),
+                    new ItemScythe(ItemTier.DIAMOND, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("diamond_scythe")
             );
         }
 
@@ -579,7 +591,8 @@ public final class Items {
                     new EnchantmentPoison(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
                     new EnchantmentStealth(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
                     new EnchantmentTurboGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentGentleGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND)
+                    new EnchantmentGentleGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentGuillotine(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND)
             );
         }
     }

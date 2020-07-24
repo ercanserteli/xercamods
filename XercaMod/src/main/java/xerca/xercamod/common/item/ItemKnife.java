@@ -1,6 +1,10 @@
 package xerca.xercamod.common.item;
 
 import com.google.common.collect.Multimap;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CropsBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -21,6 +25,7 @@ import net.minecraft.network.play.server.SAnimateHandPacket;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -146,7 +151,7 @@ public class ItemKnife extends Item {
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
         return enchantment.type == EnchantmentType.BREAKABLE || enchantment == Items.ENCHANTMENT_POISON
-                || enchantment == Items.ENCHANTMENT_STEALTH || enchantment == Enchantments.SMITE ||
-                enchantment == Enchantments.BANE_OF_ARTHROPODS || enchantment == Enchantments.LOOTING;
+                || enchantment == Items.ENCHANTMENT_STEALTH || enchantment == Enchantments.SHARPNESS
+                || enchantment == Enchantments.LOOTING;
     }
 }
