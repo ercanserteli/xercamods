@@ -128,8 +128,10 @@
   "block.xercamod.block_bookcase": "Bookcase",
   "block.xercamod.block_bookcase.name": "Bookcase",
   "block.xercamod.rope": "Rope",
+  "block.xercamod.carving_station": "Carving Bench",
 
   "container.xercamod.bookcase": "Bookcase",
+  "container.xercamod.carving_station": "Carving Bench",
 
   "itemGroup.tea_tab": "Tea",
   "itemGroup.deco_tab": "XercaMod Decoration",

@@ -126,6 +126,10 @@
   "block.xercamod.block_bookcase": "Kitaplık",
   "block.xercamod.block_bookcase.name": "Kitaplık",
   "block.xercamod.rope": "İp",
+  "block.xercamod.carving_station": "Oyma Tezgahı",
+
+  "container.xercamod.bookcase": "Kitaplık",
+  "container.xercamod.carving_station": "Oyma Tezgahı",
 
   "block.xercamod.carved_oak_1": "Oyulmuş Meşe",
   "block.xercamod.carved_oak_2": "Oyulmuş Meşe",

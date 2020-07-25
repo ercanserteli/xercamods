@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=south": { "model": "xercamod:block/carving_station" },
+    "facing=west": { "model":  "xercamod:block/carving_station", "y": 90 },
+    "facing=north": { "model": "xercamod:block/carving_station", "y": 180 },
+    "facing=east": { "model":  "xercamod:block/carving_station", "y": 270 }
+  }
+}

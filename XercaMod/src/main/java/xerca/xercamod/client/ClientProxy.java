@@ -44,6 +44,7 @@ public class ClientProxy extends Proxy {
         @SubscribeEvent
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
             ScreenManager.registerFactory(XercaTileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, GuiFunctionalBookcase::new);
+            ScreenManager.registerFactory(XercaTileEntities.CONTAINER_CARVING_STATION, CarvingStationScreen::new);
 
             RenderingRegistry.registerEntityRenderingHandler(Entities.TOMATO, new RenderTomatoFactory());
             RenderingRegistry.registerEntityRenderingHandler(Entities.CONFETTI_BALL, new RenderConfettiBallFactory());
