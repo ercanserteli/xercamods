@@ -4,7 +4,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import xerca.xercamod.common.item.ItemWarhammer;
+import xerca.xercamod.common.item.ItemScythe;
 
 public class EnchantmentGuillotine extends Enchantment {
     public EnchantmentGuillotine(Rarity rarityIn, EquipmentSlotType... slots) {
@@ -52,8 +52,9 @@ public class EnchantmentGuillotine extends Enchantment {
      */
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack) {
-        return stack.getItem() instanceof ItemWarhammer;
+        return stack.getItem() instanceof ItemScythe;
     }
+
     /**
      * This applies specifically to applying at the enchanting table. The other method {@link #canApply(ItemStack)}
      * applies for <i>all possible</i> enchantments.
