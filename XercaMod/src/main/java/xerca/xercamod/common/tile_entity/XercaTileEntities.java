@@ -7,6 +7,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
+import xerca.xercamod.common.ContainerCarvingStation;
 import xerca.xercamod.common.ContainerFunctionalBookcase;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.Blocks;
@@ -16,6 +17,7 @@ public class XercaTileEntities {
     public static final TileEntityType<?> FUNCTIONAL_BOOKCASE = null;
     public static final TileEntityType<TileEntityDoner> DONER = null;
     public static final ContainerType<ContainerFunctionalBookcase> CONTAINER_FUNCTIONAL_BOOKCASE = null;
+    public static final ContainerType<ContainerCarvingStation> CONTAINER_CARVING_STATION = null;
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
@@ -28,6 +30,7 @@ public class XercaTileEntities {
         @SubscribeEvent
         public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event) {
             event.getRegistry().register(IForgeContainerType.create(ContainerFunctionalBookcase::new).setRegistryName("container_functional_bookcase"));
+            event.getRegistry().register(IForgeContainerType.create(ContainerCarvingStation::new).setRegistryName("container_carving_station"));
         }
     }
 }

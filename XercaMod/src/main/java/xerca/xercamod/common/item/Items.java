@@ -5,6 +5,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.SingleItemRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.event.RegistryEvent;
@@ -248,6 +250,8 @@ public final class Items {
     public static final IRecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_FLASK_FILLING =          null;
     public static final IRecipeSerializer<RecipeFlaskMilkFilling> CRAFTING_SPECIAL_FLASK_MILK_FILLING = null;
     public static final IRecipeSerializer<RecipeWoodCarving> CRAFTING_SPECIAL_WOOD_CARVING =            null;
+    public static final IRecipeSerializer<RecipeCarvingStation> CARVING_STATION =                       null;
+    public static IRecipeType<RecipeCarvingStation> CARVING_STATION_TYPE = IRecipeType.register("carving");
 
     static Item makeItem(String name, ItemGroup tab){
         Item item = new Item(new Item.Properties().group(tab));
@@ -294,6 +298,7 @@ public final class Items {
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeFlaskFilling::new).setRegistryName(    XercaMod.MODID + ":crafting_special_flask_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeFlaskMilkFilling::new).setRegistryName(XercaMod.MODID + ":crafting_special_flask_milk_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeWoodCarving::new).setRegistryName(     XercaMod.MODID + ":crafting_special_wood_carving"));
+            event.getRegistry().register(new RecipeCarvingStation.Serializer<>(RecipeCarvingStation::new).setRegistryName(XercaMod.MODID + ":carving"));
 
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isSpyglassEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_spyglass"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isScytheEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_scythe"));
@@ -565,6 +570,8 @@ public final class Items {
                     new BlockItem(Blocks.WHITE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("white_terratile_stairs"),
                     new BlockItem(Blocks.YELLOW_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("yellow_terratile_stairs"),
                     new BlockItem(Blocks.TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile_stairs"),
+
+                    new BlockItem(Blocks.CARVING_STATION, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("carving_station"),
 
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true),
