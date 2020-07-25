@@ -107,7 +107,7 @@ public class ClientProxy extends Proxy {
 
         @SubscribeEvent
         public static void gameOverlayEvent(RenderGameOverlayEvent.Post event) {
-            if(event.getType() == RenderGameOverlayEvent.ElementType.ALL){
+            if(event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE){
                 PlayerEntity player = mc.player;
                 if(player.getHeldItemMainhand().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.thirdPersonView == 0){
                     renderSpyglass(event.getWindow());
@@ -157,11 +157,11 @@ public class ClientProxy extends Proxy {
             y1r = y1 + width;
         }
 
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
+//        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableAlphaTest();
+        RenderSystem.defaultAlphaFunc();
 
         mc.getTextureManager().bindTexture(spyglassBlurTexture);
         Tessellator tessellator = Tessellator.getInstance();
@@ -190,10 +190,10 @@ public class ClientProxy extends Proxy {
         bufferbuilder.pos(x1r, y1r, -90.0D).tex(0.0F, 0.0F).endVertex();
         tessellator.draw();
 
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.depthMask(true);
+//        RenderSystem.enableDepthTest();
+//        RenderSystem.enableAlphaTest();
+//        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
     }
 }
