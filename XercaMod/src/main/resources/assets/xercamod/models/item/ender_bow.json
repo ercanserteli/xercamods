@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercamod:item/enderbow_overlay",
+    "layer1": "xercamod:item/enderbow_main"
+  }
+}

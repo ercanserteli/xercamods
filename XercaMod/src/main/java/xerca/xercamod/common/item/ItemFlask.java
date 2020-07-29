@@ -137,6 +137,7 @@ public class ItemFlask extends Item {
      * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
      * different names based on their damage or NBT.
      */
+    @Override
     public String getTranslationKey(ItemStack stack) {
         if(hasMilk){
             return this.getTranslationKey();

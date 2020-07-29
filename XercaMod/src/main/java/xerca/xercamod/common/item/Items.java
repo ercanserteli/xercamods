@@ -23,6 +23,7 @@ import xerca.xercamod.common.enchantments.*;
 
 @ObjectHolder(XercaMod.MODID)
 public final class Items {
+    public static final ItemEnderBow ENDER_BOW = null;
     public static final ItemSpyglass SPYGLASS = null;
     public static final Item ITEM_YOGHURT = null;
     public static final Item ITEM_HONEYBERRY_YOGHURT = null;
@@ -248,9 +249,11 @@ public final class Items {
     public static final IRecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING =              null;
     public static final IRecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING =          null;
     public static final IRecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_FLASK_FILLING =          null;
+    public static final IRecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_ENDER_BOW_FILLING =      null;
     public static final IRecipeSerializer<RecipeFlaskMilkFilling> CRAFTING_SPECIAL_FLASK_MILK_FILLING = null;
     public static final IRecipeSerializer<RecipeWoodCarving> CRAFTING_SPECIAL_WOOD_CARVING =            null;
     public static final IRecipeSerializer<RecipeCarvingStation> CARVING_STATION =                       null;
+
     public static IRecipeType<RecipeCarvingStation> CARVING_STATION_TYPE = IRecipeType.register("carving");
 
     static Item makeItem(String name, ItemGroup tab){
@@ -296,6 +299,7 @@ public final class Items {
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeTeaFilling::new).setRegistryName(      XercaMod.MODID + ":crafting_special_tea_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeTeaRefilling::new).setRegistryName(    XercaMod.MODID + ":crafting_special_tea_refilling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeFlaskFilling::new).setRegistryName(    XercaMod.MODID + ":crafting_special_flask_filling"));
+            event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeEnderBowFilling::new).setRegistryName( XercaMod.MODID + ":crafting_special_ender_bow_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeFlaskMilkFilling::new).setRegistryName(XercaMod.MODID + ":crafting_special_flask_milk_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeWoodCarving::new).setRegistryName(     XercaMod.MODID + ":crafting_special_wood_carving"));
             event.getRegistry().register(new RecipeCarvingStation.Serializer<>(RecipeCarvingStation::new).setRegistryName(XercaMod.MODID + ":carving"));
@@ -326,6 +330,7 @@ public final class Items {
             Item glass = new ItemGlass();
 
             event.getRegistry().registerAll(
+                    new ItemEnderBow().setRegistryName("ender_bow"),
                     new ItemSpyglass().setRegistryName("spyglass"),
                     new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_1"),
                     new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_5"),
