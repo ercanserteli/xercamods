@@ -133,6 +133,8 @@ shaped_recipes = [
     ShapedRecipe(['ttt'], {'item': 'xercamod:yellow_terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:yellow_terratile'}}, {'item': 'xercamod:yellow_terratile'}, "", "terratile"),
     ShapedRecipe(['ttt'], {'item': 'xercamod:terratile_slab', 'count': 6}, {'t': {'item': 'xercamod:terratile'}}, {'item': 'xercamod:terratile'}, "", "terratile"),
 
+    ShapedRecipe(['f', 'c'], {'item': 'xercamod:ender_bow'},  {'c': {'item': 'minecraft:crossbow'}, 'f': {'item': 'xercamod:flask'}}, {'item': 'xercamod:flask'}, "", type="xercamod:crafting_condition_shaped_ender_flask"),
+
     # Carved wood - didn't work because of mirroring
     # ShapedRecipe(['w ', ' k'], {'item': 'xercamod:carved_oak_1', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
     # ShapedRecipe(['w', 'k'], {'item': 'xercamod:carved_oak_2', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
@@ -197,8 +199,6 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:spruce_log'}], {'item': 'minecraft:stripped_spruce_log'}, {'item': 'xercamod:item_knife'}, ""),
 
     ShapelessRecipe([{'item': 'minecraft:string'}, {'item': 'minecraft:string'}, {'item': 'minecraft:string'}], {'item': 'xercamod:rope'}, {'item': 'minecraft:string'}, ""),
-
-    ShapelessRecipe([{'item': 'minecraft:crossbow'}, {'item': 'xercamod:flask'}], {'item': 'xercamod:ender_bow'}, {'item': 'xercamod:flask'}, "", type="xercamod:crafting_condition_shaped_ender_flask"),
 ]
 
 cooking_recipes = [
