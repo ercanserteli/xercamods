@@ -153,5 +153,13 @@
         "name": "xercamod:big_sizzle"
       }
     ]
+  },
+  "behead": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamod:behead"
+      }
+    ]
   }
 }

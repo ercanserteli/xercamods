@@ -73,7 +73,9 @@ public class XercaMod {
         NETWORK_HANDLER.registerMessage(msg_id++, HammerQuakePacket.class, HammerQuakePacket::encode, HammerQuakePacket::decode, HammerQuakePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, ConfettiParticlePacket.class, ConfettiParticlePacket::encode, ConfettiParticlePacket::decode, ConfettiParticlePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, QuakeParticlePacket.class, QuakeParticlePacket::encode, QuakeParticlePacket::decode, QuakeParticlePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id, ConfigSyncPacket.class, ConfigSyncPacket::encode, ConfigSyncPacket::decode, ConfigSyncPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ConfigSyncPacket.class, ConfigSyncPacket::encode, ConfigSyncPacket::decode, ConfigSyncPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ScytheAttackPacket.class, ScytheAttackPacket::encode, ScytheAttackPacket::decode, ScytheAttackPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id, BeheadParticlePacket.class, BeheadParticlePacket::encode, BeheadParticlePacket::decode, BeheadParticlePacketHandler::handle);
     }
 
     private void setup(final FMLCommonSetupEvent event)

@@ -25,6 +25,7 @@ public class SoundEvents {
     public final static SoundEvent TEA_POUR = null;
     public final static SoundEvent SIZZLE = null;
     public final static SoundEvent BIG_SIZZLE = null;
+    public final static SoundEvent BEHEAD = null;
 
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = new ResourceLocation(XercaMod.MODID, soundName);
@@ -52,7 +53,8 @@ public class SoundEvents {
                     createSoundEvent("stomp"),
                     createSoundEvent("tea_pour"),
                     createSoundEvent("sizzle"),
-                    createSoundEvent("big_sizzle")
+                    createSoundEvent("big_sizzle"),
+                    createSoundEvent("behead")
             );
         }
     }
