@@ -25,6 +25,7 @@ import xerca.xercamod.common.enchantments.*;
 public final class Items {
     public static final ItemEnderBow ENDER_BOW = null;
     public static final ItemSpyglass SPYGLASS = null;
+    public static final Item RAW_SHISH_KEBAB = null;
     public static final Item ITEM_YOGHURT = null;
     public static final Item ITEM_HONEYBERRY_YOGHURT = null;
     public static final Item ITEM_HONEY_CUPCAKE = null;
@@ -450,6 +451,7 @@ public final class Items {
                     makeFoodItem("item_doner_wrap", Foods.DONER_WRAP),
                     makeFoodItem("item_chubby_doner", Foods.CHUBBY_DONER),
                     makeContainedFoodItem("item_alexander", Foods.ALEXANDER, net.minecraft.item.Items.BOWL, 16),
+                    makeFoodItem("raw_shish_kebab", Foods.RAW_SHISH_KEBAB),
 
                     new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
                     new ItemCushion(new Item.Properties().group(Items.decoTab), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),

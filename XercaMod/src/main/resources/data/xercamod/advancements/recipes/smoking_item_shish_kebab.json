@@ -3,7 +3,7 @@
   "parent": "xercamod:recipes/root",
   "rewards": {
     "recipes": [
-      "xercamod:item_shish_kebab"
+      "xercamod:smoking_item_shish_kebab"
     ]
   },
   "criteria": {
@@ -11,14 +11,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "minecraft:cooked_beef"}
+          {"item": "xercamod:raw_shish_kebab"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercamod:item_shish_kebab"
+        "recipe": "xercamod:smoking_item_shish_kebab"
       }
     }
   },
