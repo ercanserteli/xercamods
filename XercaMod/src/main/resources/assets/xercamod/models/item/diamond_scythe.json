@@ -2,5 +2,34 @@
   "parent": "item/handheld",
   "textures": {
     "layer0": "xercamod:item/tools/diamond_scythe"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "pulling": 1
+      },
+      "model": "xercamod:item/diamond_scythe_0"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.4
+      },
+      "model": "xercamod:item/diamond_scythe_1"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.7
+      },
+      "model": "xercamod:item/diamond_scythe_2"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.90
+      },
+      "model": "xercamod:item/diamond_scythe_3"
+    }
+  ]
 }
