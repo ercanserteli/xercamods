@@ -5,6 +5,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 
 public class Foods {
+    public static Food RAW_SHISH_KEBAB = makeFood(1, 0.4f, true).build();
     public static Food YOGHURT = makeFood(4, 0.5f, false).build();
     public static Food AYRAN = makeFood(4, 0.5f, false).setAlwaysEdible().build();
     public static Food HONEYBERRY_YOGHURT = makeFood(12, 1.0f, false).build();
@@ -64,7 +65,7 @@ public class Foods {
     public static Food CROISSANT = makeFood(5, 0.6f, false).build();
     public static Food POTATO_SLICES = makeFood(1, 0.4f, false).build();
     public static Food POTATO_FRIES = makeFood(3, 0.6f, false).build();
-    public static Food SHISH_KEBAB = makeFood(10, 1.4f, true).build();
+    public static Food SHISH_KEBAB = makeFood(7, 1.0f, true).build();
     public static Food TOMATO_SLICES = makeFood(1, 0.5f, true).build();
     public static Food ICE_TEA = makeFood(2, 0.5f, false).setAlwaysEdible().build();
     public static Food APPLE_JUICE = makeFood(3, 0.6f, false).setAlwaysEdible().build();
