@@ -253,7 +253,7 @@ public final class Items {
     public static final IRecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_ENDER_BOW_FILLING =      null;
     public static final IRecipeSerializer<RecipeFlaskMilkFilling> CRAFTING_SPECIAL_FLASK_MILK_FILLING = null;
     public static final IRecipeSerializer<RecipeWoodCarving> CRAFTING_SPECIAL_WOOD_CARVING =            null;
-    public static final IRecipeSerializer<RecipeCarvingStation> CARVING_STATION =                       null;
+    public static final IRecipeSerializer<RecipeCarvingStation> CARVING =                               null;
 
     public static IRecipeType<RecipeCarvingStation> CARVING_STATION_TYPE = IRecipeType.register("carving");
 

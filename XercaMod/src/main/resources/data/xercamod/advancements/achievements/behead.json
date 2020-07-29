@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "xercamod:iron_scythe"
+    },
+    "title": {
+      "translate": "advancements.xercamod.achievements.behead.title"
+    },
+    "description": {
+      "translate": "advancements.xercamod.achievements.behead.description"
+    }
+  },
+  "parent": "xercamod:achievements/root",
+  "criteria": {
+    "iron": {
+      "trigger": "behead"
+    }
+  }
+}
