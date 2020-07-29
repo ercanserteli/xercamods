@@ -16,7 +16,7 @@ import xerca.xercamod.common.item.Items;
 
 public class RecipeCarvingStation extends SingleItemRecipe {
     public RecipeCarvingStation(ResourceLocation resourceLocation, String s, Ingredient ingredient, ItemStack stack) {
-        super(Items.CARVING_STATION_TYPE, Items.CARVING_STATION, resourceLocation, s, ingredient, stack);
+        super(Items.CARVING_STATION_TYPE, Items.CARVING, resourceLocation, s, ingredient, stack);
     }
 
     /**
