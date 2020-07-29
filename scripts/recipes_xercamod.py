@@ -197,6 +197,8 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:spruce_log'}], {'item': 'minecraft:stripped_spruce_log'}, {'item': 'xercamod:item_knife'}, ""),
 
     ShapelessRecipe([{'item': 'minecraft:string'}, {'item': 'minecraft:string'}, {'item': 'minecraft:string'}], {'item': 'xercamod:rope'}, {'item': 'minecraft:string'}, ""),
+
+    ShapelessRecipe([{'item': 'minecraft:crossbow'}, {'item': 'xercamod:flask'}], {'item': 'xercamod:ender_bow'}, {'item': 'xercamod:flask'}, "", type="xercamod:crafting_condition_shaped_ender_flask"),
 ]
 
 cooking_recipes = [
@@ -221,6 +223,7 @@ cooking_recipes = [
 
 special_recipes = [
     SpecialRecipe("xercamod:crafting_special_flask_filling", None, ""),
+    SpecialRecipe("xercamod:crafting_special_ender_bow_filling", None, ""),
     SpecialRecipe("xercamod:crafting_special_flask_milk_filling", None, ""),
     SpecialRecipe("xercamod:crafting_special_tea_filling", None, ""),
     SpecialRecipe("xercamod:crafting_special_tea_pouring", None, ""),

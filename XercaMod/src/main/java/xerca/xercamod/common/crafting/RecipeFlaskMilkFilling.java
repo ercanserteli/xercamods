@@ -14,8 +14,8 @@ import xerca.xercamod.common.item.ItemFlask;
 import xerca.xercamod.common.item.Items;
 
 public class RecipeFlaskMilkFilling extends SpecialRecipe {
-    public RecipeFlaskMilkFilling(ResourceLocation p_i48170_1_) {
-        super(p_i48170_1_);
+    public RecipeFlaskMilkFilling(ResourceLocation resourceLocation) {
+        super(resourceLocation);
     }
 
     /**

@@ -76,6 +76,11 @@ public class ClientProxy extends Proxy {
                         (itemStack, colorIndex) -> colorIndex > 0 ? -1 : PotionUtils.getColor(itemStack), Items.FLASK
                 );
             }
+            if(Items.ENDER_BOW != null){
+                event.getItemColors().register(
+                        (itemStack, colorIndex) -> colorIndex > 0 ? -1 : PotionUtils.getColor(itemStack), Items.ENDER_BOW
+                );
+            }
         }
     }
 
