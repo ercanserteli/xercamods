@@ -2,8 +2,8 @@ package xerca.xercamod.common.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -28,8 +28,8 @@ public class BlockTerracottaTileSlab extends SlabBlock {
         if (blockstate.getBlock() == this) {
             return blockstate.with(TYPE, SlabType.DOUBLE).with(WATERLOGGED, false).with(FACING, dir);
         } else {
-            IFluidState ifluidstate = context.getWorld().getFluidState(blockpos);
-            BlockState blockstate1 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER)).with(FACING, dir);
+            FluidState fluidstate = context.getWorld().getFluidState(blockpos);
+            BlockState blockstate1 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER).with(FACING, dir);
             Direction direction = context.getFace();
             return direction != Direction.DOWN && (direction == Direction.UP || !(context.getHitVec().y - (double)blockpos.getY() > 0.5D)) ? blockstate1 : blockstate1.with(TYPE, SlabType.TOP);
         }

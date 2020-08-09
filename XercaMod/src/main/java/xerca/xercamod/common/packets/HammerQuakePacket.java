@@ -1,14 +1,14 @@
 package xerca.xercamod.common.packets;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class HammerQuakePacket {
     private float pullDuration;
-    private Vec3d position;
+    private Vector3d position;
     private boolean messageIsValid;
 
-    public HammerQuakePacket(Vec3d position, float pullDuration) {
+    public HammerQuakePacket(Vector3d position, float pullDuration) {
         this.pullDuration = pullDuration;
         this.position = position;
     }
@@ -23,7 +23,7 @@ public class HammerQuakePacket {
             double x = buf.readDouble();
             double y = buf.readDouble();
             double z = buf.readDouble();
-            result.position = new Vec3d(x, y, z);
+            result.position = new Vector3d(x, y, z);
             result.pullDuration = buf.readFloat();
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading HammerAttackPacket: " + ioe);
@@ -34,7 +34,7 @@ public class HammerQuakePacket {
     }
 
     public static void encode(HammerQuakePacket pkt, PacketBuffer buf) {
-        Vec3d pos = pkt.getPosition();
+        Vector3d pos = pkt.getPosition();
         buf.writeDouble(pos.x);
         buf.writeDouble(pos.y);
         buf.writeDouble(pos.z);
@@ -45,7 +45,7 @@ public class HammerQuakePacket {
         return pullDuration;
     }
 
-    public Vec3d getPosition() {
+    public Vector3d getPosition() {
         return position;
     }
 

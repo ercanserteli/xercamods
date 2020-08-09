@@ -12,7 +12,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -60,7 +60,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     @Override
     public void tick(){
         super.tick();
-        move(MoverType.SELF, new Vec3d(0, -0.16, 0));
+        move(MoverType.SELF, new Vector3d(0, -0.16, 0));
         setBoundingBox(new AxisAlignedBB(getPosX() - 0.5, getPosY(), getPosZ() - 0.5, getPosX() + 0.5, getPosY() + getHeight(), getPosZ() + 0.5));
     }
 
@@ -143,7 +143,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
      * Applies the given player interaction to this Entity.
      */
     @Override
-    public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
+    public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
         if (!this.world.isRemote) {
             player.startRiding(this);
         }

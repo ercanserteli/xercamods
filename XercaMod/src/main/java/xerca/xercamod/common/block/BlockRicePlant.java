@@ -1,9 +1,9 @@
 package xerca.xercamod.common.block;
 
-import net.minecraft.block.*;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
@@ -38,8 +38,8 @@ class BlockRicePlant extends CropsBlock implements IGrowable {
             int water_count = 0;
             for(Direction direction : Direction.Plane.HORIZONTAL) {
                 BlockState blockstate = worldIn.getBlockState(pos.offset(direction));
-                IFluidState ifluidstate = worldIn.getFluidState(pos.offset(direction));
-                if (ifluidstate.isTagged(FluidTags.WATER) || blockstate.getBlock() == net.minecraft.block.Blocks.FROSTED_ICE) {
+                FluidState fluidstate = worldIn.getFluidState(pos.offset(direction));
+                if (fluidstate.isTagged(FluidTags.WATER) || blockstate.getBlock() == net.minecraft.block.Blocks.FROSTED_ICE) {
                     water_count++;
                     if(water_count >= 2){
                         return true;
