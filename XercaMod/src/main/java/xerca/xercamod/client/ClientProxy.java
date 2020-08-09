@@ -113,7 +113,7 @@ public class ClientProxy extends Proxy {
 
         @SubscribeEvent
         public static void gameOverlayEvent(RenderGameOverlayEvent.Post event) {
-            if(event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE){
+            if(event.getType() == RenderGameOverlayEvent.ElementType.ALL){
                 PlayerEntity player = mc.player;
                 if(player.getHeldItemMainhand().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.thirdPersonView == 0){
                     renderSpyglass(event.getWindow());

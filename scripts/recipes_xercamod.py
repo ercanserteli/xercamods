@@ -134,6 +134,8 @@ shaped_recipes = [
 
     ShapedRecipe(['f', 'c'], {'item': 'xercamod:ender_bow'},  {'c': {'item': 'minecraft:crossbow'}, 'f': {'item': 'xercamod:flask'}}, {'item': 'xercamod:flask'}, "", type="xercamod:crafting_condition_shaped_ender_flask"),
 
+    ShapedRecipe(['kk', 'pp', 'pp'], {'item': 'xercamod:carving_station'},  {'p': {'tag': 'minecraft:planks'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "", type="xercamod:crafting_condition_shaped_carved_wood"),
+
     # Carved wood - didn't work because of mirroring
     # ShapedRecipe(['w ', ' k'], {'item': 'xercamod:carved_oak_1', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
     # ShapedRecipe(['w', 'k'], {'item': 'xercamod:carved_oak_2', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
