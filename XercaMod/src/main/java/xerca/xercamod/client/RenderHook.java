@@ -12,7 +12,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import xerca.xercamod.common.entity.EntityHook;
 
 import javax.annotation.Nonnull;
@@ -67,7 +70,7 @@ class RenderHook extends EntityRenderer<EntityHook> {
             if ((this.renderManager.options == null || this.renderManager.options.thirdPersonView <= 0) && playerentity == Minecraft.getInstance().player) {
                 double d7 = this.renderManager.options.fov;
                 d7 = d7 / 100.0D;
-                Vec3d vec3d = new Vec3d((double)i * -0.36D * d7, -0.045D * d7, 0.4D);
+                Vector3d vec3d = new Vector3d((double)i * -0.36D * d7, -0.045D * d7, 0.4D);
                 vec3d = vec3d.rotatePitch(-MathHelper.lerp(partialTicks, playerentity.prevRotationPitch, playerentity.rotationPitch) * ((float)Math.PI / 180F));
                 vec3d = vec3d.rotateYaw(-MathHelper.lerp(partialTicks, playerentity.prevRotationYaw, playerentity.rotationYaw) * ((float)Math.PI / 180F));
                 vec3d = vec3d.rotateYaw(f1 * 0.5F);

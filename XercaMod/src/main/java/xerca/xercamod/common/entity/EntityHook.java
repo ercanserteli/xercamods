@@ -18,6 +18,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -86,7 +87,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         double y = this.angler.getPosY() + (double)this.angler.getEyeHeight();
         double z = this.angler.getPosZ();// - (double)f2 * 0.3D;
         this.setLocationAndAngles(x, y, z, yaw, pitch);
-        Vec3d vec3d = new Vec3d((double)(-f3), -(f5 / f4), (double)(-f2));
+        Vector3d vec3d = new Vector3d((double)(-f3), -(f5 / f4), (double)(-f2));
         double length = vec3d.length();
         vec3d = vec3d.scale(speed/length);
         this.setMotion(vec3d);
@@ -151,7 +152,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
                 this.caughtEntity = caught;
 
                 if(!hasGentle){
-                    world.playSound(null, this.getPosition(), SoundEvents.HOOK_IMPACT, SoundCategory.PLAYERS, 1.0f, world.rand.nextFloat() * 0.2F + 0.9F);
+                    world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundEvents.HOOK_IMPACT, SoundCategory.PLAYERS, 1.0f, world.rand.nextFloat() * 0.2F + 0.9F);
 
                     caughtEntity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.angler), 3);
                     if(!this.caughtEntity.isAlive()){
@@ -159,7 +160,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
                         return true;
                     }
                 }else{
-                    world.playSound(null, this.getPosition(), SoundEvents.HOOK_IMPACT, SoundCategory.PLAYERS, 0.6f, world.rand.nextFloat() * 0.2F + 1.5f);
+                    world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundEvents.HOOK_IMPACT, SoundCategory.PLAYERS, 0.6f, world.rand.nextFloat() * 0.2F + 1.5f);
                 }
 
                 this.caughtEntity.noClip = true;
@@ -180,9 +181,9 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
 
     private void pullEntity() {
         if (this.caughtEntity.isAlive()) {
-            Vec3d v1 = this.angler.getPositionVector();
-            Vec3d v2 = this.caughtEntity.getPositionVector();
-            Vec3d v = v1.subtract(v2);
+            Vector3d v1 = this.angler.getPositionVec();
+            Vector3d v2 = this.caughtEntity.getPositionVec();
+            Vector3d v = v1.subtract(v2);
             if (v.length() > 2) {
                 v = v.normalize().scale(speed);
                 this.caughtEntity.setMotion(v);
@@ -201,9 +202,9 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private void pullUser() {
-        Vec3d v1 = this.angler.getPositionVector();
-        Vec3d v2 = this.getPositionVector();
-        Vec3d v = v2.subtract(v1);
+        Vector3d v1 = this.angler.getPositionVec();
+        Vector3d v2 = this.getPositionVec();
+        Vector3d v = v2.subtract(v1);
         if (v.length() > 2) {
             v = v.normalize().scale(speed);
             this.angler.setMotion(v);
@@ -279,8 +280,8 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             }
 
             if (this.isReturning) {
-                Vec3d target = this.angler.getPositionVector().add(0, this.angler.getEyeHeight(), 0);
-                Vec3d v = target.subtract(this.getPositionVector());
+                Vector3d target = this.angler.getPositionVec().add(0, this.angler.getEyeHeight(), 0);
+                Vector3d v = target.subtract(this.getPositionVec());
                 if (v.length() < 3D) {
                     this.remove();
                     return;

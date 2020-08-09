@@ -3,7 +3,7 @@ package xerca.xercamod.common.packets;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,7 +48,7 @@ public class ScytheAttackPacketHandler {
                 return;
             }
             Entity target = pl.world.getEntityByID(msg.getTargetId());
-            float damage = ((float) pl.getAttributes().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() * 1.3f);
+            float damage = ((float) pl.getAttribute(Attributes.field_233823_f_).getValue() * 1.3f);
 
             st.damageItem(1, pl, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
             if(target instanceof LivingEntity){
@@ -61,7 +61,7 @@ public class ScytheAttackPacketHandler {
                     pl.world.playSound(null, target.getPosX(), target.getPosY() + 0.5d, target.getPosZ(), SoundEvents.BEHEAD, SoundCategory.PLAYERS, 1.0f, pl.world.rand.nextFloat() * 0.2F + 0.9f);
 
                     BeheadParticlePacket pack = new BeheadParticlePacket(96, targetLiving.getPosX(), targetLiving.getPosY(), targetLiving.getPosZ());
-                    XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(targetLiving.getPosX(), targetLiving.getPosY(), targetLiving.getPosZ(), 64.0D, pl.dimension)), pack);
+                    XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(targetLiving.getPosX(), targetLiving.getPosY(), targetLiving.getPosZ(), 64.0D, pl.getServerWorld().func_234923_W_())), pack);
 
                     ItemScythe.spawnHead(targetLiving);
                     Triggers.BEHEAD.trigger(pl);

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:forgespi:3.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/forgespi/3.1.1/f258f875d9252d5ee83d8f0f2d03f71123f37650/forgespi-3.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minecraftforge/forgespi/3.1.1/f045ae91097e879ed4bdcda7e898746e23d3f7f7/forgespi-3.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

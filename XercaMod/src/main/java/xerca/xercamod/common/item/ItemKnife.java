@@ -1,10 +1,6 @@
 package xerca.xercamod.common.item;
 
 import com.google.common.collect.Multimap;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -12,8 +8,9 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -25,15 +22,14 @@ import net.minecraft.network.play.server.SAnimateHandPacket;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.Triggers;
+import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.packets.KnifeAttackPacket;
 
 import javax.annotation.Nonnull;
@@ -107,13 +103,14 @@ public class ItemKnife extends Item {
 
     /**
      * Gets a map of item attribute modifiers, used by ItemSword to increase hit damage.
+     * @return
      */
     @Nonnull
     @Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-        Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
         if (slot == EquipmentSlotType.MAINHAND || slot == EquipmentSlotType.OFFHAND) {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", weaponDamage, AttributeModifier.Operation.ADDITION));
+            multimap.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", weaponDamage, AttributeModifier.Operation.ADDITION));
         }
         return multimap;
     }

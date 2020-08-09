@@ -5,7 +5,7 @@ import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -89,9 +89,10 @@ public class XercaMod {
         {
             /**
              * Return the projectile entity spawned by this dispense behavior.
+             * @return
              */
             @Nonnull
-            protected IProjectile getProjectileEntity(@Nonnull World worldIn, @Nonnull IPosition position, @Nonnull ItemStack stackIn)
+            protected ProjectileEntity getProjectileEntity(@Nonnull World worldIn, @Nonnull IPosition position, @Nonnull ItemStack stackIn)
             {
                 return new EntityConfettiBall(worldIn, position.getX(), position.getY(), position.getZ());
             }

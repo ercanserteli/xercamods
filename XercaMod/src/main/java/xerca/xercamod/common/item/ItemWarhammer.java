@@ -4,14 +4,16 @@ import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
@@ -29,8 +31,8 @@ import xerca.xercamod.common.packets.HammerAttackPacket;
 import xerca.xercamod.common.packets.HammerQuakePacket;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
 
 public class ItemWarhammer extends Item {
     private final float weaponDamage;
@@ -45,9 +47,8 @@ public class ItemWarhammer extends Item {
         this.pushAmount = getPushFromMaterial(mat);
 
         this.addPropertyOverride(new ResourceLocation("pull"), new IItemPropertyGetter() {
-            @OnlyIn(Dist.CLIENT)
             @Override
-            public float call(@Nonnull ItemStack stack, World worldIn, LivingEntity entityIn) {
+            public float call(ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn) {
                 if (entityIn == null) {
                     return 0.0F;
                 } else {
@@ -59,7 +60,7 @@ public class ItemWarhammer extends Item {
         this.addPropertyOverride(new ResourceLocation("pulling"), new IItemPropertyGetter() {
             @OnlyIn(Dist.CLIENT)
             @Override
-            public float call(@Nonnull ItemStack stack, World worldIn, LivingEntity entityIn) {
+            public float call(@Nonnull ItemStack stack, ClientWorld worldIn, LivingEntity entityIn) {
                 return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
             }
         });
@@ -123,12 +124,12 @@ public class ItemWarhammer extends Item {
 
     @Nonnull
     @Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType equipmentSlot, ItemStack stack) {
-        Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType equipmentSlot, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
 
         if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) this.weaponDamage, AttributeModifier.Operation.ADDITION));
-            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -3.0f, AttributeModifier.Operation.ADDITION));
+            multimap.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) this.weaponDamage, AttributeModifier.Operation.ADDITION));
+            multimap.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -3.0f, AttributeModifier.Operation.ADDITION));
         }
 
         return multimap;

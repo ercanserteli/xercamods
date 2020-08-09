@@ -10,7 +10,7 @@ import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,7 +47,7 @@ public class EntityConfettiBall extends ProjectileItemEntity {
         }
     }
 
-    private void spawnConfetti(Vec3d vec) {
+    private void spawnConfetti(Vector3d vec) {
         spawnConfetti(vec.x, vec.y, vec.z);
     }
 

@@ -17,7 +17,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
@@ -84,8 +84,8 @@ public class BlockDoner extends Block {
                     else{
                         worldIn.setBlockState(pos, Blocks.IRON_BARS.getDefaultState());
                     }
-                    Vec3d playerPos = new Vec3d(player.getPosX(), player.getPosY(), player.getPosZ());
-                    Vec3d boost = playerPos.subtract(new Vec3d(pos.getX(), pos.getY(), pos.getZ()));
+                    Vector3d playerPos = new Vector3d(player.getPosX(), player.getPosY(), player.getPosZ());
+                    Vector3d boost = playerPos.subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
                     boost = boost.normalize().scale(0.15d);
 
                     ItemEntity donerEntity = new ItemEntity(worldIn, pos.getX() + 0.5f + boost.x*6, pos.getY() + 0.5f, pos.getZ() + 0.5f + boost.x*6, new ItemStack(xerca.xercamod.common.item.Items.DONER_SLICE));

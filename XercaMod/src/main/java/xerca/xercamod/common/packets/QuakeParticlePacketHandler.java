@@ -2,7 +2,7 @@ package xerca.xercamod.common.packets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,14 +25,14 @@ public class QuakeParticlePacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(QuakeParticlePacket pkt) {
         World world = Minecraft.getInstance().world;
-        Vec3d centerPos = new Vec3d(pkt.getPosX(), pkt.getPosY(), pkt.getPosZ());
+        Vector3d centerPos = new Vector3d(pkt.getPosX(), pkt.getPosY(), pkt.getPosZ());
         for (int j = 0; j < pkt.getCount(); ++j) {
             double posX = centerPos.x + world.rand.nextGaussian();
             double posY = centerPos.y;
             double posZ = centerPos.z + world.rand.nextGaussian();
 
-            Vec3d particlePos = new Vec3d(posX, posY, posZ);
-            Vec3d particleVel = particlePos.subtract(centerPos).normalize().scale(0.15);
+            Vector3d particlePos = new Vector3d(posX, posY, posZ);
+            Vector3d particleVel = particlePos.subtract(centerPos).normalize().scale(0.15);
 
             world.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, particleVel.x, 0.01, particleVel.z);
         }

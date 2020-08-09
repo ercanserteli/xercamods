@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 import xerca.xercamod.common.Config;
@@ -28,9 +28,9 @@ public class ItemConfetti extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
         worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.CONFETTI, SoundCategory.PLAYERS, 1.0f, worldIn.rand.nextFloat() * 0.2F + 0.8F);
         if(!worldIn.isRemote){
-            Vec3d pos = playerIn.getPositionVector().add(playerIn.getLookVec()).add(0d, 1d, 0d);
+            Vector3d pos = playerIn.getPositionVec().add(playerIn.getLookVec()).add(0d, 1d, 0d);
             ConfettiParticlePacket pack = new ConfettiParticlePacket(32, pos.x, pos.y, pos.z);
-            XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, playerIn.dimension)), pack);
+            XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, playerIn.world.func_234923_W_())), pack);
         }
 
         final ItemStack heldItem = playerIn.getHeldItem(hand);

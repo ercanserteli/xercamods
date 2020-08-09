@@ -41,13 +41,13 @@ public class ItemEnderBow extends Item {
             if(range > 1){
                 range *= 0.8f;
             }
-            worldIn.playSound(playerIn, playerIn.getPosition(), SoundEvents.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 1.0f, 1.0f);
             if (!worldIn.isRemote) {
                 PotionEntity potionentity = new PotionEntity(worldIn, playerIn);
                 ItemStack potionStack = new ItemStack(isLingering(stack) ? Items.LINGERING_POTION : Items.SPLASH_POTION);
                 PotionUtils.addPotionToItemStack(potionStack, PotionUtils.getPotionFromItem(stack));
                 potionentity.setItem(potionStack);
-                potionentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, -10.0F, 0.5F * range, 1.0F / range);
+                potionentity.func_234612_a_(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, -10.0F, 0.5F * range, 1.0F / range);
                 worldIn.addEntity(potionentity);
 
                 decrementCharges(stack);
@@ -105,7 +105,7 @@ public class ItemEnderBow extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
-        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").applyTextStyle(TextFormatting.YELLOW));
+        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").func_240699_a_(TextFormatting.YELLOW));
     }
 
 

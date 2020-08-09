@@ -3,7 +3,7 @@ package xerca.xercamod.common.packets;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,10 +12,9 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xerca.xercamod.common.SoundEvents;
-import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.item.ItemWarhammer;
 import xerca.xercamod.common.item.Items;
 
@@ -60,7 +59,7 @@ public class HammerAttackPacketHandler {
             float pull = msg.getPullDuration();
             float mult = damageBonusMult(pull);
             int heavyLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_HEAVY, st);
-            float damage = ((float) pl.getAttributes().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() + heavyLevel * 0.5f) * mult;
+            float damage = ((float) pl.getAttribute(Attributes.field_233823_f_).getValue() + heavyLevel * 0.5f) * mult;
             float push = (((ItemWarhammer) item).getPushAmount() + heavyLevel * 0.15f) * 2 * mult;
 
             int uppercutLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_UPPERCUT, st);
@@ -82,7 +81,7 @@ public class HammerAttackPacketHandler {
                 }
             }
 
-            Vec3d knockVector = target.getPositionVector().subtract(pl.getPositionVector()).normalize().scale(push);
+            Vector3d knockVector = target.getPositionVec().subtract(pl.getPositionVec()).normalize().scale(push);
             target.addVelocity(knockVector.x, knockVector.y + bonusVelY, knockVector.z);
             target.velocityChanged = true;
         }else{
