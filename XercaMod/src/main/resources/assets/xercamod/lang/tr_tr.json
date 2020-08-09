@@ -275,5 +275,8 @@
   "enchantment.xercamod.enchantment_uppercut": "Uçurgan",
   "enchantment.xercamod.enchantment_poison": "Zehirli",
   "enchantment.xercamod.enchantment_stealth": "Sessiz katil",
-  "enchantment.xercamod.enchantment_guillotine": "Giyotin"
+  "enchantment.xercamod.enchantment_guillotine": "Giyotin",
+  "enchantment.xercamod.enchantment_capacity": "Kapasite",
+  "enchantment.xercamod.enchantment_range": "Menzil",
+  "enchantment.xercamod.enchantment_chug": "Tıksırana kadar"
 }

@@ -26,7 +26,7 @@ guiScale:0
 particles:0
 maxFps:120
 difficulty:2
-fancyGraphics:true
+fancyGraphics:false
 ao:2
 biomeBlendRadius:2
 renderClouds:true
@@ -91,7 +91,7 @@ key_key.hotbar.6:key.keyboard.6
 key_key.hotbar.7:key.keyboard.7
 key_key.hotbar.8:key.keyboard.8
 key_key.hotbar.9:key.keyboard.9
-soundCategory_master:0.50165564
+soundCategory_master:0.055463575
 soundCategory_music:0.0
 soundCategory_record:1.0
 soundCategory_weather:0.0

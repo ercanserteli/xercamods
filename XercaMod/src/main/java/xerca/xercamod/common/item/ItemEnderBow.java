@@ -1,6 +1,9 @@
 package xerca.xercamod.common.item;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.item.Item;
@@ -12,6 +15,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,26 +27,33 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemEnderBow extends Item {
-    public static int maxCharges = 8;
+    private static final int baseMaxCharges = 8;
 
     public ItemEnderBow() {
-        super(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1));
+        super(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1).maxDamage(160));
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
         if (getCharges(stack) > 0) {
+            float range = EnchantmentHelper.getEnchantmentLevel(xerca.xercamod.common.item.Items.ENCHANTMENT_RANGE, stack) + 1;
+            if(range > 1){
+                range *= 0.8f;
+            }
             worldIn.playSound(playerIn, playerIn.getPosition(), SoundEvents.ITEM_CROSSBOW_SHOOT, SoundCategory.PLAYERS, 1.0f, 1.0f);
             if (!worldIn.isRemote) {
                 PotionEntity potionentity = new PotionEntity(worldIn, playerIn);
                 ItemStack potionStack = new ItemStack(isLingering(stack) ? Items.LINGERING_POTION : Items.SPLASH_POTION);
                 PotionUtils.addPotionToItemStack(potionStack, PotionUtils.getPotionFromItem(stack));
                 potionentity.setItem(potionStack);
-                potionentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, -20.0F, 0.5F, 1.0F);
+                potionentity.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, -10.0F, 0.5F * range, 1.0F / range);
                 worldIn.addEntity(potionentity);
 
                 decrementCharges(stack);
+                stack.damageItem(1, playerIn, (playerEntity) -> {
+                    playerEntity.sendBreakAnimation(handIn);
+                });
             }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         } else {
@@ -70,13 +81,6 @@ public class ItemEnderBow extends Item {
         return 0;
     }
 
-    public static void setCharges(ItemStack itemstack, int charges){
-        if(charges >= 0 && charges <= maxCharges){
-            CompoundNBT tag = itemstack.getOrCreateTag();
-            tag.putInt("charges", charges);
-        }
-    }
-
     private boolean decrementCharges(ItemStack itemstack){
         CompoundNBT tag = itemstack.getOrCreateTag();
         if(tag.contains("charges")){
@@ -101,14 +105,14 @@ public class ItemEnderBow extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
-        tooltip.add(new StringTextComponent(getCharges(stack) + " charges"));
+        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").applyTextStyle(TextFormatting.YELLOW));
     }
 
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
-        return super.hasEffect(stack) || !PotionUtils.getEffectsFromStack(stack).isEmpty();
+        return super.hasEffect(stack);
     }
 
     @Override
@@ -118,5 +122,17 @@ public class ItemEnderBow extends Item {
             return;
         }
         super.fillItemGroup(group, items);
+    }
+
+    @Override
+    public int getItemEnchantability() {
+        return 1;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment ench)
+    {
+        return ench.type == EnchantmentType.BREAKABLE || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_RANGE
+                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY;
     }
 }

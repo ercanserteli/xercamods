@@ -350,6 +350,9 @@
   "enchantment.xercamod.enchantment_turbo_grab": "Turbo",
   "enchantment.xercamod.enchantment_gentle_grab": "Gentle Grab",
   "enchantment.xercamod.enchantment_guillotine": "Guillotine",
+  "enchantment.xercamod.enchantment_capacity": "Capacity",
+  "enchantment.xercamod.enchantment_range": "Range",
+  "enchantment.xercamod.enchantment_chug": "Chug",
 
   "enchantment.xercamod.enchantment_heavy.desc": "Warhammer enchantment. Increases the maximum pull time, but also adds more damage and knock back.",
   "enchantment.xercamod.enchantment_maim.desc": "Warhammer enchantment. Cripples your opponent on hit, applying a Slow effect.",
@@ -362,6 +365,9 @@
   "enchantment.xercamod.enchantment_turbo_grab.desc": "Grab hook enchantment. Increases the speed and distance of the hook.",
   "enchantment.xercamod.enchantment_gentle_grab.desc": "Grab hook enchantment. Pulls the target without causing damage.",
   "enchantment.xercamod.enchantment_guillotine.desc": "Scythe enchantment. Adds the ability to decapitate on the killing blow.",
+  "enchantment.xercamod.enchantment_capacity.desc": "Ender Flask and Potion Launcher enchantment. Increases the potion capacity.",
+  "enchantment.xercamod.enchantment_range.desc": "Potion Launcher enchantment. Increases the range and speed of the thrown potion.",
+  "enchantment.xercamod.enchantment_chug.desc": "Ender Flask enchantment. Increases the drinking speed.",
 
   "entity.xercamod.cushion": "Cushion",
 

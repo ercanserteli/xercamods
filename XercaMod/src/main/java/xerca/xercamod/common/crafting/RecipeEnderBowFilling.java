@@ -65,7 +65,7 @@ public class RecipeEnderBowFilling extends SpecialRecipe {
             }
         }
 
-        return !bowStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (ItemFlask.getCharges(bowStack) + i) <= ItemFlask.maxCharges;
+        return !bowStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (ItemFlask.getCharges(bowStack) + i) <= ItemFlask.getMaxCharges(bowStack);
     }
 
     /**
@@ -79,18 +79,18 @@ public class RecipeEnderBowFilling extends SpecialRecipe {
         int i = 0;
         Potion potionType = Potions.EMPTY;
         boolean isLingering = false;
-        ItemStack flaskStack = ItemStack.EMPTY;
+        ItemStack bowStack = ItemStack.EMPTY;
         Potion currentFlaskPotion = Potions.EMPTY;
 
         for(int j = 0; j < inv.getSizeInventory(); ++j) {
             ItemStack itemstack = inv.getStackInSlot(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.ENDER_BOW) {
-                    if (!flaskStack.isEmpty()) {
+                    if (!bowStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    flaskStack = itemstack;
-                    currentFlaskPotion = PotionUtils.getPotionFromItem(flaskStack);
+                    bowStack = itemstack;
+                    currentFlaskPotion = PotionUtils.getPotionFromItem(bowStack);
                     if(potionType != Potions.EMPTY && !currentFlaskPotion.equals(Potions.EMPTY) && !currentFlaskPotion.equals(potionType)){
                         return ItemStack.EMPTY;
                     }
@@ -114,9 +114,10 @@ public class RecipeEnderBowFilling extends SpecialRecipe {
             }
         }
 
-        int oldCharges = ItemFlask.getCharges(flaskStack);
-        if (!flaskStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (oldCharges + i) <= ItemFlask.maxCharges) {
+        int oldCharges = ItemFlask.getCharges(bowStack);
+        if (!bowStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (oldCharges + i) <= ItemFlask.getMaxCharges(bowStack)) {
             ItemStack resultStack = new ItemStack(Items.ENDER_BOW);
+            resultStack.setTag(bowStack.getOrCreateTag().copy());
             PotionUtils.addPotionToItemStack(resultStack, potionType);
             ItemFlask.setCharges(resultStack, oldCharges + i);
             resultStack.getOrCreateTag().putBoolean("isLinger", isLingering);

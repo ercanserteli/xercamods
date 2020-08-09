@@ -64,7 +64,7 @@ public class RecipeFlaskFilling extends SpecialRecipe {
             }
         }
 
-        return !flaskStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (ItemFlask.getCharges(flaskStack) + i) <= ItemFlask.maxCharges;
+        return !flaskStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (ItemFlask.getCharges(flaskStack) + i) <= ItemFlask.getMaxCharges(flaskStack);
     }
 
     /**
@@ -112,8 +112,9 @@ public class RecipeFlaskFilling extends SpecialRecipe {
         }
 
         int oldCharges = ItemFlask.getCharges(flaskStack);
-        if (!flaskStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (oldCharges + i) <= ItemFlask.maxCharges) {
+        if (!flaskStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (oldCharges + i) <= ItemFlask.getMaxCharges(flaskStack)) {
             ItemStack resultStack = new ItemStack(Items.FLASK);
+            resultStack.setTag(flaskStack.getOrCreateTag().copy());
             PotionUtils.addPotionToItemStack(resultStack, potionType);
             ItemFlask.setCharges(resultStack, oldCharges + i);
             return resultStack;

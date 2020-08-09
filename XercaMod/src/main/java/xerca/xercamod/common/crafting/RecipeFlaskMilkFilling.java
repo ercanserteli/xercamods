@@ -51,7 +51,7 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
             }
         }
 
-        return !flaskStack.isEmpty() && i > 0 && (ItemFlask.getCharges(flaskStack) + i) <= ItemFlask.maxCharges;
+        return !flaskStack.isEmpty() && i > 0 && (ItemFlask.getCharges(flaskStack) + i) <= ItemFlask.getMaxCharges(flaskStack);
     }
 
     /**
@@ -87,8 +87,9 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
             }
         }
         int oldCharges = ItemFlask.getCharges(flaskStack);
-        if (!flaskStack.isEmpty() && i > 0 && (oldCharges + i) <= ItemFlask.maxCharges) {
+        if (!flaskStack.isEmpty() && i > 0 && (oldCharges + i) <= ItemFlask.getMaxCharges(flaskStack)) {
             ItemStack resultStack = new ItemStack(Items.FLASK_MILK);
+            resultStack.setTag(flaskStack.getOrCreateTag().copy());
             ItemFlask.setCharges(resultStack, oldCharges + i);
             return resultStack;
         } else {

@@ -1,6 +1,9 @@
 package xerca.xercamod.common.item;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -16,6 +19,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemFlask extends Item {
-    public static int maxCharges = 8;
+    private static final int baseMaxCharges = 8;
     private boolean hasMilk;
 
     public ItemFlask(Properties properties, String registryName, boolean hasMilk) {
@@ -41,7 +45,15 @@ public class ItemFlask extends Item {
      */
     @Override
     public int getUseDuration(ItemStack stack) {
-        return 32;
+        int chug = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_CHUG, stack);
+        switch (chug){
+            case 2:
+                return 10;
+            case 1:
+                return 21;
+            default:
+                return 32;
+        }
     }
 
     /**
@@ -90,13 +102,18 @@ public class ItemFlask extends Item {
                         }
                     }
                 }
-            }
+                decrementCharges(stack);
 
-            decrementCharges(stack);
+                stack.damageItem(1, entityplayer, (playerEntity) -> {
+                    playerEntity.sendBreakAnimation(playerEntity.getActiveHand());
+                });
+            }
         }
 
         if(hasMilk && getCharges(stack) <= 0){
+            CompoundNBT tag = stack.getTag();
             stack = new ItemStack(Items.FLASK);
+            stack.setTag(tag);
         }
         return stack;
     }
@@ -111,8 +128,13 @@ public class ItemFlask extends Item {
         return 0;
     }
 
+    public static int getMaxCharges(ItemStack itemstack){
+        int cap = EnchantmentHelper.getEnchantmentLevel(xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY, itemstack);
+        return baseMaxCharges * (cap + 1);
+    }
+
     public static void setCharges(ItemStack itemstack, int charges){
-        if(charges >= 0 && charges <= maxCharges){
+        if(charges >= 0 && charges <= getMaxCharges(itemstack)){
             CompoundNBT tag = itemstack.getOrCreateTag();
             tag.putInt("charges", charges);
         }
@@ -152,12 +174,12 @@ public class ItemFlask extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if(hasMilk){
-            tooltip.add(new StringTextComponent("Calcium for your bones"));
+            tooltip.add(new StringTextComponent("Calcium for your bones").applyTextStyle(TextFormatting.YELLOW));
         }
         else{
             PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
         }
-        tooltip.add(new StringTextComponent(getCharges(stack) + " charges"));
+        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").applyTextStyle(TextFormatting.YELLOW));
     }
 
     /**
@@ -170,7 +192,7 @@ public class ItemFlask extends Item {
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
-        return super.hasEffect(stack) || (hasMilk || !PotionUtils.getEffectsFromStack(stack).isEmpty());
+        return super.hasEffect(stack);
     }
 
     @Override
@@ -180,5 +202,18 @@ public class ItemFlask extends Item {
             return;
         }
         super.fillItemGroup(group, items);
+    }
+
+    @Override
+    public int getItemEnchantability() {
+        return 1;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment ench)
+    {
+        return ench.type == EnchantmentType.BREAKABLE
+                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY
+                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CHUG;
     }
 }

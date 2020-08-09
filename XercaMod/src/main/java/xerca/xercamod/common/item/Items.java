@@ -221,6 +221,8 @@ public final class Items {
     public static final Item WHITE_TERRATILE_STAIRS = null;
     public static final Item YELLOW_TERRATILE_STAIRS = null;
     public static final Item TERRATILE_STAIRS = null;
+    public static final Item CARVING_STATION = null;
+    public static final Item ITEM_BOOKCASE = null;
 
     public static final Item ROPE = null;
 
@@ -241,6 +243,9 @@ public final class Items {
     public static final Enchantment ENCHANTMENT_TURBO_GRAB = null;
     public static final Enchantment ENCHANTMENT_GENTLE_GRAB = null;
     public static final Enchantment ENCHANTMENT_GUILLOTINE = null;
+    public static final Enchantment ENCHANTMENT_RANGE = null;
+    public static final Enchantment ENCHANTMENT_CAPACITY = null;
+    public static final Enchantment ENCHANTMENT_CHUG = null;
 
     public static TeaCreativeTab teaTab;
     public static DecoCreativeTab decoTab;
@@ -474,7 +479,7 @@ public final class Items {
                     new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties().group(ItemGroup.FOOD), Config::isFoodEnabled).setRegistryName("sweet_berry_pie"),
                     new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().group(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
                     new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().group(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_straw"),
-                    new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().group(ItemGroup.DECORATIONS), Config::isBookcaseEnabled).setRegistryName("item_bookcase"),
+                    new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().group(Items.decoTab), Config::isBookcaseEnabled).setRegistryName("item_bookcase"),
                     new CarvedWoodItem(Blocks.CARVED_OAK_1, new Item.Properties().group(Items.decoTab), 1).setRegistryName("carved_oak_1"),
                     new CarvedWoodItem(Blocks.CARVED_OAK_2, new Item.Properties().group(Items.decoTab), 2).setRegistryName("carved_oak_2"),
                     new CarvedWoodItem(Blocks.CARVED_OAK_3, new Item.Properties().group(Items.decoTab), 3).setRegistryName("carved_oak_3"),
@@ -578,10 +583,10 @@ public final class Items {
                     new BlockItem(Blocks.YELLOW_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("yellow_terratile_stairs"),
                     new BlockItem(Blocks.TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile_stairs"),
 
-                    new BlockItem(Blocks.CARVING_STATION, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("carving_station"),
+                    new BlockItem(Blocks.CARVING_STATION, new Item.Properties().group(Items.decoTab)).setRegistryName("carving_station"),
 
-                    new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1), "flask", false),
-                    new ItemFlask(new Item.Properties().maxStackSize(1), "flask_milk", true),
+                    new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1).maxDamage(160), "flask", false),
+                    new ItemFlask(new Item.Properties().maxStackSize(1).maxDamage(160), "flask_milk", true),
 
                     new BlockItem(Blocks.ROPE, new Item.Properties().group(Items.decoTab)).setRegistryName("rope"),
 
@@ -606,7 +611,10 @@ public final class Items {
                     new EnchantmentStealth(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
                     new EnchantmentTurboGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
                     new EnchantmentGentleGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentGuillotine(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND)
+                    new EnchantmentGuillotine(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
+                    new EnchantmentCapacity(Enchantment.Rarity.COMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentRange(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentChug(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND)
             );
         }
     }
