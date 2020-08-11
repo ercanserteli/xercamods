@@ -1,8 +1,10 @@
 package xerca.xercapaint.common.item;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HangingEntityItem;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,6 +35,15 @@ public class ItemCanvas extends HangingEntityItem {
         super(Entities.CANVAS, new Properties().group(Items.paintTab).maxStackSize(1));
         this.setRegistryName(name);
         this.canvasType = canvasType;
+
+        this.addPropertyOverride(new ResourceLocation(XercaPaint.MODID, "drawn"), new IItemPropertyGetter() {
+            @OnlyIn(Dist.CLIENT)
+            @Override
+            public float call(@Nonnull ItemStack itemStack, @Nullable World world, @Nullable LivingEntity entityLivingBase) {
+                if(!itemStack.hasTag()) return 0.0f;
+                else return 1.0F;
+            }
+        });
     }
 
     @Override
@@ -50,7 +61,6 @@ public class ItemCanvas extends HangingEntityItem {
         ItemStack itemstack = context.getItem();
         if (playerentity != null && !this.canPlace(playerentity, direction, itemstack, pos)) {
             XercaPaint.proxy.showCanvasGui(playerentity);
-            return ActionResultType.SUCCESS;
         } else {
             World world = context.getWorld();
 
@@ -71,8 +81,8 @@ public class ItemCanvas extends HangingEntityItem {
                 itemstack.shrink(1);
             }
 
-            return ActionResultType.SUCCESS;
         }
+        return ActionResultType.SUCCESS;
     }
 
     @Nonnull

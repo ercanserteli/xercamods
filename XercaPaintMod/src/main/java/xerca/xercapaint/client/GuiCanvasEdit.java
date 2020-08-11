@@ -31,8 +31,8 @@ public class GuiCanvasEdit extends BasePalette {
     private int canvasY = 40;
     private int canvasWidth;
     private int canvasHeight;
-    private final int brushMeterX = 420;
-    private final int brushMeterY = 120;
+    private int brushMeterX = 420;
+    private int brushMeterY = 120;
     private int canvasPixelScale;
     private int canvasPixelWidth;
     private int canvasPixelHeight;
@@ -199,6 +199,8 @@ public class GuiCanvasEdit extends BasePalette {
 
         paletteX = paletteCanvasX;
         paletteY = 40;
+
+        brushMeterX = canvasX + canvasWidth + 2;
 
         // Hide mouse cursor
         GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);

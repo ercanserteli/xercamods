@@ -10,6 +10,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -110,10 +111,42 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     }
 
+
+    private double offs(int l) {
+        return l % 32 == 0 ? 0.5D : 0.0D;
+    }
+
     @Override
     protected void updateBoundingBox(){
         if(canvasType != null){
-            super.updateBoundingBox();
+//            super.updateBoundingBox();
+            if (this.facingDirection != null) {
+                double d0 = (double)this.hangingPosition.getX() + 0.5D;
+                double d1 = (double)this.hangingPosition.getY() + 0.5D;
+                double d2 = (double)this.hangingPosition.getZ() + 0.5D;
+                double d4 = this.offs(this.getWidthPixels());
+                double d5 = this.offs(this.getHeightPixels());
+                d0 = d0 - (double)this.facingDirection.getXOffset() * 0.46875D;
+                d2 = d2 - (double)this.facingDirection.getZOffset() * 0.46875D;
+                d1 = d1 + d5;
+                Direction direction = this.facingDirection.rotateYCCW();
+                d0 = d0 + d4 * (double)direction.getXOffset();
+                d2 = d2 + d4 * (double)direction.getZOffset();
+                this.setRawPosition(d0, d1, d2);
+                double d6 = this.getWidthPixels()-2;
+                double d7 = this.getHeightPixels()-2;
+                double d8 = this.getWidthPixels()-2;
+                if (this.facingDirection.getAxis() == Direction.Axis.Z) {
+                    d8 = 1.0D;
+                } else {
+                    d6 = 1.0D;
+                }
+
+                d6 = d6 / 32.0D;
+                d7 = d7 / 32.0D;
+                d8 = d8 / 32.0D;
+                this.setBoundingBox(new AxisAlignedBB(d0 - d6, d1 - d7, d2 - d8, d0 + d6, d1 + d7, d2 + d8));
+            }
         }
     }
 
