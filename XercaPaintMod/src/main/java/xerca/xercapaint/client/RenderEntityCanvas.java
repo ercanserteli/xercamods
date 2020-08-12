@@ -30,6 +30,7 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
+    static RenderEntityCanvas theInstance;
     static private final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
 
     private final TextureManager textureManager;
@@ -59,7 +60,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     public static class RenderEntityCanvasFactory implements IRenderFactory<EntityCanvas> {
         @Override
         public EntityRenderer<? super EntityCanvas> createRenderFor(EntityRendererManager manager) {
-            return new RenderEntityCanvas(manager);
+            theInstance = new RenderEntityCanvas(manager);
+            return theInstance;
         }
     }
 
@@ -78,6 +80,21 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             int currentVersion = textureData.getInt("v");
             if(instance.version < currentVersion){
                 instance.updateCanvasTexture(textureData);
+            }
+        }
+
+        return instance;
+    }
+
+    RenderEntityCanvas.Instance getMapRendererInstance(CompoundNBT tag, int width, int height) {
+        RenderEntityCanvas.Instance instance = this.loadedCanvases.get(tag.getString("name"));
+        if (instance == null) {
+            instance = new Instance(tag, width, height);
+            this.loadedCanvases.put(tag.getString("name"), instance);
+        }else{
+            int currentVersion = tag.getInt("v");
+            if(instance.version < currentVersion){
+                instance.updateCanvasTexture(tag);
             }
         }
 
@@ -109,13 +126,16 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         int version = 0;
         int width;
         int height;
-        private final DynamicTexture canvasTexture;
-        private final ResourceLocation location;
+        public final DynamicTexture canvasTexture;
+        public final ResourceLocation location;
 
         private Instance(EntityCanvas canvas) {
-            CompoundNBT tag = canvas.getCanvasNBT();
-            this.width = canvas.getWidthPixels();
-            this.height = canvas.getHeightPixels();
+            this(canvas.getCanvasNBT(), canvas.getWidthPixels(), canvas.getHeightPixels());
+        }
+
+        private Instance(CompoundNBT tag, int width, int height) {
+            this.width = width;
+            this.height = height;
             this.canvasTexture = new DynamicTexture(width, height, true);
             this.location = RenderEntityCanvas.this.textureManager.getDynamicTextureLocation("canvas/" + tag.getString("name"), this.canvasTexture);
 
@@ -150,12 +170,17 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             canvasTexture.updateDynamicTexture();
         }
 
-        public void render(EntityCanvas canvas, float yaw, float pitch, MatrixStack ms, IRenderTypeBuffer buffer, Direction facing) {
+        public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, MatrixStack ms, IRenderTypeBuffer buffer, Direction facing) {
             final float wScale = width/16.0f;
             final float hScale = height/16.0f;
-            final double x = canvas.getPosX();
-            final double y = canvas.getPosY();
-            final double z = canvas.getPosZ();
+            int lightmap = 15728880;
+
+            if(canvas != null){
+                final double x = canvas.getPosX();
+                final double y = canvas.getPosY();
+                final double z = canvas.getPosZ();
+                lightmap = WorldRenderer.getCombinedLight(canvas.world, new BlockPos(x, y, z));
+            }
 
             IVertexBuilder vb = buffer.getBuffer(RenderType.getEntitySolid(this.location));
 
@@ -164,24 +189,28 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             final float yOffset = facing.getYOffset();
             final float zOffset = facing.getZOffset();
 
-//            ms.translate(-xOffset*0.3, 0.25, -zOffset*0.3);
-//            ms.translate(xOffset*0.5d*wScale, yOffset*0.5d*hScale, zOffset*0.5d*wScale);
-            if(facing.getAxis().isHorizontal()){
-                ms.translate(zOffset*0.5d*wScale, -0.5d*hScale, -xOffset*0.5d*wScale);
-            }else{
-                ms.translate(0.5*wScale, 0*hScale, (yOffset > 0 ? 0.5 : -0.5)*wScale);
+            float f = 1.0f/32.0f;
+            if(canvas != null) {
+                if (facing.getAxis().isHorizontal()) {
+                    ms.translate(zOffset * 0.5d * wScale, -0.5d * hScale, -xOffset * 0.5d * wScale);
+                } else {
+                    ms.translate(0.5 * wScale, 0 * hScale, (yOffset > 0 ? 0.5 : -0.5) * wScale);
+                }
+            }
+            else{
+                ms.translate(0.75, 0.5, 0.5);
+                if(wScale > 1 || hScale > 1){
+                    f /= 3.3f;
+                }else{
+                    f /= 2.0f;
+                }
             }
             ms.rotate(Vector3f.XP.rotationDegrees( pitch));
             ms.rotate(Vector3f.YP.rotationDegrees( 180-yaw));
 
-//            ms.translate(-0.5D, -0.5D, -0.5D);
-
-            float f = 1.0f/32.0f;
             ms.scale(f, f, f);
 
             textureManager.bindTexture(location);
-
-            int lightmap = WorldRenderer.getCombinedLight(canvas.world, new BlockPos(x, y, z));
 
             Matrix4f m = ms.getLast().getMatrix();
             Matrix3f mn = ms.getLast().getNormal();

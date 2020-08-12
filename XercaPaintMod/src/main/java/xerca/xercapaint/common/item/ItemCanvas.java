@@ -1,5 +1,6 @@
 package xerca.xercapaint.common.item;
 
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.system.NonnullDefault;
+import xerca.xercapaint.client.CanvasItemRenderer;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.Entities;
@@ -26,13 +28,26 @@ import xerca.xercapaint.common.entity.EntityCanvas;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 @NonnullDefault
 public class ItemCanvas extends HangingEntityItem {
     private CanvasType canvasType;
 
     ItemCanvas(String name, CanvasType canvasType) {
-        super(Entities.CANVAS, new Properties().group(Items.paintTab).maxStackSize(1));
+        super(Entities.CANVAS, new Properties().group(Items.paintTab).maxStackSize(1).setISTER(() -> new Callable<ItemStackTileEntityRenderer>()
+        {
+            @Nullable
+            CanvasItemRenderer r = null;
+
+            @Override
+            public ItemStackTileEntityRenderer call() {
+                if(r == null)
+                    r = new CanvasItemRenderer();
+                return r;
+            }
+        }));
+
         this.setRegistryName(name);
         this.canvasType = canvasType;
 
