@@ -1,7 +1,11 @@
-
 {
-    "parent": "item/generated",
+    "parent": "builtin/entity",
     "textures": {
         "layer0": "xercapaint:item/item_canvas_drawn"
+    },
+    "display": {
+      "gui": {
+        "translation": [ 0, -4, 0]
+      }
     }
 }
