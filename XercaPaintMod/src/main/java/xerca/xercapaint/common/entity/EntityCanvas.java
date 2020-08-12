@@ -1,7 +1,11 @@
 package xerca.xercapaint.common.entity;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.RedstoneDiodeBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.HangingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -17,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
+import org.apache.commons.lang3.Validate;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.Items;
@@ -57,6 +62,11 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     @Override
     public int getHeightPixels() {
         return CanvasType.getHeight(canvasType);
+    }
+
+    @Override
+    protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return 0.0F;
     }
 
     @Override
@@ -108,9 +118,25 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     @Override
     public void playPlaceSound() {
-
+        this.playSound(SoundEvents.ENTITY_PAINTING_PLACE, 1.0F, 1.0F);
     }
 
+    @Override
+    protected void updateFacingWithBoundingBox(Direction facingDirectionIn) {
+        Validate.notNull(facingDirectionIn);
+        this.facingDirection = facingDirectionIn;
+        if (facingDirectionIn.getAxis().isHorizontal()) {
+            this.rotationPitch = 0.0F;
+            this.rotationYaw = (float)(this.facingDirection.getHorizontalIndex() * 90);
+        } else {
+            this.rotationPitch = (float)(-90 * facingDirectionIn.getAxisDirection().getOffset());
+            this.rotationYaw = 0.0F;
+        }
+
+        this.prevRotationPitch = this.rotationPitch;
+        this.prevRotationYaw = this.rotationYaw;
+        this.updateBoundingBox();
+    }
 
     private double offs(int l) {
         return l % 32 == 0 ? 0.5D : 0.0D;
@@ -119,34 +145,57 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     @Override
     protected void updateBoundingBox(){
         if(canvasType != null){
-//            super.updateBoundingBox();
             if (this.facingDirection != null) {
-                double d0 = (double)this.hangingPosition.getX() + 0.5D;
-                double d1 = (double)this.hangingPosition.getY() + 0.5D;
-                double d2 = (double)this.hangingPosition.getZ() + 0.5D;
-                double d4 = this.offs(this.getWidthPixels());
-                double d5 = this.offs(this.getHeightPixels());
-                d0 = d0 - (double)this.facingDirection.getXOffset() * 0.46875D;
-                d2 = d2 - (double)this.facingDirection.getZOffset() * 0.46875D;
-                d1 = d1 + d5;
-                Direction direction = this.facingDirection.rotateYCCW();
-                d0 = d0 + d4 * (double)direction.getXOffset();
-                d2 = d2 + d4 * (double)direction.getZOffset();
-                this.setRawPosition(d0, d1, d2);
+                double d1 = (double)this.hangingPosition.getX() + 0.5D - (double)this.facingDirection.getXOffset() * 0.46875D;
+                double d2 = (double)this.hangingPosition.getY() + 0.5D - (double)this.facingDirection.getYOffset() * 0.46875D;
+                double d3 = (double)this.hangingPosition.getZ() + 0.5D - (double)this.facingDirection.getZOffset() * 0.46875D;
+
+                if(this.facingDirection.getAxis().isHorizontal()){
+                    double d4 = this.offs(this.getWidthPixels());
+                    double d5 = this.offs(this.getHeightPixels());
+                    d2 = d2 + d5;
+                    Direction direction = this.facingDirection.rotateYCCW();
+                    d1 = d1 + d4 * (double)direction.getXOffset();
+                    d3 = d3 + d4 * (double)direction.getZOffset();
+                }else{
+
+                }
+
+                this.setRawPosition(d1, d2, d3);
                 double d6 = this.getWidthPixels()-2;
                 double d7 = this.getHeightPixels()-2;
                 double d8 = this.getWidthPixels()-2;
-                if (this.facingDirection.getAxis() == Direction.Axis.Z) {
-                    d8 = 1.0D;
-                } else {
-                    d6 = 1.0D;
+                Direction.Axis direction$axis = this.facingDirection.getAxis();
+                switch(direction$axis) {
+                    case X:
+                        d6 = 1.0D;
+                        break;
+                    case Y:
+                        d7 = 1.0D;
+                        break;
+                    case Z:
+                        d8 = 1.0D;
                 }
 
                 d6 = d6 / 32.0D;
                 d7 = d7 / 32.0D;
                 d8 = d8 / 32.0D;
-                this.setBoundingBox(new AxisAlignedBB(d0 - d6, d1 - d7, d2 - d8, d0 + d6, d1 + d7, d2 + d8));
+                this.setBoundingBox(new AxisAlignedBB(d1 - d6, d2 - d7, d3 - d8, d1 + d6, d2 + d7, d3 + d8));
             }
+        }
+    }
+
+    @Override
+    public boolean onValidSurface() {
+        if(facingDirection.getAxis().isHorizontal()){
+            return super.onValidSurface();
+        }
+        if (!this.world.func_226669_j_(this)) {
+            return false;
+        } else {
+            BlockState blockstate = this.world.getBlockState(this.hangingPosition.offset(this.facingDirection.getOpposite()));
+            return blockstate.getMaterial().isSolid() ||
+                    this.facingDirection.getAxis().isHorizontal() && RedstoneDiodeBlock.isDiode(blockstate) ? this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox(), IS_HANGING_ENTITY).isEmpty() : false;
         }
     }
 
@@ -157,16 +206,18 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     @Override
     public void readAdditional(CompoundNBT tagCompound) {
+        super.readAdditional(tagCompound);
         this.canvasNBT = tagCompound.getCompound("canvas");
         this.canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
-        super.readAdditional(tagCompound);
+        this.updateFacingWithBoundingBox(Direction.byIndex(tagCompound.getByte("Facing")));
     }
 
     @Override
     public void writeAdditional(CompoundNBT tagCompound) {
+        super.writeAdditional(tagCompound);
         tagCompound.put("canvas", canvasNBT);
         tagCompound.putByte("ctype", (byte)canvasType.ordinal());
-        super.writeAdditional(tagCompound);
+        tagCompound.putByte("Facing", (byte)this.facingDirection.getIndex());
     }
 
     @Override
