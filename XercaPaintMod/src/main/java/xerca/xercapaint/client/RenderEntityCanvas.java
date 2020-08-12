@@ -50,7 +50,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     public void render(EntityCanvas entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         CompoundNBT tag = entity.getCanvasNBT();
         if(tag != null && tag.contains("name") ){
-            getMapRendererInstance(entity).render(entity, entityYaw, matrixStackIn, bufferIn, entity.getHorizontalFacing());
+            getMapRendererInstance(entity).render(entity, entityYaw, entity.rotationPitch, matrixStackIn, bufferIn, entity.getHorizontalFacing());
         }
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
@@ -150,7 +150,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             canvasTexture.updateDynamicTexture();
         }
 
-        public void render(EntityCanvas canvas, float yaw, MatrixStack ms, IRenderTypeBuffer buffer, Direction facing) {
+        public void render(EntityCanvas canvas, float yaw, float pitch, MatrixStack ms, IRenderTypeBuffer buffer, Direction facing) {
             final float wScale = width/16.0f;
             final float hScale = height/16.0f;
             final double x = canvas.getPosX();
@@ -161,10 +161,20 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
             ms.push();
             final float xOffset = facing.getXOffset();
+            final float yOffset = facing.getYOffset();
             final float zOffset = facing.getZOffset();
-            final float yOffset = -1.0f;
-            ms.translate(zOffset*0.5d*wScale, yOffset*0.5d*hScale, -xOffset*0.5d*wScale);
+
+//            ms.translate(-xOffset*0.3, 0.25, -zOffset*0.3);
+//            ms.translate(xOffset*0.5d*wScale, yOffset*0.5d*hScale, zOffset*0.5d*wScale);
+            if(facing.getAxis().isHorizontal()){
+                ms.translate(zOffset*0.5d*wScale, -0.5d*hScale, -xOffset*0.5d*wScale);
+            }else{
+                ms.translate(0.5*wScale, 0*hScale, (yOffset > 0 ? 0.5 : -0.5)*wScale);
+            }
+            ms.rotate(Vector3f.XP.rotationDegrees( pitch));
             ms.rotate(Vector3f.YP.rotationDegrees( 180-yaw));
+
+//            ms.translate(-0.5D, -0.5D, -0.5D);
 
             float f = 1.0f/32.0f;
             ms.scale(f, f, f);
@@ -176,40 +186,40 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             Matrix4f m = ms.getLast().getMatrix();
             Matrix3f mn = ms.getLast().getNormal();
             // Draw the front
-            vb.pos(m, 0.0F, 32.0F*hScale, -1.0F).color(255, 255, 255, 255).tex(1.0F, 0.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, 0.0F, zOffset).endVertex();
-            vb.pos(m,32.0F*wScale, 32.0F*hScale, -1.0F).color(255, 255, 255, 255).tex(0.0F, 0.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, 0.0F, zOffset).endVertex();
-            vb.pos(m,32.0F*wScale, 0.0F, -1.0F).color(255, 255, 255, 255).tex(0.0F, 1.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, 0.0F, zOffset).endVertex();
-            vb.pos(m,0.0F, 0.0F, -1.0F).color(255, 255, 255, 255).tex(1.0F, 1.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, 0.0F, zOffset).endVertex();
+            vb.pos(m, 0.0F, 32.0F*hScale, -1.0F).color(255, 255, 255, 255).tex(1.0F, 0.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, yOffset, zOffset).endVertex();
+            vb.pos(m,32.0F*wScale, 32.0F*hScale, -1.0F).color(255, 255, 255, 255).tex(0.0F, 0.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, yOffset, zOffset).endVertex();
+            vb.pos(m,32.0F*wScale, 0.0F, -1.0F).color(255, 255, 255, 255).tex(0.0F, 1.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, yOffset, zOffset).endVertex();
+            vb.pos(m,0.0F, 0.0F, -1.0F).color(255, 255, 255, 255).tex(1.0F, 1.0F).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOffset, yOffset, zOffset).endVertex();
 
             vb = buffer.getBuffer(RenderType.getEntitySolid(backLocation));
             // Draw the back and sides
             final float sideWidth = 1.0F/16.0F;
             textureManager.bindTexture(backLocation);
-            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0D, 1.0F, 1.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0D, 0.0F, 1.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0D, 1.0F, 1.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0D, 0.0F, 1.0F, lightmap, xOffset, yOffset, zOffset);
 
             // Sides
-            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0D, sideWidth, 1.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, -1.0D, 0.0F, 1.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0D, sideWidth, 1.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, -1.0D, 0.0F, 1.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, lightmap, xOffset, yOffset, zOffset);
 
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0F, 0.0F, 0.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0F, 1.0F, 0.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, -1.0F, 1.0F, sideWidth, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, -1.0F, 0.0F, sideWidth, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0F, 0.0F, 0.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0F, 1.0F, 0.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, -1.0F, 1.0F, sideWidth, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, -1.0F, 0.0F, sideWidth, lightmap, xOffset, yOffset, zOffset);
 
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, -1.0F, 0.0F, 0.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, -1.0F, 0.0F, 1.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0F, sideWidth, 1.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, sideWidth, 0.0F, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, -1.0F, 0.0F, 0.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, -1.0F, 0.0F, 1.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0F, sideWidth, 1.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, sideWidth, 0.0F, lightmap, xOffset, yOffset, zOffset);
 
-            addVertex(vb, m, mn, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, -1.0F, 1.0F, 1.0F, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, 1.0F, 1.0F-sideWidth, lightmap, xOffset, 0, zOffset);
-            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F-sideWidth, lightmap, xOffset, 0, zOffset);
+            addVertex(vb, m, mn, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, -1.0F, 1.0F, 1.0F, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, 1.0F, 1.0F-sideWidth, lightmap, xOffset, yOffset, zOffset);
+            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F-sideWidth, lightmap, xOffset, yOffset, zOffset);
 
             ms.pop();
         }

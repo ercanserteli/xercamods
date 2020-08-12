@@ -146,4 +146,12 @@ public class ItemCanvas extends HangingEntityItem {
         return canvasType;
     }
 
+    protected boolean canPlace(PlayerEntity playerIn, Direction directionIn, ItemStack itemStackIn, BlockPos posIn) {
+        if(canvasType == CanvasType.SMALL){
+            return !World.isOutsideBuildHeight(posIn) && playerIn.canPlayerEdit(posIn, directionIn, itemStackIn);
+        }
+        else{
+            return !directionIn.getAxis().isVertical() && playerIn.canPlayerEdit(posIn, directionIn, itemStackIn);
+        }
+    }
 }
