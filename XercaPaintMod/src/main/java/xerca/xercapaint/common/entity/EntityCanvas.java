@@ -1,18 +1,24 @@
 package xerca.xercapaint.common.entity;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneDiodeBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.HangingEntity;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -33,11 +39,13 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     private CompoundNBT canvasNBT;
     private int tickCounter1 = 0;
     private CanvasType canvasType;
+    private static final DataParameter<Integer> ROTATION = EntityDataManager.createKey(EntityCanvas.class, DataSerializers.VARINT);
 
-    public EntityCanvas(World world, CompoundNBT canvasNBT, BlockPos pos, Direction facing, CanvasType canvasType) {
+    public EntityCanvas(World world, CompoundNBT canvasNBT, BlockPos pos, Direction facing, CanvasType canvasType, int rotation) {
         super(Entities.CANVAS, world, pos);
         this.canvasNBT = canvasNBT;
         this.canvasType = canvasType;
+        this.setRotation(rotation);
 
         this.updateFacingWithBoundingBox(facing);
     }
@@ -52,6 +60,10 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     public CompoundNBT getCanvasNBT() {
         return canvasNBT;
+    }
+
+    protected void registerData() {
+        this.getDataManager().register(ROTATION, 0);
     }
 
     @Override
@@ -85,11 +97,9 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
             }
             else if(canvasType == CanvasType.LARGE){
                 canvasItem = new ItemStack(Items.ITEM_CANVAS_LARGE);
-
             }
             else if(canvasType == CanvasType.LONG){
                 canvasItem = new ItemStack(Items.ITEM_CANVAS_LONG);
-
             }
             else if(canvasType == CanvasType.TALL){
                 canvasItem = new ItemStack(Items.ITEM_CANVAS_TALL);
@@ -113,7 +123,6 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
                 this.onBroken(null);
             }
         }
-
     }
 
     @Override
@@ -199,6 +208,14 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         }
     }
 
+    public int getRotation() {
+        return this.getDataManager().get(ROTATION);
+    }
+
+    private void setRotation(int rotation) {
+        this.getDataManager().set(ROTATION, rotation % 4);
+    }
+
     @Override
     public IPacket<?> createSpawnPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
@@ -210,6 +227,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         this.canvasNBT = tagCompound.getCompound("canvas");
         this.canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
         this.updateFacingWithBoundingBox(Direction.byIndex(tagCompound.getByte("Facing")));
+        this.setRotation(tagCompound.getByte("Rotation"));
     }
 
     @Override
@@ -218,14 +236,16 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         tagCompound.put("canvas", canvasNBT);
         tagCompound.putByte("ctype", (byte)canvasType.ordinal());
         tagCompound.putByte("Facing", (byte)this.facingDirection.getIndex());
+        tagCompound.putByte("Rotation", (byte)this.getRotation());
     }
 
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
-        buffer.writeCompoundTag(canvasNBT);
+        buffer.writeCompoundTag(canvasNBT);//todo: don't send pixels if not needed?
         buffer.writeInt(facingDirection.getIndex());
         buffer.writeByte(canvasType.ordinal());
         buffer.writeBlockPos(hangingPosition); // this has to be written, otherwise pos gets broken
+        buffer.writeByte((byte)this.getRotation());
 //        XercaPaint.LOGGER.debug("writeSpawnData Pos: " + this.hangingPosition.toString() + " posY: " + this.posY);
     }
 
@@ -235,8 +255,21 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         facingDirection = Direction.byIndex(buffer.readInt());
         canvasType = CanvasType.fromByte(buffer.readByte());
         hangingPosition = buffer.readBlockPos();
+        setRotation(buffer.readByte());
 
         updateFacingWithBoundingBox(facingDirection);
 //        XercaPaint.LOGGER.debug("readSpawnData Pos: " + this.hangingPosition.toString() + " posY: " + this.posY);
+    }
+
+    public boolean processInitialInteract(PlayerEntity player, Hand hand) {
+        if(canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE){
+            if (!this.world.isRemote) {
+                setRotation(getRotation() + 1);
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

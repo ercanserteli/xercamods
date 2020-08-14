@@ -21,7 +21,7 @@ public class CanvasItemRenderer extends ItemStackTileEntityRenderer
                 ItemCanvas itemCanvas = (ItemCanvas) stack.getItem();
                 RenderEntityCanvas.Instance canvasIns = RenderEntityCanvas.theInstance.getMapRendererInstance(nbt, itemCanvas.getWidth(), itemCanvas.getHeight());
                 if(canvasIns != null){
-                    canvasIns.render(null, 0, 0, matrixStack, buffer, Direction.UP);
+                    canvasIns.render(null, 0, 0, matrixStack, buffer, Direction.UP, combinedLightIn);
                 }
             }
         }

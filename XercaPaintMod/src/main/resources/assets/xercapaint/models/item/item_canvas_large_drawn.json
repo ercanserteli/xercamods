@@ -8,6 +8,11 @@
       "gui": {
         "scale": [1.2, 1.2, 1.2],
         "translation": [ 1, -6, 1]
+      },
+      "fixed": {
+        "translation": [ 1, 6, -1],
+        "scale": [1.2, 1.2, 1.2],
+        "rotation": [ 180, 0, 0]
       }
     }
 }
