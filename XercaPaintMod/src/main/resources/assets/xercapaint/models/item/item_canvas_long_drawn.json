@@ -7,7 +7,12 @@
     "display": {
       "gui": {
         "scale": [1.2, 1.2, 1.2],
-        "translation": [ 1, -2, 0]
+        "translation": [ 1, -3, 0]
+      },
+      "fixed": {
+        "translation": [ 1, 3, 0],
+        "scale": [1.2, 1.2, 1.2],
+        "rotation": [ 180, 0, 0]
       }
     }
 }

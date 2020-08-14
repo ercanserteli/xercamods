@@ -85,7 +85,29 @@ public class ItemCanvas extends HangingEntityItem {
                 return ActionResultType.SUCCESS;
             }
 
-            EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType);
+            int rotation = 0;
+            if(direction.getAxis() == Direction.Axis.Y){
+                double xDiff = blockpos.getX() - playerentity.getPosX();
+                double zDiff = blockpos.getZ() - playerentity.getPosZ();
+                if(Math.abs(xDiff) > Math.abs(zDiff)){
+                    if(xDiff > 0){
+                        rotation = 1;
+                    }else{
+                        rotation = 3;
+                    }
+                }else{
+                    if(zDiff > 0){
+                        rotation = 2;
+                    }else{
+                        rotation = 0;
+                    }
+                }
+                if(direction == Direction.DOWN && Math.abs(xDiff) < Math.abs(zDiff)){
+                    rotation += 2;
+                }
+            }
+
+            EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
 
             if (entityCanvas.onValidSurface()) {
                 if (!world.isRemote) {

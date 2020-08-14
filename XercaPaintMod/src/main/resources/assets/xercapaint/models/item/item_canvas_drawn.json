@@ -6,6 +6,10 @@
     "display": {
       "gui": {
         "translation": [ 0, -4, 0]
+      },
+      "fixed": {
+        "translation": [ 0, 4, 0],
+        "rotation": [ 180, 0, 0]
       }
     }
 }

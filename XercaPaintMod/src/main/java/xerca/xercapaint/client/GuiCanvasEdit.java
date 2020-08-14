@@ -142,21 +142,21 @@ public class GuiCanvasEdit extends BasePalette {
                 x = (mouseX - canvasX + pixelHalf)/ canvasPixelScale;
                 y = (mouseY - canvasY + pixelHalf)/ canvasPixelScale;
 
-                setPixelAt(x-1, y+2, color);
-                setPixelAt(x, y+2, color);
-
-                setPixelAt(x-2, y+1, color);
                 setPixelAt(x-1, y+1, color);
                 setPixelAt(x, y+1, color);
-                setPixelAt(x+1, y+1, color);
 
                 setPixelAt(x-2, y, color);
                 setPixelAt(x-1, y, color);
                 setPixelAt(x, y, color);
                 setPixelAt(x+1, y, color);
 
+                setPixelAt(x-2, y-1, color);
                 setPixelAt(x-1, y-1, color);
                 setPixelAt(x, y-1, color);
+                setPixelAt(x+1, y-1, color);
+
+                setPixelAt(x-1, y-2, color);
+                setPixelAt(x, y-2, color);
                 break;
             case 3:
                 x = (mouseX - canvasX)/ canvasPixelScale;
