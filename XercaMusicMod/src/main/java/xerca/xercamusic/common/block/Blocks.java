@@ -14,6 +14,7 @@ import static xerca.xercamusic.common.XercaMusic.Null;
 public class Blocks {
     public static final Block BLOCK_METRONOME = Null();
     public static final Block MUSIC_BOX = Null();
+    public static final Block PIANO = Null();
 
     public static void setup() {
 
@@ -23,10 +24,11 @@ public class Blocks {
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-            XercaMusic.LOGGER.info("XercaMusic: Registering blocks");
+            XercaMusic.LOGGER.debug("XercaMusic: Registering blocks");
             event.getRegistry().registerAll(
                     new BlockMetronome(),
-                    new BlockMusicBox()
+                    new BlockMusicBox(),
+                    new BlockPiano()
             );
         }
     }

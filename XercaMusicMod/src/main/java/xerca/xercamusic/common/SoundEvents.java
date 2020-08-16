@@ -29,6 +29,7 @@ public class SoundEvents {
     public static SoundEvent[] violins;
     public static SoundEvent[] xylophones;
     public static SoundEvent[] cellos;
+    public static SoundEvent[] pianos;
 
     /**
      * Register a {@link SoundEvent}.
@@ -66,6 +67,7 @@ public class SoundEvents {
             violins = new SoundEvent[48];
             xylophones = new SoundEvent[48];
             cellos = new SoundEvent[48];
+            pianos = new SoundEvent[48];
             for (int i = 0; i < 48; i++) {
                 // Instrument SoundEvent creation
                 cymbals[i] = createSoundEvent("cymbal" + (i + 1));
@@ -83,6 +85,7 @@ public class SoundEvents {
                 violins[i] = createSoundEvent("violin" + (i + 1));
                 xylophones[i] = createSoundEvent("xylophone" + (i + 1));
                 cellos[i] = createSoundEvent("cello" + (i + 1));
+                pianos[i] = createSoundEvent("piano" + (i + 1));
             }
             // Instrument SoundEvent registration
             event.getRegistry().registerAll(cymbals);
@@ -100,6 +103,7 @@ public class SoundEvents {
             event.getRegistry().registerAll(violins);
             event.getRegistry().registerAll(xylophones);
             event.getRegistry().registerAll(cellos);
+            event.getRegistry().registerAll(pianos);
 
             // Instrument SoundEvent setting
             Items.CYMBAL.setSounds(cymbals);
@@ -116,6 +120,7 @@ public class SoundEvents {
             Items.VIOLIN.setSounds(violins);
             Items.XYLOPHONE.setSounds(xylophones);
             Items.CELLO.setSounds(cellos);
+            Items.PIANO.setSounds(pianos);
         }
     }
 }

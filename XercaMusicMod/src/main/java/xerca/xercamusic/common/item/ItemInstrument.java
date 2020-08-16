@@ -3,6 +3,7 @@ package xerca.xercamusic.common.item;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -42,7 +43,7 @@ public class ItemInstrument extends Item {
     public void playMusic(World worldIn, PlayerEntity playerIn, boolean canStop){
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesWithinAABB(EntityMusicSpirit.class, playerIn.getBoundingBox().grow(3.0), entity -> entity.getBody().isEntityEqual(playerIn));
         if(musicSpirits.size() == 0){
-            worldIn.addEntity(new EntityMusicSpirit(worldIn, playerIn));
+            worldIn.addEntity(new EntityMusicSpirit(worldIn, playerIn, (ItemInstrument) playerIn.getHeldItemMainhand().getItem()));
         }
         else if(canStop){
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
