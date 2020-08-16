@@ -31,6 +31,7 @@ public final class Items {
     public static final ItemInstrument TUBULAR_BELL = Null();
     public static final ItemInstrument VIOLIN = Null();
     public static final ItemInstrument XYLOPHONE = Null();
+    public static final ItemInstrument PIANO = Null();
     public static final ItemMusicSheet MUSIC_SHEET = Null();
 
     public static ItemInstrument[] instruments;
@@ -76,6 +77,7 @@ public final class Items {
                     new ItemInstrument("flute", true, 11),
                     new ItemInstrument("saxophone", true, 12),
                     new ItemInstrument("god", false, 13),
+                    new ItemBlockInstrument("piano", false, 14, Blocks.PIANO),
             };
 
             event.getRegistry().registerAll(instruments);
@@ -83,6 +85,7 @@ public final class Items {
                     new ItemMusicSheet(),
                     new BlockItem(Blocks.MUSIC_BOX, new Item.Properties().group(Items.musicTab)).setRegistryName("music_box"),
                     new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties().group(Items.musicTab)).setRegistryName("metronome")
+//                    new BlockItem(Blocks.PIANO, new Item.Properties().group(Items.musicTab)).setRegistryName("piano")
             );
         }
     }
