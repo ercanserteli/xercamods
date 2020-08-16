@@ -3,6 +3,7 @@ package xerca.xercamusic.common;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import xerca.xercamusic.client.NoteSound;
+import xerca.xercamusic.common.item.ItemInstrument;
 
 public interface Proxy {
 
@@ -19,5 +20,7 @@ public interface Proxy {
     void showMusicGui();
 
     void showInstrumentGui();
+
+    void showInstrumentGui(ItemInstrument instrument);
 
 }

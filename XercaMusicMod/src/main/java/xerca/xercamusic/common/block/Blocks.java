@@ -15,6 +15,7 @@ public class Blocks {
     public static final Block BLOCK_METRONOME = Null();
     public static final Block MUSIC_BOX = Null();
     public static final Block PIANO = Null();
+    public static final Block DRUM_KIT = Null();
 
     public static void setup() {
 
@@ -28,7 +29,8 @@ public class Blocks {
             event.getRegistry().registerAll(
                     new BlockMetronome(),
                     new BlockMusicBox(),
-                    new BlockPiano()
+                    new BlockPiano(),
+                    new BlockDrums()
             );
         }
     }

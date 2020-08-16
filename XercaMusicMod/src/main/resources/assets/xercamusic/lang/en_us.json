@@ -15,12 +15,13 @@
   "item.xercamusic.violin": "Violin",
   "item.xercamusic.xylophone": "Xylophone",
   "item.xercamusic.cello": "Cello",
-  "item.xercamusic.drum_kit": "Mini Drum Kit",
+  "item.xercamusic.drum_kit": "Drum Kit",
   "item.xercamusic.cymbal": "Cymbal",
 
   "block.xercamusic.block_metronome": "Metronome",
   "block.xercamusic.music_box": "Music Box",
   "block.xercamusic.piano": "Piano",
+  "block.xercamusic.drum_kit": "Drum Kit",
 
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Music",

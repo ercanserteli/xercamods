@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "ppp",
+        "sis",
+        "ppp"
+    ],
+    "key": {"s": {"item": "minecraft:string"}, "i": {"item": "minecraft:iron_ingot"}, "p": {"tag": "minecraft:planks"}},
+    "result": {"item": "xercamusic:piano"}
+}
+        

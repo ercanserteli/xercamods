@@ -15,12 +15,13 @@
   "item.xercamusic.violin": "小提琴",
   "item.xercamusic.xylophone": "木琴",
   "item.xercamusic.cello": "大提琴",
-  "item.xercamusic.drum_kit": "迷你架子鼓",
+  "item.xercamusic.drum_kit": "架子鼓",
   "item.xercamusic.cymbal": "铙钹",
 
   "block.xercamusic.block_metronome": "节拍器",
   "block.xercamusic.music_box": "音乐盒",
   "block.xercamusic.piano": "钢琴",
+  "block.xercamusic.drum_kit": "架子鼓",
 
   "advancements.xercamusic.achievements.root.title": "Xerca式音乐",
   "advancements.xercamusic.achievements.root.description": "Music!",

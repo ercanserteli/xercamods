@@ -4,6 +4,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.common.Proxy;
+import xerca.xercamusic.common.item.ItemInstrument;
 
 public class ServerProxy implements Proxy {
     public void preInit() {
@@ -36,6 +37,11 @@ public class ServerProxy implements Proxy {
 
     @Override
     public void showInstrumentGui() {
+
+    }
+
+    @Override
+    public void showInstrumentGui(ItemInstrument instrument) {
 
     }
 }
