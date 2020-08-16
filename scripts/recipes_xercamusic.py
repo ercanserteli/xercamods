@@ -16,6 +16,7 @@ recipes = [
     ShapedRecipe(['sss', 'g g'], {'item': 'xercamusic:tubular_bell'}, {'s': {'item': 'minecraft:stick'}, 'g': {'item': 'minecraft:gold_ingot'}}, {'item': 'minecraft:gold_ingot'}, ""),
     ShapedRecipe([' s ', 'pip', ' p '], {'item': 'xercamusic:violin'}, {'p': {'item': 'minecraft:spruce_planks'}, 's': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:string'}}, {'item': 'minecraft:spruce_planks'}, ""),
     ShapedRecipe(['sss', 'ppp'], {'item': 'xercamusic:xylophone'}, {'s': {'item': 'minecraft:stick'}, 'p': {'tag': 'minecraft:planks'}}, {'tag': 'minecraft:planks'}, ""),
+    ShapedRecipe(['ppp', 'sis', 'ppp'], {'item': 'xercamusic:piano'}, {'s': {'item': 'minecraft:string'}, 'i': {'item': 'minecraft:iron_ingot'}, 'p': {'tag': 'minecraft:planks'}}, {'tag': 'minecraft:planks'}, ""),
 
     ShapelessRecipe([{'item': 'minecraft:note_block'}, {'item': 'minecraft:clock'}], {'item': 'xercamusic:metronome'}, {'item': 'minecraft:note_block'}, ""),
     ShapelessRecipe([{'item': 'minecraft:paper'}, {'item': 'minecraft:ink_sac'}, {'item': 'minecraft:feather'}], {'item': 'xercamusic:music_sheet'}, {'item': 'minecraft:paper'}, ""),

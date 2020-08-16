@@ -68,7 +68,7 @@ public final class Items {
                     new ItemInstrument("banjo", false, 2),
                     new ItemInstrument("drum", false, 3),
                     new ItemInstrument("cymbal", false, 4),
-                    new ItemInstrument("drum_kit", false, 5),
+                    new ItemBlockInstrument("drum_kit", false, 5, Blocks.DRUM_KIT),
                     new ItemInstrument("xylophone", false, 6),
                     new ItemInstrument("tubular_bell", false, 7),
                     new ItemInstrument("sansula", false, 8),
@@ -85,8 +85,13 @@ public final class Items {
                     new ItemMusicSheet(),
                     new BlockItem(Blocks.MUSIC_BOX, new Item.Properties().group(Items.musicTab)).setRegistryName("music_box"),
                     new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties().group(Items.musicTab)).setRegistryName("metronome")
-//                    new BlockItem(Blocks.PIANO, new Item.Properties().group(Items.musicTab)).setRegistryName("piano")
             );
+
+            for(ItemInstrument i : instruments){
+                if(i instanceof ItemBlockInstrument){
+                    ((ItemBlockInstrument)i).addToBlockToItemMap(Item.BLOCK_TO_ITEM, i);
+                }
+            }
         }
     }
 

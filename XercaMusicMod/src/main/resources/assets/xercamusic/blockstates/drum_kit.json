@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=south": { "model": "xercamusic:block/drum_kit" },
+    "facing=west": { "model": "xercamusic:block/drum_kit", "y": 90 },
+    "facing=north": { "model": "xercamusic:block/drum_kit", "y": 180 },
+    "facing=east": { "model": "xercamusic:block/drum_kit", "y": 270 }
+  }
+}

@@ -1,6 +1,9 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -22,40 +25,31 @@ import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class BlockPiano extends BlockInstrument {
+public class BlockDrums extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
     private static final VoxelShape[] shapes = {
-            VoxelShapes.or(
-                    Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
-                    Block.makeCuboidShape(0.0D, 10.0D, 7.0D, 16.0D, 16.0D, 16.0D)),
-            VoxelShapes.or(
-                    Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
-                    Block.makeCuboidShape(0.0D, 10.0D, 0.0D, 16.0D, 16.0D, 9.0D)),
-            VoxelShapes.or(
-                    Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
-                    Block.makeCuboidShape(7.0D, 10.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            VoxelShapes.or(
-                    Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
-                    Block.makeCuboidShape(0.0D, 10.0D, 0.0D, 9.0D, 16.0D, 16.0D)),
+            Block.makeCuboidShape(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 15.0D),
+            Block.makeCuboidShape(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 14.0D),
+            Block.makeCuboidShape(2.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D),
+            Block.makeCuboidShape(1.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D),
     };
 
-    public BlockPiano() {
+    public BlockDrums() {
         super(Properties.create(Material.WOOD).hardnessAndResistance(2.f, 6.f).sound(SoundType.WOOD).notSolid());
         this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH));
-        this.setRegistryName("piano");
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+        this.setRegistryName("drum_kit");
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return shapes[Math.max(0, state.get(FACING).getIndex() - 2)];
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
     }
 
     @Override
@@ -75,6 +69,6 @@ public class BlockPiano extends BlockInstrument {
 
     @Override
     public ItemInstrument getItemInstrument() {
-        return Items.PIANO;
+        return Items.DRUM_KIT;
     }
 }

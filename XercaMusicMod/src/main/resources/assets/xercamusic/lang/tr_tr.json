@@ -14,13 +14,14 @@
   "item.xercamusic.violin": "Keman",
   "item.xercamusic.xylophone": "Ksilofon",
   "item.xercamusic.cello": "Çello",
-  "item.xercamusic.drum_kit": "Taşınabilir Bateri",
+  "item.xercamusic.drum_kit": "Bateri Seti",
   "item.xercamusic.cymbal": "Büyük Zil",
   "item.xercamusic.item_cello": "Çello",
 
   "block.xercamusic.block_metronome": "Metronom",
   "block.xercamusic.music_box": "Müzik Kutusu",
   "block.xercamusic.piano": "Piyano",
+  "block.xercamusic.drum_kit": "Bateri Seti",
 
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Müzik",

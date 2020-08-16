@@ -9,8 +9,8 @@
     },
 	"textures": {
 		"0": "xercamusic:block/piano",
-		"2": "xercamusic:block/piano_door",
-		"particle": "xercamusic:block/piano_door"
+		"2": "xercamusic:block/piano_body",
+		"particle": "xercamusic:block/piano_body"
 	},
 	"elements": [
 		{

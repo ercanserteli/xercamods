@@ -41,6 +41,11 @@ public class ClientProxy implements Proxy {
         }
     }
 
+    public void showInstrumentGui(ItemInstrument instrument){
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        Minecraft.getInstance().displayGuiScreen(new GuiInstrument(player, instrument, new TranslationTextComponent("item.xercamusic.instrument_gui")));
+    }
+
     @Override
     public NoteSound playNote(SoundEvent event, double x, double y, double z) {
         return playNote(event, x, y, z, SoundCategory.PLAYERS, 3.5f, 1.0f);

@@ -65,9 +65,6 @@ public class ItemInstrument extends Item {
             }
         } else {
             XercaMusic.proxy.showInstrumentGui();
-//            int note = (int)(worldIn.rand.nextGaussian()*8 + 24);//.nextInt(48)
-//            note = Math.max(0, Math.min(47, note));
-//            worldIn.playSound(playerIn, playerIn.getPosition(), sounds[note], SoundCategory.PLAYERS, 3.0f, 1.0f);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
     }
