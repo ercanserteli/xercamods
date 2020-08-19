@@ -1,14 +1,14 @@
 package xerca.xercapaint.common.entity;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneDiodeBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.HangingEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,23 +31,47 @@ import org.apache.commons.lang3.Validate;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.Items;
+import xerca.xercapaint.common.packets.PictureRequestPacket;
 
 import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Set;
 
 
 public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpawnData {
-    private CompoundNBT canvasNBT;
+    private String canvasName;
+    private String canvasTitle;
+    private String canvasAuthor;
+    private int canvasVersion;
+    private int canvasGeneration = 0;
+    private boolean canvasSigned;
     private int tickCounter1 = 0;
     private CanvasType canvasType;
     private static final DataParameter<Integer> ROTATION = EntityDataManager.createKey(EntityCanvas.class, DataSerializers.VARINT);
+    public static final Map<String, Picture> PICTURES = Maps.newHashMap();
+    public static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
 
     public EntityCanvas(World world, CompoundNBT canvasNBT, BlockPos pos, Direction facing, CanvasType canvasType, int rotation) {
         super(Entities.CANVAS, world, pos);
-        this.canvasNBT = canvasNBT;
+        this.canvasName = canvasNBT.getString("name");
+        this.canvasVersion = canvasNBT.getInt("v");
+        if(canvasNBT.contains("title") && canvasNBT.contains("author")){
+            this.canvasSigned = true;
+            this.canvasTitle = canvasNBT.getString("title");
+            this.canvasAuthor = canvasNBT.getString("author");
+            this.canvasGeneration = canvasNBT.getInt("generation");
+        }else{
+            this.canvasSigned = false;
+        }
         this.canvasType = canvasType;
         this.setRotation(rotation);
 
         this.updateFacingWithBoundingBox(facing);
+
+        Picture picture = PICTURES.get(canvasName);
+        if(picture == null || picture.version < canvasVersion){
+            PICTURES.put(canvasName, new Picture(canvasVersion, canvasNBT.getIntArray("pixels")));
+        }
     }
 
     public EntityCanvas(EntityType<EntityCanvas> entityCanvasEntityType, World world) {
@@ -58,9 +82,9 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         super(Entities.CANVAS, world);
     }
 
-    public CompoundNBT getCanvasNBT() {
-        return canvasNBT;
-    }
+//    public CompoundNBT getCanvasNBT() {
+//        return canvasNBT;
+//    }
 
     protected void registerData() {
         this.getDataManager().register(ROTATION, 0);
@@ -79,6 +103,14 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     @Override
     protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 0.0F;
+    }
+
+    public String getCanvasName() {
+        return canvasName;
+    }
+
+    public int getCanvasVersion() {
+        return canvasVersion;
     }
 
     @Override
@@ -107,7 +139,21 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
                 XercaPaint.LOGGER.error("Invalid canvas type");
                 return;
             }
-            canvasItem.setTag(this.canvasNBT.copy());
+            CompoundNBT nbt = new CompoundNBT();
+            nbt.putString("name", canvasName);
+            nbt.putInt("v", canvasVersion);
+            nbt.putInt("generation", 0);
+            if (canvasSigned) {
+                nbt.putString("author", canvasAuthor);
+                nbt.putString("title", canvasTitle);
+                nbt.putInt("generation", canvasGeneration);
+            }
+            Picture picture = PICTURES.get(canvasName);
+            if(picture != null){
+                nbt.putIntArray("pixels", picture.pixels);
+            }
+
+            canvasItem.setTag(nbt);
             this.entityDropItem(canvasItem);
         }
     }
@@ -223,25 +269,64 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     @Override
     public void readAdditional(CompoundNBT tagCompound) {
-        super.readAdditional(tagCompound);
-        this.canvasNBT = tagCompound.getCompound("canvas");
+        this.hangingPosition = new BlockPos(tagCompound.getInt("TileX"), tagCompound.getInt("TileY"), tagCompound.getInt("TileZ"));
+        CompoundNBT canvasNBT = tagCompound;
+        if(tagCompound.contains("canvas")){
+            canvasNBT = tagCompound.getCompound("canvas");
+        }
+        this.canvasSigned = canvasNBT.contains("author") && canvasNBT.contains("title");
+        this.canvasName = canvasNBT.getString("name");
+        this.canvasVersion = canvasNBT.getInt("v");
+        if(canvasSigned)
+        {
+            this.canvasAuthor = canvasNBT.getString("author");
+            this.canvasTitle = canvasNBT.getString("title");
+            this.canvasGeneration = canvasNBT.getInt("generation");
+        }
+
+        Picture picture = PICTURES.get(canvasName);
+        if(picture == null || picture.version < canvasVersion){
+            PICTURES.put(canvasName, new Picture(canvasVersion, canvasNBT.getIntArray("pixels")));
+        }
+
         this.canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
-        this.updateFacingWithBoundingBox(Direction.byIndex(tagCompound.getByte("Facing")));
+        if(tagCompound.contains("Facing") && !tagCompound.contains("RealFace")){
+            Direction horizontal = Direction.byHorizontalIndex(tagCompound.getByte("Facing"));
+            this.updateFacingWithBoundingBox(horizontal);
+        }
+        else{
+            this.updateFacingWithBoundingBox(Direction.byIndex(tagCompound.getByte("RealFace")));
+        }
         this.setRotation(tagCompound.getByte("Rotation"));
     }
 
     @Override
     public void writeAdditional(CompoundNBT tagCompound) {
-        super.writeAdditional(tagCompound);
-        tagCompound.put("canvas", canvasNBT);
+        BlockPos blockpos = this.getHangingPosition();
+        tagCompound.putInt("TileX", blockpos.getX());
+        tagCompound.putInt("TileY", blockpos.getY());
+        tagCompound.putInt("TileZ", blockpos.getZ());
+        tagCompound.putString("name", canvasName);
+        tagCompound.putInt("v", canvasVersion);
+        if(canvasSigned){
+            tagCompound.putString("author", canvasAuthor);
+            tagCompound.putString("title", canvasTitle);
+            tagCompound.putInt("generation", canvasGeneration);
+        }
         tagCompound.putByte("ctype", (byte)canvasType.ordinal());
-        tagCompound.putByte("Facing", (byte)this.facingDirection.getIndex());
+        tagCompound.putByte("RealFace", (byte)this.facingDirection.getIndex());
         tagCompound.putByte("Rotation", (byte)this.getRotation());
+
+        Picture picture = PICTURES.get(canvasName);
+        if(picture != null){
+            tagCompound.putIntArray("pixels", picture.pixels);
+        }
     }
 
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
-        buffer.writeCompoundTag(canvasNBT);//todo: don't send pixels if not needed?
+        buffer.writeString(canvasName);
+        buffer.writeInt(canvasVersion);
         buffer.writeInt(facingDirection.getIndex());
         buffer.writeByte(canvasType.ordinal());
         buffer.writeBlockPos(hangingPosition); // this has to be written, otherwise pos gets broken
@@ -249,9 +334,23 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 //        XercaPaint.LOGGER.debug("writeSpawnData Pos: " + this.hangingPosition.toString() + " posY: " + this.posY);
     }
 
+    private void requestPicture(){
+        if(!PICTURE_REQUESTS.contains(canvasName)){
+            PICTURE_REQUESTS.add(canvasName);
+            PictureRequestPacket pack = new PictureRequestPacket(canvasName);
+            XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+        }
+    }
+
     @Override
     public void readSpawnData(PacketBuffer buffer) {
-        canvasNBT = buffer.readCompoundTag();
+        canvasName = buffer.readString();
+        canvasVersion = buffer.readInt();
+
+        Picture picture = PICTURES.get(canvasName);
+        if(picture == null || picture.version < canvasVersion){
+            requestPicture();
+        }
         facingDirection = Direction.byIndex(buffer.readInt());
         canvasType = CanvasType.fromByte(buffer.readByte());
         hangingPosition = buffer.readBlockPos();
@@ -270,6 +369,16 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         }
         else{
             return false;
+        }
+    }
+
+    public static class Picture{
+        public int version;
+        public int[] pixels;
+
+        public Picture(int version, int[] pixels){
+            this.version = version;
+            this.pixels = pixels;
         }
     }
 }
