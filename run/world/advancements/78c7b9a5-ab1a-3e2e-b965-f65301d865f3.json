@@ -1,304 +1,4 @@
 {
-  "xercamod:recipes/stripped_spruce_log": {
-    "criteria": {
-      "has_item": "2020-05-15 19:02:46 +0300"
-    },
-    "done": true
-  },
-  "xercamusic:recipes/tubular_bell": {
-    "criteria": {
-      "has_item": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/misc/paper": {
-    "criteria": {
-      "has_reeds": "2020-05-30 17:14:38 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/leather": {
-    "criteria": {
-      "has_item": "2020-05-30 17:14:33 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/misc/writable_book": {
-    "criteria": {
-      "has_book": "2020-05-15 19:26:57 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/combat/golden_chestplate": {
-    "criteria": {
-      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "xercamod:achievements/root": {
-    "criteria": {
-      "crafting_table": "2020-05-10 00:03:56 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/stripped_dark_oak_wood": {
-    "criteria": {
-      "has_log": "2020-05-15 19:03:08 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/combat/leather_helmet": {
-    "criteria": {
-      "has_leather": "2020-05-30 17:14:38 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/decorations/crafting_table": {
-    "criteria": {
-      "has_planks": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "xercamod:achievements/shoot_hook": {
-    "criteria": {
-      "shot_tomato": "2020-05-10 00:04:00 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/tools/golden_hoe": {
-    "criteria": {
-      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/polished_granite_stairs": {
-    "criteria": {
-      "has_polished_granite": "2020-05-10 12:21:12 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/stripped_acacia_wood": {
-    "criteria": {
-      "has_log": "2020-05-15 19:03:08 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/stripped_acacia_log": {
-    "criteria": {
-      "has_item": "2020-05-15 19:02:46 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/decorations/chest": {
-    "criteria": {
-      "has_lots_of_items": "2020-05-15 19:03:08 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/combat/golden_sword": {
-    "criteria": {
-      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/acacia_wood": {
-    "criteria": {
-      "has_log": "2020-05-15 19:02:41 +0300"
-    },
-    "done": true
-  },
-  "xercamusic:recipes/guitar": {
-    "criteria": {
-      "has_item": "2020-05-30 17:13:34 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/misc/stick": {
-    "criteria": {
-      "has_planks": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/spruce_wood": {
-    "criteria": {
-      "has_log": "2020-05-15 19:02:36 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/item_bookcase": {
-    "criteria": {
-      "has_the_recipe": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/redstone/light_weighted_pressure_plate": {
-    "criteria": {
-      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/oak_planks": {
-    "criteria": {
-      "has_log": "2020-05-15 19:02:35 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/item_attorney_badge": {
-    "criteria": {
-      "has_item": "2020-05-30 17:14:25 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/dark_oak_planks": {
-    "criteria": {
-      "has_logs": "2020-05-15 19:02:38 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/misc/gold_nugget": {
-    "criteria": {
-      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/misc/sugar_from_sugar_cane": {
-    "criteria": {
-      "has_reeds": "2020-05-30 17:14:38 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/bookshelf": {
-    "criteria": {
-      "has_book": "2020-05-15 19:26:57 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/tools/golden_axe": {
-    "criteria": {
-      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/brewing/golden_carrot": {
-    "criteria": {
-      "has_gold_nugget": "2020-05-30 17:14:25 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/combat/golden_helmet": {
-    "criteria": {
-      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/redstone/oak_pressure_plate": {
-    "criteria": {
-      "has_planks": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "xercamusic:recipes/saxophone": {
-    "criteria": {
-      "has_item": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/birch_planks": {
-    "criteria": {
-      "has_log": "2020-05-15 19:02:40 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/gold_nugget": {
-    "criteria": {
-      "has_the_recipe": "2020-05-30 17:14:22 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/stripped_dark_oak_log": {
-    "criteria": {
-      "has_item": "2020-05-15 19:02:46 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/redstone/note_block": {
-    "criteria": {
-      "has_redstone": "2020-05-15 19:26:37 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/oak_wood": {
-    "criteria": {
-      "has_log": "2020-05-15 19:02:35 +0300"
-    },
-    "done": true
-  },
-  "minecraft:story/root": {
-    "criteria": {
-      "crafting_table": "2020-05-15 19:02:49 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/item_gold_warhammer": {
-    "criteria": {
-      "has_item": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/redstone/dropper": {
-    "criteria": {
-      "has_redstone": "2020-05-15 19:26:37 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/sugar_cane": {
-    "criteria": {
-      "has_item": "2020-05-30 17:14:34 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/stripped_birch_log": {
-    "criteria": {
-      "has_item": "2020-05-15 19:02:46 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/decorations/oak_sign": {
-    "criteria": {
-      "has_oak_planks": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/stripped_birch_wood": {
-    "criteria": {
-      "has_log": "2020-05-15 19:03:08 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/redstone/oak_trapdoor": {
-    "criteria": {
-      "has_planks": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/misc/leather_horse_armor": {
-    "criteria": {
-      "has_leather": "2020-05-30 17:14:38 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/combat/leather_leggings": {
-    "criteria": {
-      "has_leather": "2020-05-30 17:14:38 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/tools/golden_shovel": {
-    "criteria": {
-      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/redstone/oak_fence_gate": {
     "criteria": {
       "has_planks": "2020-05-15 19:26:27 +0300"
@@ -329,33 +29,9 @@
     },
     "done": true
   },
-  "xercamusic:recipes/drum": {
-    "criteria": {
-      "has_item": "2020-05-30 17:13:34 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/tools/compass": {
     "criteria": {
       "has_redstone": "2020-05-15 19:26:37 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/stripped_jungle_log": {
-    "criteria": {
-      "has_item": "2020-05-15 19:02:46 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/item_golden_coin_5": {
-    "criteria": {
-      "has_the_recipe": "2020-05-30 17:14:14 +0300"
-    },
-    "done": true
-  },
-  "xercamod:recipes/stripped_oak_log": {
-    "criteria": {
-      "has_item": "2020-05-15 19:02:46 +0300"
     },
     "done": true
   },
@@ -371,19 +47,25 @@
     },
     "done": true
   },
-  "xercamod:recipes/item_golden_coin_1": {
+  "minecraft:recipes/misc/paper": {
     "criteria": {
-      "has_the_recipe": "2020-05-30 17:14:16 +0300"
+      "has_reeds": "2020-05-30 17:14:38 +0300"
     },
     "done": true
   },
-  "xercamod:recipes/item_block_leather": {
+  "minecraft:recipes/misc/writable_book": {
     "criteria": {
-      "has_item": "2020-05-30 17:14:38 +0300"
+      "has_book": "2020-05-15 19:26:57 +0300"
     },
     "done": true
   },
   "minecraft:recipes/building_blocks/gold_block": {
+    "criteria": {
+      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/combat/golden_chestplate": {
     "criteria": {
       "has_gold_ingot": "2020-05-30 17:14:10 +0300"
     },
@@ -395,9 +77,15 @@
     },
     "done": true
   },
-  "xercamusic:recipes/xylophone": {
+  "minecraft:recipes/building_blocks/stripped_dark_oak_wood": {
     "criteria": {
-      "has_item": "2020-05-30 17:13:34 +0300"
+      "has_log": "2020-05-15 19:03:08 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/combat/leather_helmet": {
+    "criteria": {
+      "has_leather": "2020-05-30 17:14:38 +0300"
     },
     "done": true
   },
@@ -415,9 +103,33 @@
     },
     "done": true
   },
+  "minecraft:recipes/decorations/crafting_table": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/building_blocks/spruce_planks": {
     "criteria": {
       "has_log": "2020-05-15 19:02:36 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/tools/golden_hoe": {
+    "criteria": {
+      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/polished_granite_stairs": {
+    "criteria": {
+      "has_polished_granite": "2020-05-10 12:21:12 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stripped_acacia_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:03:08 +0300"
     },
     "done": true
   },
@@ -427,15 +139,21 @@
     },
     "done": true
   },
-  "minecraft:recipes/food/golden_apple": {
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2020-05-15 19:03:08 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/combat/golden_sword": {
     "criteria": {
       "has_gold_ingot": "2020-05-30 17:14:10 +0300"
     },
     "done": true
   },
-  "xercamod:recipes/item_golden_coin_5_alt": {
+  "minecraft:recipes/food/golden_apple": {
     "criteria": {
-      "has_the_recipe": "2020-05-30 17:14:14 +0300"
+      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
     },
     "done": true
   },
@@ -457,7 +175,19 @@
     },
     "done": true
   },
+  "minecraft:recipes/building_blocks/acacia_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:41 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/redstone/oak_door": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/stick": {
     "criteria": {
       "has_planks": "2020-05-15 19:26:27 +0300"
     },
@@ -469,9 +199,21 @@
     },
     "done": true
   },
+  "minecraft:recipes/building_blocks/spruce_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:36 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/combat/leather_boots": {
     "criteria": {
       "has_leather": "2020-05-30 17:14:38 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/light_weighted_pressure_plate": {
+    "criteria": {
+      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
     },
     "done": true
   },
@@ -481,15 +223,9 @@
     },
     "done": true
   },
-  "xercamod:recipes/item_gavel": {
+  "minecraft:recipes/building_blocks/oak_planks": {
     "criteria": {
-      "has_item": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "xercamusic:achievements/root": {
-    "criteria": {
-      "crafting_table": "2020-05-30 17:13:34 +0300"
+      "has_log": "2020-05-15 19:02:35 +0300"
     },
     "done": true
   },
@@ -499,15 +235,33 @@
     },
     "done": true
   },
+  "minecraft:recipes/building_blocks/dark_oak_planks": {
+    "criteria": {
+      "has_logs": "2020-05-15 19:02:38 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/building_blocks/polished_granite_slab_from_polished_granite_stonecutting": {
     "criteria": {
       "has_polished_granite": "2020-05-10 12:21:12 +0300"
     },
     "done": true
   },
-  "xercamusic:recipes/music_box": {
+  "minecraft:recipes/misc/gold_nugget": {
     "criteria": {
-      "has_item": "2020-05-30 17:13:34 +0300"
+      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/sugar_from_sugar_cane": {
+    "criteria": {
+      "has_reeds": "2020-05-30 17:14:38 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/bookshelf": {
+    "criteria": {
+      "has_book": "2020-05-15 19:26:57 +0300"
     },
     "done": true
   },
@@ -523,9 +277,21 @@
     },
     "done": true
   },
+  "minecraft:recipes/tools/golden_axe": {
+    "criteria": {
+      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/redstone/redstone_block": {
     "criteria": {
       "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/brewing/golden_carrot": {
+    "criteria": {
+      "has_gold_nugget": "2020-05-30 17:14:25 +0300"
     },
     "done": true
   },
@@ -541,9 +307,21 @@
     },
     "done": true
   },
-  "xercamod:recipes/item_prosecutor_badge": {
+  "minecraft:recipes/combat/golden_helmet": {
     "criteria": {
-      "has_item": "2020-05-30 17:14:25 +0300"
+      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/oak_pressure_plate": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/birch_planks": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:40 +0300"
     },
     "done": true
   },
@@ -559,27 +337,75 @@
     },
     "done": true
   },
+  "minecraft:recipes/redstone/note_block": {
+    "criteria": {
+      "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:02:35 +0300"
+    },
+    "done": true
+  },
+  "minecraft:story/root": {
+    "criteria": {
+      "crafting_table": "2020-05-15 19:02:49 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/decorations/oak_fence": {
     "criteria": {
       "has_planks": "2020-05-15 19:26:27 +0300"
     },
     "done": true
   },
-  "xercamusic:recipes/cymbal": {
+  "minecraft:recipes/redstone/dropper": {
     "criteria": {
-      "has_item": "2020-05-30 17:14:10 +0300"
+      "has_redstone": "2020-05-15 19:26:37 +0300"
     },
     "done": true
   },
-  "xercamod:recipes/item_block_straw": {
+  "minecraft:recipes/decorations/oak_sign": {
     "criteria": {
-      "has_item": "2020-05-30 17:14:38 +0300"
+      "has_oak_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stripped_birch_wood": {
+    "criteria": {
+      "has_log": "2020-05-15 19:03:08 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/oak_trapdoor": {
+    "criteria": {
+      "has_planks": "2020-05-15 19:26:27 +0300"
     },
     "done": true
   },
   "minecraft:recipes/building_blocks/oak_slab": {
     "criteria": {
       "has_planks": "2020-05-15 19:26:27 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/leather_horse_armor": {
+    "criteria": {
+      "has_leather": "2020-05-30 17:14:38 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/combat/leather_leggings": {
+    "criteria": {
+      "has_leather": "2020-05-30 17:14:38 +0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/tools/golden_shovel": {
+    "criteria": {
+      "has_gold_ingot": "2020-05-30 17:14:10 +0300"
     },
     "done": true
   },

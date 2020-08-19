@@ -13,10 +13,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercapaint.client.ClientProxy;
-import xerca.xercapaint.common.packets.CanvasUpdatePacket;
-import xerca.xercapaint.common.packets.CanvasUpdatePacketHandler;
-import xerca.xercapaint.common.packets.PaletteUpdatePacket;
-import xerca.xercapaint.common.packets.PaletteUpdatePacketHandler;
+import xerca.xercapaint.common.packets.*;
 import xerca.xercapaint.server.ServerProxy;
 
 @Mod(XercaPaint.MODID)
@@ -48,6 +45,8 @@ public class XercaPaint {
         int msg_id = 0;
         NETWORK_HANDLER.registerMessage(msg_id++, CanvasUpdatePacket.class, CanvasUpdatePacket::encode, CanvasUpdatePacket::decode, CanvasUpdatePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, PaletteUpdatePacket.class, PaletteUpdatePacket::encode, PaletteUpdatePacket::decode, PaletteUpdatePacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, PictureRequestPacket.class, PictureRequestPacket::encode, PictureRequestPacket::decode, PictureRequestPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, PictureSendPacket.class, PictureSendPacket::encode, PictureSendPacket::decode, PictureSendPacketHandler::handle);
     }
 
     private void setup(final FMLCommonSetupEvent event)

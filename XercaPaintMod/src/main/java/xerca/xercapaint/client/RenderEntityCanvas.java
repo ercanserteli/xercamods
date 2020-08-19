@@ -13,10 +13,10 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityCanvas;
 
@@ -27,8 +27,16 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
-    static RenderEntityCanvas theInstance;
+    static public RenderEntityCanvas theInstance;
     static private final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
+    private static final int[] EMPTY_PIXELS;
+
+    static {
+        EMPTY_PIXELS = new int[1024];
+        for(int i=0; i<1024; i++){
+            EMPTY_PIXELS[i] = PaletteUtil.Color.WHITE.rgbVal();
+        }
+    }
 
     private final TextureManager textureManager;
     private final Map<String, RenderEntityCanvas.Instance> loadedCanvases = Maps.newHashMap();
@@ -41,16 +49,13 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     @Nullable
     @Override
     public ResourceLocation getEntityTexture(EntityCanvas entity) {
-        return getMapRendererInstance(entity).location;
+        return getCanvasRendererInstance(entity).location;
     }
 
     @Override
     public void render(EntityCanvas entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-        CompoundNBT tag = entity.getCanvasNBT();
-        if(tag != null && tag.contains("name") ){
-            getMapRendererInstance(entity).render(entity, entityYaw, entity.rotationPitch, matrixStackIn, bufferIn, entity.getHorizontalFacing(), packedLightIn);
-        }
+        getCanvasRendererInstance(entity).render(entity, entityYaw, entity.rotationPitch, matrixStackIn, bufferIn, entity.getHorizontalFacing(), packedLightIn);
     }
 
 
@@ -62,36 +67,34 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         }
     }
 
-
-//    public void updateMapTexture(CompoundNBT textureData) {
-//        this.getMapRendererInstance(textureData).updateCanvasTexture(textureData);
-//    }
-
-    private RenderEntityCanvas.Instance getMapRendererInstance(EntityCanvas canvas) {
-        CompoundNBT textureData = canvas.getCanvasNBT();
-        RenderEntityCanvas.Instance instance = this.loadedCanvases.get(textureData.getString("name"));
-        if (instance == null) {
-            instance = new Instance(canvas);
-            this.loadedCanvases.put(textureData.getString("name"), instance);
-        }else{
-            int currentVersion = textureData.getInt("v");
-            if(instance.version < currentVersion){
-                instance.updateCanvasTexture(textureData);
-            }
+    public void updateMapTexture(String name, int version) {
+        Instance instance = this.getMapInstanceIfExists(name);
+        if(instance != null){
+            instance.updateCanvasTexture(name, version);
         }
-
-        return instance;
     }
 
-    RenderEntityCanvas.Instance getMapRendererInstance(CompoundNBT tag, int width, int height) {
-        RenderEntityCanvas.Instance instance = this.loadedCanvases.get(tag.getString("name"));
+    private RenderEntityCanvas.Instance getCanvasRendererInstance(EntityCanvas canvas) {
+        return getCanvasRendererInstance(canvas.getCanvasName(), canvas.getCanvasVersion(), canvas.getWidthPixels(), canvas.getHeightPixels());
+    }
+
+    RenderEntityCanvas.Instance getCanvasRendererInstance(CompoundNBT tag, int width, int height) {
+        String name = tag.getString("name");
+        int version = tag.getInt("v");
+        if(!EntityCanvas.PICTURES.containsKey(name)){
+            EntityCanvas.PICTURES.put(name, new EntityCanvas.Picture(version, tag.getIntArray("pixels")));
+        }
+        return getCanvasRendererInstance(name, version, width, height);
+    }
+
+    RenderEntityCanvas.Instance getCanvasRendererInstance(String name, int version, int width, int height) {
+        RenderEntityCanvas.Instance instance = this.loadedCanvases.get(name);
         if (instance == null) {
-            instance = new Instance(tag, width, height);
-            this.loadedCanvases.put(tag.getString("name"), instance);
+            instance = new Instance(name, version, width, height);
+            this.loadedCanvases.put(name, instance);
         }else{
-            int currentVersion = tag.getInt("v");
-            if(instance.version < currentVersion){
-                instance.updateCanvasTexture(tag);
+            if(instance.version < version || !instance.loaded){
+                instance.updateCanvasTexture(name, version);
             }
         }
 
@@ -106,7 +109,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     /**
      * Clears the currently loaded maps and removes their corresponding textures
      */
-    public void clearLoadedMaps() {
+    public void clearLoadedCanvases() {
         for(RenderEntityCanvas.Instance instance : this.loadedCanvases.values()) {
             instance.close();
         }
@@ -115,28 +118,28 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     }
 
     public void close() {
-        this.clearLoadedMaps();
+        this.clearLoadedCanvases();
     }
 
     @OnlyIn(Dist.CLIENT)
-    class Instance implements AutoCloseable {
+    public class Instance implements AutoCloseable {
         int version = 0;
         int width;
         int height;
+        boolean loaded;
+        boolean started;
         public final DynamicTexture canvasTexture;
         public final ResourceLocation location;
 
-        private Instance(EntityCanvas canvas) {
-            this(canvas.getCanvasNBT(), canvas.getWidthPixels(), canvas.getHeightPixels());
-        }
-
-        private Instance(CompoundNBT tag, int width, int height) {
+        private Instance(String name, int version, int width, int height) {
+            this.started = false;
+            this.loaded = false;
             this.width = width;
             this.height = height;
             this.canvasTexture = new DynamicTexture(width, height, true);
-            this.location = RenderEntityCanvas.this.textureManager.getDynamicTextureLocation("canvas/" + tag.getString("name"), this.canvasTexture);
+            this.location = RenderEntityCanvas.this.textureManager.getDynamicTextureLocation("canvas/" + name, this.canvasTexture);
 
-            updateCanvasTexture(tag);
+            updateCanvasTexture(name, version);
         }
 
         private int swapColor(int color){
@@ -146,25 +149,29 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             return k << 16 | j << 8 | i;
         }
 
-        private void updateCanvasTexture(CompoundNBT textureData) {
-            this.version = textureData.getInt("v");
-
-            int[] pixels = textureData.getIntArray("pixels");
-
-            if(pixels.length < height*width){
-                XercaPaint.LOGGER.warn("Pixels array length (" + pixels.length + ") is smaller than canvas area (" + height*width + ")");
-                return;
+        private void updateCanvasTexture(String name, int version) {
+            this.version = version;
+            int[] pixels = EMPTY_PIXELS;
+            if(EntityCanvas.PICTURES.containsKey(name)){
+                pixels = EntityCanvas.PICTURES.get(name).pixels;
+                loaded = true;
             }
-
-            for (int i = 0; i < height; ++i) {
-                for (int j = 0; j < width; ++j) {
-                    int k = j + i * width;
-
-                    canvasTexture.getTextureData().setPixelRGBA(j, i, swapColor(pixels[k]));
+            if(loaded || !started){
+                if(pixels.length < height*width){
+                    XercaPaint.LOGGER.warn("Pixels array length (" + pixels.length + ") is smaller than canvas area (" + height*width + ")");
+                    return;
                 }
-            }
 
-            canvasTexture.updateDynamicTexture();
+                for (int i = 0; i < height; ++i) {
+                    for (int j = 0; j < width; ++j) {
+                        int k = j + i * width;
+                        canvasTexture.getTextureData().setPixelRGBA(j, i, swapColor(pixels[k]));
+                    }
+                }
+
+                canvasTexture.updateDynamicTexture();
+            }
+            this.started = true;
         }
 
         public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, MatrixStack ms, IRenderTypeBuffer buffer, Direction facing, int packedLight) {
