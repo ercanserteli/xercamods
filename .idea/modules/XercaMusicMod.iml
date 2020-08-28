@@ -10,6 +10,7 @@
     <content url="file://$MODULE_DIR$/../../XercaMusicMod">
       <excludeFolder url="file://$MODULE_DIR$/../../XercaMusicMod/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../XercaMusicMod/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../XercaMusicMod/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
