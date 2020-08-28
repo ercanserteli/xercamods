@@ -2,54 +2,54 @@
   "multipart": [
     {
       "when": { "OR": [
-      { "north": false, "south": false, "east": false, "west": false, "up": false, "down": false },
+        { "north": false, "south": false, "east": false, "west": false, "up": false, "down": false },
 
-      { "north": true, "south": false },
-      { "south": true, "north": false },
-      { "up": true, "down": false },
-      { "down": true, "up": false },
-      { "east": true, "west": false },
-      { "west": true, "east": false },
+        { "north": true, "south": false },
+        { "south": true, "north": false },
+        { "up": true, "down": false },
+        { "down": true, "up": false },
+        { "east": true, "west": false },
+        { "west": true, "east": false },
 
-      { "north": true, "east": true },
-      { "north": true, "west": true },
-      { "north": true, "up": true },
-      { "north": true, "down": true },
-      { "east": true, "south": true },
-      { "east": true, "up": true },
-      { "east": true, "down": true },
-      { "west": true, "up": true },
-      { "west": true, "down": true },
-      { "west": true, "south": true },
-      { "south": true, "up": true },
-      { "south": true, "down": true }
-    ]},
+        { "north": true, "east": true },
+        { "north": true, "west": true },
+        { "north": true, "up": true },
+        { "north": true, "down": true },
+        { "east": true, "south": true },
+        { "east": true, "up": true },
+        { "east": true, "down": true },
+        { "west": true, "up": true },
+        { "west": true, "down": true },
+        { "west": true, "south": true },
+        { "south": true, "up": true },
+        { "south": true, "down": true }
+      ]},
       "apply": { "model": "xercamod:block/rope_knot" }
     },
 
     {
       "when": { "north": true },
-      "apply": { "model": "xercamod:block/rope_straight" }
+      "apply": { "model": "xercamod:block/rope_straight_b" }
     },
     {
       "when": { "east": true },
-      "apply": { "model": "xercamod:block/rope_straight", "y": 90 }
+      "apply": { "model": "xercamod:block/rope_straight_b", "y": 90, "uvlock": false }
     },
     {
       "when": { "south": true },
-      "apply": { "model": "xercamod:block/rope_straight", "y": 180 }
+      "apply": { "model": "xercamod:block/rope_straight_a", "y": 0, "uvlock": false }
     },
     {
       "when": { "west": true },
-      "apply": { "model": "xercamod:block/rope_straight", "y": 270 }
+      "apply": { "model": "xercamod:block/rope_straight_a", "y": 90, "uvlock": false }
     },
     {
       "when": { "up": true },
-      "apply": { "model": "xercamod:block/rope_straight", "x": 270 }
+      "apply": { "model": "xercamod:block/rope_straight_b", "x": 270, "uvlock": false }
     },
     {
       "when": { "down": true },
-      "apply": { "model": "xercamod:block/rope_straight", "x": 90 }
+      "apply": { "model": "xercamod:block/rope_straight_a", "x": 270, "uvlock": false }
     }
   ]
 }
