@@ -8,7 +8,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMetronome;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class TileEntityMetronome extends TileEntity implements ITickableTileEntity {
     public final static int[] pauseLevels = {20, 15, 12, 10, 8, 6, 5, 4, 3, 2, 1};
-    private final static Vec3i halfRange = new Vec3i(8, 2, 8);
+    private final static Vector3i halfRange = new Vector3i(8, 2, 8);
 
     private int age = 0;
     private boolean oldPoweredState = false;
@@ -37,8 +37,8 @@ public class TileEntityMetronome extends TileEntity implements ITickableTileEnti
     }
 
     @Override
-    public void read(CompoundNBT parent) {
-		super.read(parent);
+    public void read(BlockState state, CompoundNBT parent) {
+		super.read(state, parent);
     }
 
     @Override

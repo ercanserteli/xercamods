@@ -1,5 +1,6 @@
 package xerca.xercapaint.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.CompoundNBT;
@@ -72,12 +73,12 @@ public class GuiCanvasView extends Screen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float f) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float f) {
         for(int i=0; i<canvasPixelHeight; i++){
             for(int j=0; j<canvasPixelWidth; j++){
                 int x = canvasX + j*canvasPixelScale;
                 int y = canvasY + i*canvasPixelScale;
-                fill(x, y, x+canvasPixelScale, y+canvasPixelScale, getPixelAt(j, i));
+                fill(matrixStack, x, y, x+canvasPixelScale, y+canvasPixelScale, getPixelAt(j, i));
             }
         }
         
@@ -93,10 +94,10 @@ public class GuiCanvasView extends Screen {
             float minX = Math.min(genX, titleX);
             float maxX = Math.max(genX + genWidth, titleX + titleWidth);
 
-            fill((int)(minX - 10), canvasY - 30, (int)(maxX + 10), canvasY - 4, 0xFFEEEEEE);
+            fill(matrixStack, (int)(minX - 10), canvasY - 30, (int)(maxX + 10), canvasY - 4, 0xFFEEEEEE);
 
-            this.font.drawString(title, titleX, canvasY - 25, 0xFF111111);
-            this.font.drawString(gen, genX, canvasY - 14, 0xFF444444);
+            this.font.drawString(matrixStack, title, titleX, canvasY - 25, 0xFF111111);
+            this.font.drawString(matrixStack, gen, genX, canvasY - 14, 0xFF444444);
         }
     }
 }

@@ -1,11 +1,18 @@
 package xerca.xercapaint.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.IItemPropertyGetter;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -15,6 +22,10 @@ import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
+import xerca.xercapaint.common.item.Items;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ClientProxy extends Proxy {
 
@@ -57,11 +68,19 @@ public class ClientProxy extends Proxy {
         }
     }
 
-
     @Mod.EventBusSubscriber(modid = XercaPaint.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-    static class ModBusSubscriber{
+    static public class ModBusSubscriber{
         @SubscribeEvent
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
+            IItemPropertyGetter drawn = (itemStack, p_call_2_, p_call_3_) -> {
+                if(!itemStack.hasTag()) return 0.0f;
+                else return 1.0F;
+            };
+
+            ItemModelsProperties.func_239418_a_(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.func_239418_a_(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.func_239418_a_(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.func_239418_a_(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
         }
     }
 }

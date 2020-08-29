@@ -17,6 +17,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
@@ -245,7 +246,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         if(facingDirection.getAxis().isHorizontal()){
             return super.onValidSurface();
         }
-        if (!this.world.func_226669_j_(this)) {
+        if (!this.world.hasNoCollisions(this)) {
             return false;
         } else {
             BlockState blockstate = this.world.getBlockState(this.hangingPosition.offset(this.facingDirection.getOpposite()));
@@ -360,15 +361,15 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 //        XercaPaint.LOGGER.debug("readSpawnData Pos: " + this.hangingPosition.toString() + " posY: " + this.posY);
     }
 
-    public boolean processInitialInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if(canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE){
             if (!this.world.isRemote) {
                 setRotation(getRotation() + 1);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         else{
-            return false;
+            return ActionResultType.PASS;
         }
     }
 

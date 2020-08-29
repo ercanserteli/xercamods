@@ -23,37 +23,6 @@ public class ItemGrabHook extends FishingRodItem {
     public ItemGrabHook() {
         super((new Item.Properties()).group(ItemGroup.COMBAT).defaultMaxDamage(210));
         this.setRegistryName("item_grab_hook");
-        this.addPropertyOverride(new ResourceLocation(XercaMod.MODID, "cast"), new IItemPropertyGetter() {
-            @OnlyIn(Dist.CLIENT)
-            @Override
-            public float call(@Nonnull ItemStack itemStack, @Nullable World world, @Nullable LivingEntity entityLivingBase) {
-                if(!itemStack.hasTag()) return 0.0f;
-                CompoundNBT tag = itemStack.getTag();
-                if(!tag.contains("cast")) return 0.0f;
-
-                return tag.getBoolean("cast") ? 1.0F : 0.0F;//);
-            }
-        });
-
-        this.addPropertyOverride(new ResourceLocation("pull"), new IItemPropertyGetter() {
-            @OnlyIn(Dist.CLIENT)
-            @Override
-            public float call(@Nonnull ItemStack stack, World worldIn, LivingEntity entityIn) {
-                if (entityIn == null) {
-                    return 0.0F;
-                } else {
-                    ItemStack itemstack = entityIn.getActiveItemStack();
-                    return ((itemstack.getItem() instanceof ItemGrabHook)) ? (float) (stack.getUseDuration() - entityIn.getItemInUseCount()) / (20.0F) : 0.0F;
-                }
-            }
-        });
-        this.addPropertyOverride(new ResourceLocation("pulling"), new IItemPropertyGetter() {
-            @OnlyIn(Dist.CLIENT)
-            @Override
-            public float call(@Nonnull ItemStack stack, World worldIn, LivingEntity entityIn) {
-                return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
-            }
-        });
     }
 
     @Nonnull

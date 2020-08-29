@@ -1,5 +1,6 @@
 package xerca.xercapaint.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,25 +28,25 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float f) {
-        super.render(mouseX, mouseY, f);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float f) {
+        super.render(matrixStack, mouseX, mouseY, f);
 
-        renderCursor(mouseX, mouseY);
+        renderCursor(matrixStack, mouseX, mouseY);
     }
 
-    private void renderCursor(int mouseX, int mouseY){
+    private void renderCursor(MatrixStack matrixStack, int mouseX, int mouseY){
         if(isCarryingColor){
             carriedColor.setGLColor();
-            blit(mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
 
         }else if(isCarryingWater){
             waterColor.setGLColor();
-            blit(mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
         }
     }
 
     @Override
-    public void removed() {
+    public void onClose() {
         if (dirty) {
             PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
             XercaPaint.NETWORK_HANDLER.sendToServer(pack);

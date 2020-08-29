@@ -27,8 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemEnderBow extends Item {
-    private static final int baseMaxCharges = 8;
-
     public ItemEnderBow() {
         super(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1).maxDamage(160));
     }
@@ -105,7 +103,7 @@ public class ItemEnderBow extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
-        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").func_240699_a_(TextFormatting.YELLOW));
+        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").mergeStyle(TextFormatting.YELLOW));
     }
 
 

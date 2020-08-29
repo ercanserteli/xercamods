@@ -65,7 +65,7 @@ public class ItemPalette extends Item {
                     for(byte basicColor : basicColors){
                         basicCount += basicColor;
                     }
-                    tooltip.add(new TranslationTextComponent("palette.basic_count", String.valueOf(basicCount)).applyTextStyle(TextFormatting.GRAY));
+                    tooltip.add(new TranslationTextComponent("palette.basic_count", String.valueOf(basicCount)).mergeStyle(TextFormatting.GRAY));
                 }
 
                 int[] ns = tag.getIntArray("n");
@@ -77,12 +77,12 @@ public class ItemPalette extends Item {
                             fullCount++;
                         }
                     }
-                    tooltip.add(new TranslationTextComponent("palette.custom_count", String.valueOf(fullCount)).applyTextStyle(TextFormatting.GRAY));
+                    tooltip.add(new TranslationTextComponent("palette.custom_count", String.valueOf(fullCount)).mergeStyle(TextFormatting.GRAY));
                 }
             }
         }
         else{
-            tooltip.add(new TranslationTextComponent("palette.empty").applyTextStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("palette.empty").mergeStyle(TextFormatting.GRAY));
         }
     }
 }

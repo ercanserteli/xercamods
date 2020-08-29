@@ -64,8 +64,8 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
     }
 
     @Override
-    public void read(CompoundNBT parent) {
-        super.read(parent); // The super call is required to save and load the tiles location
+    public void read(BlockState state, CompoundNBT parent) {
+        super.read(state, parent); // The super call is required to save and load the tiles location
         if (parent.contains("note", 10)) {
             CompoundNBT noteTag = parent.getCompound("note");
             ItemStack note = ItemStack.read(noteTag);
@@ -83,9 +83,9 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
     }
 
     @Override
-    public void handleUpdateTag(CompoundNBT nbt) {
+    public void handleUpdateTag(BlockState state, CompoundNBT nbt) {
 //        XercaMusic.LOGGER.debug("TileEntityMusicBox handleUpdateTag called");
-        this.read(nbt);
+        this.read(state, nbt);
     }
 
     private void stopPowering(){

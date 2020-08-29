@@ -35,7 +35,7 @@ class ItemEnderCupcake extends Item {
 
             for(int lvt_11_1_ = 0; lvt_11_1_ < 16; ++lvt_11_1_) {
                 double x = entity.getPosX() + (entity.getRNG().nextDouble() - 0.5D) * 8.0D;
-                double y = MathHelper.clamp(entity.getPosY() + (double)(entity.getRNG().nextInt(8) - 4), 0.0D, (world.getActualHeight() - 1));
+                double y = MathHelper.clamp(entity.getPosY() + (double)(entity.getRNG().nextInt(8) - 4), 0.0D, (world.func_234938_ad_() - 1));
                 double z = entity.getPosZ() + (entity.getRNG().nextDouble() - 0.5D) * 8.0D;
                 if (entity.isPassenger()) {
                     entity.stopRiding();

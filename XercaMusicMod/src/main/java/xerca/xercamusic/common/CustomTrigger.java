@@ -8,7 +8,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -82,7 +84,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
      * @return the tame bird trigger. instance
      */
     @Override
-    public CustomTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context)
+    public CustomTrigger.Instance deserialize(JsonObject json, ConditionArrayParser context)
     {
         return new CustomTrigger.Instance(getId());
     }
@@ -110,7 +112,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
          */
         public Instance(ResourceLocation parRL)
         {
-            super(parRL);
+            super(parRL,  EntityPredicate.AndPredicate.ANY_AND);
         }
 
         /**

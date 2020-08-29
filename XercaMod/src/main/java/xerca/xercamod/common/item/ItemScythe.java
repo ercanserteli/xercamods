@@ -10,6 +10,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
@@ -42,26 +43,6 @@ public class ItemScythe extends ToolItem {
 
     public ItemScythe(IItemTier tier, int attackDamageIn, float attackSpeedIn, Item.Properties builder) {
         super(attackDamageIn, attackSpeedIn, tier, EFFECTIVE_ON, builder.addToolType(net.minecraftforge.common.ToolType.PICKAXE, tier.getHarvestLevel()));
-
-        this.addPropertyOverride(new ResourceLocation("pull"), new IItemPropertyGetter() {
-            @OnlyIn(Dist.CLIENT)
-            @Override
-            public float call(@Nonnull ItemStack stack, World worldIn, LivingEntity entityIn) {
-                if (entityIn == null) {
-                    return 0.0F;
-                } else {
-                    ItemStack itemstack = entityIn.getActiveItemStack();
-                    return ((itemstack.getItem() instanceof ItemScythe)) ? (stack.getUseDuration() - entityIn.getItemInUseCount()) / 20.0F : 0.0F;
-                }
-            }
-        });
-        this.addPropertyOverride(new ResourceLocation("pulling"), new IItemPropertyGetter() {
-            @OnlyIn(Dist.CLIENT)
-            @Override
-            public float call(@Nonnull ItemStack stack, World worldIn, LivingEntity entityIn) {
-                return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
-            }
-        });
     }
 
     @Override
@@ -124,8 +105,8 @@ public class ItemScythe extends ToolItem {
         return false;
     }
 
-    private void breakBlock( BlockPos pos, World world, PlayerEntity player){
-        world.func_225521_a_(pos, true, player);
+    private void breakBlock(BlockPos pos, World world, PlayerEntity player){
+        world.destroyBlock(pos, true, player);
     }
 
     private boolean isMaxCrop(BlockState bs){
@@ -174,7 +155,7 @@ public class ItemScythe extends ToolItem {
         else if(target.getType() == EntityType.MAGMA_CUBE){
             spawnHead("MHF_LavaSlime", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.magma_cube");
         }
-        else if(target.getType() == EntityType.ZOMBIE_PIGMAN){
+        else if(target.getType() == EntityType.ZOMBIFIED_PIGLIN){
             spawnHead("MHF_PigZombie", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.zombie_pigman");
         }
         else if(target.getType() == EntityType.SPIDER){
@@ -228,7 +209,7 @@ public class ItemScythe extends ToolItem {
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity)
     {
         if(EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING, stack) > 0){
-            float damage = (float)player.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue();
+            float damage = (float)player.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
             float bonusDamage;
             if (entity instanceof LivingEntity) {
                 bonusDamage = EnchantmentHelper.getModifierForCreature(stack, ((LivingEntity)entity).getCreatureAttribute());
@@ -243,14 +224,14 @@ public class ItemScythe extends ToolItem {
 
             boolean cooledAttack = cooldownStrength > 0.9F;
             boolean cooledSprintAttack = player.isSprinting() && cooledAttack;
-            boolean critical = cooledAttack && player.fallDistance > 0.0F && !player.onGround && !player.isOnLadder() &&
+            boolean critical = cooledAttack && player.fallDistance > 0.0F && !player.isOnGround() && !player.isOnLadder() &&
                     !player.isInWater() && !player.isPotionActive(Effects.BLINDNESS) && !player.isPassenger() &&
                     entity instanceof LivingEntity  && !player.isSprinting();
 //        net.minecraftforge.event.entity.player.CriticalHitEvent hitResult = net.minecraftforge.common.ForgeHooks.getCriticalHit(player, entity, critical, critical ? 1.5F : 1.0F);
 //        critical = hitResult != null;
 
             double d0 = player.distanceWalkedModified - player.prevDistanceWalkedModified;
-            boolean sweep = cooledAttack && !critical && !cooledSprintAttack && player.onGround &&
+            boolean sweep = cooledAttack && !critical && !cooledSprintAttack && player.isOnGround() &&
                     d0 < player.getAIMoveSpeed();
 
             if(sweep){
@@ -258,7 +239,8 @@ public class ItemScythe extends ToolItem {
 
                 for(LivingEntity livingentity : player.world.getEntitiesWithinAABB(LivingEntity.class, entity.getBoundingBox().grow(1.0D, 0.25D, 1.0D))) {
                     if (livingentity != player && livingentity != entity && !player.isOnSameTeam(livingentity) && (!(livingentity instanceof ArmorStandEntity) || !((ArmorStandEntity)livingentity).hasMarker()) && player.getDistanceSq(livingentity) < 9.0D) {
-                        livingentity.knockBack(player, 0.4F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
+//                        livingentity.knockback(player, 0.4F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
+                        livingentity.applyKnockback(0.4F, (double)MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
                         livingentity.attackEntityFrom(DamageSource.causePlayerDamage(player), sweepDamage);
                     }
                 }

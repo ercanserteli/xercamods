@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemFlask extends Item {
-    private static final int baseMaxCharges = 8;
+    private static final int baseMaxCharges = 16;
     private boolean hasMilk;
 
     public ItemFlask(Properties properties, String registryName, boolean hasMilk) {
@@ -174,12 +174,12 @@ public class ItemFlask extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if(hasMilk){
-            tooltip.add(new StringTextComponent("Calcium for your bones").applyTextStyle(TextFormatting.YELLOW));
+            tooltip.add(new StringTextComponent("Calcium for your bones").mergeStyle(TextFormatting.YELLOW));
         }
         else{
             PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
         }
-        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").applyTextStyle(TextFormatting.YELLOW));
+        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").mergeStyle(TextFormatting.YELLOW));
     }
 
     /**

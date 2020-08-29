@@ -3,12 +3,13 @@ package xerca.xercamod.common;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -17,25 +18,25 @@ import java.util.Set;
 
 public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
 {
-    private final ResourceLocation RL;
+    private final ResourceLocation resourceLocation;
     private final Map<PlayerAdvancements, CustomTrigger.Listeners> listeners = Maps.newHashMap();
 
     public CustomTrigger(String registryName)
     {
         super();
-        RL = new ResourceLocation(registryName);
+        this.resourceLocation = new ResourceLocation(registryName);
     }
 
-    public CustomTrigger(ResourceLocation parRL)
+    public CustomTrigger(ResourceLocation resourceLocation)
     {
         super();
-        RL = parRL;
+        this.resourceLocation = resourceLocation;
     }
 
     @Override
     public ResourceLocation getId()
     {
-        return RL;
+        return resourceLocation;
     }
 
     @Override
@@ -74,16 +75,8 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
         listeners.remove(playerAdvancementsIn);
     }
 
-    /**
-     * Deserialize a ICriterionInstance of this trigger from the data in the JSON.
-     *
-     * @param json the json
-     * @param context the context
-     * @return the tame bird trigger. instance
-     */
     @Override
-    public CustomTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context)
-    {
+    public Instance deserialize(JsonObject json, ConditionArrayParser conditions) {
         return new CustomTrigger.Instance(getId());
     }
 
@@ -104,13 +97,12 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
 
     public static class Instance extends CriterionInstance
     {
-
         /**
          * Instantiates a new instance.
          */
-        public Instance(ResourceLocation parRL)
+        public Instance(ResourceLocation resourceLocation)
         {
-            super(parRL);
+            super(resourceLocation, EntityPredicate.AndPredicate.ANY_AND);
         }
 
         /**

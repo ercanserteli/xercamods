@@ -81,7 +81,7 @@ public class BlockMetronome extends Block {
                 return ActionResultType.SUCCESS;
             }
             else{
-                state = state.cycle(BPM);
+                state = state.func_235896_a_(BPM); //cycle
                 worldIn.setBlockState(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
                 return ActionResultType.SUCCESS;
             }

@@ -14,6 +14,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -45,14 +46,17 @@ public class ItemGoldenCupcake extends Item {
             int n = worldIn.rand.nextInt(5);
             switch (n){
                 case 0:
-                    ((ServerWorld)worldIn).addLightningBolt(new LightningBoltEntity(worldIn, player.getPosX(), player.getPosY(), player.getPosZ(), true));
+                    LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(worldIn);
+                    lightningboltentity.setPositionAndUpdate(player.getPosX(), player.getPosY(), player.getPosZ());
+                    worldIn.addEntity(lightningboltentity);
+
                     worldIn.createExplosion(null, player.getPosX(), player.getPosY(), player.getPosZ(), 1.1F, false, Explosion.Mode.BREAK);
                     EntityConfettiBall entityball = new EntityConfettiBall(worldIn, player);
-                    entityball.shoot(player, 270, player.rotationYaw + 90, 0.0F, 1.0F, 1.0F);
+                    entityball.func_234612_a_(player, 270, player.rotationYaw + 90, 0.0F, 1.0F, 1.0F);
                     worldIn.addEntity(entityball);
                     for(int i=0; i<8; i++){
                         entityball = new EntityConfettiBall(worldIn, player);
-                        entityball.shoot(player, 300, 45*i, 0.0F, 1.0F, 1.0F);
+                        entityball.func_234612_a_(player, 300, 45*i, 0.0F, 1.0F, 1.0F);
                         worldIn.addEntity(entityball);
                     }
 
@@ -82,25 +86,25 @@ public class ItemGoldenCupcake extends Item {
                     worldIn.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.SCARY, SoundCategory.PLAYERS, 1.0f, worldIn.rand.nextFloat() * 0.2F + 0.8F);
 
                     player.addPotionEffect(new EffectInstance(Effects.BLINDNESS, 200, 1));
-
-                    ItemStack head = new ItemStack(net.minecraft.item.Items.PLAYER_HEAD, 1);
-                    head.getOrCreateTag().put("SkullOwner", StringNBT.valueOf("MHF_Herobrine"));
+                    //todo: headler aşırı lagli???
+//                    ItemStack head = new ItemStack(net.minecraft.item.Items.PLAYER_HEAD, 1);
+//                    head.getOrCreateTag().put("SkullOwner", StringNBT.valueOf("MHF_Herobrine"));
 
                     Item[] instruments = {Items.ITEM_GAVEL, Items.ITEM_RAW_SAUSAGE, Items.ITEM_STONE_WARHAMMER, Items.ITEM_PROSECUTOR_BADGE};
                     int i = worldIn.rand.nextInt(4);
 
                     Entity e1 = new SkeletonEntity(EntityType.SKELETON, worldIn);
                     e1.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(instruments[i]));
-                    e1.setItemStackToSlot(EquipmentSlotType.HEAD, head);
+//                    e1.setItemStackToSlot(EquipmentSlotType.HEAD, head);
                     e1.setLocationAndAngles(player.getPosX() + (double) worldIn.rand.nextInt(3), player.getPosY() + (double) worldIn.rand.nextInt(5), player.getPosZ() + (double) worldIn.rand.nextInt(3), worldIn.rand.nextFloat() * 360.0F, 0.0F);
 
-                    ItemStack playerHead = new ItemStack(net.minecraft.item.Items.PLAYER_HEAD, 1);
-                    playerHead.getOrCreateTag().put("SkullOwner", StringNBT.valueOf(player.getName().getString()));
+//                    ItemStack playerHead = new ItemStack(net.minecraft.item.Items.PLAYER_HEAD, 1);
+//                    playerHead.getOrCreateTag().put("SkullOwner", StringNBT.valueOf(player.getName().getString()));
 
                     Entity e2 = new ZombieEntity(worldIn);
                     e2.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(Items.ITEM_KNIFE));
                     e2.setItemStackToSlot(EquipmentSlotType.OFFHAND, new ItemStack(Items.ITEM_KNIFE));
-                    e2.setItemStackToSlot(EquipmentSlotType.HEAD, playerHead);
+//                    e2.setItemStackToSlot(EquipmentSlotType.HEAD, playerHead);
                     e2.setLocationAndAngles(player.getPosX() + (double) worldIn.rand.nextInt(3), player.getPosY() + (double) worldIn.rand.nextInt(5), player.getPosZ() + (double) worldIn.rand.nextInt(3), worldIn.rand.nextFloat() * 360.0F, 0.0F);
 
                     worldIn.addEntity(e1);

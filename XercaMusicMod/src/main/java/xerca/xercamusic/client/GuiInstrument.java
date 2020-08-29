@@ -1,5 +1,6 @@
 package xerca.xercamusic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -60,23 +61,23 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float f) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         Minecraft.getInstance().getTextureManager().bindTexture(insGuiTextures);
 
-        blit(guiBaseX, guiBaseY, this.getBlitOffset(), 0, 0, guiWidth, guiHeight, 512, 512);
+        blit(matrixStack, guiBaseX, guiBaseY, this.getBlitOffset(), 0, 0, guiWidth, guiHeight, 512, 512);
 
         if(pushedButton >= 0 && pushedButton < 48){
             int pushedOctave = pushedButton / 12;
             int x = guiBaseX + guiMarginWidth + pushedButton*guiNoteWidth + pushedOctave;
             int y = guiBaseY + 11;
-            blit(x, y, this.getBlitOffset(), 402, 11, 7, 82, 512, 512);
+            blit(matrixStack, x, y, this.getBlitOffset(), 402, 11, 7, 82, 512, 512);
         }
 
         int octaveHighlightX = guiBaseX + guiMarginWidth + currentKeyboardOctave * guiOctaveWidth - 1;
         int octaveHighlightY = guiBaseY + 3;
-        blit(octaveHighlightX, octaveHighlightY, this.getBlitOffset(), 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
+        blit(matrixStack, octaveHighlightX, octaveHighlightY, this.getBlitOffset(), 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
     }
 
     @Override
@@ -129,7 +130,7 @@ public class GuiInstrument extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers){
-        setFocused(null);
+        setListener(null);
         super.keyPressed(keyCode, scanCode, modifiers);
 
         if (scanCode >= 16 && scanCode <= 27) {
@@ -150,14 +151,6 @@ public class GuiInstrument extends Screen {
     public boolean keyReleased(int keyCode, int scanCode, int modifiers){
         pushedButton = -1;
         return true;
-    }
-
-    /**
-     * Called when the screen is unloaded. Used to disable keyboard repeat events
-     */
-    @Override
-    public void removed() {
-
     }
 
 }

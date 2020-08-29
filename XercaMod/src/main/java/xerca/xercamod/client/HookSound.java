@@ -27,14 +27,8 @@ class HookSound extends TickableSound {
     }
 
     private void setDonePlaying() {
-        this.repeat = false;
-        this.donePlaying = true;
+        this.func_239509_o_();
         this.repeatDelay = 0;
-    }
-
-    @Override
-    public boolean isDonePlaying() {
-        return this.donePlaying;
     }
 
     @Override

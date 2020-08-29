@@ -59,7 +59,7 @@ public class HammerAttackPacketHandler {
             float pull = msg.getPullDuration();
             float mult = damageBonusMult(pull);
             int heavyLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_HEAVY, st);
-            float damage = ((float) pl.getAttribute(Attributes.field_233823_f_).getValue() + heavyLevel * 0.5f) * mult;
+            float damage = ((float) pl.getAttribute(Attributes.ATTACK_DAMAGE).getValue() + heavyLevel * 0.5f) * mult;
             float push = (((ItemWarhammer) item).getPushAmount() + heavyLevel * 0.15f) * 2 * mult;
 
             int uppercutLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_UPPERCUT, st);
