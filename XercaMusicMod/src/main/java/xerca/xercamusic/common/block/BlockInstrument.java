@@ -1,6 +1,7 @@
 package xerca.xercamusic.common.block;
 
 
+import com.sun.javafx.geom.Vec3d;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,7 +10,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
@@ -27,7 +28,7 @@ public abstract class BlockInstrument extends Block {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if(new Vec3d(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.getPositionVec()) > 4){
+        if(new Vector3d(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.getPositionVec()) > 4){
             return ActionResultType.PASS;
         }
         ItemStack handStack = player.getHeldItem(hand);

@@ -46,7 +46,7 @@ public class EntityTomato extends ProjectileItemEntity {
     protected void onImpact(RayTraceResult result) {
         if (result.getType() == RayTraceResult.Type.ENTITY) {
             EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult) result;
-            entityRayTraceResult.getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 1f);
+            entityRayTraceResult.getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), 1f);
         }
 
         if (!this.world.isRemote) {

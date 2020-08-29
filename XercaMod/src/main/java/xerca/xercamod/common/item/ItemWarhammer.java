@@ -1,5 +1,6 @@
 package xerca.xercamod.common.item;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -38,6 +39,7 @@ public class ItemWarhammer extends Item {
     private final float weaponDamage;
     private final float pushAmount;
     private final ItemTier material;
+    private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
     public ItemWarhammer(String name, ItemTier mat) {
         super(new Item.Properties().group(ItemGroup.COMBAT).maxStackSize(1).defaultMaxDamage(mat.getMaxUses()));
@@ -46,24 +48,10 @@ public class ItemWarhammer extends Item {
         this.weaponDamage = 1.0F + mat.getAttackDamage();
         this.pushAmount = getPushFromMaterial(mat);
 
-        this.addPropertyOverride(new ResourceLocation("pull"), new IItemPropertyGetter() {
-            @Override
-            public float call(ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn) {
-                if (entityIn == null) {
-                    return 0.0F;
-                } else {
-                    ItemStack itemstack = entityIn.getActiveItemStack();
-                    return ((itemstack.getItem() instanceof ItemWarhammer)) ? (float) (stack.getUseDuration() - entityIn.getItemInUseCount()) / (getFullUseSeconds(stack) * 20.0F) : 0.0F;
-                }
-            }
-        });
-        this.addPropertyOverride(new ResourceLocation("pulling"), new IItemPropertyGetter() {
-            @OnlyIn(Dist.CLIENT)
-            @Override
-            public float call(@Nonnull ItemStack stack, ClientWorld worldIn, LivingEntity entityIn) {
-                return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
-            }
-        });
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.weaponDamage, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -3.0, AttributeModifier.Operation.ADDITION));
+        this.attributeModifiers = builder.build();
     }
 
     private float getPushFromMaterial(ItemTier mat) {
@@ -125,14 +113,7 @@ public class ItemWarhammer extends Item {
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType equipmentSlot, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
-
-        if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-            multimap.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) this.weaponDamage, AttributeModifier.Operation.ADDITION));
-            multimap.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -3.0f, AttributeModifier.Operation.ADDITION));
-        }
-
-        return multimap;
+        return equipmentSlot == EquipmentSlotType.MAINHAND ? this.attributeModifiers : super.getAttributeModifiers(equipmentSlot);
     }
 
     @Nonnull

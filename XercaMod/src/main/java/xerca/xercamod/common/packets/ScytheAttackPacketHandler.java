@@ -48,7 +48,7 @@ public class ScytheAttackPacketHandler {
                 return;
             }
             Entity target = pl.world.getEntityByID(msg.getTargetId());
-            float damage = ((float) pl.getAttribute(Attributes.field_233823_f_).getValue() * 1.3f);
+            float damage = ((float) pl.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * 1.3f);
 
             st.damageItem(1, pl, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
             if(target instanceof LivingEntity){

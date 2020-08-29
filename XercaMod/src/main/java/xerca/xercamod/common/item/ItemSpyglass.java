@@ -17,7 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ItemSpyglass extends Item {
     public ItemSpyglass() {
-        super(new Item.Properties().group(ItemGroup.TOOLS));
+        super(new Item.Properties().group(ItemGroup.TOOLS).maxStackSize(1));
     }
 
     @Override

@@ -120,7 +120,7 @@ public class ItemMusicSheet extends Item {
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltip.add((new TranslationTextComponent("note.generation." + (generation - 1))).applyTextStyle(TextFormatting.GRAY));
+                tooltip.add((new TranslationTextComponent("note.generation." + (generation - 1))).mergeStyle(TextFormatting.GRAY));
             }
         }
     }

@@ -33,7 +33,6 @@ public class CarvedWoodItem extends BlockConditionedItem {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         StringTextComponent variationText = new StringTextComponent("Variation " + variation);
-        variationText.setStyle(new Style().setColor(TextFormatting.GRAY));
-        tooltip.add(variationText);
+        tooltip.add(variationText.mergeStyle(TextFormatting.GRAY));
     }
 }

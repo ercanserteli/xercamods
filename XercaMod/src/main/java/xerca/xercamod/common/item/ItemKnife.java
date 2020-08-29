@@ -1,5 +1,6 @@
 package xerca.xercamod.common.item;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
@@ -39,10 +40,15 @@ public class ItemKnife extends Item {
     private static final float defaultBonus = 8.0f;
     private static final float weaponDamage = 2.0f;
     private static final int maxDamage = 240;
+    private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
     ItemKnife() {
         super(new Item.Properties().group(ItemGroup.TOOLS).maxStackSize(1).defaultMaxDamage(maxDamage));
         this.setRegistryName("item_knife");
+
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", weaponDamage, AttributeModifier.Operation.ADDITION));
+        this.attributeModifiers = builder.build();
     }
 
     @Override
@@ -101,18 +107,10 @@ public class ItemKnife extends Item {
         return new ActionResult<>(ActionResultType.PASS, heldItem);
     }
 
-    /**
-     * Gets a map of item attribute modifiers, used by ItemSword to increase hit damage.
-     * @return
-     */
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-        if (slot == EquipmentSlotType.MAINHAND || slot == EquipmentSlotType.OFFHAND) {
-            multimap.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", weaponDamage, AttributeModifier.Operation.ADDITION));
-        }
-        return multimap;
+        return (slot == EquipmentSlotType.MAINHAND || slot == EquipmentSlotType.OFFHAND) ? this.attributeModifiers : super.getAttributeModifiers(slot);
     }
 
     @Override

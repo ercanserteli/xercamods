@@ -74,8 +74,8 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
     }
 
     @Override
-    public void read(CompoundNBT parentNBTTagCompound) {
-        super.read(parentNBTTagCompound); // The super call is required to save and load the tiles location
+    public void read(BlockState state, CompoundNBT parentNBTTagCompound) {
+        super.read(state, parentNBTTagCompound); // The super call is required to save and load the tiles location
         CompoundNBT inventoryTagCompound = parentNBTTagCompound.getCompound("inventory");
         this.inventory.deserializeNBT(inventoryTagCompound);
     }
@@ -112,7 +112,7 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        this.read(packet.getNbtCompound());
+        this.read(null, packet.getNbtCompound()); //todo: is null ok?: seems to work
     }
 
     @Override
@@ -121,8 +121,8 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
     }
 
     @Override
-    public void handleUpdateTag(CompoundNBT nbt) {
-        this.read(nbt);
+    public void handleUpdateTag(BlockState state, CompoundNBT nbt) {
+        this.read(state, nbt);
     }
 
     @Override

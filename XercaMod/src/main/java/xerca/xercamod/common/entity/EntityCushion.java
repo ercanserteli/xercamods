@@ -156,16 +156,16 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if (player.isSteppingCarefully()) {
-            return false;
+            return ActionResultType.PASS;
         } else {
             if (!this.world.isRemote) {
                 if(!this.isBeingRidden()) {
                     player.startRiding(this);
                 }
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
     }
 }

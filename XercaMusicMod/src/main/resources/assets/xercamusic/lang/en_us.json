@@ -40,5 +40,8 @@
   "note.downButton": "▼",
   "note.startPreviewButton": "►",
   "note.stopPreviewButton": "■",
-  "note.hideNeighborsButton": "N"
+  "note.hideNeighborsButton": "N",
+  "note.toggleTooltip": "Toggle neighbor sheets",
+  "note.lockTooltip": "Lock preview instrument",
+  "note.previewTooltip": "Preview music"
 }

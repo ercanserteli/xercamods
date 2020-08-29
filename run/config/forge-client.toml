@@ -19,4 +19,6 @@
 	forgeCloudsEnabled = true
 	#When enabled, makes specific reload tasks such as language changing quicker to run.
 	selectiveResourceReloadEnabled = true
+	#Set to true to use a combined DEPTH_STENCIL attachment instead of two separate ones.
+	useCombinedDepthStencilAttachment = false
 

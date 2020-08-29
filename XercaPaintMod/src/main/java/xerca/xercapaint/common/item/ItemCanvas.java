@@ -50,15 +50,6 @@ public class ItemCanvas extends HangingEntityItem {
 
         this.setRegistryName(name);
         this.canvasType = canvasType;
-
-        this.addPropertyOverride(new ResourceLocation(XercaPaint.MODID, "drawn"), new IItemPropertyGetter() {
-            @OnlyIn(Dist.CLIENT)
-            @Override
-            public float call(@Nonnull ItemStack itemStack, @Nullable World world, @Nullable LivingEntity entityLivingBase) {
-                if(!itemStack.hasTag()) return 0.0f;
-                else return 1.0F;
-            }
-        });
     }
 
     @Override
@@ -151,10 +142,10 @@ public class ItemCanvas extends HangingEntityItem {
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltip.add((new TranslationTextComponent("canvas.generation." + (generation - 1))).applyTextStyle(TextFormatting.GRAY));
+                tooltip.add((new TranslationTextComponent("canvas.generation." + (generation - 1))).mergeStyle(TextFormatting.GRAY));
             }
         }else{
-            tooltip.add(new TranslationTextComponent("canvas.empty").applyTextStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("canvas.empty").mergeStyle(TextFormatting.GRAY));
         }
     }
 

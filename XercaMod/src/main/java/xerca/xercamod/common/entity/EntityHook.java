@@ -20,6 +20,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,6 +30,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
+
+import javax.annotation.Nullable;
 
 public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     private static final DataParameter<Integer> cau_ent = EntityDataManager.<Integer>createKey(EntityHook.class, DataSerializers.VARINT);
@@ -139,7 +142,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private boolean checkCollision() {
-        RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), (p_213856_1_) -> !p_213856_1_.isSpectator() && (p_213856_1_.canBeCollidedWith() || p_213856_1_ instanceof ItemEntity) && (p_213856_1_ != this.angler || this.ticksInAir >= 5), RayTraceContext.BlockMode.COLLIDER, true);
+        RayTraceResult raytraceresult = ProjectileHelper.func_234618_a_(this, (entity) -> !entity.isSpectator() && (entity.canBeCollidedWith() || entity instanceof ItemEntity) && (entity != this.angler || this.ticksInAir >= 5));
         if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
             if (raytraceresult.getType() == RayTraceResult.Type.ENTITY) {
                 Entity caught = ((EntityRayTraceResult) raytraceresult).getEntity();
