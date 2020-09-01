@@ -84,7 +84,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     RenderEntityCanvas.Instance getCanvasRendererInstance(CompoundNBT tag, int width, int height) {
         String name = tag.getString("name");
         int version = tag.getInt("v");
-        if(!EntityCanvas.PICTURES.containsKey(name)){
+        if(!EntityCanvas.PICTURES.containsKey(name) || EntityCanvas.PICTURES.get(name).version < version){
             EntityCanvas.PICTURES.put(name, new EntityCanvas.Picture(version, tag.getIntArray("pixels")));
         }
         return getCanvasRendererInstance(name, version, width, height);
