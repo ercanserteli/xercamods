@@ -292,7 +292,8 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
         this.canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
         if(tagCompound.contains("Facing") && !tagCompound.contains("RealFace")){
-            Direction horizontal = Direction.byHorizontalIndex(tagCompound.getByte("Facing"));
+            int facing = tagCompound.getByte("Facing");
+            Direction horizontal = Direction.byHorizontalIndex(facing);
             this.updateFacingWithBoundingBox(horizontal);
         }
         else{

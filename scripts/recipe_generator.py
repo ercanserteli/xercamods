@@ -209,6 +209,35 @@ class CarvingRecipe(Recipe):
         return self.result.split(":", 1)[1] + "_from_" + self.ingredient.split(":", 1)[1] + "_carving"
 
 
+class SmithingRecipe(Recipe):
+    def __init__(self, base, addition, result, group="", folder="", type="minecraft:smithing"):
+        super().__init__(type, group, None, folder)
+        self.base = base
+        self.addition = addition
+        self.result = result
+
+    def produce_recipe_json(self):
+        # group_line = '"group": "{}",'.format(self.group) if self.group else ""
+        template = """
+{{
+    "type": "{type}",
+    "base": {{
+        "item": "{base}"
+    }},
+    "addition": {{
+        "item": "{addition}"
+    }},
+    "result": {{
+        "item": "{result}"
+    }}
+}}
+        """
+        return template.format(type=self.type, base=self.base, addition=self.addition, result=self.result).replace("'", '"')
+
+    def get_name(self):
+        return self.result.split(":", 1)[1] + "_smithing"
+
+
 def write_recipe_adv_root_json():
     content = """{
   "criteria": {

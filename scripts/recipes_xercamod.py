@@ -402,6 +402,11 @@ carving_recipes = [
     CarvingRecipe("minecraft:stripped_dark_oak_log", "xercamod:carved_dark_oak_8", 1, "", "carving"),
 ]
 
+smithing_recipes = [
+    SmithingRecipe("xercamod:diamond_scythe", "minecraft:netherite_ingot", "xercamod:netherite_scythe"),
+    SmithingRecipe("xercamod:item_diamond_warhammer", "minecraft:netherite_ingot", "xercamod:item_netherite_warhammer")
+]
+
 campfire_recipes = []
 smoker_recipes = []
 
@@ -416,7 +421,7 @@ for r in cooking_recipes:
     smoker_recipe.cooking_time = int(smoker_recipe.cooking_time*0.5)
     smoker_recipes.append(smoker_recipe)
 
-all_recipes = [r for l in [shaped_recipes, shapeless_recipes, cooking_recipes, special_recipes, campfire_recipes, smoker_recipes, stonecutting_recipes, carving_recipes] for r in l]
+all_recipes = [r for l in [shaped_recipes, shapeless_recipes, cooking_recipes, special_recipes, campfire_recipes, smoker_recipes, stonecutting_recipes, carving_recipes, smithing_recipes] for r in l]
 
 
 # generate_recipe_code_from_files("xercamod")

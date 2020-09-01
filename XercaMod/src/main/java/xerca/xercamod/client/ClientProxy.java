@@ -122,6 +122,8 @@ public class ClientProxy extends Proxy {
             ItemModelsProperties.func_239418_a_(Items.GOLDEN_SCYTHE, new ResourceLocation("pulling"), pulling);
             ItemModelsProperties.func_239418_a_(Items.DIAMOND_SCYTHE, new ResourceLocation("pull"), scythePull);
             ItemModelsProperties.func_239418_a_(Items.DIAMOND_SCYTHE, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.func_239418_a_(Items.NETHERITE_SCYTHE, new ResourceLocation("pull"), scythePull);
+            ItemModelsProperties.func_239418_a_(Items.NETHERITE_SCYTHE, new ResourceLocation("pulling"), pulling);
 
             ItemModelsProperties.func_239418_a_(Items.ITEM_GRAB_HOOK, new ResourceLocation("pull"), grabHookPull);
             ItemModelsProperties.func_239418_a_(Items.ITEM_GRAB_HOOK, new ResourceLocation("pulling"), pulling);
@@ -141,6 +143,8 @@ public class ClientProxy extends Proxy {
             ItemModelsProperties.func_239418_a_(Items.ITEM_GOLD_WARHAMMER, new ResourceLocation("pulling"), pulling);
             ItemModelsProperties.func_239418_a_(Items.ITEM_DIAMOND_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
             ItemModelsProperties.func_239418_a_(Items.ITEM_DIAMOND_WARHAMMER, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.func_239418_a_(Items.ITEM_NETHERITE_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
+            ItemModelsProperties.func_239418_a_(Items.ITEM_NETHERITE_WARHAMMER, new ResourceLocation("pulling"), pulling);
 
         }
 
@@ -190,7 +194,7 @@ public class ClientProxy extends Proxy {
         public static void gameOverlayEvent(RenderGameOverlayEvent.Post event) {
             if(event.getType() == RenderGameOverlayEvent.ElementType.ALL){
                 PlayerEntity player = mc.player;
-                if(player.getHeldItemMainhand().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.func_243230_g() == PointOfView.FIRST_PERSON){
+                if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.func_243230_g() == PointOfView.FIRST_PERSON){
                     renderSpyglass(event.getWindow());
                 }
             }
@@ -199,7 +203,7 @@ public class ClientProxy extends Proxy {
         @SubscribeEvent
         public static void fovEvent(FOVUpdateEvent updateEvent) {
             PlayerEntity player = updateEvent.getEntity();
-            if(player.getHeldItemMainhand().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.func_243230_g() == PointOfView.FIRST_PERSON){
+            if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.func_243230_g() == PointOfView.FIRST_PERSON){
                 updateEvent.setNewfov(updateEvent.getNewfov()/8);
             }
         }
@@ -238,7 +242,6 @@ public class ClientProxy extends Proxy {
             y1r = y1 + width;
         }
 
-//        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableAlphaTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -271,10 +274,6 @@ public class ClientProxy extends Proxy {
         bufferbuilder.pos(x1r, y1r, -90.0D).tex(0.0F, 0.0F).endVertex();
         tessellator.draw();
 
-//        RenderSystem.depthMask(true);
-//        RenderSystem.enableDepthTest();
-//        RenderSystem.enableAlphaTest();
-//        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
     }
 }

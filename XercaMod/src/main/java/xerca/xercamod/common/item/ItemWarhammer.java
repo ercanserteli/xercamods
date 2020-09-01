@@ -62,7 +62,7 @@ public class ItemWarhammer extends Item {
             push = 0.3f;
         } else if (mat == ItemTier.DIAMOND) {
             push = 0.4f;
-        } else {
+        } else { //Gold and netherite have the same push
             push = 0.5f;
         }
         return push;
