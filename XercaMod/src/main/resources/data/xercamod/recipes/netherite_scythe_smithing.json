@@ -1,0 +1,14 @@
+
+{
+    "type": "minecraft:smithing",
+    "base": {
+        "item": "xercamod:diamond_scythe"
+    },
+    "addition": {
+        "item": "minecraft:netherite_ingot"
+    },
+    "result": {
+        "item": "xercamod:netherite_scythe"
+    }
+}
+        

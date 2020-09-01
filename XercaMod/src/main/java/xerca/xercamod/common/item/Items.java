@@ -51,6 +51,7 @@ public final class Items {
     public static final Item SUSHI = null;
     public static final Item COOKED_RICE = null;
     public static final ItemGrabHook ITEM_GRAB_HOOK = null;
+    public static final ItemWarhammer ITEM_NETHERITE_WARHAMMER = null;
     public static final ItemWarhammer ITEM_DIAMOND_WARHAMMER = null;
     public static final ItemWarhammer ITEM_GOLD_WARHAMMER = null;
     public static final ItemWarhammer ITEM_IRON_WARHAMMER = null;
@@ -231,6 +232,7 @@ public final class Items {
     public static final ItemScythe IRON_SCYTHE = null;
     public static final ItemScythe GOLDEN_SCYTHE = null;
     public static final ItemScythe DIAMOND_SCYTHE = null;
+    public static final ItemScythe NETHERITE_SCYTHE = null;
 
     public static final Enchantment ENCHANTMENT_STEALTH = null;
     public static final Enchantment ENCHANTMENT_POISON = null;
@@ -341,6 +343,7 @@ public final class Items {
                     new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_1"),
                     new ItemConditioned(new Item.Properties().group(ItemGroup.MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_5"),
                     new ItemGrabHook(),
+                    new ItemWarhammer("item_netherite_warhammer", ItemTier.NETHERITE),
                     new ItemWarhammer("item_diamond_warhammer", ItemTier.DIAMOND),
                     new ItemWarhammer("item_gold_warhammer", ItemTier.GOLD),
                     new ItemWarhammer("item_iron_warhammer", ItemTier.IRON),
@@ -594,7 +597,8 @@ public final class Items {
                     new ItemScythe(ItemTier.STONE, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("stone_scythe"),
                     new ItemScythe(ItemTier.IRON, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("iron_scythe"),
                     new ItemScythe(ItemTier.GOLD, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("golden_scythe"),
-                    new ItemScythe(ItemTier.DIAMOND, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("diamond_scythe")
+                    new ItemScythe(ItemTier.DIAMOND, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("diamond_scythe"),
+                    new ItemScythe(ItemTier.NETHERITE, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("netherite_scythe")
             );
         }
 
