@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemFlask extends Item {
-    private static final int baseMaxCharges = 8;
+    private static final int baseMaxCharges = 16;
     private boolean hasMilk;
 
     public ItemFlask(Properties properties, String registryName, boolean hasMilk) {

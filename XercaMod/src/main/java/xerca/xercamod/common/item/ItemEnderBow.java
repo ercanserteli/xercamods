@@ -27,7 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemEnderBow extends Item {
-    private static final int baseMaxCharges = 8;
 
     public ItemEnderBow() {
         super(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1).maxDamage(160));

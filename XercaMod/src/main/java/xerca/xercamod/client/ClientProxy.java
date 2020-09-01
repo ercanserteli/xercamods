@@ -115,7 +115,7 @@ public class ClientProxy extends Proxy {
         public static void gameOverlayEvent(RenderGameOverlayEvent.Post event) {
             if(event.getType() == RenderGameOverlayEvent.ElementType.ALL){
                 PlayerEntity player = mc.player;
-                if(player.getHeldItemMainhand().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.thirdPersonView == 0){
+                if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.thirdPersonView == 0){
                     renderSpyglass(event.getWindow());
                 }
             }
@@ -124,7 +124,7 @@ public class ClientProxy extends Proxy {
         @SubscribeEvent
         public static void fovEvent(FOVUpdateEvent updateEvent) {
             PlayerEntity player = updateEvent.getEntity();
-            if(player.getHeldItemMainhand().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.thirdPersonView == 0){
+            if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.thirdPersonView == 0){
                 updateEvent.setNewfov(updateEvent.getNewfov()/8);
             }
         }
@@ -163,7 +163,6 @@ public class ClientProxy extends Proxy {
             y1r = y1 + width;
         }
 
-//        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableAlphaTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -196,10 +195,6 @@ public class ClientProxy extends Proxy {
         bufferbuilder.pos(x1r, y1r, -90.0D).tex(0.0F, 0.0F).endVertex();
         tessellator.draw();
 
-//        RenderSystem.depthMask(true);
-//        RenderSystem.enableDepthTest();
-//        RenderSystem.enableAlphaTest();
-//        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
     }
 }
