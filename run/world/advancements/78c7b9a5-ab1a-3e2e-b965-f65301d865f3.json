@@ -23,12 +23,6 @@
     },
     "done": true
   },
-  "minecraft:recipes/building_blocks/acacia_planks": {
-    "criteria": {
-      "has_logs": "2020-05-15 19:02:41 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/tools/compass": {
     "criteria": {
       "has_redstone": "2020-05-15 19:26:37 +0300"
@@ -106,12 +100,6 @@
   "minecraft:recipes/decorations/crafting_table": {
     "criteria": {
       "has_planks": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/spruce_planks": {
-    "criteria": {
-      "has_log": "2020-05-15 19:02:36 +0300"
     },
     "done": true
   },
@@ -223,21 +211,9 @@
     },
     "done": true
   },
-  "minecraft:recipes/building_blocks/oak_planks": {
-    "criteria": {
-      "has_log": "2020-05-15 19:02:35 +0300"
-    },
-    "done": true
-  },
   "minecraft:recipes/tools/clock": {
     "criteria": {
       "has_redstone": "2020-05-15 19:26:37 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/dark_oak_planks": {
-    "criteria": {
-      "has_logs": "2020-05-15 19:02:38 +0300"
     },
     "done": true
   },
@@ -316,12 +292,6 @@
   "minecraft:recipes/redstone/oak_pressure_plate": {
     "criteria": {
       "has_planks": "2020-05-15 19:26:27 +0300"
-    },
-    "done": true
-  },
-  "minecraft:recipes/building_blocks/birch_planks": {
-    "criteria": {
-      "has_log": "2020-05-15 19:02:40 +0300"
     },
     "done": true
   },
@@ -415,5 +385,5 @@
     },
     "done": true
   },
-  "DataVersion": 2230
+  "DataVersion": 2578
 }
