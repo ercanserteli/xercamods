@@ -1,0 +1,14 @@
+{
+  "conditions": [
+    {
+      "condition": "block_state_property",
+      "block":"minecraft:grass"
+    },
+    {
+      "condition": "minecraft:random_chance",
+      "chance": 0.066
+    }
+  ],
+  "seedItem": "xercamod:item_tomato_seeds",
+  "isFood": true
+}
