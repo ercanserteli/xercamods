@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropsBlock;
+import net.minecraft.block.TallGrassBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -129,7 +130,7 @@ public class ItemScythe extends ToolItem {
     }
 
     private boolean isMaxCrop(BlockState bs){
-        return bs.getBlock() instanceof CropsBlock && ((CropsBlock)bs.getBlock()).isMaxAge(bs);
+        return (bs.getBlock() instanceof TallGrassBlock) || (bs.getBlock() instanceof CropsBlock && ((CropsBlock)bs.getBlock()).isMaxAge(bs));
     }
 
     @Override
@@ -209,11 +210,6 @@ public class ItemScythe extends ToolItem {
         }
         InventoryHelper.spawnItemStack(world, x, y, z, playerHead);
     }
-
-//    @Override
-//    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-//        return false;
-//    }
 
     @Override
     @ParametersAreNonnullByDefault

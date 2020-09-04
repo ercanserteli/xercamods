@@ -45,26 +45,6 @@ class EventHandler {
         }
     }
 
-    private static final ResourceLocation grass = new ResourceLocation("minecraft", "blocks/grass");
-
-    @SubscribeEvent
-    public static void onLootLoad(LootTableLoadEvent event)
-    {
-        // Adding XercaMod seeds to the loot table of grass
-        if (event.getName().equals(grass))
-        {
-            if(Config.isTeaEnabled() && Config.isFoodEnabled()){
-                event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass"))).build());
-            }
-            else if(!Config.isTeaEnabled() && Config.isFoodEnabled()){
-                event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass_tomato_only"))).build());
-            }
-            else if(Config.isTeaEnabled()){
-                event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(XercaMod.MODID, "blocks/grass_tea_only"))).build());
-            }
-        }
-    }
-
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         XercaMod.LOGGER.debug("PlayerLoggedIn Event");

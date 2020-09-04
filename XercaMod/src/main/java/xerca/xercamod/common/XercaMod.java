@@ -10,6 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -139,6 +142,16 @@ public class XercaMod {
                     LOGGER.error("send_note from XercaMusic failed to sent a ResourceLocation");
                 }
             }
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
+    public static class RegistrationHandler {
+        @SubscribeEvent
+        public static void registerLootModifiers(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
+            event.getRegistry().register(new SeedLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"rice_seeds")));
+            event.getRegistry().register(new SeedLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"tomato_seeds")));
+            event.getRegistry().register(new SeedLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"tea_seeds")));
         }
     }
 }
