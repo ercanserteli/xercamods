@@ -215,7 +215,9 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         }
         super.tick();
         if(blockInsPos == null || blockInstrument == null){
-            this.setPosition(body.getPosX(), body.getPosY(), body.getPosZ());
+            if(body != null) {  // this check is added to work around a strange crash
+                this.setPosition(body.getPosX(), body.getPosY(), body.getPosZ());
+            }
         }
         if (this.world.isRemote) {
             if(mPause == 0){

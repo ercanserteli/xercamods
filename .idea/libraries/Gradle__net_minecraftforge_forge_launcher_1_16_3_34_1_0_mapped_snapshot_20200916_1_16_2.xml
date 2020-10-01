@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:forge:launcher:1.16.3-34.1.0_mapped_snapshot_20200916-1.16.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.16.3-34.1.0_mapped_snapshot_20200916-1.16.2/forge-1.16.3-34.1.0_mapped_snapshot_20200916-1.16.2-launcher.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.16.3-34.1.0_mapped_snapshot_20200916-1.16.2/forge-1.16.3-34.1.0_mapped_snapshot_20200916-1.16.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

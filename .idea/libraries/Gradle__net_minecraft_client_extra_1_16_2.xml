@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: net.minecraft:client:extra:1.16.2">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_repo/versions/1.16.2/client-extra.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: net.minecraft:mappings_snapshot:zip:20200723-1.16.1">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/maven_downloader/de/oceanlabs/mcp/mcp_snapshot/20200723-1.16.1/mcp_snapshot-20200723-1.16.1.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -112,22 +112,22 @@ public class ClientProxy extends Proxy {
                 return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
             };
 
-            ItemModelsProperties.func_239418_a_(Items.STONE_SCYTHE, new ResourceLocation("pull"), scythePull);
-            ItemModelsProperties.func_239418_a_(Items.STONE_SCYTHE, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.WOODEN_SCYTHE, new ResourceLocation("pull"), scythePull);
-            ItemModelsProperties.func_239418_a_(Items.WOODEN_SCYTHE, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.IRON_SCYTHE, new ResourceLocation("pull"), scythePull);
-            ItemModelsProperties.func_239418_a_(Items.IRON_SCYTHE, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.GOLDEN_SCYTHE, new ResourceLocation("pull"), scythePull);
-            ItemModelsProperties.func_239418_a_(Items.GOLDEN_SCYTHE, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.DIAMOND_SCYTHE, new ResourceLocation("pull"), scythePull);
-            ItemModelsProperties.func_239418_a_(Items.DIAMOND_SCYTHE, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.NETHERITE_SCYTHE, new ResourceLocation("pull"), scythePull);
-            ItemModelsProperties.func_239418_a_(Items.NETHERITE_SCYTHE, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.STONE_SCYTHE, new ResourceLocation("pull"), scythePull);
+            ItemModelsProperties.registerProperty(Items.STONE_SCYTHE, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.WOODEN_SCYTHE, new ResourceLocation("pull"), scythePull);
+            ItemModelsProperties.registerProperty(Items.WOODEN_SCYTHE, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.IRON_SCYTHE, new ResourceLocation("pull"), scythePull);
+            ItemModelsProperties.registerProperty(Items.IRON_SCYTHE, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.GOLDEN_SCYTHE, new ResourceLocation("pull"), scythePull);
+            ItemModelsProperties.registerProperty(Items.GOLDEN_SCYTHE, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.DIAMOND_SCYTHE, new ResourceLocation("pull"), scythePull);
+            ItemModelsProperties.registerProperty(Items.DIAMOND_SCYTHE, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.NETHERITE_SCYTHE, new ResourceLocation("pull"), scythePull);
+            ItemModelsProperties.registerProperty(Items.NETHERITE_SCYTHE, new ResourceLocation("pulling"), pulling);
 
-            ItemModelsProperties.func_239418_a_(Items.ITEM_GRAB_HOOK, new ResourceLocation("pull"), grabHookPull);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_GRAB_HOOK, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_GRAB_HOOK, new ResourceLocation("cast"), (stack, worldIn, entityIn) -> {
+            ItemModelsProperties.registerProperty(Items.ITEM_GRAB_HOOK, new ResourceLocation("pull"), grabHookPull);
+            ItemModelsProperties.registerProperty(Items.ITEM_GRAB_HOOK, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.ITEM_GRAB_HOOK, new ResourceLocation("cast"), (stack, worldIn, entityIn) -> {
                     if(!stack.hasTag()) return 0.0f;
                     CompoundNBT tag = stack.getTag();
                     if(!tag.contains("cast")) return 0.0f;
@@ -135,16 +135,16 @@ public class ClientProxy extends Proxy {
                 }
             );
 
-            ItemModelsProperties.func_239418_a_(Items.ITEM_STONE_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_STONE_WARHAMMER, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_IRON_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_IRON_WARHAMMER, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_GOLD_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_GOLD_WARHAMMER, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_DIAMOND_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_DIAMOND_WARHAMMER, new ResourceLocation("pulling"), pulling);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_NETHERITE_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_NETHERITE_WARHAMMER, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.ITEM_STONE_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
+            ItemModelsProperties.registerProperty(Items.ITEM_STONE_WARHAMMER, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.ITEM_IRON_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
+            ItemModelsProperties.registerProperty(Items.ITEM_IRON_WARHAMMER, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.ITEM_GOLD_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
+            ItemModelsProperties.registerProperty(Items.ITEM_GOLD_WARHAMMER, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.ITEM_DIAMOND_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
+            ItemModelsProperties.registerProperty(Items.ITEM_DIAMOND_WARHAMMER, new ResourceLocation("pulling"), pulling);
+            ItemModelsProperties.registerProperty(Items.ITEM_NETHERITE_WARHAMMER, new ResourceLocation("pull"), warhammerPull);
+            ItemModelsProperties.registerProperty(Items.ITEM_NETHERITE_WARHAMMER, new ResourceLocation("pulling"), pulling);
 
         }
 
@@ -194,7 +194,7 @@ public class ClientProxy extends Proxy {
         public static void gameOverlayEvent(RenderGameOverlayEvent.Post event) {
             if(event.getType() == RenderGameOverlayEvent.ElementType.ALL){
                 PlayerEntity player = mc.player;
-                if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.func_243230_g() == PointOfView.FIRST_PERSON){
+                if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON){
                     renderSpyglass(event.getWindow());
                 }
             }
@@ -203,7 +203,7 @@ public class ClientProxy extends Proxy {
         @SubscribeEvent
         public static void fovEvent(FOVUpdateEvent updateEvent) {
             PlayerEntity player = updateEvent.getEntity();
-            if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.func_243230_g() == PointOfView.FIRST_PERSON){
+            if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON){
                 updateEvent.setNewfov(updateEvent.getNewfov()/8);
             }
         }

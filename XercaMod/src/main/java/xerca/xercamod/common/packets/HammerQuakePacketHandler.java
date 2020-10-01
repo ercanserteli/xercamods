@@ -86,7 +86,7 @@ public class HammerQuakePacketHandler {
 
                 int particleCount = (int) (volume*64);
                 QuakeParticlePacket pack = new QuakeParticlePacket(particleCount, pos.x, pos.y, pos.z);
-                XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, pl.getServerWorld().func_234923_W_())), pack);
+                XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, pl.getServerWorld().getDimensionKey())), pack);
 
             }
             else{

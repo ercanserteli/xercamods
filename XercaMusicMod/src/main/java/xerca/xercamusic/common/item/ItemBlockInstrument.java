@@ -130,15 +130,13 @@ public class ItemBlockInstrument extends ItemInstrument{
     }
 
     private static <T extends Comparable<T>> BlockState func_219988_a(BlockState p_219988_0_, Property<T> p_219988_1_, String p_219988_2_) {
-        return p_219988_1_.parseValue(p_219988_2_).map((p_219986_2_) -> {
-            return p_219988_0_.with(p_219988_1_, p_219986_2_);
-        }).orElse(p_219988_0_);
+        return p_219988_1_.parseValue(p_219988_2_).map((p_219986_2_) -> p_219988_0_.with(p_219988_1_, p_219986_2_)).orElse(p_219988_0_);
     }
 
-    protected boolean canPlace(BlockItemUseContext p_195944_1_, BlockState p_195944_2_) {
-        PlayerEntity playerentity = p_195944_1_.getPlayer();
+    protected boolean canPlace(BlockItemUseContext context, BlockState state) {
+        PlayerEntity playerentity = context.getPlayer();
         ISelectionContext iselectioncontext = playerentity == null ? ISelectionContext.dummy() : ISelectionContext.forEntity(playerentity);
-        return (!this.checkPosition() || p_195944_2_.isValidPosition(p_195944_1_.getWorld(), p_195944_1_.getPos())) && p_195944_1_.getWorld().func_226663_a_(p_195944_2_, p_195944_1_.getPos(), iselectioncontext);
+        return (!this.checkPosition() || state.isValidPosition(context.getWorld(), context.getPos())) && context.getWorld().placedBlockCollides(state, context.getPos(), iselectioncontext);
     }
 
     protected boolean checkPosition() {

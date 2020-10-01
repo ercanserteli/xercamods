@@ -30,7 +30,7 @@ public class ItemConfetti extends Item {
         if(!worldIn.isRemote){
             Vector3d pos = playerIn.getPositionVec().add(playerIn.getLookVec()).add(0d, 1d, 0d);
             ConfettiParticlePacket pack = new ConfettiParticlePacket(32, pos.x, pos.y, pos.z);
-            XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, playerIn.world.func_234923_W_())), pack);
+            XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, playerIn.world.getDimensionKey())), pack);
         }
 
         final ItemStack heldItem = playerIn.getHeldItem(hand);

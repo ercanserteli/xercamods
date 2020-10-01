@@ -68,7 +68,7 @@ class RenderHook extends EntityRenderer<EntityHook> {
             double d5;
             double d6;
             float f3;
-            if ((this.renderManager.options == null || this.renderManager.options.func_243230_g().func_243192_a()) && playerentity == Minecraft.getInstance().player) {
+            if ((this.renderManager.options == null || this.renderManager.options.getPointOfView().func_243192_a()) && playerentity == Minecraft.getInstance().player) {
                 double d7 = this.renderManager.options.fov;
                 d7 = d7 / 100.0D;
                 Vector3d vec3d = new Vector3d((double)i * -0.36D * d7, -0.045D * d7, 0.4D);
