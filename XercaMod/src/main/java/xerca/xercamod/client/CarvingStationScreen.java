@@ -41,7 +41,7 @@ public class CarvingStationScreen extends ContainerScreen<ContainerCarvingStatio
 
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.func_230459_a_(matrixStack, mouseX, mouseY);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
@@ -60,8 +60,9 @@ public class CarvingStationScreen extends ContainerScreen<ContainerCarvingStatio
         this.drawRecipesItems(l, i1, j1);
     }
 
-    protected void func_230459_a_(MatrixStack matrixStack, int x, int y) {
-        super.func_230459_a_(matrixStack, x, y);
+    @Override
+    protected void renderHoveredTooltip(MatrixStack matrixStack, int x, int y) {
+        super.renderHoveredTooltip(matrixStack, x, y);
         if (this.hasItemsInInputSlot) {
             int i = this.guiLeft + 52;
             int j = this.guiTop + 14;

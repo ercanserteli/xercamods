@@ -61,7 +61,7 @@ public class ScytheAttackPacketHandler {
                     pl.world.playSound(null, target.getPosX(), target.getPosY() + 0.5d, target.getPosZ(), SoundEvents.BEHEAD, SoundCategory.PLAYERS, 1.0f, pl.world.rand.nextFloat() * 0.2F + 0.9f);
 
                     BeheadParticlePacket pack = new BeheadParticlePacket(96, targetLiving.getPosX(), targetLiving.getPosY(), targetLiving.getPosZ());
-                    XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(targetLiving.getPosX(), targetLiving.getPosY(), targetLiving.getPosZ(), 64.0D, pl.getServerWorld().func_234923_W_())), pack);
+                    XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(targetLiving.getPosX(), targetLiving.getPosY(), targetLiving.getPosZ(), 64.0D, pl.getServerWorld().getDimensionKey())), pack);
 
                     ItemScythe.spawnHead(targetLiving);
                     Triggers.BEHEAD.trigger(pl);

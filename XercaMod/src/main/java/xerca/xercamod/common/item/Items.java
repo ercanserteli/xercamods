@@ -598,7 +598,7 @@ public final class Items {
                     new ItemScythe(ItemTier.IRON, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("iron_scythe"),
                     new ItemScythe(ItemTier.GOLD, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("golden_scythe"),
                     new ItemScythe(ItemTier.DIAMOND, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("diamond_scythe"),
-                    new ItemScythe(ItemTier.NETHERITE, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("netherite_scythe")
+                    new ItemScythe(ItemTier.NETHERITE, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS).isImmuneToFire()).setRegistryName("netherite_scythe")
             );
         }
 

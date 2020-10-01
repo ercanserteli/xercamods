@@ -40,6 +40,6 @@ public class GuiFunctionalBookcase extends ContainerScreen<ContainerFunctionalBo
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        func_230459_a_(matrixStack, mouseX, mouseY);
+        renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 }

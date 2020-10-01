@@ -77,10 +77,10 @@ public class ClientProxy extends Proxy {
                 else return 1.0F;
             };
 
-            ItemModelsProperties.func_239418_a_(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.func_239418_a_(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
         }
     }
 }

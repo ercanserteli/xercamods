@@ -1,5 +1,6 @@
 package xerca.xercamod.common;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -7,6 +8,7 @@ import net.minecraft.loot.LootContext;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -38,6 +40,15 @@ public class SeedLootModifier extends LootModifier {
             Item seed = ForgeRegistries.ITEMS.getValue(new ResourceLocation((JSONUtils.getString(object, "seedItem"))));
             boolean isFood = JSONUtils.getBoolean(object, "isFood");
             return new SeedLootModifier(conditionsIn, seed, isFood);
+        }
+
+        @Override
+        public JsonObject write(SeedLootModifier instance) {
+            JsonObject json = new JsonObject();
+            ResourceLocation itemRL = Registry.ITEM.getKey(instance.itemSeed);
+            json.addProperty("seedItem", itemRL.toString());
+            json.addProperty("isFood", instance.isFood);
+            return json;
         }
     }
 }

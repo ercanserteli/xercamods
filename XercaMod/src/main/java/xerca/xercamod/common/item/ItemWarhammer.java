@@ -42,7 +42,10 @@ public class ItemWarhammer extends Item {
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
     public ItemWarhammer(String name, ItemTier mat) {
-        super(new Item.Properties().group(ItemGroup.COMBAT).maxStackSize(1).defaultMaxDamage(mat.getMaxUses()));
+        super(mat.equals(ItemTier.NETHERITE)
+                ? new Item.Properties().group(ItemGroup.COMBAT).maxStackSize(1).defaultMaxDamage(mat.getMaxUses()).isImmuneToFire()
+                : new Item.Properties().group(ItemGroup.COMBAT).maxStackSize(1).defaultMaxDamage(mat.getMaxUses()));
+
         this.setRegistryName(name);
         this.material = mat;
         this.weaponDamage = 1.0F + mat.getAttackDamage();
