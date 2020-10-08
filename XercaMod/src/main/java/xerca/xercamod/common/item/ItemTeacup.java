@@ -27,14 +27,14 @@ import java.util.List;
 public class ItemTeacup extends ItemStackableContainedFood {
     private final int sugarAmount;
 
-    public ItemTeacup(int sugarAmount) {
+    public ItemTeacup(int sugarAmount, Item teaCup) {
         super(sugarAmount == 0 ? (new Item.Properties().group(Items.teaTab)).food(Foods.TEACUP0) :
               sugarAmount == 1 ? (new Item.Properties()).food(Foods.TEACUP1) :
               sugarAmount == 2 ? (new Item.Properties()).food(Foods.TEACUP2) :
               sugarAmount == 3 ? (new Item.Properties()).food(Foods.TEACUP3) :
               sugarAmount == 4 ? (new Item.Properties()).food(Foods.TEACUP4) :
               sugarAmount == 5 ? (new Item.Properties()).food(Foods.TEACUP5) :
-                                 (new Item.Properties()).food(Foods.TEACUP6), Items.ITEM_TEACUP, 64);
+                                 (new Item.Properties()).food(Foods.TEACUP6), teaCup, 64);
         this.sugarAmount = sugarAmount;
         this.setRegistryName("item_full_teacup_" + sugarAmount);
     }

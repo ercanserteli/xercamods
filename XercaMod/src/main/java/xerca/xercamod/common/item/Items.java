@@ -336,6 +336,7 @@ public final class Items {
             teaTab = new TeaCreativeTab();
             decoTab = new DecoCreativeTab();
             Item glass = new ItemGlass();
+            Item teaCup = new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_teacup");
 
             event.getRegistry().registerAll(
                     new ItemEnderBow().setRegistryName("ender_bow"),
@@ -354,7 +355,7 @@ public final class Items {
                     new ItemBadge("item_attorney_badge"),
                     new ItemGavel(),
 
-                    new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_teacup"),
+                    teaCup,
                     new ItemTeapot(Blocks.BLOCK_TEAPOT, 0, true),
                     new ItemTeapot(Blocks.BLOCK_TEAPOT, 1, true),
                     new ItemTeapot(Blocks.BLOCK_TEAPOT, 2, true),
@@ -371,13 +372,13 @@ public final class Items {
                     new ItemTeapot(Blocks.BLOCK_TEAPOT, 5, false),
                     new ItemTeapot(Blocks.BLOCK_TEAPOT, 6, false),
                     new ItemTeapot(Blocks.BLOCK_TEAPOT, 7, false),
-                    new ItemTeacup(0),
-                    new ItemTeacup(1),
-                    new ItemTeacup(2),
-                    new ItemTeacup(3),
-                    new ItemTeacup(4),
-                    new ItemTeacup(5),
-                    new ItemTeacup(6),
+                    new ItemTeacup(0, teaCup),
+                    new ItemTeacup(1, teaCup),
+                    new ItemTeacup(2, teaCup),
+                    new ItemTeacup(3, teaCup),
+                    new ItemTeacup(4, teaCup),
+                    new ItemTeacup(5, teaCup),
+                    new ItemTeacup(6, teaCup),
                     new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_teapot"),
                     new BlockNamedConditionedItem(Blocks.BLOCK_TEA_PLANT, new Item.Properties().group(Items.teaTab), Config::isTeaEnabled).setRegistryName("item_tea_seeds"),
                     new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_tea_dried"),
