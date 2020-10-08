@@ -90,16 +90,15 @@ public class XercaMod {
         // Making confetti ball dispensable by dispenser
         DispenserBlock.registerDispenseBehavior(Items.ITEM_CONFETTI_BALL, new ProjectileDispenseBehavior()
         {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             * @return
-             */
             @Nonnull
             protected ProjectileEntity getProjectileEntity(@Nonnull World worldIn, @Nonnull IPosition position, @Nonnull ItemStack stackIn)
             {
                 return new EntityConfettiBall(worldIn, position.getX(), position.getY(), position.getZ());
             }
         });
+
+        // Making confetti dispensable by dispenser
+        DispenserBlock.registerDispenseBehavior(Items.ITEM_CONFETTI, new ConfettiDispenseItemBehavior());
 
         Items.registerCompostables();
         DecoCreativeTab.initItemList();

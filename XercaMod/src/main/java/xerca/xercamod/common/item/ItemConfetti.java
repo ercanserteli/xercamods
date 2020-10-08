@@ -14,6 +14,7 @@ import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.packets.ConfettiParticlePacket;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 
@@ -26,7 +27,8 @@ public class ItemConfetti extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.CONFETTI, SoundCategory.PLAYERS, 1.0f, worldIn.rand.nextFloat() * 0.2F + 0.8F);
+//        worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.CONFETTI, SoundCategory.PLAYERS, 1.0f, worldIn.rand.nextFloat() * 0.2F + 0.8F);
+        playSound(worldIn, playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ());
         if(!worldIn.isRemote){
             Vector3d pos = playerIn.getPositionVec().add(playerIn.getLookVec()).add(0d, 1d, 0d);
             ConfettiParticlePacket pack = new ConfettiParticlePacket(32, pos.x, pos.y, pos.z);
@@ -38,6 +40,10 @@ public class ItemConfetti extends Item {
             heldItem.shrink(1);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+    }
+
+    static public void playSound(World world, @Nullable PlayerEntity player, double x, double y, double z){
+        world.playSound(player, x, y, z, SoundEvents.CONFETTI, SoundCategory.PLAYERS, 1.0f, world.rand.nextFloat() * 0.2F + 0.8F);
     }
 
     @Override
