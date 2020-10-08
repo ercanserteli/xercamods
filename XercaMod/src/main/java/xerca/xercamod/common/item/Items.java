@@ -606,20 +606,20 @@ public final class Items {
         @SubscribeEvent
         public static void registerEnchantments(final RegistryEvent.Register<Enchantment> event){
             event.getRegistry().registerAll(
-                    new EnchantmentHeavy(Enchantment.Rarity.COMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentMaim(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentQuick(Enchantment.Rarity.COMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentHeavy(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentMaim(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
+                    new EnchantmentQuick(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
                     new EnchantmentQuake(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
                     new EnchantmentGrappling(Enchantment.Rarity.VERY_RARE, EquipmentSlotType.MAINHAND),
-                    new EnchantmentUppercut(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentUppercut(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
                     new EnchantmentPoison(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentStealth(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentStealth(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
                     new EnchantmentTurboGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentGentleGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentGuillotine(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
-                    new EnchantmentCapacity(Enchantment.Rarity.COMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentRange(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
-                    new EnchantmentChug(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND)
+                    new EnchantmentGentleGrab(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
+                    new EnchantmentGuillotine(Enchantment.Rarity.VERY_RARE, EquipmentSlotType.MAINHAND),
+                    new EnchantmentCapacity(Enchantment.Rarity.UNCOMMON, EquipmentSlotType.MAINHAND),
+                    new EnchantmentRange(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND),
+                    new EnchantmentChug(Enchantment.Rarity.RARE, EquipmentSlotType.MAINHAND)
             );
         }
     }
