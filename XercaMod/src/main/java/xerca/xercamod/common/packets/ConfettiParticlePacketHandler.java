@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,11 +27,12 @@ public class ConfettiParticlePacketHandler {
 
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(ConfettiParticlePacket pkt) {
+        Vector3i dir = pkt.getDirection();
         World world = Minecraft.getInstance().world;
         for (int j = 0; j < pkt.getCount(); ++j) {
-            double velX = ((double) world.rand.nextFloat() - 0.5D) * 0.3D;
-            double velY = ((double) world.rand.nextFloat()) * 0.5D;
-            double velZ = ((double) world.rand.nextFloat() - 0.5D) * 0.3D;
+            double velX = ((double) world.rand.nextFloat() + dir.getX() - 0.5D) * 0.3D;
+            double velY = ((double) world.rand.nextFloat() + dir.getY() * 0.5D) * 0.5D;
+            double velZ = ((double) world.rand.nextFloat() + dir.getZ() - 0.5D) * 0.3D;
             world.addParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(Items.ITEM_CONFETTI)), pkt.getPosX(), pkt.getPosY(), pkt.getPosZ(), velX, velY, velZ);
         }
     }
