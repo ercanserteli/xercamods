@@ -101,7 +101,7 @@ public class BlockMusicBox extends HorizontalBlock {
         }
     }
 
-    public void insertMusic(IWorld worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
+    public static void insertMusic(IWorld worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         if (tileentity instanceof TileEntityMusicBox) {
             ((TileEntityMusicBox) tileentity).setNoteStack(noteStack);
@@ -109,12 +109,13 @@ public class BlockMusicBox extends HorizontalBlock {
         }
     }
 
-    public void insertInstrument(IWorld worldIn, BlockPos pos, BlockState state, Item instrument) {
+    public static void insertInstrument(IWorld worldIn, BlockPos pos, BlockState state, Item instrument) {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         if (tileentity instanceof TileEntityMusicBox) {
             ((TileEntityMusicBox) tileentity).setInstrument(instrument);
             worldIn.setBlockState(pos, state.with(HAS_INSTRUMENT, Boolean.TRUE), 3);
         }
+        worldIn.playEvent(null, 1012, pos, 0); // play door close sound
     }
 
     @Override

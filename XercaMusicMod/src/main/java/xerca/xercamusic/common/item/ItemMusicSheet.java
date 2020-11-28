@@ -135,7 +135,7 @@ public class ItemMusicSheet extends Item {
             ItemStack itemstack = context.getItem();
             if (itemstack.hasTag()) {
                 if (!world.isRemote) {
-                    ((BlockMusicBox) Blocks.MUSIC_BOX).insertMusic(world, blockpos, iblockstate, itemstack.copy());
+                    BlockMusicBox.insertMusic(world, blockpos, iblockstate, itemstack.copy());
 
                     if(context.getPlayer() != null && !context.getPlayer().abilities.isCreativeMode){
                         itemstack.shrink(1);
