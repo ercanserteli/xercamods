@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: net.minecraftforge:forge:1.16.4-35.1.0_mapped_snapshot_20201028-1.16.3">
+    <CLASSES>
+      <root url="file://$APPLICATION_HOME_DIR$/jbr/bin/Could not find net.minecraftforge:forge:1.16.4-35.1.0_mapped_snapshot_20201028-1.16.3.&#13;&#10;Required by:&#13;&#10;    project :" />
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.16.4-35.1.0_mapped_snapshot_20201028-1.16.3/forge-1.16.4-35.1.0_mapped_snapshot_20201028-1.16.3-recomp.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.16.4-35.1.0_mapped_snapshot_20201028-1.16.3/forge-1.16.4-35.1.0_mapped_snapshot_20201028-1.16.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

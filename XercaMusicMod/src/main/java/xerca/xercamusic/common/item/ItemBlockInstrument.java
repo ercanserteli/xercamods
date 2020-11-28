@@ -23,6 +23,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import xerca.xercamusic.common.block.BlockMusicBox;
+import xerca.xercamusic.common.block.Blocks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -39,6 +41,14 @@ public class ItemBlockInstrument extends ItemInstrument{
      * Called when this item is used when targetting a Block
      */
     public ActionResultType onItemUse(ItemUseContext context) {
+        BlockState blockState = context.getWorld().getBlockState(context.getPos());
+        if(blockState.getBlock() == Blocks.MUSIC_BOX){
+            BlockMusicBox.insertInstrument(context.getWorld(), context.getPos(), blockState, this);
+            if(context.getPlayer() != null && !context.getPlayer().abilities.isCreativeMode){
+                context.getItem().shrink(1);
+            }
+            return ActionResultType.SUCCESS;
+        }
         ActionResultType actionresulttype = this.tryPlace(new BlockItemUseContext(context));
         return actionresulttype != ActionResultType.SUCCESS && this.isFood() ? this.onItemRightClick(context.getWorld(), context.getPlayer(), context.getHand()).getType() : actionresulttype;
     }

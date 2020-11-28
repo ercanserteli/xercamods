@@ -65,6 +65,12 @@
     },
     "done": true
   },
+  "xercamod:achievements/root": {
+    "criteria": {
+      "crafting_table": "2020-10-08 12:04:06 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/building_blocks/polished_granite_stairs_from_polished_granite_stonecutting": {
     "criteria": {
       "has_polished_granite": "2020-05-10 12:21:12 +0300"
@@ -124,6 +130,12 @@
   "minecraft:recipes/redstone/redstone_torch": {
     "criteria": {
       "has_redstone": "2020-05-15 19:26:37 +0300"
+    },
+    "done": true
+  },
+  "minecraft:husbandry/root": {
+    "criteria": {
+      "consumed_item": "2020-10-08 12:04:10 +0300"
     },
     "done": true
   },
@@ -385,5 +397,5 @@
     },
     "done": true
   },
-  "DataVersion": 2578
+  "DataVersion": 2584
 }

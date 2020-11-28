@@ -78,8 +78,7 @@ public class ItemInstrument extends Item {
         if (iblockstate.getBlock() == Blocks.MUSIC_BOX && !iblockstate.get(BlockMusicBox.HAS_INSTRUMENT)) {
             ItemStack itemstack = context.getItem();
             if (!world.isRemote) {
-                ((BlockMusicBox)Blocks.MUSIC_BOX).insertInstrument(world, blockpos, iblockstate, itemstack.getItem());
-                world.playEvent(null, 1012, blockpos, 0); // play door close sound
+                BlockMusicBox.insertInstrument(world, blockpos, iblockstate, itemstack.getItem());
 
                 if(context.getPlayer() != null && !context.getPlayer().abilities.isCreativeMode){
                     itemstack.shrink(1);
