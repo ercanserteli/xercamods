@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.CakeBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -14,7 +15,7 @@ import net.minecraft.world.World;
 
 class BlockSweetBerryPie extends CakeBlock {
     public BlockSweetBerryPie() {
-        super(Properties.create(Material.CAKE));
+        super(Properties.create(Material.CAKE, DyeColor.ORANGE));
         this.setRegistryName("block_sweet_berry_pie");
     }
 
