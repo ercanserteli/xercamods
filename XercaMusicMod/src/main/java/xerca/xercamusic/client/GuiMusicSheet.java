@@ -873,6 +873,9 @@ public class GuiMusicSheet extends Screen {
                             editCursorEnd = length - 1;
                             resetEditCursorEnd = false;
                         }
+                        else{
+                            currentOctave = 0;
+                        }
                         break;
                     case GLFW.GLFW_KEY_LEFT_CONTROL:
                     case GLFW.GLFW_KEY_RIGHT_CONTROL:

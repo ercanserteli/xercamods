@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
@@ -183,5 +184,12 @@ public class BlockMusicBox extends HorizontalBlock {
         } else {
             return blockState.get(HORIZONTAL_FACING).rotateYCCW() == side ? 15 : 0;
         }
+    }
+
+    // This block should NOT check for weak power, otherwise it transmits input to output and also gets powered by itself
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    {
+        return false;
     }
 }

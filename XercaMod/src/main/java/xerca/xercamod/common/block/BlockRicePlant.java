@@ -3,6 +3,7 @@ package xerca.xercamod.common.block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;

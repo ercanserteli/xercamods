@@ -2,6 +2,7 @@ package xerca.xercamod.common.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
@@ -15,8 +16,8 @@ import net.minecraftforge.common.ToolType;
 public class BlockTerracottaTileSlab extends SlabBlock {
     public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
-    protected BlockTerracottaTileSlab() {
-        super(Properties.create(Material.ROCK).hardnessAndResistance(1.5f).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE));
+    protected BlockTerracottaTileSlab(MaterialColor color) {
+        super(Properties.create(Material.ROCK, color).hardnessAndResistance(1.5f).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE));
         this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.EAST));
     }
 

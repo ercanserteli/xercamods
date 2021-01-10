@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "xercamod:spyglass",
+    "xercamod:golden_scythe",
+    "xercamod:item_gold_warhammer",
+    "xercamod:item_golden_coin_1",
+    "xercamod:item_golden_coin_5",
+    "xercamod:item_golden_cupcake"
+  ]
+}
