@@ -1,25 +1,37 @@
 package xerca.xercamod.common.item;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.CropsBlock;
+import net.minecraft.block.TallGrassBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.*;
+import net.minecraft.entity.CreatureAttribute;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.*;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,6 +43,8 @@ import xerca.xercamod.common.packets.ScytheAttackPacket;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import static xerca.xercamod.common.item.Items.ENCHANTMENT_GUILLOTINE;
@@ -119,74 +133,92 @@ public class ItemScythe extends ToolItem {
                 || ench == Enchantments.BANE_OF_ARTHROPODS || ench == Enchantments.LOOTING;
     }
 
+    public static CompoundNBT getSkullNBT(List<Integer> id, String texture) {
+        CompoundNBT skullNBT = new CompoundNBT();
+        CompoundNBT propertiesNBT = new CompoundNBT();
+        ListNBT texturesNBT = new ListNBT();
+        CompoundNBT tNBT = new CompoundNBT();
+        tNBT.putString("Value", texture);
+        texturesNBT.add(tNBT);
+        propertiesNBT.put("textures", texturesNBT);
+        skullNBT.put("Properties", propertiesNBT);
+        skullNBT.putIntArray("Id", id);
+        return skullNBT;
+    }
+
     public static void spawnHead(LivingEntity target){
         if(target instanceof PlayerEntity){
-            spawnHead(target.getName().getString(), target.world, target.getPosX(), target.getPosY(), target.getPosZ());
+            spawnHead((PlayerEntity) target, target.world, target.getPosX(), target.getPosY(), target.getPosZ());
         }
         else if(target.getType() == EntityType.COW){
-            spawnHead("MHF_Cow", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.cow");
+            spawnHead(Arrays.asList(-2094654955,1289635317,-2072061254,-1389687975), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBlNGU2ZmJmNWYzZGNmOTQ0MjJhMWYzMTk0NDhmMTUyMzY5ZDE3OWRiZmJjZGYwMGU1YmZlODQ5NWZhOTc3In19fQ==", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.cow");
         }
         else if(target.getType() == EntityType.IRON_GOLEM){
-            spawnHead("MHF_Golem", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.iron_golem");
+            spawnHead(Arrays.asList(-417497690,-2115092234,-1652637095,-1368159706), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM2Y2Q3MjAyYzM0ZTc4ZjMwNzMwOTAzNDlmN2Q5NzNiMjg4YWY1ZTViNzMzNGRkMjQ5MDEwYjNmMjcwNzhmOSJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.iron_golem");
         }
         else if(target.getType() == EntityType.OCELOT){
-            spawnHead("MHF_Ocelot", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.ocelot");
+            spawnHead(Arrays.asList(26786972,-1196471604,-1857097459,-1977271489), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTE4YjZiNzk3ODMzNjhkZmUwMDQyOTg1MTEwZGEzNjZmOWM3ODhiNDUwOTdhM2VhNmQwZDlhNzUzZTlmNDJjNiJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.ocelot");
         }
         else if(target.getType() == EntityType.BLAZE){
-            spawnHead("MHF_Blaze", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.blaze");
+            spawnHead(Arrays.asList(-1988261685,-188068212,-1178146933,-1658240924), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA2ZTM0MmY5MGVjNTM4YWFhMTU1MmIyMjRmMjY0YTA0MDg0MDkwMmUxMjZkOTFlY2U2MTM5YWE1YjNjN2NjMyJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.blaze");
         }
         else if(target.getType() == EntityType.PIG){
-            spawnHead("MHF_Pig", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.pig");
+            spawnHead(Arrays.asList(1003849902,-32486937,-1481465560,1732265), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTU2MmEzN2I4NzFmOTY0YmZjM2UxMzExZWE2NzJhYWEwMzk4NGE1ZGM0NzIxNTRhMzRkYzI1YWYxNTdlMzgyYiJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.pig");
         }
         else if(target.getType() == EntityType.SLIME){
-            spawnHead("MHF_Slime", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.slime");
+            spawnHead(Arrays.asList(-1039916148,-57717813,-1391423156,-248573967), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODZjMjdiMDEzZjFiZjMzNDQ4NjllODFlNWM2MTAwMjdiYzQ1ZWM1Yjc5NTE0ZmRjOTZlMDFkZjFiN2UzYTM4NyJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.slime");
         }
         else if(target.getType() == EntityType.VILLAGER){
-            spawnHead("MHF_Villager", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.villager");
+            spawnHead(Arrays.asList(-579522334,-80917881,-1713988716,921668381), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjRiZDgzMjgxM2FjMzhlNjg2NDg5MzhkN2EzMmY2YmEyOTgwMWFhZjMxNzQwNDM2N2YyMTRiNzhiNGQ0NzU0YyJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.villager");
         }
         else if(target.getType() == EntityType.CAVE_SPIDER){
-            spawnHead("MHF_CaveSpider", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.cave_spider");
+            spawnHead(Arrays.asList(202094529,1049906219,-1603801553,1961515467), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdiMDcwNjNhNjg3NGZhM2UyMjU0OGUwMjA2MmJkNzMzYzI1ODg1OTI5ODA5NjI0MTgwYWViYjg1MTU1N2Y2YSJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.cave_spider");
         }
         else if(target.getType() == EntityType.ENDERMAN){
-            spawnHead("MHF_Enderman", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.enderman");
+            spawnHead(Arrays.asList(-620677106,-2030549868,-1207093980,1829338684), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWIwOWEzNzUyNTEwZTkxNGIwYmRjOTA5NmIzOTJiYjM1OWY3YThlOGE5NTY2YTAyZTdmNjZmYWZmOGQ2Zjg5ZSJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.enderman");
         }
         else if(target.getType() == EntityType.MAGMA_CUBE){
-            spawnHead("MHF_LavaSlime", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.magma_cube");
+            spawnHead(Arrays.asList(-1846771288,385960253,-1088350611,-1439946228), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDkwZDYxZThjZTk1MTFhMGEyYjVlYTI3NDJjYjFlZjM2MTMxMzgwZWQ0MTI5ZTFiMTYzY2U4ZmYwMDBkZThlYSJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.magma_cube");
         }
         else if(target.getType() == EntityType.ZOMBIFIED_PIGLIN){
-            spawnHead("MHF_PigZombie", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.zombie_pigman");
+            spawnHead(Arrays.asList(-174221110,851921639,-1251029810,-1727624143), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE2ZDE2N2M1NzQ0ZWQxNGViYzAyZjQ0N2YzMjYxNDA1OTM2MmI3ZDJlY2I4MDhmZjA2MTY1ZDJjMzQzYmVmMiJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.zombie_pigman");
         }
         else if(target.getType() == EntityType.SPIDER){
-            spawnHead("MHF_Spider", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.spider");
+            spawnHead(Arrays.asList(848845569,-89043442,-1563667252,1307407919), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjYxYTQ5NTQxYTgzNmFhOGY0Zjc2ZTBkNGNiMmZmMDQ4ODhjNjJmOTQxMWVhMTBjYmFjZjFmMmE1NDQyNDI0MCJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.spider");
         }
         else if(target.getType() == EntityType.CHICKEN){
-            spawnHead("MHF_Chicken", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.chicken");
+            spawnHead(Arrays.asList(1799972324,1156335733,-1788030142,1902426427), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE2YjhlOTgzODljNTQxYmIzNjQ1Mzg1MGJjYmQxZjdiYzVhNTdkYTYyZGNjNTA1MDYwNDA5NzM3ZWM1YjcyYSJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.chicken");
         }
         else if(target.getType() == EntityType.GHAST){
-            spawnHead("MHF_Ghast", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.ghast");
+            spawnHead(Arrays.asList(1340996983,-1860222137,-1353501742,-1474776410), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE0ZTQyZWIxNWEwODgxM2E2YTZmNjFmMTBhYTI4ODAxOWZhMGZhZTEwNmEyOTUzZGRiNDZmNzdlZTJkNzdmIn19fQ==", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.ghast");
         }
         else if(target.getType() == EntityType.MOOSHROOM){
-            spawnHead("MHF_MushroomCow", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.mooshroom");
+            spawnHead(Arrays.asList(-1612461734,989744374,-1157404361,1657691129), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTIzY2ZjNTU4MjQ1NGZjZjk5MDZmODQxZmRhMmNjNmFlODk2Y2Y0NTU4MjFjNGFkYTE5OThkZTcwODc3Y2M4NiJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.mooshroom");
         }
         else if(target.getType() == EntityType.SHEEP){
-            spawnHead("MHF_Sheep", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.sheep");
+            spawnHead(Arrays.asList(262421674,-1762178383,-1870145564,1689656607), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2NhMzhjY2Y0MTdlOTljYTlkNDdlZWIxNWE4YTMwZWRiMTUwN2FhNTJiNjc4YzIyMGM3MTdjNDc0YWE2ZmUzZSJ9fX0=", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.sheep");
         }
         else if(target.getType() == EntityType.SQUID){
-            spawnHead("MHF_Squid", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.squid");
+            spawnHead(Arrays.asList(-1940995388,882658030,-1188418964,246238058), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU4OTEwMWQ1Y2M3NGFhNDU4MDIxYTA2MGY2Mjg5YTUxYTM1YTdkMzRkOGNhZGRmYzNjZGYzYjJjOWEwNzFhIn19fQ==", target.world, target.getPosX(), target.getPosY(), target.getPosZ(), "xercamod.head.squid");
         }
     }
 
-    private static void spawnHead(String playerName, World world, double x, double y, double z){
-        spawnHead(playerName, world, x, y, z, null);
-    }
-
-    private static void spawnHead(String playerName, World world, double x, double y, double z, @Nullable String nameTransKey){
+    private static void spawnHead(INBT skullOwner, World world, double x, double y, double z, @Nullable String nameTransKey){
         ItemStack playerHead = new ItemStack(net.minecraft.item.Items.PLAYER_HEAD, 1);
-        playerHead.getOrCreateTag().put("SkullOwner", StringNBT.valueOf(playerName));
+        CompoundNBT headNBT = playerHead.getOrCreateTag();
+        headNBT.put("SkullOwner", skullOwner);
         if(nameTransKey != null){
             playerHead.setDisplayName(new TranslationTextComponent(nameTransKey));
         }
         InventoryHelper.spawnItemStack(world, x, y, z, playerHead);
+    }
+
+    private static void spawnHead(List<Integer> id, String texture, World world, double x, double y, double z, @Nullable String nameTransKey){
+        spawnHead(getSkullNBT(id, texture), world, x, y, z, nameTransKey);
+    }
+
+    private static void spawnHead(PlayerEntity player, World world, double x, double y, double z){
+        spawnHead(NBTUtil.writeGameProfile(new CompoundNBT(), player.getGameProfile()), world, x, y, z, null);
     }
 
     @Override
@@ -296,8 +328,18 @@ public class ItemScythe extends ToolItem {
                         XercaMod.NETWORK_HANDLER.sendToServer(pack);
                     }
                 }
-
             }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        TranslationTextComponent text = new TranslationTextComponent("xercamod.scythe_tooltip");
+        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+        if(EnchantmentHelper.getEnchantmentLevel(ENCHANTMENT_GUILLOTINE, stack) > 0){
+            TranslationTextComponent textGuillotine = new TranslationTextComponent("xercamod.guillotine_tooltip");
+            tooltip.add(textGuillotine.mergeStyle(TextFormatting.YELLOW));
         }
     }
 }

@@ -390,5 +390,16 @@
   "xercamod.head.ghast": "Ghast Head",
   "xercamod.head.mooshroom": "Mooshroom Head",
   "xercamod.head.sheep": "Sheep Head",
-  "xercamod.head.squid": "Squid Head"
+  "xercamod.head.squid": "Squid Head",
+
+  "xercamod.scythe_tooltip": "Won't break non-fully grown crops",
+  "xercamod.guillotine_tooltip": "Finish enemy with a right-click charged attack to use Guillotine",
+  "xercamod.warhammer_tooltip": "Hold right click to charge",
+  "xercamod.grap_hook_tooltip": "Will pull entities towards you. Hold right click to charge.",
+  "xercamod.grappling_tooltip": "Target a block to pull yourself there",
+  "xercamod.cushion_tooltip": "You can sit on it",
+  "xercamod.ender_flask_tooltip": "Fill with potions",
+  "xercamod.ender_bow_tooltip": "Fill with throwing or lingering potions",
+  "xercamod.empty_teapot_tooltip": "Fill with dried tea leaves and water, then cook it to make tea",
+  "xercamod.rope_tooltip": "Can be climbed"
 }

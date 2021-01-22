@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercamod.client.ClientProxy;
 import xerca.xercamod.common.entity.EntityConfettiBall;
+import xerca.xercamod.common.entity.EntityTomato;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.packets.*;
 import xerca.xercamod.server.ServerProxy;
@@ -94,6 +95,15 @@ public class XercaMod {
             protected ProjectileEntity getProjectileEntity(@Nonnull World worldIn, @Nonnull IPosition position, @Nonnull ItemStack stackIn)
             {
                 return new EntityConfettiBall(worldIn, position.getX(), position.getY(), position.getZ());
+            }
+        });
+        // Making tomato dispensable by dispenser
+        DispenserBlock.registerDispenseBehavior(Items.ITEM_TOMATO, new ProjectileDispenseBehavior()
+        {
+            @Nonnull
+            protected ProjectileEntity getProjectileEntity(@Nonnull World worldIn, @Nonnull IPosition position, @Nonnull ItemStack stackIn)
+            {
+                return new EntityTomato(worldIn, position.getX(), position.getY(), position.getZ());
             }
         });
 

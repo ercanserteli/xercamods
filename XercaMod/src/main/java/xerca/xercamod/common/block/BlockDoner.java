@@ -93,9 +93,12 @@ public class BlockDoner extends Block {
                     donerEntity.addVelocity(boost.x, 0, boost.z);
                     donerEntity.velocityChanged = true;
                     worldIn.addEntity(donerEntity);
+
+                    heldItem.damageItem(1, player, (playerEntity) -> {
+                        playerEntity.sendBreakAnimation(hand);
+                    });
                 }
                 worldIn.playSound(player, pos, xerca.xercamod.common.SoundEvents.SNEAK_HIT, SoundCategory.BLOCKS, 0.4f, 0.9f + worldIn.rand.nextFloat()*0.1f);
-
                 return ActionResultType.SUCCESS;
             }
         }

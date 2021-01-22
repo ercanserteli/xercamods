@@ -20,6 +20,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -173,6 +174,9 @@ public class ItemFlask extends Item {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        TranslationTextComponent text = new TranslationTextComponent("xercamod.ender_flask_tooltip");
+        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+
         if(hasMilk){
             tooltip.add(new StringTextComponent("Calcium for your bones").mergeStyle(TextFormatting.YELLOW));
         }
