@@ -281,5 +281,13 @@
   "enchantment.xercamod.enchantment_guillotine": "Giyotin",
   "enchantment.xercamod.enchantment_capacity": "Kapasite",
   "enchantment.xercamod.enchantment_range": "Menzil",
-  "enchantment.xercamod.enchantment_chug": "Tıksırana kadar"
+  "enchantment.xercamod.enchantment_chug": "Tıksırana kadar",
+
+  "xercamod.scythe_tooltip": "Ham ekinleri kırmaz",
+  "xercamod.guillotine_tooltip": "Giyotini kullanmak için düşmanı sağ tuşa uzun basmalı saldırı ile öldür",
+  "xercamod.warhammer_tooltip": "Sağ tuşa basılı tutarak hasar ve itişi arttır",
+  "xercamod.grap_hook_tooltip": "Canlıları kendine çekmeni sağlar. Sağ tuşa basılı tutarak menzili arttır",
+  "xercamod.cushion_tooltip": "Üstüne oturmalık",
+  "xercamod.ender_bow_tooltip": "Atmalık veya kalıcı iksirler ile doldur",
+  "xercamod.empty_teapot_tooltip": "Çay yapmak için kuru çay yaprakları ve su ile doldurup pişir"
 }

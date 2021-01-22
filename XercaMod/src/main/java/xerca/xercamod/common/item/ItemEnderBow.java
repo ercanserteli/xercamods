@@ -16,6 +16,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -102,6 +103,9 @@ public class ItemEnderBow extends Item {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        TranslationTextComponent text = new TranslationTextComponent("xercamod.ender_bow_tooltip");
+        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+
         PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
         tooltip.add(new StringTextComponent(getCharges(stack) + " charges").mergeStyle(TextFormatting.YELLOW));
     }

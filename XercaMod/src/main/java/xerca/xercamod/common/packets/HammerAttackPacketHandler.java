@@ -72,6 +72,19 @@ public class HammerAttackPacketHandler {
                 LivingEntity targetLiving = (LivingEntity) target;
                 float enchantBonus = EnchantmentHelper.getModifierForCreature(st, targetLiving.getCreatureAttribute());
 //              XercaMod.LOGGER.warn("Enchantment bonus damage: " + enchantBonus);
+
+                // Critical hit
+                boolean cooledAttack = pull > 0.9F;
+                boolean critical = cooledAttack && pl.fallDistance > 0.0F && !pl.isOnGround() && !pl.isOnLadder() &&
+                        !pl.isInWater() && !pl.isPotionActive(Effects.BLINDNESS) && !pl.isPassenger() && !pl.isSprinting();
+                net.minecraftforge.event.entity.player.CriticalHitEvent hitResult = net.minecraftforge.common.ForgeHooks.getCriticalHit(pl, target, critical, critical ? 1.5F : 1.0F);
+                critical = hitResult != null;
+                if (critical) {
+                    damage *= hitResult.getDamageModifier();
+                    pl.world.playSound(null, pl.getPosX(), pl.getPosY(), pl.getPosZ(), net.minecraft.util.SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, pl.getSoundCategory(), 1.0F, 1.0F);
+                    pl.onCriticalHit(target);
+                }
+
                 damage += enchantBonus;
                 targetLiving.attackEntityFrom(DamageSource.causePlayerDamage(pl), damage);
 

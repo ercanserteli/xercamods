@@ -1,6 +1,8 @@
 {
   "parent": "xercamod:block/carved_wood/carved_birch",
   "textures": {
+    "up": "xercamod:block/carved_wood/carved_birch_1_top",
+    "down": "xercamod:block/carved_wood/carved_birch_1_top",
     "north": "xercamod:block/carved_wood/carved_birch_1_sidea",
     "south": "xercamod:block/carved_wood/carved_birch_1_sidea",
     "west":  "xercamod:block/carved_wood/carved_birch_1_sideb",

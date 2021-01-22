@@ -11,9 +11,8 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.PointOfView;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
@@ -21,13 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -39,15 +33,13 @@ import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.Proxy;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.Blocks;
-import xerca.xercamod.common.entity.*;
+import xerca.xercamod.common.entity.Entities;
+import xerca.xercamod.common.entity.EntityHook;
 import xerca.xercamod.common.item.ItemGrabHook;
 import xerca.xercamod.common.item.ItemScythe;
 import xerca.xercamod.common.item.ItemWarhammer;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.tile_entity.XercaTileEntities;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class ClientProxy extends Proxy {
     private static final ResourceLocation spyglassBlurTexture = new ResourceLocation(XercaMod.MODID, "textures/misc/spyglass_blur.png");
@@ -205,6 +197,20 @@ public class ClientProxy extends Proxy {
             PlayerEntity player = updateEvent.getEntity();
             if(player.getActiveItemStack().getItem() == Items.SPYGLASS && player.getItemInUseCount() > 0 && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON){
                 updateEvent.setNewfov(updateEvent.getNewfov()/8);
+            }
+        }
+
+        @SubscribeEvent
+        public static void inputUpdateEvent(InputUpdateEvent updateEvent) {
+            ItemStack activeItem = updateEvent.getPlayer().getActiveItemStack();
+            if(activeItem.getItem() instanceof ItemWarhammer && updateEvent.getPlayer().isHandActive()){
+                int legerityLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_QUICK, activeItem);
+                if(legerityLevel > 4){
+                    legerityLevel = 4;
+                }
+                float bonus = 3F + 0.5F*legerityLevel;
+                updateEvent.getMovementInput().moveStrafe *= bonus;
+                updateEvent.getMovementInput().moveForward *= bonus;
             }
         }
     }

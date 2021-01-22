@@ -29,6 +29,18 @@
     },
     "done": true
   },
+  "minecraft:adventure/kill_a_mob": {
+    "criteria": {
+      "minecraft:zombified_piglin": "2021-01-22 18:45:03 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/item_golden_coin_5": {
+    "criteria": {
+      "has_item": "2021-01-22 18:45:04 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/redstone/oak_button": {
     "criteria": {
       "has_planks": "2020-05-15 19:26:27 +0300"
@@ -157,6 +169,12 @@
     },
     "done": true
   },
+  "xercamod:recipes/item_golden_coin_5_alt": {
+    "criteria": {
+      "has_the_recipe": "2021-01-22 18:45:04 +0300"
+    },
+    "done": true
+  },
   "minecraft:recipes/building_blocks/oak_stairs": {
     "criteria": {
       "has_planks": "2020-05-15 19:26:27 +0300"
@@ -229,6 +247,18 @@
     },
     "done": true
   },
+  "xercamod:recipes/item_attorney_badge": {
+    "criteria": {
+      "has_item": "2021-01-22 18:45:04 +0300"
+    },
+    "done": true
+  },
+  "minecraft:adventure/kill_all_mobs": {
+    "criteria": {
+      "minecraft:zombified_piglin": "2021-01-22 18:45:03 +0300"
+    },
+    "done": false
+  },
   "minecraft:recipes/building_blocks/polished_granite_slab_from_polished_granite_stonecutting": {
     "criteria": {
       "has_polished_granite": "2020-05-10 12:21:12 +0300"
@@ -298,6 +328,12 @@
   "minecraft:recipes/combat/golden_helmet": {
     "criteria": {
       "has_gold_ingot": "2020-05-30 17:14:10 +0300"
+    },
+    "done": true
+  },
+  "xercamod:recipes/item_prosecutor_badge": {
+    "criteria": {
+      "has_item": "2021-01-22 18:45:04 +0300"
     },
     "done": true
   },

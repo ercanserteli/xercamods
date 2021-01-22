@@ -1,22 +1,32 @@
 package xerca.xercamod.common.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.Config;
-import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.entity.EntityHook;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+
+import static xerca.xercamod.common.item.Items.ENCHANTMENT_GRAPPLING;
+import static xerca.xercamod.common.item.Items.ENCHANTMENT_GUILLOTINE;
 
 public class ItemGrabHook extends FishingRodItem {
 
@@ -87,5 +97,16 @@ public class ItemGrabHook extends FishingRodItem {
             return;
         }
         super.fillItemGroup(group, items);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        TranslationTextComponent text = new TranslationTextComponent("xercamod.grap_hook_tooltip");
+        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+        if(EnchantmentHelper.getEnchantmentLevel(ENCHANTMENT_GRAPPLING, stack) > 0){
+            TranslationTextComponent textGrappling = new TranslationTextComponent("xercamod.grappling_tooltip");
+            tooltip.add(textGrappling.mergeStyle(TextFormatting.YELLOW));
+        }
     }
 }

@@ -22,7 +22,7 @@ mouseSensitivity:0.5
 fov:0.0
 screenEffectScale:1.0
 fovEffectScale:1.0
-gamma:0.0
+gamma:1.0
 renderDistance:12
 entityDistanceScaling:1.0
 guiScale:0
@@ -100,7 +100,7 @@ key_key.hotbar.6:key.keyboard.6
 key_key.hotbar.7:key.keyboard.7
 key_key.hotbar.8:key.keyboard.8
 key_key.hotbar.9:key.keyboard.9
-soundCategory_master:0.634106
+soundCategory_master:0.45695364
 soundCategory_music:0.0
 soundCategory_record:1.0
 soundCategory_weather:0.0

@@ -1,6 +1,7 @@
 package xerca.xercamod.common.item;
 
 import net.minecraft.block.ComposterBlock;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
@@ -9,6 +10,10 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.SingleItemRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +25,9 @@ import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.crafting.*;
 import xerca.xercamod.common.enchantments.*;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 @ObjectHolder(XercaMod.MODID)
 public final class Items {
@@ -77,7 +85,7 @@ public final class Items {
     public static final ItemTeapot ITEM_HOT_TEAPOT_5 = null;
     public static final ItemTeapot ITEM_HOT_TEAPOT_6 = null;
     public static final ItemTeapot ITEM_HOT_TEAPOT_7 = null;
-    public static final Item ITEM_TEAPOT = null;
+    public static final ItemEmptyTeapot ITEM_TEAPOT = null;
     public static final Item ITEM_TEA_SEEDS = null;
     public static final Item ITEM_TEA_DRIED = null;
     public static final Item ITEM_CHOCOLATE = null;
@@ -379,7 +387,7 @@ public final class Items {
                     new ItemTeacup(4, teaCup),
                     new ItemTeacup(5, teaCup),
                     new ItemTeacup(6, teaCup),
-                    new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_teapot"),
+                    new ItemEmptyTeapot(new Item.Properties().group(Items.teaTab)).setRegistryName("item_teapot"),
                     new BlockNamedConditionedItem(Blocks.BLOCK_TEA_PLANT, new Item.Properties().group(Items.teaTab), Config::isTeaEnabled).setRegistryName("item_tea_seeds"),
                     new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_tea_dried"),
                     new ItemTea(new Item.Properties().group(Items.teaTab)).setRegistryName("item_tea_leaf"),
@@ -592,7 +600,12 @@ public final class Items {
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1).maxDamage(160), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1).maxDamage(160), "flask_milk", true),
 
-                    new BlockItem(Blocks.ROPE, new Item.Properties().group(Items.decoTab)).setRegistryName("rope"),
+                    new BlockItem(Blocks.ROPE, new Item.Properties().group(Items.decoTab)){
+                        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+                            TranslationTextComponent text = new TranslationTextComponent("xercamod.rope_tooltip");
+                            tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+                        }
+                    }.setRegistryName("rope"),
 
                     new ItemScythe(ItemTier.WOOD, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("wooden_scythe"),
                     new ItemScythe(ItemTier.STONE, 3, -2.6f, (new Item.Properties()).group(ItemGroup.TOOLS)).setRegistryName("stone_scythe"),

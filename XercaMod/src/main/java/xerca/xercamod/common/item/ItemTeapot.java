@@ -2,21 +2,15 @@ package xerca.xercamod.common.item;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.Config;
-import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.block.BlockTeapot;
-import xerca.xercamod.common.block.Blocks;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;

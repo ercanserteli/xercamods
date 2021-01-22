@@ -1,17 +1,24 @@
 package xerca.xercamod.common.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.BlockCushion;
 import xerca.xercamod.common.entity.EntityCushion;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -72,5 +79,12 @@ public class ItemCushion extends Item {
             return;
         }
         super.fillItemGroup(group, items);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        TranslationTextComponent text = new TranslationTextComponent("xercamod.cushion_tooltip");
+        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
     }
 }
