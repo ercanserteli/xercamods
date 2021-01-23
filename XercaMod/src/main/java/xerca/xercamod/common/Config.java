@@ -1,6 +1,10 @@
 package xerca.xercamod.common;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -11,12 +15,32 @@ import xerca.xercamod.common.packets.ConfigSyncPacket;
 
 @Mod.EventBusSubscriber(modid = XercaMod.MODID)
 public class Config {
+    public static Map<String, Supplier<Boolean>> conditionMap;
+    static {
+        conditionMap = new HashMap<>(16);
+        conditionMap.put("grab_hook", Config::isGrabHookEnabled);
+        conditionMap.put("warhammer", Config::isWarhammerEnabled);
+        conditionMap.put("cushion", Config::isCushionEnabled);
+        conditionMap.put("tea", Config::isTeaEnabled);
+        conditionMap.put("food", Config::isFoodEnabled);
+        conditionMap.put("confetti", Config::isConfettiEnabled);
+        conditionMap.put("ender_flask", Config::isEnderFlaskEnabled);
+        conditionMap.put("courtroom", Config::isCourtroomEnabled);
+        conditionMap.put("carved_wood", Config::isCarvedWoodEnabled);
+        conditionMap.put("leather_straw", Config::isLeatherStrawEnabled);
+        conditionMap.put("bookcase", Config::isBookcaseEnabled);
+        conditionMap.put("coins", Config::isCoinsEnabled);
+        conditionMap.put("scythe", Config::isScytheEnabled);
+        conditionMap.put("spyglass", Config::isSpyglassEnabled);
+        conditionMap.put("rope", Config::isRopeEnabled);
+        conditionMap.put("terracotta_tile", Config::isTerracottaTileEnabled);
+    }
+
     public static final String CATEGORY_GENERAL = "general";
 
     private static final ForgeConfigSpec.Builder COMMON_BUILD = new ForgeConfigSpec.Builder();
 
     public static ForgeConfigSpec COMMON_CONFIG;
-
 
     private static ForgeConfigSpec.BooleanValue GRAB_HOOK_ENABLE;
     private static ForgeConfigSpec.BooleanValue WARHAMMER_ENABLE;
@@ -32,6 +56,8 @@ public class Config {
     private static ForgeConfigSpec.BooleanValue COINS_ENABLE;
     private static ForgeConfigSpec.BooleanValue SCYTHE_ENABLE;
     private static ForgeConfigSpec.BooleanValue SPYGLASS_ENABLE;
+    private static ForgeConfigSpec.BooleanValue ROPE_ENABLE;
+    private static ForgeConfigSpec.BooleanValue TERRACOTTA_TILE_ENABLE;
 
     private static boolean grabHookEnabled;
     private static boolean warhammerEnabled;
@@ -47,6 +73,8 @@ public class Config {
     private static boolean coinsEnabled;
     private static boolean scytheEnabled;
     private static boolean spyglassEnabled;
+    private static boolean ropeEnabled;
+    private static boolean terracottaTileEnabled;
 
     static {
 
@@ -66,13 +94,13 @@ public class Config {
         COINS_ENABLE = COMMON_BUILD.comment("Enable Golden Coins").define("coins", true);
         SCYTHE_ENABLE = COMMON_BUILD.comment("Enable Scythe").define("scythe", true);
         SPYGLASS_ENABLE = COMMON_BUILD.comment("Enable Spyglass").define("spyglass", true);
+        ROPE_ENABLE = COMMON_BUILD.comment("Enable Rope").define("rope", true);
+        TERRACOTTA_TILE_ENABLE = COMMON_BUILD.comment("Enable Terracotta Tiles").define("terracotta_tile", true);
 
         COMMON_BUILD.pop();
 
         COMMON_CONFIG = COMMON_BUILD.build();
     }
-
-
 
     public static void loadConfig(ForgeConfigSpec spec, Path path) {
 
@@ -118,6 +146,8 @@ public class Config {
         coinsEnabled = COINS_ENABLE.get();
         scytheEnabled = SCYTHE_ENABLE.get();
         spyglassEnabled = SPYGLASS_ENABLE.get();
+        ropeEnabled = ROPE_ENABLE.get();
+        terracottaTileEnabled = TERRACOTTA_TILE_ENABLE.get();
     }
 
     public static void syncWithPacket(ConfigSyncPacket packet){
@@ -137,13 +167,16 @@ public class Config {
             coinsEnabled =  packet.coins;
             scytheEnabled =  packet.scythe;
             spyglassEnabled =  packet.spyglass;
+            ropeEnabled =  packet.rope;
+            terracottaTileEnabled =  packet.terracotta_tile;
         }
     }
 
     public static ConfigSyncPacket makePacket(){
         return new ConfigSyncPacket(grabHookEnabled, warhammerEnabled, cushionEnabled, teaEnabled,
                 foodEnabled, confettiEnabled, enderFlaskEnabled, courtroomEnabled, carvedWoodEnabled,
-                leatherStrawEnabled, bookcaseEnabled, coinsEnabled, scytheEnabled, spyglassEnabled
+                leatherStrawEnabled, bookcaseEnabled, coinsEnabled, scytheEnabled, spyglassEnabled,
+                ropeEnabled, terracottaTileEnabled
         );
     }
 
@@ -201,5 +234,13 @@ public class Config {
 
     public static boolean isSpyglassEnabled() {
         return spyglassEnabled;
+    }
+
+    public static boolean isRopeEnabled() {
+        return ropeEnabled;
+    }
+
+    public static boolean isTerracottaTileEnabled() {
+        return terracottaTileEnabled;
     }
 }

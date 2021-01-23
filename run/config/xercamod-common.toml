@@ -9,8 +9,12 @@
 	warhammer = true
 	#Enable Golden Coins
 	coins = true
+	#Enable Terracotta Tiles
+	terracotta_tile = true
 	#Enable Grab Hook
 	grab_hook = true
+	#Enable Rope
+	rope = true
 	#Enable Leather and Straw Blocks
 	leather_straw = true
 	#Enable Food

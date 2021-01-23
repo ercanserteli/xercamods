@@ -1,6 +1,5 @@
 {
   "tomato_splash": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:tomato_splash"
@@ -8,7 +7,6 @@
     ]
   },
   "sneak_hit": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:sneak_hit1"
@@ -25,7 +23,6 @@
     ]
   },
   "crack": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:crack1"
@@ -42,7 +39,6 @@
     ]
   },
   "gavel": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:gavel"
@@ -50,7 +46,6 @@
     ]
   },
   "objection": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:objection"
@@ -58,7 +53,6 @@
     ]
   },
   "hammer": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:hammer"
@@ -66,7 +60,6 @@
     ]
   },
   "hook_chain": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:hook_chain"
@@ -74,7 +67,6 @@
     ]
   },
   "hook_impact": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:hook_impact"
@@ -82,7 +74,6 @@
     ]
   },
   "big_burp": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:big_burp"
@@ -90,7 +81,6 @@
     ]
   },
   "yahoo": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:yahoo"
@@ -98,7 +88,6 @@
     ]
   },
   "scary": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:scary"
@@ -106,7 +95,6 @@
     ]
   },
   "confetti": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:confetti"
@@ -114,7 +102,6 @@
     ]
   },
   "stomp": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:stomp"
@@ -122,7 +109,6 @@
     ]
   },
   "tea_pour": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:tea_pour"
@@ -130,7 +116,6 @@
     ]
   },
   "sizzle": {
-    "category": "block",
     "sounds": [
       {
         "name": "xercamod:sizzle1"
@@ -147,7 +132,6 @@
     ]
   },
   "big_sizzle": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:big_sizzle"
@@ -155,10 +139,23 @@
     ]
   },
   "behead": {
-    "category": "player",
     "sounds": [
       {
         "name": "xercamod:behead"
+      }
+    ]
+  },
+  "holy": {
+    "sounds": [
+      {
+        "name": "xercamod:holy"
+      }
+    ]
+  },
+  "sparkles": {
+    "sounds": [
+      {
+        "name": "xercamod:sparkles"
       }
     ]
   }

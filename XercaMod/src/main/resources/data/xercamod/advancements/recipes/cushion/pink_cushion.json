@@ -3,7 +3,7 @@
   "parent": "xercamod:recipes/root",
   "rewards": {
     "recipes": [
-      "xercamod:pink_cushion"
+      "xercamod:cushion/pink_cushion"
     ]
   },
   "criteria": {
@@ -18,7 +18,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercamod:pink_cushion"
+        "recipe": "xercamod:cushion/pink_cushion"
+      }
+    },
+    "config": {
+      "trigger": "xercamod:config_check",
+      "conditions":{
+        "config": "cushion"
       }
     }
   },
@@ -26,7 +32,8 @@
     [
       "has_item",
       "has_the_recipe"
-    ]
+    ],
+    ["config"]
   ]
 }
-        
+            

@@ -391,14 +391,14 @@
   "xercamod.head.sheep": "Sheep Head",
   "xercamod.head.squid": "Squid Head",
 
-  "xercamod.scythe_tooltip": "Won't break non-fully grown crops",
-  "xercamod.guillotine_tooltip": "Finish enemy with a right-click charged attack to use Guillotine",
-  "xercamod.warhammer_tooltip": "Hold right click to charge",
-  "xercamod.grap_hook_tooltip": "Will pull entities towards you. Hold right click to charge.",
-  "xercamod.grappling_tooltip": "Target a block to pull yourself there",
-  "xercamod.cushion_tooltip": "You can sit on it",
-  "xercamod.ender_flask_tooltip": "Fill with potions",
-  "xercamod.ender_bow_tooltip": "Fill with throwing or lingering potions",
-  "xercamod.empty_teapot_tooltip": "Fill with dried tea leaves and water, then cook it to make tea",
-  "xercamod.rope_tooltip": "Can be climbed"
+  "xercamod.scythe_tooltip": "Не жнет недозревшие ростки",
+  "xercamod.guillotine_tooltip": "Добейте врага заряженной атакой(ПКМ), чтобы использовать гильотину.",
+  "xercamod.warhammer_tooltip": "Удерживайте ПКМ для мощной атаки.",
+  "xercamod.grap_hook_tooltip": "Притянет противника к вам. Удерживайте ПКМ для увеличения дальности броска.",
+  "xercamod.grappling_tooltip": "Цельтесь в блоки, чтобы притянуться к этой точке.",
+  "xercamod.cushion_tooltip": "Вы можете сидеть на ней.",
+  "xercamod.ender_flask_tooltip": "Залейте зельями - объедините бутылочки с зельями с эндер-флаской на верстаке.",
+  "xercamod.ender_bow_tooltip": "Зарядите взрывными или туманными зельями.",
+  "xercamod.empty_teapot_tooltip": "Залейте сушеными чайными листьями и водой, затем сварите ее, чтобы заварить чай.",
+  "xercamod.rope_tooltip": "Можно карабкаться"
 }

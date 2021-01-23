@@ -1,8 +1,0 @@
-
-{
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "xercamod:item_block_straw"}],
-    "result": {"item": "minecraft:sugar_cane", "count": 9}
-}
-        

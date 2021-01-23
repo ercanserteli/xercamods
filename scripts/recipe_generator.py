@@ -10,6 +10,9 @@ mod_id_to_folder = {
     "xercapaint": "XercaPaintMod"
 }
 
+conditions = ["grab_hook", "warhammer", "cushion", "tea", "food", "confetti", "ender_flask", "courtroom", "carved_wood",
+              "leather_straw", "bookcase", "coins", "scythe", "spyglass", "rope", "terracotta_tile"]
+
 
 class Type(Enum):
     crafting_shaped, crafting_shapeless, smelting, campfire_cooking, blasting, smoking, stone_cutting = range(7)
@@ -22,13 +25,28 @@ class Recipe:
         self.discover_item = discover_item
         self.folder = folder
 
+        self.cond = None
+        if "condition" in type:
+            for c in conditions:
+                if c in type:
+                    self.cond = c
+                    if folder == "":
+                        self.folder = self.cond
+                    break
+
     def produce_advancement_json(self):
-        template = """
+        if self.folder:
+            recipe_path = self.folder + "/" + self.get_name()
+        else:
+            recipe_path = self.get_name()
+
+        if self.cond is None:
+            template = """
 {{
   "parent": "{mod_id}:recipes/root",
   "rewards": {{
     "recipes": [
-      "{mod_id}:{result_item}"
+      "{mod_id}:{recipe_path}"
     ]
   }},
   "criteria": {{
@@ -43,7 +61,7 @@ class Recipe:
     "has_the_recipe": {{
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {{
-        "recipe": "{mod_id}:{result_item}"
+        "recipe": "{mod_id}:{recipe_path}"
       }}
     }}
   }},
@@ -55,7 +73,48 @@ class Recipe:
   ]
 }}
         """
-        return template.format(mod_id=mod_id, result_item=self.get_name(), discover_item=self.discover_item).replace("'", '"')
+            return template.format(mod_id=mod_id, recipe_path=recipe_path, discover_item=self.discover_item).replace("'", '"')
+        else:
+            template = """
+{{
+  "parent": "{mod_id}:recipes/root",
+  "rewards": {{
+    "recipes": [
+      "{mod_id}:{recipe_path}"
+    ]
+  }},
+  "criteria": {{
+    "has_item": {{
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {{
+        "items": [
+          {discover_item}
+        ]
+      }}
+    }},
+    "has_the_recipe": {{
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {{
+        "recipe": "{mod_id}:{recipe_path}"
+      }}
+    }},
+    "config": {{
+      "trigger": "xercamod:config_check",
+      "conditions":{{
+        "config": "{cond}"
+      }}
+    }}
+  }},
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ],
+    ["config"]
+  ]
+}}
+            """
+            return template.format(mod_id=mod_id, recipe_path=recipe_path, discover_item=self.discover_item, cond=self.cond).replace("'", '"')
 
 
 class ShapedRecipe(Recipe):
@@ -135,7 +194,7 @@ class CookingRecipe(Recipe):
         item_name = self.result.split(":", 1)[1]
         if "smelting" in self.type:
             return "smelting_" + item_name
-        if "campfire_cooking" in self.type:
+        if "campfire" in self.type:
             return "campfire_cooking_" + item_name
         if "smoking" in self.type:
             return "smoking_" + item_name

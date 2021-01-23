@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_campfire_food",
+    "group": "hot_teapot",
+    "ingredient": [
+        {"item": "xercamod:item_full_teapot_2"}
+    ],
+    "result": "xercamod:item_hot_teapot_2",
+    "experience": 0.15,
+    "cookingtime": 450
+}
+        

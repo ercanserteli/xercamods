@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_smelting_food",
+    
+    "ingredient": [
+        {"item": "xercamod:rice_pudding"}
+    ],
+    "result": "xercamod:baked_rice_pudding",
+    "experience": 0.2,
+    "cookingtime": 250
+}
+        
