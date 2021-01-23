@@ -7,7 +7,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.SingleItemRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.text.ITextComponent;
@@ -270,6 +269,10 @@ public final class Items {
     public static final IRecipeSerializer<RecipeWoodCarving> CRAFTING_SPECIAL_WOOD_CARVING =            null;
     public static final IRecipeSerializer<RecipeCarvingStation> CARVING =                               null;
 
+    public static final IRecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_SPYGLASS =  null;
+    public static final IRecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_SCYTHE =  null;
+    public static final IRecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_WARHAMMER =  null;
+
     public static IRecipeType<RecipeCarvingStation> CARVING_STATION_TYPE = IRecipeType.register("carving");
 
     static Item makeItem(String name, ItemGroup tab){
@@ -310,6 +313,9 @@ public final class Items {
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void registerRecipes(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
+
+//            CraftingHelper.register(ConfigurationCondition.Serializer.INSTANCE);
+
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeTeaSugaring::new).setRegistryName(     XercaMod.MODID + ":crafting_special_tea_sugaring"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeTeaPouring::new).setRegistryName(      XercaMod.MODID + ":crafting_special_tea_pouring"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeTeaFilling::new).setRegistryName(      XercaMod.MODID + ":crafting_special_tea_filling"));
@@ -318,6 +324,7 @@ public final class Items {
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeEnderBowFilling::new).setRegistryName( XercaMod.MODID + ":crafting_special_ender_bow_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeFlaskMilkFilling::new).setRegistryName(XercaMod.MODID + ":crafting_special_flask_milk_filling"));
             event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeWoodCarving::new).setRegistryName(     XercaMod.MODID + ":crafting_special_wood_carving"));
+
             event.getRegistry().register(new RecipeCarvingStation.Serializer<>(RecipeCarvingStation::new).setRegistryName(XercaMod.MODID + ":carving"));
 
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isSpyglassEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_spyglass"));
@@ -336,7 +343,15 @@ public final class Items {
             event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isCourtroomEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_courtroom"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isCarvedWoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_carved_wood"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isLeatherStrawEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_leather_straw"));
+            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isLeatherStrawEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_leather_straw"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isBookcaseEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_bookcase"));
+            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isCoinsEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_coins"));
+            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isRopeEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_rope"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isTerracottaTileEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_terracotta_tile"));
+
+            event.getRegistry().register(new RecipeConditionSmelting.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_smelting_food"));
+            event.getRegistry().register(new RecipeConditionCampfire.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_campfire_food"));
+            event.getRegistry().register(new RecipeConditionSmoking.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_smoking_food"));
         }
 
         @SubscribeEvent
@@ -541,66 +556,66 @@ public final class Items {
                     new CarvedWoodItem(Blocks.CARVED_SPRUCE_7, new Item.Properties().group(Items.decoTab), 7).setRegistryName("carved_spruce_7"),
                     new CarvedWoodItem(Blocks.CARVED_SPRUCE_8, new Item.Properties().group(Items.decoTab), 8).setRegistryName("carved_spruce_8"),
 
-                    new BlockItem(Blocks.BLACK_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("black_terratile"),
-                    new BlockItem(Blocks.BLUE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("blue_terratile"),
-                    new BlockItem(Blocks.BROWN_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("brown_terratile"),
-                    new BlockItem(Blocks.CYAN_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("cyan_terratile"),
-                    new BlockItem(Blocks.GRAY_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("gray_terratile"),
-                    new BlockItem(Blocks.GREEN_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("green_terratile"),
-                    new BlockItem(Blocks.LIGHT_BLUE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("light_blue_terratile"),
-                    new BlockItem(Blocks.LIGHT_GRAY_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("light_gray_terratile"),
-                    new BlockItem(Blocks.LIME_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("lime_terratile"),
-                    new BlockItem(Blocks.MAGENTA_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("magenta_terratile"),
-                    new BlockItem(Blocks.ORANGE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("orange_terratile"),
-                    new BlockItem(Blocks.PINK_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("pink_terratile"),
-                    new BlockItem(Blocks.PURPLE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("purple_terratile"),
-                    new BlockItem(Blocks.RED_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("red_terratile"),
-                    new BlockItem(Blocks.WHITE_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("white_terratile"),
-                    new BlockItem(Blocks.YELLOW_TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("yellow_terratile"),
-                    new BlockItem(Blocks.TERRATILE, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile"),
+                    new BlockConditionedItem(Blocks.BLACK_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("black_terratile"),
+                    new BlockConditionedItem(Blocks.BLUE_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("blue_terratile"),
+                    new BlockConditionedItem(Blocks.BROWN_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("brown_terratile"),
+                    new BlockConditionedItem(Blocks.CYAN_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("cyan_terratile"),
+                    new BlockConditionedItem(Blocks.GRAY_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("gray_terratile"),
+                    new BlockConditionedItem(Blocks.GREEN_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("green_terratile"),
+                    new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_blue_terratile"),
+                    new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_gray_terratile"),
+                    new BlockConditionedItem(Blocks.LIME_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("lime_terratile"),
+                    new BlockConditionedItem(Blocks.MAGENTA_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("magenta_terratile"),
+                    new BlockConditionedItem(Blocks.ORANGE_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("orange_terratile"),
+                    new BlockConditionedItem(Blocks.PINK_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("pink_terratile"),
+                    new BlockConditionedItem(Blocks.PURPLE_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("purple_terratile"),
+                    new BlockConditionedItem(Blocks.RED_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("red_terratile"),
+                    new BlockConditionedItem(Blocks.WHITE_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("white_terratile"),
+                    new BlockConditionedItem(Blocks.YELLOW_TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("yellow_terratile"),
+                    new BlockConditionedItem(Blocks.TERRATILE, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile"),
 
-                    new BlockItem(Blocks.BLACK_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("black_terratile_slab"),
-                    new BlockItem(Blocks.BLUE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("blue_terratile_slab"),
-                    new BlockItem(Blocks.BROWN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("brown_terratile_slab"),
-                    new BlockItem(Blocks.CYAN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("cyan_terratile_slab"),
-                    new BlockItem(Blocks.GRAY_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("gray_terratile_slab"),
-                    new BlockItem(Blocks.GREEN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("green_terratile_slab"),
-                    new BlockItem(Blocks.LIGHT_BLUE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("light_blue_terratile_slab"),
-                    new BlockItem(Blocks.LIGHT_GRAY_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("light_gray_terratile_slab"),
-                    new BlockItem(Blocks.LIME_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("lime_terratile_slab"),
-                    new BlockItem(Blocks.MAGENTA_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("magenta_terratile_slab"),
-                    new BlockItem(Blocks.ORANGE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("orange_terratile_slab"),
-                    new BlockItem(Blocks.PINK_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("pink_terratile_slab"),
-                    new BlockItem(Blocks.PURPLE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("purple_terratile_slab"),
-                    new BlockItem(Blocks.RED_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("red_terratile_slab"),
-                    new BlockItem(Blocks.WHITE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("white_terratile_slab"),
-                    new BlockItem(Blocks.YELLOW_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("yellow_terratile_slab"),
-                    new BlockItem(Blocks.TERRATILE_SLAB, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile_slab"),
+                    new BlockConditionedItem(Blocks.BLACK_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("black_terratile_slab"),
+                    new BlockConditionedItem(Blocks.BLUE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("blue_terratile_slab"),
+                    new BlockConditionedItem(Blocks.BROWN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("brown_terratile_slab"),
+                    new BlockConditionedItem(Blocks.CYAN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("cyan_terratile_slab"),
+                    new BlockConditionedItem(Blocks.GRAY_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("gray_terratile_slab"),
+                    new BlockConditionedItem(Blocks.GREEN_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("green_terratile_slab"),
+                    new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_blue_terratile_slab"),
+                    new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_gray_terratile_slab"),
+                    new BlockConditionedItem(Blocks.LIME_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("lime_terratile_slab"),
+                    new BlockConditionedItem(Blocks.MAGENTA_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("magenta_terratile_slab"),
+                    new BlockConditionedItem(Blocks.ORANGE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("orange_terratile_slab"),
+                    new BlockConditionedItem(Blocks.PINK_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("pink_terratile_slab"),
+                    new BlockConditionedItem(Blocks.PURPLE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("purple_terratile_slab"),
+                    new BlockConditionedItem(Blocks.RED_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("red_terratile_slab"),
+                    new BlockConditionedItem(Blocks.WHITE_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("white_terratile_slab"),
+                    new BlockConditionedItem(Blocks.YELLOW_TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("yellow_terratile_slab"),
+                    new BlockConditionedItem(Blocks.TERRATILE_SLAB, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile_slab"),
 
-                    new BlockItem(Blocks.BLACK_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("black_terratile_stairs"),
-                    new BlockItem(Blocks.BLUE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("blue_terratile_stairs"),
-                    new BlockItem(Blocks.BROWN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("brown_terratile_stairs"),
-                    new BlockItem(Blocks.CYAN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("cyan_terratile_stairs"),
-                    new BlockItem(Blocks.GRAY_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("gray_terratile_stairs"),
-                    new BlockItem(Blocks.GREEN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("green_terratile_stairs"),
-                    new BlockItem(Blocks.LIGHT_BLUE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("light_blue_terratile_stairs"),
-                    new BlockItem(Blocks.LIGHT_GRAY_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("light_gray_terratile_stairs"),
-                    new BlockItem(Blocks.LIME_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("lime_terratile_stairs"),
-                    new BlockItem(Blocks.MAGENTA_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("magenta_terratile_stairs"),
-                    new BlockItem(Blocks.ORANGE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("orange_terratile_stairs"),
-                    new BlockItem(Blocks.PINK_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("pink_terratile_stairs"),
-                    new BlockItem(Blocks.PURPLE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("purple_terratile_stairs"),
-                    new BlockItem(Blocks.RED_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("red_terratile_stairs"),
-                    new BlockItem(Blocks.WHITE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("white_terratile_stairs"),
-                    new BlockItem(Blocks.YELLOW_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("yellow_terratile_stairs"),
-                    new BlockItem(Blocks.TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab)).setRegistryName("terratile_stairs"),
+                    new BlockConditionedItem(Blocks.BLACK_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("black_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.BLUE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("blue_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.BROWN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("brown_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.CYAN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("cyan_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.GRAY_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("gray_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.GREEN_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("green_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_blue_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_gray_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.LIME_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("lime_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.MAGENTA_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("magenta_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.ORANGE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("orange_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.PINK_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("pink_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.PURPLE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("purple_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.RED_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("red_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.WHITE_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("white_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.YELLOW_TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("yellow_terratile_stairs"),
+                    new BlockConditionedItem(Blocks.TERRATILE_STAIRS, new Item.Properties().group(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile_stairs"),
 
                     new BlockItem(Blocks.CARVING_STATION, new Item.Properties().group(Items.decoTab)).setRegistryName("carving_station"),
 
                     new ItemFlask(new Item.Properties().group(ItemGroup.BREWING).maxStackSize(1).maxDamage(160), "flask", false),
                     new ItemFlask(new Item.Properties().maxStackSize(1).maxDamage(160), "flask_milk", true),
 
-                    new BlockItem(Blocks.ROPE, new Item.Properties().group(Items.decoTab)){
+                    new BlockConditionedItem(Blocks.ROPE, new Item.Properties().group(Items.decoTab), Config::isRopeEnabled){
                         public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
                             TranslationTextComponent text = new TranslationTextComponent("xercamod.rope_tooltip");
                             tooltip.add(text.mergeStyle(TextFormatting.BLUE));

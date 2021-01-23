@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_campfire_food",
+    
+    "ingredient": [
+        {"item": "minecraft:egg"}
+    ],
+    "result": "xercamod:item_fried_egg",
+    "experience": 0.2,
+    "cookingtime": 600
+}
+        

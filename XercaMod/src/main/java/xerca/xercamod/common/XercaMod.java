@@ -130,6 +130,8 @@ public class XercaMod {
                 e.printStackTrace();
             }
         }
+
+        CriteriaTriggers.register(Triggers.CONFIG_CHECK);
     }
 
 

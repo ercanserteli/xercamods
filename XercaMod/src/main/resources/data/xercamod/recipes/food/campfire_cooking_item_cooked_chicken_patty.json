@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_campfire_food",
+    
+    "ingredient": [
+        {"item": "xercamod:item_raw_chicken_patty"}
+    ],
+    "result": "xercamod:item_cooked_chicken_patty",
+    "experience": 0.2,
+    "cookingtime": 600
+}
+        
