@@ -2,6 +2,7 @@ package xerca.xercamod.common.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.SixWayBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -29,23 +30,22 @@ public class BlockRope extends SixWayBlock {
         return this.makeConnections(context.getWorld(), context.getPos());
     }
 
-    boolean isConnectable(BlockState bs){
-        return bs.isSolid() || bs.getBlock() == this;
+    boolean isConnectable(IBlockReader blockReader, BlockPos pos, Direction dir){
+        BlockState bs = blockReader.getBlockState(pos.offset(dir));
+//        if(dir == Direction.DOWN && bs.getBlock() == Blocks.LANTERN){
+//            return true;
+//        }
+        return bs.getBlock() == this || Block.hasEnoughSolidSide((IWorldReader) blockReader, pos.offset(dir), dir.getOpposite());
     }
 
     public BlockState makeConnections(IBlockReader blockReader, BlockPos pos) {
-        BlockState downBlock = blockReader.getBlockState(pos.down());
-        BlockState upBlock = blockReader.getBlockState(pos.up());
-        BlockState northBlock = blockReader.getBlockState(pos.north());
-        BlockState eastBlock = blockReader.getBlockState(pos.east());
-        BlockState southBlock = blockReader.getBlockState(pos.south());
-        BlockState westBlock = blockReader.getBlockState(pos.west());
-        return this.getDefaultState().with(DOWN, downBlock.isSolid()).
-                with(UP, isConnectable(upBlock)).
-                with(NORTH, isConnectable(northBlock)).
-                with(EAST, isConnectable(eastBlock)).
-                with(SOUTH, isConnectable(southBlock)).
-                with(WEST, isConnectable(westBlock));
+        return this.getDefaultState().
+                with(DOWN, isConnectable(blockReader, pos, Direction.DOWN)).
+                with(UP, isConnectable(blockReader, pos, Direction.UP)).
+                with(NORTH, isConnectable(blockReader, pos, Direction.NORTH)).
+                with(EAST, isConnectable(blockReader, pos, Direction.EAST)).
+                with(SOUTH, isConnectable(blockReader, pos, Direction.SOUTH)).
+                with(WEST, isConnectable(blockReader, pos, Direction.WEST));
     }
 
     /**
@@ -62,7 +62,7 @@ public class BlockRope extends SixWayBlock {
             worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 1);
             return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
         } else {
-            return stateIn.with(FACING_TO_PROPERTY_MAP.get(facing), isConnectable(facingState));
+            return stateIn.with(FACING_TO_PROPERTY_MAP.get(facing), isConnectable(worldIn, currentPos, facing));
         }
     }
 
