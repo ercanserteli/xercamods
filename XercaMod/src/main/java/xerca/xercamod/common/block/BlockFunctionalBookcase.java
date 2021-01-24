@@ -5,11 +5,10 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +24,7 @@ import net.minecraftforge.items.IItemHandler;
 import xerca.xercamod.common.tile_entity.TileEntityFunctionalBookcase;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class BlockFunctionalBookcase extends Block {
 
@@ -96,12 +96,35 @@ public class BlockFunctionalBookcase extends Block {
         return BlockRenderType.MODEL;
     }
 
+    @Override
     public boolean hasComparatorInputOverride(BlockState state) {
         return true;
     }
 
+    @Override
     public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
-        return (int)(15.0f * (((float)blockState.get(BOOK_AMOUNT)) / 6.0f));
+        return calcRedstoneFromTE(worldIn.getTileEntity(pos));
+    }
+
+    public static int calcRedstoneFromTE(TileEntity te) {
+        if(!(te instanceof TileEntityFunctionalBookcase)){
+            return 0;
+        }
+        Optional<IItemHandler> optInv = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
+        if (!optInv.isPresent()) {
+            return 0;
+        } else {
+            IItemHandler inv = optInv.get();
+            int i = 0;
+
+            for(int j = 0; j < inv.getSlots(); ++j) {
+                ItemStack itemstack = inv.getStackInSlot(j);
+                if (!itemstack.isEmpty()) {
+                    ++i;
+                }
+            }
+            return i;
+        }
     }
 }
 

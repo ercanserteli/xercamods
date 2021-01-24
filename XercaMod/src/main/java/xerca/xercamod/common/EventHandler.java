@@ -6,6 +6,9 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.recipebook.RecipeList;
 import net.minecraft.data.RecipeProvider;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.merchant.villager.VillagerProfession;
+import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -19,11 +22,13 @@ import net.minecraft.world.World;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.TableLootEntry;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.common.BasicTrade;
 import net.minecraftforge.common.util.RecipeMatcher;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -35,11 +40,31 @@ import java.util.Collection;
 
 @Mod.EventBusSubscriber(modid = XercaMod.MODID)
 class EventHandler {
-//    @SubscribeEvent
-//    public static void playerTickEvent(TickEvent.PlayerTickEvent ev) {
-//        if(ev.phase == TickEvent.Phase.START){
-//        }
-//    }
+
+    @SubscribeEvent
+    public static void villagerTradesEvent(VillagerTradesEvent ev) {
+        if(Config.isFoodEnabled()){
+            if(ev.getType().equals(VillagerProfession.FARMER)){
+                ev.getTrades().get(1).add(new BasicTrade(new ItemStack(Items.ITEM_RICE_SEEDS, 24), new ItemStack(net.minecraft.item.Items.EMERALD), 16, 2, 0.05f));
+                ev.getTrades().get(1).add(new BasicTrade(new ItemStack(Items.ITEM_TOMATO, 22), new ItemStack(net.minecraft.item.Items.EMERALD), 16, 2, 0.05f));
+                ev.getTrades().get(1).add(new BasicTrade(new ItemStack(Items.ITEM_TEA_LEAF, 18), new ItemStack(net.minecraft.item.Items.EMERALD), 16, 2, 0.05f));
+            }
+        }
+        if(Config.isScytheEnabled()){
+            if(ev.getType().equals(VillagerProfession.TOOLSMITH)){
+                ev.getTrades().get(1).add(new BasicTrade(1, new ItemStack(Items.STONE_SCYTHE), 12, 1, 0.2f));
+                ev.getTrades().get(3).add(new EnchantedItemTrade(Items.IRON_SCYTHE, 2, 3, 10, 0.2F));
+                ev.getTrades().get(4).add(new EnchantedItemTrade(Items.DIAMOND_SCYTHE, 5, 3, 15, 0.2F));
+            }
+        }
+        if(Config.isWarhammerEnabled()){
+            if(ev.getType().equals(VillagerProfession.WEAPONSMITH)){
+                ev.getTrades().get(3).add(new EnchantedItemTrade(Items.ITEM_IRON_WARHAMMER, 3, 3, 20, 0.2F));
+                ev.getTrades().get(5).add(new EnchantedItemTrade(Items.ITEM_DIAMOND_WARHAMMER, 10, 3, 30, 0.2F));
+            }
+        }
+    }
+
 
     @SubscribeEvent
     public static void craftEvent(PlayerEvent.ItemCraftedEvent ev) {
