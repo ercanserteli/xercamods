@@ -1,6 +1,8 @@
 {
   "parent": "xercamod:block/carved_wood/carved_jungle",
   "textures": {
+    "up": "xercamod:block/carved_wood/carved_jungle_2_top",
+    "down": "xercamod:block/carved_wood/carved_jungle_2_top",
     "north": "xercamod:block/carved_wood/carved_jungle_2a",
     "south": "xercamod:block/carved_wood/carved_jungle_2c",
     "west":  "xercamod:block/carved_wood/carved_jungle_2b",
