@@ -2,7 +2,7 @@
   "parent": "xercamod:block/carved_wood/carved_oak",
   "textures": {
     "up": "xercamod:block/carved_wood/carved_oak_4_top",
-    "down": "xercamod:block/carved_wood/carved_oak_4_top",
+    "down": "xercamod:block/carved_wood/carved_oak_4_bottom",
     "north": "xercamod:block/carved_wood/carved_oak_4_sidea",
     "south": "xercamod:block/carved_wood/carved_oak_4_sidec",
     "west":  "xercamod:block/carved_wood/carved_oak_4_sideb",
