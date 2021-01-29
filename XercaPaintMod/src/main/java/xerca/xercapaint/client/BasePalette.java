@@ -3,19 +3,24 @@ package xerca.xercapaint.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.text.ITextComponent;
 import xerca.xercapaint.common.PaletteUtil;
+import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
 
 import static xerca.xercapaint.common.PaletteUtil.emptinessColor;
 import static xerca.xercapaint.common.PaletteUtil.readCustomColorArrayFromNBT;
 
 public abstract class BasePalette extends Screen {
-    protected static final ResourceLocation noteGuiTextures = new ResourceLocation(XercaPaint.MODID, "textures/gui/palette.png");
+    protected static final ResourceLocation paletteTextures = new ResourceLocation(XercaPaint.MODID, "textures/gui/palette.png");
     final static int dyeSpriteX = 240;
     final static int dyeSpriteSize = 16;
     final static int brushSpriteX = 0;
@@ -86,6 +91,7 @@ public abstract class BasePalette extends Screen {
     boolean isCarryingWater = false;
     boolean dirty = false;
     PaletteUtil.Color carriedColor;
+    int carriedCustomColorId = -1;
     PaletteUtil.Color currentColor = basicColors[0];
     PaletteUtil.CustomColor[] customColors;
     boolean[] basicColorFlags;
@@ -127,7 +133,7 @@ public abstract class BasePalette extends Screen {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        Minecraft.getInstance().getTextureManager().bindTexture(noteGuiTextures);
+        Minecraft.getInstance().getTextureManager().bindTexture(paletteTextures);
 
         // Draw basic colors
         for(int i=0; i<basicColorFlags.length; i++){
@@ -199,6 +205,7 @@ public abstract class BasePalette extends Screen {
                         if(mouseButton == 0) {
                             if(customColors[i].getNumberOfColors() > 0){
                                 carriedColor = currentColor = customColors[i].getColor();
+                                carriedCustomColorId = i;
                                 isCarryingColor = true;
                             }
                         }
@@ -235,8 +242,11 @@ public abstract class BasePalette extends Screen {
                         if(isCarryingWater){
                             customColor.reset();
                         }else{
-                            customColor.mix(carriedColor);
-                            currentColor = customColor.getColor();
+                            if(carriedCustomColorId != i){
+                                customColor.mix(carriedColor);
+                                currentColor = customColor.getColor();
+                                playSound(SoundEvents.MIX);
+                            }
                         }
                         dirty = true;
                         break;
@@ -245,8 +255,21 @@ public abstract class BasePalette extends Screen {
             }
             isCarryingColor = false;
             isCarryingWater = false;
+            carriedCustomColorId = -1;
         }
         return super.mouseReleased(posX, posY, mouseButton);
+    }
+
+    protected void playSound(ISound sound){
+        Minecraft.getInstance().getSoundHandler().play(sound);
+    }
+
+    protected void playSound(SoundEvent soundEvent){
+        Minecraft m = Minecraft.getInstance();
+        if(m.world != null){
+            m.getSoundHandler().play(new SimpleSound(soundEvent, SoundCategory.MASTER, 1,
+                    0.8f + m.world.rand.nextFloat()*0.4f, Minecraft.getInstance().player.getPosition()));
+        }
     }
 
     @Override
