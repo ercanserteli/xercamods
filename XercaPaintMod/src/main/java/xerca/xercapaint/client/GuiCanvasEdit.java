@@ -2,6 +2,7 @@ package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +16,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.CallbackI;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.XercaPaint;
@@ -28,8 +30,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCanvasEdit extends BasePalette {
-    private static final ResourceLocation noteGuiTextures = new ResourceLocation(XercaPaint.MODID, "textures/gui/palette.png");
-    private int canvasX; // = 240;
+    private int canvasX;
     private int canvasY = 40;
     private int canvasWidth;
     private int canvasHeight;
@@ -46,6 +47,7 @@ public class GuiCanvasEdit extends BasePalette {
     private Button buttonCancel;
     private Button buttonFinalize;
     private int updateCount;
+    private BrushSound brushSound = null;
 
     private final PlayerEntity editingPlayer;
 
@@ -372,6 +374,11 @@ public class GuiCanvasEdit extends BasePalette {
         this.font.func_238418_a_(new TranslationTextComponent("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
     }
 
+    private void playBrushSound(){
+        brushSound = new BrushSound();
+        playSound(brushSound);
+    }
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers){
         if (this.gettingSigned) {
@@ -454,6 +461,8 @@ public class GuiCanvasEdit extends BasePalette {
 
         if(inCanvas(mouseX, mouseY)){
             clickedCanvas(mouseX, mouseY, mouseButton);
+
+            playBrushSound();
         }
 
         if(inBrushMeter(mouseX, mouseY)){
@@ -486,6 +495,10 @@ public class GuiCanvasEdit extends BasePalette {
             undoStarted = false;
             undoStack.removeFirst();
         }
+
+        if(brushSound != null){
+            brushSound.stopSound();
+        }
         return super.mouseReleased(posX, posY, mouseButton);
     }
 
@@ -499,6 +512,10 @@ public class GuiCanvasEdit extends BasePalette {
         int mouseY = (int)Math.floor(posY);
         if(inCanvas(mouseX, mouseY)){
             clickedCanvas(mouseX, mouseY, mouseButton);
+        }
+
+        if(brushSound != null){
+            brushSound.refreshFade();
         }
         return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }

@@ -1,0 +1,40 @@
+{
+  "stroke_loop": {
+    "sounds": [
+      {
+        "name": "xercapaint:brush-loop1"
+      },
+      {
+        "name": "xercapaint:brush-loop2"
+      }
+    ]
+  },
+  "mix": {
+    "sounds": [
+      {
+        "name": "xercapaint:mix1"
+      },
+      {
+        "name": "xercapaint:mix2"
+      },
+      {
+        "name": "xercapaint:mix3"
+      },
+      {
+        "name": "xercapaint:mix4"
+      },
+      {
+        "name": "xercapaint:mix5"
+      },
+      {
+        "name": "xercapaint:mix6"
+      },
+      {
+        "name": "xercapaint:mix7"
+      },
+      {
+        "name": "xercapaint:mix8"
+      }
+    ]
+  }
+}
