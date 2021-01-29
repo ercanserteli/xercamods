@@ -354,7 +354,7 @@ public class GuiMusicSheet extends Screen {
 
     private void playSound(int note, int previewInstrument, int neighborId){
         SoundEvent noteSound;
-        if(previewInstrument > 0 && previewInstrument < Items.instruments.length){
+        if(previewInstrument >= 0 && previewInstrument < Items.instruments.length){
             ItemInstrument ins = Items.instruments[previewInstrument];
             noteSound = ins.getSound(note);
 
