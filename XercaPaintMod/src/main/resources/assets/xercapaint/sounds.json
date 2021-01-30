@@ -36,5 +36,51 @@
         "name": "xercapaint:mix8"
       }
     ]
+  },
+  "color_picker": {
+    "sounds": [
+      {
+        "name": "xercapaint:picker1"
+      },
+      {
+        "name": "xercapaint:picker2"
+      },
+      {
+        "name": "xercapaint:picker3"
+      }
+    ]
+  },
+  "color_picker_suck": {
+    "sounds": [
+      {
+        "name": "xercapaint:picker_suck1"
+      },
+      {
+        "name": "xercapaint:picker_suck2"
+      },
+      {
+        "name": "xercapaint:picker_suck3"
+      }
+    ]
+  },
+  "water": {
+    "sounds": [
+      {
+        "name": "xercapaint:water1"
+      },
+      {
+        "name": "xercapaint:water2"
+      }
+    ]
+  },
+    "water_drop": {
+      "sounds": [
+      {
+        "name": "xercapaint:water_drop1"
+      },
+      {
+        "name": "xercapaint:water_drop2"
+      }
+    ]
   }
 }
