@@ -2,12 +2,10 @@ package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.text.ITextComponent;
@@ -16,9 +14,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.system.CallbackI;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.PaletteUtil;
+import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.packets.CanvasUpdatePacket;
 
@@ -110,6 +108,10 @@ public class GuiCanvasEdit extends BasePalette {
 
             long secs = System.currentTimeMillis()/1000;
             this.name = "" + player.getUniqueID().toString() + "_" + secs;
+        }
+
+        if(paletteComplete){
+            XercaPaint.LOGGER.warn("Is complete");
         }
     }
 
@@ -300,52 +302,59 @@ public class GuiCanvasEdit extends BasePalette {
         }else if(isCarryingWater){
             waterColor.setGLColor();
             blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
-        }else{
-            if(inCanvas(mouseX, mouseY)){
-                // Render drawing outline
-                int x = 0;
-                int y = 0;
-                int outlineSize = 0;
-                int pixelHalf = canvasPixelScale/2;
-                if(brushSize == 0){
-                    x = ((mouseX - canvasX)/ canvasPixelScale)*canvasPixelScale + canvasX - 1;
-                    y = ((mouseY - canvasY)/ canvasPixelScale)*canvasPixelScale + canvasY - 1;
-                    outlineSize = canvasPixelScale + 2;
-                }
-                if(brushSize == 1){
-                    x = (((mouseX - canvasX + pixelHalf) / canvasPixelScale) - 1)*canvasPixelScale + canvasX - 1;
-                    y = (((mouseY - canvasY + pixelHalf) / canvasPixelScale) - 1)*canvasPixelScale + canvasY - 1;
-                    outlineSize = canvasPixelScale*2 + 2;
-                }
-                if(brushSize == 2){
-                    x = (((mouseX - canvasX + pixelHalf) / canvasPixelScale) - 2)*canvasPixelScale + canvasX - 1;
-                    y = (((mouseY - canvasY + pixelHalf) / canvasPixelScale) - 2)*canvasPixelScale + canvasY - 1;
-                    outlineSize = canvasPixelScale*4 + 2;
-                }
-                if(brushSize == 3){
-                    x = (((mouseX - canvasX)/ canvasPixelScale) - 2)*canvasPixelScale + canvasX - 1;
-                    y = (((mouseY - canvasY)/ canvasPixelScale) - 2)*canvasPixelScale + canvasY - 1;
-                    outlineSize = canvasPixelScale*5 + 2;
-                }
-
-                Vector2f textureVec;
-                if(canvasPixelScale == 10){
-                    textureVec = outlinePoss1[brushSize];
-                }
-                else{
-                    textureVec = outlinePoss2[brushSize];
-                }
-
-                GlStateManager.color4f(0.3F, 0.3F, 0.3F, 1.0F);
-                blit(matrixStack, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
-
-            }
-
+        }else if(isPickingColor){
+            drawOutline(matrixStack, mouseX, mouseY, 0);
+            PaletteUtil.Color.WHITE.setGLColor();
+            blit(matrixStack, mouseX, mouseY-colorPickerSize, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
+        }
+        else{
+            drawOutline(matrixStack, mouseX, mouseY, brushSize);
             fill(matrixStack, mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
             GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = brushSpriteY - brushSpriteSize*brushSize;
             blit(matrixStack, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize);
+        }
+    }
+
+    private void drawOutline(MatrixStack matrixStack, int mouseX, int mouseY, int brushSize){
+        if(inCanvas(mouseX, mouseY)){
+            // Render drawing outline
+            int x = 0;
+            int y = 0;
+            int outlineSize = 0;
+            int pixelHalf = canvasPixelScale/2;
+            if(brushSize == 0){
+                x = ((mouseX - canvasX)/ canvasPixelScale)*canvasPixelScale + canvasX - 1;
+                y = ((mouseY - canvasY)/ canvasPixelScale)*canvasPixelScale + canvasY - 1;
+                outlineSize = canvasPixelScale + 2;
+            }
+            if(brushSize == 1){
+                x = (((mouseX - canvasX + pixelHalf) / canvasPixelScale) - 1)*canvasPixelScale + canvasX - 1;
+                y = (((mouseY - canvasY + pixelHalf) / canvasPixelScale) - 1)*canvasPixelScale + canvasY - 1;
+                outlineSize = canvasPixelScale*2 + 2;
+            }
+            if(brushSize == 2){
+                x = (((mouseX - canvasX + pixelHalf) / canvasPixelScale) - 2)*canvasPixelScale + canvasX - 1;
+                y = (((mouseY - canvasY + pixelHalf) / canvasPixelScale) - 2)*canvasPixelScale + canvasY - 1;
+                outlineSize = canvasPixelScale*4 + 2;
+            }
+            if(brushSize == 3){
+                x = (((mouseX - canvasX)/ canvasPixelScale) - 2)*canvasPixelScale + canvasX - 1;
+                y = (((mouseY - canvasY)/ canvasPixelScale) - 2)*canvasPixelScale + canvasY - 1;
+                outlineSize = canvasPixelScale*5 + 2;
+            }
+
+            Vector2f textureVec;
+            if(canvasPixelScale == 10){
+                textureVec = outlinePoss1[brushSize];
+            }
+            else{
+                textureVec = outlinePoss2[brushSize];
+            }
+
+            GlStateManager.color4f(0.3F, 0.3F, 0.3F, 1.0F);
+            blit(matrixStack, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
         }
     }
 
@@ -460,9 +469,20 @@ public class GuiCanvasEdit extends BasePalette {
         undoStack.push(pixels.clone());
 
         if(inCanvas(mouseX, mouseY)){
-            clickedCanvas(mouseX, mouseY, mouseButton);
-
-            playBrushSound();
+            if(isPickingColor){
+                int x = (mouseX - canvasX)/ canvasPixelScale;
+                int y = (mouseY - canvasY)/ canvasPixelScale;
+                if(x >= 0 && y >= 0 && x < canvasPixelWidth && y < canvasPixelHeight){
+                    int color = getPixelAt(x, y);
+                    carriedColor = new PaletteUtil.Color(color);
+                    setCarryingColor();
+                    playSound(SoundEvents.COLOR_PICKER_SUCK);
+                }
+            }
+            else{
+                clickedCanvas(mouseX, mouseY, mouseButton);
+                playBrushSound();
+            }
         }
 
         if(inBrushMeter(mouseX, mouseY)){
@@ -507,15 +527,16 @@ public class GuiCanvasEdit extends BasePalette {
         if(gettingSigned){
             return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
         }
+        if(!isCarryingColor && !isCarryingWater && !isPickingColor){
+            int mouseX = (int)Math.floor(posX);
+            int mouseY = (int)Math.floor(posY);
+            if(inCanvas(mouseX, mouseY)){
+                clickedCanvas(mouseX, mouseY, mouseButton);
+            }
 
-        int mouseX = (int)Math.floor(posX);
-        int mouseY = (int)Math.floor(posY);
-        if(inCanvas(mouseX, mouseY)){
-            clickedCanvas(mouseX, mouseY, mouseButton);
-        }
-
-        if(brushSound != null){
-            brushSound.refreshFade();
+            if(brushSound != null){
+                brushSound.refreshFade();
+            }
         }
         return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }

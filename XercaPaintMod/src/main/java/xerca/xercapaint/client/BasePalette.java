@@ -29,6 +29,11 @@ public abstract class BasePalette extends Screen {
     final static int dropSpriteWidth = 6;
     final static int paletteWidth = 157;
     final static int paletteHeight = 193;
+    static final int colorPickerSpriteX = 25;
+    static final int colorPickerSpriteY = 242;
+    static final int colorPickerPosX = 98;
+    static final int colorPickerPosY = 62;
+    static final int colorPickerSize = 14;
     static int paletteX;
     static int paletteY;
     final static PaletteUtil.Color waterColor = new PaletteUtil.Color(53, 118, 191);
@@ -87,6 +92,7 @@ public abstract class BasePalette extends Screen {
     final static float basicColorRadius = 11.f;
     final static float customColorRadius = 6.5f;
 
+    boolean isPickingColor = false;
     boolean isCarryingColor = false;
     boolean isCarryingWater = false;
     boolean dirty = false;
@@ -95,6 +101,7 @@ public abstract class BasePalette extends Screen {
     PaletteUtil.Color currentColor = basicColors[0];
     PaletteUtil.CustomColor[] customColors;
     boolean[] basicColorFlags;
+    boolean paletteComplete = false;
 
     BasePalette(ITextComponent titleIn, CompoundNBT paletteTag) {
         super(titleIn);
@@ -113,9 +120,11 @@ public abstract class BasePalette extends Screen {
             }
 
             if(paletteTag.contains("basic")){
+                paletteComplete = true;
                 byte[] basics = paletteTag.getByteArray("basic");
                 for(int i=0; i<basics.length; i++){
                     basicColorFlags[i] = basics[i] > 0;
+                    paletteComplete &= basicColorFlags[i];
                 }
             }
         }else{
@@ -160,6 +169,11 @@ public abstract class BasePalette extends Screen {
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         blit(matrixStack, paletteX, paletteY, 0, 0, paletteWidth, paletteHeight);
+
+        // Draw color picker
+        if(paletteComplete){
+            blit(matrixStack, paletteX + colorPickerPosX, paletteY + colorPickerPosY, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
+        }
     }
 
     protected boolean superMouseClicked(double posX, double posY, int mouseButton){
@@ -192,7 +206,8 @@ public abstract class BasePalette extends Screen {
                 if(basicColorFlags[i] && sqrDist(clickVec, basicColorCenters[i]) <= sqrBasicRadius){
                     if(mouseButton == 0){
                         carriedColor = currentColor = basicColors[i];
-                        isCarryingColor = true;
+                        setCarryingColor();
+                        playSound(SoundEvents.MIX, 0.6f);
                     }
                     colorFound = true;
                     break;
@@ -206,7 +221,8 @@ public abstract class BasePalette extends Screen {
                             if(customColors[i].getNumberOfColors() > 0){
                                 carriedColor = currentColor = customColors[i].getColor();
                                 carriedCustomColorId = i;
-                                isCarryingColor = true;
+                                setCarryingColor();
+                                playSound(SoundEvents.MIX, 0.3f);
                             }
                         }
                         colorFound = true;
@@ -218,12 +234,40 @@ public abstract class BasePalette extends Screen {
             if(!colorFound) {
                 if(sqrDist(clickVec, waterCenter) <= sqrCustomRadius){
                     if(mouseButton == 0) {
-                        isCarryingWater = true;
+                        setCarryingWater();
+                        playSound(SoundEvents.WATER);
+                    }
+                }
+            }
+
+            if(paletteComplete && !isCarryingWater && !isCarryingColor){
+                if(x >= colorPickerPosX && x < colorPickerPosX + colorPickerSize && y >= colorPickerPosY && y < colorPickerPosY + colorPickerSize){
+                    if(mouseButton == 0) {
+                        setPickingColor();
+                        playSound(SoundEvents.COLOR_PICKER);
                     }
                 }
             }
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    protected void setCarryingWater(){
+        isCarryingWater = true;
+        isCarryingColor = false;
+        isPickingColor = false;
+    }
+
+    protected void setCarryingColor(){
+        isCarryingWater = false;
+        isCarryingColor = true;
+        isPickingColor = false;
+    }
+
+    protected void setPickingColor(){
+        isCarryingWater = false;
+        isCarryingColor = false;
+        isPickingColor = true;
     }
 
     @Override
@@ -241,6 +285,7 @@ public abstract class BasePalette extends Screen {
                         PaletteUtil.CustomColor customColor = customColors[i];
                         if(isCarryingWater){
                             customColor.reset();
+                            playSound(SoundEvents.WATER_DROP);
                         }else{
                             if(carriedCustomColorId != i){
                                 customColor.mix(carriedColor);
@@ -265,9 +310,13 @@ public abstract class BasePalette extends Screen {
     }
 
     protected void playSound(SoundEvent soundEvent){
+        playSound(soundEvent, 1.0f);
+    }
+
+    protected void playSound(SoundEvent soundEvent, float volume){
         Minecraft m = Minecraft.getInstance();
         if(m.world != null){
-            m.getSoundHandler().play(new SimpleSound(soundEvent, SoundCategory.MASTER, 1,
+            m.getSoundHandler().play(new SimpleSound(soundEvent, SoundCategory.MASTER, volume,
                     0.8f + m.world.rand.nextFloat()*0.4f, Minecraft.getInstance().player.getPosition()));
         }
     }

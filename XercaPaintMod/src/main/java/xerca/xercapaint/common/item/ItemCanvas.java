@@ -99,15 +99,13 @@ public class ItemCanvas extends HangingEntityItem {
             }
 
             if (!world.isRemote) {
-            EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
+                EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
 
-            if (entityCanvas.onValidSurface()) {
+                if (entityCanvas.onValidSurface()) {
                     entityCanvas.playPlaceSound();
                     world.addEntity(entityCanvas);
-
-                itemstack.shrink(1);
-            }
-
+                    itemstack.shrink(1);
+                }
             }
         }
         return ActionResultType.SUCCESS;
