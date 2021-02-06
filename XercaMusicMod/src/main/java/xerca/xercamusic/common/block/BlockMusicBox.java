@@ -122,13 +122,16 @@ public class BlockMusicBox extends HorizontalBlock {
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack heldItem = player.getHeldItem(hand);
-        if (heldItem.getItem() == Items.MUSIC_SHEET || heldItem.getItem() instanceof ItemInstrument) {
-            return ActionResultType.PASS;
-        }
         if (hit.getFace() == Direction.UP && state.get(HAS_MUSIC)) {
+            if(heldItem.getItem() instanceof ItemInstrument && !state.get(HAS_INSTRUMENT)){
+                return ActionResultType.PASS;
+            }
             ejectItem(worldIn, pos, state, true, false);
             return ActionResultType.SUCCESS;
         } else if (hit.getFace() == state.get(HORIZONTAL_FACING).getOpposite() && state.get(HAS_INSTRUMENT)) {
+            if(heldItem.getItem() == Items.MUSIC_SHEET && !state.get(HAS_MUSIC)){
+                return ActionResultType.PASS;
+            }
             worldIn.playEvent(null, 1006, pos, 0); //play door open sound
             ejectItem(worldIn, pos, state, false, false);
             return ActionResultType.SUCCESS;

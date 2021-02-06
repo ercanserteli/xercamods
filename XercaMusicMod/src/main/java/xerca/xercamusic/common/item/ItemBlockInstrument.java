@@ -42,7 +42,7 @@ public class ItemBlockInstrument extends ItemInstrument{
      */
     public ActionResultType onItemUse(ItemUseContext context) {
         BlockState blockState = context.getWorld().getBlockState(context.getPos());
-        if(blockState.getBlock() == Blocks.MUSIC_BOX){
+        if(blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.get(BlockMusicBox.HAS_INSTRUMENT)){
             BlockMusicBox.insertInstrument(context.getWorld(), context.getPos(), blockState, this);
             if(context.getPlayer() != null && !context.getPlayer().abilities.isCreativeMode){
                 context.getItem().shrink(1);
