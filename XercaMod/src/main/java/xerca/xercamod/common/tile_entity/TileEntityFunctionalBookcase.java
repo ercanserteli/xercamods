@@ -59,7 +59,7 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
     @Nonnull
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return inventoryCap.cast();// CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
+            return inventoryCap.cast();
         }
         return super.getCapability(capability, facing);
     }
@@ -84,7 +84,7 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
         int i = getBookAmount();
         BlockState st = Blocks.BLOCK_BOOKCASE.getDefaultState().with(BlockFunctionalBookcase.BOOK_AMOUNT, i);
         this.world.setBlockState(this.pos, st);
-        this.world.updateComparatorOutputLevel(this.pos, st.getBlock());
+        this.world.updateComparatorOutputLevel(this.pos, st.getBlock());//todo check if needed
         this.markDirty();
     }
 
