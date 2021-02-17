@@ -111,9 +111,11 @@ class EventHandler {
             serverPlayer.getRecipeBook().remove(recipesToRemove, serverPlayer);
             for(IRecipe<?> r : recipesToRemove){
                 Advancement advancement = serverPlayer.server.getAdvancementManager().getAdvancement(new ResourceLocation(XercaMod.MODID, "recipes/" + r.getId().getPath()));
-                serverPlayer.getAdvancements().revokeCriterion(advancement, "config");
-                serverPlayer.getAdvancements().revokeCriterion(advancement, "has_item");
-                serverPlayer.getAdvancements().revokeCriterion(advancement, "has_the_recipe");
+                if(advancement != null){
+                    serverPlayer.getAdvancements().revokeCriterion(advancement, "config");
+                    serverPlayer.getAdvancements().revokeCriterion(advancement, "has_item");
+                    serverPlayer.getAdvancements().revokeCriterion(advancement, "has_the_recipe");
+                }
             }
         }
     }
