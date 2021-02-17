@@ -4,9 +4,10 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemScythe;
 
-public class EnchantmentGuillotine extends Enchantment {
+public class EnchantmentGuillotine extends EnchantmentWithConfig {
     public EnchantmentGuillotine(Rarity rarityIn, EquipmentSlotType... slots) {
         super(rarityIn, EnchantmentType.WEAPON, slots);
         this.setRegistryName("enchantment_guillotine");
@@ -44,25 +45,13 @@ public class EnchantmentGuillotine extends Enchantment {
         return super.canApplyTogether(ench);
     }
 
-    /**
-     * This applies specifically to applying at the enchanting table. The other method {@link #canApply(ItemStack)}
-     * applies for <i>all possible</i> enchantments.
-     * @param stack
-     * @return
-     */
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack) {
-        return stack.getItem() instanceof ItemScythe;
+    protected boolean isConfigEnabled() {
+        return Config.isScytheEnabled();
     }
 
-    /**
-     * This applies specifically to applying at the enchanting table. The other method {@link #canApply(ItemStack)}
-     * applies for <i>all possible</i> enchantments.
-     * @param stack
-     * @return
-     */
     @Override
-    public boolean canApply(ItemStack stack) {
-        return this.canApplyAtEnchantingTable(stack);
+    protected boolean isItemCompatible(ItemStack stack) {
+        return stack.getItem() instanceof ItemScythe;
     }
 }

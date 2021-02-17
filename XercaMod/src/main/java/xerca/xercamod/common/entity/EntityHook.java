@@ -258,12 +258,12 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             }
         }
 
-        if (this.caughtEntity != null) {
+        if (this.caughtEntity != null && this.angler != null) {
             pullEntity();
             return;
         }
         if (this.inGround) {
-            if(hasGrappling){
+            if(hasGrappling && this.angler != null){
                 pullUser();
             }else{
                 this.remove();
