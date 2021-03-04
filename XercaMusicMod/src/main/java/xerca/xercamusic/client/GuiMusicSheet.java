@@ -142,10 +142,13 @@ public class GuiMusicSheet extends Screen {
     GuiMusicSheet(PlayerEntity player, CompoundNBT noteTag, ITextComponent title) {
         super(title);
         this.editingPlayer = player;
-        if (noteTag != null && !noteTag.isEmpty()) {
+        if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("music")) {
             byte[] nbtMusic = noteTag.getByteArray("music");
             this.length = noteTag.getInt("length");
             this.pause = noteTag.getByte("pause");
+            if(pause <= 0 || pause > 20){
+                pause = 5;
+            }
             this.isSigned = noteTag.getInt("generation") > 0;
             this.noteTitle = noteTag.getString("title");
             this.authorName = noteTag.getString("author");
