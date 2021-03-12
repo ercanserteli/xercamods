@@ -26,7 +26,7 @@ import xerca.xercamusic.common.packets.MusicBoxUpdatePacket;
 public class TileEntityMusicBox extends TileEntity implements ITickableTileEntity {
     private boolean isPlaying = false;
     private boolean oldPoweredState = false;
-    private boolean stopPowering = false;
+    private boolean isPowering = false;
     private boolean firstBlockUpdate = true;
 
     private ItemStack noteStack = ItemStack.EMPTY;
@@ -94,14 +94,14 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
     private void stopPowering(){
         BlockState state = this.getBlockState();
         world.setBlockState(pos, state.with(BlockMusicBox.POWERING, false));
-        stopPowering = false;
+        isPowering = false;
         poweringAge = 0;
     }
 
     @Override
     public void tick() {
         // Powering state timer should work in all cases
-        if(stopPowering){
+        if(isPowering){
             if(poweringAge >= 20){
                 stopPowering();
                 return;
@@ -148,7 +148,7 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
                     mTime = 0;
                     poweringAge = 0;
                     isPlaying = false;
-                    stopPowering = true;
+                    isPowering = true;
 
                     //if(!world.isRemote) {
                         Direction rightSide = state.get(BlockMusicBox.HORIZONTAL_FACING).rotateY();
@@ -251,6 +251,9 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
             firstBlockUpdate = false;
             CompoundNBT nbt = new CompoundNBT();
             this.write(nbt);
+            if(world != null && getBlockState().get(BlockMusicBox.POWERING)){
+                stopPowering();
+            }
             return new SUpdateTileEntityPacket(this.getPos(), 0, nbt);
         }
         else return null;
@@ -259,5 +262,8 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         this.read(getBlockState(), pkt.getNbtCompound());
+        if(world != null && getBlockState().get(BlockMusicBox.POWERING)){
+            stopPowering();
+        }
     }
 }
