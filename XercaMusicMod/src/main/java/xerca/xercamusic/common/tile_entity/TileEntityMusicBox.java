@@ -4,6 +4,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +27,7 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
     private boolean isPlaying = false;
     private boolean oldPoweredState = false;
     private boolean stopPowering = false;
+    private boolean firstBlockUpdate = true;
 
     private ItemStack noteStack = ItemStack.EMPTY;
     private ItemInstrument instrument;
@@ -240,4 +243,21 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
         XercaMusic.NETWORK_HANDLER.send(PacketDistributor.TRACKING_CHUNK.with(() -> (Chunk) world.getChunk(pos)), packet);
     }
 
+    //fix to sync client state after the block was moved
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        //send update only on first block update to not send more packets than needed as updateClient() already does most of the functionality
+        if (firstBlockUpdate) {
+            firstBlockUpdate = false;
+            CompoundNBT nbt = new CompoundNBT();
+            this.write(nbt);
+            return new SUpdateTileEntityPacket(this.getPos(), 0, nbt);
+        }
+        else return null;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        this.read(getBlockState(), pkt.getNbtCompound());
+    }
 }
