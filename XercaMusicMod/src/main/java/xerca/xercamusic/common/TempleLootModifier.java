@@ -1,10 +1,10 @@
 package xerca.xercamusic.common;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import xerca.xercamusic.common.item.Items;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TempleLootModifier extends LootModifier {
 
-    protected TempleLootModifier(ILootCondition[] conditionsIn) {
+    protected TempleLootModifier(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
 
@@ -25,7 +25,7 @@ public class TempleLootModifier extends LootModifier {
 
     static class Serializer extends GlobalLootModifierSerializer<TempleLootModifier> {
         @Override
-        public TempleLootModifier read(ResourceLocation name, JsonObject object, ILootCondition[] conditionsIn) {
+        public TempleLootModifier read(ResourceLocation name, JsonObject object, LootItemCondition[] conditionsIn) {
             return new TempleLootModifier(conditionsIn);
         }
 

@@ -1,6 +1,6 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercamusic.common.XercaMusic;
 
 import java.util.Arrays;
@@ -30,10 +30,10 @@ public class MusicUpdatePacket {
         this.messageIsValid = false;
     }
 
-    public static MusicUpdatePacket decode(PacketBuffer buf) {
+    public static MusicUpdatePacket decode(FriendlyByteBuf buf) {
         MusicUpdatePacket result = new MusicUpdatePacket();
         try {
-            result.title = buf.readString(255);
+            result.title = buf.readUtf(255);
             result.signed = buf.readBoolean();
             result.pause = buf.readByte();
             result.length = buf.readInt();
@@ -49,8 +49,8 @@ public class MusicUpdatePacket {
         return result;
     }
 
-    public static void encode(MusicUpdatePacket pkt, PacketBuffer buf) {
-        buf.writeString(pkt.title);
+    public static void encode(MusicUpdatePacket pkt, FriendlyByteBuf buf) {
+        buf.writeUtf(pkt.title);
         buf.writeBoolean(pkt.signed);
         buf.writeByte(pkt.pause);
         buf.writeInt(pkt.length);

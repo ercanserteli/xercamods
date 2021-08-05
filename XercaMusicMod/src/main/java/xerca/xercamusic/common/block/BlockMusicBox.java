@@ -1,68 +1,73 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
+import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class BlockMusicBox extends HorizontalBlock {
+public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty POWERING = BooleanProperty.create("powering");
     public static final BooleanProperty HAS_MUSIC = BooleanProperty.create("has_music");
     public static final BooleanProperty HAS_INSTRUMENT = BooleanProperty.create("has_instrument");
 
     public BlockMusicBox() {
-        super(Properties.create(Material.WOOD).hardnessAndResistance(2.f, 6.f).sound(SoundType.WOOD));
-        this.setDefaultState(this.stateContainer.getBaseState().with(POWERED, false).
-                with(HAS_MUSIC, false).with(HAS_INSTRUMENT, false).with(HORIZONTAL_FACING, Direction.NORTH).with(POWERING, false));
+        super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD));
+        this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).
+                setValue(HAS_MUSIC, false).setValue(HAS_INSTRUMENT, false).setValue(FACING, Direction.NORTH).setValue(POWERING, false));
         this.setRegistryName("music_box");
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(POWERED, context.getWorld().isBlockPowered(context.getPos())).
-                with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing());
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos())).
+                setValue(FACING, context.getHorizontalDirection());
     }
 
     @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if(worldIn != null && !worldIn.isRemote){
-            boolean powered = worldIn.isBlockPowered(pos);
-            if(powered && state.get(POWERING)){
+    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        if(worldIn != null && !worldIn.isClientSide){
+            boolean powered = worldIn.hasNeighborSignal(pos);
+            if(powered && state.getValue(POWERING)){
                 return;
             }
-            if (powered != state.get(POWERED)) {
-                worldIn.setBlockState(pos, state.with(POWERED, powered), 2);
+            if (powered != state.getValue(POWERED)) {
+                worldIn.setBlock(pos, state.setValue(POWERED, powered), 2);
             }
         }
     }
 
-    private void ejectItem(World world, BlockPos pos, BlockState state, boolean isMusic, boolean isBreaking) {
-        if (!world.isRemote) {
-            TileEntity tileentity = world.getTileEntity(pos);
+    private void ejectItem(Level world, BlockPos pos, BlockState state, boolean isMusic, boolean isBreaking) {
+        if (!world.isClientSide) {
+            BlockEntity tileentity = world.getBlockEntity(pos);
             if (tileentity instanceof TileEntityMusicBox) {
                 TileEntityMusicBox te = (TileEntityMusicBox)tileentity;
                 ItemStack itemstack = isMusic ? te.getNoteStack().copy() : new ItemStack(te.getInstrument());
@@ -70,11 +75,11 @@ public class BlockMusicBox extends HorizontalBlock {
                     if (!isBreaking) {
                         if (isMusic) {
                             te.removeNoteStack();
-                            world.setBlockState(pos, state.with(HAS_MUSIC, Boolean.FALSE), 3);
+                            world.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.FALSE), 3);
                         }
                         else {
                             te.removeInstrument();
-                            world.setBlockState(pos, state.with(HAS_INSTRUMENT, Boolean.FALSE), 3);
+                            world.setBlock(pos, state.setValue(HAS_INSTRUMENT, Boolean.FALSE), 3);
                         }
                     }
 
@@ -83,116 +88,118 @@ public class BlockMusicBox extends HorizontalBlock {
                     if(isMusic){
                         entityitem = new ItemEntity(world, (double)pos.getX(), (double)pos.getY() + 1, (double)pos.getZ(), itemstack);
 
-                        entityitem.setMotion(world.rand.nextDouble() * 0.2 - 0.1, 0.1, world.rand.nextDouble() * 0.2 - 0.1);
+                        entityitem.setDeltaMovement(world.random.nextDouble() * 0.2 - 0.1, 0.1, world.random.nextDouble() * 0.2 - 0.1);
                     }
                     else{
-                        Direction backFace = state.get(HORIZONTAL_FACING).getOpposite();
-                        int xOffset = backFace.getXOffset();
-                        int zOffset = backFace.getZOffset();
+                        Direction backFace = state.getValue(FACING).getOpposite();
+                        int xOffset = backFace.getStepX();
+                        int zOffset = backFace.getStepZ();
 
                         entityitem = new ItemEntity(world, pos.getX() + xOffset*0.625, pos.getY() + 0.5D, pos.getZ() + zOffset*0.625, itemstack);
-                        double speed = world.rand.nextDouble() * 0.1 + 0.2;
-                        entityitem.setMotion(xOffset * speed, 0.1, zOffset * speed);
+                        double speed = world.random.nextDouble() * 0.1 + 0.2;
+                        entityitem.setDeltaMovement(xOffset * speed, 0.1, zOffset * speed);
                     }
 
-                    entityitem.setDefaultPickupDelay();
-                    world.addEntity(entityitem);
+                    entityitem.setDefaultPickUpDelay();
+                    world.addFreshEntity(entityitem);
                 }
             }
         }
     }
 
-    public static void insertMusic(IWorld worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
-        TileEntity tileentity = worldIn.getTileEntity(pos);
+    public static void insertMusic(LevelAccessor worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
+        BlockEntity tileentity = worldIn.getBlockEntity(pos);
         if (tileentity instanceof TileEntityMusicBox) {
             ((TileEntityMusicBox) tileentity).setNoteStack(noteStack);
-            worldIn.setBlockState(pos, state.with(HAS_MUSIC, Boolean.TRUE), 3);
+            worldIn.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.TRUE), 3);
         }
     }
 
-    public static void insertInstrument(IWorld worldIn, BlockPos pos, BlockState state, Item instrument) {
-        TileEntity tileentity = worldIn.getTileEntity(pos);
+    public static void insertInstrument(LevelAccessor worldIn, BlockPos pos, BlockState state, Item instrument) {
+        BlockEntity tileentity = worldIn.getBlockEntity(pos);
         if (tileentity instanceof TileEntityMusicBox) {
             ((TileEntityMusicBox) tileentity).setInstrument(instrument);
-            worldIn.setBlockState(pos, state.with(HAS_INSTRUMENT, Boolean.TRUE), 3);
+            worldIn.setBlock(pos, state.setValue(HAS_INSTRUMENT, Boolean.TRUE), 3);
         }
-        worldIn.playEvent(null, 1012, pos, 0); // play door close sound
+        worldIn.levelEvent(null, 1012, pos, 0); // play door close sound
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        ItemStack heldItem = player.getHeldItem(hand);
-        if (hit.getFace() == Direction.UP && state.get(HAS_MUSIC)) {
-            if(heldItem.getItem() instanceof ItemInstrument && !state.get(HAS_INSTRUMENT)){
-                return ActionResultType.PASS;
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        ItemStack heldItem = player.getItemInHand(hand);
+        if (hit.getDirection() == Direction.UP && state.getValue(HAS_MUSIC)) {
+            if(heldItem.getItem() instanceof ItemInstrument && !state.getValue(HAS_INSTRUMENT)){
+                return InteractionResult.PASS;
             }
             ejectItem(worldIn, pos, state, true, false);
-            return ActionResultType.SUCCESS;
-        } else if (hit.getFace() == state.get(HORIZONTAL_FACING).getOpposite() && state.get(HAS_INSTRUMENT)) {
-            if(heldItem.getItem() == Items.MUSIC_SHEET && !state.get(HAS_MUSIC)){
-                return ActionResultType.PASS;
+            return InteractionResult.SUCCESS;
+        } else if (hit.getDirection() == state.getValue(FACING).getOpposite() && state.getValue(HAS_INSTRUMENT)) {
+            if(heldItem.getItem() == Items.MUSIC_SHEET && !state.getValue(HAS_MUSIC)){
+                return InteractionResult.PASS;
             }
-            worldIn.playEvent(null, 1006, pos, 0); //play door open sound
+            worldIn.levelEvent(null, 1006, pos, 0); //play door open sound
             ejectItem(worldIn, pos, state, false, false);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != Blocks.MUSIC_BOX || newState.getBlock() != Blocks.MUSIC_BOX) {
             ejectItem(worldIn, pos, state, true, true);
             ejectItem(worldIn, pos, state, false, true);
 
-            super.onReplaced(state, worldIn, pos, newState, isMoving);
+            super.onRemove(state, worldIn, pos, newState, isMoving);
         }
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(POWERED, HAS_MUSIC, HAS_INSTRUMENT, HORIZONTAL_FACING, POWERING);
-    }
-
-    // Called when the block is placed or loaded client side to get the tile entity for the block
-    // Should return a new instance of the tile entity for the block
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityMusicBox();
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(POWERED, HAS_MUSIC, HAS_INSTRUMENT, FACING, POWERING);
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    /**
-     * Can this block provide power. Only wire currently seems to have this change based on its state.
-     * @deprecated call via {@link BlockState#canProvidePower()} whenever possible. Implementing/overriding is fine.
-     */
-    @Override
-    public boolean canProvidePower(BlockState state) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 
     @Override
-    public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        return blockState.getWeakPower(blockAccess, pos, side);
+    public int getDirectSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
+        return blockState.getSignal(blockAccess, pos, side);
     }
 
     @Override
-    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        if (!blockState.get(POWERING)) {
+    public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
+        if (!blockState.getValue(POWERING)) {
             return 0;
         } else {
-            return blockState.get(HORIZONTAL_FACING).rotateYCCW() == side ? 15 : 0;
+            return blockState.getValue(FACING).getCounterClockWise() == side ? 15 : 0;
         }
     }
 
     // This block should NOT check for weak power, otherwise it transmits input to output and also gets powered by itself
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new TileEntityMusicBox(blockPos, blockState);
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+//        if (level.isClientSide()) {
+//            return null;
+//        }
+        return (level1, blockPos, blockState1, t) -> {
+            if (t instanceof TileEntityMusicBox) {
+                TileEntityMusicBox.tick(level1, blockPos, blockState1, (TileEntityMusicBox) t);
+            }
+        };
     }
 }

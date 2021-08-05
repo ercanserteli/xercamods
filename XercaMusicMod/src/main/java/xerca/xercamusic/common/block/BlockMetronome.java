@@ -1,123 +1,133 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class BlockMetronome extends Block {
+public class BlockMetronome extends BaseEntityBlock {
     public static final IntegerProperty BPM = IntegerProperty.create("bpm", 0, 10);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-    public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public BlockMetronome() {
-        super(Properties.create(Material.WOOD).hardnessAndResistance(2.f, 6.f).sound(SoundType.WOOD));
-        this.setDefaultState(this.stateContainer.getBaseState().with(BPM, 0).with(POWERED, false).with(FACING, Direction.NORTH));
+        super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD));
+        this.registerDefaultState(this.stateDefinition.any().setValue(BPM, 0).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
         this.setRegistryName("block_metronome");
     }
 
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite()).with(POWERED, context.getWorld().isBlockPowered(context.getPos()));
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
 
     @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        boolean flag = worldIn.isBlockPowered(pos);
-        if (flag != state.get(POWERED)) {
+    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        boolean flag = worldIn.hasNeighborSignal(pos);
+        if (flag != state.getValue(POWERED)) {
             if (flag) {
                 // unpowered to powered
             }
 
-            worldIn.setBlockState(pos, state.with(POWERED, flag), 3);
+            worldIn.setBlock(pos, state.setValue(POWERED, flag), 3);
         }
 
     }
 
 
-    public void setBpm(BlockState state, World worldIn, BlockPos pos, int bpm) {
-        if (!worldIn.isRemote) {
+    public void setBpm(BlockState state, Level worldIn, BlockPos pos, int bpm) {
+        if (!worldIn.isClientSide) {
             if (bpm >= 0 && bpm <= 10) {
-                state = state.with(BPM, bpm);
-                worldIn.setBlockState(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
+                state = state.setValue(BPM, bpm);
+                worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
             }
         }
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (worldIn.isRemote) {
-            return ActionResultType.SUCCESS;
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (worldIn.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
-            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundCategory.BLOCKS, 1.0f, 1.0f);
+            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
-            if(player.getHeldItem(hand).getItem() == Items.MUSIC_SHEET){
-                note = player.getHeldItem(hand);
-            } else if(player.getHeldItemOffhand().getItem() == Items.MUSIC_SHEET){
-                note = player.getHeldItemOffhand();
+            if(player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET){
+                note = player.getItemInHand(hand);
+            } else if(player.getOffhandItem().getItem() == Items.MUSIC_SHEET){
+                note = player.getOffhandItem();
             }
 
             if(!note.isEmpty() && note.hasTag()){
                 int pause = note.getTag().getInt("pause");
                 setBpm(state, worldIn, pos, ItemMusicSheet.pauseToBPMLevel[pause]);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             else{
-                state = state.func_235896_a_(BPM); //cycle
-                worldIn.setBlockState(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
-                return ActionResultType.SUCCESS;
+                state = state.cycle(BPM); //cycle
+                worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
+                return InteractionResult.SUCCESS;
             }
         }
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BPM, POWERED, FACING);
     }
 
-    // Called when the block is placed or loaded client side to get the tile entity for the block
-    // Should return a new instance of the tile entity for the block
+    @Nullable
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityMetronome();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new TileEntityMetronome(pos, state);
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+//        if (level.isClientSide()) {
+//            return null;
+//        }
+        return (level1, blockPos, blockState1, t) -> {
+            if (t instanceof TileEntityMetronome) {
+                TileEntityMetronome.tick(level1, blockPos, blockState1, (TileEntityMetronome) t);
+            }
+        };
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
     public BlockState rotate(BlockState state, Rotation rot) {
-        return state.with(FACING, rot.rotate(state.get(FACING)));
+        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.toRotation(state.get(FACING)));
+        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
 }

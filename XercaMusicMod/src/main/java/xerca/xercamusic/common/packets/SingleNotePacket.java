@@ -1,6 +1,6 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
@@ -19,7 +19,7 @@ public class SingleNotePacket {
         this.messageIsValid = false;
     }
 
-    public static SingleNotePacket decode(PacketBuffer buf) {
+    public static SingleNotePacket decode(FriendlyByteBuf buf) {
         SingleNotePacket result = new SingleNotePacket();
         try {
             result.note = buf.readInt();
@@ -39,7 +39,7 @@ public class SingleNotePacket {
         return result;
     }
 
-    public static void encode(SingleNotePacket pkt, PacketBuffer buf) {
+    public static void encode(SingleNotePacket pkt, FriendlyByteBuf buf) {
         buf.writeInt(pkt.note);
         buf.writeInt(pkt.instrumentItem.getInstrumentId());
     }

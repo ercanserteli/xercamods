@@ -1,19 +1,20 @@
 package xerca.xercamusic.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.ItemInstrument;
-import xerca.xercamusic.common.packets.MusicUpdatePacket;
 import xerca.xercamusic.common.packets.SingleNotePacket;
 
 @OnlyIn(Dist.CLIENT)
@@ -34,11 +35,11 @@ public class GuiInstrument extends Screen {
     private static final int guiOctaveHighlightWidth = 98;
     private static final int guiOctaveHighlightHeight = 92;
 
-    private final PlayerEntity player;
+    private final Player player;
     private final ItemInstrument instrument;
     private NoteSound lastPlayed = null;
 
-    GuiInstrument(PlayerEntity player, ItemInstrument instrument, ITextComponent title) {
+    GuiInstrument(Player player, ItemInstrument instrument, Component title) {
         super(title);
         this.player = player;
         this.instrument = instrument;
@@ -61,10 +62,11 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        Minecraft.getInstance().getTextureManager().bindTexture(insGuiTextures);
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+//        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        Minecraft.getInstance().getTextureManager().bind(insGuiTextures);
+        RenderSystem.setShaderTexture(0, insGuiTextures);
 
         blit(matrixStack, guiBaseX, guiBaseY, this.getBlitOffset(), 0, 0, guiWidth, guiHeight, 512, 512);
 
@@ -116,8 +118,9 @@ public class GuiInstrument extends Screen {
         }
 
         SoundEvent noteSound = instrument.getSound(note);
-        lastPlayed = XercaMusic.proxy.playNote(noteSound, player.getPosX(), player.getPosY(), player.getPosZ());
-        player.world.addParticle(ParticleTypes.NOTE, player.getPosX() + 0.5D, player.getPosY() + 2.2D, player.getPosZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
+//        lastPlayed = XercaMusic.proxy.playNote(noteSound, player.getX(), player.getY(), player.getZ());
+        lastPlayed = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound, player.getX(), player.getY(), player.getZ()));
+        player.level.addParticle(ParticleTypes.NOTE, player.getX() + 0.5D, player.getY() + 2.2D, player.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
 
         SingleNotePacket pack = new SingleNotePacket(note, instrument);
         XercaMusic.NETWORK_HANDLER.sendToServer(pack);
@@ -130,7 +133,7 @@ public class GuiInstrument extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers){
-        setListener(null);
+        setFocused(null);
         super.keyPressed(keyCode, scanCode, modifiers);
 
         if (scanCode >= 16 && scanCode <= 27) {

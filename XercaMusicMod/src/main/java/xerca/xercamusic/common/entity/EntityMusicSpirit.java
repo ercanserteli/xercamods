@@ -1,29 +1,30 @@
 package xerca.xercamusic.common.entity;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
-import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnData {
-    private PlayerEntity body;
+    private Player body;
     private ItemStack note;
     private ItemInstrument instrument;
     private byte[] music;
@@ -35,45 +36,45 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     private BlockInstrument blockInstrument = null;
     private BlockPos blockInsPos = null;
 
-    public EntityMusicSpirit(World worldIn) {
+    public EntityMusicSpirit(Level worldIn) {
         super(Entities.MUSIC_SPIRIT, worldIn);
     }
 
-    public EntityMusicSpirit(World worldIn, PlayerEntity body, ItemInstrument instrument) {
+    public EntityMusicSpirit(Level worldIn, Player body, ItemInstrument instrument) {
         super(Entities.MUSIC_SPIRIT, worldIn);
         this.body = body;
         this.instrument = instrument;
         setNoteFromBody();
         this.mTime = 0;
-        this.setPosition(body.getPosX(), body.getPosY(), body.getPosZ());
+        this.setPos(body.getX(), body.getY(), body.getZ());
         if (note.hasTag() && note.getTag().contains("music")) {
-            CompoundNBT comp = note.getTag();
+            CompoundTag comp = note.getTag();
             music = comp.getByteArray("music");
             mLength = comp.getInt("length");
             mPause = comp.getByte("pause");
         }
     }
 
-    public EntityMusicSpirit(World worldIn, PlayerEntity body, BlockPos blockInsPos, ItemInstrument instrument) {
+    public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, ItemInstrument instrument) {
         this(worldIn, body, instrument);
         setBlockPosAndInstrument(blockInsPos);
     }
 
-    public EntityMusicSpirit(EntityType<EntityMusicSpirit> type, World world) {
+    public EntityMusicSpirit(EntityType<EntityMusicSpirit> type, Level world) {
         super(type, world);
     }
 
-    public EntityMusicSpirit(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+    public EntityMusicSpirit(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
         this(world);
     }
 
     private void setBlockPosAndInstrument(BlockPos pos){
         this.blockInsPos = pos;
-        Block block = world.getBlockState(blockInsPos).getBlock();
+        Block block = level.getBlockState(blockInsPos).getBlock();
 
         if(block instanceof BlockInstrument) {
             blockInstrument = (BlockInstrument)block;
-            setPosition((double)blockInsPos.getX()+0.5, (double)blockInsPos.getY()-0.5, (double)blockInsPos.getZ()+0.5);
+            setPos((double)blockInsPos.getX()+0.5, (double)blockInsPos.getY()-0.5, (double)blockInsPos.getZ()+0.5);
         }
         else{
             XercaMusic.LOGGER.warn("Got invalid block as instrument");
@@ -83,8 +84,8 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     private boolean isBodyHandLegit(){
-        ItemStack mainStack = body.getHeldItemMainhand();
-        ItemStack offStack = body.getHeldItemOffhand();
+        ItemStack mainStack = body.getMainHandItem();
+        ItemStack offStack = body.getOffhandItem();
         if(blockInstrument != null && blockInsPos != null){
             return mainStack.getItem() == Items.MUSIC_SHEET || offStack.getItem() == Items.MUSIC_SHEET;
         }
@@ -94,8 +95,8 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     private void setNoteFromBody(){
-        ItemStack mainStack = body.getHeldItemMainhand();
-        ItemStack offStack = body.getHeldItemOffhand();
+        ItemStack mainStack = body.getMainHandItem();
+        ItemStack offStack = body.getOffhandItem();
         if(mainStack.getItem() == Items.MUSIC_SHEET){
             this.note = mainStack;
         }
@@ -108,7 +109,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    protected void readAdditional(CompoundNBT tagCompound) {
+    protected void readAdditionalSaveData(CompoundTag tagCompound) {
         this.music = tagCompound.getByteArray("music");
         this.mLength = tagCompound.getInt("length");
         this.mPause = tagCompound.getByte("pause");
@@ -119,7 +120,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT tagCompound) {
+    protected void addAdditionalSaveData(CompoundTag tagCompound) {
         tagCompound.putByteArray("music", this.music);
         tagCompound.putInt("length", mLength);
         tagCompound.putByte("pause", mPause);
@@ -132,13 +133,13 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
-        buffer.writeInt(body != null ? body.getEntityId() : -1);
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        buffer.writeInt(body != null ? body.getId() : -1);
         if(blockInstrument != null && blockInsPos != null){
             buffer.writeInt(blockInsPos.getX());
             buffer.writeInt(blockInsPos.getY());
@@ -152,11 +153,11 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public void readSpawnData(PacketBuffer buffer) {
+    public void readSpawnData(FriendlyByteBuf buffer) {
         int id = buffer.readInt();
-        Entity ent = world.getEntityByID(id);
-        if (ent instanceof PlayerEntity) {
-            body = (PlayerEntity) ent;
+        Entity ent = level.getEntity(id);
+        if (ent instanceof Player) {
+            body = (Player) ent;
         }
 
         int bx = buffer.readInt();
@@ -172,12 +173,12 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             this.setNoteFromBody();
         }
         else{
-            this.instrument = (ItemInstrument) body.getHeldItemMainhand().getItem();
-            this.note = body.getHeldItemOffhand();
-            this.setPosition(body.getPosX(), body.getPosY(), body.getPosZ());
+            this.instrument = (ItemInstrument) body.getMainHandItem().getItem();
+            this.note = body.getOffhandItem();
+            this.setPos(body.getX(), body.getY(), body.getZ());
         }
         if (note.hasTag() && note.getTag().contains("music")) {
-            CompoundNBT comp = note.getTag();
+            CompoundTag comp = note.getTag();
             music = comp.getByteArray("music");
             mLength = comp.getInt("length");
             mPause = comp.getByte("pause");
@@ -185,30 +186,30 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
 
     }
 
     @Override
     public void tick() {
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
             if (body == null || !isPlaying) {
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
                 return;
             }
             if (!isBodyHandLegit()) {
                 isPlaying = false;
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
                 return;
             }
 
             if(blockInsPos != null && blockInstrument != null){
-                if(world.getBlockState(blockInsPos).getBlock() != blockInstrument){
-                    this.remove();
+                if(level.getBlockState(blockInsPos).getBlock() != blockInstrument){
+                    this.remove(RemovalReason.DISCARDED);
                     return;
                 }
-                if(this.getPositionVec().distanceTo(this.body.getPositionVec()) > 4){
-                    this.remove();
+                if(this.position().distanceTo(this.body.position()) > 4){
+                    this.remove(RemovalReason.DISCARDED);
                     return;
                 }
             }
@@ -216,26 +217,29 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         super.tick();
         if(blockInsPos == null || blockInstrument == null){
             if(body != null) {  // this check is added to work around a strange crash
-                this.setPosition(body.getPosX(), body.getPosY(), body.getPosZ());
+                this.setPos(body.getX(), body.getY(), body.getZ());
             }
         }
-        if (this.world.isRemote) {
+        if (this.level.isClientSide) {
             if(mPause == 0){
                 System.err.println("EntityMusicSpirit mPause is 0! THIS SHOULD NOT HAPPEN!");
                 return;
             }
-            if (this.ticksExisted % mPause == 0) {
+            if (this.tickCount % mPause == 0) {
                 if (mTime == mLength) {
-                    XercaMusic.proxy.endMusic(getEntityId(), body.getEntityId());
-                    this.remove();
+//                    XercaMusic.proxy.endMusic(getId(), body.getId());
+                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientStuff.endMusic(getId(), body.getId()));
+                    this.remove(RemovalReason.DISCARDED);
                     return;
                 }
                 if (music[mTime] != 0 && music[mTime] <= 48) {
                     if(instrument.shouldCutOff && lastPlayed != null){
                         lastPlayed.stopSound();
                     }
-                    lastPlayed = XercaMusic.proxy.playNote(instrument.getSound(music[mTime] - 1), getPosX(), getPosY() + 0.5d, getPosZ());
-                    this.world.addParticle(ParticleTypes.NOTE, getPosX(), getPosY() + 2.2D, getPosZ(), (music[mTime] -1) / 24.0D, 0.0D, 0.0D);
+//                    lastPlayed = XercaMusic.proxy.playNote(instrument.getSound(music[mTime] - 1), getX(), getY() + 0.5d, getZ());
+                    lastPlayed = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+                            ClientStuff.playNote(instrument.getSound(music[mTime] - 1), getX(), getY() + 0.5d, getZ()));
+                    this.level.addParticle(ParticleTypes.NOTE, getX(), getY() + 2.2D, getZ(), (music[mTime] -1) / 24.0D, 0.0D, 0.0D);
 
                 }
                 mTime++;
@@ -251,11 +255,11 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         isPlaying = playing;
     }
 
-    public PlayerEntity getBody() {
+    public Player getBody() {
         return body;
     }
 
-    public void setBody(PlayerEntity body) {
+    public void setBody(Player body) {
         this.body = body;
     }
 

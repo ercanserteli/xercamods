@@ -1,9 +1,9 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
 
@@ -15,7 +15,7 @@ public class MusicUpdatePacketHandler {
             System.err.println("Packet was invalid");
             return;
         }
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when MusicUpdatePacket was received");
             return;
@@ -25,10 +25,10 @@ public class MusicUpdatePacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void processMessage(MusicUpdatePacket msg, ServerPlayerEntity pl) {
-        ItemStack note = pl.getHeldItemMainhand();
+    private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {
+        ItemStack note = pl.getMainHandItem();
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
-            CompoundNBT comp = note.getOrCreateTag();
+            CompoundTag comp = note.getOrCreateTag();
 
             comp.putByteArray("music", msg.getMusic());
             comp.putInt("length", msg.getLength());

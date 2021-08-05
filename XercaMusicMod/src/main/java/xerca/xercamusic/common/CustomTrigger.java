@@ -5,19 +5,21 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.ICriterionTrigger;
-import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.criterion.CriterionInstance;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
+import net.minecraft.advancements.CriterionTrigger.Listener;
+
+public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
 {
     private final ResourceLocation RL;
     private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
@@ -41,7 +43,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
     }
 
     @Override
-    public void addListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listener)
+    public void addPlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listener)
     {
         CustomTrigger.Listeners myCustomTrigger$listeners = listeners.get(playerAdvancementsIn);
 
@@ -55,7 +57,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
     }
 
     @Override
-    public void removeListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listener)
+    public void removePlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listener)
     {
         CustomTrigger.Listeners xercamusictrigger$listeners = listeners.get(playerAdvancementsIn);
 
@@ -71,7 +73,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
     }
 
     @Override
-    public void removeAllListeners(PlayerAdvancements playerAdvancementsIn)
+    public void removePlayerListeners(PlayerAdvancements playerAdvancementsIn)
     {
         listeners.remove(playerAdvancementsIn);
     }
@@ -84,7 +86,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
      * @return the tame bird trigger. instance
      */
     @Override
-    public CustomTrigger.Instance deserialize(JsonObject json, ConditionArrayParser context)
+    public CustomTrigger.Instance createInstance(JsonObject json, DeserializationContext context)
     {
         return new CustomTrigger.Instance(getId());
     }
@@ -94,7 +96,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
      *
      * @param parPlayer the player
      */
-    public void trigger(ServerPlayerEntity parPlayer)
+    public void trigger(ServerPlayer parPlayer)
     {
         CustomTrigger.Listeners xercamusictrigger$listeners = listeners.get(parPlayer.getAdvancements());
 
@@ -104,7 +106,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
         }
     }
 
-    public static class Instance extends CriterionInstance
+    public static class Instance extends AbstractCriterionTriggerInstance
     {
 
         /**
@@ -112,7 +114,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
          */
         public Instance(ResourceLocation parRL)
         {
-            super(parRL,  EntityPredicate.AndPredicate.ANY_AND);
+            super(parRL,  EntityPredicate.Composite.ANY);
         }
 
         /**
@@ -176,13 +178,13 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
          *
          * @param player the player
          */
-        public void trigger(ServerPlayerEntity player)
+        public void trigger(ServerPlayer player)
         {
             ArrayList<Listener<Instance>> list = null;
 
             for (Listener<Instance> listener : listeners)
             {
-                if (listener.getCriterionInstance().test())
+                if (listener.getTriggerInstance().test())
                 {
                     if (list == null)
                     {
@@ -197,7 +199,7 @@ public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
             {
                 for (Listener<Instance> listener1 : list)
                 {
-                    listener1.grantCriterion(playerAdvancements);
+                    listener1.run(playerAdvancements);
                 }
             }
         }

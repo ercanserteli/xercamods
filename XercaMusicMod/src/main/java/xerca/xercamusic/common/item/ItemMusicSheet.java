@@ -1,23 +1,26 @@
 package xerca.xercamusic.common.item;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.StringUtil;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
+import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
@@ -37,38 +40,39 @@ public class ItemMusicSheet extends Item {
     }
 
     ItemMusicSheet() {
-        super(new Properties().group(Items.musicTab).maxStackSize(1));
+        super(new Properties().tab(Items.musicTab).stacksTo(1));
         this.setRegistryName("music_sheet");
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        final ItemStack heldItem = playerIn.getHeldItem(hand);
-        if(worldIn.isRemote){
-            XercaMusic.proxy.showMusicGui();
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+        final ItemStack heldItem = playerIn.getItemInHand(hand);
+        if(worldIn.isClientSide){
+//            XercaMusic.proxy.showMusicGui();
+            DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientStuff::showMusicGui);
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
+    public Component getName(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundNBT nbttagcompound = stack.getTag();
+            CompoundTag nbttagcompound = stack.getTag();
             if(nbttagcompound != null){
                 String s = nbttagcompound.getString("title");
-                if (!StringUtils.isNullOrEmpty(s)) {
-                    return new StringTextComponent(s);
+                if (!StringUtil.isNullOrEmpty(s)) {
+                    return new TextComponent(s);
                 }
             }
         }
-        return super.getDisplayName(stack);
+        return super.getName(stack);
     }
 
     public static byte[] getMusic(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundNBT nbttagcompound = stack.getTag();
+            CompoundTag nbttagcompound = stack.getTag();
             if(nbttagcompound != null && nbttagcompound.contains("music")){
                 return nbttagcompound.getByteArray("music");
             }
@@ -78,7 +82,7 @@ public class ItemMusicSheet extends Item {
 
     public static int getPause(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundNBT nbttagcompound = stack.getTag();
+            CompoundTag nbttagcompound = stack.getTag();
             if(nbttagcompound != null && nbttagcompound.contains("pause")){
                 return nbttagcompound.getByte("pause");
             }
@@ -88,7 +92,7 @@ public class ItemMusicSheet extends Item {
 
     public static int getPrevInstrument(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundNBT nbttagcompound = stack.getTag();
+            CompoundTag nbttagcompound = stack.getTag();
             if(nbttagcompound != null && nbttagcompound.contains("prevIns")){
                 return nbttagcompound.getByte("prevIns");
             }
@@ -108,52 +112,52 @@ public class ItemMusicSheet extends Item {
      */
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.hasTag()) {
-            CompoundNBT tag = stack.getTag();
+            CompoundTag tag = stack.getTag();
             String s = tag.getString("author");
 
-            if (!StringUtils.isNullOrEmpty(s)) {
-                tooltip.add(new TranslationTextComponent("note.byAuthor", s));
+            if (!StringUtil.isNullOrEmpty(s)) {
+                tooltip.add(new TranslatableComponent("note.byAuthor", s));
             }
 
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltip.add((new TranslationTextComponent("note.generation." + (generation - 1))).mergeStyle(TextFormatting.GRAY));
+                tooltip.add((new TranslatableComponent("note.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
             }
         }
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
-        BlockPos blockpos = context.getPos();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
+        BlockPos blockpos = context.getClickedPos();
         BlockState iblockstate = world.getBlockState(blockpos);
-        if (iblockstate.getBlock() == Blocks.MUSIC_BOX && !iblockstate.get(BlockMusicBox.HAS_MUSIC)) {
-            ItemStack itemstack = context.getItem();
+        if (iblockstate.getBlock() == Blocks.MUSIC_BOX && !iblockstate.getValue(BlockMusicBox.HAS_MUSIC)) {
+            ItemStack itemstack = context.getItemInHand();
             if (itemstack.hasTag()) {
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
                     BlockMusicBox.insertMusic(world, blockpos, iblockstate, itemstack.copy());
 
-                    if(context.getPlayer() != null && !context.getPlayer().abilities.isCreativeMode){
+                    if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
                         itemstack.shrink(1);
                     }
                 }
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         if(stack.hasTag()){
-            CompoundNBT ntc = stack.getTag();
+            CompoundTag ntc = stack.getTag();
             if(ntc.contains("generation")){
                 int generation = ntc.getInt("generation");
                 return generation > 0;

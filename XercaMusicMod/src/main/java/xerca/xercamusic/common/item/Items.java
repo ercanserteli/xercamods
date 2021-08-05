@@ -1,10 +1,10 @@
 package xerca.xercamusic.common.item;
 
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -38,14 +38,14 @@ public final class Items {
 
     public static MusicCreativeTab musicTab;
 
-    public static final IRecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = Null();
+    public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = Null();
 
 
     public static void setup() {
     }
 
-    static Item makeItem(String name, ItemGroup tab){
-        Item item = new Item(new Item.Properties().group(tab));
+    static Item makeItem(String name, CreativeModeTab tab){
+        Item item = new Item(new Item.Properties().tab(tab));
         item.setRegistryName(name);
         return item;
     }
@@ -53,8 +53,8 @@ public final class Items {
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
-        public static void registerRecipes(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
-            event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeNoteCloning::new).setRegistryName(XercaMusic.MODID + ":crafting_special_notecloning"));
+        public static void registerRecipes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
+            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeNoteCloning::new).setRegistryName(XercaMusic.MODID + ":crafting_special_notecloning"));
         }
 
         @SubscribeEvent
@@ -83,13 +83,13 @@ public final class Items {
             event.getRegistry().registerAll(instruments);
             event.getRegistry().registerAll(
                     new ItemMusicSheet(),
-                    new BlockItem(Blocks.MUSIC_BOX, new Item.Properties().group(Items.musicTab)).setRegistryName("music_box"),
-                    new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties().group(Items.musicTab)).setRegistryName("metronome")
+                    new BlockItem(Blocks.MUSIC_BOX, new Item.Properties().tab(Items.musicTab)).setRegistryName("music_box"),
+                    new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties().tab(Items.musicTab)).setRegistryName("metronome")
             );
 
             for(ItemInstrument i : instruments){
                 if(i instanceof ItemBlockInstrument){
-                    ((ItemBlockInstrument)i).addToBlockToItemMap(Item.BLOCK_TO_ITEM, i);
+                    ((ItemBlockInstrument)i).addToBlockToItemMap(Item.BY_BLOCK, i);
                 }
             }
         }

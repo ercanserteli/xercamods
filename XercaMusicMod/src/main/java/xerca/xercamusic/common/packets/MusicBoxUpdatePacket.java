@@ -1,18 +1,17 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercamusic.common.XercaMusic;
 
 public class MusicBoxUpdatePacket {
     private BlockPos pos;
-    private CompoundNBT noteStackNBT;
+    private CompoundTag noteStackNBT;
     private String instrumentId;
     private boolean messageIsValid;
 
@@ -26,7 +25,7 @@ public class MusicBoxUpdatePacket {
             if(noteStack.hasTag()){
                 this.noteStackNBT = noteStack.getTag();
             }else{
-                this.noteStackNBT = new CompoundNBT();
+                this.noteStackNBT = new CompoundTag();
             }
         }
         if(itemInstrument != null){
@@ -41,12 +40,12 @@ public class MusicBoxUpdatePacket {
         this.messageIsValid = false;
     }
 
-    public static MusicBoxUpdatePacket decode(PacketBuffer buf) {
+    public static MusicBoxUpdatePacket decode(FriendlyByteBuf buf) {
         MusicBoxUpdatePacket result = new MusicBoxUpdatePacket();
         try {
             result.pos = buf.readBlockPos();
-            result.noteStackNBT = buf.readCompoundTag();
-            result.instrumentId = buf.readString(255);
+            result.noteStackNBT = buf.readNbt();
+            result.instrumentId = buf.readUtf(255);
         } catch (IndexOutOfBoundsException ioe) {
             XercaMusic.LOGGER.error("Exception while reading MusicBoxUpdatePacket: " + ioe);
             return null;
@@ -55,10 +54,10 @@ public class MusicBoxUpdatePacket {
         return result;
     }
 
-    public static void encode(MusicBoxUpdatePacket pkt, PacketBuffer buf) {
+    public static void encode(MusicBoxUpdatePacket pkt, FriendlyByteBuf buf) {
         buf.writeBlockPos(pkt.pos);
-        buf.writeCompoundTag(pkt.noteStackNBT);
-        buf.writeString(pkt.instrumentId);
+        buf.writeNbt(pkt.noteStackNBT);
+        buf.writeUtf(pkt.instrumentId);
     }
 
     public boolean isMessageValid() {
@@ -66,11 +65,11 @@ public class MusicBoxUpdatePacket {
     }
 
 
-    public CompoundNBT getNoteStackNBT() {
+    public CompoundTag getNoteStackNBT() {
         return noteStackNBT;
     }
 
-    public void setNoteStackNBT(CompoundNBT noteStackNBT) {
+    public void setNoteStackNBT(CompoundTag noteStackNBT) {
         this.noteStackNBT = noteStackNBT;
     }
 

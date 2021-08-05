@@ -1,21 +1,22 @@
 package xerca.xercamusic.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SharedConstants;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.*;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.SharedConstants;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.SoundEvents;
@@ -29,11 +30,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 
+import net.minecraft.client.gui.components.Button.OnPress;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+
 @OnlyIn(Dist.CLIENT)
 public class GuiMusicSheet extends Screen {
     private static final ResourceLocation noteGuiTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/music_sheet.png");
     private static final ResourceLocation instrumentTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/instruments.png");
-    private final PlayerEntity editingPlayer;
+    private final Player editingPlayer;
     public final static int beatsInTab = 48;
     public final static int tabAmount = 5;
     private final static int totalBeats = beatsInTab * tabAmount;
@@ -131,7 +139,7 @@ public class GuiMusicSheet extends Screen {
     }
 
     private int getCurrentOffhandInsIndex(){
-        Item offhand = editingPlayer.getHeldItemOffhand().getItem();
+        Item offhand = editingPlayer.getOffhandItem().getItem();
         if (offhand instanceof ItemInstrument) {
             ItemInstrument ins = (ItemInstrument) offhand;
             return ArrayUtils.indexOf(Items.instruments, ins);
@@ -139,7 +147,7 @@ public class GuiMusicSheet extends Screen {
         return -1;
     }
 
-    GuiMusicSheet(PlayerEntity player, CompoundNBT noteTag, ITextComponent title) {
+    GuiMusicSheet(Player player, CompoundTag noteTag, Component title) {
         super(title);
         this.editingPlayer = player;
         if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("music")) {
@@ -183,7 +191,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         // Neighbor sheets
-        int currentSlot = player.inventory.currentItem;
+        int currentSlot = player.getInventory().selected;
         boolean added = addNeighborSheet(getStackInSlot(currentSlot - 1));
         if(added){
             addNeighborSheet(getStackInSlot(currentSlot - 2));
@@ -213,8 +221,8 @@ public class GuiMusicSheet extends Screen {
     }
 
     private ItemStack getStackInSlot(int slot){
-        if(slot >= 0 && slot < editingPlayer.inventory.getSizeInventory()) {
-            return editingPlayer.inventory.getStackInSlot(slot);
+        if(slot >= 0 && slot < editingPlayer.getInventory().getContainerSize()) {
+            return editingPlayer.getInventory().getItem(slot);
         }
         return ItemStack.EMPTY;
     }
@@ -228,7 +236,7 @@ public class GuiMusicSheet extends Screen {
         noteImageX = (this.width - noteImageWidth) / 2;
         noteImageY = 2;
         if (!this.isSigned) {
-            this.bpmUp = this.addButton(new Button(noteImageX + bpmButX, noteImageY + bpmButY, bpmButW, bpmButH, new TranslationTextComponent("note.upButton"), button -> {
+            this.bpmUp = this.addRenderableWidget(new Button(noteImageX + bpmButX, noteImageY + bpmButY, bpmButW, bpmButH, new TranslatableComponent("note.upButton"), button -> {
                 if (!isSigned) {
                     dirty = true;
                     if (pause == 20) {
@@ -244,7 +252,7 @@ public class GuiMusicSheet extends Screen {
                 }
             }));
 
-            this.bpmDown = this.addButton(new Button(noteImageX + bpmButX, noteImageY + bpmButY + 1 + bpmButH, bpmButW, bpmButH, new TranslationTextComponent("note.downButton"), button -> {
+            this.bpmDown = this.addRenderableWidget(new Button(noteImageX + bpmButX, noteImageY + bpmButY + 1 + bpmButH, bpmButW, bpmButH, new TranslatableComponent("note.downButton"), button -> {
                 if (!isSigned) {
                     dirty = true;
                     if (pause <= 5) {
@@ -259,7 +267,7 @@ public class GuiMusicSheet extends Screen {
                     bpm = 1200 / pause;
                 }
             }));
-            this.buttonSign = this.addButton(new Button( noteImageX - 100, 100, 98, 20, new TranslationTextComponent("note.signButton"), button -> {
+            this.buttonSign = this.addRenderableWidget(new Button( noteImageX - 100, 100, 98, 20, new TranslatableComponent("note.signButton"), button -> {
                 if (!isSigned) {
                     //System.out.println("Sign button pressed!");
                     gettingSigned = true;
@@ -267,16 +275,16 @@ public class GuiMusicSheet extends Screen {
                 }
 
             }));
-            this.buttonFinalize = this.addButton(new Button( noteImageX - 100, 100, 98, 20, new TranslationTextComponent("note.finalizeButton"), button -> {
+            this.buttonFinalize = this.addRenderableWidget(new Button( noteImageX - 100, 100, 98, 20, new TranslatableComponent("note.finalizeButton"), button -> {
                 if (!isSigned) {
                     //this.sendBookToServer(true);
                     dirty = true;
                     isSigned = true;
-                    minecraft.displayGuiScreen(null);
+                    minecraft.setScreen(null);
                 }
 
             }));
-            this.buttonCancel = this.addButton(new Button( noteImageX - 100, 130, 98, 20, new TranslationTextComponent("gui.cancel"), button -> {
+            this.buttonCancel = this.addRenderableWidget(new Button( noteImageX - 100, 130, 98, 20, new TranslatableComponent("gui.cancel"), button -> {
                 if (!isSigned) {
                     //this.sendBookToServer(true);
                     gettingSigned = false;
@@ -285,7 +293,7 @@ public class GuiMusicSheet extends Screen {
 
             }));
         }
-        this.buttonPreview = this.addButton(new ChangeableImageButton(noteImageX + 67, 23, 16, 16, 224, 0, 16, noteGuiTextures, button -> {
+        this.buttonPreview = this.addRenderableWidget(new ChangeableImageButton(noteImageX + 67, 23, 16, 16, 224, 0, 16, noteGuiTextures, button -> {
             if (!previewing) {
                 startPreview();
             } else {
@@ -293,7 +301,7 @@ public class GuiMusicSheet extends Screen {
             }
         }));
 
-        this.buttonHideNeighbors = this.addButton(new ChangeableImageButton( noteImageX + 87, 23, 16, 16, 224, 32, 16, noteGuiTextures, button -> {
+        this.buttonHideNeighbors = this.addRenderableWidget(new ChangeableImageButton( noteImageX + 87, 23, 16, 16, 224, 32, 16, noteGuiTextures, button -> {
             neighborsHidden = !neighborsHidden;
             if(neighborsHidden){
                 this.buttonHideNeighbors.setTexStarts(240,32);
@@ -302,7 +310,7 @@ public class GuiMusicSheet extends Screen {
             }
         }));
 
-        this.buttonLockPrevIns = this.addButton(new LockImageButton( noteImageX + 107, 23, 16, 16, previewInstrument*16 +16, 0, 16, instrumentTextures, button -> {
+        this.buttonLockPrevIns = this.addRenderableWidget(new LockImageButton( noteImageX + 107, 23, 16, 16, previewInstrument*16 +16, 0, 16, instrumentTextures, button -> {
             prevInsLocked = !prevInsLocked;
             dirty = true;
             if(!prevInsLocked){
@@ -372,7 +380,9 @@ public class GuiMusicSheet extends Screen {
         }else{
             noteSound = SoundEvents.harp_mcs[note];
         }
-        NoteSound sound = XercaMusic.proxy.playNote(noteSound, editingPlayer.getPosX(), editingPlayer.getPosY(), editingPlayer.getPosZ());
+//        NoteSound sound = XercaMusic.proxy.playNote(noteSound, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ());
+        NoteSound sound = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+                ClientStuff.playNote(noteSound, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ()));
 
         if(neighborId >= 0 && neighborId < neighborLastPlayeds.size()){
             neighborLastPlayeds.set(neighborId, sound);
@@ -398,7 +408,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void drawSigning(MatrixStack matrixStack) {
+    private void drawSigning(PoseStack matrixStack) {
         int i = noteImageX;
         int j = noteImageY;
 
@@ -407,23 +417,23 @@ public class GuiMusicSheet extends Screen {
 
         if (!this.isSigned) {
             if (this.updateCount / 6 % 2 == 0) {
-                s = s + "" + TextFormatting.BLACK + "_";
+                s = s + "" + ChatFormatting.BLACK + "_";
             } else {
-                s = s + "" + TextFormatting.GRAY + "_";
+                s = s + "" + ChatFormatting.GRAY + "_";
             }
         }
-        String s1 = I18n.format("note.editTitle");
-        int k = this.font.getStringWidth(s1);
-        this.font.drawString(matrixStack, s1, i + 36 + (116 - k) / 2.0f, j + 16 + 16, 0);
-        int l = this.font.getStringWidth(s);
-        this.font.drawString(matrixStack, s, i + 36 + (116 - l) / 2.0f, j + 48, 0);
-        String s2 = I18n.format("note.byAuthor", this.editingPlayer.getName().getString());
-        int i1 = this.font.getStringWidth(s2);
-        this.font.drawString(matrixStack, TextFormatting.DARK_GRAY + s2, i + 36 + (116 - i1) / 2, j + 48 + 10, 0);
-        this.font.func_238418_a_(new TranslationTextComponent("note.finalizeWarning"), i + 36, j + 80, 116, 0);
+        String s1 = I18n.get("note.editTitle");
+        int k = this.font.width(s1);
+        this.font.draw(matrixStack, s1, i + 36 + (116 - k) / 2.0f, j + 16 + 16, 0);
+        int l = this.font.width(s);
+        this.font.draw(matrixStack, s, i + 36 + (116 - l) / 2.0f, j + 48, 0);
+        String s2 = I18n.get("note.byAuthor", this.editingPlayer.getName().getString());
+        int i1 = this.font.width(s2);
+        this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + s2, i + 36 + (116 - i1) / 2, j + 48 + 10, 0);
+        this.font.drawWordWrap(new TranslatableComponent("note.finalizeWarning"), i + 36, j + 80, 116, 0);
     }
 
-    private void drawCursor(MatrixStack matrixStack, int cursorX, int color){
+    private void drawCursor(PoseStack matrixStack, int cursorX, int color){
         Note note = new Note(cursorX, 11);
         int x = note.getPixelX(noteImageX);
         int y = note.getPixelY(noteImageY);
@@ -431,17 +441,19 @@ public class GuiMusicSheet extends Screen {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        Minecraft.getInstance().getTextureManager().bindTexture(noteGuiTextures);
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+//        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        Minecraft.getInstance().getTextureManager().bind(noteGuiTextures);
+        RenderSystem.setShaderTexture(0, noteGuiTextures);
         blit(matrixStack, noteImageX, noteImageY, 0, 0, noteImageWidth, noteImageHeight);
         if (this.gettingSigned) {
             drawSigning(matrixStack);
         } else {
-            this.font.drawString(matrixStack, "Tempo", noteImageX + bpmButX - 30, noteImageY + bpmButY, 0xFF000000);
-            this.font.drawString(matrixStack, "" + bpm, noteImageX + bpmButX - 30, noteImageY + bpmButY + 10, 0xFF000000);
+            this.font.draw(matrixStack, "Tempo", noteImageX + bpmButX - 30, noteImageY + bpmButY, 0xFF000000);
+            this.font.draw(matrixStack, "" + bpm, noteImageX + bpmButX - 30, noteImageY + bpmButY + 10, 0xFF000000);
             if (!this.isSigned) {
-                this.font.drawString(matrixStack, "Octave", noteImageX + paletteX, noteImageY + paletteY - 8, 0xFF000000);
+                this.font.draw(matrixStack, "Octave", noteImageX + paletteX, noteImageY + paletteY - 8, 0xFF000000);
                 int j = currentOctave;
                 for (int i = 0; i < 4; i++) {
                     if (i == j) continue;
@@ -479,8 +491,8 @@ public class GuiMusicSheet extends Screen {
                     }
                 }
             } else {
-                int k = this.font.getStringWidth(noteTitle);
-                this.font.drawString(matrixStack, noteTitle, (noteImageX + (noteImageWidth - k) / 2.0f), noteImageY + 12, 0xFF000000);
+                int k = this.font.width(noteTitle);
+                this.font.draw(matrixStack, noteTitle, (noteImageX + (noteImageWidth - k) / 2.0f), noteImageY + 12, 0xFF000000);
 
                 if(this.selfSigned){
                     drawCursor(matrixStack, editCursor, 0xFFAA2222);
@@ -544,24 +556,25 @@ public class GuiMusicSheet extends Screen {
             //	}
         }
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         if (!gettingSigned && !isSigned && validClick(mouseX - noteImageX, mouseY - noteImageY)) {
             fill(matrixStack, mouseX - 1, mouseY - 1, mouseX + 2, mouseY + 2, octaveColors[currentOctave]);
         }
 
         if(buttonHideNeighbors.isHovered()){
-            renderTooltip(matrixStack, new TranslationTextComponent("note.toggleTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, new TranslatableComponent("note.toggleTooltip"), mouseX, mouseY);
         }
         if(buttonLockPrevIns.isHovered()){
-            renderTooltip(matrixStack, new TranslationTextComponent("note.lockTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, new TranslatableComponent("note.lockTooltip"), mouseX, mouseY);
         }
         if(buttonPreview.isHovered()){
-            renderTooltip(matrixStack, new TranslationTextComponent("note.previewTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, new TranslatableComponent("note.previewTooltip"), mouseX, mouseY);
         }
     }
 
-    private void drawNote(MatrixStack matrixStack, int i, byte[] music, int[] octaveColors) {
+    private void drawNote(PoseStack matrixStack, int i, byte[] music, int[] octaveColors) {
         if (music[i] != 0) {
             int value = music[i];
             int height = (value - 1) % 12;
@@ -729,13 +742,13 @@ public class GuiMusicSheet extends Screen {
 
     private void encodeToClipboard(){
         String encodeBytes = Base64.getEncoder().encodeToString(Arrays.copyOfRange(music, editCursor, editCursorEnd + 1));
-        GLFW.glfwSetClipboardString(Minecraft.getInstance().getMainWindow().getHandle(), encodeBytes);
+        GLFW.glfwSetClipboardString(Minecraft.getInstance().getWindow().getWindow(), encodeBytes);
 
         editCursorEnd = editCursor;
     }
 
     private void decodeFromClipboard(){
-        String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getMainWindow().getHandle());
+        String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getWindow().getWindow());
         if(encodedMusic != null && !encodedMusic.isEmpty()){
             byte[] musicPiece;
             try { // Try because this can fail with weird clipboard content
@@ -763,7 +776,7 @@ public class GuiMusicSheet extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers){
-        setListener(null);
+        setFocused(null);
         super.keyPressed(keyCode, scanCode, modifiers);
 
         // Copying when viewing self signed
@@ -793,7 +806,7 @@ public class GuiMusicSheet extends Screen {
                         if (!this.noteTitle.isEmpty()) {
                             dirty = true;
                             this.isSigned = true;
-                            this.minecraft.displayGuiScreen(null);
+                            this.minecraft.setScreen(null);
                         }
                         break;
                     default:
@@ -938,7 +951,7 @@ public class GuiMusicSheet extends Screen {
 
         if (!this.isSigned) {
             if (this.gettingSigned) {
-                if (this.noteTitle.length() < 16 && SharedConstants.isAllowedCharacter(typedChar)) {
+                if (this.noteTitle.length() < 16 && SharedConstants.isAllowedChatCharacter(typedChar)) {
                     this.noteTitle = this.noteTitle + typedChar;
                     this.updateButtons();
                 }
@@ -964,7 +977,7 @@ public class GuiMusicSheet extends Screen {
      * Called when the screen is unloaded. Used to disable keyboard repeat events
      */
     @Override
-    public void onClose() {
+    public void removed() {
         if (dirty) {
             MusicUpdatePacket pack = new MusicUpdatePacket(music, length, pause, isSigned, noteTitle, (byte)previewInstrument, prevInsLocked);
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
@@ -984,15 +997,15 @@ public class GuiMusicSheet extends Screen {
         protected final int texWidth;
         protected final int texHeight;
 
-        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, IPressable onClick) {
+        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, OnPress onClick) {
             this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, 256, 256, onClick);
         }
 
-        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, IPressable onClick) {
-            this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, StringTextComponent.EMPTY);
+        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
+            this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, TextComponent.EMPTY);
         }
 
-        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, IPressable onClick, ITextComponent message) {
+        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Component message) {
             super(x, y, width, height, message, onClick);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
@@ -1009,8 +1022,9 @@ public class GuiMusicSheet extends Screen {
 
         protected int preRender(){
             Minecraft lvt_4_1_ = Minecraft.getInstance();
-            lvt_4_1_.getTextureManager().bindTexture(this.resourceLocation);
-            GlStateManager.disableDepthTest();
+//            lvt_4_1_.getTextureManager().bind(this.resourceLocation);
+            RenderSystem.setShaderTexture(0, this.resourceLocation);
+            GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
             if (this.isHovered()) {
                 yTexStartNew += this.yDiffText;
@@ -1019,11 +1033,11 @@ public class GuiMusicSheet extends Screen {
         }
 
         protected void postRender(){
-            GlStateManager.enableDepthTest();
+            GlStateManager._enableDepthTest();
         }
 
         @Override
-        public void renderButton(MatrixStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderButton(PoseStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
             int yTexStartNew = preRender();
             blit(matrixStack, this.x, this.y, (float)this.xTexStart, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
@@ -1032,20 +1046,20 @@ public class GuiMusicSheet extends Screen {
 
     public class LockImageButton extends ChangeableImageButton {
 
-        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, IPressable onClick) {
+        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, OnPress onClick) {
             this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, 256, 256, onClick);
         }
 
-        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, IPressable onClick) {
-            this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, StringTextComponent.EMPTY);
+        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
+            this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, TextComponent.EMPTY);
         }
 
-        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, IPressable onClick, ITextComponent message) {
+        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Component message) {
             super(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, message);
         }
 
         @Override
-        public void renderButton(MatrixStack matrixStack, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
+        public void renderButton(PoseStack matrixStack, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
             int yTexStartNew = preRender();
 
             blit(matrixStack, this.x, this.y, (float)this.xTexStart, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);

@@ -1,12 +1,9 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.item.Items;
 
 import java.util.function.Supplier;
 
@@ -16,7 +13,7 @@ public class SingleNotePacketHandler {
             System.err.println("Packet was invalid");
             return;
         }
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when MusicUpdatePacket was received");
             return;
@@ -26,8 +23,8 @@ public class SingleNotePacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void processMessage(SingleNotePacket msg, ServerPlayerEntity pl) {
-        PacketDistributor.PacketTarget target = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pl.getPosX(), pl.getPosY(), pl.getPosZ(), 24.0D, pl.getServerWorld().getDimensionKey()));
+    private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
+        PacketDistributor.PacketTarget target = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pl.getX(), pl.getY(), pl.getZ(), 24.0D, pl.getLevel().dimension()));
         SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.getNote(), msg.getInstrumentItem(), pl);
         XercaMusic.NETWORK_HANDLER.send(target, packet);
     }

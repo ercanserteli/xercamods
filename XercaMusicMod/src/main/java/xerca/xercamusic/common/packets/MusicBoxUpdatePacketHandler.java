@@ -1,14 +1,13 @@
 package xerca.xercamusic.common.packets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
@@ -28,12 +27,12 @@ public class MusicBoxUpdatePacketHandler {
 
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(MusicBoxUpdatePacket msg) {
-        World world = Minecraft.getInstance().world;
-        if(!world.isBlockLoaded(msg.getPos())){
+        Level world = Minecraft.getInstance().level;
+        if(!world.hasChunkAt(msg.getPos())){
             return;
         }
 
-        TileEntity te =  world.getTileEntity(msg.getPos());
+        BlockEntity te =  world.getBlockEntity(msg.getPos());
         if(te instanceof TileEntityMusicBox){
             TileEntityMusicBox tileEntityMusicBox = (TileEntityMusicBox) te;
 

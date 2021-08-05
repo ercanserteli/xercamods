@@ -1,8 +1,8 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
 import java.util.function.Supplier;
@@ -14,7 +14,7 @@ public class MusicEndedPacketHandler {
             return;
         }
 
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when MusicEndedPacketHandler was received");
             return;
@@ -24,8 +24,8 @@ public class MusicEndedPacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void processMessage(MusicEndedPacket msg, ServerPlayerEntity pl) {
-        Entity ent = pl.world.getEntityByID(msg.getPlayerId());
+    private static void processMessage(MusicEndedPacket msg, ServerPlayer pl) {
+        Entity ent = pl.level.getEntity(msg.getPlayerId());
         if(ent instanceof EntityMusicSpirit){
             EntityMusicSpirit spirit = (EntityMusicSpirit) ent;
             spirit.setPlaying(false);

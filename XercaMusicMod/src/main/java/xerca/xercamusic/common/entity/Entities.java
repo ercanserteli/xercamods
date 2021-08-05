@@ -1,9 +1,9 @@
 package xerca.xercamusic.common.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +21,7 @@ public class Entities {
         @SubscribeEvent
         public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
             final EntityType<EntityMusicSpirit> musicSpiritEntityType = build("music_spirit",
-                    EntityType.Builder.<EntityMusicSpirit>create((EntityMusicSpirit::new), EntityClassification.MISC).setCustomClientFactory(EntityMusicSpirit::new).size(0.25f, 0.25f).setUpdateInterval(10)
+                    EntityType.Builder.<EntityMusicSpirit>of((EntityMusicSpirit::new), MobCategory.MISC).setCustomClientFactory(EntityMusicSpirit::new).sized(0.25f, 0.25f).setUpdateInterval(10)
             );
             event.getRegistry().register(musicSpiritEntityType);
         }

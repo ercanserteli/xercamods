@@ -1,14 +1,18 @@
 package xerca.xercamusic.common.tile_entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMetronome;
@@ -18,66 +22,71 @@ import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
 
-public class TileEntityMetronome extends TileEntity implements ITickableTileEntity {
+public class TileEntityMetronome extends BlockEntity {
     public final static int[] pauseLevels = {20, 15, 12, 10, 8, 6, 5, 4, 3, 2, 1};
-    private final static Vector3i halfRange = new Vector3i(8, 2, 8);
+    private final static Vec3i halfRange = new Vec3i(8, 2, 8);
 
     private int age = 0;
     private boolean oldPoweredState = false;
     private int countDown = 0;
 
-    public TileEntityMetronome(){
-        super(TileEntities.METRONOME);
+    public TileEntityMetronome(BlockPos blockPos, BlockState blockState){
+        super(TileEntities.METRONOME, blockPos, blockState);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT parent) {
-        super.write(parent);
+    public CompoundTag save(CompoundTag parent) {
+        super.save(parent);
         return parent;
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT parent) {
-		super.read(state, parent);
+//    public void load(BlockState state, CompoundTag parent) {
+//		super.load(state, parent);
+//    }
+    public void load(CompoundTag parent) {
+		super.load(parent);
     }
 
-    @Override
-    public void tick() {
-        if (this.world != null) {
-            BlockState state = this.getBlockState();
-            if (state.get(BlockMetronome.POWERED)) {
-                if(!oldPoweredState){
-                    age = 0;
-                    countDown = 0;
+    public static void tick(Level level, BlockPos blockPos, BlockState blockState, TileEntityMetronome metronome) {
+        if (metronome.level != null) {
+            BlockState state = metronome.getBlockState();
+            if (state.getValue(BlockMetronome.POWERED)) {
+                if(!metronome.oldPoweredState){
+                    metronome.age = 0;
+                    metronome.countDown = 0;
                 }
 
-                int bpmLevel = state.get(BlockMetronome.BPM);
-                if (age % pauseLevels[bpmLevel] == 0) {
-                    if(this.world.isRemote){
+                int bpmLevel = state.getValue(BlockMetronome.BPM);
+                if (metronome.age % pauseLevels[bpmLevel] == 0) {
+                    if(metronome.level.isClientSide){// note: doesn't work if this function is only called in server
                         // Client side
-                        XercaMusic.proxy.playNote(SoundEvents.TICK, pos.getX(), pos.getY(), pos.getZ(), SoundCategory.BLOCKS, 1.0f, 0.9f + world.rand.nextFloat()*0.1f);
-                        world.addParticle(ParticleTypes.NOTE, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.2D, (double) pos.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
+//                        XercaMusic.proxy.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat()*0.1f);
+                        DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+                                ClientStuff.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat()*0.1f));
+
+                        level.addParticle(ParticleTypes.NOTE, (double) metronome.worldPosition.getX() + 0.5D, (double) metronome.worldPosition.getY() + 1.2D, (double) metronome.worldPosition.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
                     }
                     else{
                         // Server side
-                        if(countDown >= 3){
-                            List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(this.pos.subtract(halfRange), this.pos.add(halfRange)),
-                                    player -> player.getHeldItemMainhand().getItem() instanceof ItemInstrument && player.getHeldItemOffhand().getItem() instanceof ItemMusicSheet
-                                            && player.getHeldItemOffhand().hasTag() && player.getHeldItemOffhand().getTag().getInt("pause") == pauseLevels[bpmLevel] );
+                        if(metronome.countDown >= 3){
+                            List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
+                                    player -> player.getMainHandItem().getItem() instanceof ItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
+                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag().getInt("pause") == pauseLevels[bpmLevel] );
 
-                            for(PlayerEntity player : players){
-                                Items.GUITAR.playMusic(world, player, false);
+                            for(Player player : players){
+                                Items.GUITAR.playMusic(level, player, false);
                             }
                         }
                     }
 
-                    countDown++;
+                    metronome.countDown++;
                 }
 
-                oldPoweredState = true;
-                age++;
+                metronome.oldPoweredState = true;
+                metronome.age++;
             }else{
-                oldPoweredState = false;
+                metronome.oldPoweredState = false;
             }
         }
     }

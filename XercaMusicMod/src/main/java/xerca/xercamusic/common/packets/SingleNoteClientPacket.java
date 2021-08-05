@@ -1,9 +1,9 @@
 package xerca.xercamusic.common.packets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
@@ -11,10 +11,10 @@ import xerca.xercamusic.common.item.Items;
 public class SingleNoteClientPacket {
     private int note;
     private ItemInstrument instrumentItem;
-    private PlayerEntity playerEntity;
+    private Player playerEntity;
     private boolean messageIsValid;
 
-    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, PlayerEntity playerEntity) {
+    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, Player playerEntity) {
         this.note = note;
         this.instrumentItem = itemInstrument;
         this.playerEntity = playerEntity;
@@ -24,7 +24,7 @@ public class SingleNoteClientPacket {
         this.messageIsValid = false;
     }
 
-    public static SingleNoteClientPacket decode(PacketBuffer buf) {
+    public static SingleNoteClientPacket decode(FriendlyByteBuf buf) {
         SingleNoteClientPacket result = new SingleNoteClientPacket();
         try {
             result.note = buf.readInt();
@@ -38,12 +38,12 @@ public class SingleNoteClientPacket {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
-            Entity entity = Minecraft.getInstance().world.getEntityByID(playerId);
-            if(!(entity instanceof PlayerEntity)){
+            Entity entity = Minecraft.getInstance().level.getEntity(playerId);
+            if(!(entity instanceof Player)){
                 throw new IndexOutOfBoundsException("Invalid playerId: " + playerId);
             }
 
-            result.playerEntity = (PlayerEntity) entity;
+            result.playerEntity = (Player) entity;
             result.instrumentItem = Items.instruments[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
             XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: " + ioe);
@@ -53,10 +53,10 @@ public class SingleNoteClientPacket {
         return result;
     }
 
-    public static void encode(SingleNoteClientPacket pkt, PacketBuffer buf) {
+    public static void encode(SingleNoteClientPacket pkt, FriendlyByteBuf buf) {
 
         int instrumentId = pkt.getInstrumentItem().getInstrumentId();
-        int playerId = pkt.getPlayerEntity().getEntityId();
+        int playerId = pkt.getPlayerEntity().getId();
 
         buf.writeInt(pkt.getNote());
         buf.writeInt(instrumentId);
@@ -84,11 +84,11 @@ public class SingleNoteClientPacket {
         this.instrumentItem = instrumentItem;
     }
 
-    public PlayerEntity getPlayerEntity() {
+    public Player getPlayerEntity() {
         return playerEntity;
     }
 
-    public void setPlayerEntity(PlayerEntity playerEntity) {
+    public void setPlayerEntity(Player playerEntity) {
         this.playerEntity = playerEntity;
     }
 

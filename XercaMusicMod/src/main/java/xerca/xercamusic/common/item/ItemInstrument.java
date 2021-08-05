@@ -1,16 +1,21 @@
 package xerca.xercamusic.common.item;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import xerca.xercamusic.common.XercaMusic;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
@@ -25,7 +30,7 @@ public class ItemInstrument extends Item {
     private final int instrumentId;
 
     ItemInstrument(String name, boolean shouldCutOff, int instrumentId) {
-        super(new Properties().group(Items.musicTab));
+        super(new Properties().tab(Items.musicTab));
         this.setRegistryName(name);
         this.shouldCutOff = shouldCutOff;
         this.instrumentId = instrumentId;
@@ -40,10 +45,10 @@ public class ItemInstrument extends Item {
     }
 
     // Should be called from the server side
-    public void playMusic(World worldIn, PlayerEntity playerIn, boolean canStop){
-        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesWithinAABB(EntityMusicSpirit.class, playerIn.getBoundingBox().grow(3.0), entity -> entity.getBody().isEntityEqual(playerIn));
+    public void playMusic(Level worldIn, Player playerIn, boolean canStop){
+        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
         if(musicSpirits.size() == 0){
-            worldIn.addEntity(new EntityMusicSpirit(worldIn, playerIn, (ItemInstrument) playerIn.getHeldItemMainhand().getItem()));
+            worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, (ItemInstrument) playerIn.getMainHandItem().getItem()));
         }
         else if(canStop){
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
@@ -56,47 +61,49 @@ public class ItemInstrument extends Item {
 
     @Override
     @Nonnull
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        final ItemStack heldItem = playerIn.getHeldItem(handIn);
-        ItemStack off = playerIn.getHeldItemOffhand();
-        if (handIn == Hand.MAIN_HAND && off.getItem() == Items.MUSIC_SHEET) {
-            if (!worldIn.isRemote) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+        final ItemStack heldItem = playerIn.getItemInHand(handIn);
+        ItemStack off = playerIn.getOffhandItem();
+        if (handIn == InteractionHand.MAIN_HAND && off.getItem() == Items.MUSIC_SHEET) {
+            if (!worldIn.isClientSide) {
                 playMusic(worldIn, playerIn, true);
             }
         } else {
-            XercaMusic.proxy.showInstrumentGui();
+            if (worldIn.isClientSide) {
+                DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientStuff::showInstrumentGui);
+            }
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
-        BlockPos blockpos = context.getPos();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
+        BlockPos blockpos = context.getClickedPos();
         BlockState iblockstate = world.getBlockState(blockpos);
-        if (iblockstate.getBlock() == Blocks.MUSIC_BOX && !iblockstate.get(BlockMusicBox.HAS_INSTRUMENT)) {
-            ItemStack itemstack = context.getItem();
-            if (!world.isRemote) {
+        if (iblockstate.getBlock() == Blocks.MUSIC_BOX && !iblockstate.getValue(BlockMusicBox.HAS_INSTRUMENT)) {
+            ItemStack itemstack = context.getItemInHand();
+            if (!world.isClientSide) {
                 BlockMusicBox.insertInstrument(world, blockpos, iblockstate, itemstack.getItem());
 
-                if(context.getPlayer() != null && !context.getPlayer().abilities.isCreativeMode){
+                if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
                     itemstack.shrink(1);
                 }
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        World world = attacker.world;
-        if (!world.isRemote) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        Level world = attacker.level;
+        if (!world.isClientSide) {
             for (int i = 0; i < 3; i++) {
-                world.playSound(null, target.getPosition(), sounds[world.rand.nextInt(48)], SoundCategory.PLAYERS, 3.0f, 1.0f);
+                world.playSound(null, target.blockPosition(), sounds[world.random.nextInt(48)], SoundSource.PLAYERS, 3.0f, 1.0f);
             }
         }
         return true;

@@ -1,6 +1,6 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class MusicEndedPacket {
     private int playerId;
@@ -14,7 +14,7 @@ public class MusicEndedPacket {
         this.messageIsValid = false;
     }
 
-    public static MusicEndedPacket decode(PacketBuffer buf) {
+    public static MusicEndedPacket decode(FriendlyByteBuf buf) {
         MusicEndedPacket result = new MusicEndedPacket();
         try {
             result.playerId = buf.readInt();
@@ -26,7 +26,7 @@ public class MusicEndedPacket {
         return result;
     }
 
-    public static void encode(MusicEndedPacket pkt, PacketBuffer buf) {
+    public static void encode(MusicEndedPacket pkt, FriendlyByteBuf buf) {
         buf.writeInt(pkt.playerId);
     }
 
