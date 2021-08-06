@@ -3,13 +3,13 @@ package xerca.xercapaint.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,9 +34,9 @@ public class ClientProxy extends Proxy {
         RenderingRegistry.registerEntityRenderingHandler(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
     }
 
-    public void showCanvasGui(PlayerEntity player){
-        final ItemStack heldItem = player.getHeldItemMainhand();
-        final ItemStack offhandItem = player.getHeldItemOffhand();
+    public void showCanvasGui(Player player){
+        final ItemStack heldItem = player.getMainHandItem();
+        final ItemStack offhandItem = player.getOffhandItem();
         final Minecraft minecraft = Minecraft.getInstance();
 
         if(heldItem.isEmpty() || (minecraft.player != null && !minecraft.player.getGameProfile().getId().equals(player.getGameProfile().getId()))){
@@ -44,25 +44,25 @@ public class ClientProxy extends Proxy {
         }
 
         if(heldItem.getItem() instanceof ItemCanvas){
-            CompoundNBT tag = heldItem.getTag();
+            CompoundTag tag = heldItem.getTag();
             if(offhandItem.isEmpty() || (tag != null && tag.getInt("generation") > 0)){
-                minecraft.displayGuiScreen(new GuiCanvasView(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
+                minecraft.setScreen(new GuiCanvasView(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }else if(offhandItem.getItem() instanceof ItemPalette){
-                minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
-                        tag, offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
+                minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
+                        tag, offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }
         }
         else if(heldItem.getItem() instanceof ItemPalette){
             if(offhandItem.isEmpty()){
-                minecraft.displayGuiScreen(new GuiPalette(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_palette")));
+                minecraft.setScreen(new GuiPalette(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_palette")));
             }else if(offhandItem.getItem() instanceof ItemCanvas){
-                CompoundNBT tag = offhandItem.getTag();
+                CompoundTag tag = offhandItem.getTag();
                 if(tag != null && tag.getInt("generation") > 0){
-                    minecraft.displayGuiScreen(new GuiCanvasView(offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
+                    minecraft.setScreen(new GuiCanvasView(offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
                 }
                 else{
-                    minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
-                            tag, heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
+                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
+                            tag, heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
                 }
             }
         }
@@ -72,15 +72,17 @@ public class ClientProxy extends Proxy {
     static public class ModBusSubscriber{
         @SubscribeEvent
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
-            IItemPropertyGetter drawn = (itemStack, p_call_2_, p_call_3_) -> {
+            ItemPropertyFunction drawn = (itemStack, p_call_2_, p_call_3_) -> {
                 if(!itemStack.hasTag()) return 0.0f;
                 else return 1.0F;
             };
 
-            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
         }
+
+
     }
 }

@@ -45,7 +45,7 @@ public class ItemInstrument extends Item {
     }
 
     // Should be called from the server side
-    public void playMusic(Level worldIn, Player playerIn, boolean canStop){
+    static public void playMusic(Level worldIn, Player playerIn, boolean canStop){
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
         if(musicSpirits.size() == 0){
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, (ItemInstrument) playerIn.getMainHandItem().getItem()));

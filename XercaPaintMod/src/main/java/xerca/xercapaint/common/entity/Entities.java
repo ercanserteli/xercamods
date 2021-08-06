@@ -1,9 +1,9 @@
 package xerca.xercapaint.common.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,8 +19,8 @@ public class Entities {
         @SubscribeEvent
         public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
             final EntityType<EntityCanvas> canvasEntityType = build("canvas",
-                    EntityType.Builder.<EntityCanvas>create((EntityCanvas::new), EntityClassification.MISC).
-                            setCustomClientFactory(EntityCanvas::new).size(0.5f, 0.5f).setUpdateInterval(2147483647).setTrackingRange(10).setShouldReceiveVelocityUpdates(false)
+                    EntityType.Builder.<EntityCanvas>of((EntityCanvas::new), MobCategory.MISC).
+                            setCustomClientFactory(EntityCanvas::new).sized(0.5f, 0.5f).setUpdateInterval(2147483647).setTrackingRange(10).setShouldReceiveVelocityUpdates(false)
             );
             event.getRegistry().register(canvasEntityType);
         }

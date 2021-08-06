@@ -1,20 +1,20 @@
 package xerca.xercapaint.common.item.crafting;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.WrittenBookItem;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.WrittenBookItem;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.Items;
 
 @MethodsReturnNonnullByDefault
-public class RecipeCanvasCloning extends SpecialRecipe {
+public class RecipeCanvasCloning extends CustomRecipe {
     public RecipeCanvasCloning(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
@@ -23,12 +23,12 @@ public class RecipeCanvasCloning extends SpecialRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getSizeInventory(); ++j) {
-            ItemStack itemstack1 = inv.getStackInSlot(j);
+        for(int j = 0; j < inv.getContainerSize(); ++j) {
+            ItemStack itemstack1 = inv.getItem(j);
             if (!itemstack1.isEmpty()) {
                 if (itemstack1.getItem() instanceof ItemCanvas && itemstack1.hasTag() && WrittenBookItem.getGeneration(itemstack1) > 0) {
                     if (!orgCanvas.isEmpty()) {
@@ -59,12 +59,12 @@ public class RecipeCanvasCloning extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getSizeInventory(); ++j) {
-            ItemStack itemstack1 = inv.getStackInSlot(j);
+        for(int j = 0; j < inv.getContainerSize(); ++j) {
+            ItemStack itemstack1 = inv.getItem(j);
             if (!itemstack1.isEmpty()) {
                 if (itemstack1.getItem() instanceof ItemCanvas && itemstack1.hasTag() && WrittenBookItem.getGeneration(itemstack1) > 0) {
                     if (!orgCanvas.isEmpty()) {
@@ -91,7 +91,7 @@ public class RecipeCanvasCloning extends SpecialRecipe {
         int gen = WrittenBookItem.getGeneration(orgCanvas);
         if (!orgCanvas.isEmpty() && orgCanvas.hasTag() && !freshCanvas.isEmpty() && !freshCanvas.hasTag() && gen < 3 && gen > 0) {
             ItemStack resultStack = new ItemStack(orgCanvas.getItem());
-            CompoundNBT nbttagcompound = orgCanvas.getTag().copy();
+            CompoundTag nbttagcompound = orgCanvas.getTag().copy();
             nbttagcompound.putInt("generation", gen + 1);
             resultStack.setTag(nbttagcompound);
             return resultStack;
@@ -101,11 +101,11 @@ public class RecipeCanvasCloning extends SpecialRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         for(int i = 0; i < nonnulllist.size(); ++i) {
-            ItemStack itemstack = inv.getStackInSlot(i);
+            ItemStack itemstack = inv.getItem(i);
             if (itemstack.hasContainerItem()) {
                 nonnulllist.set(i, itemstack.getContainerItem());
             } else if (itemstack.getItem() instanceof ItemCanvas && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
@@ -120,7 +120,7 @@ public class RecipeCanvasCloning extends SpecialRecipe {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_CANVAS_CLONING;
     }
 
@@ -128,7 +128,7 @@ public class RecipeCanvasCloning extends SpecialRecipe {
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 2 && height >= 2;
     }
 }

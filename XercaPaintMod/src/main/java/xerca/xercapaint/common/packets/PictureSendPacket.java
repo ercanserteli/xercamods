@@ -1,6 +1,6 @@
 package xerca.xercapaint.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.Arrays;
 
@@ -20,16 +20,16 @@ public class PictureSendPacket {
         this.messageIsValid = false;
     }
 
-    public static void encode(PictureSendPacket pkt, PacketBuffer buf) {
-        buf.writeString(pkt.name);
+    public static void encode(PictureSendPacket pkt, FriendlyByteBuf buf) {
+        buf.writeUtf(pkt.name);
         buf.writeInt(pkt.version);
         buf.writeVarIntArray(pkt.pixels);
     }
 
-    public static PictureSendPacket decode(PacketBuffer buf) {
+    public static PictureSendPacket decode(FriendlyByteBuf buf) {
         PictureSendPacket result = new PictureSendPacket();
         try {
-            result.name = buf.readString(64);
+            result.name = buf.readUtf(64);
             result.version = buf.readInt();
             result.pixels = buf.readVarIntArray(1024);
         } catch (IndexOutOfBoundsException ioe) {

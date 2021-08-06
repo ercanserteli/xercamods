@@ -61,7 +61,6 @@ public class TileEntityMetronome extends BlockEntity {
                 if (metronome.age % pauseLevels[bpmLevel] == 0) {
                     if(metronome.level.isClientSide){// note: doesn't work if this function is only called in server
                         // Client side
-//                        XercaMusic.proxy.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat()*0.1f);
                         DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
                                 ClientStuff.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat()*0.1f));
 
@@ -73,9 +72,9 @@ public class TileEntityMetronome extends BlockEntity {
                             List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
                                     player -> player.getMainHandItem().getItem() instanceof ItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
                                             && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag().getInt("pause") == pauseLevels[bpmLevel] );
-
+                            XercaMusic.LOGGER.warn("Metronome found " + players.size() + " players");
                             for(Player player : players){
-                                Items.GUITAR.playMusic(level, player, false);
+                                ItemInstrument.playMusic(level, player, false);
                             }
                         }
                     }

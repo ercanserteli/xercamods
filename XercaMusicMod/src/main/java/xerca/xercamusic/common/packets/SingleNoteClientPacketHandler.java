@@ -50,7 +50,7 @@ public class SingleNoteClientPacketHandler {
                 noteSounds.put(playerEntity, new NoteSoundEntry(noteSound, playerEntity));
             }
 
-            playerEntity.level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, (msg.getNote()) / 24.0D, 0.0D, 0.0D);
+            playerEntity.level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (msg.getNote()) / 24.0D, 0.0D, 0.0D);
         }
     }
 

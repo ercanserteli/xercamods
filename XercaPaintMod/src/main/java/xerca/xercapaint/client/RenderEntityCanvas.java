@@ -1,21 +1,21 @@
 package xerca.xercapaint.client;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -44,27 +44,27 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     private final TextureManager textureManager;
     private final Map<String, RenderEntityCanvas.Instance> loadedCanvases = Maps.newHashMap();
 
-    RenderEntityCanvas(EntityRendererManager renderManager) {
+    RenderEntityCanvas(EntityRenderDispatcher renderManager) {
         super(renderManager);
         this.textureManager = Minecraft.getInstance().textureManager;
     }
 
     @Nullable
     @Override
-    public ResourceLocation getEntityTexture(EntityCanvas entity) {
+    public ResourceLocation getTextureLocation(EntityCanvas entity) {
         return getCanvasRendererInstance(entity).location;
     }
 
     @Override
-    public void render(EntityCanvas entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(EntityCanvas entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-        getCanvasRendererInstance(entity).render(entity, entityYaw, entity.rotationPitch, matrixStackIn, bufferIn, entity.getHorizontalFacing(), packedLightIn);
+        getCanvasRendererInstance(entity).render(entity, entityYaw, entity.xRot, matrixStackIn, bufferIn, entity.getDirection(), packedLightIn);
     }
 
 
     public static class RenderEntityCanvasFactory implements IRenderFactory<EntityCanvas> {
         @Override
-        public EntityRenderer<? super EntityCanvas> createRenderFor(EntityRendererManager manager) {
+        public EntityRenderer<? super EntityCanvas> createRenderFor(EntityRenderDispatcher manager) {
             theInstance = new RenderEntityCanvas(manager);
             return theInstance;
         }
@@ -78,10 +78,10 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     }
 
     private RenderEntityCanvas.Instance getCanvasRendererInstance(EntityCanvas canvas) {
-        return getCanvasRendererInstance(canvas.getCanvasName(), canvas.getCanvasVersion(), canvas.getWidthPixels(), canvas.getHeightPixels());
+        return getCanvasRendererInstance(canvas.getCanvasName(), canvas.getCanvasVersion(), canvas.getWidth(), canvas.getHeight());
     }
 
-    RenderEntityCanvas.Instance getCanvasRendererInstance(CompoundNBT tag, int width, int height) {
+    RenderEntityCanvas.Instance getCanvasRendererInstance(CompoundTag tag, int width, int height) {
         String name = tag.getString("name");
         int version = tag.getInt("v");
         if(!EntityCanvas.PICTURES.containsKey(name) || EntityCanvas.PICTURES.get(name).version < version){
@@ -140,7 +140,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             this.width = width;
             this.height = height;
             this.canvasTexture = new DynamicTexture(width, height, true);
-            this.location = RenderEntityCanvas.this.textureManager.getDynamicTextureLocation("canvas/" + name, this.canvasTexture);
+            this.location = RenderEntityCanvas.this.textureManager.register("canvas/" + name, this.canvasTexture);
 
             updateCanvasTexture(name, version);
         }
@@ -168,34 +168,34 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                 for (int i = 0; i < height; ++i) {
                     for (int j = 0; j < width; ++j) {
                         int k = j + i * width;
-                        canvasTexture.getTextureData().setPixelRGBA(j, i, swapColor(pixels[k]));
+                        canvasTexture.getPixels().setPixelRGBA(j, i, swapColor(pixels[k]));
                     }
                 }
 
-                canvasTexture.updateDynamicTexture();
+                canvasTexture.upload();
             }
             this.started = true;
         }
 
-        public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, MatrixStack ms, IRenderTypeBuffer buffer, Direction facing, int packedLight) {
+        public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, PoseStack ms, MultiBufferSource buffer, Direction facing, int packedLight) {
             final float wScale = width/16.0f;
             final float hScale = height/16.0f;
 
-            ms.push();
-            Matrix3f mn = ms.getLast().getNormal().copy();
+            ms.pushPose();
+            Matrix3f mn = ms.last().normal().copy();
 
-            float xOffset = facing.getXOffset();
-            float yOffset = facing.getYOffset();
-            float zOffset = facing.getZOffset();
+            float xOffset = facing.getStepX();
+            float yOffset = facing.getStepY();
+            float zOffset = facing.getStepZ();
 
             if(canvas != null && canvas.getRotation() > 0) {
-                ms.rotate(Vector3f.XP.rotationDegrees( pitch));
-                ms.rotate(Vector3f.YP.rotationDegrees( 180-yaw));
-                ms.rotate(Vector3f.ZP.rotationDegrees(90*canvas.getRotation()));
-                ms.rotate(Vector3f.YP.rotationDegrees( -180+yaw));
-                ms.rotate(Vector3f.XP.rotationDegrees( -pitch));
+                ms.mulPose(Vector3f.XP.rotationDegrees( pitch));
+                ms.mulPose(Vector3f.YP.rotationDegrees( 180-yaw));
+                ms.mulPose(Vector3f.ZP.rotationDegrees(90*canvas.getRotation()));
+                ms.mulPose(Vector3f.YP.rotationDegrees( -180+yaw));
+                ms.mulPose(Vector3f.XP.rotationDegrees( -pitch));
             }
-            ms.getLast().getNormal().set(mn);
+            ms.last().normal().load(mn);
 
             float f = 1.0f/32.0f;
             if(canvas != null) {
@@ -213,16 +213,16 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                     f /= 2.0f;
                 }
             }
-            ms.rotate(Vector3f.XP.rotationDegrees( pitch));
-            ms.rotate(Vector3f.YP.rotationDegrees( 180-yaw));
+            ms.mulPose(Vector3f.XP.rotationDegrees( pitch));
+            ms.mulPose(Vector3f.YP.rotationDegrees( 180-yaw));
 
             ms.scale(f, f, f);
 
-            textureManager.bindTexture(location);
+            textureManager.bind(location);
 
-            Matrix4f m = ms.getLast().getMatrix();
-            mn = ms.getLast().getNormal();
-            IVertexBuilder vb = buffer.getBuffer(RenderType.getEntitySolid(this.location));
+            Matrix4f m = ms.last().pose();
+            mn = ms.last().normal();
+            VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(this.location));
 
             // Draw the front
             addVertex(vb, m, mn, 0.0F, 32.0F*hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
@@ -230,10 +230,10 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             addVertex(vb, m, mn, 32.0F*wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, mn, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
 
-            vb = buffer.getBuffer(RenderType.getEntitySolid(backLocation));
+            vb = buffer.getBuffer(RenderType.entitySolid(backLocation));
             // Draw the back and sides
             final float sideWidth = 1.0F/16.0F;
-            textureManager.bindTexture(backLocation);
+            textureManager.bind(backLocation);
             addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
@@ -260,17 +260,17 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, 1.0F, 1.0F-sideWidth, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, mn, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F-sideWidth, packedLight, xOffset, yOffset, zOffset);
 
-            ms.pop();
+            ms.popPose();
         }
 
-        private void addVertex(IVertexBuilder vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
+        private void addVertex(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
         {
-            vb.pos(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).tex(tx, ty).overlay(OverlayTexture.NO_OVERLAY).lightmap(lightmap).normal(mn, xOff, yOff, zOff).endVertex();
+            vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(mn, xOff, yOff, zOff).endVertex();
         }
 
-        private void addVertexFront(IVertexBuilder vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
+        private void addVertexFront(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
         {
-            vb.pos(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).tex(tx, ty).lightmap(lightmap).endVertex();
+            vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).uv2(lightmap).endVertex();
         }
 
         public void close() {

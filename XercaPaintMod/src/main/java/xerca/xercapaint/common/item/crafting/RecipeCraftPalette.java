@@ -1,16 +1,16 @@
 package xerca.xercapaint.common.item.crafting;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import xerca.xercapaint.common.item.Items;
 
 import javax.annotation.Nullable;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RecipeCraftPalette extends SpecialRecipe {
+public class RecipeCraftPalette extends CustomRecipe {
     public RecipeCraftPalette(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
@@ -32,11 +32,11 @@ public class RecipeCraftPalette extends SpecialRecipe {
         return stack.getItem() instanceof DyeItem;
     }
 
-    private boolean isPlankRow(CraftingInventory inv, int row){
+    private boolean isPlankRow(CraftingContainer inv, int row){
         int plankCount = 0;
         for(int j = 0; j < inv.getWidth(); ++j) {
             int id = row*inv.getWidth() + j;
-            ItemStack stack = inv.getStackInSlot(id);
+            ItemStack stack = inv.getItem(id);
             if(isPlank(stack)){
                 plankCount++;
             }
@@ -44,7 +44,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
         return plankCount == 3;
     }
 
-    private int findPlankRow(CraftingInventory inv){
+    private int findPlankRow(CraftingContainer inv){
         for(int i = 0; i < inv.getHeight(); ++i) {
             if(isPlankRow(inv, i)){
                 return i;
@@ -54,7 +54,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
     }
 
     @Nullable
-    private ArrayList<ItemStack> findDyes(CraftingInventory inv, int plankRow){
+    private ArrayList<ItemStack> findDyes(CraftingContainer inv, int plankRow){
         ArrayList<ItemStack> dyes = new ArrayList<>();
         for(int i = 0; i < inv.getHeight(); ++i) {
             if(i == plankRow){
@@ -62,7 +62,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
             }
             for(int j = 0; j < inv.getWidth(); ++j) {
                 int id = i*inv.getWidth() + j;
-                ItemStack stack = inv.getStackInSlot(id);
+                ItemStack stack = inv.getItem(id);
                 if(isDye(stack)){
                     dyes.add(stack);
                 }
@@ -79,7 +79,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         int plankRow = findPlankRow(inv);
         if(plankRow < 0){
             return false;
@@ -96,7 +96,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         int plankRow = findPlankRow(inv);
         if(plankRow < 0){
             return ItemStack.EMPTY;
@@ -112,20 +112,20 @@ public class RecipeCraftPalette extends SpecialRecipe {
             basicColors[15 - color.getId()] = 1;
         }
         ItemStack result = new ItemStack(Items.ITEM_PALETTE);
-        CompoundNBT tag = result.getOrCreateTag();
+        CompoundTag tag = result.getOrCreateTag();
         tag.putByteArray("basic", basicColors);
         return result;
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        NonNullList<ItemStack> list = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+        NonNullList<ItemStack> list = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         return list;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_PALETTE_CRAFTING;
     }
 
@@ -133,7 +133,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 3 && height >= 3;
     }
 }

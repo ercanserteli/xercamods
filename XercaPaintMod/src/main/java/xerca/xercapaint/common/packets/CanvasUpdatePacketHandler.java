@@ -1,8 +1,8 @@
 package xerca.xercapaint.common.packets;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.ItemCanvas;
@@ -18,7 +18,7 @@ public class CanvasUpdatePacketHandler {
             System.err.println("Packet was invalid");
             return;
         }
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when CanvasUpdatePacket was received");
             return;
@@ -28,9 +28,9 @@ public class CanvasUpdatePacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void processMessage(CanvasUpdatePacket msg, ServerPlayerEntity pl) {
-        ItemStack canvas = pl.getHeldItemMainhand();
-        ItemStack palette = pl.getHeldItemOffhand();
+    private static void processMessage(CanvasUpdatePacket msg, ServerPlayer pl) {
+        ItemStack canvas = pl.getMainHandItem();
+        ItemStack palette = pl.getOffhandItem();
         if(canvas.getItem() == Items.ITEM_PALETTE){
             ItemStack temp = canvas;
             canvas = palette;
@@ -38,7 +38,7 @@ public class CanvasUpdatePacketHandler {
         }
 
         if (!canvas.isEmpty() && canvas.getItem() instanceof ItemCanvas) {
-            CompoundNBT comp = canvas.getOrCreateTag();
+            CompoundTag comp = canvas.getOrCreateTag();
 
             comp.putIntArray("pixels", msg.getPixels());
             comp.putString("name", msg.getName());
@@ -51,7 +51,7 @@ public class CanvasUpdatePacketHandler {
             }
 
             if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
-                CompoundNBT paletteComp = palette.getOrCreateTag();
+                CompoundTag paletteComp = palette.getOrCreateTag();
                 writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
             }
 

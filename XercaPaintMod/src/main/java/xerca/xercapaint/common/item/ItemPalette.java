@@ -1,16 +1,16 @@
 package xerca.xercapaint.common.item;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercapaint.common.XercaPaint;
@@ -21,17 +21,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+
 public class ItemPalette extends Item {
     ItemPalette(String name) {
-        super(new Properties().group(Items.paintTab).maxStackSize(1));
+        super(new Properties().tab(Items.paintTab).stacksTo(1));
         this.setRegistryName(name);
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         XercaPaint.proxy.showCanvasGui(playerIn);
-        return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getHeldItem(hand));
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
     }
 
     /**
@@ -39,8 +46,8 @@ public class ItemPalette extends Item {
      */
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+        if (this.allowdedIn(group)) {
             // Empty palette
             items.add(new ItemStack(this));
 
@@ -55,9 +62,9 @@ public class ItemPalette extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.hasTag()) {
-            CompoundNBT tag = stack.getTag();
+            CompoundTag tag = stack.getTag();
             if(tag != null){
                 byte[] basicColors = tag.getByteArray("basic");
                 if (basicColors.length == 16) {
@@ -65,7 +72,7 @@ public class ItemPalette extends Item {
                     for(byte basicColor : basicColors){
                         basicCount += basicColor;
                     }
-                    tooltip.add(new TranslationTextComponent("palette.basic_count", String.valueOf(basicCount)).mergeStyle(TextFormatting.GRAY));
+                    tooltip.add(new TranslatableComponent("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
                 }
 
                 int[] ns = tag.getIntArray("n");
@@ -77,12 +84,12 @@ public class ItemPalette extends Item {
                             fullCount++;
                         }
                     }
-                    tooltip.add(new TranslationTextComponent("palette.custom_count", String.valueOf(fullCount)).mergeStyle(TextFormatting.GRAY));
+                    tooltip.add(new TranslatableComponent("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
                 }
             }
         }
         else{
-            tooltip.add(new TranslationTextComponent("palette.empty").mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslatableComponent("palette.empty").withStyle(ChatFormatting.GRAY));
         }
     }
 }

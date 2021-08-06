@@ -1,6 +1,6 @@
 package xerca.xercapaint.server;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import xerca.xercapaint.common.Proxy;
 
@@ -12,7 +12,7 @@ public class ServerProxy extends Proxy {
     }
 
     @Override
-    public void showCanvasGui(PlayerEntity player) {
+    public void showCanvasGui(Player player) {
 
     }
 }

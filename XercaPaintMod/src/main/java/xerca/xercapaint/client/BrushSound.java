@@ -1,16 +1,18 @@
 package xerca.xercapaint.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercapaint.common.SoundEvents;
 
 import java.util.Random;
 
+import net.minecraft.client.resources.sounds.SoundInstance.Attenuation;
+
 @OnlyIn(Dist.CLIENT)
-public class BrushSound extends TickableSound {
+public class BrushSound extends AbstractTickableSoundInstance {
     private int age = 0;
     private int fadingTicks = 4;
     private Random random;
@@ -18,13 +20,13 @@ public class BrushSound extends TickableSound {
     private static final float[] fadeVolumes = {0.0f, 0.3f, 0.7f};
 
     public BrushSound() {
-        super(SoundEvents.STROKE_LOOP, SoundCategory.MASTER);
+        super(SoundEvents.STROKE_LOOP, SoundSource.MASTER);
         volume = 1.0f;
         pitch = 1.0F;
-        repeat = true;
-        attenuationType = AttenuationType.NONE;
-        if(Minecraft.getInstance().world != null) {
-            random = Minecraft.getInstance().world.getRandom();
+        looping = true;
+        attenuation = Attenuation.NONE;
+        if(Minecraft.getInstance().level != null) {
+            random = Minecraft.getInstance().level.getRandom();
         }
     }
 
@@ -41,7 +43,7 @@ public class BrushSound extends TickableSound {
     public void tick() {
         age++;
         if(fadingTicks <= 0 && age > 300){
-            this.finishPlaying();
+            this.stop();
         }
         if(fadingTicks >= 0){
             if(fadingTicks < fadeVolumes.length){

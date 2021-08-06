@@ -1,8 +1,8 @@
 package xerca.xercapaint.common.packets;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xerca.xercapaint.common.item.Items;
 
@@ -16,7 +16,7 @@ public class PaletteUpdatePacketHandler {
             System.err.println("Packet was invalid");
             return;
         }
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when PaletteUpdatePacket was received");
             return;
@@ -26,11 +26,11 @@ public class PaletteUpdatePacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void processMessage(PaletteUpdatePacket msg, ServerPlayerEntity pl) {
-        ItemStack palette = pl.getHeldItemMainhand();
+    private static void processMessage(PaletteUpdatePacket msg, ServerPlayer pl) {
+        ItemStack palette = pl.getMainHandItem();
 
         if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
-            CompoundNBT paletteComp = palette.getOrCreateTag();
+            CompoundTag paletteComp = palette.getOrCreateTag();
             writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
         }
     }

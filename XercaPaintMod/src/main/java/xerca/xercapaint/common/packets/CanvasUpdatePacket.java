@@ -1,6 +1,6 @@
 package xerca.xercapaint.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.PaletteUtil;
 
@@ -31,19 +31,19 @@ public class CanvasUpdatePacket {
         this.messageIsValid = false;
     }
 
-    public static void encode(CanvasUpdatePacket pkt, PacketBuffer buf) {
+    public static void encode(CanvasUpdatePacket pkt, FriendlyByteBuf buf) {
         for(PaletteUtil.CustomColor color : pkt.paletteColors){
             color.writeToBuffer(buf);
         }
         buf.writeByte(pkt.canvasType.ordinal());
         buf.writeInt(pkt.version);
-        buf.writeString(pkt.name);
-        buf.writeString(pkt.title);
+        buf.writeUtf(pkt.name);
+        buf.writeUtf(pkt.title);
         buf.writeBoolean(pkt.signed);
         buf.writeVarIntArray(pkt.pixels);
     }
 
-    public static CanvasUpdatePacket decode(PacketBuffer buf) {
+    public static CanvasUpdatePacket decode(FriendlyByteBuf buf) {
         CanvasUpdatePacket result = new CanvasUpdatePacket();
         try {
             result.paletteColors = new PaletteUtil.CustomColor[12];
@@ -52,8 +52,8 @@ public class CanvasUpdatePacket {
             }
             result.canvasType = CanvasType.fromByte(buf.readByte());
             result.version = buf.readInt();
-            result.name = buf.readString(64);
-            result.title = buf.readString(32);
+            result.name = buf.readUtf(64);
+            result.title = buf.readUtf(32);
             result.signed = buf.readBoolean();
             int area = CanvasType.getHeight(result.canvasType)*CanvasType.getWidth(result.canvasType);
             result.pixels = buf.readVarIntArray(area);

@@ -118,9 +118,8 @@ public class GuiInstrument extends Screen {
         }
 
         SoundEvent noteSound = instrument.getSound(note);
-//        lastPlayed = XercaMusic.proxy.playNote(noteSound, player.getX(), player.getY(), player.getZ());
         lastPlayed = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound, player.getX(), player.getY(), player.getZ()));
-        player.level.addParticle(ParticleTypes.NOTE, player.getX() + 0.5D, player.getY() + 2.2D, player.getZ() + 0.5D, note / 24.0D, 0.0D, 0.0D);
+        player.level.addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
 
         SingleNotePacket pack = new SingleNotePacket(note, instrument);
         XercaMusic.NETWORK_HANDLER.sendToServer(pack);

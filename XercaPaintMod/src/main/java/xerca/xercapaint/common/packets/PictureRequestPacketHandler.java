@@ -1,6 +1,6 @@
 package xerca.xercapaint.common.packets;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import xerca.xercapaint.common.XercaPaint;
@@ -14,7 +14,7 @@ public class PictureRequestPacketHandler {
             System.err.println("Packet was invalid");
             return;
         }
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when CanvasUpdatePacket was received");
             return;
@@ -24,7 +24,7 @@ public class PictureRequestPacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void processMessage(PictureRequestPacket msg, ServerPlayerEntity pl) {
+    private static void processMessage(PictureRequestPacket msg, ServerPlayer pl) {
         String name = msg.getName();
         EntityCanvas.Picture picture = EntityCanvas.PICTURES.get(name);
         if(picture != null){

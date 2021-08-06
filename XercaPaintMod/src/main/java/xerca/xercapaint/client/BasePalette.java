@@ -1,17 +1,17 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.network.chat.Component;
 import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
@@ -56,39 +56,39 @@ public abstract class BasePalette extends Screen {
             new PaletteUtil.Color(0xFFF9801D),
             new PaletteUtil.Color(0xFFF9FFFE)
     };
-    final static Vector2f[] basicColorCenters = {
-            new Vector2f(23.5f, 172.5f),
-            new Vector2f(18.5f, 145.5f),
-            new Vector2f(16.5f, 117.5f),
-            new Vector2f(17.5f, 89.5f),
-            new Vector2f(23.5f, 62.5f),
-            new Vector2f(38.5f, 39.5f),
-            new Vector2f(61.5f, 24.5f),
-            new Vector2f(87.5f, 17.5f),
-            new Vector2f(114.5f, 15.5f),
-            new Vector2f(44.5f, 154.5f),
-            new Vector2f(41.5f, 127.5f),
-            new Vector2f(42.5f, 100.5f),
-            new Vector2f(48.5f, 74.5f),
-            new Vector2f(64.5f, 52.5f),
-            new Vector2f(90.5f, 44.5f),
-            new Vector2f(117.5f, 42.5f)
+    final static Vec2[] basicColorCenters = {
+            new Vec2(23.5f, 172.5f),
+            new Vec2(18.5f, 145.5f),
+            new Vec2(16.5f, 117.5f),
+            new Vec2(17.5f, 89.5f),
+            new Vec2(23.5f, 62.5f),
+            new Vec2(38.5f, 39.5f),
+            new Vec2(61.5f, 24.5f),
+            new Vec2(87.5f, 17.5f),
+            new Vec2(114.5f, 15.5f),
+            new Vec2(44.5f, 154.5f),
+            new Vec2(41.5f, 127.5f),
+            new Vec2(42.5f, 100.5f),
+            new Vec2(48.5f, 74.5f),
+            new Vec2(64.5f, 52.5f),
+            new Vec2(90.5f, 44.5f),
+            new Vec2(117.5f, 42.5f)
     };
-    final static Vector2f[] customColorCenters = {
-            new Vector2f(101.5f, 132.0f),
-            new Vector2f(113.5f, 118.0f),
-            new Vector2f(120.5f, 102.0f),
-            new Vector2f(124.5f, 084.0f),
-            new Vector2f(126.5f, 066.0f),
-            new Vector2f(097.5f, 152.0f),
-            new Vector2f(114.5f, 146.0f),
-            new Vector2f(127.5f, 133.0f),
-            new Vector2f(134.5f, 116.0f),
-            new Vector2f(139.5f, 098.0f),
-            new Vector2f(142.5f, 080.0f),
-            new Vector2f(144.5f, 062.0f),
+    final static Vec2[] customColorCenters = {
+            new Vec2(101.5f, 132.0f),
+            new Vec2(113.5f, 118.0f),
+            new Vec2(120.5f, 102.0f),
+            new Vec2(124.5f, 084.0f),
+            new Vec2(126.5f, 066.0f),
+            new Vec2(097.5f, 152.0f),
+            new Vec2(114.5f, 146.0f),
+            new Vec2(127.5f, 133.0f),
+            new Vec2(134.5f, 116.0f),
+            new Vec2(139.5f, 098.0f),
+            new Vec2(142.5f, 080.0f),
+            new Vec2(144.5f, 062.0f),
     };
-    final static Vector2f waterCenter = new Vector2f(140.5f, 28.f);
+    final static Vec2 waterCenter = new Vec2(140.5f, 28.f);
     final static float basicColorRadius = 11.f;
     final static float customColorRadius = 6.5f;
 
@@ -103,7 +103,7 @@ public abstract class BasePalette extends Screen {
     boolean[] basicColorFlags;
     boolean paletteComplete = false;
 
-    BasePalette(ITextComponent titleIn, CompoundNBT paletteTag) {
+    BasePalette(Component titleIn, CompoundTag paletteTag) {
         super(titleIn);
         this.customColors = new PaletteUtil.CustomColor[12];
         this.basicColorFlags = new boolean[16];
@@ -134,15 +134,15 @@ public abstract class BasePalette extends Screen {
         }
     }
 
-    protected void superRender(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    protected void superRender(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        Minecraft.getInstance().getTextureManager().bindTexture(paletteTextures);
+        Minecraft.getInstance().getTextureManager().bind(paletteTextures);
 
         // Draw basic colors
         for(int i=0; i<basicColorFlags.length; i++){
@@ -152,7 +152,7 @@ public abstract class BasePalette extends Screen {
             if(basicColorFlags[i]){
                 fill(matrixStack, x-r, y-r, x+r+1, y+r+1, basicColors[i].rgbVal());
 
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 blit(matrixStack, x - 8, y - 8, dyeSpriteX, i*dyeSpriteSize, dyeSpriteSize, dyeSpriteSize);
             }
             else{
@@ -167,7 +167,7 @@ public abstract class BasePalette extends Screen {
             fill(matrixStack, x-6, y-7, x+7, y+6, customColors[i].getColor().rgbVal());
         }
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         blit(matrixStack, paletteX, paletteY, 0, 0, paletteWidth, paletteHeight);
 
         // Draw color picker
@@ -197,7 +197,7 @@ public abstract class BasePalette extends Screen {
         if(paletteClick(mouseX, mouseY)){
             int x = (mouseX - paletteX);
             int y = (mouseY - paletteY);
-            Vector2f clickVec = new Vector2f(x, y);
+            Vec2 clickVec = new Vec2(x, y);
             float sqrBasicRadius = basicColorRadius * basicColorRadius;
             float sqrCustomRadius = customColorRadius * customColorRadius;
 
@@ -279,7 +279,7 @@ public abstract class BasePalette extends Screen {
                 float sqrCustomRadius = customColorRadius * customColorRadius;
                 int x = (mouseX - paletteX);
                 int y = (mouseY - paletteY);
-                Vector2f clickVec = new Vector2f(x, y);
+                Vec2 clickVec = new Vec2(x, y);
                 for (int i = 0; i < customColorCenters.length; i++) {
                     if (sqrDist(clickVec, customColorCenters[i]) <= sqrCustomRadius) {
                         PaletteUtil.CustomColor customColor = customColors[i];
@@ -305,8 +305,8 @@ public abstract class BasePalette extends Screen {
         return super.mouseReleased(posX, posY, mouseButton);
     }
 
-    protected void playSound(ISound sound){
-        Minecraft.getInstance().getSoundHandler().play(sound);
+    protected void playSound(SoundInstance sound){
+        Minecraft.getInstance().getSoundManager().play(sound);
     }
 
     protected void playSound(SoundEvent soundEvent){
@@ -315,9 +315,9 @@ public abstract class BasePalette extends Screen {
 
     protected void playSound(SoundEvent soundEvent, float volume){
         Minecraft m = Minecraft.getInstance();
-        if(m.world != null){
-            m.getSoundHandler().play(new SimpleSound(soundEvent, SoundCategory.MASTER, volume,
-                    0.8f + m.world.rand.nextFloat()*0.4f, Minecraft.getInstance().player.getPosition()));
+        if(m.level != null){
+            m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
+                    0.8f + m.level.random.nextFloat()*0.4f, Minecraft.getInstance().player.blockPosition()));
         }
     }
 
@@ -330,7 +330,7 @@ public abstract class BasePalette extends Screen {
         return x <= paletteX + paletteWidth && x >= paletteX && y <= paletteY + paletteHeight && y >= paletteY;
     }
 
-    float sqrDist(Vector2f a, Vector2f b){
+    float sqrDist(Vec2 a, Vec2 b){
         return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y);
     }
 }

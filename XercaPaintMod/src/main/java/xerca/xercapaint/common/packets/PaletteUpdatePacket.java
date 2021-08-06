@@ -1,6 +1,6 @@
 package xerca.xercapaint.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercapaint.common.PaletteUtil;
 
 import java.util.Arrays;
@@ -17,13 +17,13 @@ public class PaletteUpdatePacket {
         this.messageIsValid = false;
     }
 
-    public static void encode(PaletteUpdatePacket pkt, PacketBuffer buf) {
+    public static void encode(PaletteUpdatePacket pkt, FriendlyByteBuf buf) {
         for(PaletteUtil.CustomColor color : pkt.paletteColors){
             color.writeToBuffer(buf);
         }
     }
 
-    public static PaletteUpdatePacket decode(PacketBuffer buf) {
+    public static PaletteUpdatePacket decode(FriendlyByteBuf buf) {
         PaletteUpdatePacket result = new PaletteUpdatePacket();
         try {
             result.paletteColors = new PaletteUtil.CustomColor[12];

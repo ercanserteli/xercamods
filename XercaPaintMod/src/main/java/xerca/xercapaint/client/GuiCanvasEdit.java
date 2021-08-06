@@ -1,16 +1,16 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SharedConstants;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.SharedConstants;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -47,7 +47,7 @@ public class GuiCanvasEdit extends BasePalette {
     private int updateCount;
     private BrushSound brushSound = null;
 
-    private final PlayerEntity editingPlayer;
+    private final Player editingPlayer;
 
     private CanvasType canvasType;
     private boolean isSigned = false;
@@ -57,24 +57,24 @@ public class GuiCanvasEdit extends BasePalette {
     private String name = "";
     private int version = 0;
 
-    private static final Vector2f[] outlinePoss1 = {
-            new Vector2f(0.f, 199.0f),
-            new Vector2f(12.f, 199.0f),
-            new Vector2f(34.f, 199.0f),
-            new Vector2f(76.f, 199.0f),
+    private static final Vec2[] outlinePoss1 = {
+            new Vec2(0.f, 199.0f),
+            new Vec2(12.f, 199.0f),
+            new Vec2(34.f, 199.0f),
+            new Vec2(76.f, 199.0f),
     };
 
-    private static final Vector2f[] outlinePoss2 = {
-            new Vector2f(128.f, 199.0f),
-            new Vector2f(135.f, 199.0f),
-            new Vector2f(147.f, 199.0f),
-            new Vector2f(169.f, 199.0f),
+    private static final Vec2[] outlinePoss2 = {
+            new Vec2(128.f, 199.0f),
+            new Vec2(135.f, 199.0f),
+            new Vec2(147.f, 199.0f),
+            new Vec2(169.f, 199.0f),
     };
 
     private static final int maxUndoLength = 16;
     private Deque<int[]> undoStack = new ArrayDeque<>(maxUndoLength);
 
-    protected GuiCanvasEdit(PlayerEntity player, CompoundNBT canvasTag, CompoundNBT paletteTag, ITextComponent title, CanvasType canvasType) {
+    protected GuiCanvasEdit(Player player, CompoundTag canvasTag, CompoundTag paletteTag, Component title, CanvasType canvasType) {
         super(title, paletteTag);
         updateCount = 0;
 
@@ -107,7 +107,7 @@ public class GuiCanvasEdit extends BasePalette {
             Arrays.fill(this.pixels, basicColors[15].rgbVal());
 
             long secs = System.currentTimeMillis()/1000;
-            this.name = "" + player.getUniqueID().toString() + "_" + secs;
+            this.name = "" + player.getUUID().toString() + "_" + secs;
         }
 
         if(paletteComplete){
@@ -209,34 +209,34 @@ public class GuiCanvasEdit extends BasePalette {
         brushMeterX = canvasX + canvasWidth + 2;
 
         // Hide mouse cursor
-        GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         int x = canvasX;
         int y = canvasY + canvasHeight + 10;
-        this.buttonSign = this.addButton(new Button( x, y, 98, 20, new TranslationTextComponent("canvas.signButton"), button -> {
+        this.buttonSign = this.addButton(new Button( x, y, 98, 20, new TranslatableComponent("canvas.signButton"), button -> {
             if (!isSigned) {
                 gettingSigned = true;
                 updateButtons();
 
-                GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }));
-        this.buttonFinalize = this.addButton(new Button( canvasX - 100, 100, 98, 20, new TranslationTextComponent("canvas.finalizeButton"), button -> {
+        this.buttonFinalize = this.addButton(new Button( canvasX - 100, 100, 98, 20, new TranslatableComponent("canvas.finalizeButton"), button -> {
             if (!isSigned) {
                 dirty = true;
                 isSigned = true;
                 if(minecraft != null){
-                    minecraft.displayGuiScreen(null);
+                    minecraft.setScreen(null);
                 }
             }
 
         }));
-        this.buttonCancel = this.addButton(new Button( canvasX - 100, 130, 98, 20, new TranslationTextComponent("gui.cancel"), button -> {
+        this.buttonCancel = this.addButton(new Button( canvasX - 100, 130, 98, 20, new TranslatableComponent("gui.cancel"), button -> {
             if (!isSigned) {
                 gettingSigned = false;
                 updateButtons();
 
-                GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
         }));
 
@@ -259,7 +259,7 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float f) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float f) {
         if(!gettingSigned) {
             super.render(matrixStack, mouseX, mouseY, f);
         }
@@ -282,7 +282,7 @@ public class GuiCanvasEdit extends BasePalette {
                 int y = brushMeterY + i*brushSpriteSize;
                 fill(matrixStack, brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
             }
-            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
             blit(matrixStack, brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
             blit(matrixStack, brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
 
@@ -294,7 +294,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    private void renderCursor(MatrixStack matrixStack, int mouseX, int mouseY){
+    private void renderCursor(PoseStack matrixStack, int mouseX, int mouseY){
         if(isCarryingColor){
             carriedColor.setGLColor();
             blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
@@ -311,13 +311,13 @@ public class GuiCanvasEdit extends BasePalette {
             drawOutline(matrixStack, mouseX, mouseY, brushSize);
             fill(matrixStack, mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
-            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = brushSpriteY - brushSpriteSize*brushSize;
             blit(matrixStack, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize);
         }
     }
 
-    private void drawOutline(MatrixStack matrixStack, int mouseX, int mouseY, int brushSize){
+    private void drawOutline(PoseStack matrixStack, int mouseX, int mouseY, int brushSize){
         if(inCanvas(mouseX, mouseY)){
             // Render drawing outline
             int x = 0;
@@ -345,7 +345,7 @@ public class GuiCanvasEdit extends BasePalette {
                 outlineSize = canvasPixelScale*5 + 2;
             }
 
-            Vector2f textureVec;
+            Vec2 textureVec;
             if(canvasPixelScale == 10){
                 textureVec = outlinePoss1[brushSize];
             }
@@ -353,12 +353,12 @@ public class GuiCanvasEdit extends BasePalette {
                 textureVec = outlinePoss2[brushSize];
             }
 
-            GlStateManager.color4f(0.3F, 0.3F, 0.3F, 1.0F);
+            GlStateManager._color4f(0.3F, 0.3F, 0.3F, 1.0F);
             blit(matrixStack, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
         }
     }
 
-    private void drawSigning(MatrixStack matrixStack) {
+    private void drawSigning(PoseStack matrixStack) {
         int i = canvasX;
         int j = canvasY;
 
@@ -367,20 +367,20 @@ public class GuiCanvasEdit extends BasePalette {
 
         if (!this.isSigned) {
             if (this.updateCount / 6 % 2 == 0) {
-                s = s + "" + TextFormatting.BLACK + "_";
+                s = s + "" + ChatFormatting.BLACK + "_";
             } else {
-                s = s + "" + TextFormatting.GRAY + "_";
+                s = s + "" + ChatFormatting.GRAY + "_";
             }
         }
-        String s1 = I18n.format("canvas.editTitle");
-        int k = this.font.getStringWidth(s1);
-        this.font.drawString(matrixStack, s1, i + 26 + (116 - k) / 2.0f, j + 16 + 16, 0);
-        int l = this.font.getStringWidth(s);
-        this.font.drawString(matrixStack, s, i + 26 + (116 - l) / 2.0f, j + 48, 0);
-        String s2 = I18n.format("canvas.byAuthor", this.editingPlayer.getName().getString());
-        int i1 = this.font.getStringWidth(s2);
-        this.font.drawString(matrixStack, TextFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2, j + 48 + 10, 0);
-        this.font.func_238418_a_(new TranslationTextComponent("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
+        String s1 = I18n.get("canvas.editTitle");
+        int k = this.font.width(s1);
+        this.font.draw(matrixStack, s1, i + 26 + (116 - k) / 2.0f, j + 16 + 16, 0);
+        int l = this.font.width(s);
+        this.font.draw(matrixStack, s, i + 26 + (116 - l) / 2.0f, j + 48, 0);
+        String s2 = I18n.get("canvas.byAuthor", this.editingPlayer.getName().getString());
+        int i1 = this.font.width(s2);
+        this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2, j + 48 + 10, 0);
+        this.font.drawWordWrap(new TranslatableComponent("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
     }
 
     private void playBrushSound(){
@@ -402,7 +402,7 @@ public class GuiCanvasEdit extends BasePalette {
                     if (!this.canvasTitle.isEmpty()) {
                         dirty = true;
                         this.isSigned = true;
-                        this.minecraft.displayGuiScreen(null);
+                        this.minecraft.setScreen(null);
                     }
                     break;
                 default:
@@ -428,7 +428,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         if (!this.isSigned) {
             if (this.gettingSigned) {
-                if (this.canvasTitle.length() < 16 && SharedConstants.isAllowedCharacter(typedChar)) {
+                if (this.canvasTitle.length() < 16 && SharedConstants.isAllowedChatCharacter(typedChar)) {
                     this.canvasTitle = this.canvasTitle + typedChar;
                     this.updateButtons();
                 }
@@ -550,7 +550,7 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public void onClose() {
+    public void removed() {
         if (dirty) {
             version ++;
             CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, customColors, canvasType);

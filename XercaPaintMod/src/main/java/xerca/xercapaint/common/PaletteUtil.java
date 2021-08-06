@@ -1,8 +1,8 @@
 package xerca.xercapaint.common;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
     final public static PaletteUtil.Color emptinessColor = new PaletteUtil.Color(255, 236, 229);
@@ -41,7 +41,7 @@ public class PaletteUtil {
         }
 
         public void setGLColor(){
-            GlStateManager.color4f(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
+            GlStateManager._color4f(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
         }
     }
     public static class CustomColor {
@@ -58,7 +58,7 @@ public class PaletteUtil {
             calculateResult();
         }
 
-        public CustomColor(PacketBuffer buf) {
+        public CustomColor(FriendlyByteBuf buf) {
             readFromBuffer(buf);
         }
 
@@ -117,7 +117,7 @@ public class PaletteUtil {
             return numberOfColors;
         }
 
-        public void writeToBuffer(PacketBuffer buf){
+        public void writeToBuffer(FriendlyByteBuf buf){
             buf.writeInt(totalRed);
             buf.writeInt(totalGreen);
             buf.writeInt(totalBlue);
@@ -125,7 +125,7 @@ public class PaletteUtil {
             buf.writeInt(numberOfColors);
         }
 
-        public void readFromBuffer(PacketBuffer buf){
+        public void readFromBuffer(FriendlyByteBuf buf){
             totalRed = buf.readInt();
             totalGreen = buf.readInt();
             totalBlue = buf.readInt();
@@ -134,7 +134,7 @@ public class PaletteUtil {
         }
     }
 
-    public static void writeCustomColorArrayToNBT(CompoundNBT tag, PaletteUtil.CustomColor[] customColors){
+    public static void writeCustomColorArrayToNBT(CompoundTag tag, PaletteUtil.CustomColor[] customColors){
         int[] totalReds = new int[12];
         int[] totalGreens = new int[12];
         int[] totalBlues = new int[12];
@@ -155,7 +155,7 @@ public class PaletteUtil {
         tag.putIntArray("n", numbersOfColors);
     }
 
-    public static void readCustomColorArrayFromNBT(CompoundNBT tag, PaletteUtil.CustomColor[] customColors){
+    public static void readCustomColorArrayFromNBT(CompoundTag tag, PaletteUtil.CustomColor[] customColors){
         int[] totalReds = tag.getIntArray("r");
         int[] totalGreens = tag.getIntArray("g");
         int[] totalBlues = tag.getIntArray("b");

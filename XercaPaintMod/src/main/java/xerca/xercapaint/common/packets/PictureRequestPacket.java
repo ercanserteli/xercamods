@@ -1,6 +1,6 @@
 package xerca.xercapaint.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class PictureRequestPacket {
     private String name;
@@ -14,14 +14,14 @@ public class PictureRequestPacket {
         this.messageIsValid = false;
     }
 
-    public static void encode(PictureRequestPacket pkt, PacketBuffer buf) {
-        buf.writeString(pkt.name);
+    public static void encode(PictureRequestPacket pkt, FriendlyByteBuf buf) {
+        buf.writeUtf(pkt.name);
     }
 
-    public static PictureRequestPacket decode(PacketBuffer buf) {
+    public static PictureRequestPacket decode(FriendlyByteBuf buf) {
         PictureRequestPacket result = new PictureRequestPacket();
         try {
-            result.name = buf.readString(64);
+            result.name = buf.readUtf(64);
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading PictureRequestPacket: " + ioe);
             return null;

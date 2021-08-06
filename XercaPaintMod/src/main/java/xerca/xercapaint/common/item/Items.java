@@ -1,9 +1,9 @@
 package xerca.xercapaint.common.item;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,15 +24,15 @@ public final class Items {
     public static final ItemCanvas ITEM_CANVAS_LONG = null;
     public static final ItemCanvas ITEM_CANVAS_TALL = null;
 
-    public static final IRecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = null;
-    public static final IRecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_FILLING = null;
-    public static final IRecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = null;
-    public static final IRecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = null;
+    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = null;
+    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_FILLING = null;
+    public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = null;
+    public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = null;
 
     public static PaintCreativeTab paintTab;
 
-    static Item makeItem(String name, ItemGroup tab){
-        Item item = new Item(new Item.Properties().group(tab));
+    static Item makeItem(String name, CreativeModeTab tab){
+        Item item = new Item(new Item.Properties().tab(tab));
         item.setRegistryName(name);
         return item;
     }
@@ -40,10 +40,10 @@ public final class Items {
     @Mod.EventBusSubscriber(modid = XercaPaint.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
-        public static void registerRecipes(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
-            event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeCraftPalette::new).setRegistryName(XercaPaint.MODID + ":crafting_special_palette_crafting"));
-            event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeFillPalette::new).setRegistryName(XercaPaint.MODID + ":crafting_special_palette_filling"));
-            event.getRegistry().register(new SpecialRecipeSerializer<>(RecipeCanvasCloning::new).setRegistryName(XercaPaint.MODID + ":crafting_special_canvas_cloning"));
+        public static void registerRecipes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
+            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeCraftPalette::new).setRegistryName(XercaPaint.MODID + ":crafting_special_palette_crafting"));
+            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeFillPalette::new).setRegistryName(XercaPaint.MODID + ":crafting_special_palette_filling"));
+            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeCanvasCloning::new).setRegistryName(XercaPaint.MODID + ":crafting_special_canvas_cloning"));
             event.getRegistry().register(new RecipeTaglessShaped.TaglessSerializer().setRegistryName(XercaPaint.MODID + ":crafting_tagless_shaped"));
         }
 
