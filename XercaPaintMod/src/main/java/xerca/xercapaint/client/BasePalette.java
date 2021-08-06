@@ -1,5 +1,6 @@
 package xerca.xercapaint.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -142,7 +143,8 @@ public abstract class BasePalette extends Screen {
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        Minecraft.getInstance().getTextureManager().bind(paletteTextures);
+//        Minecraft.getInstance().getTextureManager().bind(paletteTextures);
+        RenderSystem.setShaderTexture(0, paletteTextures);
 
         // Draw basic colors
         for(int i=0; i<basicColorFlags.length; i++){
@@ -152,7 +154,8 @@ public abstract class BasePalette extends Screen {
             if(basicColorFlags[i]){
                 fill(matrixStack, x-r, y-r, x+r+1, y+r+1, basicColors[i].rgbVal());
 
-                GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//                GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 blit(matrixStack, x - 8, y - 8, dyeSpriteX, i*dyeSpriteSize, dyeSpriteSize, dyeSpriteSize);
             }
             else{
@@ -167,7 +170,8 @@ public abstract class BasePalette extends Screen {
             fill(matrixStack, x-6, y-7, x+7, y+6, customColors[i].getColor().rgbVal());
         }
 
-        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         blit(matrixStack, paletteX, paletteY, 0, 0, paletteWidth, paletteHeight);
 
         // Draw color picker

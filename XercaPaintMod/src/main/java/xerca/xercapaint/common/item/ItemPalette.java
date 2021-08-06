@@ -37,7 +37,9 @@ public class ItemPalette extends Item {
     @Nonnull
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
-        XercaPaint.proxy.showCanvasGui(playerIn);
+        if(worldIn.isClientSide) {
+            XercaPaint.proxy.showCanvasGui(playerIn);
+        }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
     }
 

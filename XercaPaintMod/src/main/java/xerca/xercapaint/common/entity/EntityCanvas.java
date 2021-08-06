@@ -2,8 +2,17 @@ package xerca.xercapaint.common.entity;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.DiodeBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -11,23 +20,14 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.level.block.DiodeBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import org.apache.commons.lang3.Validate;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.XercaPaint;
@@ -120,7 +120,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
             this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             if (brokenEntity instanceof Player) {
                 Player playerentity = (Player)brokenEntity;
-                if (playerentity.abilities.instabuild) {
+                if (playerentity.getAbilities().instabuild) {
                     return;
                 }
             }
@@ -166,7 +166,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         if (this.tickCounter1++ == 50 && !this.level.isClientSide) {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.survives()) {
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
                 this.dropItem(null);
             }
         }
@@ -182,15 +182,15 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         Validate.notNull(facingDirectionIn);
         this.direction = facingDirectionIn;
         if (facingDirectionIn.getAxis().isHorizontal()) {
-            this.xRot = 0.0F;
-            this.yRot = (float)(this.direction.get2DDataValue() * 90);
+            this.setXRot(0.0F);
+            this.setYRot((float)(this.direction.get2DDataValue() * 90));
         } else {
-            this.xRot = (float)(-90 * facingDirectionIn.getAxisDirection().getStep());
-            this.yRot = 0.0F;
+            this.setXRot((float)(-90 * facingDirectionIn.getAxisDirection().getStep()));
+            this.setYRot(0.0F);
         }
 
-        this.xRotO = this.xRot;
-        this.yRotO = this.yRot;
+        this.xRotO = this.getXRot();
+        this.yRotO = this.getYRot();
         this.recalculateBoundingBox();
     }
 

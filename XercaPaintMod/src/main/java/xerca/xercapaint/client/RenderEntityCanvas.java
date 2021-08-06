@@ -1,24 +1,25 @@
 package xerca.xercapaint.client;
 
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityCanvas;
@@ -44,8 +45,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     private final TextureManager textureManager;
     private final Map<String, RenderEntityCanvas.Instance> loadedCanvases = Maps.newHashMap();
 
-    RenderEntityCanvas(EntityRenderDispatcher renderManager) {
-        super(renderManager);
+    RenderEntityCanvas(EntityRendererProvider.Context ctx) {
+        super(ctx);
         this.textureManager = Minecraft.getInstance().textureManager;
     }
 
@@ -58,14 +59,14 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     @Override
     public void render(EntityCanvas entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-        getCanvasRendererInstance(entity).render(entity, entityYaw, entity.xRot, matrixStackIn, bufferIn, entity.getDirection(), packedLightIn);
+        getCanvasRendererInstance(entity).render(entity, entityYaw, entity.getXRot(), matrixStackIn, bufferIn, entity.getDirection(), packedLightIn);
     }
 
 
-    public static class RenderEntityCanvasFactory implements IRenderFactory<EntityCanvas> {
+    public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
         @Override
-        public EntityRenderer<? super EntityCanvas> createRenderFor(EntityRenderDispatcher manager) {
-            theInstance = new RenderEntityCanvas(manager);
+        public EntityRenderer<EntityCanvas> create(Context ctx) {
+            theInstance = new RenderEntityCanvas(ctx);
             return theInstance;
         }
     }
@@ -218,7 +219,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
             ms.scale(f, f, f);
 
-            textureManager.bind(location);
+//            textureManager.bind(location);
+            RenderSystem.setShaderTexture(0, location);
 
             Matrix4f m = ms.last().pose();
             mn = ms.last().normal();
@@ -233,7 +235,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             vb = buffer.getBuffer(RenderType.entitySolid(backLocation));
             // Draw the back and sides
             final float sideWidth = 1.0F/16.0F;
-            textureManager.bind(backLocation);
+//            textureManager.bind(backLocation);
+            RenderSystem.setShaderTexture(0, backLocation);
             addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);

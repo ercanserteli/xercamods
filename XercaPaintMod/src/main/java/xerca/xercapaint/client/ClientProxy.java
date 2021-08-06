@@ -1,20 +1,16 @@
 package xerca.xercapaint.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import xerca.xercapaint.common.Proxy;
@@ -24,14 +20,10 @@ import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 public class ClientProxy extends Proxy {
 
     @Override
     public void init() {
-        RenderingRegistry.registerEntityRenderingHandler(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
     }
 
     public void showCanvasGui(Player player){
@@ -72,7 +64,7 @@ public class ClientProxy extends Proxy {
     static public class ModBusSubscriber{
         @SubscribeEvent
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
-            ItemPropertyFunction drawn = (itemStack, p_call_2_, p_call_3_) -> {
+            ItemPropertyFunction drawn = (itemStack, level, livingEntity, i) -> {
                 if(!itemStack.hasTag()) return 0.0f;
                 else return 1.0F;
             };
@@ -83,6 +75,9 @@ public class ClientProxy extends Proxy {
             ItemProperties.register(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
         }
 
-
+        @SubscribeEvent
+        public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+            event.registerEntityRenderer(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
+        }
     }
 }

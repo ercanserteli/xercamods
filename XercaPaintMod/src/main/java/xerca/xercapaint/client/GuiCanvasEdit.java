@@ -1,5 +1,6 @@
 package xerca.xercapaint.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.components.Button;
@@ -213,7 +214,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         int x = canvasX;
         int y = canvasY + canvasHeight + 10;
-        this.buttonSign = this.addButton(new Button( x, y, 98, 20, new TranslatableComponent("canvas.signButton"), button -> {
+        this.buttonSign = this.addRenderableWidget(new Button( x, y, 98, 20, new TranslatableComponent("canvas.signButton"), button -> {
             if (!isSigned) {
                 gettingSigned = true;
                 updateButtons();
@@ -221,7 +222,7 @@ public class GuiCanvasEdit extends BasePalette {
                 GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }));
-        this.buttonFinalize = this.addButton(new Button( canvasX - 100, 100, 98, 20, new TranslatableComponent("canvas.finalizeButton"), button -> {
+        this.buttonFinalize = this.addRenderableWidget(new Button( canvasX - 100, 100, 98, 20, new TranslatableComponent("canvas.finalizeButton"), button -> {
             if (!isSigned) {
                 dirty = true;
                 isSigned = true;
@@ -231,7 +232,7 @@ public class GuiCanvasEdit extends BasePalette {
             }
 
         }));
-        this.buttonCancel = this.addButton(new Button( canvasX - 100, 130, 98, 20, new TranslatableComponent("gui.cancel"), button -> {
+        this.buttonCancel = this.addRenderableWidget(new Button( canvasX - 100, 130, 98, 20, new TranslatableComponent("gui.cancel"), button -> {
             if (!isSigned) {
                 gettingSigned = false;
                 updateButtons();
@@ -282,7 +283,9 @@ public class GuiCanvasEdit extends BasePalette {
                 int y = brushMeterY + i*brushSpriteSize;
                 fill(matrixStack, brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
             }
-            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             blit(matrixStack, brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
             blit(matrixStack, brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
 
@@ -309,9 +312,13 @@ public class GuiCanvasEdit extends BasePalette {
         }
         else{
             drawOutline(matrixStack, mouseX, mouseY, brushSize);
+
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             fill(matrixStack, mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
-            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = brushSpriteY - brushSpriteSize*brushSize;
             blit(matrixStack, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize);
         }
@@ -353,7 +360,9 @@ public class GuiCanvasEdit extends BasePalette {
                 textureVec = outlinePoss2[brushSize];
             }
 
-            GlStateManager._color4f(0.3F, 0.3F, 0.3F, 1.0F);
+//            GlStateManager._color4f(0.3F, 0.3F, 0.3F, 1.0F);
+//            GlStateManager._clearColor(0.3F, 0.3F, 0.3F, 1.0F);
+            RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 1.0F);
             blit(matrixStack, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
         }
     }

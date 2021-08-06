@@ -1,23 +1,27 @@
 package xerca.xercapaint.common.item;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HangingEntityItem;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.StringUtil;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.HangingEntityItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercapaint.client.CanvasItemRenderer;
 import xerca.xercapaint.common.CanvasType;
@@ -28,32 +32,14 @@ import xerca.xercapaint.common.entity.EntityCanvas;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.concurrent.Callable;
-
-import net.minecraft.world.item.Item.Properties;
-
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import java.util.function.Consumer;
 
 @NonnullDefault
 public class ItemCanvas extends HangingEntityItem {
     private CanvasType canvasType;
 
     ItemCanvas(String name, CanvasType canvasType) {
-        super(Entities.CANVAS, new Properties().tab(Items.paintTab).stacksTo(1).setISTER(() -> new Callable<BlockEntityWithoutLevelRenderer>()
-        {
-            @Nullable
-            CanvasItemRenderer r = null;
-
-            @Override
-            public BlockEntityWithoutLevelRenderer call() {
-                if(r == null)
-                    r = new CanvasItemRenderer();
-                return r;
-            }
-        }));
+        super(Entities.CANVAS, new Properties().tab(Items.paintTab).stacksTo(1));
 
         this.setRegistryName(name);
         this.canvasType = canvasType;
@@ -61,7 +47,9 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
-        XercaPaint.proxy.showCanvasGui(playerIn);
+        if(worldIn.isClientSide){
+            XercaPaint.proxy.showCanvasGui(playerIn);
+        }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
     }
 
@@ -73,13 +61,17 @@ public class ItemCanvas extends HangingEntityItem {
         Player playerentity = context.getPlayer();
         ItemStack itemstack = context.getItemInHand();
         if (playerentity != null && !this.mayPlace(playerentity, direction, itemstack, pos)) {
-            XercaPaint.proxy.showCanvasGui(playerentity);
+            if(context.getLevel().isClientSide){
+                XercaPaint.proxy.showCanvasGui(playerentity);
+            }
         } else {
             Level world = context.getLevel();
 
             CompoundTag tag = itemstack.getTag();
             if(tag == null || !tag.contains("pixels") || !tag.contains("name")){
-                XercaPaint.proxy.showCanvasGui(playerentity);
+                if(context.getLevel().isClientSide) {
+                    XercaPaint.proxy.showCanvasGui(playerentity);
+                }
                 return InteractionResult.SUCCESS;
             }
 
@@ -181,10 +173,30 @@ public class ItemCanvas extends HangingEntityItem {
 
     protected boolean mayPlace(Player playerIn, Direction directionIn, ItemStack itemStackIn, BlockPos posIn) {
         if(canvasType == CanvasType.SMALL){
-            return !Level.isOutsideBuildHeight(posIn) && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
+            return Level.isInSpawnableBounds(posIn) && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         }
         else{
             return !directionIn.getAxis().isVertical() && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         }
+    }
+
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+        super.initializeClient(consumer);
+        consumer.accept(RenderProp.INSTANCE);
+    }
+}
+
+class RenderProp implements IItemRenderProperties{
+    public static RenderProp INSTANCE = new RenderProp();
+
+//    @Override
+//    public Font getFont(ItemStack stack) {
+//        return Minecraft.getInstance().font;
+//    }
+
+    @Override
+    public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+        return new CanvasItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
     }
 }

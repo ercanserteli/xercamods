@@ -1,9 +1,9 @@
 package xerca.xercapaint.common.packets;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.Items;
