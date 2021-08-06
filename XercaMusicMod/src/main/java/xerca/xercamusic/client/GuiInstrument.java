@@ -64,7 +64,7 @@ public class GuiInstrument extends Screen {
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 //        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 //        Minecraft.getInstance().getTextureManager().bind(insGuiTextures);
         RenderSystem.setShaderTexture(0, insGuiTextures);
 

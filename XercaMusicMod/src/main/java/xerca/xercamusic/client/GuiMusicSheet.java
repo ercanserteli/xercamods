@@ -443,7 +443,7 @@ public class GuiMusicSheet extends Screen {
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 //        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 //        Minecraft.getInstance().getTextureManager().bind(noteGuiTextures);
         RenderSystem.setShaderTexture(0, noteGuiTextures);
         blit(matrixStack, noteImageX, noteImageY, 0, 0, noteImageWidth, noteImageHeight);
@@ -557,7 +557,7 @@ public class GuiMusicSheet extends Screen {
         }
 
 //        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         if (!gettingSigned && !isSigned && validClick(mouseX - noteImageX, mouseY - noteImageY)) {
             fill(matrixStack, mouseX - 1, mouseY - 1, mouseX + 2, mouseY + 2, octaveColors[currentOctave]);
