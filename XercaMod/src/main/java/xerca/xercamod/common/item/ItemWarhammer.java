@@ -2,34 +2,33 @@ package xerca.xercamod.common.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.Config;
@@ -45,32 +44,32 @@ import java.util.List;
 public class ItemWarhammer extends Item {
     private final float weaponDamage;
     private final float pushAmount;
-    private final ItemTier material;
+    private final Tiers material;
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
-    public ItemWarhammer(String name, ItemTier mat) {
-        super(mat.equals(ItemTier.NETHERITE)
-                ? new Item.Properties().group(ItemGroup.COMBAT).maxStackSize(1).defaultMaxDamage(mat.getMaxUses()).isImmuneToFire()
-                : new Item.Properties().group(ItemGroup.COMBAT).maxStackSize(1).defaultMaxDamage(mat.getMaxUses()));
+    public ItemWarhammer(String name, Tiers mat) {
+        super(mat.equals(Tiers.NETHERITE)
+                ? new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).defaultDurability(mat.getUses()).fireResistant()
+                : new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).defaultDurability(mat.getUses()));
 
         this.setRegistryName(name);
         this.material = mat;
-        this.weaponDamage = 1.0F + mat.getAttackDamage();
+        this.weaponDamage = 1.0F + mat.getAttackDamageBonus();
         this.pushAmount = getPushFromMaterial(mat);
 
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.weaponDamage, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -3.0, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.weaponDamage, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -3.0, AttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
     }
 
-    private float getPushFromMaterial(ItemTier mat) {
+    private float getPushFromMaterial(Tiers mat) {
         float push;
-        if (mat == ItemTier.STONE) {
+        if (mat == Tiers.STONE) {
             push = 0.15f;
-        } else if (mat == ItemTier.IRON) {
+        } else if (mat == Tiers.IRON) {
             push = 0.3f;
-        } else if (mat == ItemTier.DIAMOND) {
+        } else if (mat == Tiers.DIAMOND) {
             push = 0.4f;
         } else { //Gold and netherite have the same push
             push = 0.5f;
@@ -79,57 +78,57 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
-    public int getItemEnchantability()
+    public int getEnchantmentValue()
     {
-        return this.material.getEnchantability();
+        return this.material.getEnchantmentValue();
     }
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
-        return enchantment.type == EnchantmentType.BREAKABLE || enchantment == Items.ENCHANTMENT_HEAVY ||
+        return enchantment.category == EnchantmentCategory.BREAKABLE || enchantment == Items.ENCHANTMENT_HEAVY ||
                 enchantment == Items.ENCHANTMENT_QUAKE ||  enchantment == Items.ENCHANTMENT_MAIM ||
                 enchantment == Items.ENCHANTMENT_QUICK ||enchantment == Items.ENCHANTMENT_UPPERCUT ||
                 enchantment == Enchantments.SMITE || enchantment == Enchantments.BANE_OF_ARTHROPODS ||
-                enchantment == Enchantments.LOOTING;
+                enchantment == Enchantments.MOB_LOOTING;
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        stack.damageItem(1, attacker, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        stack.hurtAndBreak(1, attacker, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
         return true;
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState blockIn, BlockPos pos, LivingEntity entityLiving) {
-        if ((double) blockIn.getBlockHardness(worldIn, pos) != 0.0D) {
-            stack.damageItem(1, entityLiving, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
+    public boolean mineBlock(ItemStack stack, Level worldIn, BlockState blockIn, BlockPos pos, LivingEntity entityLiving) {
+        if ((double) blockIn.getDestroySpeed(worldIn, pos) != 0.0D) {
+            stack.hurtAndBreak(1, entityLiving, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
         }
         return true;
     }
 
     @Override
-    public boolean canHarvestBlock(BlockState blockIn) {
+    public boolean isCorrectToolForDrops(BlockState blockIn) {
         return blockIn.getBlock() == Blocks.STONE;
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        Ingredient ingr = this.material.getRepairMaterial();
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        Ingredient ingr = this.material.getRepairIngredient();
         if (ingr.test(repair)) return true;
-        return super.getIsRepairable(toRepair, repair);
+        return super.isValidRepairItem(toRepair, repair);
     }
 
     @Nonnull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType equipmentSlot, ItemStack stack) {
-        return equipmentSlot == EquipmentSlotType.MAINHAND ? this.attributeModifiers : super.getAttributeModifiers(equipmentSlot);
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot equipmentSlot, ItemStack stack) {
+        return equipmentSlot == EquipmentSlot.MAINHAND ? this.attributeModifiers : super.getDefaultAttributeModifiers(equipmentSlot);
     }
 
     @Nonnull
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.BOW;
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.BOW;
     }
 
     @Override
@@ -140,13 +139,13 @@ public class ItemWarhammer extends Item {
     public float getFullUseSeconds(ItemStack stack){
         float seconds = 1.0f;
         if(stack.isEnchanted()){
-            int heavyLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_HEAVY, stack);
+            int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_HEAVY, stack);
             if(heavyLevel > 0){
                 float multiplier = 0.1f*(heavyLevel);
                 seconds += seconds*multiplier;
             }
             else{
-                int quickLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_QUICK, stack);
+                int quickLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_QUICK, stack);
                 float multiplier = 0.12f*(quickLevel);
                 seconds -= seconds*multiplier;
             }
@@ -156,17 +155,17 @@ public class ItemWarhammer extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        final ItemStack heldItem = playerIn.getHeldItem(hand);
-        playerIn.setActiveHand(hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+        final ItemStack heldItem = playerIn.getItemInHand(hand);
+        playerIn.startUsingItem(hand);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
-        if (!(entityLiving instanceof PlayerEntity)) return;
+    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+        if (!(entityLiving instanceof Player)) return;
 
-        PlayerEntity player = (PlayerEntity) entityLiving;
+        Player player = (Player) entityLiving;
 
         // Number of seconds that the item has been used for
         float useSeconds = (this.getUseDuration(stack) - timeLeft) / 20.0f;
@@ -174,18 +173,18 @@ public class ItemWarhammer extends Item {
         if(f > 1.f) f = 1.f;
 
         if ((double) f >= 0.1D) {
-            player.swingArm(Hand.MAIN_HAND);
-            if (worldIn.isRemote) {
+            player.swing(InteractionHand.MAIN_HAND);
+            if (worldIn.isClientSide) {
                 Minecraft mine = Minecraft.getInstance();
-                if (mine.objectMouseOver != null){
-                    if(mine.objectMouseOver.getType() == RayTraceResult.Type.ENTITY) {
-                        Entity target = ((EntityRayTraceResult) mine.objectMouseOver).getEntity();
-                        HammerAttackPacket pack = new HammerAttackPacket(f, target.getEntityId());
+                if (mine.hitResult != null){
+                    if(mine.hitResult.getType() == HitResult.Type.ENTITY) {
+                        Entity target = ((EntityHitResult) mine.hitResult).getEntity();
+                        HammerAttackPacket pack = new HammerAttackPacket(f, target.getId());
                         XercaMod.NETWORK_HANDLER.sendToServer(pack);
                     }
-                    else if(mine.objectMouseOver.getType() == RayTraceResult.Type.BLOCK){
-                        if(EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_QUAKE, stack) > 0){
-                            HammerQuakePacket pack = new HammerQuakePacket(mine.objectMouseOver.getHitVec(), f);
+                    else if(mine.hitResult.getType() == HitResult.Type.BLOCK){
+                        if(EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_QUAKE, stack) > 0){
+                            HammerQuakePacket pack = new HammerQuakePacket(mine.hitResult.getLocation(), f);
                             XercaMod.NETWORK_HANDLER.sendToServer(pack);
                         }
                     }
@@ -201,17 +200,17 @@ public class ItemWarhammer extends Item {
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isWarhammerEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        TranslationTextComponent text = new TranslationTextComponent("xercamod.warhammer_tooltip");
-        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        TranslatableComponent text = new TranslatableComponent("xercamod.warhammer_tooltip");
+        tooltip.add(text.withStyle(ChatFormatting.BLUE));
     }
 }

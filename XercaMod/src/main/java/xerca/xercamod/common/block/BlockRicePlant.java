@@ -1,30 +1,30 @@
 package xerca.xercamod.common.block;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.fluid.FluidState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Material;
 import xerca.xercamod.common.item.Items;
 
 import java.util.Random;
 
-class BlockRicePlant extends CropsBlock implements IGrowable {
+class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     BlockRicePlant() {
-        super(Properties.create(Material.PLANTS).sound(SoundType.PLANT).hardnessAndResistance(0.0f).tickRandomly().doesNotBlockMovement());
+        super(Properties.of(Material.PLANT).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
         this.setRegistryName("block_rice_plant");
     }
 
     @Override
-    protected IItemProvider getSeedsItem() {
+    protected ItemLike getBaseSeedId() {
         return Items.ITEM_RICE_SEEDS;
     }
 
@@ -34,13 +34,13 @@ class BlockRicePlant extends CropsBlock implements IGrowable {
     }
 
     @Override
-    protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        if(state.getBlock() == Blocks.FARMLAND && state.get(FarmlandBlock.MOISTURE) > 6){
+    protected boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
+        if(state.getBlock() == Blocks.FARMLAND && state.getValue(FarmBlock.MOISTURE) > 6){
             int water_count = 0;
             for(Direction direction : Direction.Plane.HORIZONTAL) {
-                BlockState blockstate = worldIn.getBlockState(pos.offset(direction));
-                FluidState fluidstate = worldIn.getFluidState(pos.offset(direction));
-                if (fluidstate.isTagged(FluidTags.WATER) || blockstate.getBlock() == net.minecraft.block.Blocks.FROSTED_ICE) {
+                BlockState blockstate = worldIn.getBlockState(pos.relative(direction));
+                FluidState fluidstate = worldIn.getFluidState(pos.relative(direction));
+                if (fluidstate.is(FluidTags.WATER) || blockstate.getBlock() == net.minecraft.world.level.block.Blocks.FROSTED_ICE) {
                     water_count++;
                     if(water_count >= 2){
                         return true;
@@ -52,13 +52,13 @@ class BlockRicePlant extends CropsBlock implements IGrowable {
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-        return isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos.down()) && (worldIn.getLightSubtracted(pos, 0) >= 8 || worldIn.canSeeSky(pos)) && super.isValidPosition(state, worldIn, pos);
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
+        return mayPlaceOn(worldIn.getBlockState(pos.below()), worldIn, pos.below()) && (worldIn.getRawBrightness(pos, 0) >= 8 || worldIn.canSeeSky(pos)) && super.canSurvive(state, worldIn, pos);
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-        if(!isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos.down())){
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+        if(!mayPlaceOn(worldIn.getBlockState(pos.below()), worldIn, pos.below())){
             worldIn.destroyBlock(pos, true);
         }
         super.tick(state, worldIn, pos, rand);

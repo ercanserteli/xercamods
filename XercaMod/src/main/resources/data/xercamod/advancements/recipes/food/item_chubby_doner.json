@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "xercamod:doner_slice"}
+          {"items": ["xercamod:doner_slice"]}
         ]
       }
     },

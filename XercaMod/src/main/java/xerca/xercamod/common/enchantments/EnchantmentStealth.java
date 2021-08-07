@@ -1,14 +1,14 @@
 package xerca.xercamod.common.enchantments;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import xerca.xercamod.common.item.ItemKnife;
 
 public class EnchantmentStealth extends Enchantment {
-    public EnchantmentStealth(Rarity rarityIn, EquipmentSlotType... slots) {
-        super(rarityIn, EnchantmentType.WEAPON, slots);
+    public EnchantmentStealth(Rarity rarityIn, EquipmentSlot... slots) {
+        super(rarityIn, EnchantmentCategory.WEAPON, slots);
         this.setRegistryName("enchantment_stealth");
     }
 
@@ -16,7 +16,7 @@ public class EnchantmentStealth extends Enchantment {
      * Returns the minimal value of enchantability needed on the enchantment level passed.
      */
     @Override
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return 15 + (enchantmentLevel - 1) * 9;
     }
 
@@ -24,8 +24,8 @@ public class EnchantmentStealth extends Enchantment {
      * Returns the maximum value of enchantability needed on the enchantment level passed.
      */
     @Override
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return super.getMinEnchantability(enchantmentLevel) + 50;
+    public int getMaxCost(int enchantmentLevel) {
+        return super.getMinCost(enchantmentLevel) + 50;
     }
 
     /**
@@ -53,7 +53,7 @@ public class EnchantmentStealth extends Enchantment {
      * @return
      */
     @Override
-    public boolean canApply(ItemStack stack) {
+    public boolean canEnchant(ItemStack stack) {
         return this.canApplyAtEnchantingTable(stack);
     }
 }

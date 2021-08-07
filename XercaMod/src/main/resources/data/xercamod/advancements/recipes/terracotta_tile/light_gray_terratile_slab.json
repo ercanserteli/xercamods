@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "xercamod:light_gray_terratile"}
+          {"items": ["xercamod:light_gray_terratile"]}
         ]
       }
     },

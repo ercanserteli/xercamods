@@ -1,6 +1,6 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class KnifeAttackPacket {
     private boolean isStealth;
@@ -16,7 +16,7 @@ public class KnifeAttackPacket {
         this.messageIsValid = false;
     }
 
-    public static KnifeAttackPacket decode(PacketBuffer buf) {
+    public static KnifeAttackPacket decode(FriendlyByteBuf buf) {
         KnifeAttackPacket result = new KnifeAttackPacket();
         try {
             result.isStealth = buf.readBoolean();
@@ -29,7 +29,7 @@ public class KnifeAttackPacket {
         return result;
     }
 
-    public static void encode(KnifeAttackPacket pkt, PacketBuffer buf) {
+    public static void encode(KnifeAttackPacket pkt, FriendlyByteBuf buf) {
         buf.writeBoolean(pkt.isStealth());
         buf.writeInt(pkt.getTargetId());
     }

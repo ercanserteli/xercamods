@@ -1,17 +1,18 @@
 package xerca.xercamod.common.tile_entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -26,17 +27,17 @@ import javax.annotation.Nullable;
 
 import static xerca.xercamod.common.tile_entity.XercaTileEntities.FUNCTIONAL_BOOKCASE;
 
-public class TileEntityFunctionalBookcase extends TileEntity implements INamedContainerProvider {
+public class TileEntityFunctionalBookcase extends BlockEntity implements MenuProvider {
     private final static int NUMBER_OF_SLOTS = 6;
     private final ItemStackHandler inventory = new ItemStackHandler(NUMBER_OF_SLOTS) {
         protected void onContentsChanged(int slot) {
-            markDirty();
+            setChanged();
         }
     };
     private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 
-    public TileEntityFunctionalBookcase() {
-        super(FUNCTIONAL_BOOKCASE);
+    public TileEntityFunctionalBookcase(BlockPos blockPos, BlockState blockState) {
+        super(FUNCTIONAL_BOOKCASE, blockPos, blockState);
     }
 
     public int getSizeInventory() {
@@ -46,13 +47,13 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
     // Return true if the given player is able to use this block. In this case it checks that
     // 1) the world tileentity hasn't been replaced in the meantime, and
     // 2) the player isn't too far away from the centre of the block
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        if (this.world.getTileEntity(this.pos) != this) return false;
+    public boolean isUsableByPlayer(Player player) {
+        if (this.level.getBlockEntity(this.worldPosition) != this) return false;
         final double X_CENTRE_OFFSET = 0.5;
         final double Y_CENTRE_OFFSET = 0.5;
         final double Z_CENTRE_OFFSET = 0.5;
         final double MAXIMUM_DISTANCE_SQ = 8.0 * 8.0;
-        return player.getDistanceSq(pos.getX() + X_CENTRE_OFFSET, pos.getY() + Y_CENTRE_OFFSET, pos.getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
+        return player.distanceToSqr(worldPosition.getX() + X_CENTRE_OFFSET, worldPosition.getY() + Y_CENTRE_OFFSET, worldPosition.getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
     }
 
     @Override
@@ -66,26 +67,26 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT parentNBTTagCompound) {
-        super.write(parentNBTTagCompound); // The super call is required to save and load the tileEntity's location
-        CompoundNBT inventoryTagCompound = this.inventory.serializeNBT();
+    public CompoundTag save(CompoundTag parentNBTTagCompound) {
+        super.save(parentNBTTagCompound); // The super call is required to save and load the tileEntity's location
+        CompoundTag inventoryTagCompound = this.inventory.serializeNBT();
         parentNBTTagCompound.put("inventory", inventoryTagCompound);
         return parentNBTTagCompound;
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT parentNBTTagCompound) {
-        super.read(state, parentNBTTagCompound); // The super call is required to save and load the tiles location
-        CompoundNBT inventoryTagCompound = parentNBTTagCompound.getCompound("inventory");
+    public void load(CompoundTag parentNBTTagCompound) {
+        super.load(parentNBTTagCompound); // The super call is required to save and load the tiles location
+        CompoundTag inventoryTagCompound = parentNBTTagCompound.getCompound("inventory");
         this.inventory.deserializeNBT(inventoryTagCompound);
     }
 
-    public void closeInventory(PlayerEntity player) {
+    public void closeInventory(Player player) {
         int i = getBookAmount();
-        BlockState st = Blocks.BLOCK_BOOKCASE.getDefaultState().with(BlockFunctionalBookcase.BOOK_AMOUNT, i);
-        this.world.setBlockState(this.pos, st);
-        this.world.updateComparatorOutputLevel(this.pos, st.getBlock());//todo check if needed
-        this.markDirty();
+        BlockState st = Blocks.BLOCK_BOOKCASE.defaultBlockState().setValue(BlockFunctionalBookcase.BOOK_AMOUNT, i);
+        this.level.setBlockAndUpdate(this.worldPosition, st);
+        this.level.updateNeighbourForOutputSignal(this.worldPosition, st.getBlock());//todo check if needed
+        this.setChanged();
     }
 
     private int getBookAmount() {
@@ -99,40 +100,40 @@ public class TileEntityFunctionalBookcase extends TileEntity implements INamedCo
     }
 
     @Override
-    public void markDirty() {
-        super.markDirty();
+    public void setChanged() {
+        super.setChanged();
     }
 
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.getPos(), 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.getBlockPos(), 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        this.read(null, packet.getNbtCompound()); //todo: is null ok?: seems to work
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
+        this.load(packet.getTag());
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT nbt) {
-        this.read(state, nbt);
+    public void handleUpdateTag(CompoundTag nbt) {
+        this.load(nbt);
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(Blocks.BLOCK_BOOKCASE.getTranslationKey() + ".name");
+    public Component getDisplayName() {
+        return new TranslatableComponent(Blocks.BLOCK_BOOKCASE.getDescriptionId() + ".name");
     }
 
     @Nullable
     @Override
-    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
         return new ContainerFunctionalBookcase(windowId, playerInventory, this);
     }
 }

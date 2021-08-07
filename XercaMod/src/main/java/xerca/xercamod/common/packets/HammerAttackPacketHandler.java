@@ -1,19 +1,19 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.ItemWarhammer;
 import xerca.xercamod.common.item.Items;
@@ -28,7 +28,7 @@ public class HammerAttackPacketHandler {
             return;
         }
 
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when HammerAttackPacket was received");
             return;
@@ -50,53 +50,53 @@ public class HammerAttackPacketHandler {
         }
     }
 
-    private static void processMessage(HammerAttackPacket msg, ServerPlayerEntity pl) {
-        Entity target = pl.world.getEntityByID(msg.getTargetId());
+    private static void processMessage(HammerAttackPacket msg, ServerPlayer pl) {
+        Entity target = pl.level.getEntity(msg.getTargetId());
 
-        ItemStack st = pl.getHeldItemMainhand();
+        ItemStack st = pl.getMainHandItem();
         Item item = st.getItem();
         if (item instanceof ItemWarhammer){
             float pull = msg.getPullDuration();
             float mult = damageBonusMult(pull);
-            int heavyLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_HEAVY, st);
+            int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_HEAVY, st);
             float damage = ((float) pl.getAttribute(Attributes.ATTACK_DAMAGE).getValue() + heavyLevel * 0.5f) * mult;
             float push = (((ItemWarhammer) item).getPushAmount() + heavyLevel * 0.15f) * 2 * mult;
 
-            int uppercutLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_UPPERCUT, st);
+            int uppercutLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_UPPERCUT, st);
             double bonusVelY = (uppercutLevel * 0.25) * pull;
 
             float pitch = (2.0f / (damage + heavyLevel));
-            pl.world.playSound(null, target.getPosX(), target.getPosY() + 0.5d, target.getPosZ(), SoundEvents.HAMMER, SoundCategory.PLAYERS, 1.0f, pl.world.rand.nextFloat() * 0.1F + 0.4F + pitch);
-            st.damageItem(1, pl, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
+            pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.HAMMER, SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);
+            st.hurtAndBreak(1, pl, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
             if(target instanceof LivingEntity){
                 LivingEntity targetLiving = (LivingEntity) target;
-                float enchantBonus = EnchantmentHelper.getModifierForCreature(st, targetLiving.getCreatureAttribute());
+                float enchantBonus = EnchantmentHelper.getDamageBonus(st, targetLiving.getMobType());
 //              XercaMod.LOGGER.warn("Enchantment bonus damage: " + enchantBonus);
 
                 // Critical hit
                 boolean cooledAttack = pull > 0.9F;
-                boolean critical = cooledAttack && pl.fallDistance > 0.0F && !pl.isOnGround() && !pl.isOnLadder() &&
-                        !pl.isInWater() && !pl.isPotionActive(Effects.BLINDNESS) && !pl.isPassenger() && !pl.isSprinting();
+                boolean critical = cooledAttack && pl.fallDistance > 0.0F && !pl.isOnGround() && !pl.onClimbable() &&
+                        !pl.isInWater() && !pl.hasEffect(MobEffects.BLINDNESS) && !pl.isPassenger() && !pl.isSprinting();
                 net.minecraftforge.event.entity.player.CriticalHitEvent hitResult = net.minecraftforge.common.ForgeHooks.getCriticalHit(pl, target, critical, critical ? 1.5F : 1.0F);
                 critical = hitResult != null;
                 if (critical) {
                     damage *= hitResult.getDamageModifier();
-                    pl.world.playSound(null, pl.getPosX(), pl.getPosY(), pl.getPosZ(), net.minecraft.util.SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, pl.getSoundCategory(), 1.0F, 1.0F);
-                    pl.onCriticalHit(target);
+                    pl.level.playSound(null, pl.getX(), pl.getY(), pl.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_CRIT, pl.getSoundSource(), 1.0F, 1.0F);
+                    pl.crit(target);
                 }
 
                 damage += enchantBonus;
-                targetLiving.attackEntityFrom(DamageSource.causePlayerDamage(pl), damage);
+                targetLiving.hurt(DamageSource.playerAttack(pl), damage);
 
-                int maimLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_MAIM, st);
+                int maimLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_MAIM, st);
                 if(maimLevel > 0){
-                    targetLiving.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 100 + 40 * maimLevel, maimLevel - 1));
+                    targetLiving.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100 + 40 * maimLevel, maimLevel - 1));
                 }
             }
 
-            Vector3d knockVector = target.getPositionVec().subtract(pl.getPositionVec()).normalize().scale(push);
-            target.addVelocity(knockVector.x, knockVector.y + bonusVelY, knockVector.z);
-            target.velocityChanged = true;
+            Vec3 knockVector = target.position().subtract(pl.position()).normalize().scale(push);
+            target.push(knockVector.x, knockVector.y + bonusVelY, knockVector.z);
+            target.hurtMarked = true;
         }else{
             System.out.println("No warhammer at hand!");
         }

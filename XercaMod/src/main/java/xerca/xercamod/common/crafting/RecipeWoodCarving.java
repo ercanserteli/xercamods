@@ -1,20 +1,18 @@
 package xerca.xercamod.common.crafting;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.item.ItemKnife;
 import xerca.xercamod.common.item.Items;
 
-@MethodsReturnNonnullByDefault
-public class RecipeWoodCarving extends SpecialRecipe {
+public class RecipeWoodCarving extends CustomRecipe {
     public RecipeWoodCarving(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
@@ -23,12 +21,12 @@ public class RecipeWoodCarving extends SpecialRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         if(!Config.isCarvedWoodEnabled()){
             return false;
         }
 
-        int invSize = inv.getSizeInventory();
+        int invSize = inv.getContainerSize();
         if(invSize != 4 && invSize != 9){
             return false;
         }
@@ -39,7 +37,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
 
         for(int y = 0; y < slotAxisLength; ++y) {
             for(int x = 0; x < slotAxisLength; ++x) {
-                ItemStack itemstack = inv.getStackInSlot(y*slotAxisLength + x);
+                ItemStack itemstack = inv.getItem(y*slotAxisLength + x);
                 if (!itemstack.isEmpty()) {
                     if (itemstack.getItem() instanceof ItemKnife) {
                         if(knifeFound){
@@ -48,12 +46,12 @@ public class RecipeWoodCarving extends SpecialRecipe {
                         knifeX = x;
                         knifeY = y;
                         knifeFound = true;
-                    } else if(itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_ACACIA_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()
+                    } else if(itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_OAK_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_BIRCH_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_ACACIA_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()
                     ) {
                         if(logFound){
                             return false;
@@ -75,7 +73,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
         }
 
         Item resultItem;
-        if(logType == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem()){
+        if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_OAK_LOG.asItem()){
             if(difX == -1 && difY == -1){
                 resultItem = Blocks.CARVED_OAK_1.asItem();
             }
@@ -104,7 +102,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
                 return ItemStack.EMPTY;
             }
         }
-        else if(logType == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()){
+        else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_BIRCH_LOG.asItem()){
             if(difX == -1 && difY == -1){
                 resultItem = Blocks.CARVED_BIRCH_1.asItem();
             }
@@ -133,7 +131,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
                 return ItemStack.EMPTY;
             }
         }
-        else if(logType == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()){
+        else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()){
             if(difX == -1 && difY == -1){
                 resultItem = Blocks.CARVED_DARK_OAK_1.asItem();
             }
@@ -162,7 +160,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
                 return ItemStack.EMPTY;
             }
         }
-        else if(logType == net.minecraft.block.Blocks.STRIPPED_ACACIA_LOG.asItem()){
+        else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_ACACIA_LOG.asItem()){
             if(difX == -1 && difY == -1){
                 resultItem = Blocks.CARVED_ACACIA_1.asItem();
             }
@@ -191,7 +189,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
                 return ItemStack.EMPTY;
             }
         }
-        else if(logType == net.minecraft.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()){
+        else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()){
             if(difX == -1 && difY == -1){
                 resultItem = Blocks.CARVED_JUNGLE_1.asItem();
             }
@@ -220,7 +218,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
                 return ItemStack.EMPTY;
             }
         }
-        else if(logType == net.minecraft.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()){
+        else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()){
             if(difX == -1 && difY == -1){
                 resultItem = Blocks.CARVED_SPRUCE_1.asItem();
             }
@@ -260,8 +258,8 @@ public class RecipeWoodCarving extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
-        int invSize = inv.getSizeInventory();
+    public ItemStack assemble(CraftingContainer inv) {
+        int invSize = inv.getContainerSize();
         if(invSize != 4 && invSize != 9){
             return ItemStack.EMPTY;
         }
@@ -273,7 +271,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
 
         for(int y = 0; y < slotAxisLength; ++y) {
             for(int x = 0; x < slotAxisLength; ++x) {
-                ItemStack itemstack = inv.getStackInSlot(y*slotAxisLength + x);
+                ItemStack itemstack = inv.getItem(y*slotAxisLength + x);
                 if (!itemstack.isEmpty()) {
                     if (itemstack.getItem() instanceof ItemKnife) {
                         if(knifeFound){
@@ -282,12 +280,12 @@ public class RecipeWoodCarving extends SpecialRecipe {
                         knifeX = x;
                         knifeY = y;
                         knifeFound = true;
-                    } else if(itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_OAK_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_BIRCH_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_ACACIA_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()
-                            || itemstack.getItem() == net.minecraft.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()
+                    } else if(itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_OAK_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_BIRCH_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_ACACIA_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()
                     ) {
                         if(logFound){
                             return ItemStack.EMPTY;
@@ -312,7 +310,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_WOOD_CARVING;
     }
 
@@ -320,7 +318,7 @@ public class RecipeWoodCarving extends SpecialRecipe {
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 2 && height >= 2;
     }
 }

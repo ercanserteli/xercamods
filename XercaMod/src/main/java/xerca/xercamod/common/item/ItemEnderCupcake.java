@@ -1,17 +1,15 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import xerca.xercamod.common.Config;
 
 import javax.annotation.Nonnull;
@@ -20,36 +18,36 @@ import javax.annotation.ParametersAreNonnullByDefault;
 class ItemEnderCupcake extends Item {
 
     public ItemEnderCupcake() {
-        super(new Properties().group(ItemGroup.FOOD).food(Foods.ENDER_CUPCAKE));
+        super(new Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ENDER_CUPCAKE));
         this.setRegistryName("ender_cupcake");
     }
 
     @Nonnull
     @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entity) {
-        ItemStack lvt_4_1_ = super.onItemUseFinish(stack, world, entity);
-        if (!world.isRemote) {
-            double lvt_5_1_ = entity.getPosX();
-            double lvt_7_1_ = entity.getPosY();
-            double lvt_9_1_ = entity.getPosZ();
+    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
+        ItemStack lvt_4_1_ = super.finishUsingItem(stack, world, entity);
+        if (!world.isClientSide) {
+            double lvt_5_1_ = entity.getX();
+            double lvt_7_1_ = entity.getY();
+            double lvt_9_1_ = entity.getZ();
 
             for(int lvt_11_1_ = 0; lvt_11_1_ < 16; ++lvt_11_1_) {
-                double x = entity.getPosX() + (entity.getRNG().nextDouble() - 0.5D) * 8.0D;
-                double y = MathHelper.clamp(entity.getPosY() + (double)(entity.getRNG().nextInt(8) - 4), 0.0D, (world.func_234938_ad_() - 1));
-                double z = entity.getPosZ() + (entity.getRNG().nextDouble() - 0.5D) * 8.0D;
+                double x = entity.getX() + (entity.getRandom().nextDouble() - 0.5D) * 8.0D;
+                double y = Mth.clamp(entity.getY() + (double)(entity.getRandom().nextInt(8) - 4), 0.0D, (world.getHeight() - 1));
+                double z = entity.getZ() + (entity.getRandom().nextDouble() - 0.5D) * 8.0D;
                 if (entity.isPassenger()) {
                     entity.stopRiding();
                 }
 
-                if (entity.attemptTeleport(x, y, z, true)) {
-                    world.playSound(null, lvt_5_1_, lvt_7_1_, lvt_9_1_, net.minecraft.util.SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    entity.playSound(SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, 1.0F, 1.0F);
+                if (entity.randomTeleport(x, y, z, true)) {
+                    world.playSound(null, lvt_5_1_, lvt_7_1_, lvt_9_1_, net.minecraft.sounds.SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    entity.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 1.0F, 1.0F);
                     break;
                 }
             }
 
-            if (entity instanceof PlayerEntity) {
-                ((PlayerEntity)entity).getCooldownTracker().setCooldown(this, 20);
+            if (entity instanceof Player) {
+                ((Player)entity).getCooldowns().addCooldown(this, 20);
             }
         }
 
@@ -58,10 +56,10 @@ class ItemEnderCupcake extends Item {
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isFoodEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 }

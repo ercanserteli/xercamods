@@ -1,11 +1,11 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,8 +19,8 @@ public class ItemEmptyTeapot extends ItemTea {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        TranslationTextComponent text = new TranslationTextComponent("xercamod.empty_teapot_tooltip");
-        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        TranslatableComponent text = new TranslatableComponent("xercamod.empty_teapot_tooltip");
+        tooltip.add(text.withStyle(ChatFormatting.BLUE));
     }
 }

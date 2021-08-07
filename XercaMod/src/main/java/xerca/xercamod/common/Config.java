@@ -1,17 +1,17 @@
 package xerca.xercamod.common;
 
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import xerca.xercamod.common.packets.ConfigSyncPacket;
+
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = XercaMod.MODID)
 public class Config {
@@ -117,14 +117,14 @@ public class Config {
     }
 
     @SubscribeEvent
-    public static void onLoad(final ModConfig.Loading configEvent) {
+    public static void onLoad(final ModConfigEvent.Loading configEvent) {
         XercaMod.LOGGER.debug("Config load event");
 //        System.out.println(COMMON_CONFIG.getValues());
         Config.bakeConfig();
     }
 
     @SubscribeEvent
-    public static void onReload(final ModConfig.Reloading configEvent) {
+    public static void onReload(final ModConfigEvent.Reloading configEvent) {
         XercaMod.LOGGER.debug("Config reload event");
 //        System.out.println(COMMON_CONFIG.getValues());
         Config.bakeConfig();

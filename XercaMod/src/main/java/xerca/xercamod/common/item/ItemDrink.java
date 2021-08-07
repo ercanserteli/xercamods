@@ -1,16 +1,13 @@
 package xerca.xercamod.common.item;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
 import xerca.xercamod.common.Config;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-@MethodsReturnNonnullByDefault
 
 public class ItemDrink extends ItemStackableContainedFood {
 
@@ -19,16 +16,16 @@ public class ItemDrink extends ItemStackableContainedFood {
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.DRINK;
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.DRINK;
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isFoodEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 }

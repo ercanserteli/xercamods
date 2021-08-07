@@ -1,14 +1,14 @@
 package xerca.xercamod.common.enchantments;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemGrabHook;
 
 public class EnchantmentTurboGrab extends EnchantmentWithConfig {
-    public EnchantmentTurboGrab(Rarity rarityIn, EquipmentSlotType... slots) {
-        super(rarityIn, EnchantmentType.WEAPON, slots);
+    public EnchantmentTurboGrab(Rarity rarityIn, EquipmentSlot... slots) {
+        super(rarityIn, EnchantmentCategory.WEAPON, slots);
         this.setRegistryName("enchantment_turbo_grab");
     }
 
@@ -16,7 +16,7 @@ public class EnchantmentTurboGrab extends EnchantmentWithConfig {
      * Returns the minimal value of enchantability needed on the enchantment level passed.
      */
     @Override
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return  10 + (enchantmentLevel - 1) * 10;
     }
 
@@ -24,8 +24,8 @@ public class EnchantmentTurboGrab extends EnchantmentWithConfig {
      * Returns the maximum value of enchantability nedded on the enchantment level passed.
      */
     @Override
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return getMinEnchantability(enchantmentLevel) + 10;
+    public int getMaxCost(int enchantmentLevel) {
+        return getMinCost(enchantmentLevel) + 10;
     }
 
     /**

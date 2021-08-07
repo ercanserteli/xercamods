@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "minecraft:glass_pane"}
+          {"items": ["minecraft:glass_pane"]}
         ]
       }
     },

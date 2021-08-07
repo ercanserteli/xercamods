@@ -1,33 +1,30 @@
 package xerca.xercamod.common.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import xerca.xercamod.common.Config;
-import xerca.xercamod.common.item.Items;
 
 import java.util.function.Supplier;
 
 public class RecipeConditionShaped extends ShapedRecipe {
     private final Supplier<Boolean> condition;
-    private IRecipeSerializer serializer;
+    private RecipeSerializer serializer;
 
     public RecipeConditionShaped(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn, Supplier<Boolean> condition) {
         super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
         this.condition = condition;
     }
 
-    public RecipeConditionShaped(ShapedRecipe shapedRecipe, Supplier<Boolean> condition, IRecipeSerializer serializer){
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getRecipeOutput());
+    public RecipeConditionShaped(ShapedRecipe shapedRecipe, Supplier<Boolean> condition, RecipeSerializer serializer){
+        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -35,7 +32,7 @@ public class RecipeConditionShaped extends ShapedRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         if(!condition.get()){
             return false;
         }
@@ -45,22 +42,22 @@ public class RecipeConditionShaped extends ShapedRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         if(!condition.get()){
             return ItemStack.EMPTY;
         }
-        return super.getCraftingResult(inv);
+        return super.assemble(inv);
     }
 
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return serializer;
     }
 
-    public void setSerializer(IRecipeSerializer<?> serializer) {
+    public void setSerializer(RecipeSerializer<?> serializer) {
         this.serializer = serializer;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeConditionShaped> {
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeConditionShaped> {
         private static final ShapedRecipe.Serializer shapedSerializer = new ShapedRecipe.Serializer();
         private final Supplier<Boolean> condition;
 
@@ -68,18 +65,18 @@ public class RecipeConditionShaped extends ShapedRecipe {
             this.condition = condition;
         }
 
-        public RecipeConditionShaped read(ResourceLocation recipeId, JsonObject json) {
-            ShapedRecipe shapedRecipe = shapedSerializer.read(recipeId, json);
+        public RecipeConditionShaped fromJson(ResourceLocation recipeId, JsonObject json) {
+            ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);
             return new RecipeConditionShaped(shapedRecipe, condition, this);
         }
 
-        public RecipeConditionShaped read(ResourceLocation recipeId, PacketBuffer buffer) {
-            ShapedRecipe shapedRecipe = shapedSerializer.read(recipeId, buffer);
+        public RecipeConditionShaped fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(recipeId, buffer);
             return new RecipeConditionShaped(shapedRecipe, condition, this);
         }
 
-        public void write(PacketBuffer buffer, RecipeConditionShaped recipe) {
-            shapedSerializer.write(buffer, recipe);
+        public void toNetwork(FriendlyByteBuf buffer, RecipeConditionShaped recipe) {
+            shapedSerializer.toNetwork(buffer, recipe);
         }
 
 

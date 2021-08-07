@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "minecraft:blue_terracotta"}
+          {"items": ["minecraft:blue_terracotta"]}
         ]
       }
     },

@@ -1,16 +1,16 @@
 package xerca.xercamod.common.crafting;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.Items;
 
-public class RecipeTeaFilling extends SpecialRecipe {
+public class RecipeTeaFilling extends CustomRecipe {
     public RecipeTeaFilling(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
@@ -18,7 +18,7 @@ public class RecipeTeaFilling extends SpecialRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         if(!Config.isTeaEnabled()){
             return false;
         }
@@ -27,15 +27,15 @@ public class RecipeTeaFilling extends SpecialRecipe {
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemStack bucketStack = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getSizeInventory(); ++j) {
-            ItemStack itemstack = inv.getStackInSlot(j);
+        for(int j = 0; j < inv.getContainerSize(); ++j) {
+            ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.ITEM_TEAPOT) {
                     if (!teapotStack.isEmpty()) {
                         return false;
                     }
                     teapotStack = itemstack;
-                }else if (itemstack.getItem() == net.minecraft.item.Items.WATER_BUCKET) {
+                }else if (itemstack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
                     if (!bucketStack.isEmpty()) {
                         return false;
                     }
@@ -56,7 +56,7 @@ public class RecipeTeaFilling extends SpecialRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         if(!Config.isTeaEnabled()){
             return ItemStack.EMPTY;
         }
@@ -65,15 +65,15 @@ public class RecipeTeaFilling extends SpecialRecipe {
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemStack bucketStack = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getSizeInventory(); ++j) {
-            ItemStack itemstack = inv.getStackInSlot(j);
+        for(int j = 0; j < inv.getContainerSize(); ++j) {
+            ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.ITEM_TEAPOT) {
                     if (!teapotStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
                     teapotStack = itemstack;
-                }else if (itemstack.getItem() == net.minecraft.item.Items.WATER_BUCKET) {
+                }else if (itemstack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
                     if (!bucketStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
@@ -91,20 +91,20 @@ public class RecipeTeaFilling extends SpecialRecipe {
         if (!teapotStack.isEmpty() && !bucketStack.isEmpty() && i > 0) {
             String str = Items.ITEM_FULL_TEAPOT_1.getRegistryName().toString();
             str = str.substring(0, str.length() - 1) + i;
-            return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(str)));
+            return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str)));
         } else {
             return ItemStack.EMPTY;
         }
     }
 
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_TEA_FILLING;
     }
 
     /**
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 2 && height >= 2;
     }
 }

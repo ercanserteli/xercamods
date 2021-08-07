@@ -1,15 +1,15 @@
 package xerca.xercamod.client;
 
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.entity.EntityHook;
 
 @OnlyIn(Dist.CLIENT)
-class HookSound extends TickableSound {
+class HookSound extends AbstractTickableSoundInstance {
     private final EntityHook theHook;
     private boolean repeat = true;
     private final boolean isReturning;
@@ -19,7 +19,7 @@ class HookSound extends TickableSound {
     private final float pitch;
 
     public HookSound(EntityHook hook, boolean isReturning) {
-        super(SoundEvents.HOOK_CHAIN, SoundCategory.PLAYERS);
+        super(SoundEvents.HOOK_CHAIN, SoundSource.PLAYERS);
         volume = 1.0f;
         pitch = 1.0F;
         theHook = hook;
@@ -27,7 +27,7 @@ class HookSound extends TickableSound {
     }
 
     private void setDonePlaying() {
-        this.finishPlaying();
+        this.stop();
         this.repeatDelay = 0;
     }
 
@@ -43,16 +43,16 @@ class HookSound extends TickableSound {
             return;
         }
 
-        final PlayerEntity angler = theHook.getAngler();
+        final Player angler = theHook.getAngler();
         if(angler != null){
-            x = (float) angler.getPosX();
-            y = (float) angler.getPosY();
-            z = (float) angler.getPosZ();
+            x = (float) angler.getX();
+            y = (float) angler.getY();
+            z = (float) angler.getZ();
         }
     }
 
     @Override
-    public boolean canRepeat() {
+    public boolean isLooping() {
         return this.repeat;
     }
 
@@ -67,12 +67,12 @@ class HookSound extends TickableSound {
     }
 
     @Override
-    public int getRepeatDelay() {
+    public int getDelay() {
         return this.repeatDelay;
     }
 
     @Override
-    public AttenuationType getAttenuationType() {
-        return AttenuationType.LINEAR;
+    public Attenuation getAttenuation() {
+        return Attenuation.LINEAR;
     }
 }

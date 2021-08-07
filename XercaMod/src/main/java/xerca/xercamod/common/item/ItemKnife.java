@@ -3,31 +3,35 @@ package xerca.xercamod.common.item;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.network.play.server.SAnimateHandPacket;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.*;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.Triggers;
 import xerca.xercamod.common.XercaMod;
@@ -43,44 +47,44 @@ public class ItemKnife extends Item {
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
     ItemKnife() {
-        super(new Item.Properties().group(ItemGroup.TOOLS).maxStackSize(1).defaultMaxDamage(maxDamage));
+        super(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS).stacksTo(1).defaultDurability(maxDamage));
         this.setRegistryName("item_knife");
 
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", weaponDamage, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", weaponDamage, AttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         float damage = 0.0F;
-        if (attacker.isSteppingCarefully() && MathHelper.abs(MathHelper.wrapDegrees(target.rotationYaw) - MathHelper.wrapDegrees(attacker.rotationYaw)) < 65.0F) {
-            if(!target.world.isRemote){
-                SAnimateHandPacket packetOut = new SAnimateHandPacket(target, 4);
-                ((ServerWorld)target.world).getChunkProvider().sendToTrackingAndSelf(attacker, packetOut);
+        if (attacker.isSteppingCarefully() && Mth.abs(Mth.wrapDegrees(target.getYRot()) - Mth.wrapDegrees(attacker.getYRot())) < 65.0F) {
+            if(!target.level.isClientSide){
+                ClientboundAnimatePacket packetOut = new ClientboundAnimatePacket(target, 4);
+                ((ServerLevel)target.level).getChunkSource().broadcastAndSend(attacker, packetOut);
 
             }
-            attacker.world.playSound(null, target.getPosX(), target.getPosY() + 0.5d, target.getPosZ(), SoundEvents.SNEAK_HIT, SoundCategory.PLAYERS, 1.0f, attacker.world.rand.nextFloat() * 0.2F + 0.8F);
+            attacker.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 1.0f, attacker.level.random.nextFloat() * 0.2F + 0.8F);
 
             float bonus = defaultBonus;
             if(stack.isEnchanted()){
-                bonus += EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_STEALTH, stack)*2;
+                bonus += EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_STEALTH, stack)*2;
             }
 
             damage += bonus;
-            PlayerEntity player = (PlayerEntity) attacker;
-            DamageSource damagesource = DamageSource.causePlayerDamage(player);
-            target.attackEntityFrom(damagesource, damage);
+            Player player = (Player) attacker;
+            DamageSource damagesource = DamageSource.playerAttack(player);
+            target.hurt(damagesource, damage);
             if(target.getHealth() <= 0f) {
-                Triggers.ASSASSINATE.trigger((ServerPlayerEntity) player);
+                Triggers.ASSASSINATE.trigger((ServerPlayer) player);
             }
         }
-        stack.damageItem(1, attacker, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
+        stack.hurtAndBreak(1, attacker, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
 
         if(stack.isEnchanted()){
-            int poison = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_POISON, stack);
+            int poison = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_POISON, stack);
             if(poison > 0){
-                target.addPotionEffect(new EffectInstance(Effects.POISON, 30 + 30 * poison, poison - 1));
+                target.addEffect(new MobEffectInstance(MobEffects.POISON, 30 + 30 * poison, poison - 1));
             }
         }
 
@@ -89,28 +93,28 @@ public class ItemKnife extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        final ItemStack heldItem = playerIn.getHeldItem(hand);
-        if (hand == Hand.OFF_HAND) {
-            playerIn.swingArm(hand);
-            if (worldIn.isRemote) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+        final ItemStack heldItem = playerIn.getItemInHand(hand);
+        if (hand == InteractionHand.OFF_HAND) {
+            playerIn.swing(hand);
+            if (worldIn.isClientSide) {
                 Minecraft mine = Minecraft.getInstance();
-                if (mine.objectMouseOver != null && mine.objectMouseOver.getType() == RayTraceResult.Type.ENTITY) {
-                    Entity target = ((EntityRayTraceResult) mine.objectMouseOver).getEntity();
-                    KnifeAttackPacket pack = new KnifeAttackPacket(false, target.getEntityId());
+                if (mine.hitResult != null && mine.hitResult.getType() == HitResult.Type.ENTITY) {
+                    Entity target = ((EntityHitResult) mine.hitResult).getEntity();
+                    KnifeAttackPacket pack = new KnifeAttackPacket(false, target.getId());
                     XercaMod.NETWORK_HANDLER.sendToServer(pack);
                 }
             }
-            playerIn.getCooldownTracker().setCooldown(this, 15);
-            return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+            playerIn.getCooldowns().addCooldown(this, 15);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
         }
-        return new ActionResult<>(ActionResultType.PASS, heldItem);
+        return new InteractionResultHolder<>(InteractionResult.PASS, heldItem);
     }
 
     @Nonnull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack) {
-        return (slot == EquipmentSlotType.MAINHAND || slot == EquipmentSlotType.OFFHAND) ? this.attributeModifiers : super.getAttributeModifiers(slot);
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, ItemStack stack) {
+        return (slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND) ? this.attributeModifiers : super.getDefaultAttributeModifiers(slot);
     }
 
     @Override
@@ -124,8 +128,8 @@ public class ItemKnife extends Item {
         ItemStack ret = new ItemStack(this);
         ret.setTag(itemStack.getTag());
 
-        ret.setDamage(itemStack.getDamage() + 1);
-        if(ret.getDamage() >= ret.getMaxDamage()){
+        ret.setDamageValue(itemStack.getDamageValue() + 1);
+        if(ret.getDamageValue() >= ret.getMaxDamage()){
             return ItemStack.EMPTY;
         }
 
@@ -137,16 +141,16 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public int getItemEnchantability()
+    public int getEnchantmentValue()
     {
-        return ItemTier.IRON.getEnchantability();
+        return Tiers.IRON.getEnchantmentValue();
     }
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
-        return enchantment.type == EnchantmentType.BREAKABLE || enchantment == Items.ENCHANTMENT_POISON
+        return enchantment.category == EnchantmentCategory.BREAKABLE || enchantment == Items.ENCHANTMENT_POISON
                 || enchantment == Items.ENCHANTMENT_STEALTH || enchantment == Enchantments.SHARPNESS
-                || enchantment == Enchantments.LOOTING;
+                || enchantment == Enchantments.MOB_LOOTING;
     }
 }

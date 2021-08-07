@@ -1,20 +1,27 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.Config;
-import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.BlockCushion;
 import xerca.xercamod.common.entity.EntityCushion;
 
@@ -37,54 +44,54 @@ public class ItemCushion extends Item {
      * Called when this item is used when targetting a Block
      */
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        Direction enumfacing = context.getFace();
+    public InteractionResult useOn(UseOnContext context) {
+        Direction enumfacing = context.getClickedFace();
         if (enumfacing == Direction.DOWN) {
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         } else {
-            World world = context.getWorld();
-            BlockItemUseContext blockitemusecontext = new BlockItemUseContext(context);
-            BlockPos blockpos = blockitemusecontext.getPos();
+            Level world = context.getLevel();
+            BlockPlaceContext blockitemusecontext = new BlockPlaceContext(context);
+            BlockPos blockpos = blockitemusecontext.getClickedPos();
             if (blockitemusecontext.canPlace()) {
                 double d0 = (double)blockpos.getX();
                 double d1 = (double)blockpos.getY();
                 double d2 = (double)blockpos.getZ();
-                List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D));
+                List<Entity> list = world.getEntities(null, new AABB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D));
                 if (!list.isEmpty()) {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 } else {
-                    ItemStack itemstack = context.getItem();
-                    if (!world.isRemote) {
+                    ItemStack itemstack = context.getItemInHand();
+                    if (!world.isClientSide) {
                         world.removeBlock(blockpos, false);
                         EntityCushion entityCushion = new EntityCushion(world, d0 + 0.5D, d1, d2 + 0.5D, this);
-                        float f = (float) MathHelper.floor((MathHelper.wrapDegrees(context.getPlacementYaw() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-                        entityCushion.setLocationAndAngles(d0 + 0.5D, d1, d2 + 0.5D, f, 0.0F);
-                        world.addEntity(entityCushion);
-                        world.playSound(null, entityCushion.getPosX(), entityCushion.getPosY(), entityCushion.getPosZ(), SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.BLOCKS, 0.75F, 0.8F);
+                        float f = (float) Mth.floor((Mth.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
+                        entityCushion.moveTo(d0 + 0.5D, d1, d2 + 0.5D, f, 0.0F);
+                        world.addFreshEntity(entityCushion);
+                        world.playSound(null, entityCushion.getX(), entityCushion.getY(), entityCushion.getZ(), SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
                     }
 
                     itemstack.shrink(1);
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             } else {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
         }
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isCushionEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        TranslationTextComponent text = new TranslationTextComponent("xercamod.cushion_tooltip");
-        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        TranslatableComponent text = new TranslatableComponent("xercamod.cushion_tooltip");
+        tooltip.add(text.withStyle(ChatFormatting.BLUE));
     }
 }

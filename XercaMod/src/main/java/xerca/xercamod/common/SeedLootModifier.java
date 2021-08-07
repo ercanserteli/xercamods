@@ -1,13 +1,13 @@
 package xerca.xercamod.common;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -18,7 +18,7 @@ public class SeedLootModifier extends LootModifier {
     private final Item itemSeed;
     private final boolean isFood;
 
-    protected SeedLootModifier(ILootCondition[] conditionsIn, Item itemSeed, boolean isFood) {
+    protected SeedLootModifier(LootItemCondition[] conditionsIn, Item itemSeed, boolean isFood) {
         super(conditionsIn);
         this.itemSeed = itemSeed;
         this.isFood = isFood;
@@ -35,9 +35,9 @@ public class SeedLootModifier extends LootModifier {
 
     static class Serializer extends GlobalLootModifierSerializer<SeedLootModifier> {
         @Override
-        public SeedLootModifier read(ResourceLocation name, JsonObject object, ILootCondition[] conditionsIn) {
-            Item seed = ForgeRegistries.ITEMS.getValue(new ResourceLocation((JSONUtils.getString(object, "seedItem"))));
-            boolean isFood = JSONUtils.getBoolean(object, "isFood");
+        public SeedLootModifier read(ResourceLocation name, JsonObject object, LootItemCondition[] conditionsIn) {
+            Item seed = ForgeRegistries.ITEMS.getValue(new ResourceLocation((GsonHelper.getAsString(object, "seedItem"))));
+            boolean isFood = GsonHelper.getAsBoolean(object, "isFood");
             return new SeedLootModifier(conditionsIn, seed, isFood);
         }
 

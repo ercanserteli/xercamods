@@ -1,15 +1,15 @@
 package xerca.xercamod.common.enchantments;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemEnderBow;
 import xerca.xercamod.common.item.ItemFlask;
 
 public class EnchantmentCapacity extends EnchantmentWithConfig {
-    public EnchantmentCapacity(Rarity rarityIn, EquipmentSlotType... slots) {
-        super(rarityIn, EnchantmentType.WEAPON, slots);
+    public EnchantmentCapacity(Rarity rarityIn, EquipmentSlot... slots) {
+        super(rarityIn, EnchantmentCategory.WEAPON, slots);
         this.setRegistryName("enchantment_capacity");
     }
 
@@ -17,7 +17,7 @@ public class EnchantmentCapacity extends EnchantmentWithConfig {
      * Returns the minimal value of enchantability needed on the enchantment level passed.
      */
     @Override
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return 15 + (enchantmentLevel - 1) * 9;
     }
 
@@ -25,8 +25,8 @@ public class EnchantmentCapacity extends EnchantmentWithConfig {
      * Returns the maximum value of enchantability needed on the enchantment level passed.
      */
     @Override
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return super.getMinEnchantability(enchantmentLevel) + 30;
+    public int getMaxCost(int enchantmentLevel) {
+        return super.getMinCost(enchantmentLevel) + 30;
     }
 
     /**

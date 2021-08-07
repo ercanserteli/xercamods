@@ -19,7 +19,7 @@
       "conditions": {
         "items": [
           {
-            "item": "xercamod:item_golden_cupcake"
+            "items": ["xercamod:item_golden_cupcake"]
           }
         ]
       }

@@ -1,19 +1,17 @@
 package xerca.xercamod.common;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.item.Items;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DecoCreativeTab extends ItemGroup {
+public class DecoCreativeTab extends CreativeModeTab {
     static List<Item> orderedItems;
 
     public DecoCreativeTab() {
@@ -150,15 +148,15 @@ public class DecoCreativeTab extends ItemGroup {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         return new ItemStack(Items.ITEM_BLOCK_LEATHER);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fill(NonNullList<ItemStack> items) {
+    public void fillItemList(NonNullList<ItemStack> items) {
         for(Item item : orderedItems) {
-            item.fillItemGroup(this, items);
+            item.fillItemCategory(this, items);
         }
     }
 }

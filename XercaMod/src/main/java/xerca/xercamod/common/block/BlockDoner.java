@@ -1,117 +1,110 @@
 package xerca.xercamod.common.block;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import xerca.xercamod.common.tile_entity.TileEntityDoner;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class BlockDoner extends Block {
+public class BlockDoner extends Block implements EntityBlock {
     public static final IntegerProperty MEAT_AMOUNT = IntegerProperty.create("meat", 1, 4);
     public static final BooleanProperty IS_RAW = BooleanProperty.create("is_raw");
 
-    public void setRenderType(BlockRenderType renderType) {
+    public void setRenderType(RenderShape renderType) {
         this.renderType = renderType;
     }
 
-    private BlockRenderType renderType = BlockRenderType.ENTITYBLOCK_ANIMATED;
+    private RenderShape renderType = RenderShape.ENTITYBLOCK_ANIMATED;
 
     public BlockDoner() {
-        super(Block.Properties.create(Material.CAKE).sound(SoundType.METAL).hardnessAndResistance(1).notSolid());
+        super(Block.Properties.of(Material.CAKE).sound(SoundType.METAL).strength(1).noOcclusion());
         setRegistryName("block_doner");
-        setDefaultState(this.stateContainer.getBaseState().with(MEAT_AMOUNT, 1).with(IS_RAW, true));
+        registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(IS_RAW, true));
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+        return Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
     }
 
     @Override
-    public boolean hasTileEntity(final BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityDoner();
-    }
-
-    @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(MEAT_AMOUNT, IS_RAW);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        ItemStack heldItem = player.getHeldItem(hand);
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        ItemStack heldItem = player.getItemInHand(hand);
         if (heldItem.getItem() == Items.MUTTON) {
-            if(state.get(IS_RAW) && state.get(MEAT_AMOUNT) < 4){
-                if (!worldIn.isRemote) {
-                    worldIn.setBlockState(pos, state.with(MEAT_AMOUNT, state.get(MEAT_AMOUNT) + 1));
+            if(state.getValue(IS_RAW) && state.getValue(MEAT_AMOUNT) < 4){
+                if (!worldIn.isClientSide) {
+                    worldIn.setBlockAndUpdate(pos, state.setValue(MEAT_AMOUNT, state.getValue(MEAT_AMOUNT) + 1));
                     heldItem.shrink(1);
                 }
-                worldIn.playSound(null, pos, SoundEvents.BLOCK_SLIME_BLOCK_PLACE, SoundCategory.BLOCKS, 0.8f, 0.9f + worldIn.rand.nextFloat()*0.1f);
-                return ActionResultType.SUCCESS;
+                worldIn.playSound(null, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8f, 0.9f + worldIn.random.nextFloat()*0.1f);
+                return InteractionResult.SUCCESS;
             }
         }
         else if(heldItem.getItem() == xerca.xercamod.common.item.Items.ITEM_KNIFE){
-            if(!state.get(IS_RAW)){
-                if(!worldIn.isRemote){
-                    if(state.get(MEAT_AMOUNT) > 1){
-                        worldIn.setBlockState(pos, state.with(MEAT_AMOUNT, state.get(MEAT_AMOUNT)-1));
+            if(!state.getValue(IS_RAW)){
+                if(!worldIn.isClientSide){
+                    if(state.getValue(MEAT_AMOUNT) > 1){
+                        worldIn.setBlockAndUpdate(pos, state.setValue(MEAT_AMOUNT, state.getValue(MEAT_AMOUNT)-1));
                     }
                     else{
-                        worldIn.setBlockState(pos, Blocks.IRON_BARS.getDefaultState());
+                        worldIn.setBlockAndUpdate(pos, Blocks.IRON_BARS.defaultBlockState());
                     }
-                    Vector3d playerPos = new Vector3d(player.getPosX(), player.getPosY(), player.getPosZ());
-                    Vector3d boost = playerPos.subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
+                    Vec3 playerPos = new Vec3(player.getX(), player.getY(), player.getZ());
+                    Vec3 boost = playerPos.subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
                     boost = boost.normalize().scale(0.15d);
 
                     ItemEntity donerEntity = new ItemEntity(worldIn, pos.getX() + 0.5f + boost.x*6, pos.getY() + 0.5f, pos.getZ() + 0.5f + boost.x*6, new ItemStack(xerca.xercamod.common.item.Items.DONER_SLICE));
-                    donerEntity.setDefaultPickupDelay();
-                    donerEntity.addVelocity(boost.x, 0, boost.z);
-                    donerEntity.velocityChanged = true;
-                    worldIn.addEntity(donerEntity);
+                    donerEntity.setDefaultPickUpDelay();
+                    donerEntity.push(boost.x, 0, boost.z);
+                    donerEntity.hurtMarked = true;
+                    worldIn.addFreshEntity(donerEntity);
 
-                    heldItem.damageItem(1, player, (playerEntity) -> {
-                        playerEntity.sendBreakAnimation(hand);
+                    heldItem.hurtAndBreak(1, player, (playerEntity) -> {
+                        playerEntity.broadcastBreakEvent(hand);
                     });
                 }
-                worldIn.playSound(player, pos, xerca.xercamod.common.SoundEvents.SNEAK_HIT, SoundCategory.BLOCKS, 0.4f, 0.9f + worldIn.rand.nextFloat()*0.1f);
-                return ActionResultType.SUCCESS;
+                worldIn.playSound(player, pos, xerca.xercamod.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat()*0.1f);
+                return InteractionResult.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock() && newState.getBlock() != Blocks.IRON_BARS) {
-            if(!worldIn.isRemote) {
+            if(!worldIn.isClientSide) {
                 ItemEntity barsEntity = new ItemEntity(worldIn, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.IRON_BARS));
-                barsEntity.setDefaultPickupDelay();
-                worldIn.addEntity(barsEntity);
+                barsEntity.setDefaultPickUpDelay();
+                worldIn.addFreshEntity(barsEntity);
 
 //                ItemStack meatStack = state.get(IS_RAW) ? new ItemStack(Items.MUTTON, state.get(MEAT_AMOUNT)) :
 //                        new ItemStack(xerca.xercamod.common.item.Items.DONER_SLICE, state.get(MEAT_AMOUNT));
@@ -120,11 +113,26 @@ public class BlockDoner extends Block {
 //                worldIn.addEntity(meatEntity);
             }
         }
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return renderType;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new TileEntityDoner(blockPos, blockState);
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return (level1, blockPos, blockState1, t) -> {
+            if (t instanceof TileEntityDoner) {
+                TileEntityDoner.tick(level1, blockPos, blockState1, (TileEntityDoner) t);
+            }
+        };
     }
 }

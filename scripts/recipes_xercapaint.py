@@ -14,6 +14,6 @@ recipes = [
     SpecialRecipe("xercapaint:crafting_special_canvas_cloning", None, ""),
 ]
 
-
+clean_recipe_jsons("xercapaint")
 # generate_recipe_code_from_files("xercapaint")
 generate_recipe_jsons(recipes, "xercapaint")

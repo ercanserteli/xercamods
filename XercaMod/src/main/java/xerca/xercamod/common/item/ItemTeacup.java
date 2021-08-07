@@ -1,23 +1,14 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercamod.common.Config;
-import xerca.xercamod.common.XercaMod;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,7 +19,7 @@ public class ItemTeacup extends ItemStackableContainedFood {
     private final int sugarAmount;
 
     public ItemTeacup(int sugarAmount, Item teaCup) {
-        super(sugarAmount == 0 ? (new Item.Properties().group(Items.teaTab)).food(Foods.TEACUP0) :
+        super(sugarAmount == 0 ? (new Item.Properties().tab(Items.teaTab)).food(Foods.TEACUP0) :
               sugarAmount == 1 ? (new Item.Properties()).food(Foods.TEACUP1) :
               sugarAmount == 2 ? (new Item.Properties()).food(Foods.TEACUP2) :
               sugarAmount == 3 ? (new Item.Properties()).food(Foods.TEACUP3) :
@@ -40,8 +31,8 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    public UseAction getUseAction(ItemStack par1ItemStack) {
-        return UseAction.DRINK;
+    public UseAnim getUseAnimation(ItemStack par1ItemStack) {
+        return UseAnim.DRINK;
     }
 
     public int getSugarAmount() {
@@ -50,13 +41,13 @@ public class ItemTeacup extends ItemStackableContainedFood {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.sugarAmount == 0) {
-            tooltip.add(new StringTextComponent("No sugar"));
+            tooltip.add(new TextComponent("No sugar"));
         } else if(this.sugarAmount == 1) {
-            tooltip.add(new StringTextComponent(this.sugarAmount + " sugar"));
+            tooltip.add(new TextComponent(this.sugarAmount + " sugar"));
         } else {
-            tooltip.add(new StringTextComponent(this.sugarAmount + " sugars"));
+            tooltip.add(new TextComponent(this.sugarAmount + " sugars"));
         }
     }
 
@@ -72,10 +63,10 @@ public class ItemTeacup extends ItemStackableContainedFood {
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isTeaEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 }

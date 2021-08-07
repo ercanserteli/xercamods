@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "xercamod:lime_terratile"}
+          {"items": ["xercamod:lime_terratile"]}
         ]
       }
     },

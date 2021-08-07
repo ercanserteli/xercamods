@@ -1,7 +1,7 @@
 package xerca.xercamod.common.tile_entity;
 
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,21 +14,21 @@ import xerca.xercamod.common.block.Blocks;
 
 @ObjectHolder(XercaMod.MODID)
 public class XercaTileEntities {
-    public static final TileEntityType<?> FUNCTIONAL_BOOKCASE = null;
-    public static final TileEntityType<TileEntityDoner> DONER = null;
-    public static final ContainerType<ContainerFunctionalBookcase> CONTAINER_FUNCTIONAL_BOOKCASE = null;
-    public static final ContainerType<ContainerCarvingStation> CONTAINER_CARVING_STATION = null;
+    public static final BlockEntityType<?> FUNCTIONAL_BOOKCASE = null;
+    public static final BlockEntityType<TileEntityDoner> DONER = null;
+    public static final MenuType<ContainerFunctionalBookcase> CONTAINER_FUNCTIONAL_BOOKCASE = null;
+    public static final MenuType<ContainerCarvingStation> CONTAINER_CARVING_STATION = null;
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
-        public static void registerTileEntities(final RegistryEvent.Register<TileEntityType<?>> event) {
-            event.getRegistry().register(TileEntityType.Builder.create(TileEntityFunctionalBookcase::new, Blocks.BLOCK_BOOKCASE).build(null).setRegistryName(XercaMod.MODID, "functional_bookcase"));
-            event.getRegistry().register(TileEntityType.Builder.create(TileEntityDoner::new, Blocks.BLOCK_DONER).build(null).setRegistryName(XercaMod.MODID, "doner"));
+        public static void registerTileEntities(final RegistryEvent.Register<BlockEntityType<?>> event) {
+            event.getRegistry().register(BlockEntityType.Builder.of(TileEntityFunctionalBookcase::new, Blocks.BLOCK_BOOKCASE).build(null).setRegistryName(XercaMod.MODID, "functional_bookcase"));
+            event.getRegistry().register(BlockEntityType.Builder.of(TileEntityDoner::new, Blocks.BLOCK_DONER).build(null).setRegistryName(XercaMod.MODID, "doner"));
         }
 
         @SubscribeEvent
-        public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event) {
+        public static void registerContainers(final RegistryEvent.Register<MenuType<?>> event) {
             event.getRegistry().register(IForgeContainerType.create(ContainerFunctionalBookcase::new).setRegistryName("container_functional_bookcase"));
             event.getRegistry().register(IForgeContainerType.create(ContainerCarvingStation::new).setRegistryName("container_carving_station"));
         }

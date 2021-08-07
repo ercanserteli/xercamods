@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "minecraft:chorus_fruit"}
+          {"items": ["minecraft:chorus_fruit"]}
         ]
       }
     },

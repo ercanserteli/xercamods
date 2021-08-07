@@ -1,9 +1,9 @@
 package xerca.xercamod.common.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -64,16 +64,16 @@ public final class Entities {
             };
 
             final EntityType<EntityConfettiBall> confettiBall = build("confetti_ball",
-                    EntityType.Builder.<EntityConfettiBall>create((EntityConfettiBall::new), EntityClassification.MISC).setCustomClientFactory(EntityConfettiBall::new).size(0.25f, 0.25f).setUpdateInterval(10)
+                    EntityType.Builder.<EntityConfettiBall>of((EntityConfettiBall::new), MobCategory.MISC).setCustomClientFactory(EntityConfettiBall::new).sized(0.25f, 0.25f).setUpdateInterval(10)
             );
             final EntityType<EntityHook> hook = build("hook",
-                    EntityType.Builder.<EntityHook>create((EntityHook::new), EntityClassification.MISC).setCustomClientFactory(EntityHook::new).size(0.25f, 0.25f).setUpdateInterval(4).setTrackingRange(10)
+                    EntityType.Builder.<EntityHook>of((EntityHook::new), MobCategory.MISC).setCustomClientFactory(EntityHook::new).sized(0.25f, 0.25f).setUpdateInterval(4).setTrackingRange(10)
             );
             final EntityType<EntityTomato> tomato = build("tomato",
-                    EntityType.Builder.<EntityTomato>create((EntityTomato::new), EntityClassification.MISC).setCustomClientFactory(EntityTomato::new).size(0.25f, 0.25f).setUpdateInterval(10)
+                    EntityType.Builder.<EntityTomato>of((EntityTomato::new), MobCategory.MISC).setCustomClientFactory(EntityTomato::new).sized(0.25f, 0.25f).setUpdateInterval(10)
             );
             final EntityType<EntityCushion> cushion = build("cushion",
-                    EntityType.Builder.<EntityCushion>create((EntityCushion::new), EntityClassification.MISC).setCustomClientFactory(EntityCushion::new).size(1.f, 0.125f)
+                    EntityType.Builder.<EntityCushion>of((EntityCushion::new), MobCategory.MISC).setCustomClientFactory(EntityCushion::new).sized(1.f, 0.125f)
             );
 
             event.getRegistry().register(confettiBall);

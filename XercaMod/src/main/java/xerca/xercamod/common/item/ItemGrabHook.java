@@ -1,20 +1,19 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.Config;
@@ -26,56 +25,55 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 import static xerca.xercamod.common.item.Items.ENCHANTMENT_GRAPPLING;
-import static xerca.xercamod.common.item.Items.ENCHANTMENT_GUILLOTINE;
 
 public class ItemGrabHook extends FishingRodItem {
 
     public ItemGrabHook() {
-        super((new Item.Properties()).group(ItemGroup.COMBAT).defaultMaxDamage(210));
+        super((new Item.Properties()).tab(CreativeModeTab.TAB_COMBAT).defaultDurability(210));
         this.setRegistryName("item_grab_hook");
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        final ItemStack heldItem = playerIn.getHeldItem(hand);
-        playerIn.setActiveHand(hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+        final ItemStack heldItem = playerIn.getItemInHand(hand);
+        playerIn.startUsingItem(hand);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
         float useSeconds = (this.getUseDuration(stack) - timeLeft) / 20.0f;
         if(useSeconds > 1.f) useSeconds = 1.f;
 
-        if(useSeconds > 0.1f && entityLiving instanceof PlayerEntity){
-            PlayerEntity playerIn = (PlayerEntity) entityLiving;
-            Hand hand;
-            if(playerIn.getHeldItemMainhand().getItem() instanceof ItemGrabHook){
-                hand = Hand.MAIN_HAND;
+        if(useSeconds > 0.1f && entityLiving instanceof Player){
+            Player playerIn = (Player) entityLiving;
+            InteractionHand hand;
+            if(playerIn.getMainHandItem().getItem() instanceof ItemGrabHook){
+                hand = InteractionHand.MAIN_HAND;
             }
-            else if(playerIn.getHeldItemOffhand().getItem() instanceof ItemGrabHook){
-                hand = Hand.OFF_HAND;
+            else if(playerIn.getOffhandItem().getItem() instanceof ItemGrabHook){
+                hand = InteractionHand.OFF_HAND;
             }
             else{
                 return;
             }
 
-            final ItemStack heldItem = playerIn.getHeldItem(hand);
-            playerIn.getCooldownTracker().setCooldown(this, 40);
-            heldItem.damageItem(1, playerIn, (p) -> p.sendBreakAnimation(hand));
-            if (!worldIn.isRemote) {
-                worldIn.addEntity(new EntityHook(worldIn, playerIn, heldItem, useSeconds));
+            final ItemStack heldItem = playerIn.getItemInHand(hand);
+            playerIn.getCooldowns().addCooldown(this, 40);
+            heldItem.hurtAndBreak(1, playerIn, (p) -> p.broadcastBreakEvent(hand));
+            if (!worldIn.isClientSide) {
+                worldIn.addFreshEntity(new EntityHook(worldIn, playerIn, heldItem, useSeconds));
             }
 
-            playerIn.swingArm(hand);
+            playerIn.swing(hand);
         }
     }
 
     @Nonnull
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.BOW;
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.BOW;
     }
 
     @Override
@@ -86,26 +84,26 @@ public class ItemGrabHook extends FishingRodItem {
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
-        return enchantment.type == EnchantmentType.BREAKABLE || enchantment == Items.ENCHANTMENT_GRAPPLING;
+        return enchantment.category == EnchantmentCategory.BREAKABLE || enchantment == Items.ENCHANTMENT_GRAPPLING;
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isGrabHookEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        TranslationTextComponent text = new TranslationTextComponent("xercamod.grap_hook_tooltip");
-        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
-        if(EnchantmentHelper.getEnchantmentLevel(ENCHANTMENT_GRAPPLING, stack) > 0){
-            TranslationTextComponent textGrappling = new TranslationTextComponent("xercamod.grappling_tooltip");
-            tooltip.add(textGrappling.mergeStyle(TextFormatting.YELLOW));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        TranslatableComponent text = new TranslatableComponent("xercamod.grap_hook_tooltip");
+        tooltip.add(text.withStyle(ChatFormatting.BLUE));
+        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GRAPPLING, stack) > 0){
+            TranslatableComponent textGrappling = new TranslatableComponent("xercamod.grappling_tooltip");
+            tooltip.add(textGrappling.withStyle(ChatFormatting.YELLOW));
         }
     }
 }

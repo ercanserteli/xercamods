@@ -1,69 +1,58 @@
 package xerca.xercamod.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xerca.xercamod.common.tile_entity.TileEntityFunctionalBookcase;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class BlockFunctionalBookcase extends Block {
+public class BlockFunctionalBookcase extends Block implements EntityBlock {
 
     public static final IntegerProperty BOOK_AMOUNT = IntegerProperty.create("books", 0, 6);
 
     public BlockFunctionalBookcase() {
-        super(Block.Properties.create(Material.WOOD).hardnessAndResistance(2.0F, 3.0F).sound(SoundType.WOOD));
-        this.setDefaultState(this.stateContainer.getBaseState().with(BOOK_AMOUNT, 0));
+        super(Block.Properties.of(Material.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD));
+        this.registerDefaultState(this.stateDefinition.any().setValue(BOOK_AMOUNT, 0));
         this.setRegistryName("block_bookcase");
-    }
-
-
-    @Override
-    public boolean hasTileEntity(final BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityFunctionalBookcase();
     }
 
     // Called when the block is right clicked
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (worldIn.isRemote) return ActionResultType.SUCCESS;
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+        if (worldIn.isClientSide) return InteractionResult.SUCCESS;
 
-        if (player instanceof ServerPlayerEntity)
+        if (player instanceof ServerPlayer)
         {
-            final TileEntityFunctionalBookcase tileEntity = (TileEntityFunctionalBookcase)worldIn.getTileEntity(pos);
-            NetworkHooks.openGui((ServerPlayerEntity) player, tileEntity, pos);
+            final TileEntityFunctionalBookcase tileEntity = (TileEntityFunctionalBookcase)worldIn.getBlockEntity(pos);
+            NetworkHooks.openGui((ServerPlayer) player, tileEntity, pos);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
-            TileEntity tent = worldIn.getTileEntity(pos);
+            BlockEntity tent = worldIn.getBlockEntity(pos);
             IItemHandler inventory = tent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
             for (int i = 0; i < inventory.getSlots(); i++) {
@@ -71,42 +60,42 @@ public class BlockFunctionalBookcase extends Block {
                     ItemEntity item = new ItemEntity(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, inventory.getStackInSlot(i));
 
                     float multiplier = 0.1f;
-                    float motionX = worldIn.rand.nextFloat() - 0.5f;
-                    float motionY = worldIn.rand.nextFloat() - 0.5f;
-                    float motionZ = worldIn.rand.nextFloat() - 0.5f;
+                    float motionX = worldIn.random.nextFloat() - 0.5f;
+                    float motionY = worldIn.random.nextFloat() - 0.5f;
+                    float motionZ = worldIn.random.nextFloat() - 0.5f;
 
-                    item.setMotion(motionX * multiplier, motionY * multiplier, motionZ * multiplier);
+                    item.setDeltaMovement(motionX * multiplier, motionY * multiplier, motionZ * multiplier);
 
-                    worldIn.addEntity(item);
+                    worldIn.addFreshEntity(item);
                 }
             }
 
-            super.onReplaced(state, worldIn, pos, newState, isMoving);
+            super.onRemove(state, worldIn, pos, newState, isMoving);
         }
 
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BOOK_AMOUNT);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
-        return calcRedstoneFromTE(worldIn.getTileEntity(pos));
+    public int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos) {
+        return calcRedstoneFromTE(worldIn.getBlockEntity(pos));
     }
 
-    public static int calcRedstoneFromTE(TileEntity te) {
+    public static int calcRedstoneFromTE(BlockEntity te) {
         if(!(te instanceof TileEntityFunctionalBookcase)){
             return 0;
         }
@@ -125,6 +114,12 @@ public class BlockFunctionalBookcase extends Block {
             }
             return i;
         }
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new TileEntityFunctionalBookcase(blockPos, blockState);
     }
 }
 

@@ -1,27 +1,23 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.Config;
@@ -46,7 +42,7 @@ public class ItemFlask extends Item {
      */
     @Override
     public int getUseDuration(ItemStack stack) {
-        int chug = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_CHUG, stack);
+        int chug = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_CHUG, stack);
         switch (chug){
             case 2:
                 return 10;
@@ -61,22 +57,18 @@ public class ItemFlask extends Item {
      * returns the action that specifies what animation to play when the items is being used
      */
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.DRINK;
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.DRINK;
     }
 
-    /**
-     * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
-     * {@link #onItemUse}.
-     */
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand handIn) {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
         if (getCharges(itemstack) > 0) {
-            playerIn.setActiveHand(handIn);
-            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+            playerIn.startUsingItem(handIn);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
         } else {
-            return new ActionResult<>(ActionResultType.FAIL, itemstack);
+            return new InteractionResultHolder<>(InteractionResult.FAIL, itemstack);
         }
     }
 
@@ -84,35 +76,35 @@ public class ItemFlask extends Item {
      * Called when the player finishes using this Item (E.g. finishes eating.). Not called when the player stops using
      * the Item before the action is complete.
      */
-    public ItemStack onItemUseFinish(@Nonnull ItemStack stack, World worldIn, LivingEntity entityLiving) {
+    public ItemStack finishUsingItem(@Nonnull ItemStack stack, Level worldIn, LivingEntity entityLiving) {
         int charges = getCharges(stack);
         if(charges > 0){
-            if (entityLiving instanceof PlayerEntity) {
-                PlayerEntity entityplayer = (PlayerEntity)entityLiving;
-                if (!worldIn.isRemote) {
+            if (entityLiving instanceof Player) {
+                Player entityplayer = (Player)entityLiving;
+                if (!worldIn.isClientSide) {
                     if(hasMilk){
-                        entityplayer.curePotionEffects(new ItemStack(net.minecraft.item.Items.MILK_BUCKET));
+                        entityplayer.curePotionEffects(new ItemStack(net.minecraft.world.item.Items.MILK_BUCKET));
                     }
                     else{
-                        for(EffectInstance potioneffect : PotionUtils.getEffectsFromStack(stack)) {
-                            if (potioneffect.getPotion().isInstant()) {
-                                potioneffect.getPotion().affectEntity(entityplayer, entityplayer, entityLiving, potioneffect.getAmplifier(), 1.0D);
+                        for(MobEffectInstance potioneffect : PotionUtils.getMobEffects(stack)) {
+                            if (potioneffect.getEffect().isInstantenous()) {
+                                potioneffect.getEffect().applyInstantenousEffect(entityplayer, entityplayer, entityLiving, potioneffect.getAmplifier(), 1.0D);
                             } else {
-                                entityLiving.addPotionEffect(new EffectInstance(potioneffect));
+                                entityLiving.addEffect(new MobEffectInstance(potioneffect));
                             }
                         }
                     }
                 }
                 decrementCharges(stack);
 
-                stack.damageItem(1, entityplayer, (playerEntity) -> {
-                    playerEntity.sendBreakAnimation(playerEntity.getActiveHand());
+                stack.hurtAndBreak(1, entityplayer, (playerEntity) -> {
+                    playerEntity.broadcastBreakEvent(playerEntity.getUsedItemHand());
                 });
             }
         }
 
         if(hasMilk && getCharges(stack) <= 0){
-            CompoundNBT tag = stack.getTag();
+            CompoundTag tag = stack.getTag();
             stack = new ItemStack(Items.FLASK);
             stack.setTag(tag);
         }
@@ -121,7 +113,7 @@ public class ItemFlask extends Item {
 
     public static int getCharges(ItemStack itemstack){
         if(itemstack.hasTag()){
-            CompoundNBT tag = itemstack.getTag();
+            CompoundTag tag = itemstack.getTag();
             if(tag.contains("charges")){
                 return tag.getInt("charges");
             }
@@ -130,19 +122,19 @@ public class ItemFlask extends Item {
     }
 
     public static int getMaxCharges(ItemStack itemstack){
-        int cap = EnchantmentHelper.getEnchantmentLevel(xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY, itemstack);
+        int cap = EnchantmentHelper.getItemEnchantmentLevel(xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY, itemstack);
         return baseMaxCharges * (cap + 1);
     }
 
     public static void setCharges(ItemStack itemstack, int charges){
         if(charges >= 0 && charges <= getMaxCharges(itemstack)){
-            CompoundNBT tag = itemstack.getOrCreateTag();
+            CompoundTag tag = itemstack.getOrCreateTag();
             tag.putInt("charges", charges);
         }
     }
 
     private boolean decrementCharges(ItemStack itemstack){
-        CompoundNBT tag = itemstack.getOrCreateTag();
+        CompoundTag tag = itemstack.getOrCreateTag();
         if(tag.contains("charges")){
             int oldCharges = tag.getInt("charges");
             if(oldCharges > 0){
@@ -161,11 +153,11 @@ public class ItemFlask extends Item {
      * different names based on their damage or NBT.
      */
     @Override
-    public String getTranslationKey(ItemStack stack) {
+    public String getDescriptionId(ItemStack stack) {
         if(hasMilk){
-            return this.getTranslationKey();
+            return this.getDescriptionId();
         }
-        return PotionUtils.getPotionFromItem(stack).getNamePrefixed(this.getTranslationKey() + ".effect.");
+        return PotionUtils.getPotion(stack).getName(this.getDescriptionId() + ".effect.");
     }
 
     /**
@@ -173,17 +165,17 @@ public class ItemFlask extends Item {
      */
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        TranslationTextComponent text = new TranslationTextComponent("xercamod.ender_flask_tooltip");
-        tooltip.add(text.mergeStyle(TextFormatting.BLUE));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        TranslatableComponent text = new TranslatableComponent("xercamod.ender_flask_tooltip");
+        tooltip.add(text.withStyle(ChatFormatting.BLUE));
 
         if(hasMilk){
-            tooltip.add(new StringTextComponent("Calcium for your bones").mergeStyle(TextFormatting.YELLOW));
+            tooltip.add(new TextComponent("Calcium for your bones").withStyle(ChatFormatting.YELLOW));
         }
         else{
             PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
         }
-        tooltip.add(new StringTextComponent(getCharges(stack) + " charges").mergeStyle(TextFormatting.YELLOW));
+        tooltip.add(new TextComponent(getCharges(stack) + " charges").withStyle(ChatFormatting.YELLOW));
     }
 
     /**
@@ -195,28 +187,28 @@ public class ItemFlask extends Item {
      */
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean hasEffect(ItemStack stack) {
-        return super.hasEffect(stack);
+    public boolean isFoil(ItemStack stack) {
+        return super.isFoil(stack);
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isEnderFlaskEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 
     @Override
-    public int getItemEnchantability() {
+    public int getEnchantmentValue() {
         return 1;
     }
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment ench)
     {
-        return ench.type == EnchantmentType.BREAKABLE
+        return ench.category == EnchantmentCategory.BREAKABLE
                 || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY
                 || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CHUG;
     }

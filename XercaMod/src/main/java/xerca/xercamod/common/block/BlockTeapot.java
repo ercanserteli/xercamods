@@ -1,28 +1,31 @@
 package xerca.xercamod.common.block;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.SoundEvents;
@@ -35,21 +38,21 @@ import java.util.Random;
 
 public class BlockTeapot extends Block {
     public static final IntegerProperty TEA_AMOUNT = IntegerProperty.create("tea", 0, 7);
-    private static final VoxelShape centerShape = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 10.0D, 12.0D);
-    private static final VoxelShape topShape = Block.makeCuboidShape(7.0D, 10.0D, 7.0D, 9.0D, 11.0D, 9.0D);
-    private static final VoxelShape handleShape = Block.makeCuboidShape(7.0D, 3.0D, 12.0D, 9.0D, 9.0D, 14.0D);
-    private static final VoxelShape tipShape = Block.makeCuboidShape(7.0D, 8.0D, 3.0D, 9.0D, 9.0D, 4.0D);
-    private static final VoxelShape shape = VoxelShapes.or(VoxelShapes.or(VoxelShapes.or(centerShape, topShape), handleShape), tipShape);
+    private static final VoxelShape centerShape = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 10.0D, 12.0D);
+    private static final VoxelShape topShape = Block.box(7.0D, 10.0D, 7.0D, 9.0D, 11.0D, 9.0D);
+    private static final VoxelShape handleShape = Block.box(7.0D, 3.0D, 12.0D, 9.0D, 9.0D, 14.0D);
+    private static final VoxelShape tipShape = Block.box(7.0D, 8.0D, 3.0D, 9.0D, 9.0D, 4.0D);
+    private static final VoxelShape shape = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape), handleShape), tipShape);
 
     public BlockTeapot() {
-        super(Properties.create(Material.CLAY).hardnessAndResistance(0.0F, 1.0F).sound(SoundType.STONE));
-        this.setDefaultState(this.stateContainer.getBaseState().with(TEA_AMOUNT, 0));
+        super(Properties.of(Material.CLAY).strength(0.0F, 1.0F).sound(SoundType.STONE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(TEA_AMOUNT, 0));
         this.setRegistryName("block_teapot");
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random r) {
-        int teaAmount = stateIn.get(TEA_AMOUNT);
+    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random r) {
+        int teaAmount = stateIn.getValue(TEA_AMOUNT);
         if (teaAmount > 0) {
 //            if(worldIn.getGameTime() % (9 - teaAmount) == 0){
             if (r.nextDouble()*5 < ((double)teaAmount)*0.5) {
@@ -65,26 +68,26 @@ public class BlockTeapot extends Block {
 
     // Called when the block is right clicked
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (worldIn.isRemote) return ActionResultType.SUCCESS;
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+        if (worldIn.isClientSide) return InteractionResult.SUCCESS;
 
-        if (player instanceof ServerPlayerEntity)
+        if (player instanceof ServerPlayer)
         {
-            if(player.getHeldItemMainhand().getItem() == Items.ITEM_TEACUP && state.get(TEA_AMOUNT) > 0){
-                worldIn.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.TEA_POUR, SoundCategory.PLAYERS, 1.0F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
+            if(player.getMainHandItem().getItem() == Items.ITEM_TEACUP && state.getValue(TEA_AMOUNT) > 0){
+                worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
 
-                player.getHeldItemMainhand().shrink(1);
-                player.addItemStackToInventory(new ItemStack(Items.ITEM_FULL_TEACUP_0));
+                player.getMainHandItem().shrink(1);
+                player.addItem(new ItemStack(Items.ITEM_FULL_TEACUP_0));
 
-                worldIn.setBlockState(pos, state.with(TEA_AMOUNT, state.get(TEA_AMOUNT) - 1));
+                worldIn.setBlockAndUpdate(pos, state.setValue(TEA_AMOUNT, state.getValue(TEA_AMOUNT) - 1));
             }
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        int teaAmount = state.get(TEA_AMOUNT);
+        int teaAmount = state.getValue(TEA_AMOUNT);
         ItemStack teapotStack;
         if(teaAmount == 0){
             teapotStack = new ItemStack(Items.ITEM_TEAPOT);
@@ -95,28 +98,28 @@ public class BlockTeapot extends Block {
     }
 
     @Override
-    public boolean isValidPosition(BlockState blockState, IWorldReader worldReader, BlockPos blockPos) {
-        return worldReader.getBlockState(blockPos.down()).getMaterial().isSolid();
+    public boolean canSurvive(BlockState blockState, LevelReader worldReader, BlockPos blockPos) {
+        return worldReader.getBlockState(blockPos.below()).getMaterial().isSolid();
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState state1, IWorld world, BlockPos blockPos, BlockPos blockPos1) {
-        return direction == Direction.DOWN && !state.isValidPosition(world, blockPos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(state, direction, state1, world, blockPos, blockPos1);
+    public BlockState updateShape(BlockState state, Direction direction, BlockState state1, LevelAccessor world, BlockPos blockPos, BlockPos blockPos1) {
+        return direction == Direction.DOWN && !state.canSurvive(world, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state1, world, blockPos, blockPos1);
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
         return shape;
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(TEA_AMOUNT);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     public ItemTeapot getItemHotTeapot(int teaAmount){

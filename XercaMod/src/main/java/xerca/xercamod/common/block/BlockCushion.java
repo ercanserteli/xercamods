@@ -1,7 +1,7 @@
 package xerca.xercamod.common.block;
 
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 public class BlockCushion extends Block {
     public int cushionIndex;

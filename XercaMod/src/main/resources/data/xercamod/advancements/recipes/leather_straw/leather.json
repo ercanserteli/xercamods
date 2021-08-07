@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "xercamod:item_block_leather"}
+          {"items": ["xercamod:item_block_leather"]}
         ]
       }
     },

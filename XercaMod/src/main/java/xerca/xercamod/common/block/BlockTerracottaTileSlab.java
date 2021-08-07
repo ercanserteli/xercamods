@@ -1,43 +1,47 @@
 package xerca.xercamod.common.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.SlabType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.ToolType;
 
 public class BlockTerracottaTileSlab extends SlabBlock {
-    public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     protected BlockTerracottaTileSlab(MaterialColor color) {
-        super(Properties.create(Material.ROCK, color).hardnessAndResistance(1.5f).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE));
-        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.EAST));
+        super(Properties.of(Material.STONE, color).strength(1.5f).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.EAST));
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        Direction dir = context.getPlacementHorizontalFacing().getOpposite().rotateY();
-        BlockPos blockpos = context.getPos();
-        BlockState blockstate = context.getWorld().getBlockState(blockpos);
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction dir = context.getHorizontalDirection().getOpposite().getClockWise();
+        BlockPos blockpos = context.getClickedPos();
+        BlockState blockstate = context.getLevel().getBlockState(blockpos);
         if (blockstate.getBlock() == this) {
-            return blockstate.with(TYPE, SlabType.DOUBLE).with(WATERLOGGED, false).with(FACING, dir);
+            return blockstate.setValue(TYPE, SlabType.DOUBLE).setValue(WATERLOGGED, false).setValue(FACING, dir);
         } else {
-            FluidState fluidstate = context.getWorld().getFluidState(blockpos);
-            BlockState blockstate1 = this.getDefaultState().with(TYPE, SlabType.BOTTOM).with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER).with(FACING, dir);
-            Direction direction = context.getFace();
-            return direction != Direction.DOWN && (direction == Direction.UP || !(context.getHitVec().y - (double)blockpos.getY() > 0.5D)) ? blockstate1 : blockstate1.with(TYPE, SlabType.TOP);
+            FluidState fluidstate = context.getLevel().getFluidState(blockpos);
+            BlockState blockstate1 = this.defaultBlockState().setValue(TYPE, SlabType.BOTTOM).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER).setValue(FACING, dir);
+            Direction direction = context.getClickedFace();
+            return direction != Direction.DOWN && (direction == Direction.UP || !(context.getClickLocation().y - (double)blockpos.getY() > 0.5D)) ? blockstate1 : blockstate1.setValue(TYPE, SlabType.TOP);
         }
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, TYPE, WATERLOGGED);
     }
 }

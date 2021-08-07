@@ -91,20 +91,25 @@ public class XercaMusic
     }
 
     private void registerTriggers() {
-        Method method;
-        method = ObfuscationReflectionHelper.findMethod(CriteriaTriggers.class, "register", CriterionTrigger.class);
-        method.setAccessible(true);
+//        Method method;
+//        method = ObfuscationReflectionHelper.findMethod(CriteriaTriggers.class, "register", CriterionTrigger.class);
+//        method.setAccessible(true);
+//
+//        for (int i=0; i < Triggers.TRIGGER_ARRAY.length; i++)
+//        {
+//            try
+//            {
+//                method.invoke(null, Triggers.TRIGGER_ARRAY[i]);
+//            }
+//            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
 
-        for (int i=0; i < Triggers.TRIGGER_ARRAY.length; i++)
+        for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++)
         {
-            try
-            {
-                method.invoke(null, Triggers.TRIGGER_ARRAY[i]);
-            }
-            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-            {
-                e.printStackTrace();
-            }
+            CriteriaTriggers.register(Triggers.TRIGGER_ARRAY[i]);
         }
     }
 

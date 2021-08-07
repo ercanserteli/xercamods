@@ -25,5 +25,6 @@ recipes = [
 ]
 
 
+clean_recipe_jsons("xercamusic")
 # generate_recipe_code_from_files("xercamusic")
 generate_recipe_jsons(recipes, "xercamusic")

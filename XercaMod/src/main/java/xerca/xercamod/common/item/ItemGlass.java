@@ -1,25 +1,25 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import xerca.xercamod.common.Config;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ItemGlass extends Item {
     public ItemGlass() {
-        super((new Item.Properties()).group(ItemGroup.MISC));
+        super((new Item.Properties()).tab(CreativeModeTab.TAB_MISC));
         this.setRegistryName("item_glass");
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isFoodEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 }

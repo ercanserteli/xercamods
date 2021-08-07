@@ -1,57 +1,60 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercamod.common.Config;
-import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.SoundEvents;
+import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.packets.ConfettiParticlePacket;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-
 public class ItemConfetti extends Item {
 
     ItemConfetti() {
-        super(new Item.Properties().group(ItemGroup.MISC));
+        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
         this.setRegistryName("item_confetti");
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
 //        worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.CONFETTI, SoundCategory.PLAYERS, 1.0f, worldIn.rand.nextFloat() * 0.2F + 0.8F);
-        playSound(worldIn, playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ());
-        if(!worldIn.isRemote){
-            Vector3d pos = playerIn.getPositionVec().add(playerIn.getLookVec()).add(0d, 1d, 0d);
+        playSound(worldIn, playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ());
+        if(!worldIn.isClientSide){
+            Vec3 pos = playerIn.position().add(playerIn.getLookAngle()).add(0d, 1d, 0d);
             ConfettiParticlePacket pack = new ConfettiParticlePacket(32, pos.x, pos.y, pos.z);
-            XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, playerIn.world.getDimensionKey())), pack);
+            XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, playerIn.level.dimension())), pack);
         }
 
-        final ItemStack heldItem = playerIn.getHeldItem(hand);
+        final ItemStack heldItem = playerIn.getItemInHand(hand);
         if (!playerIn.isCreative()) {
             heldItem.shrink(1);
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
-    static public void playSound(World world, @Nullable PlayerEntity player, double x, double y, double z){
-        world.playSound(player, x, y, z, SoundEvents.CONFETTI, SoundCategory.PLAYERS, 1.0f, world.rand.nextFloat() * 0.2F + 0.8F);
+    static public void playSound(Level world, @Nullable Player player, double x, double y, double z){
+        world.playSound(player, x, y, z, SoundEvents.CONFETTI, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.8F);
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isConfettiEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 }

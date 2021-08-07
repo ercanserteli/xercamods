@@ -1,12 +1,12 @@
 package xerca.xercamod.common.enchantments;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 public abstract class EnchantmentWithConfig extends Enchantment {
-    protected EnchantmentWithConfig(Rarity rarityIn, EnchantmentType typeIn, EquipmentSlotType[] slots) {
+    protected EnchantmentWithConfig(Rarity rarityIn, EnchantmentCategory typeIn, EquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);
     }
 
@@ -20,21 +20,21 @@ public abstract class EnchantmentWithConfig extends Enchantment {
     }
 
     @Override
-    public boolean canApply(ItemStack stack) {
+    public boolean canEnchant(ItemStack stack) {
         return this.canApplyAtEnchantingTable(stack);
     }
 
     /**
      * Checks if the enchantment can be sold by villagers in their trades.
      */
-    public boolean canVillagerTrade() {
+    public boolean isTradeable() {
         return isConfigEnabled();
     }
 
     /**
      * Checks if the enchantment can be applied to loot table drops.
      */
-    public boolean canGenerateInLoot() {
+    public boolean isDiscoverable() {
         return isConfigEnabled();
     }
 

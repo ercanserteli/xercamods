@@ -1,18 +1,18 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.Triggers;
 import xerca.xercamod.common.XercaMod;
@@ -30,7 +30,7 @@ public class HammerQuakePacketHandler {
             return;
         }
 
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when HammerQuakePacket was received");
             return;
@@ -53,21 +53,21 @@ public class HammerQuakePacketHandler {
         }
     }
 
-    private static void processMessage(HammerQuakePacket msg, ServerPlayerEntity pl) {
-        ItemStack st = pl.getHeldItemMainhand();
+    private static void processMessage(HammerQuakePacket msg, ServerPlayer pl) {
+        ItemStack st = pl.getMainHandItem();
         Item item = st.getItem();
         if (item instanceof ItemWarhammer){
-            int quakeLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_QUAKE, st);
+            int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_QUAKE, st);
             if(quakeLevel > 0){
                 double range = rangeForQuake(quakeLevel);
-                List<LivingEntity> targets = pl.world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pl.getPositionVec().subtract(5, 5, 5), pl.getPositionVec().add(5, 5, 5)), entity -> (!entity.isEntityEqual(pl) && entity.getPositionVec().squareDistanceTo(msg.getPosition()) < range));
+                List<LivingEntity> targets = pl.level.getEntitiesOfClass(LivingEntity.class, new AABB(pl.position().subtract(5, 5, 5), pl.position().add(5, 5, 5)), entity -> (!entity.is(pl) && entity.position().distanceToSqr(msg.getPosition()) < range));
                 if(targets.size() >= 6){
                     Triggers.QUAKE.trigger(pl);
                 }
 
                 float pull = msg.getPullDuration();
                 float mult = HammerAttackPacketHandler.damageBonusMult(pull);
-                int heavyLevel = EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_HEAVY, st);
+                int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_HEAVY, st);
                 float damage = ((float) pl.getAttribute(Attributes.ATTACK_DAMAGE).getValue() + heavyLevel * 0.5f) * mult * 0.5f;
                 float push = (((ItemWarhammer) item).getPushAmount() + heavyLevel * 0.15f)  * mult;
 
@@ -75,18 +75,18 @@ public class HammerQuakePacketHandler {
                 double volume = Math.log10(10.0*pull + 1.0);
                 if(volume > 1.0) volume = 1.0;
 
-                Vector3d pos = msg.getPosition();
+                Vec3 pos = msg.getPosition();
                 for(LivingEntity target : targets){
-                    Vector3d knockvec = target.getPositionVec().subtract(pos).normalize().scale(push);
-                    target.addVelocity(knockvec.x, knockvec.y, knockvec.z);
-                    target.attackEntityFrom(DamageSource.causePlayerDamage(pl), damage);
+                    Vec3 knockvec = target.position().subtract(pos).normalize().scale(push);
+                    target.push(knockvec.x, knockvec.y, knockvec.z);
+                    target.hurt(DamageSource.playerAttack(pl), damage);
                 }
-                st.damageItem(1, pl, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
-                pl.world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.STOMP, SoundCategory.PLAYERS, (float) volume, pl.world.rand.nextFloat() * 0.1F + 0.4F + pitch);
+                st.hurtAndBreak(1, pl, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+                pl.level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.STOMP, SoundSource.PLAYERS, (float) volume, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);
 
                 int particleCount = (int) (volume*64);
                 QuakeParticlePacket pack = new QuakeParticlePacket(particleCount, pos.x, pos.y, pos.z);
-                XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, pl.getServerWorld().getDimensionKey())), pack);
+                XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, pl.getLevel().dimension())), pack);
 
             }
             else{

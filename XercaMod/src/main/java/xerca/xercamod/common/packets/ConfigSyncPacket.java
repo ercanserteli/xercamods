@@ -1,6 +1,6 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ConfigSyncPacket {
     private boolean messageIsValid;
@@ -48,7 +48,7 @@ public class ConfigSyncPacket {
         messageIsValid = false;
     }
 
-    public static ConfigSyncPacket decode(PacketBuffer buf) {
+    public static ConfigSyncPacket decode(FriendlyByteBuf buf) {
         ConfigSyncPacket result = new ConfigSyncPacket();
         try {
             result.grabHook = buf.readBoolean();
@@ -75,7 +75,7 @@ public class ConfigSyncPacket {
         return result;
     }
 
-    public static void encode(ConfigSyncPacket pkt, PacketBuffer buf) {
+    public static void encode(ConfigSyncPacket pkt, FriendlyByteBuf buf) {
         buf.writeBoolean(pkt.grabHook);
         buf.writeBoolean(pkt.warhammer);
         buf.writeBoolean(pkt.cushion);

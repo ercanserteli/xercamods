@@ -1,25 +1,23 @@
 package xerca.xercamod.common.item;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.lwjgl.system.NonnullDefault;
 
-@MethodsReturnNonnullByDefault
 @NonnullDefault
 
 public class ItemContainedFood extends Item {
     private Item container;
     public ItemContainedFood(Properties properties, Item container) {
-        super(properties.maxStackSize(1));
+        super(properties.stacksTo(1));
         this.container = container;
     }
 
     @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-        super.onItemUseFinish(stack, worldIn, entityLiving);
+    public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
+        super.finishUsingItem(stack, worldIn, entityLiving);
         return new ItemStack(container);
     }
 }

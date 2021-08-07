@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "minecraft:cooked_cod"}
+          {"items": ["minecraft:cooked_cod"]}
         ]
       }
     },

@@ -1,31 +1,30 @@
 package xerca.xercamod.common.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CampfireCookingRecipe;
-import net.minecraft.item.crafting.CookingRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CampfireCookingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCookingSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.function.Supplier;
 
 public class RecipeConditionCampfire extends CampfireCookingRecipe {
     private final Supplier<Boolean> condition;
-    private IRecipeSerializer serializer;
+    private RecipeSerializer serializer;
 
     public RecipeConditionCampfire(ResourceLocation idIn, String groupIn, Ingredient ingredientIn, ItemStack resultIn, float experienceIn, int cookTimeIn, Supplier<Boolean> condition) {
         super(idIn, groupIn, ingredientIn, resultIn, experienceIn, cookTimeIn);
         this.condition = condition;
     }
 
-    public RecipeConditionCampfire(CampfireCookingRecipe CampfireCookingRecipe, Supplier<Boolean> condition, IRecipeSerializer serializer){
-        super(CampfireCookingRecipe.getId(), CampfireCookingRecipe.getGroup(), CampfireCookingRecipe.getIngredients().get(0), CampfireCookingRecipe.getRecipeOutput(), CampfireCookingRecipe.getExperience(), CampfireCookingRecipe.getCookTime());
+    public RecipeConditionCampfire(CampfireCookingRecipe CampfireCookingRecipe, Supplier<Boolean> condition, RecipeSerializer serializer){
+        super(CampfireCookingRecipe.getId(), CampfireCookingRecipe.getGroup(), CampfireCookingRecipe.getIngredients().get(0), CampfireCookingRecipe.getResultItem(), CampfireCookingRecipe.getExperience(), CampfireCookingRecipe.getCookingTime());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -34,7 +33,7 @@ public class RecipeConditionCampfire extends CampfireCookingRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(Container inv, Level worldIn) {
         if(!condition.get()){
             return false;
         }
@@ -45,42 +44,42 @@ public class RecipeConditionCampfire extends CampfireCookingRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack assemble(Container inv) {
         if(!condition.get()){
             return ItemStack.EMPTY;
         }
-        return super.getCraftingResult(inv);
+        return super.assemble(inv);
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return serializer;
     }
 
-    public void setSerializer(IRecipeSerializer<?> serializer) {
+    public void setSerializer(RecipeSerializer<?> serializer) {
         this.serializer = serializer;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecipeConditionCampfire> {
-        private static final CookingRecipeSerializer<CampfireCookingRecipe> furnaceSerializer = IRecipeSerializer.CAMPFIRE_COOKING;
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeConditionCampfire> {
+        private static final SimpleCookingSerializer<CampfireCookingRecipe> furnaceSerializer = RecipeSerializer.CAMPFIRE_COOKING_RECIPE;
         private final Supplier<Boolean> condition;
 
         public Serializer(Supplier<Boolean> condition){
             this.condition = condition;
         }
 
-        public RecipeConditionCampfire read(ResourceLocation recipeId, JsonObject json) {
-            CampfireCookingRecipe CampfireCookingRecipe = furnaceSerializer.read(recipeId, json);
+        public RecipeConditionCampfire fromJson(ResourceLocation recipeId, JsonObject json) {
+            CampfireCookingRecipe CampfireCookingRecipe = furnaceSerializer.fromJson(recipeId, json);
             return new RecipeConditionCampfire(CampfireCookingRecipe, condition, this);
         }
 
-        public RecipeConditionCampfire read(ResourceLocation recipeId, PacketBuffer buffer) {
-            CampfireCookingRecipe CampfireCookingRecipe = furnaceSerializer.read(recipeId, buffer);
+        public RecipeConditionCampfire fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            CampfireCookingRecipe CampfireCookingRecipe = furnaceSerializer.fromNetwork(recipeId, buffer);
             return new RecipeConditionCampfire(CampfireCookingRecipe, condition, this);
         }
 
-        public void write(PacketBuffer buffer, RecipeConditionCampfire recipe) {
-            furnaceSerializer.write(buffer, recipe);
+        public void toNetwork(FriendlyByteBuf buffer, RecipeConditionCampfire recipe) {
+            furnaceSerializer.toNetwork(buffer, recipe);
         }
 
 

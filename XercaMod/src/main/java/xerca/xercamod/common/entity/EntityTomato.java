@@ -1,73 +1,73 @@
 package xerca.xercamod.common.entity;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
 
-public class EntityTomato extends ProjectileItemEntity {
+public class EntityTomato extends ThrowableItemProjectile {
 
-    public EntityTomato(EntityType<? extends EntityTomato> type, World world) {
+    public EntityTomato(EntityType<? extends EntityTomato> type, Level world) {
         super(type, world);
     }
 
-    public EntityTomato(World worldIn, LivingEntity throwerIn) {
+    public EntityTomato(Level worldIn, LivingEntity throwerIn) {
         super(Entities.TOMATO, throwerIn, worldIn);
     }
 
-    public EntityTomato(World worldIn, double x, double y, double z) {
+    public EntityTomato(Level worldIn, double x, double y, double z) {
         super(Entities.TOMATO, x, y, z, worldIn);
     }
 
-    public EntityTomato(World worldIn) {
+    public EntityTomato(Level worldIn) {
         super(Entities.TOMATO, worldIn);
     }
 
-    public EntityTomato(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+    public EntityTomato(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
         this(world);
     }
 
     @Override
-    protected void onImpact(RayTraceResult result) {
-        if (result.getType() == RayTraceResult.Type.ENTITY) {
-            EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult) result;
-            entityRayTraceResult.getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), 1f);
+    protected void onHit(HitResult result) {
+        if (result.getType() == HitResult.Type.ENTITY) {
+            EntityHitResult entityRayTraceResult = (EntityHitResult) result;
+            entityRayTraceResult.getEntity().hurt(DamageSource.thrown(this, this.getOwner()), 1f);
         }
 
-        if (!this.world.isRemote) {
-            this.world.setEntityState(this, (byte)3);
-            world.playSound(null, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, SoundEvents.TOMATO_SPLASH, SoundCategory.PLAYERS, 1.0f, this.rand.nextFloat() * 0.2F + 0.9F);
-            this.remove();
+        if (!this.level.isClientSide) {
+            this.level.broadcastEntityEvent(this, (byte)3);
+            level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, SoundEvents.TOMATO_SPLASH, SoundSource.PLAYERS, 1.0f, this.random.nextFloat() * 0.2F + 0.9F);
+            this.remove(RemovalReason.DISCARDED);
         }
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
 
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id)
+    public void handleEntityEvent(byte id)
     {
         if (id == 3)
         {
             for (int j = 0; j < 8; ++j) {
-                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO)), this.getPosX(), this.getPosY(), this.getPosZ(), ((double) this.rand.nextFloat() - 0.5D) * 0.28D, ((double) this.rand.nextFloat() - 0.3D) * 0.28D, ((double) this.rand.nextFloat() - 0.5D) * 0.28D);
+                this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO)), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.28D, ((double) this.random.nextFloat() - 0.3D) * 0.28D, ((double) this.random.nextFloat() - 0.5D) * 0.28D);
             }
         }
     }
@@ -84,7 +84,7 @@ public class EntityTomato extends ProjectileItemEntity {
     }
 
     @Override
-    public IPacket<?> createSpawnPacket()
+    public Packet<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

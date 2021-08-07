@@ -1,6 +1,6 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class HammerAttackPacket {
     private float pullDuration;
@@ -16,7 +16,7 @@ public class HammerAttackPacket {
         this.messageIsValid = false;
     }
 
-    public static HammerAttackPacket decode(PacketBuffer buf) {
+    public static HammerAttackPacket decode(FriendlyByteBuf buf) {
         HammerAttackPacket result = new HammerAttackPacket();
         try {
             result.pullDuration = buf.readFloat();
@@ -29,7 +29,7 @@ public class HammerAttackPacket {
         return result;
     }
 
-    public static void encode(HammerAttackPacket pkt, PacketBuffer buf) {
+    public static void encode(HammerAttackPacket pkt, FriendlyByteBuf buf) {
         buf.writeFloat(pkt.getPullDuration());
         buf.writeInt(pkt.getTargetId());
     }

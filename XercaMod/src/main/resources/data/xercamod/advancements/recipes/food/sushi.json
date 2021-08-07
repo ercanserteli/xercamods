@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "xercamod:cooked_rice"}
+          {"items": ["xercamod:cooked_rice"]}
         ]
       }
     },

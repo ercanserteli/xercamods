@@ -1,19 +1,19 @@
 package xerca.xercamod.common.crafting;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.MilkBucketItem;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MilkBucketItem;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemFlask;
 import xerca.xercamod.common.item.Items;
 
-public class RecipeFlaskMilkFilling extends SpecialRecipe {
+public class RecipeFlaskMilkFilling extends CustomRecipe {
     public RecipeFlaskMilkFilling(ResourceLocation resourceLocation) {
         super(resourceLocation);
     }
@@ -22,7 +22,7 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         if(!Config.isEnderFlaskEnabled()){
             return false;
         }
@@ -30,15 +30,15 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
         int i = 0;
         ItemStack flaskStack = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getSizeInventory(); ++j) {
-            ItemStack itemstack = inv.getStackInSlot(j);
+        for(int j = 0; j < inv.getContainerSize(); ++j) {
+            ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemFlask) {
                     if (!flaskStack.isEmpty()) {
                         return false;
                     }
                     flaskStack = itemstack;
-                    if(!PotionUtils.getPotionFromItem(flaskStack).equals(Potions.EMPTY)){
+                    if(!PotionUtils.getPotion(flaskStack).equals(Potions.EMPTY)){
                         return false;
                     }
                 } else {
@@ -58,7 +58,7 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         if(!Config.isEnderFlaskEnabled()){
             return ItemStack.EMPTY;
         }
@@ -66,15 +66,15 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
         int i = 0;
         ItemStack flaskStack = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getSizeInventory(); ++j) {
-            ItemStack itemstack = inv.getStackInSlot(j);
+        for(int j = 0; j < inv.getContainerSize(); ++j) {
+            ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemFlask) {
                     if (!flaskStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
                     flaskStack = itemstack;
-                    if(!PotionUtils.getPotionFromItem(flaskStack).equals(Potions.EMPTY)){
+                    if(!PotionUtils.getPotion(flaskStack).equals(Potions.EMPTY)){
                         return ItemStack.EMPTY;
                     }
                 } else {
@@ -97,7 +97,7 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
         }
     }
 
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_FLASK_MILK_FILLING;
     }
 
@@ -105,7 +105,7 @@ public class RecipeFlaskMilkFilling extends SpecialRecipe {
     /**
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 3 && height >= 3;
     }
 }

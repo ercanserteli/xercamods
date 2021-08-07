@@ -1,23 +1,23 @@
 package xerca.xercamod.common.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import xerca.xercamod.common.block.BlockCushion;
 import xerca.xercamod.common.item.ItemCushion;
 
@@ -32,53 +32,53 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     static ItemCushion[] itemCushions;
 
 
-    public EntityCushion(EntityType<? extends EntityCushion> type, World world) {
+    public EntityCushion(EntityType<? extends EntityCushion> type, Level world) {
         super(type, world);
     }
 
-    public EntityCushion(World worldIn) {
+    public EntityCushion(Level worldIn) {
         super(Entities.CUSHION, worldIn);
         this.setNoGravity(false);
     }
-    public EntityCushion(World worldIn, double x, double y, double z, ItemCushion item) {
+    public EntityCushion(Level worldIn, double x, double y, double z, ItemCushion item) {
         this(worldIn);
-        this.setPosition(x, y, z);
+        this.setPos(x, y, z);
         this.item = item;
         this.block = item.getBlock();
         this.cushionIndex = block.cushionIndex;
     }
 
-    public EntityCushion(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+    public EntityCushion(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
         this(world);
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
 
     }
 
     @Override
     public void tick(){
         super.tick();
-        move(MoverType.SELF, new Vector3d(0, -0.16, 0));
-        setBoundingBox(new AxisAlignedBB(getPosX() - 0.5, getPosY(), getPosZ() - 0.5, getPosX() + 0.5, getPosY() + getHeight(), getPosZ() + 0.5));
+        move(MoverType.SELF, new Vec3(0, -0.16, 0));
+        setBoundingBox(new AABB(getX() - 0.5, getY(), getZ() - 0.5, getX() + 0.5, getY() + getBbHeight(), getZ() + 0.5));
     }
 
 
     @Override
-    public boolean hitByEntity(Entity entityIn) {
-        return entityIn instanceof PlayerEntity && this.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) entityIn), 0.0F);
+    public boolean skipAttackInteraction(Entity entityIn) {
+        return entityIn instanceof Player && this.hurt(DamageSource.playerAttack((Player) entityIn), 0.0F);
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if (!this.removed && !this.world.isRemote) {
-                this.remove();
-                this.markVelocityChanged();
-                this.onBroken(source.getTrueSource());
+            if (!this.isRemoved() && !this.level.isClientSide) {
+                this.remove(RemovalReason.DISCARDED);
+                this.markHurt();
+                this.onBroken(source.getEntity());
             }
 
             return true;
@@ -86,86 +86,86 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public void onBroken(@Nullable Entity brokenEntity) {
-        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            this.playSound(SoundEvents.BLOCK_WOOL_BREAK, 1.0F, 1.0F);
-            if (brokenEntity instanceof PlayerEntity) {
-                PlayerEntity entityplayer = (PlayerEntity)brokenEntity;
-                if (entityplayer.abilities.isCreativeMode) {
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.playSound(SoundEvents.WOOL_BREAK, 1.0F, 1.0F);
+            if (brokenEntity instanceof Player) {
+                Player entityplayer = (Player)brokenEntity;
+                if (entityplayer.getAbilities().instabuild) {
                     return;
                 }
             }
 
-            this.entityDropItem(item);
+            this.spawnAtLocation(item);
         }
     }
     /**
      * Returns true if this entity should push and be pushed by other entities when colliding.
      */
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return true;
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         cushionIndex = compound.getInt("cushion");
         this.block = blockCushions[cushionIndex];
         this.item = itemCushions[cushionIndex];
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         compound.putInt("cushion", cushionIndex);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt(cushionIndex);
     }
 
     @Override
-    public void readSpawnData(PacketBuffer buffer) {
+    public void readSpawnData(FriendlyByteBuf buffer) {
         this.cushionIndex = buffer.readInt();
         this.block = blockCushions[cushionIndex];
         this.item = itemCushions[cushionIndex];
     }
 
     @Override
-    public double getMountedYOffset() {
+    public double getPassengersRidingOffset() {
         return -0.125;
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return true;
     }
     /**
      * Applies the given player interaction to this Entity.
      */
     @Override
-    public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
-        if (!this.world.isRemote) {
+    public InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
+        if (!this.level.isClientSide) {
             player.startRiding(this);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         if (player.isSteppingCarefully()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         } else {
-            if (!this.world.isRemote) {
-                if(!this.isBeingRidden()) {
+            if (!this.level.isClientSide) {
+                if(!this.isVehicle()) {
                     player.startRiding(this);
                 }
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
     }
 }

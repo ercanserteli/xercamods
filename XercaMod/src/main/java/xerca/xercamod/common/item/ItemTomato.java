@@ -1,11 +1,16 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.entity.EntityTomato;
 
@@ -14,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ItemTomato extends Item {
     public ItemTomato() {
-        super(new Item.Properties().group(ItemGroup.MISC));
+        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
         this.setRegistryName("item_tomato");
     }
 
@@ -23,28 +28,28 @@ public class ItemTomato extends Item {
      */
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        final ItemStack heldItem = playerIn.getHeldItem(hand);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+        final ItemStack heldItem = playerIn.getItemInHand(hand);
         if (!playerIn.isCreative()) {
             heldItem.shrink(1);
         }
 
-        worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.ENTITY_SNOWBALL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (worldIn.rand.nextFloat() * 0.4F + 0.8F));
+        worldIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (worldIn.random.nextFloat() * 0.4F + 0.8F));
 
-        if (!worldIn.isRemote) {
+        if (!worldIn.isClientSide) {
             EntityTomato entitytomato = new EntityTomato(worldIn, playerIn);
-            entitytomato.func_234612_a_(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
-            worldIn.addEntity(entitytomato);
+            entitytomato.shootFromRotation(playerIn, playerIn.getXRot(), playerIn.getYRot(), 0.0F, 1.5F, 1.0F);
+            worldIn.addFreshEntity(entitytomato);
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, heldItem);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isFoodEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 }

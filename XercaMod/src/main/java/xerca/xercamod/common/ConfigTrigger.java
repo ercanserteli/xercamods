@@ -1,15 +1,11 @@
 package xerca.xercamod.common;
 
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
-import net.minecraft.advancements.criterion.CriterionInstance;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.loot.ConditionArraySerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
-public class ConfigTrigger extends AbstractCriterionTrigger<ConfigTrigger.Instance> {
+public class ConfigTrigger extends SimpleCriterionTrigger<ConfigTrigger.Instance> {
     private static final ResourceLocation ID = new ResourceLocation(XercaMod.MODID, "config_check");
 
     public ResourceLocation getId() {
@@ -17,28 +13,28 @@ public class ConfigTrigger extends AbstractCriterionTrigger<ConfigTrigger.Instan
     }
 
     @Override
-    protected Instance deserializeTrigger(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser) {
+    protected Instance createInstance(JsonObject json, EntityPredicate.Composite entityPredicate, DeserializationContext conditionsParser) {
         return new ConfigTrigger.Instance(entityPredicate, ConfigPredicate.deserialize(json));
     }
 
-    public void test(ServerPlayerEntity player) {
+    public void test(ServerPlayer player) {
         this.trigger(player);
     }
 
-    private void trigger(ServerPlayerEntity player) {
-        this.triggerListeners(player, Instance::test);
+    private void trigger(ServerPlayer player) {
+        this.trigger(player, Instance::test);
     }
 
-    public static class Instance extends CriterionInstance {
+    public static class Instance extends AbstractCriterionTriggerInstance {
         private final ConfigPredicate predicate;
 
-        public Instance(EntityPredicate.AndPredicate player, ConfigPredicate predicate) {
+        public Instance(EntityPredicate.Composite player, ConfigPredicate predicate) {
             super(ConfigTrigger.ID, player);
             this.predicate = predicate;
         }
 
-        public JsonObject serialize(ConditionArraySerializer conditions) {
-            JsonObject jsonobject = super.serialize(conditions);
+        public JsonObject serializeToJson(SerializationContext conditions) {
+            JsonObject jsonobject = super.serializeToJson(conditions);
             jsonobject.add("pred", predicate.serialize());
             return jsonobject;
         }

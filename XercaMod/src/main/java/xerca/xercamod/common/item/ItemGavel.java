@@ -1,15 +1,15 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.SoundEvents;
 
@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemGavel extends Item {
 
     public ItemGavel() {
-        super(new Item.Properties().group(ItemGroup.TOOLS));
+        super(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS));
         this.setRegistryName("item_gavel");
     }
 
@@ -26,23 +26,23 @@ public class ItemGavel extends Item {
      * Called when a Block is right-clicked with this Item
      */
     @Override
-    public ActionResultType onItemUse(ItemUseContext useContext) {
-        World worldIn = useContext.getWorld();
-        BlockPos pos = useContext.getPos();
-        PlayerEntity playerIn = useContext.getPlayer();
+    public InteractionResult useOn(UseOnContext useContext) {
+        Level worldIn = useContext.getLevel();
+        BlockPos pos = useContext.getClickedPos();
+        Player playerIn = useContext.getPlayer();
 
-        if (worldIn.getBlockState(pos).isSolid()) {
-            worldIn.playSound(playerIn, pos, SoundEvents.GAVEL, SoundCategory.PLAYERS, 1.0F, worldIn.rand.nextFloat() * 0.2F + 0.8F);
+        if (worldIn.getBlockState(pos).canOcclude()) {
+            worldIn.playSound(playerIn, pos, SoundEvents.GAVEL, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.2F + 0.8F);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isCourtroomEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 }

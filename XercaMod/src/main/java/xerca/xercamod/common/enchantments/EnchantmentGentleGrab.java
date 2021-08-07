@@ -1,14 +1,14 @@
 package xerca.xercamod.common.enchantments;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemGrabHook;
 
 public class EnchantmentGentleGrab extends EnchantmentWithConfig {
-    public EnchantmentGentleGrab(Rarity rarityIn, EquipmentSlotType... slots) {
-        super(rarityIn, EnchantmentType.WEAPON, slots);
+    public EnchantmentGentleGrab(Rarity rarityIn, EquipmentSlot... slots) {
+        super(rarityIn, EnchantmentCategory.WEAPON, slots);
         this.setRegistryName("enchantment_gentle_grab");
     }
 
@@ -16,7 +16,7 @@ public class EnchantmentGentleGrab extends EnchantmentWithConfig {
      * Returns the minimal value of enchantability needed on the enchantment level passed.
      */
     @Override
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return  18;
     }
 
@@ -24,7 +24,7 @@ public class EnchantmentGentleGrab extends EnchantmentWithConfig {
      * Returns the maximum value of enchantability nedded on the enchantment level passed.
      */
     @Override
-    public int getMaxEnchantability(int enchantmentLevel) {
+    public int getMaxCost(int enchantmentLevel) {
         return 50;
     }
 

@@ -1,6 +1,6 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ParticlePacket {
     protected int count;
@@ -20,14 +20,14 @@ public class ParticlePacket {
         this.messageIsValid = false;
     }
 
-    public void read(PacketBuffer buf) {
+    public void read(FriendlyByteBuf buf) {
         posX = buf.readDouble();
         posY = buf.readDouble();
         posZ = buf.readDouble();
         count = buf.readInt();
     }
 
-    public void write(PacketBuffer buf) {
+    public void write(FriendlyByteBuf buf) {
         buf.writeDouble(getPosX());
         buf.writeDouble(getPosY());
         buf.writeDouble(getPosZ());

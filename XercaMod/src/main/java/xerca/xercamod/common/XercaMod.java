@@ -1,39 +1,36 @@
 package xerca.xercamod.common;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.ICriterionTrigger;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.IPosition;
-import net.minecraft.dispenser.ProjectileDispenseBehavior;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.core.Position;
+import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xerca.xercamod.client.ClientProxy;
 import xerca.xercamod.common.entity.EntityConfettiBall;
 import xerca.xercamod.common.entity.EntityTomato;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.packets.*;
-import xerca.xercamod.server.ServerProxy;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
@@ -45,8 +42,6 @@ import java.util.stream.Collectors;
 public class XercaMod {
     public static final String MODID = "xercamod";
     public static final String NAME = "Xerca Mod";
-
-    public static Proxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
@@ -89,46 +84,50 @@ public class XercaMod {
         registerTriggers();
 
         // Making confetti ball dispensable by dispenser
-        DispenserBlock.registerDispenseBehavior(Items.ITEM_CONFETTI_BALL, new ProjectileDispenseBehavior()
+        DispenserBlock.registerBehavior(Items.ITEM_CONFETTI_BALL, new AbstractProjectileDispenseBehavior()
         {
             @Nonnull
-            protected ProjectileEntity getProjectileEntity(@Nonnull World worldIn, @Nonnull IPosition position, @Nonnull ItemStack stackIn)
+            protected Projectile getProjectile(@Nonnull Level worldIn, @Nonnull Position position, @Nonnull ItemStack stackIn)
             {
-                return new EntityConfettiBall(worldIn, position.getX(), position.getY(), position.getZ());
+                return new EntityConfettiBall(worldIn, position.x(), position.y(), position.z());
             }
         });
         // Making tomato dispensable by dispenser
-        DispenserBlock.registerDispenseBehavior(Items.ITEM_TOMATO, new ProjectileDispenseBehavior()
+        DispenserBlock.registerBehavior(Items.ITEM_TOMATO, new AbstractProjectileDispenseBehavior()
         {
             @Nonnull
-            protected ProjectileEntity getProjectileEntity(@Nonnull World worldIn, @Nonnull IPosition position, @Nonnull ItemStack stackIn)
+            protected Projectile getProjectile(@Nonnull Level worldIn, @Nonnull Position position, @Nonnull ItemStack stackIn)
             {
-                return new EntityTomato(worldIn, position.getX(), position.getY(), position.getZ());
+                return new EntityTomato(worldIn, position.x(), position.y(), position.z());
             }
         });
 
         // Making confetti dispensable by dispenser
-        DispenserBlock.registerDispenseBehavior(Items.ITEM_CONFETTI, new ConfettiDispenseItemBehavior());
+        DispenserBlock.registerBehavior(Items.ITEM_CONFETTI, new ConfettiDispenseItemBehavior());
 
         Items.registerCompostables();
         DecoCreativeTab.initItemList();
     }
 
     private void registerTriggers() {
-        Method method;
-        method = ObfuscationReflectionHelper.findMethod(CriteriaTriggers.class, "func_192118_a", ICriterionTrigger.class);
-        method.setAccessible(true);
-
+//        Method method;
+//        method = ObfuscationReflectionHelper.findMethod(CriteriaTriggers.class, "register", CriterionTrigger.class);
+//        method.setAccessible(true);
+//
+//        for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++)
+//        {
+//            try
+//            {
+//                method.invoke(null, Triggers.TRIGGER_ARRAY[i]);
+//            }
+//            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
         for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++)
         {
-            try
-            {
-                method.invoke(null, Triggers.TRIGGER_ARRAY[i]);
-            }
-            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-            {
-                e.printStackTrace();
-            }
+            CriteriaTriggers.register(Triggers.TRIGGER_ARRAY[i]);
         }
 
         CriteriaTriggers.register(Triggers.CONFIG_CHECK);

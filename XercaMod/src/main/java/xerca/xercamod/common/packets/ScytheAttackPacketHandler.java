@@ -1,17 +1,17 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.Triggers;
 import xerca.xercamod.common.XercaMod;
@@ -28,7 +28,7 @@ public class ScytheAttackPacketHandler {
             return;
         }
 
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when ScytheAttackPacket was received");
             return;
@@ -38,36 +38,36 @@ public class ScytheAttackPacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void processMessage(ScytheAttackPacket msg, ServerPlayerEntity pl) {
-        ItemStack st = pl.getHeldItemMainhand();
+    private static void processMessage(ScytheAttackPacket msg, ServerPlayer pl) {
+        ItemStack st = pl.getMainHandItem();
         Item item = st.getItem();
-        if (item instanceof ItemScythe && EnchantmentHelper.getEnchantmentLevel(Items.ENCHANTMENT_GUILLOTINE, st) > 0){
+        if (item instanceof ItemScythe && EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_GUILLOTINE, st) > 0){
             float pull = msg.getPullDuration();
             if(pull < 0.9f){
                 XercaMod.LOGGER.warn("Pull duration too short");
                 return;
             }
-            Entity target = pl.world.getEntityByID(msg.getTargetId());
+            Entity target = pl.level.getEntity(msg.getTargetId());
             float damage = ((float) pl.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * 1.3f);
 
-            st.damageItem(1, pl, (p) -> p.sendBreakAnimation(Hand.MAIN_HAND));
+            st.hurtAndBreak(1, pl, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
             if(target instanceof LivingEntity){
                 LivingEntity targetLiving = (LivingEntity) target;
-                float enchantBonus = EnchantmentHelper.getModifierForCreature(st, targetLiving.getCreatureAttribute());
+                float enchantBonus = EnchantmentHelper.getDamageBonus(st, targetLiving.getMobType());
                 damage += enchantBonus;
-                targetLiving.attackEntityFrom(DamageSource.causePlayerDamage(pl), damage);
+                targetLiving.hurt(DamageSource.playerAttack(pl), damage);
 
                 if(targetLiving.getHealth() <= 0){
-                    pl.world.playSound(null, target.getPosX(), target.getPosY() + 0.5d, target.getPosZ(), SoundEvents.BEHEAD, SoundCategory.PLAYERS, 1.0f, pl.world.rand.nextFloat() * 0.2F + 0.9f);
+                    pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.BEHEAD, SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.2F + 0.9f);
 
-                    BeheadParticlePacket pack = new BeheadParticlePacket(96, targetLiving.getPosX(), targetLiving.getPosY(), targetLiving.getPosZ());
-                    XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(targetLiving.getPosX(), targetLiving.getPosY(), targetLiving.getPosZ(), 64.0D, pl.getServerWorld().getDimensionKey())), pack);
+                    BeheadParticlePacket pack = new BeheadParticlePacket(96, targetLiving.getX(), targetLiving.getY(), targetLiving.getZ());
+                    XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(targetLiving.getX(), targetLiving.getY(), targetLiving.getZ(), 64.0D, pl.getLevel().dimension())), pack);
 
                     ItemScythe.spawnHead(targetLiving);
                     Triggers.BEHEAD.trigger(pl);
                 }
                 else{
-                    pl.world.playSound(null, target.getPosX(), target.getPosY() + 0.5d, target.getPosZ(), net.minecraft.util.SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0f, pl.world.rand.nextFloat() * 0.2F + 0.9f);
+                    pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.2F + 0.9f);
                 }
             }
         }else{

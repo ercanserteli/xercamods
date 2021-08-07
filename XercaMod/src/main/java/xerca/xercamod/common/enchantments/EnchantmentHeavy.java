@@ -1,15 +1,15 @@
 package xerca.xercamod.common.enchantments;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemWarhammer;
 
 public class EnchantmentHeavy extends EnchantmentWithConfig {
-    public EnchantmentHeavy(Rarity rarityIn, EquipmentSlotType... slots) {
-        super(rarityIn, EnchantmentType.WEAPON, slots);
+    public EnchantmentHeavy(Rarity rarityIn, EquipmentSlot... slots) {
+        super(rarityIn, EnchantmentCategory.WEAPON, slots);
         this.setRegistryName("enchantment_heavy");
     }
 
@@ -17,7 +17,7 @@ public class EnchantmentHeavy extends EnchantmentWithConfig {
      * Returns the minimal value of enchantability needed on the enchantment level passed.
      */
     @Override
-    public int getMinEnchantability(int enchantmentLevel) {
+    public int getMinCost(int enchantmentLevel) {
         return 1 + (enchantmentLevel - 1) * 10;
     }
 
@@ -25,8 +25,8 @@ public class EnchantmentHeavy extends EnchantmentWithConfig {
      * Returns the maximum value of enchantability nedded on the enchantment level passed.
      */
     @Override
-    public int getMaxEnchantability(int enchantmentLevel) {
-        return this.getMinEnchantability(enchantmentLevel) + 15;
+    public int getMaxCost(int enchantmentLevel) {
+        return this.getMinCost(enchantmentLevel) + 15;
     }
 
     /**
@@ -41,8 +41,8 @@ public class EnchantmentHeavy extends EnchantmentWithConfig {
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
     @Override
-    public boolean canApplyTogether(Enchantment ench) {
-        return super.canApplyTogether(ench) && !(ench instanceof EnchantmentQuick);
+    public boolean checkCompatibility(Enchantment ench) {
+        return super.checkCompatibility(ench) && !(ench instanceof EnchantmentQuick);
     }
 
     @Override

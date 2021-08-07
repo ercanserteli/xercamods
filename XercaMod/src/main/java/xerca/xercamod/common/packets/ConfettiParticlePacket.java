@@ -1,15 +1,15 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ConfettiParticlePacket extends ParticlePacket {
-    private Vector3i direction;
+    private Vec3i direction;
 
     public ConfettiParticlePacket(int count, double posX, double posY, double posZ) {
-        this(count, posX, posY, posZ, Vector3i.NULL_VECTOR);
+        this(count, posX, posY, posZ, Vec3i.ZERO);
     }
-    public ConfettiParticlePacket(int count, double posX, double posY, double posZ, Vector3i direction) {
+    public ConfettiParticlePacket(int count, double posX, double posY, double posZ, Vec3i direction) {
         super(count, posX, posY, posZ);
         this.direction = direction;
     }
@@ -18,19 +18,19 @@ public class ConfettiParticlePacket extends ParticlePacket {
         super();
     }
 
-    public void read(PacketBuffer buf) {
+    public void read(FriendlyByteBuf buf) {
         super.read(buf);
-        direction = new Vector3i(buf.readInt(), buf.readInt(), buf.readInt());
+        direction = new Vec3i(buf.readInt(), buf.readInt(), buf.readInt());
     }
 
-    public void write(PacketBuffer buf) {
+    public void write(FriendlyByteBuf buf) {
         super.write(buf);
         buf.writeInt(direction.getX());
         buf.writeInt(direction.getY());
         buf.writeInt(direction.getZ());
     }
 
-    public static ConfettiParticlePacket decode(PacketBuffer buf) {
+    public static ConfettiParticlePacket decode(FriendlyByteBuf buf) {
         ConfettiParticlePacket result = new ConfettiParticlePacket();
         try {
             result.read(buf);
@@ -42,11 +42,11 @@ public class ConfettiParticlePacket extends ParticlePacket {
         return result;
     }
 
-    public static void encode(ConfettiParticlePacket pkt, PacketBuffer buf) {
+    public static void encode(ConfettiParticlePacket pkt, FriendlyByteBuf buf) {
         pkt.write(buf);
     }
 
-    public Vector3i getDirection() {
+    public Vec3i getDirection() {
         return direction;
     }
 }

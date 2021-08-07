@@ -1,6 +1,6 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class QuakeParticlePacket extends ParticlePacket {
     public QuakeParticlePacket(int count, double posX, double posY, double posZ) {
@@ -11,7 +11,7 @@ public class QuakeParticlePacket extends ParticlePacket {
         super();
     }
 
-    public static QuakeParticlePacket decode(PacketBuffer buf) {
+    public static QuakeParticlePacket decode(FriendlyByteBuf buf) {
         QuakeParticlePacket result = new QuakeParticlePacket();
         try {
             result.read(buf);
@@ -23,7 +23,7 @@ public class QuakeParticlePacket extends ParticlePacket {
         return result;
     }
 
-    public static void encode(QuakeParticlePacket pkt, PacketBuffer buf) {
+    public static void encode(QuakeParticlePacket pkt, FriendlyByteBuf buf) {
         pkt.write(buf);
     }
 }

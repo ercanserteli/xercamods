@@ -1,15 +1,15 @@
 package xerca.xercamod.common.item;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.SoundEvents;
 
@@ -19,29 +19,29 @@ import javax.annotation.ParametersAreNonnullByDefault;
 class ItemUltimateBurger extends Item {
 
     public ItemUltimateBurger() {
-        super(new Item.Properties().group(ItemGroup.FOOD).food(Foods.ULTIMATE_BURGER));
+        super(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ULTIMATE_BURGER));
         this.setRegistryName("item_ultimate_burger");
     }
 
     @Nonnull
     @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-        if (entityLiving instanceof PlayerEntity) {
-            PlayerEntity entityPlayer = (PlayerEntity) entityLiving;
-            worldIn.playSound(null, entityPlayer.getPosX(), entityPlayer.getPosY(), entityPlayer.getPosZ(), SoundEvents.BIG_BURP, SoundCategory.PLAYERS, 5.0F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
-            if (entityPlayer instanceof ServerPlayerEntity) {
-                CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)entityPlayer, stack);
+    public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
+        if (entityLiving instanceof Player) {
+            Player entityPlayer = (Player) entityLiving;
+            worldIn.playSound(null, entityPlayer.getX(), entityPlayer.getY(), entityPlayer.getZ(), SoundEvents.BIG_BURP, SoundSource.PLAYERS, 5.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
+            if (entityPlayer instanceof ServerPlayer) {
+                CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)entityPlayer, stack);
             }
         }
-        return entityLiving.onFoodEaten(worldIn, stack);
+        return entityLiving.eat(worldIn, stack);
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if(!Config.isFoodEnabled()){
             return;
         }
-        super.fillItemGroup(group, items);
+        super.fillItemCategory(group, items);
     }
 }

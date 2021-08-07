@@ -1,13 +1,13 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvents;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.item.Items;
 
@@ -21,7 +21,7 @@ public class KnifeAttackPacketHandler {
             return;
         }
 
-        ServerPlayerEntity sendingPlayer = ctx.get().getSender();
+        ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
             System.err.println("EntityPlayerMP was null when KnifeAttackPacket was received");
             return;
@@ -31,23 +31,23 @@ public class KnifeAttackPacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void processMessage(KnifeAttackPacket msg, ServerPlayerEntity pl) {
-        Entity target = pl.world.getEntityByID(msg.getTargetId());
-        ItemStack st = pl.getHeldItemOffhand();;
+    private static void processMessage(KnifeAttackPacket msg, ServerPlayer pl) {
+        Entity target = pl.level.getEntity(msg.getTargetId());
+        ItemStack st = pl.getOffhandItem();;
         if (st.getItem() != Items.ITEM_KNIFE) {
             XercaMod.LOGGER.warn("No knife at offhand!");
             return;
         }
         if (target instanceof LivingEntity) {
-            st.getItem().hitEntity(st, (LivingEntity) target, pl);
-            float enchantBonus = EnchantmentHelper.getModifierForCreature(st, ((LivingEntity) target).getCreatureAttribute());
-            target.attackEntityFrom(DamageSource.causePlayerDamage(pl), 3.0f + enchantBonus);
+            st.getItem().hurtEnemy(st, (LivingEntity) target, pl);
+            float enchantBonus = EnchantmentHelper.getDamageBonus(st, ((LivingEntity) target).getMobType());
+            target.hurt(DamageSource.playerAttack(pl), 3.0f + enchantBonus);
             if(enchantBonus > 0.0f){
-                pl.onEnchantmentCritical(target);
-                pl.world.playSound(null, pl.getPosX(), pl.getPosY(), pl.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, pl.getSoundCategory(), 1.0F, 1.0F);
+                pl.magicCrit(target);
+                pl.level.playSound(null, pl.getX(), pl.getY(), pl.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, pl.getSoundSource(), 1.0F, 1.0F);
             }
             else {
-                pl.world.playSound(null, pl.getPosX(), pl.getPosY(), pl.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_WEAK, pl.getSoundCategory(), 1.0F, 1.0F);
+                pl.level.playSound(null, pl.getX(), pl.getY(), pl.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, pl.getSoundSource(), 1.0F, 1.0F);
             }
         }
 

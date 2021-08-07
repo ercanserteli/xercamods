@@ -1,15 +1,15 @@
 package xerca.xercamod.common;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -20,15 +20,15 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContainerFunctionalBookcase extends Container {
+public class ContainerFunctionalBookcase extends AbstractContainerMenu {
     public static List<ResourceLocation> acceptedItems = new ArrayList<>(); // This is for other mods (xercamusic) to add items
     private TileEntityFunctionalBookcase tileEntity;
 
-    public ContainerFunctionalBookcase(int windowId, PlayerInventory inv, PacketBuffer extraData){
-        this(windowId, inv, inv.player.world.getTileEntity(extraData.readBlockPos()));
+    public ContainerFunctionalBookcase(int windowId, Inventory inv, FriendlyByteBuf extraData){
+        this(windowId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
     }
 
-    public ContainerFunctionalBookcase(int windowId, PlayerInventory invPlayer, TileEntity tileEntityInventoryBookcase) {
+    public ContainerFunctionalBookcase(int windowId, Inventory invPlayer, BlockEntity tileEntityInventoryBookcase) {
         super(XercaTileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, windowId);
         if(!(tileEntityInventoryBookcase instanceof TileEntityFunctionalBookcase)){
             XercaMod.LOGGER.error("TileEntity not an instance of TileEntityFunctionalBookcase!");
@@ -85,34 +85,34 @@ public class ContainerFunctionalBookcase extends Container {
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull Player player) {
         return tileEntity.isUsableByPlayer(player);
     }
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex) {
+    public ItemStack quickMoveStack(Player player, int sourceSlotIndex) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = inventorySlots.get(sourceSlotIndex);
+        Slot slot = slots.get(sourceSlotIndex);
 
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        if (slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 
-            int containerSlots = inventorySlots.size() - player.inventory.mainInventory.size();
+            int containerSlots = slots.size() - player.getInventory().items.size();
 
             if (sourceSlotIndex < containerSlots) {
-                if (!this.mergeItemStack(itemstack1, containerSlots, inventorySlots.size(), true)) {
+                if (!this.moveItemStackTo(itemstack1, containerSlots, slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, containerSlots, false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 0, containerSlots, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if (itemstack1.getCount() == itemstack.getCount()) {
@@ -126,8 +126,8 @@ public class ContainerFunctionalBookcase extends Container {
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity playerIn) {
-        super.onContainerClosed(playerIn);
+    public void removed(Player playerIn) {
+        super.removed(playerIn);
         this.tileEntity.closeInventory(playerIn);
     }
 
@@ -137,15 +137,15 @@ public class ContainerFunctionalBookcase extends Container {
         }
 
         @Override
-        public boolean isItemValid(@Nonnull ItemStack stack) {
+        public boolean mayPlace(@Nonnull ItemStack stack) {
             Item it = stack.getItem();
             return it == Items.BOOK || it == Items.WRITABLE_BOOK || it == Items.WRITTEN_BOOK || it == Items.ENCHANTED_BOOK ||
                     acceptedItems.contains(it.getRegistryName());
         }
 
         @Override
-        public void onSlotChanged() {
-            tileEntity.markDirty();
+        public void setChanged() {
+            tileEntity.setChanged();
         }
     }
 }

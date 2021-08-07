@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "xercamod:purple_terratile"}
+          {"items": ["xercamod:purple_terratile"]}
         ]
       }
     },

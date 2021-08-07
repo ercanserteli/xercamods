@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"item": "xercapaint:item_canvas_tall"}
+          {"items": ["xercapaint:item_canvas_long"]}
         ]
       }
     },

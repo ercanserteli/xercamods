@@ -1,21 +1,21 @@
 package xerca.xercamod.common.crafting;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemFlask;
 import xerca.xercamod.common.item.Items;
 
-public class RecipeFlaskFilling extends SpecialRecipe {
+public class RecipeFlaskFilling extends CustomRecipe {
     public RecipeFlaskFilling(ResourceLocation resourceLocation) {
         super(resourceLocation);
     }
@@ -23,7 +23,7 @@ public class RecipeFlaskFilling extends SpecialRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingContainer inv, Level worldIn) {
         if(!Config.isEnderFlaskEnabled()){
             return false;
         }
@@ -33,15 +33,15 @@ public class RecipeFlaskFilling extends SpecialRecipe {
         ItemStack flaskStack = ItemStack.EMPTY;
         Potion currentFlaskPotion = Potions.EMPTY;
 
-        for(int j = 0; j < inv.getSizeInventory(); ++j) {
-            ItemStack itemstack = inv.getStackInSlot(j);
+        for(int j = 0; j < inv.getContainerSize(); ++j) {
+            ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.FLASK) {
                     if (!flaskStack.isEmpty()) {
                         return false;
                     }
                     flaskStack = itemstack;
-                    currentFlaskPotion = PotionUtils.getPotionFromItem(flaskStack);
+                    currentFlaskPotion = PotionUtils.getPotion(flaskStack);
                     if(potionType != Potions.EMPTY && !currentFlaskPotion.equals(Potions.EMPTY) && !currentFlaskPotion.equals(potionType)){
                         return false;
                     }
@@ -50,8 +50,8 @@ public class RecipeFlaskFilling extends SpecialRecipe {
                         return false;
                     }
                     if(potionType.equals(Potions.EMPTY)){
-                        potionType = PotionUtils.getPotionFromItem(itemstack);
-                    }else if(!PotionUtils.getPotionFromItem(itemstack).equals(potionType)){
+                        potionType = PotionUtils.getPotion(itemstack);
+                    }else if(!PotionUtils.getPotion(itemstack).equals(potionType)){
                         return false;
                     }
 
@@ -70,7 +70,7 @@ public class RecipeFlaskFilling extends SpecialRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         if(!Config.isEnderFlaskEnabled()){
             return ItemStack.EMPTY;
         }
@@ -80,15 +80,15 @@ public class RecipeFlaskFilling extends SpecialRecipe {
         ItemStack flaskStack = ItemStack.EMPTY;
         Potion currentFlaskPotion = Potions.EMPTY;
 
-        for(int j = 0; j < inv.getSizeInventory(); ++j) {
-            ItemStack itemstack = inv.getStackInSlot(j);
+        for(int j = 0; j < inv.getContainerSize(); ++j) {
+            ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.FLASK) {
                     if (!flaskStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
                     flaskStack = itemstack;
-                    currentFlaskPotion = PotionUtils.getPotionFromItem(flaskStack);
+                    currentFlaskPotion = PotionUtils.getPotion(flaskStack);
                     if(potionType != Potions.EMPTY && !currentFlaskPotion.equals(Potions.EMPTY) && !currentFlaskPotion.equals(potionType)){
                         return ItemStack.EMPTY;
                     }
@@ -97,8 +97,8 @@ public class RecipeFlaskFilling extends SpecialRecipe {
                         return ItemStack.EMPTY;
                     }
                     if(potionType.equals(Potions.EMPTY)){
-                        potionType = PotionUtils.getPotionFromItem(itemstack);
-                    }else if(!PotionUtils.getPotionFromItem(itemstack).equals(potionType)){
+                        potionType = PotionUtils.getPotion(itemstack);
+                    }else if(!PotionUtils.getPotion(itemstack).equals(potionType)){
                         return ItemStack.EMPTY;
                     }
 
@@ -115,7 +115,7 @@ public class RecipeFlaskFilling extends SpecialRecipe {
         if (!flaskStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (oldCharges + i) <= ItemFlask.getMaxCharges(flaskStack)) {
             ItemStack resultStack = new ItemStack(Items.FLASK);
             resultStack.setTag(flaskStack.getOrCreateTag().copy());
-            PotionUtils.addPotionToItemStack(resultStack, potionType);
+            PotionUtils.setPotion(resultStack, potionType);
             ItemFlask.setCharges(resultStack, oldCharges + i);
             return resultStack;
         } else {
@@ -123,15 +123,15 @@ public class RecipeFlaskFilling extends SpecialRecipe {
         }
     }
 
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         for(int i = 0; i < nonnulllist.size(); ++i) {
-            ItemStack itemstack = inv.getStackInSlot(i);
+            ItemStack itemstack = inv.getItem(i);
             if (itemstack.hasContainerItem()) {
                 nonnulllist.set(i, itemstack.getContainerItem());
             } else if (itemstack.getItem() instanceof PotionItem) {
-                ItemStack bottle = new ItemStack(net.minecraft.item.Items.GLASS_BOTTLE);
+                ItemStack bottle = new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE);
                 nonnulllist.set(i, bottle);
             }
         }
@@ -139,14 +139,14 @@ public class RecipeFlaskFilling extends SpecialRecipe {
         return nonnulllist;
     }
 
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_FLASK_FILLING;
     }
 
     /**
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 3 && height >= 3;
     }
 }

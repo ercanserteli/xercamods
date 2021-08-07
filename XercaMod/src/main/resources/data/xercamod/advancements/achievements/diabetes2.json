@@ -23,7 +23,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "minecraft:cookie"
+          "items": ["minecraft:cookie"]
         }
       }
     },
@@ -31,7 +31,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "minecraft:pumpkin_pie"
+          "items": ["minecraft:pumpkin_pie"]
         }
       }
     },
@@ -39,7 +39,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_apple_cupcake"
+          "items": ["xercamod:item_apple_cupcake"]
         }
       }
     },
@@ -47,7 +47,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_pumpkin_cupcake"
+          "items": ["xercamod:item_pumpkin_cupcake"]
         }
       }
     },
@@ -55,7 +55,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_cocoa_cupcake"
+          "items": ["xercamod:item_cocoa_cupcake"]
         }
       }
     },
@@ -63,7 +63,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_melon_cupcake"
+          "items": ["xercamod:item_melon_cupcake"]
         }
       }
     },
@@ -71,7 +71,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_carrot_cupcake"
+          "items": ["xercamod:item_carrot_cupcake"]
         }
       }
     },
@@ -79,7 +79,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_fancy_apple_cupcake"
+          "items": ["xercamod:item_fancy_apple_cupcake"]
         }
       }
     },
@@ -87,7 +87,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_fancy_pumpkin_cupcake"
+          "items": ["xercamod:item_fancy_pumpkin_cupcake"]
         }
       }
     },
@@ -95,7 +95,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_donut"
+          "items": ["xercamod:item_donut"]
         }
       }
     },
@@ -103,7 +103,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_fancy_donut"
+          "items": ["xercamod:item_fancy_donut"]
         }
       }
     },
@@ -111,7 +111,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_chocolate"
+          "items": ["xercamod:item_chocolate"]
         }
       }
     },
@@ -119,7 +119,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_croissant"
+          "items": ["xercamod:item_croissant"]
         }
       }
     },
@@ -127,7 +127,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_ice_tea"
+          "items": ["xercamod:item_ice_tea"]
         }
       }
     },
@@ -135,7 +135,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_apple_juice"
+          "items": ["xercamod:item_apple_juice"]
         }
       }
     },
@@ -143,7 +143,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_carrot_juice"
+          "items": ["xercamod:item_carrot_juice"]
         }
       }
     },
@@ -151,7 +151,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_melon_juice"
+          "items": ["xercamod:item_melon_juice"]
         }
       }
     },
@@ -159,7 +159,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "item": "xercamod:item_pumpkin_juice"
+          "items": ["xercamod:item_pumpkin_juice"]
         }
       }
     }

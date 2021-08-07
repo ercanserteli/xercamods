@@ -22,6 +22,8 @@ class Recipe:
     def __init__(self, type, group, discover_item, folder):
         self.type = type
         self.group = group
+        if discover_item is not None and "item" in discover_item.keys():
+            discover_item = "{'items': ['" + discover_item["item"] + "']}"
         self.discover_item = discover_item
         self.folder = folder
 

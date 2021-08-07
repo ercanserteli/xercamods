@@ -1,6 +1,6 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ScytheAttackPacket {
     private float pullDuration;
@@ -16,7 +16,7 @@ public class ScytheAttackPacket {
         this.messageIsValid = false;
     }
 
-    public static ScytheAttackPacket decode(PacketBuffer buf) {
+    public static ScytheAttackPacket decode(FriendlyByteBuf buf) {
         ScytheAttackPacket result = new ScytheAttackPacket();
         try {
             result.pullDuration = buf.readFloat();
@@ -29,7 +29,7 @@ public class ScytheAttackPacket {
         return result;
     }
 
-    public static void encode(ScytheAttackPacket pkt, PacketBuffer buf) {
+    public static void encode(ScytheAttackPacket pkt, FriendlyByteBuf buf) {
         buf.writeFloat(pkt.getPullDuration());
         buf.writeInt(pkt.getTargetId());
     }
