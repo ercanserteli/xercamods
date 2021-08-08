@@ -27,6 +27,9 @@ public abstract class BasePalette extends Screen {
     final static int brushSpriteX = 0;
     final static int brushSpriteY = 247;
     final static int brushSpriteSize = 9;
+    final static int brushOpacitySpriteX = 196;
+    final static int brushOpacitySpriteY = 197;
+    final static int brushOpacitySpriteSize = 14;
     final static int dropSpriteWidth = 6;
     final static int paletteWidth = 157;
     final static int paletteHeight = 193;
@@ -102,7 +105,7 @@ public abstract class BasePalette extends Screen {
     boolean dirty = false;
     PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
-    PaletteUtil.Color currentColor = basicColors[0];
+    static PaletteUtil.Color currentColor = basicColors[0];
     PaletteUtil.CustomColor[] customColors;
     boolean[] basicColorFlags;
     boolean paletteComplete = false;

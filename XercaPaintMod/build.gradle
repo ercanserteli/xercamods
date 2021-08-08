@@ -27,7 +27,7 @@ artifacts {
     archives jar
 }
 
-version = "1.17.1-0.1"
+version = "1.17.1-0.2"
 group= "xerca.xercapaint" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "xercapaint"
 
@@ -86,6 +86,7 @@ minecraft {
 }
 
 tasks.register('buildCopy', Copy) {
+    dependsOn build
     from "E:/Mine/Mine Mods/XercaPaintMod/build/libs/${archivesBaseName}-${version}.jar"
     into "E:/Mine/Mine Mods/builds"
 }

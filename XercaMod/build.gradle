@@ -72,6 +72,7 @@ minecraft {
 }
 
 tasks.register('buildCopy', Copy) {
+    dependsOn build
     from "E:/Mine/Mine Mods/XercaMod/build/libs/${archivesBaseName}-${version}.jar"
     into "E:/Mine/Mine Mods/builds"
 }
