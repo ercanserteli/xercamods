@@ -12,8 +12,6 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
-
 version = "1.17.1-0.1"
 group= "xerca.xercamod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "xercamod"
@@ -71,6 +69,11 @@ minecraft {
             }
         }
     }
+}
+
+tasks.register('buildCopy', Copy) {
+    from "E:/Mine/Mine Mods/XercaMod/build/libs/${archivesBaseName}-${version}.jar"
+    into "E:/Mine/Mine Mods/builds"
 }
 
 dependencies {

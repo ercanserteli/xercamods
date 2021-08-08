@@ -15,8 +15,6 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
-
 task deobfJar(type: Jar) { // Generate deobfuscated
     from sourceSets.main.output
     classifier = 'deobf'
@@ -86,6 +84,12 @@ minecraft {
     }
     //replace "{@version:mod}":project.version
 }
+
+tasks.register('buildCopy', Copy) {
+    from "E:/Mine/Mine Mods/XercaPaintMod/build/libs/${archivesBaseName}-${version}.jar"
+    into "E:/Mine/Mine Mods/builds"
+}
+
 
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
