@@ -68,11 +68,14 @@ public class ClientProxy extends Proxy {
                 if(!itemStack.hasTag()) return 0.0f;
                 else return 1.0F;
             };
+            ItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
+                    ((float)ItemPalette.basicColorCount(stack)) / 16.0F;
 
             ItemProperties.register(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
             ItemProperties.register(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
             ItemProperties.register(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
             ItemProperties.register(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemProperties.register(Items.ITEM_PALETTE, new ResourceLocation(XercaPaint.MODID, "colors"), colors);
         }
 
         @SubscribeEvent

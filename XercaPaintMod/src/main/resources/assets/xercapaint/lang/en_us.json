@@ -19,5 +19,12 @@
   "canvas.generation.0": "Original",
   "canvas.generation.1": "Copy of original",
   "canvas.generation.2": "Copy of copy",
-  "canvas.editTitle": "Enter Painting Title:"
+  "canvas.editTitle": "Enter Painting Title:",
+
+  "export.success": "Painting exported to %1$s",
+  "import.success": "Painting imported from %1$s",
+  "import.fail.1": "You must have an empty canvas on your main-hand to import a painting in survival mode",
+  "import.fail.2": "Your canvas must be the correct size to import this painting in survival mode (%1$s)",
+  "import.fail.3": "You must have a palette with all basic colors on your off-hand to import a painting in survival mode",
+  "import.fail.4": "Could not parse command or read the painting file (%1$s)"
 }

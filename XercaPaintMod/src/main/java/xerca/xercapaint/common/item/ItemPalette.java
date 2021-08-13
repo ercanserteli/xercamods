@@ -62,6 +62,28 @@ public class ItemPalette extends Item {
         }
     }
 
+    public static boolean isFull(ItemStack stack){
+        return basicColorCount(stack) == 16;
+    }
+
+    public static int basicColorCount(ItemStack stack){
+        if(stack.getItem() != Items.ITEM_PALETTE){
+            return 0;
+        }
+        CompoundTag tag = stack.getTag();
+        if(tag != null && tag.contains("basic")){
+            byte[] basicColors = tag.getByteArray("basic");
+            if (basicColors.length == 16) {
+                int basicCount = 0;
+                for(byte basicColor : basicColors){
+                    basicCount += basicColor;
+                }
+                return basicCount;
+            }
+        }
+        return 0;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {

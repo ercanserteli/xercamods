@@ -19,5 +19,8 @@
   "canvas.finalizeWarning": "Dikkat! Müziği imzaladıktan sonra değiştiremezsin.",
   "canvas.generation.0": "Orijinal",
   "canvas.generation.1": "Kopya",
-  "canvas.generation.2": "Korsan"
+  "canvas.generation.2": "Korsan",
+
+  "export.success": "Resim dışa aktarıldı: %1$s",
+  "import.success": "Resim içe aktarıldı %1$s"
 }
