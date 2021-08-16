@@ -21,8 +21,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import org.lwjgl.system.NonnullDefault;
+import xerca.xercapaint.client.ClientStuff;
 import xerca.xercapaint.common.CanvasType;
-import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityCanvas;
 
@@ -45,7 +45,7 @@ public class ItemCanvas extends HangingEntityItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         if(worldIn.isClientSide){
-            XercaPaint.proxy.showCanvasGui(playerIn);
+            ClientStuff.showCanvasGui(playerIn);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
     }
@@ -59,7 +59,7 @@ public class ItemCanvas extends HangingEntityItem {
         ItemStack itemstack = context.getItemInHand();
         if (playerentity != null && !this.mayPlace(playerentity, direction, itemstack, pos)) {
             if(context.getLevel().isClientSide){
-                XercaPaint.proxy.showCanvasGui(playerentity);
+                ClientStuff.showCanvasGui(playerentity);
             }
         } else {
             Level world = context.getLevel();
@@ -67,7 +67,7 @@ public class ItemCanvas extends HangingEntityItem {
             CompoundTag tag = itemstack.getTag();
             if(tag == null || !tag.contains("pixels") || !tag.contains("name")){
                 if(context.getLevel().isClientSide) {
-                    XercaPaint.proxy.showCanvasGui(playerentity);
+                    ClientStuff.showCanvasGui(playerentity);
                 }
                 return InteractionResult.SUCCESS;
             }

@@ -6,8 +6,6 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import xerca.xercapaint.common.entity.Entities;
-import xerca.xercapaint.common.entity.EntityEasel;
 
 @Mod.EventBusSubscriber(modid = XercaPaint.MODID)
 class EventHandler {
@@ -23,6 +21,6 @@ class EventHandler {
 class EventHandlerMod {
     @SubscribeEvent
     public static void onAttributeCreationEvent(EntityAttributeCreationEvent event) {
-        event.put(Entities.EASEL, EntityEasel.createLivingAttributes().build());
+//        event.put(Entities.EASEL, EntityEasel.createLivingAttributes().build());
     }
 }

@@ -19,6 +19,7 @@ import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityEasel;
+import xerca.xercapaint.common.packets.CanvasMiniUpdatePacket;
 import xerca.xercapaint.common.packets.CanvasUpdatePacket;
 
 import java.util.*;
@@ -279,10 +280,17 @@ public class GuiCanvasEdit extends BasePalette {
     public void tick() {
         ++this.updateCount;
         ++this.timeSinceLastUpdate;
-        if(easel != null && skippedUpdate && timeSinceLastUpdate > 20 && dirty){
-            updateCanvas();
-            skippedUpdate = false;
+
+        if(easel != null){
+            if(easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(editingPlayer) > 64){
+                this.onClose();
+            }
+            if(skippedUpdate && timeSinceLastUpdate > 20 && dirty){
+                updateCanvas(false);
+                skippedUpdate = false;
+            }
         }
+
         super.tick();
     }
 
@@ -456,7 +464,7 @@ public class GuiCanvasEdit extends BasePalette {
                 if (undoStack.size() > 0) {
                     pixels = undoStack.pop();
                     if(easel != null){
-                        updateCanvas();
+                        updateCanvas(false);
                     }
                 }
                 return true;
@@ -596,7 +604,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         if(easel != null){
-            updateCanvas();
+            updateCanvas(false);
         }
 
         return super.mouseReleased(posX, posY, mouseButton);
@@ -670,20 +678,27 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public void removed() {
-        updateCanvas();
+        updateCanvas(true);
     }
 
-    private void updateCanvas(){
-        if (dirty) {
-            if(timeSinceLastUpdate < 10){
-                skippedUpdate = true;
-            }
-            else{
-                version ++;
-                CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, easel, customColors, canvasType);
-                XercaPaint.NETWORK_HANDLER.sendToServer(pack);
-                dirty = false;
-                timeSinceLastUpdate = 0;
+    private void updateCanvas(boolean closing){
+        if(closing){
+            version ++;
+            CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, easel, customColors, canvasType);
+            XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+        }
+        else{
+            if (dirty) {
+                if(timeSinceLastUpdate < 10){
+                    skippedUpdate = true;
+                }
+                else{
+                    version ++;
+                    CanvasMiniUpdatePacket pack = new CanvasMiniUpdatePacket(pixels, name, version, easel, canvasType);
+                    XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+                    dirty = false;
+                    timeSinceLastUpdate = 0;
+                }
             }
         }
     }

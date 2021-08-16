@@ -1,13 +1,16 @@
 package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercapaint.common.CanvasType;
+import xerca.xercapaint.common.entity.EntityEasel;
 
 import java.util.Arrays;
 
@@ -29,8 +32,10 @@ public class GuiCanvasView extends Screen {
     private String name = "";
     private int version = 0;
     private int generation = 0;
+    private EntityEasel easel;
+    private Player player;
 
-    protected GuiCanvasView(CompoundTag canvasTag, Component title, CanvasType canvasType) {
+    protected GuiCanvasView(CompoundTag canvasTag, Component title, CanvasType canvasType, EntityEasel easel) {
         super(title);
 
         this.canvasType = canvasType;
@@ -40,6 +45,8 @@ public class GuiCanvasView extends Screen {
         int canvasPixelArea = canvasPixelHeight*canvasPixelWidth;
         this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
         this.canvasHeight = this.canvasPixelHeight * this.canvasPixelScale;
+        this.easel = easel;
+        this.player = Minecraft.getInstance().player;
 
         if (canvasTag != null && !canvasTag.isEmpty()) {
             int[] nbtPixels = canvasTag.getIntArray("pixels");
@@ -99,5 +106,15 @@ public class GuiCanvasView extends Screen {
             this.font.draw(matrixStack, title, titleX, canvasY - 25, 0xFF111111);
             this.font.draw(matrixStack, gen, genX, canvasY - 14, 0xFF444444);
         }
+    }
+
+    @Override
+    public void tick() {
+        if(easel != null){
+            if(easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 100){
+                this.onClose();
+            }
+        }
+        super.tick();
     }
 }

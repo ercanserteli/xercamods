@@ -14,7 +14,6 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import xerca.xercapaint.common.Proxy;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityEasel;
@@ -22,13 +21,9 @@ import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
-public class ClientProxy extends Proxy {
+public class ClientStuff {
     public static ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(new ResourceLocation(XercaPaint.MODID, "easel"), "main");
     public static ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(new ResourceLocation(XercaPaint.MODID, "easel"), "canvas");
-
-    @Override
-    public void init() {
-    }
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette){
         showCanvasGui(easel, palette, Minecraft.getInstance());
@@ -40,7 +35,7 @@ public class ClientProxy extends Proxy {
         if((tag != null && tag.getInt("generation") > 0) || palette.isEmpty()){
             minecraft.setScreen(new GuiCanvasView(canvas.getTag(),
                     new TranslatableComponent("item.xercapaint.item_canvas"),
-                    ((ItemCanvas)canvas.getItem()).getCanvasType()));
+                    ((ItemCanvas)canvas.getItem()).getCanvasType(), easel));
         }
         else{
             minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvas.getTag(), palette.getTag(),
@@ -49,7 +44,7 @@ public class ClientProxy extends Proxy {
         }
     }
 
-    public void showCanvasGui(Player player){
+    public static void showCanvasGui(Player player){
         final ItemStack heldItem = player.getMainHandItem();
         final ItemStack offhandItem = player.getOffhandItem();
         final Minecraft minecraft = Minecraft.getInstance();
@@ -61,7 +56,7 @@ public class ClientProxy extends Proxy {
         if(heldItem.getItem() instanceof ItemCanvas){
             CompoundTag tag = heldItem.getTag();
             if(offhandItem.isEmpty() || (tag != null && tag.getInt("generation") > 0)){
-                minecraft.setScreen(new GuiCanvasView(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
+                minecraft.setScreen(new GuiCanvasView(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
             }else if(offhandItem.getItem() instanceof ItemPalette){
                 minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
                         tag, offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
@@ -73,7 +68,7 @@ public class ClientProxy extends Proxy {
             }else if(offhandItem.getItem() instanceof ItemCanvas){
                 CompoundTag tag = offhandItem.getTag();
                 if(tag != null && tag.getInt("generation") > 0){
-                    minecraft.setScreen(new GuiCanvasView(offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
+                    minecraft.setScreen(new GuiCanvasView(offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType(), null));
                 }
                 else{
                     minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
