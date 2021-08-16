@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 
-version = "1.17.1-0.1"
+version = "1.17.1-0.2"
 group= "xerca.xercamod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "xercamod"
 

@@ -47,6 +47,9 @@ public class XercaPaint {
         NETWORK_HANDLER.registerMessage(msg_id++, PaletteUpdatePacket.class, PaletteUpdatePacket::encode, PaletteUpdatePacket::decode, PaletteUpdatePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, PictureRequestPacket.class, PictureRequestPacket::encode, PictureRequestPacket::decode, PictureRequestPacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, PictureSendPacket.class, PictureSendPacket::encode, PictureSendPacket::decode, PictureSendPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ExportPaintingPacket.class, ExportPaintingPacket::encode, ExportPaintingPacket::decode, ExportPaintingPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ImportPaintingPacket.class, ImportPaintingPacket::encode, ImportPaintingPacket::decode, ImportPaintingPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ImportPaintingSendPacket.class, ImportPaintingSendPacket::encode, ImportPaintingSendPacket::decode, ImportPaintingSendPacketHandler::handle);
     }
 
     private void setup(final FMLCommonSetupEvent event)

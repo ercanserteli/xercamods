@@ -1,8 +1,6 @@
 package xerca.xercapaint.common.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +21,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import org.lwjgl.system.NonnullDefault;
-import xerca.xercapaint.client.CanvasItemRenderer;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.Entities;
@@ -110,9 +107,50 @@ public class ItemCanvas extends HangingEntityItem {
         return InteractionResult.SUCCESS;
     }
 
-    @Nonnull
-    @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public static boolean hasTitle(@Nonnull ItemStack stack){
+        if (stack.hasTag()) {
+            CompoundTag tag = stack.getTag();
+            if(tag != null){
+                String s = tag.getString("title");
+                return !StringUtil.isNullOrEmpty(s);
+            }
+        }
+        return false;
+    }
+
+    public static Component getFullLabel(@Nonnull ItemStack stack){
+//        TextComponent label = new TextComponent("");
+        String labelString = "";
+        int generation = 0;
+        Component title = getCustomTitle(stack);
+        if(title != null){
+            labelString += (title.getString() + " ");
+        }
+        if (stack.hasTag()) {
+            CompoundTag tag = stack.getTag();
+            String s = tag.getString("author");
+
+            if (!StringUtil.isNullOrEmpty(s)) {
+                labelString += (new TranslatableComponent("canvas.byAuthor", s)).getString() + " ";
+            }
+
+            generation = tag.getInt("generation");
+//            if(generation > 0){
+//                labelString += (new TranslatableComponent("canvas.generation." + (generation - 1))).getString();
+//            }
+        }
+        TextComponent label = new TextComponent(labelString);
+        if(generation == 1){
+            label.withStyle(ChatFormatting.YELLOW);
+        }
+        else if(generation >= 3){
+            label.withStyle(ChatFormatting.GRAY);
+        }
+        return label;
+    }
+
+    @Nullable
+    public static Component getCustomTitle(@Nonnull ItemStack stack){
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
             if(tag != null){
@@ -121,6 +159,16 @@ public class ItemCanvas extends HangingEntityItem {
                     return new TextComponent(s);
                 }
             }
+        }
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public Component getName(@Nonnull ItemStack stack) {
+        Component comp = getCustomTitle(stack);
+        if(comp != null){
+            return comp;
         }
         return super.getName(stack);
     }
@@ -187,16 +235,3 @@ public class ItemCanvas extends HangingEntityItem {
     }
 }
 
-class RenderProp implements IItemRenderProperties{
-    public static RenderProp INSTANCE = new RenderProp();
-
-//    @Override
-//    public Font getFont(ItemStack stack) {
-//        return Minecraft.getInstance().font;
-//    }
-
-    @Override
-    public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
-        return new CanvasItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-    }
-}

@@ -11,13 +11,14 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.common.ToolType;
 
 public class BlockCarvedLog extends HorizontalDirectionalBlock {
     public BlockCarvedLog(String registryName) {
-        this(registryName, Block.Properties.of(Material.WOOD));
+        this(registryName, Block.Properties.of(Material.WOOD).harvestTool(ToolType.AXE));
     }
     public BlockCarvedLog(String registryName, BlockBehaviour.Properties properties) {
-        super(properties.strength(2.0F).sound(SoundType.WOOD));
+        super(properties.strength(2.0F).sound(SoundType.WOOD).harvestTool(ToolType.AXE));
         this.setRegistryName(registryName);
     }
 

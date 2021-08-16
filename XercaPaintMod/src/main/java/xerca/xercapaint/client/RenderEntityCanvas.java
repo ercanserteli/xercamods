@@ -71,7 +71,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         }
     }
 
-    public void updateMapTexture(String name, int version) {
+    public void updateTexture(String name, int version) {
         Instance instance = this.getMapInstanceIfExists(name);
         if(instance != null){
             instance.updateCanvasTexture(name, version);
@@ -224,7 +224,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
             Matrix4f m = ms.last().pose();
             mn = ms.last().normal();
-            VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(this.location));
+            VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(location));
 
             // Draw the front
             addVertex(vb, m, mn, 0.0F, 32.0F*hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);

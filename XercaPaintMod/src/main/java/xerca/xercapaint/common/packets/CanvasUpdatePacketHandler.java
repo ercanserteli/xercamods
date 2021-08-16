@@ -2,10 +2,13 @@ package xerca.xercapaint.common.packets;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercapaint.common.XercaPaint;
+import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.item.ItemCanvas;
+import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
 import java.util.function.Supplier;
@@ -29,12 +32,44 @@ public class CanvasUpdatePacketHandler {
     }
 
     private static void processMessage(CanvasUpdatePacket msg, ServerPlayer pl) {
-        ItemStack canvas = pl.getMainHandItem();
-        ItemStack palette = pl.getOffhandItem();
-        if(canvas.getItem() == Items.ITEM_PALETTE){
-            ItemStack temp = canvas;
-            canvas = palette;
-            palette = temp;
+        ItemStack canvas;
+        ItemStack palette;
+        Entity entityEasel = null;
+
+        if(msg.getEaselId() > -1){
+            entityEasel = pl.level.getEntity(msg.getEaselId());
+            if(entityEasel == null){
+                XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: " + msg.getEaselId());
+                return;
+            }
+            if(!(entityEasel instanceof EntityEasel easel)){
+                XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: " + msg.getEaselId());
+                return;
+            }
+            canvas = easel.getItem();
+            if(!(canvas.getItem() instanceof ItemCanvas)){
+                XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Canvas not found inside easel!");
+                return;
+            }
+            ItemStack mainHandItem = pl.getMainHandItem();
+            ItemStack offHandItem = pl.getOffhandItem();
+            if(mainHandItem.getItem() instanceof ItemPalette){
+                palette = mainHandItem;
+            }else if(offHandItem.getItem() instanceof ItemPalette){
+                palette = offHandItem;
+            }else{
+                XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Palette not found on player's hands!");
+                return;
+            }
+        }
+        else{
+            canvas = pl.getMainHandItem();
+            palette = pl.getOffhandItem();
+            if(canvas.getItem() instanceof ItemPalette){
+                ItemStack temp = canvas;
+                canvas = palette;
+                palette = temp;
+            }
         }
 
         if (!canvas.isEmpty() && canvas.getItem() instanceof ItemCanvas) {
@@ -53,6 +88,10 @@ public class CanvasUpdatePacketHandler {
             if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
                 CompoundTag paletteComp = palette.getOrCreateTag();
                 writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
+            }
+
+            if(entityEasel instanceof EntityEasel easel){
+                easel.setItem(canvas, false);
             }
 
             XercaPaint.LOGGER.debug("Handling canvas update: Name: " + msg.getName() + " V: " + msg.getVersion());

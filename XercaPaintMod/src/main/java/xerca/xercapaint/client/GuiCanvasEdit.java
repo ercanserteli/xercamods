@@ -18,6 +18,7 @@ import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
+import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.packets.CanvasUpdatePacket;
 
 import java.util.*;
@@ -63,6 +64,9 @@ public class GuiCanvasEdit extends BasePalette {
     private String canvasTitle = "";
     private String name = "";
     private int version = 0;
+    private EntityEasel easel;
+    private int timeSinceLastUpdate = 0;
+    private boolean skippedUpdate = false;
 
     private static final Vec2[] outlinePoss1 = {
             new Vec2(0.f, 199.0f),
@@ -81,7 +85,7 @@ public class GuiCanvasEdit extends BasePalette {
     private static final int maxUndoLength = 16;
     private Deque<int[]> undoStack = new ArrayDeque<>(maxUndoLength);
 
-    protected GuiCanvasEdit(Player player, CompoundTag canvasTag, CompoundTag paletteTag, Component title, CanvasType canvasType) {
+    protected GuiCanvasEdit(Player player, CompoundTag canvasTag, CompoundTag paletteTag, Component title, CanvasType canvasType, EntityEasel easel) {
         super(title, paletteTag);
         updateCount = 0;
 
@@ -92,6 +96,7 @@ public class GuiCanvasEdit extends BasePalette {
         int canvasPixelArea = canvasPixelHeight*canvasPixelWidth;
         this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
         this.canvasHeight = this.canvasPixelHeight * this.canvasPixelScale;
+        this.easel = easel;
 
         this.editingPlayer = player;
         if (canvasTag != null && !canvasTag.isEmpty()) {
@@ -99,6 +104,7 @@ public class GuiCanvasEdit extends BasePalette {
             this.authorName = canvasTag.getString("author");
             this.canvasTitle = canvasTag.getString("title");
             this.name = canvasTag.getString("name");
+            this.version = canvasTag.getInt("v");
             this.version = canvasTag.getInt("v");
 
             this.pixels =  Arrays.copyOfRange(nbtPixels, 0, canvasPixelArea);
@@ -272,6 +278,11 @@ public class GuiCanvasEdit extends BasePalette {
     @Override
     public void tick() {
         ++this.updateCount;
+        ++this.timeSinceLastUpdate;
+        if(easel != null && skippedUpdate && timeSinceLastUpdate > 20 && dirty){
+            updateCanvas();
+            skippedUpdate = false;
+        }
         super.tick();
     }
 
@@ -444,6 +455,9 @@ public class GuiCanvasEdit extends BasePalette {
             if (keyCode == GLFW.GLFW_KEY_Z && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
                 if (undoStack.size() > 0) {
                     pixels = undoStack.pop();
+                    if(easel != null){
+                        updateCanvas();
+                    }
                 }
                 return true;
             } else {
@@ -580,6 +594,11 @@ public class GuiCanvasEdit extends BasePalette {
         if(brushSound != null){
             brushSound.stopSound();
         }
+
+        if(easel != null){
+            updateCanvas();
+        }
+
         return super.mouseReleased(posX, posY, mouseButton);
     }
 
@@ -616,10 +635,10 @@ public class GuiCanvasEdit extends BasePalette {
         canvasY += deltaY;
 
         brushMeterX = (int)canvasX + canvasWidth + 2;
-        brushMeterY = (int)canvasY + canvasHeight/2 + 20;
+        brushMeterY = (int)canvasY + canvasHeight/2 + 30;
 
         brushOpacityMeterX = (int)canvasX + canvasWidth + 2;
-        brushOpacityMeterY = (int)canvasY + 10;
+        brushOpacityMeterY = (int)canvasY;
 
         canvasXs[canvasType.ordinal()] = canvasX;
         canvasYs[canvasType.ordinal()] = canvasY;
@@ -651,10 +670,21 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public void removed() {
+        updateCanvas();
+    }
+
+    private void updateCanvas(){
         if (dirty) {
-            version ++;
-            CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, customColors, canvasType);
-            XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+            if(timeSinceLastUpdate < 10){
+                skippedUpdate = true;
+            }
+            else{
+                version ++;
+                CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, easel, customColors, canvasType);
+                XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+                dirty = false;
+                timeSinceLastUpdate = 0;
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package xerca.xercapaint.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.nbt.CompoundTag;
@@ -16,14 +17,36 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import xerca.xercapaint.common.Proxy;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.Entities;
+import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
 public class ClientProxy extends Proxy {
+    public static ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(new ResourceLocation(XercaPaint.MODID, "easel"), "main");
+    public static ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(new ResourceLocation(XercaPaint.MODID, "easel"), "canvas");
 
     @Override
     public void init() {
+    }
+
+    public static void showCanvasGui(EntityEasel easel, ItemStack palette){
+        showCanvasGui(easel, palette, Minecraft.getInstance());
+    }
+
+    public static void showCanvasGui(EntityEasel easel, ItemStack palette, Minecraft minecraft){
+        ItemStack canvas = easel.getItem();
+        CompoundTag tag = canvas.getTag();
+        if((tag != null && tag.getInt("generation") > 0) || palette.isEmpty()){
+            minecraft.setScreen(new GuiCanvasView(canvas.getTag(),
+                    new TranslatableComponent("item.xercapaint.item_canvas"),
+                    ((ItemCanvas)canvas.getItem()).getCanvasType()));
+        }
+        else{
+            minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvas.getTag(), palette.getTag(),
+                    new TranslatableComponent("item.xercapaint.item_canvas"),
+                    ((ItemCanvas)canvas.getItem()).getCanvasType(), easel));
+        }
     }
 
     public void showCanvasGui(Player player){
@@ -41,7 +64,7 @@ public class ClientProxy extends Proxy {
                 minecraft.setScreen(new GuiCanvasView(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }else if(offhandItem.getItem() instanceof ItemPalette){
                 minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
-                        tag, offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
+                        tag, offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
             }
         }
         else if(heldItem.getItem() instanceof ItemPalette){
@@ -54,7 +77,7 @@ public class ClientProxy extends Proxy {
                 }
                 else{
                     minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
-                            tag, heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
+                            tag, heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType(), null));
                 }
             }
         }
@@ -81,6 +104,14 @@ public class ClientProxy extends Proxy {
         @SubscribeEvent
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
+            event.registerEntityRenderer(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
+        }
+
+        @SubscribeEvent
+        public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event)
+        {
+            event.registerLayerDefinition(EASEL_MAIN_LAYER, EaselModel::createBodyLayer);
+            event.registerLayerDefinition(EASEL_CANVAS_LAYER, EaselModel::createBodyLayer);
         }
     }
 }

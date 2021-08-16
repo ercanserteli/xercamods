@@ -6,9 +6,13 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercapaint.common.item.ItemCanvas;
+import xerca.xercapaint.common.packets.ExportPaintingPacket;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,36 +29,44 @@ public class CommandExport {
 
     private static int paintExport(CommandSourceStack stack, String name){
         XercaPaint.LOGGER.debug("Paint export called. name: " + name);
+        if(stack.getEntity() == null){
+            XercaPaint.LOGGER.error("Command entity is not found");
+            return 0;
+        }
+        Entity commander = stack.getEntity();
+        if(!(commander instanceof ServerPlayer player)){
+            XercaPaint.LOGGER.error("Command entity is not a player");
+            return 0;
+        }
+
+        ExportPaintingPacket pack = new ExportPaintingPacket(name);
+        XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), pack);
+        return 1;
+    }
+
+    public static boolean doExport(Player player, String name){
         String dir = "paintings";
         String filename = name + ".paint";
         String filepath = dir + "/" + filename;
-        if(stack.getEntity() == null){
-            XercaPaint.LOGGER.error("Command entity is not found");
+        File directory = new File(dir);
+        if (!directory.exists()){
+            directory.mkdir();
         }
-        else{
-            File directory = new File(dir);
-            if (!directory.exists()){
-                directory.mkdir();
-            }
 
-            for(ItemStack s : stack.getEntity().getHandSlots()){
-                if(s.getItem() instanceof ItemCanvas){
-                    if(s.hasTag()){
-                        try {
-                            CompoundTag tag = s.getTag().copy();
-                            tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
-
-                            NbtIo.write(tag, new File(filepath));
-                            stack.sendSuccess(new TranslatableComponent("export.success", filepath), false);
-                            return 1;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return 0;
-                        }
+        for(ItemStack s : player.getHandSlots()){
+            if(s.getItem() instanceof ItemCanvas){
+                if(s.hasTag()){
+                    try {
+                        CompoundTag tag = s.getTag().copy();
+                        tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                        NbtIo.write(tag, new File(filepath));
+                        return true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
         }
-        return 1;
+        return false;
     }
 }
