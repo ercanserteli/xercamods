@@ -27,7 +27,7 @@ artifacts {
     archives jar
 }
 
-version = "1.17.1-0.4"
+version = "1.17.1-0.6"
 group= "xerca.xercapaint" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "xercapaint"
 

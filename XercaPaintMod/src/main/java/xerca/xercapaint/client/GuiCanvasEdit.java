@@ -1,5 +1,6 @@
 package xerca.xercapaint.client;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -8,7 +9,9 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
@@ -49,11 +52,13 @@ public class GuiCanvasEdit extends BasePalette {
     private Button buttonSign;
     private Button buttonCancel;
     private Button buttonFinalize;
+    private Button buttonHelpToggle;
     private int updateCount;
     private BrushSound brushSound = null;
     private final int canvasHolderHeight = 10;
     private static int brushOpacitySetting = 0;
     private static float[] brushOpacities = {1.f, 0.75f, 0.5f, 0.25f};
+    private static boolean showHelp = true;
     private Set<Integer> draggedPoints = new HashSet<>();
 
     private final Player editingPlayer;
@@ -171,6 +176,13 @@ public class GuiCanvasEdit extends BasePalette {
                 GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
         }));
+
+        x = (int)(getMinecraft().getWindow().getGuiScaledWidth()*0.95) - 21;
+        y = (int)(getMinecraft().getWindow().getGuiScaledHeight()*0.05);
+        this.buttonHelpToggle = this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
+                paletteTextures, 256, 256, button -> {
+            showHelp = !showHelp;
+        }, (button, poseStack, i, j) -> renderTooltip(poseStack, new TextComponent("Toggle help tooltips"), i, j)));
 
         updateButtons();
     }
@@ -331,6 +343,34 @@ public class GuiCanvasEdit extends BasePalette {
 
             // Draw brush and outline
             renderCursor(matrixStack, mouseX, mouseY);
+
+            if(showHelp){
+                if(inBrushMeter(mouseX, mouseY)){
+                    int selectedSize = 3 - (mouseY - brushMeterY)/brushSpriteSize;
+                    if(selectedSize <= 3 && selectedSize >= 0){
+                        this.renderTooltip(matrixStack, new TextComponent("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
+                    }
+                }
+                else if(inBrushOpacityMeter(mouseX, mouseY)){
+                    int relativeY = mouseY - brushOpacityMeterY;
+                    int selectedOpacity = relativeY/(brushOpacitySpriteSize+1);
+                    if(selectedOpacity >= 0 && selectedOpacity <= 3){
+                        int percentage = 100 - 25*selectedOpacity;
+                        this.renderTooltip(matrixStack, new TextComponent("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
+                    }
+                }
+                else if(inColorPicker(mouseX-(int)paletteX, mouseY-(int)paletteY)){
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Color picker"),
+                            new TextComponent("Select the tool, then pick up a color from the canvas and drag-and-drop it to a custom color slot.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                }
+                else if(inWater(mouseX-(int)paletteX, mouseY-(int)paletteY)){
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Color remover"),
+                            new TextComponent("Pick up some water and drag-and-drop it to a custom color slot to clear it.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                }else if(inCanvasHolder(mouseX, mouseY)){
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Canvas holder"),
+                            new TextComponent("Pick up the canvas and move it wherever you want. You can move the palette in the same way.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                }
+            }
         }
         else{
             drawSigning(matrixStack);
@@ -556,7 +596,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         if(inBrushMeter(mouseX, mouseY)){
             int selectedSize = 3 - (mouseY - brushMeterY)/brushSpriteSize;
-            if(selectedSize >= 0){
+            if(selectedSize <= 3 && selectedSize >= 0){
                 brushSize = selectedSize;
             }
             return super.superMouseClicked(mouseX, mouseY, mouseButton);
@@ -700,6 +740,50 @@ public class GuiCanvasEdit extends BasePalette {
                     timeSinceLastUpdate = 0;
                 }
             }
+        }
+    }
+
+    public class ToggleHelpButton extends Button {
+        protected final ResourceLocation resourceLocation;
+        protected int xTexStart;
+        protected int yTexStart;
+        protected final int yDiffText;
+        protected final int texWidth;
+        protected final int texHeight;
+
+        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, OnTooltip onTooltip) {
+            super(x, y, width, height, TextComponent.EMPTY, onClick, onTooltip);
+            this.texWidth = texWidth;
+            this.texHeight = texHeight;
+            this.xTexStart = xTexStart;
+            this.yTexStart = yTexStart;
+            this.yDiffText = yDiffText;
+            this.resourceLocation = texture;
+        }
+
+        public void setTexStarts(int x, int y) {
+            this.xTexStart = x;
+            this.yTexStart = y;
+        }
+
+        protected void postRender(){
+            GlStateManager._enableDepthTest();
+        }
+
+        @Override
+        public void renderButton(PoseStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+            RenderSystem.setShaderTexture(0, this.resourceLocation);
+            GlStateManager._disableDepthTest();
+            int yTexStartNew = this.yTexStart;
+            if (this.isHovered()) {
+                yTexStartNew += this.yDiffText;
+            }
+            int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
+            blit(matrixStack, this.x, this.y, (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            if (this.isHovered()) {
+                this.renderToolTip(matrixStack, p_230431_2_, p_230431_3_);
+            }
+            postRender();
         }
     }
 }

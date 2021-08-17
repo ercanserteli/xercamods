@@ -2,17 +2,16 @@ package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec2;
 import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
@@ -253,7 +252,7 @@ public abstract class BasePalette extends Screen {
             }
 
             if(!didSomething && paletteComplete && !isCarryingWater && !isCarryingColor){
-                if(x >= colorPickerPosX && x < colorPickerPosX + colorPickerSize && y >= colorPickerPosY && y < colorPickerPosY + colorPickerSize){
+                if(inColorPicker(x, y)){
                     if(mouseButton == 0) {
                         setPickingColor();
                         playSound(SoundEvents.COLOR_PICKER);
@@ -267,6 +266,14 @@ public abstract class BasePalette extends Screen {
             }
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    protected boolean inColorPicker(int x, int y){
+        return x >= colorPickerPosX && x < colorPickerPosX + colorPickerSize && y >= colorPickerPosY && y < colorPickerPosY + colorPickerSize;
+    }
+
+    protected boolean inWater(int x, int y){
+        return sqrDist(new Vec2(x, y), waterCenter) <= customColorRadius*customColorRadius;
     }
 
     @Override

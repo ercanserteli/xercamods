@@ -37,6 +37,7 @@ public class EntityEasel extends Entity {
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
     private Player painter = null;
     private Runnable dropDeferred = null;
+    private int dropWaitTicks = 0;
 
     static {
         DATA_CANVAS = SynchedEntityData.defineId(EntityEasel.class, EntityDataSerializers.ITEM_STACK);
@@ -68,7 +69,7 @@ public class EntityEasel extends Entity {
 
     public boolean hurt(DamageSource damageSource, float p_31580_) {
         if (!this.level.isClientSide && !this.isRemoved()) {
-            if(!getItem().isEmpty()){
+            if(!getItem().isEmpty() && !damageSource.isExplosion()){
                 this.dropItem(damageSource.getEntity(), false);
             }
             else{
@@ -102,9 +103,11 @@ public class EntityEasel extends Entity {
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if(painter != null){
             if(!level.isClientSide){
-                CloseGuiPacket pack = new CloseGuiPacket();
-                XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) painter), pack);
-                dropDeferred = () -> doDrop(entity, dropSelf);
+                if(dropDeferred == null){
+                    CloseGuiPacket pack = new CloseGuiPacket();
+                    XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) painter), pack);
+                    dropDeferred = () -> doDrop(entity, dropSelf);
+                }
             }
         }
         else{
@@ -219,10 +222,11 @@ public class EntityEasel extends Entity {
                 }
             }else{
                 boolean unused = this.painter == null;
-                boolean allowed = unused || !handHoldsPalette;
-                OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, handHoldsPalette, hand);
+                boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag().getInt("generation") > 0);
+                boolean allowed = unused || !toEdit;
+                OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
                 XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), pack);
-                if(handHoldsPalette && allowed){
+                if(toEdit && allowed){
                     this.painter = player;
                 }
             }
@@ -245,15 +249,23 @@ public class EntityEasel extends Entity {
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
         if(!level.isClientSide){
-            if(dropDeferred != null && painter == null){
-                dropDeferred.run();
-                dropDeferred = null;
+            if(dropDeferred != null){
+                dropWaitTicks ++;
+                if(painter == null || dropWaitTicks > 80){
+                    dropDeferred.run();
+                    dropDeferred = null;
+                    dropWaitTicks = 0;
+                }
             }
         }
         if(painter != null){
             if(painter.isRemoved() || !painter.isAlive()){
                 painter = null;
-
+            }
+            else if(painter.distanceToSqr(this) > 64){
+                painter = null;
+//                CloseGuiPacket pack = new CloseGuiPacket();
+//                XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) painter), pack);
             }
         }
     }
