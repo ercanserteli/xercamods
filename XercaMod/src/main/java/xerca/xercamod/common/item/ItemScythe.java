@@ -56,7 +56,7 @@ public class ItemScythe extends DiggerItem {
     private static final net.minecraft.tags.Tag<Block> EFFECTIVE_ON = net.minecraft.tags.Tag.fromSet(ImmutableSet.of());
 
     public ItemScythe(Tier tier, int attackDamageIn, float attackSpeedIn, Item.Properties builder) {
-        super(attackDamageIn, attackSpeedIn, tier, EFFECTIVE_ON, builder.addToolType(net.minecraftforge.common.ToolType.PICKAXE, tier.getLevel()));
+        super(attackDamageIn, attackSpeedIn, tier, EFFECTIVE_ON, builder.defaultDurability(tier.getUses()));
     }
 
     @Override

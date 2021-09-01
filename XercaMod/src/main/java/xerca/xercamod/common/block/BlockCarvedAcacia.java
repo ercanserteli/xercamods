@@ -13,13 +13,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class BlockCarvedAcacia extends BlockCarvedLog {
     public BlockCarvedAcacia(String registryName) {
-        super(registryName, Properties.of(Material.WOOD, MaterialColor.WOOD).noOcclusion().harvestTool(ToolType.AXE));
+        super(registryName, Properties.of(Material.WOOD, MaterialColor.WOOD).noOcclusion());
     }
 
     public VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {

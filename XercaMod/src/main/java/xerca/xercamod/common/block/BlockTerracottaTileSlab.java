@@ -15,13 +15,12 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraftforge.common.ToolType;
 
 public class BlockTerracottaTileSlab extends SlabBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     protected BlockTerracottaTileSlab(MaterialColor color) {
-        super(Properties.of(Material.STONE, color).strength(1.5f).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE));
+        super(Properties.of(Material.STONE, color).strength(1.5f).sound(SoundType.STONE));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.EAST));
     }
 

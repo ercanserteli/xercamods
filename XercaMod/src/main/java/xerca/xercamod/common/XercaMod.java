@@ -1,7 +1,6 @@
 package xerca.xercamod.common;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.resources.ResourceLocation;
@@ -22,19 +21,18 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xerca.xercamod.common.data.BlockTags;
 import xerca.xercamod.common.entity.EntityConfettiBall;
 import xerca.xercamod.common.entity.EntityTomato;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.packets.*;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -148,6 +146,11 @@ public class XercaMod {
             event.getRegistry().register(new SeedLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"rice_seeds")));
             event.getRegistry().register(new SeedLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"tomato_seeds")));
             event.getRegistry().register(new SeedLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"tea_seeds")));
+        }
+
+        @SubscribeEvent
+        public static void registerDataEvent(final GatherDataEvent event) {
+            event.getGenerator().addProvider(new BlockTags(event.getGenerator(), event.getExistingFileHelper()));
         }
     }
 }

@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.ToolType;
 import xerca.xercamod.common.ContainerCarvingStation;
 
 import javax.annotation.Nullable;
@@ -29,7 +28,7 @@ public class BlockCarvingStation extends Block {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public BlockCarvingStation() {
-        super(Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2.0f, 3.0f).harvestTool(ToolType.AXE));
+        super(Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2.0f, 3.0f));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
