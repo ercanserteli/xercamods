@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_smoking_food",
+    
+    "ingredient": [
+        {"item": "xercamod:raw_plain_pizza"}
+    ],
+    "result": "xercamod:plain_pizza",
+    "experience": 0.2,
+    "cookingtime": 150
+}
+        

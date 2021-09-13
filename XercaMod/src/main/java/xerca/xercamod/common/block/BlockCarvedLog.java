@@ -14,10 +14,13 @@ import net.minecraft.world.level.material.Material;
 
 public class BlockCarvedLog extends HorizontalDirectionalBlock {
     public BlockCarvedLog(String registryName) {
-        this(registryName, Block.Properties.of(Material.WOOD));
+        this(registryName, false);
+    }
+    public BlockCarvedLog(String registryName, boolean isNether) {
+        this(registryName, Block.Properties.of(isNether ? Material.NETHER_WOOD : Material.WOOD).sound(isNether ? SoundType.STEM : SoundType.WOOD));
     }
     public BlockCarvedLog(String registryName, BlockBehaviour.Properties properties) {
-        super(properties.strength(2.0F).sound(SoundType.WOOD));
+        super(properties.strength(2.0F));
         this.setRegistryName(registryName);
     }
 

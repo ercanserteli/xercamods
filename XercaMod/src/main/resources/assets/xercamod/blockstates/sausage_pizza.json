@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "bites=0": { "model": "xercamod:block/sausage_pizza_uneaten" },
+        "bites=1": { "model": "xercamod:block/sausage_pizza_slice1" },
+        "bites=2": { "model": "xercamod:block/sausage_pizza_slice2" },
+        "bites=3": { "model": "xercamod:block/sausage_pizza_slice3" }
+    }
+}

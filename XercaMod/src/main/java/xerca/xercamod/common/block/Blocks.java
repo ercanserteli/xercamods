@@ -1,5 +1,7 @@
 package xerca.xercamod.common.block;
 
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.event.RegistryEvent;
@@ -7,10 +9,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 import xerca.xercamod.common.XercaMod;
-
-
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 
 @ObjectHolder(XercaMod.MODID)
 public class Blocks {
@@ -90,6 +88,22 @@ public class Blocks {
     public static final Block CARVED_SPRUCE_6 = null;
     public static final Block CARVED_SPRUCE_7 = null;
     public static final Block CARVED_SPRUCE_8 = null;
+    public static final Block CARVED_CRIMSON_1 = null;
+    public static final Block CARVED_CRIMSON_2 = null;
+    public static final Block CARVED_CRIMSON_3 = null;
+    public static final Block CARVED_CRIMSON_4 = null;
+    public static final Block CARVED_CRIMSON_5 = null;
+    public static final Block CARVED_CRIMSON_6 = null;
+    public static final Block CARVED_CRIMSON_7 = null;
+    public static final Block CARVED_CRIMSON_8 = null;
+    public static final Block CARVED_WARPED_1 = null;
+    public static final Block CARVED_WARPED_2 = null;
+    public static final Block CARVED_WARPED_3 = null;
+    public static final Block CARVED_WARPED_4 = null;
+    public static final Block CARVED_WARPED_5 = null;
+    public static final Block CARVED_WARPED_6 = null;
+    public static final Block CARVED_WARPED_7 = null;
+    public static final Block CARVED_WARPED_8 = null;
 
     public static final BlockTerracottaTile BLACK_TERRATILE = null;
     public static final BlockTerracottaTile BLUE_TERRATILE = null;
@@ -146,6 +160,15 @@ public class Blocks {
     public static final BlockTerracottaTileStairs TERRATILE_STAIRS = null;
 
     public static final BlockRope ROPE = null;
+
+    public static final BlockVat VAT = null;
+    public static final BlockVat VAT_MILK = null;
+    public static final BlockVat VAT_CHEESE = null;
+    public static final BlockCheese CHEESE_WHEEL = null;
+    public static final BlockPizza PLAIN_PIZZA = null;
+    public static final BlockPizza MUSH_PIZZA = null;
+    public static final BlockPizza MUSH_SAUSAGE_PIZZA = null;
+    public static final BlockPizza SAUSAGE_PIZZA = null;
 
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
@@ -229,6 +252,22 @@ public class Blocks {
                     new BlockCarvedLog("carved_spruce_6"),
                     new BlockCarvedLog("carved_spruce_7"),
                     new BlockCarvedLog("carved_spruce_8"),
+                    new BlockCarvedLog("carved_crimson_1", true),
+                    new BlockCarvedLog("carved_crimson_2", true),
+                    new BlockCarvedLog("carved_crimson_3", true),
+                    new BlockCarvedLog("carved_crimson_4", true),
+                    new BlockCarvedLog("carved_crimson_5", true),
+                    new BlockCarvedLog("carved_crimson_6", true),
+                    new BlockCarvedLog("carved_crimson_7", true),
+                    new BlockCarvedLog("carved_crimson_8", true),
+                    new BlockCarvedLog("carved_warped_1", true),
+                    new BlockCarvedLog("carved_warped_2", true),
+                    new BlockCarvedLog("carved_warped_3", true),
+                    new BlockCarvedLog("carved_warped_4", true),
+                    new BlockCarvedLog("carved_warped_5", true),
+                    new BlockCarvedLog("carved_warped_6", true),
+                    new BlockCarvedLog("carved_warped_7", true),
+                    new BlockCarvedLog("carved_warped_8", true),
 
                     new BlockTerracottaTile(MaterialColor.TERRACOTTA_BLACK).setRegistryName("black_terratile"),
                     new BlockTerracottaTile(MaterialColor.TERRACOTTA_BLUE).setRegistryName("blue_terratile"),
@@ -284,7 +323,16 @@ public class Blocks {
                     new BlockTerracottaTileStairs(() -> YELLOW_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_YELLOW).setRegistryName("yellow_terratile_stairs"),
                     new BlockTerracottaTileStairs(() -> TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_GRAY).setRegistryName("terratile_stairs"),
 
-                    new BlockRope().setRegistryName("rope")
+                    new BlockRope().setRegistryName("rope"),
+
+                    new BlockVat(BlockVat.VatContent.EMPTY).setRegistryName("vat"),
+                    new BlockVat(BlockVat.VatContent.MILK).setRegistryName("vat_milk"),
+                    new BlockVat(BlockVat.VatContent.CHEESE).setRegistryName("vat_cheese"),
+                    new BlockCheese(),
+                    new BlockPizza(2).setRegistryName("plain_pizza"),
+                    new BlockPizza(3).setRegistryName("mush_pizza"),
+                    new BlockPizza(4).setRegistryName("mush_sausage_pizza"),
+                    new BlockPizza(3).setRegistryName("sausage_pizza")
             );
         }
     }

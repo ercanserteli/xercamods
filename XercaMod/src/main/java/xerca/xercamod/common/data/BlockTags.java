@@ -67,9 +67,29 @@ public class BlockTags extends BlockTagsProvider implements DataProvider
                 Blocks.CARVED_SPRUCE_5,
                 Blocks.CARVED_SPRUCE_6,
                 Blocks.CARVED_SPRUCE_7,
-                Blocks.CARVED_SPRUCE_8
+                Blocks.CARVED_SPRUCE_8,
+                Blocks.CARVED_CRIMSON_1,
+                Blocks.CARVED_CRIMSON_2,
+                Blocks.CARVED_CRIMSON_3,
+                Blocks.CARVED_CRIMSON_4,
+                Blocks.CARVED_CRIMSON_5,
+                Blocks.CARVED_CRIMSON_6,
+                Blocks.CARVED_CRIMSON_7,
+                Blocks.CARVED_CRIMSON_8,
+                Blocks.CARVED_WARPED_1,
+                Blocks.CARVED_WARPED_2,
+                Blocks.CARVED_WARPED_3,
+                Blocks.CARVED_WARPED_4,
+                Blocks.CARVED_WARPED_5,
+                Blocks.CARVED_WARPED_6,
+                Blocks.CARVED_WARPED_7,
+                Blocks.CARVED_WARPED_8
         );
         this.tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(
+                Blocks.VAT,
+                Blocks.VAT_MILK,
+                Blocks.VAT_CHEESE,
+
                 Blocks.BLACK_TERRATILE,
                 Blocks.BLUE_TERRATILE,
                 Blocks.BROWN_TERRATILE,

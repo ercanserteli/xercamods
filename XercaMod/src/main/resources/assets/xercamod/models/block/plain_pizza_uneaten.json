@@ -1,0 +1,21 @@
+{
+	"textures": {
+		"top": "xercamod:block/block_plain_pizza",
+		"bottom": "xercamod:block/block_pizza_bottom",
+		"particle": "xercamod:block/block_plain_pizza"
+	},
+	"elements": [
+		{
+			"from": [1, 0, 1],
+			"to": [15, 2, 15],
+			"faces": {
+				"north": {"uv": [0, 0, 14, 2], "texture": "#bottom"},
+				"east": {"uv": [0, 0, 14, 2], "texture": "#bottom"},
+				"south": {"uv": [0, 0, 14, 2], "texture": "#bottom"},
+				"west": {"uv": [0, 0, 14, 2], "texture": "#bottom"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#top"},
+				"down": {"uv": [0, 0, 14, 14], "texture": "#bottom"}
+			}
+		}
+	]
+}

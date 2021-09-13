@@ -22,12 +22,19 @@ public class RecipeCarvingStation extends SingleItemRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
+    @Override
     public boolean matches(Container inv, Level worldIn) {
         return this.ingredient.test(inv.getItem(0));
     }
 
+    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(Blocks.CARVING_STATION);
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
     }
 
     public static class Serializer<T extends RecipeCarvingStation> extends net.minecraftforge.registries.ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {

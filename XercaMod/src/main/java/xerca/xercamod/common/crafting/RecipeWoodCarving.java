@@ -52,6 +52,8 @@ public class RecipeWoodCarving extends CustomRecipe {
                             || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_ACACIA_LOG.asItem()
                             || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()
                             || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_CRIMSON_STEM.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_WARPED_STEM.asItem()
                     ) {
                         if(logFound){
                             return false;
@@ -247,6 +249,64 @@ public class RecipeWoodCarving extends CustomRecipe {
                 return ItemStack.EMPTY;
             }
         }
+        else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_CRIMSON_STEM.asItem()){
+            if(difX == -1 && difY == -1){
+                resultItem = Blocks.CARVED_CRIMSON_1.asItem();
+            }
+            else if(difX == 0 && difY == -1){
+                resultItem = Blocks.CARVED_CRIMSON_2.asItem();
+            }
+            else if(difX == 1 && difY == -1){
+                resultItem = Blocks.CARVED_CRIMSON_3.asItem();
+            }
+            else if(difX == -1 && difY == 0){
+                resultItem = Blocks.CARVED_CRIMSON_4.asItem();
+            }
+            else if(difX == 1 && difY == 0){
+                resultItem = Blocks.CARVED_CRIMSON_5.asItem();
+            }
+            else if(difX == -1 && difY == 1){
+                resultItem = Blocks.CARVED_CRIMSON_6.asItem();
+            }
+            else if(difX == 0 && difY == 1){
+                resultItem = Blocks.CARVED_CRIMSON_7.asItem();
+            }
+            else if(difX == 1 && difY == 1){
+                resultItem = Blocks.CARVED_CRIMSON_8.asItem();
+            }
+            else{
+                return ItemStack.EMPTY;
+            }
+        }
+        else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_WARPED_STEM.asItem()){
+            if(difX == -1 && difY == -1){
+                resultItem = Blocks.CARVED_WARPED_1.asItem();
+            }
+            else if(difX == 0 && difY == -1){
+                resultItem = Blocks.CARVED_WARPED_2.asItem();
+            }
+            else if(difX == 1 && difY == -1){
+                resultItem = Blocks.CARVED_WARPED_3.asItem();
+            }
+            else if(difX == -1 && difY == 0){
+                resultItem = Blocks.CARVED_WARPED_4.asItem();
+            }
+            else if(difX == 1 && difY == 0){
+                resultItem = Blocks.CARVED_WARPED_5.asItem();
+            }
+            else if(difX == -1 && difY == 1){
+                resultItem = Blocks.CARVED_WARPED_6.asItem();
+            }
+            else if(difX == 0 && difY == 1){
+                resultItem = Blocks.CARVED_WARPED_7.asItem();
+            }
+            else if(difX == 1 && difY == 1){
+                resultItem = Blocks.CARVED_WARPED_8.asItem();
+            }
+            else{
+                return ItemStack.EMPTY;
+            }
+        }
         else{
             return ItemStack.EMPTY;
         }
@@ -286,6 +346,8 @@ public class RecipeWoodCarving extends CustomRecipe {
                             || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_ACACIA_LOG.asItem()
                             || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()
                             || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_CRIMSON_STEM.asItem()
+                            || itemstack.getItem() == net.minecraft.world.level.block.Blocks.STRIPPED_WARPED_STEM.asItem()
                     ) {
                         if(logFound){
                             return ItemStack.EMPTY;

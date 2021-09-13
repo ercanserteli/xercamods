@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_food",
+    
+    "ingredients": [{"item": "xercamod:pizza_dough"}, {"item": "xercamod:item_tomato_slices"}, {"item": "xercamod:cheese_slice"}, {"item": "minecraft:red_mushroom"}, {"item": "xercamod:item_raw_sausage"}],
+    "result": {"item": "xercamod:raw_mush_sausage_pizza"}
+}
+        

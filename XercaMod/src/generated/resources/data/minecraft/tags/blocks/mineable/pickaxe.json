@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
+    "xercamod:vat",
+    "xercamod:vat_milk",
+    "xercamod:vat_cheese",
     "xercamod:black_terratile",
     "xercamod:blue_terratile",
     "xercamod:brown_terratile",

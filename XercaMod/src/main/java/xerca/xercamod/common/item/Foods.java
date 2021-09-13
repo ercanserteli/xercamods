@@ -5,6 +5,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 
 public class Foods {
+    public static FoodProperties RAW_SAUSAGE_PIZZA = makeFood(2, 0.4f, true).build();
+    public static FoodProperties RAW_MUSH_SAUSAGE_PIZZA = makeFood(2, 0.4f, true).build();
+    public static FoodProperties RAW_MUSH_PIZZA = makeFood(2, 0.4f, false).build();
+    public static FoodProperties RAW_PLAIN_PIZZA = makeFood(1, 0.4f, false).build();
+    public static FoodProperties PIZZA_DOUGH = makeFood(1, 0.3f, false).build();
+    public static FoodProperties CHEESE_SLICE = makeFood(1, 0.5f, true).build();
     public static FoodProperties RAW_SHISH_KEBAB = makeFood(1, 0.4f, true).build();
     public static FoodProperties YOGHURT = makeFood(4, 0.5f, false).build();
     public static FoodProperties AYRAN = makeFood(4, 0.5f, false).alwaysEat().build();

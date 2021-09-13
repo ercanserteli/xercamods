@@ -135,6 +135,9 @@ shaped_recipes = [
 
     ShapedRecipe(['kk', 'pp', 'pp'], {'item': 'xercamod:carving_station'},  {'p': {'tag': 'minecraft:planks'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "", type="xercamod:crafting_condition_shaped_carved_wood"),
 
+    ShapedRecipe(['c c', 'ccc', 'i i'], {'item': 'xercamod:vat'},  {'c': {'item': 'minecraft:copper_ingot'}, 'i': {'item': 'minecraft:iron_ingot'}}, {'item': 'minecraft:copper_ingot'}, "", type="xercamod:crafting_condition_shaped_food"),
+    ShapedRecipe([' w ', 'wbw', ' w '], {'item': 'xercamod:pizza_dough', 'count': 2},  {'w': {'item': 'minecraft:wheat'}, 'b': {'item': 'minecraft:water_bucket'}}, {'item': 'minecraft:wheat'}, "", type="xercamod:crafting_condition_shaped_food"),
+
     # Carved wood - didn't work because of mirroring
     # ShapedRecipe(['w ', ' k'], {'item': 'xercamod:carved_oak_1', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
     # ShapedRecipe(['w', 'k'], {'item': 'xercamod:carved_oak_2', 'count': 1}, {'w': {'item': 'minecraft:stripped_oak_log'}, 'k': {'item': 'xercamod:item_knife'}}, {'item': 'xercamod:item_knife'}, "carved_oak", "carved_wood", type="xercamod:crafting_condition_shaped_carved_wood"),
@@ -170,6 +173,7 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:item_glass'}, {'item': 'xercamod:item_tomato'}], {'item': 'xercamod:item_tomato_juice'}, {'item': 'xercamod:item_glass'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_tomato'}], {'item': 'xercamod:item_tomato_seeds'}, {'item': 'xercamod:item_tomato'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_tomato'}, {'item': 'xercamod:item_knife', 'data': 32767}], {'item': 'xercamod:item_tomato_slices', 'count': 3}, {'item': 'xercamod:item_tomato'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:cheese_wheel'}, {'item': 'xercamod:item_knife', 'data': 32767}], {'item': 'xercamod:cheese_slice', 'count': 4}, {'item': 'xercamod:cheese_wheel'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_glass'}, {'item': 'minecraft:wheat'}, {'item': 'minecraft:wheat'}], {'item': 'xercamod:item_wheat_juice'}, {'item': 'xercamod:item_glass'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'xercamod:item_block_straw'}], {'item': 'minecraft:sugar_cane', 'count': 9}, {'item': 'xercamod:item_block_straw'}, "", type="xercamod:crafting_condition_shapeless_leather_straw"),
     ShapelessRecipe([{'item': 'xercamod:item_block_leather'}], {'item': 'minecraft:leather', 'count': 9}, {'item': 'xercamod:item_block_leather'}, "", type="xercamod:crafting_condition_shapeless_leather_straw"),
@@ -191,7 +195,12 @@ shapeless_recipes = [
     ShapelessRecipe([{'item': 'xercamod:doner_slice'}, {'item': 'xercamod:item_yoghurt'}, {'item': 'xercamod:item_tomato_slices'}, {'item': 'minecraft:bread'}, {'item': 'minecraft:bowl'}], {'item': 'xercamod:item_alexander'}, {'item': 'xercamod:doner_slice'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'minecraft:sweet_berries'}, {'item': 'xercamod:item_yoghurt'}, {'item': 'minecraft:honey_bottle'}, {'item': 'minecraft:bowl'}], {'item': 'xercamod:item_honeyberry_yoghurt'}, {'item': 'xercamod:item_yoghurt'}, "", type="xercamod:crafting_condition_shapeless_food"),
     ShapelessRecipe([{'item': 'minecraft:mutton'}, {'item': 'minecraft:stick'}, {'item': 'xercamod:item_tomato_slices'}], {'item': 'xercamod:raw_shish_kebab'}, {'item': 'minecraft:mutton'}, "", type="xercamod:crafting_condition_shapeless_food"),
-
+    ShapelessRecipe([{'item': 'xercamod:pizza_dough'}, {'item': 'xercamod:item_tomato_slices'}, {'item': 'xercamod:cheese_slice'}], {'item': 'xercamod:raw_plain_pizza'}, {'item': 'minecraft:pizza_dough'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:pizza_dough'}, {'item': 'xercamod:item_tomato_slices'}, {'item': 'xercamod:cheese_slice'}, {'item': 'xercamod:item_raw_sausage'}], {'item': 'xercamod:raw_sausage_pizza'}, {'item': 'minecraft:pizza_dough'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:pizza_dough'}, {'item': 'xercamod:item_tomato_slices'}, {'item': 'xercamod:cheese_slice'}, {'item': 'minecraft:brown_mushroom'}], {'item': 'xercamod:raw_mush_pizza'}, {'item': 'minecraft:pizza_dough'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:pizza_dough'}, {'item': 'xercamod:item_tomato_slices'}, {'item': 'xercamod:cheese_slice'}, {'item': 'minecraft:red_mushroom'}], {'item': 'xercamod:raw_mush_pizza'}, {'item': 'minecraft:pizza_dough'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:pizza_dough'}, {'item': 'xercamod:item_tomato_slices'}, {'item': 'xercamod:cheese_slice'}, {'item': 'minecraft:brown_mushroom'}, {'item': 'xercamod:item_raw_sausage'}], {'item': 'xercamod:raw_mush_sausage_pizza'}, {'item': 'minecraft:pizza_dough'}, "", type="xercamod:crafting_condition_shapeless_food"),
+    ShapelessRecipe([{'item': 'xercamod:pizza_dough'}, {'item': 'xercamod:item_tomato_slices'}, {'item': 'xercamod:cheese_slice'}, {'item': 'minecraft:red_mushroom'}, {'item': 'xercamod:item_raw_sausage'}], {'item': 'xercamod:raw_mush_sausage_pizza'}, {'item': 'minecraft:pizza_dough'}, "", type="xercamod:crafting_condition_shapeless_food"),
 
     ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:acacia_log'}], {'item': 'minecraft:stripped_acacia_log'}, {'item': 'xercamod:item_knife'}, ""),
     ShapelessRecipe([{'item': 'xercamod:item_knife', 'data': 32767}, {'item': 'minecraft:birch_log'}], {'item': 'minecraft:stripped_birch_log'}, {'item': 'xercamod:item_knife'}, ""),
@@ -222,6 +231,10 @@ cooking_recipes = [
     CookingRecipe("xercamod:crafting_condition_smelting_food", {'item': 'xercamod:item_rice_seeds'}, "xercamod:cooked_rice", 0.2, 200, {'item': 'xercamod:item_rice_seeds'}, ""),
     CookingRecipe("xercamod:crafting_condition_smelting_food", {'item': 'minecraft:milk_bucket'}, "xercamod:item_yoghurt", 0.2, 200, {'item': 'minecraft:milk_bucket'}, ""),
     CookingRecipe("xercamod:crafting_condition_smelting_food", {'item': 'xercamod:raw_shish_kebab'}, "xercamod:item_shish_kebab", 0.2, 200, {'item': 'xercamod:raw_shish_kebab'}, ""),
+    CookingRecipe("xercamod:crafting_condition_smelting_food", {'item': 'xercamod:raw_plain_pizza'}, "xercamod:plain_pizza", 0.2, 300, {'item': 'xercamod:raw_plain_pizza'}, ""),
+    CookingRecipe("xercamod:crafting_condition_smelting_food", {'item': 'xercamod:raw_sausage_pizza'}, "xercamod:sausage_pizza", 0.2, 350, {'item': 'xercamod:raw_sausage_pizza'}, ""),
+    CookingRecipe("xercamod:crafting_condition_smelting_food", {'item': 'xercamod:raw_mush_pizza'}, "xercamod:mush_pizza", 0.2, 350, {'item': 'xercamod:raw_mush_pizza'}, ""),
+    CookingRecipe("xercamod:crafting_condition_smelting_food", {'item': 'xercamod:raw_mush_sausage_pizza'}, "xercamod:mush_sausage_pizza", 0.2, 400, {'item': 'xercamod:raw_mush_sausage_pizza'}, ""),
 ]
 
 special_recipes = [
@@ -399,6 +412,42 @@ carving_recipes = [
     CarvingRecipe("minecraft:stripped_dark_oak_log", "xercamod:carved_dark_oak_6", 1, "", "carving"),
     CarvingRecipe("minecraft:stripped_dark_oak_log", "xercamod:carved_dark_oak_7", 1, "", "carving"),
     CarvingRecipe("minecraft:stripped_dark_oak_log", "xercamod:carved_dark_oak_8", 1, "", "carving"),
+
+    CarvingRecipe("minecraft:crimson_stem", "minecraft:stripped_crimson_stem", 1, "", "carving"),
+    CarvingRecipe("minecraft:crimson_stem", "xercamod:carved_crimson_1", 1, "", "carving"),
+    CarvingRecipe("minecraft:crimson_stem", "xercamod:carved_crimson_2", 1, "", "carving"),
+    CarvingRecipe("minecraft:crimson_stem", "xercamod:carved_crimson_3", 1, "", "carving"),
+    CarvingRecipe("minecraft:crimson_stem", "xercamod:carved_crimson_4", 1, "", "carving"),
+    CarvingRecipe("minecraft:crimson_stem", "xercamod:carved_crimson_5", 1, "", "carving"),
+    CarvingRecipe("minecraft:crimson_stem", "xercamod:carved_crimson_6", 1, "", "carving"),
+    CarvingRecipe("minecraft:crimson_stem", "xercamod:carved_crimson_7", 1, "", "carving"),
+    CarvingRecipe("minecraft:crimson_stem", "xercamod:carved_crimson_8", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_crimson_stem", "xercamod:carved_crimson_1", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_crimson_stem", "xercamod:carved_crimson_2", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_crimson_stem", "xercamod:carved_crimson_3", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_crimson_stem", "xercamod:carved_crimson_4", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_crimson_stem", "xercamod:carved_crimson_5", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_crimson_stem", "xercamod:carved_crimson_6", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_crimson_stem", "xercamod:carved_crimson_7", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_crimson_stem", "xercamod:carved_crimson_8", 1, "", "carving"),
+
+    CarvingRecipe("minecraft:warped_stem", "minecraft:stripped_warped_stem", 1, "", "carving"),
+    CarvingRecipe("minecraft:warped_stem", "xercamod:carved_warped_1", 1, "", "carving"),
+    CarvingRecipe("minecraft:warped_stem", "xercamod:carved_warped_2", 1, "", "carving"),
+    CarvingRecipe("minecraft:warped_stem", "xercamod:carved_warped_3", 1, "", "carving"),
+    CarvingRecipe("minecraft:warped_stem", "xercamod:carved_warped_4", 1, "", "carving"),
+    CarvingRecipe("minecraft:warped_stem", "xercamod:carved_warped_5", 1, "", "carving"),
+    CarvingRecipe("minecraft:warped_stem", "xercamod:carved_warped_6", 1, "", "carving"),
+    CarvingRecipe("minecraft:warped_stem", "xercamod:carved_warped_7", 1, "", "carving"),
+    CarvingRecipe("minecraft:warped_stem", "xercamod:carved_warped_8", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_warped_stem", "xercamod:carved_warped_1", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_warped_stem", "xercamod:carved_warped_2", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_warped_stem", "xercamod:carved_warped_3", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_warped_stem", "xercamod:carved_warped_4", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_warped_stem", "xercamod:carved_warped_5", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_warped_stem", "xercamod:carved_warped_6", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_warped_stem", "xercamod:carved_warped_7", 1, "", "carving"),
+    CarvingRecipe("minecraft:stripped_warped_stem", "xercamod:carved_warped_8", 1, "", "carving"),
 ]
 
 smithing_recipes = [

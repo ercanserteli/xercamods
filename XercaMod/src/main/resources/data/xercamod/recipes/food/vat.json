@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        "c c",
+        "ccc",
+        "i i"
+    ],
+    "key": {"c": {"item": "minecraft:copper_ingot"}, "i": {"item": "minecraft:iron_ingot"}},
+    "result": {"item": "xercamod:vat"}
+}
+        

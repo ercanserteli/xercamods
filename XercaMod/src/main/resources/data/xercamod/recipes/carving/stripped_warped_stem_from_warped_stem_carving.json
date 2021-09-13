@@ -1,0 +1,10 @@
+
+{
+    "type": "xercamod:carving",
+    "ingredient": {
+        "item": "minecraft:warped_stem"
+    },
+    "result": "minecraft:stripped_warped_stem",
+    "count": 1
+}
+        

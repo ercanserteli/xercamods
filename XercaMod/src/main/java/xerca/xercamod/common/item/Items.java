@@ -1,17 +1,18 @@
 package xerca.xercamod.common.item;
 
-import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,13 +27,6 @@ import xerca.xercamod.common.enchantments.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
-
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
 
 @ObjectHolder(XercaMod.MODID)
 public final class Items {
@@ -62,6 +56,11 @@ public final class Items {
     public static final Item RICEBALL = null;
     public static final Item SUSHI = null;
     public static final Item COOKED_RICE = null;
+    public static final Item PIZZA_DOUGH = null;
+    public static final Item RAW_PLAIN_PIZZA = null;
+    public static final Item RAW_MUSH_PIZZA = null;
+    public static final Item RAW_MUSH_SAUSAGE_PIZZA = null;
+    public static final Item RAW_SAUSAGE_PIZZA = null;
     public static final ItemGrabHook ITEM_GRAB_HOOK = null;
     public static final ItemWarhammer ITEM_NETHERITE_WARHAMMER = null;
     public static final ItemWarhammer ITEM_DIAMOND_WARHAMMER = null;
@@ -182,6 +181,22 @@ public final class Items {
     public static final Item CARVED_SPRUCE_6 = null;
     public static final Item CARVED_SPRUCE_7 = null;
     public static final Item CARVED_SPRUCE_8 = null;
+    public static final Item CARVED_CRIMSON_1 = null;
+    public static final Item CARVED_CRIMSON_2 = null;
+    public static final Item CARVED_CRIMSON_3 = null;
+    public static final Item CARVED_CRIMSON_4 = null;
+    public static final Item CARVED_CRIMSON_5 = null;
+    public static final Item CARVED_CRIMSON_6 = null;
+    public static final Item CARVED_CRIMSON_7 = null;
+    public static final Item CARVED_CRIMSON_8 = null;
+    public static final Item CARVED_WARPED_1 = null;
+    public static final Item CARVED_WARPED_2 = null;
+    public static final Item CARVED_WARPED_3 = null;
+    public static final Item CARVED_WARPED_4 = null;
+    public static final Item CARVED_WARPED_5 = null;
+    public static final Item CARVED_WARPED_6 = null;
+    public static final Item CARVED_WARPED_7 = null;
+    public static final Item CARVED_WARPED_8 = null;
 
     public static final Item BLACK_TERRATILE = null;
     public static final Item BLUE_TERRATILE = null;
@@ -238,6 +253,12 @@ public final class Items {
     public static final Item ITEM_BOOKCASE = null;
 
     public static final Item ROPE = null;
+
+    public static final Item VAT = null;
+    public static final Item CHEESE_WHEEL = null;
+    public static final Item CHEESE_SLICE = null;
+//    public static final Item VAT_MILK = null;
+//    public static final Item VAT_CHEESE = null;
 
     public static final ItemScythe WOODEN_SCYTHE = null;
     public static final ItemScythe STONE_SCYTHE = null;
@@ -417,23 +438,23 @@ public final class Items {
                     new BlockNamedConditionedItem(Blocks.BLOCK_TOMATO_PLANT, new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS), Config::isFoodEnabled).setRegistryName("item_tomato_seeds"),
                     new BlockNamedConditionedItem(Blocks.BLOCK_RICE_PLANT, new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS), Config::isFoodEnabled).setRegistryName("item_rice_seeds"),
                     new ItemGoldenCupcake(),
-                    makeFoodItem( "item_apple_cupcake", Foods.APPLE_CUPCAKE),
-                    makeFoodItem( "item_pumpkin_cupcake", Foods.PUMPKIN_CUPCAKE),
-                    makeFoodItem( "item_cocoa_cupcake", Foods.COCOA_CUPCAKE),
-                    makeFoodItem( "item_melon_cupcake", Foods.MELON_CUPCAKE),
-                    makeFoodItem( "item_carrot_cupcake", Foods.CARROT_CUPCAKE),
-                    makeFoodItem( "item_fancy_apple_cupcake", Foods.FANCY_APPLE_CUPCAKE),
-                    makeFoodItem( "item_fancy_pumpkin_cupcake", Foods.FANCY_PUMPKIN_CUPCAKE),
-                    makeFoodItem( "item_donut", Foods.DONUT),
-                    makeFoodItem( "item_fancy_donut", Foods.FANCY_DONUT),
-                    makeFoodItem( "item_sprinkles", Foods.SPRINKLES),
-                    makeFoodItem( "item_chocolate", Foods.CHOCOLATE),
-                    makeFoodItem( "item_bun", Foods.BUN),
+                    makeFoodItem("item_apple_cupcake", Foods.APPLE_CUPCAKE),
+                    makeFoodItem("item_pumpkin_cupcake", Foods.PUMPKIN_CUPCAKE),
+                    makeFoodItem("item_cocoa_cupcake", Foods.COCOA_CUPCAKE),
+                    makeFoodItem("item_melon_cupcake", Foods.MELON_CUPCAKE),
+                    makeFoodItem("item_carrot_cupcake", Foods.CARROT_CUPCAKE),
+                    makeFoodItem("item_fancy_apple_cupcake", Foods.FANCY_APPLE_CUPCAKE),
+                    makeFoodItem("item_fancy_pumpkin_cupcake", Foods.FANCY_PUMPKIN_CUPCAKE),
+                    makeFoodItem("item_donut", Foods.DONUT),
+                    makeFoodItem("item_fancy_donut", Foods.FANCY_DONUT),
+                    makeFoodItem("item_sprinkles", Foods.SPRINKLES),
+                    makeFoodItem("item_chocolate", Foods.CHOCOLATE),
+                    makeFoodItem("item_bun", Foods.BUN),
                     makeFoodItem("item_raw_patty", Foods.RAW_PATTY),
                     makeFoodItem("item_cooked_patty", Foods.COOKED_PATTY),
                     makeFoodItem("item_raw_chicken_patty", Foods.RAW_CHICKEN_PATTY),
                     makeFoodItem("item_cooked_chicken_patty", Foods.COOKED_CHICKEN_PATTY),
-                    makeFoodItem( "item_hamburger", Foods.HAMBURGER),
+                    makeFoodItem("item_hamburger", Foods.HAMBURGER),
                     makeFoodItem("item_chicken_burger", Foods.CHICKEN_BURGER),
                     makeFoodItem("item_mushroom_burger", Foods.MUSHROOM_BURGER),
                     makeFoodItem("item_ultimate_bottom", Foods.ULTIMATE_BOTTOM),
@@ -488,6 +509,12 @@ public final class Items {
                     makeFoodItem("item_chubby_doner", Foods.CHUBBY_DONER),
                     makeContainedFoodItem("item_alexander", Foods.ALEXANDER, net.minecraft.world.item.Items.BOWL, 16),
                     makeFoodItem("raw_shish_kebab", Foods.RAW_SHISH_KEBAB),
+                    makeFoodItem("cheese_slice", Foods.CHEESE_SLICE),
+                    makeFoodItem("pizza_dough", Foods.PIZZA_DOUGH),
+                    makeFoodItem("raw_plain_pizza", Foods.RAW_PLAIN_PIZZA),
+                    makeFoodItem("raw_mush_pizza", Foods.RAW_MUSH_PIZZA),
+                    makeFoodItem("raw_mush_sausage_pizza", Foods.RAW_MUSH_SAUSAGE_PIZZA),
+                    makeFoodItem("raw_sausage_pizza", Foods.RAW_SAUSAGE_PIZZA),
 
                     new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
                     new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),
@@ -506,6 +533,10 @@ public final class Items {
                     new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.WHITE_CUSHION).setRegistryName("white_cushion"),
                     new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.YELLOW_CUSHION).setRegistryName("yellow_cushion"),
 
+                    new BlockConditionedItem(Blocks.PLAIN_PIZZA, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("plain_pizza"),
+                    new BlockConditionedItem(Blocks.MUSH_PIZZA, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("mush_pizza"),
+                    new BlockConditionedItem(Blocks.MUSH_SAUSAGE_PIZZA, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("mush_sausage_pizza"),
+                    new BlockConditionedItem(Blocks.SAUSAGE_PIZZA, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("sausage_pizza"),
                     new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("item_apple_pie"),
                     new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("sweet_berry_pie"),
                     new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
@@ -559,6 +590,22 @@ public final class Items {
                     new CarvedWoodItem(Blocks.CARVED_SPRUCE_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_spruce_6"),
                     new CarvedWoodItem(Blocks.CARVED_SPRUCE_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_spruce_7"),
                     new CarvedWoodItem(Blocks.CARVED_SPRUCE_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_spruce_8"),
+                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_crimson_1"),
+                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_crimson_2"),
+                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_crimson_3"),
+                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_crimson_4"),
+                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_crimson_5"),
+                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_crimson_6"),
+                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_crimson_7"),
+                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_crimson_8"),
+                    new CarvedWoodItem(Blocks.CARVED_WARPED_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_warped_1"),
+                    new CarvedWoodItem(Blocks.CARVED_WARPED_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_warped_2"),
+                    new CarvedWoodItem(Blocks.CARVED_WARPED_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_warped_3"),
+                    new CarvedWoodItem(Blocks.CARVED_WARPED_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_warped_4"),
+                    new CarvedWoodItem(Blocks.CARVED_WARPED_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_warped_5"),
+                    new CarvedWoodItem(Blocks.CARVED_WARPED_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_warped_6"),
+                    new CarvedWoodItem(Blocks.CARVED_WARPED_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_warped_7"),
+                    new CarvedWoodItem(Blocks.CARVED_WARPED_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_warped_8"),
 
                     new BlockConditionedItem(Blocks.BLACK_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("black_terratile"),
                     new BlockConditionedItem(Blocks.BLUE_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("blue_terratile"),
@@ -625,6 +672,9 @@ public final class Items {
                             tooltip.add(text.withStyle(ChatFormatting.BLUE));
                         }
                     }.setRegistryName("rope"),
+
+                    new BlockConditionedItem(Blocks.VAT, new Item.Properties().tab(Items.decoTab), Config::isFoodEnabled).setRegistryName("vat"),
+                    new BlockConditionedItem(Blocks.CHEESE_WHEEL, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("cheese_wheel"),
 
                     new ItemScythe(Tiers.WOOD, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("wooden_scythe"),
                     new ItemScythe(Tiers.STONE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("stone_scythe"),

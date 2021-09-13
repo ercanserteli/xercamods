@@ -1,0 +1,35 @@
+{
+    "textures": {
+        "particle": "xercamod:block/cheese_surface",
+        "bottom": "xercamod:block/cheese_surface",
+        "top": "xercamod:block/cheese_surface",
+        "side": "xercamod:block/cheese_surface",
+        "inside": "xercamod:block/cheese_surface"
+    },
+    "elements": [
+        {
+          "from": [1, 0, 8],
+          "to": [15, 8, 15],
+            "faces": {
+                "down":  { "texture": "#bottom", "cullface": "down" },
+                "up":    { "texture": "#top" },
+                "north": { "texture": "#side" },
+                "south": { "texture": "#side" },
+                "west":  { "texture": "#inside" },
+                "east":  { "texture": "#side" }
+            }
+        },
+        {
+          "from": [1, 0, 1],
+          "to": [8, 8, 8],
+          "faces": {
+            "down":  { "texture": "#bottom", "cullface": "down" },
+            "up":    { "texture": "#top" },
+            "north": { "texture": "#side" },
+            "south": { "texture": "#side" },
+            "west":  { "texture": "#inside" },
+            "east":  { "texture": "#side" }
+          }
+        }
+    ]
+}
