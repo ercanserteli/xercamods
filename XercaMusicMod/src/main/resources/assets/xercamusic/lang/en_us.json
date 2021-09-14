@@ -43,5 +43,11 @@
   "note.hideNeighborsButton": "N",
   "note.toggleTooltip": "Toggle neighbor sheets",
   "note.lockTooltip": "Lock preview instrument",
-  "note.previewTooltip": "Preview music"
+  "note.previewTooltip": "Preview music",
+
+  "export.success": "Music sheet exported to %1$s",
+  "export.fail": "Could not export music sheet",
+  "import.success": "Music sheet imported",
+  "import.fail.1": "You must have an empty music sheet item on your main-hand to import a music sheet in survival mode",
+  "import.fail.4": "Could not parse command or read the music sheet file (%1$s)"
 }

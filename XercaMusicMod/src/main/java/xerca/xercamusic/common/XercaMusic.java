@@ -1,7 +1,8 @@
 package xerca.xercamusic.common;
 
+import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -17,7 +19,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
@@ -27,8 +28,6 @@ import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,10 @@ public class XercaMusic
         NETWORK_HANDLER.registerMessage(msg_id++, MusicEndedPacket.class, MusicEndedPacket::encode, MusicEndedPacket::decode, MusicEndedPacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, MusicBoxUpdatePacket.class, MusicBoxUpdatePacket::encode, MusicBoxUpdatePacket::decode, MusicBoxUpdatePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, SingleNotePacket.class, SingleNotePacket::encode, SingleNotePacket::decode, SingleNotePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id, SingleNoteClientPacket.class, SingleNoteClientPacket::encode, SingleNoteClientPacket::decode, SingleNoteClientPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, SingleNoteClientPacket.class, SingleNoteClientPacket::encode, SingleNoteClientPacket::decode, SingleNoteClientPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ExportMusicPacket.class, ExportMusicPacket::encode, ExportMusicPacket::decode, ExportMusicPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ImportMusicPacket.class, ImportMusicPacket::encode, ImportMusicPacket::decode, ImportMusicPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ImportMusicSendPacket.class, ImportMusicSendPacket::encode, ImportMusicSendPacket::decode, ImportMusicSendPacketHandler::handle);
     }
 
     public XercaMusic() {
@@ -91,22 +93,6 @@ public class XercaMusic
     }
 
     private void registerTriggers() {
-//        Method method;
-//        method = ObfuscationReflectionHelper.findMethod(CriteriaTriggers.class, "register", CriterionTrigger.class);
-//        method.setAccessible(true);
-//
-//        for (int i=0; i < Triggers.TRIGGER_ARRAY.length; i++)
-//        {
-//            try
-//            {
-//                method.invoke(null, Triggers.TRIGGER_ARRAY[i]);
-//            }
-//            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
-
         for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++)
         {
             CriteriaTriggers.register(Triggers.TRIGGER_ARRAY[i]);
@@ -119,6 +105,16 @@ public class XercaMusic
         @SubscribeEvent
         public static void registerLootModifiers(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
             event.getRegistry().register(new TempleLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"temple_vog")));
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = XercaMusic.MODID)
+    public static class ForgeEventHandler {
+        @SubscribeEvent
+        public static void onRegisterCommandEvent(RegisterCommandsEvent event) {
+            CommandDispatcher<CommandSourceStack> commandDispatcher = event.getDispatcher();
+            CommandImport.register(commandDispatcher);
+            CommandExport.register(commandDispatcher);
         }
     }
 

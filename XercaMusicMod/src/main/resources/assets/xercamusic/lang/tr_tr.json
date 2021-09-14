@@ -40,5 +40,11 @@
   "note.downButton": "▼",
   "note.startPreviewButton": "►",
   "note.stopPreviewButton": "■",
-  "note.hideNeighborsButton": "N"
+  "note.hideNeighborsButton": "N",
+
+  "export.success": "Müzik kağıdı dışa aktarıldı (%1$s)",
+  "export.fail": "Müzik kağıdı dışa aktarılamadı",
+  "import.success": "Müzik kağıdı içe aktarıldı",
+  "import.fail.1": "Hayatta kalma modunda müzik kağıdını içe aktarmak için elinde boş müzik kağıdı olmalı",
+  "import.fail.4": "Komut anlaşılamadı veya müzik kağıdı dosyası okunamadı (%1$s)"
 }
