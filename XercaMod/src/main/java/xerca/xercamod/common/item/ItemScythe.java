@@ -11,6 +11,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
@@ -41,6 +42,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.XercaMod;
+import xerca.xercamod.common.entity.EntityHealthOrb;
 import xerca.xercamod.common.packets.ScytheAttackPacket;
 
 import javax.annotation.Nonnull;
@@ -235,6 +237,16 @@ public class ItemScythe extends DiggerItem {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity)
     {
+        int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, stack);
+        if(devourLevel > 0){
+            float strengthScale = player.getAttackStrengthScale(0.5f);
+            if(strengthScale > 0.9f){
+                if(!player.level.isClientSide){
+                    EntityHealthOrb.award((ServerLevel) player.level, entity, devourLevel);
+                }
+                player.playSound(xerca.xercamod.common.SoundEvents.SNEAK_HIT, 0.8f, 0.9f+player.getRandom().nextFloat()*0.2f);
+            }
+        }
         if(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, stack) > 0){
             float damage = (float)player.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
             float bonusDamage;

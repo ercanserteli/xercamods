@@ -20,6 +20,7 @@ public final class Entities {
     public static final EntityType<EntityHook> HOOK = null;
     public static final EntityType<EntityTomato> TOMATO = null;
     public static final EntityType<EntityCushion> CUSHION = null;
+    public static final EntityType<EntityHealthOrb> HEALTH_ORB = null;
 
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
@@ -75,11 +76,15 @@ public final class Entities {
             final EntityType<EntityCushion> cushion = build("cushion",
                     EntityType.Builder.<EntityCushion>of((EntityCushion::new), MobCategory.MISC).setCustomClientFactory(EntityCushion::new).sized(1.f, 0.125f)
             );
+            final EntityType<EntityHealthOrb> healthOrb = build("health_orb",
+                    EntityType.Builder.<EntityHealthOrb>of((EntityHealthOrb::new), MobCategory.MISC).setCustomClientFactory(EntityHealthOrb::new).sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(20)
+            );
 
             event.getRegistry().register(confettiBall);
             event.getRegistry().register(hook);
             event.getRegistry().register(tomato);
             event.getRegistry().register(cushion);
+            event.getRegistry().register(healthOrb);
 
         }
     }

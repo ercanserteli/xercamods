@@ -97,6 +97,11 @@ public class ItemFlask extends Item {
                 }
                 decrementCharges(stack);
 
+                int useDuration = getUseDuration(stack);
+                if(useDuration < 32){
+                    entityplayer.getCooldowns().addCooldown(this, (32 - useDuration)/2);
+                }
+
                 stack.hurtAndBreak(1, entityplayer, (playerEntity) -> {
                     playerEntity.broadcastBreakEvent(playerEntity.getUsedItemHand());
                 });

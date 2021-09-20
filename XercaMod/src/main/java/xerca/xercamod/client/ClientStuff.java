@@ -70,6 +70,7 @@ public class ClientStuff {
             event.registerEntityRenderer(Entities.CONFETTI_BALL, new RenderConfettiBallFactory());
             event.registerEntityRenderer(Entities.HOOK, new RenderHookFactory());
             event.registerEntityRenderer(Entities.CUSHION, new RenderCushionFactory());
+            event.registerEntityRenderer(Entities.HEALTH_ORB, new RenderHealthOrbFactory());
 
             event.registerBlockEntityRenderer(XercaTileEntities.DONER, DonerTileEntityRenderer::new);
         }

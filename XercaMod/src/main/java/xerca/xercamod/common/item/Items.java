@@ -281,6 +281,7 @@ public final class Items {
     public static final Enchantment ENCHANTMENT_RANGE = null;
     public static final Enchantment ENCHANTMENT_CAPACITY = null;
     public static final Enchantment ENCHANTMENT_CHUG = null;
+    public static final Enchantment ENCHANTMENT_DEVOUR = null;
 
     public static TeaCreativeTab teaTab;
     public static DecoCreativeTab decoTab;
@@ -701,7 +702,8 @@ public final class Items {
                     new EnchantmentGuillotine(Enchantment.Rarity.VERY_RARE, EquipmentSlot.MAINHAND),
                     new EnchantmentCapacity(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND),
                     new EnchantmentRange(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentChug(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND)
+                    new EnchantmentChug(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
+                    new EnchantmentDevour(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND)
             );
         }
     }

@@ -1,5 +1,6 @@
 package xerca.xercamod.common.packets;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -15,6 +16,7 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.Triggers;
 import xerca.xercamod.common.XercaMod;
+import xerca.xercamod.common.entity.EntityHealthOrb;
 import xerca.xercamod.common.item.ItemScythe;
 import xerca.xercamod.common.item.Items;
 
@@ -65,6 +67,12 @@ public class ScytheAttackPacketHandler {
 
                     ItemScythe.spawnHead(targetLiving);
                     Triggers.BEHEAD.trigger(pl);
+
+                    // If scythe has devour, activate it as well
+                    int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, st);
+                    if(devourLevel > 0){
+                        EntityHealthOrb.award((ServerLevel) pl.level, targetLiving, devourLevel);
+                    }
                 }
                 else{
                     pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.2F + 0.9f);
