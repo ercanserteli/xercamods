@@ -2,22 +2,29 @@ package xerca.xercamod.common;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.BasicTrade;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import xerca.xercamod.common.entity.EntityHealthOrb;
+import xerca.xercamod.common.item.ItemScythe;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.packets.ConfigSyncPacket;
 
@@ -114,6 +121,20 @@ class EventHandler {
             world.setBlockAndUpdate(event.getPos(), xerca.xercamod.common.block.Blocks.BLOCK_DONER.defaultBlockState());
             heldItem.shrink(1);
             world.playSound(null, event.getPos(), SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8f, 0.9f + world.random.nextFloat()*0.1f);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDeath(LivingDeathEvent event) {
+        DamageSource s = event.getSource();
+        if (s.getEntity() instanceof Player player) {
+            // Handle scythe devour
+            if(player.getMainHandItem().getItem() instanceof ItemScythe){
+                int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, player.getMainHandItem());
+                if(devourLevel > 0 && !s.isExplosion() && !s.isFall() && !s.isFire() && !s.isMagic() && !s.isProjectile()){
+                    EntityHealthOrb.award((ServerLevel) player.level, event.getEntity(), devourLevel*2);
+                }
+            }
         }
     }
 }

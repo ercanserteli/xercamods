@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -237,55 +238,63 @@ public class ItemScythe extends DiggerItem {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity)
     {
-        int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, stack);
-        if(devourLevel > 0){
-            float strengthScale = player.getAttackStrengthScale(0.5f);
-            if(strengthScale > 0.9f){
-                if(!player.level.isClientSide){
-                    EntityHealthOrb.award((ServerLevel) player.level, entity, devourLevel);
-                }
-                player.playSound(xerca.xercamod.common.SoundEvents.SNEAK_HIT, 0.8f, 0.9f+player.getRandom().nextFloat()*0.2f);
-            }
-        }
-        if(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, stack) > 0){
-            float damage = (float)player.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
-            float bonusDamage;
-            if (entity instanceof LivingEntity) {
-                bonusDamage = EnchantmentHelper.getDamageBonus(stack, ((LivingEntity)entity).getMobType());
-            } else {
-                bonusDamage = EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
-            }
-
+        if(stack.isEnchanted()){
             float cooldownStrength = player.getAttackStrengthScale(0.5f);
-            damage *= (0.2F + cooldownStrength * cooldownStrength * 0.8F);
-            bonusDamage *= cooldownStrength;
-            damage += bonusDamage;
-
             boolean cooledAttack = cooldownStrength > 0.9F;
-            boolean cooledSprintAttack = player.isSprinting() && cooledAttack;
-            boolean critical = cooledAttack && player.fallDistance > 0.0F && !player.isOnGround() && !player.onClimbable() &&
-                    !player.isInWater() && !player.hasEffect(MobEffects.BLINDNESS) && !player.isPassenger() &&
-                    entity instanceof LivingEntity  && !player.isSprinting();
-//        net.minecraftforge.event.entity.player.CriticalHitEvent hitResult = net.minecraftforge.common.ForgeHooks.getCriticalHit(player, entity, critical, critical ? 1.5F : 1.0F);
-//        critical = hitResult != null;
 
-            double d0 = player.walkDist - player.walkDistO;
-            boolean sweep = cooledAttack && !critical && !cooledSprintAttack && player.isOnGround() &&
-                    d0 < player.getSpeed();
-
-            if(sweep){
-                float sweepDamage = 1.0F + EnchantmentHelper.getSweepingDamageRatio(player) * damage;
-
-                for(LivingEntity livingentity : player.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(1.0D, 0.25D, 1.0D))) {
-                    if (livingentity != player && livingentity != entity && !player.isAlliedTo(livingentity) && (!(livingentity instanceof ArmorStand) || !((ArmorStand)livingentity).isMarker()) && player.distanceToSqr(livingentity) < 9.0D) {
-//                        livingentity.knockback(player, 0.4F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
-                        livingentity.knockback(0.4F, (double)Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), (double)(-Mth.cos(player.getYRot() * ((float)Math.PI / 180F))));
-                        livingentity.hurt(DamageSource.playerAttack(player), sweepDamage);
+            // Handle devour
+            if (entity instanceof LivingEntity) {
+                LivingEntity target = (LivingEntity) entity;
+                int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, stack);
+                if(devourLevel > 0){
+                    if(cooledAttack){
+                        if(!player.level.isClientSide){
+                            if(player.getRandom().nextFloat() < 0.25f * devourLevel){
+                                EntityHealthOrb.award((ServerLevel) player.level, entity, 1);
+                                player.level.playSound(null, player, xerca.xercamod.common.SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 0.8f, 0.9f+player.getRandom().nextFloat()*0.2f);
+                            }
+                        }
                     }
                 }
+            }
 
-                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, player.getSoundSource(), 1.0F, 1.0F);
-                player.sweepAttack();
+            // Handle sweeping edge
+            if(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, stack) > 0){
+                float damage = (float)player.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
+                float bonusDamage;
+                if (entity instanceof LivingEntity) {
+                    bonusDamage = EnchantmentHelper.getDamageBonus(stack, ((LivingEntity)entity).getMobType());
+                } else {
+                    bonusDamage = EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED);
+                }
+                damage *= (0.2F + cooldownStrength * cooldownStrength * 0.8F);
+                bonusDamage *= cooldownStrength;
+                damage += bonusDamage;
+                boolean cooledSprintAttack = player.isSprinting() && cooledAttack;
+                boolean critical = cooledAttack && player.fallDistance > 0.0F && !player.isOnGround() && !player.onClimbable() &&
+                        !player.isInWater() && !player.hasEffect(MobEffects.BLINDNESS) && !player.isPassenger() &&
+                        entity instanceof LivingEntity  && !player.isSprinting();
+                // net.minecraftforge.event.entity.player.CriticalHitEvent hitResult = net.minecraftforge.common.ForgeHooks.getCriticalHit(player, entity, critical, critical ? 1.5F : 1.0F);
+                // critical = hitResult != null;
+
+                double d0 = player.walkDist - player.walkDistO;
+                boolean sweep = cooledAttack && !critical && !cooledSprintAttack && player.isOnGround() &&
+                        d0 < player.getSpeed();
+
+                if(sweep){
+                    float sweepDamage = 1.0F + EnchantmentHelper.getSweepingDamageRatio(player) * damage;
+
+                    for(LivingEntity livingentity : player.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(1.0D, 0.25D, 1.0D))) {
+                        if (livingentity != player && livingentity != entity && !player.isAlliedTo(livingentity) && (!(livingentity instanceof ArmorStand) || !((ArmorStand)livingentity).isMarker()) && player.distanceToSqr(livingentity) < 9.0D) {
+//                        livingentity.knockback(player, 0.4F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
+                            livingentity.knockback(0.4F, (double)Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), (double)(-Mth.cos(player.getYRot() * ((float)Math.PI / 180F))));
+                            livingentity.hurt(DamageSource.playerAttack(player), sweepDamage);
+                        }
+                    }
+
+                    player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    player.sweepAttack();
+                }
             }
         }
 
