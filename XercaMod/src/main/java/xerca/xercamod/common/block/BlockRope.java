@@ -8,7 +8,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,10 +47,10 @@ public class BlockRope extends PipeBlock {
                 setValue(WEST, isConnectable(blockReader, pos, Direction.WEST));
     }
 
-//    public boolean isStickyBlock(BlockState state)
-//    {
-//        return true;
-//    }
+    public boolean isStickyBlock(BlockState state)
+    {
+        return true;
+    }
 
 //    public boolean canStickTo(BlockState state, BlockState other)
 //    {
