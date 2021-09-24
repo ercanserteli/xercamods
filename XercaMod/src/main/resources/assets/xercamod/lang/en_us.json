@@ -144,11 +144,14 @@
   "block.xercamod.mush_sausage_pizza": "Mixed Pizza",
   "block.xercamod.sausage_pizza": "Sausage Pizza",
 
+  "block.xercamod.omni_chest": "Omni Chest",
+
   "container.xercamod.bookcase": "Bookcase",
   "container.xercamod.carving_station": "Carving Bench",
+  "container.xercamod.omni_chest": "Omni Chest",
 
   "itemGroup.tea_tab": "Tea",
-  "itemGroup.deco_tab": "XercaMod Decoration",
+  "itemGroup.deco_tab": "XercaMod Blocks",
 
   "item.xercamod.item_attorney_badge": "Defense Attorney Badge",
   "item.xercamod.item_prosecutor_badge": "Prosecutor Badge",

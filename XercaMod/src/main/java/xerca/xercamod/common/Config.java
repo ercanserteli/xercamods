@@ -34,6 +34,7 @@ public class Config {
         conditionMap.put("spyglass", Config::isSpyglassEnabled);
         conditionMap.put("rope", Config::isRopeEnabled);
         conditionMap.put("terracotta_tile", Config::isTerracottaTileEnabled);
+        conditionMap.put("omni_chest", Config::isOmniChestEnabled);
     }
 
     public static final String CATEGORY_GENERAL = "general";
@@ -58,6 +59,7 @@ public class Config {
     private static ForgeConfigSpec.BooleanValue SPYGLASS_ENABLE;
     private static ForgeConfigSpec.BooleanValue ROPE_ENABLE;
     private static ForgeConfigSpec.BooleanValue TERRACOTTA_TILE_ENABLE;
+    private static ForgeConfigSpec.BooleanValue OMNI_CHEST_ENABLE;
 
     private static boolean grabHookEnabled;
     private static boolean warhammerEnabled;
@@ -75,6 +77,7 @@ public class Config {
     private static boolean spyglassEnabled;
     private static boolean ropeEnabled;
     private static boolean terracottaTileEnabled;
+    private static boolean omniChestEnabled;
 
     static {
 
@@ -96,6 +99,7 @@ public class Config {
         SPYGLASS_ENABLE = COMMON_BUILD.comment("Enable Spyglass").define("spyglass", true);
         ROPE_ENABLE = COMMON_BUILD.comment("Enable Rope").define("rope", true);
         TERRACOTTA_TILE_ENABLE = COMMON_BUILD.comment("Enable Terracotta Tiles").define("terracotta_tile", true);
+        OMNI_CHEST_ENABLE = COMMON_BUILD.comment("Enable Omni Chest").define("omni_chest", true);
 
         COMMON_BUILD.pop();
 
@@ -119,19 +123,16 @@ public class Config {
     @SubscribeEvent
     public static void onLoad(final ModConfigEvent.Loading configEvent) {
         XercaMod.LOGGER.debug("Config load event");
-//        System.out.println(COMMON_CONFIG.getValues());
         Config.bakeConfig();
     }
 
     @SubscribeEvent
     public static void onReload(final ModConfigEvent.Reloading configEvent) {
         XercaMod.LOGGER.debug("Config reload event");
-//        System.out.println(COMMON_CONFIG.getValues());
         Config.bakeConfig();
     }
 
     public static void bakeConfig(){
-        XercaMod.LOGGER.debug("bakeConfig called");
         grabHookEnabled = GRAB_HOOK_ENABLE.get();
         warhammerEnabled = WARHAMMER_ENABLE.get();
         cushionEnabled = CUSHION_ENABLE.get();
@@ -148,10 +149,10 @@ public class Config {
         spyglassEnabled = SPYGLASS_ENABLE.get();
         ropeEnabled = ROPE_ENABLE.get();
         terracottaTileEnabled = TERRACOTTA_TILE_ENABLE.get();
+        omniChestEnabled = OMNI_CHEST_ENABLE.get();
     }
 
     public static void syncWithPacket(ConfigSyncPacket packet){
-        XercaMod.LOGGER.debug("syncWithPacket called");
         if(packet.isMessageValid()){
             grabHookEnabled =  packet.grabHook;
             warhammerEnabled =  packet.warhammer;
@@ -168,7 +169,8 @@ public class Config {
             scytheEnabled =  packet.scythe;
             spyglassEnabled =  packet.spyglass;
             ropeEnabled =  packet.rope;
-            terracottaTileEnabled =  packet.terracotta_tile;
+            terracottaTileEnabled =  packet.terracottaTile;
+            omniChestEnabled =  packet.omniChest;
         }
     }
 
@@ -176,7 +178,7 @@ public class Config {
         return new ConfigSyncPacket(grabHookEnabled, warhammerEnabled, cushionEnabled, teaEnabled,
                 foodEnabled, confettiEnabled, enderFlaskEnabled, courtroomEnabled, carvedWoodEnabled,
                 leatherStrawEnabled, bookcaseEnabled, coinsEnabled, scytheEnabled, spyglassEnabled,
-                ropeEnabled, terracottaTileEnabled
+                ropeEnabled, terracottaTileEnabled, omniChestEnabled
         );
     }
 
@@ -242,5 +244,9 @@ public class Config {
 
     public static boolean isTerracottaTileEnabled() {
         return terracottaTileEnabled;
+    }
+
+    public static boolean isOmniChestEnabled() {
+        return omniChestEnabled;
     }
 }

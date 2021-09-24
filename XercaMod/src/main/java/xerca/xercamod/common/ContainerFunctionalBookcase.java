@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import xerca.xercamod.common.tile_entity.TileEntities;
 import xerca.xercamod.common.tile_entity.TileEntityFunctionalBookcase;
-import xerca.xercamod.common.tile_entity.XercaTileEntities;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class ContainerFunctionalBookcase extends AbstractContainerMenu {
     }
 
     public ContainerFunctionalBookcase(int windowId, Inventory invPlayer, BlockEntity tileEntityInventoryBookcase) {
-        super(XercaTileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, windowId);
+        super(TileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, windowId);
         if(!(tileEntityInventoryBookcase instanceof TileEntityFunctionalBookcase)){
             XercaMod.LOGGER.error("TileEntity not an instance of TileEntityFunctionalBookcase!");
             return;

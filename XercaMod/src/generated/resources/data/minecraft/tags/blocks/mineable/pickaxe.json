@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "xercamod:omni_chest",
     "xercamod:vat",
     "xercamod:vat_milk",
     "xercamod:vat_cheese",

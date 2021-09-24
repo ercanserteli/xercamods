@@ -86,6 +86,8 @@ public class BlockTags extends BlockTagsProvider implements DataProvider
                 Blocks.CARVED_WARPED_8
         );
         this.tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(
+                Blocks.OMNI_CHEST,
+
                 Blocks.VAT,
                 Blocks.VAT_MILK,
                 Blocks.VAT_CHEESE,
@@ -141,6 +143,10 @@ public class BlockTags extends BlockTagsProvider implements DataProvider
                 Blocks.WHITE_TERRATILE_STAIRS,
                 Blocks.YELLOW_TERRATILE_STAIRS,
                 Blocks.TERRATILE_STAIRS
+        );
+        this.tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_HOE).add(
+                Blocks.BLOCK_LEATHER,
+                Blocks.BLOCK_STRAW
         );
     }
 }

@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.crafting.RecipeCarvingStation;
 import xerca.xercamod.common.item.Items;
-import xerca.xercamod.common.tile_entity.XercaTileEntities;
+import xerca.xercamod.common.tile_entity.TileEntities;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -60,7 +60,7 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
     }
 
     public ContainerCarvingStation(int windowIdIn, Inventory playerInventoryIn, final ContainerLevelAccess worldPosCallableIn) {
-        super(XercaTileEntities.CONTAINER_CARVING_STATION, windowIdIn);
+        super(TileEntities.CONTAINER_CARVING_STATION, windowIdIn);
         this.worldPosCallable = worldPosCallableIn;
         this.world = playerInventoryIn.player.level;
         this.inputInventorySlot = this.addSlot(new Slot(this.inputInventory, 0, 20, 33));
@@ -179,7 +179,7 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
     }
 
     public MenuType<?> getType() {
-        return XercaTileEntities.CONTAINER_CARVING_STATION;
+        return TileEntities.CONTAINER_CARVING_STATION;
     }
 
     @OnlyIn(Dist.CLIENT)

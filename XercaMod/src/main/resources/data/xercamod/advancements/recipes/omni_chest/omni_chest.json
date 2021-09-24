@@ -3,7 +3,7 @@
   "parent": "xercamod:recipes/root",
   "rewards": {
     "recipes": [
-      "xercamod:food/raw_mush_pizza"
+      "xercamod:omni_chest/omni_chest"
     ]
   },
   "criteria": {
@@ -11,20 +11,20 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["xercamod:pizza_dough"]}
+          {"items": ["minecraft:ender_chest"]}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercamod:food/raw_mush_pizza"
+        "recipe": "xercamod:omni_chest/omni_chest"
       }
     },
     "config": {
       "trigger": "xercamod:config_check",
       "conditions":{
-        "config": "food"
+        "config": "omni_chest"
       }
     }
   },

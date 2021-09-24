@@ -2,6 +2,7 @@ package xerca.xercamod.common.block;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.event.RegistryEvent;
@@ -12,6 +13,7 @@ import xerca.xercamod.common.XercaMod;
 
 @ObjectHolder(XercaMod.MODID)
 public class Blocks {
+    public static final BlockOmniChest OMNI_CHEST = null;
     public static final BlockCarvingStation CARVING_STATION = null;
 
     public static final BlockDoner BLOCK_DONER = null;
@@ -332,7 +334,9 @@ public class Blocks {
                     new BlockPizza(2).setRegistryName("plain_pizza"),
                     new BlockPizza(3).setRegistryName("mush_pizza"),
                     new BlockPizza(4).setRegistryName("mush_sausage_pizza"),
-                    new BlockPizza(3).setRegistryName("sausage_pizza")
+                    new BlockPizza(3).setRegistryName("sausage_pizza"),
+
+                    new BlockOmniChest(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(22.5F, 600.0F).lightLevel((p_50847_) -> { return 14;})).setRegistryName("omni_chest")
             );
         }
     }

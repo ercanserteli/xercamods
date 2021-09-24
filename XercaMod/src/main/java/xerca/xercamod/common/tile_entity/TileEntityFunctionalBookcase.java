@@ -25,7 +25,7 @@ import xerca.xercamod.common.block.Blocks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static xerca.xercamod.common.tile_entity.XercaTileEntities.FUNCTIONAL_BOOKCASE;
+import static xerca.xercamod.common.tile_entity.TileEntities.FUNCTIONAL_BOOKCASE;
 
 public class TileEntityFunctionalBookcase extends BlockEntity implements MenuProvider {
     private final static int NUMBER_OF_SLOTS = 6;

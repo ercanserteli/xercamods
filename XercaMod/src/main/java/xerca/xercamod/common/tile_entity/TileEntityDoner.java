@@ -16,7 +16,7 @@ import java.util.Random;
 import static net.minecraft.world.level.block.CampfireBlock.LIT;
 import static xerca.xercamod.common.block.BlockDoner.IS_RAW;
 import static xerca.xercamod.common.block.BlockDoner.MEAT_AMOUNT;
-import static xerca.xercamod.common.tile_entity.XercaTileEntities.DONER;
+import static xerca.xercamod.common.tile_entity.TileEntities.DONER;
 
 public class TileEntityDoner extends BlockEntity {
     private int spinTicks;

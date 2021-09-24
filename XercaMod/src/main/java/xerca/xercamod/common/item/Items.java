@@ -260,6 +260,8 @@ public final class Items {
 //    public static final Item VAT_MILK = null;
 //    public static final Item VAT_CHEESE = null;
 
+    public static final BlockItemOmniChest OMNI_CHEST = null;
+
     public static final ItemScythe WOODEN_SCYTHE = null;
     public static final ItemScythe STONE_SCYTHE = null;
     public static final ItemScythe IRON_SCYTHE = null;
@@ -296,9 +298,9 @@ public final class Items {
     public static final RecipeSerializer<RecipeWoodCarving> CRAFTING_SPECIAL_WOOD_CARVING =            null;
     public static final RecipeSerializer<RecipeCarvingStation> CARVING =                               null;
 
-    public static final RecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_SPYGLASS =  null;
     public static final RecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_SCYTHE =  null;
     public static final RecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_WARHAMMER =  null;
+    public static final RecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_OMNI_CHEST =  null;
 
     public static RecipeType<RecipeCarvingStation> CARVING_STATION_TYPE = RecipeType.register("carving");
 
@@ -340,9 +342,6 @@ public final class Items {
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void registerRecipes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
-
-//            CraftingHelper.register(ConfigurationCondition.Serializer.INSTANCE);
-
             event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeTeaSugaring::new).setRegistryName(     XercaMod.MODID + ":crafting_special_tea_sugaring"));
             event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeTeaPouring::new).setRegistryName(      XercaMod.MODID + ":crafting_special_tea_pouring"));
             event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeTeaFilling::new).setRegistryName(      XercaMod.MODID + ":crafting_special_tea_filling"));
@@ -354,7 +353,6 @@ public final class Items {
 
             event.getRegistry().register(new RecipeCarvingStation.Serializer<>(RecipeCarvingStation::new).setRegistryName(XercaMod.MODID + ":carving"));
 
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isSpyglassEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_spyglass"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isScytheEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_scythe"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isWarhammerEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_warhammer"));
             event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isGrabHookEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_grab_hook"));
@@ -375,6 +373,7 @@ public final class Items {
             event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isCoinsEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_coins"));
             event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isRopeEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_rope"));
             event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isTerracottaTileEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_terracotta_tile"));
+            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isOmniChestEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_omni_chest"));
 
             event.getRegistry().register(new RecipeConditionSmelting.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_smelting_food"));
             event.getRegistry().register(new RecipeConditionCampfire.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_campfire_food"));
@@ -663,6 +662,8 @@ public final class Items {
                     new BlockConditionedItem(Blocks.TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile_stairs"),
 
                     new BlockItem(Blocks.CARVING_STATION, new Item.Properties().tab(Items.decoTab)).setRegistryName("carving_station"),
+
+                    new BlockItemOmniChest(Blocks.OMNI_CHEST, new Item.Properties().tab(Items.decoTab)).setRegistryName("omni_chest"),
 
                     new ItemFlask(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).stacksTo(1).durability(160), "flask", false),
                     new ItemFlask(new Item.Properties().stacksTo(1).durability(160), "flask_milk", true),

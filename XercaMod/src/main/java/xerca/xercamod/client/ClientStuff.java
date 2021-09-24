@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,10 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.InputUpdateEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,7 +29,7 @@ import xerca.xercamod.common.item.ItemGrabHook;
 import xerca.xercamod.common.item.ItemScythe;
 import xerca.xercamod.common.item.ItemWarhammer;
 import xerca.xercamod.common.item.Items;
-import xerca.xercamod.common.tile_entity.XercaTileEntities;
+import xerca.xercamod.common.tile_entity.TileEntities;
 
 public class ClientStuff {
     private static final ResourceLocation blackTexture = new ResourceLocation(XercaMod.MODID, "textures/misc/black.png");
@@ -41,11 +39,8 @@ public class ClientStuff {
     static class ModBusSubscriber{
         @SubscribeEvent
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
-            MenuScreens.register(XercaTileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, GuiFunctionalBookcase::new);
-            MenuScreens.register(XercaTileEntities.CONTAINER_CARVING_STATION, CarvingStationScreen::new);
-
-//            RenderTypeLookup.setRenderLayer(Blocks.BLOCK_DONER, RenderType.getCutoutMipped());
-//            ClientRegistry.bindTileEntityRenderer(XercaTileEntities.DONER, DonerTileEntityRenderer::new);
+            MenuScreens.register(TileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, GuiFunctionalBookcase::new);
+            MenuScreens.register(TileEntities.CONTAINER_CARVING_STATION, CarvingStationScreen::new);
 
             ItemBlockRenderTypes.setRenderLayer(Blocks.BLOCK_TEA_PLANT, RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(Blocks.BLOCK_TOMATO_PLANT, RenderType.cutout());
@@ -58,6 +53,8 @@ public class ClientStuff {
             ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_6, RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_7, RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_8, RenderType.cutoutMipped());
+
+            ItemBlockRenderTypes.setRenderLayer(Blocks.OMNI_CHEST, RenderType.cutoutMipped());
 
             registerItemModelsProperties();
 
@@ -72,7 +69,8 @@ public class ClientStuff {
             event.registerEntityRenderer(Entities.CUSHION, new RenderCushionFactory());
             event.registerEntityRenderer(Entities.HEALTH_ORB, new RenderHealthOrbFactory());
 
-            event.registerBlockEntityRenderer(XercaTileEntities.DONER, DonerTileEntityRenderer::new);
+            event.registerBlockEntityRenderer(TileEntities.DONER, DonerTileEntityRenderer::new);
+            event.registerBlockEntityRenderer(TileEntities.OMNI_CHEST, OmniChestTileEntityRenderer::new);
         }
 
         static private void registerItemModelsProperties(){
@@ -148,6 +146,13 @@ public class ClientStuff {
                 event.getItemColors().register(
                         (itemStack, colorIndex) -> colorIndex > 0 ? -1 : PotionUtils.getColor(itemStack), Items.ENDER_BOW
                 );
+            }
+        }
+
+        @SubscribeEvent
+        public static void handleTextureStitch(TextureStitchEvent.Pre event) {
+            if(event.getMap().location().equals(Sheets.CHEST_SHEET)){
+                event.addSprite(OmniChestTileEntityRenderer.texture);
             }
         }
     }

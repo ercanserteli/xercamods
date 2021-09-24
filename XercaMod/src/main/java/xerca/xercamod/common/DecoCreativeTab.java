@@ -26,6 +26,7 @@ public class DecoCreativeTab extends CreativeModeTab {
                 Items.ITEM_BLOCK_STRAW,
                 Items.ROPE,
                 Items.VAT,
+                Items.OMNI_CHEST,
 
                 Items.BLACK_CUSHION,
                 Items.BLUE_CUSHION,

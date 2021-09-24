@@ -11,7 +11,7 @@ mod_id_to_folder = {
 }
 
 conditions = ["grab_hook", "warhammer", "cushion", "tea", "food", "confetti", "ender_flask", "courtroom", "carved_wood",
-              "leather_straw", "bookcase", "coins", "scythe", "spyglass", "rope", "terracotta_tile"]
+              "leather_straw", "bookcase", "coins", "scythe", "rope", "terracotta_tile", "omni_chest"]
 
 
 class Type(Enum):
