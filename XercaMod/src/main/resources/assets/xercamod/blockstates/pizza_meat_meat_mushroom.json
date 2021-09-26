@@ -1,0 +1,9 @@
+
+{
+    "variants": {
+        "bites=0": { "model": "xercamod:block/pizza/pizza_meat_meat_mushroom_uneaten" },
+        "bites=1": { "model": "xercamod:block/pizza/pizza_meat_meat_mushroom_slice1" },
+        "bites=2": { "model": "xercamod:block/pizza/pizza_meat_meat_mushroom_slice2" },
+        "bites=3": { "model": "xercamod:block/pizza/pizza_meat_meat_mushroom_slice3" }
+    }
+}

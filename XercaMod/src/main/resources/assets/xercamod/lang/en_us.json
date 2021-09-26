@@ -6,6 +6,7 @@
   "item.xercamod.diamond_scythe": "Diamond Scythe",
   "item.xercamod.netherite_scythe": "Netherite Scythe",
 
+  "item.xercamod.cheese_toast": "Cheese Toast",
   "item.xercamod.cheese_slice": "Cheese Slice",
   "item.xercamod.raw_shish_kebab": "Raw shish kebab",
   "item.xercamod.item_yoghurt": "Yoghurt",
@@ -73,12 +74,10 @@
   "item.xercamod.item_potato_fries": "Potato Fries",
   "item.xercamod.item_shish_kebab": "Shish Kebab",
   "item.xercamod.item_tomato_slices": "Tomato Slices",
-  "item.xercamod.pizza_dough": "Pizza Dough",
-  "item.xercamod.raw_plain_pizza": "Raw Pizza Margherita",
-  "item.xercamod.raw_mush_pizza": "Raw Mushroom Pizza",
-  "item.xercamod.raw_mush_sausage_pizza": "Raw Mixed Pizza",
-  "item.xercamod.raw_sausage_pizza": "Raw Sausage Pizza",
 
+  "item.xercamod.cola": "Cola",
+  "item.xercamod.soda": "Soda",
+  "item.xercamod.carbonated_water": "Sparkling Water",
   "item.xercamod.item_ice_tea": "Ice Tea",
   "item.xercamod.item_glass_of_water": "Water",
   "item.xercamod.item_apple_juice": "Apple Juice",
@@ -433,5 +432,15 @@
   "xercamod.ender_flask_tooltip": "Fill with potions",
   "xercamod.ender_bow_tooltip": "Fill with throwing or lingering potions",
   "xercamod.empty_teapot_tooltip": "Fill with dried tea leaves and water, then cook it to make tea",
-  "xercamod.rope_tooltip": "Can be climbed"
+  "xercamod.rope_tooltip": "Can be climbed",
+
+  "xercamod.pizza": "Pizza",
+  "xercamod.pizza_plain": "Pizza Margherita",
+  "xercamod.pizza_raw": "Raw Pizza",
+  "xercamod.pizza_raw_plain": "Raw Pizza Base",
+  "xercamod.ingredient.chicken": "Chicken",
+  "xercamod.ingredient.meat": "Doner",
+  "xercamod.ingredient.fish": "Fish",
+  "xercamod.ingredient.pepperoni": "Pepperoni",
+  "xercamod.ingredient.mushroom": "Mushroom"
 }

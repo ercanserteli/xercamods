@@ -10,6 +10,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
@@ -19,12 +20,23 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Map;
 import java.util.Random;
 
 public class BlockVat extends AbstractCauldronBlock {
     public enum VatContent {EMPTY, MILK, CHEESE}
+    private static final VoxelShape INSIDE = box(1.0D, 7.0D, 1.0D, 15.0D, 16.0D, 15.0D);
+    private static final VoxelShape SHAPE = Shapes.join(Shapes.block(), Shapes.or(
+            box(0.0D, 0.0D, 4.0D, 16.0D, 6.0D, 12.0D),
+            box(4.0D, 0.0D, 0.0D, 12.0D, 6.0D, 16.0D),
+            box(1.0D, 0.0D, 1.0D, 15.0D, 6.0D, 15.0D),
+            INSIDE), BooleanOp.ONLY_FIRST);
+
 
     private final VatContent content;
 
@@ -34,13 +46,25 @@ public class BlockVat extends AbstractCauldronBlock {
     }
 
     @Override
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return SHAPE;
+    }
+
+    @Override
+    public VoxelShape getInteractionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
+        return INSIDE;
+    }
+
+
+    @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         ItemStack itemstack = player.getItemInHand(hand);
         switch (content){
             case EMPTY -> {
                 if(itemstack.getItem() == Items.MILK_BUCKET) {
                     if(!player.isCreative()){
-                        player.setItemInHand(hand, new ItemStack(Items.BUCKET));
+                        itemstack.shrink(1);
+                        player.addItem(new ItemStack(Items.BUCKET));
                     }
 
                     level.setBlockAndUpdate(blockPos, Blocks.VAT_MILK.defaultBlockState());
@@ -52,7 +76,8 @@ public class BlockVat extends AbstractCauldronBlock {
             case MILK -> {
                 if(itemstack.getItem() == Items.BUCKET) {
                     if(!player.isCreative()) {
-                        player.setItemInHand(hand, new ItemStack(Items.MILK_BUCKET));
+                        itemstack.shrink(1);
+                        player.addItem(new ItemStack(Items.MILK_BUCKET));
                     }
 
                     level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
@@ -88,13 +113,6 @@ public class BlockVat extends AbstractCauldronBlock {
     public boolean isFull(BlockState blockState) {
         return content != VatContent.EMPTY;
     }
-
-//    @Override
-//    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, Random random) {
-//        if(content == VatContent.MILK){
-//            XercaMod.LOGGER.info("MILKY TICK");
-//        }
-//    }
 
     @Override
     public void randomTick(BlockState blockState, ServerLevel level, BlockPos blockPos, Random random) {

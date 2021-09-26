@@ -1,7 +1,3 @@
-from sys import argv
-
-from add_item import add_lang_entry
-
 flatten = lambda l: [item for sublist in l for item in sublist]
 
 colors = [

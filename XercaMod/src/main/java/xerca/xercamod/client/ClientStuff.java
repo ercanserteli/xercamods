@@ -37,6 +37,65 @@ public class ClientStuff {
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
     static class ModBusSubscriber{
+        private static void pizzaRenderLayers(){
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_PEPPERONI_PEPPERONI_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MUSHROOM_PEPPERONI_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MUSHROOM_MUSHROOM_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MUSHROOM_MUSHROOM_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_PEPPERONI_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_MUSHROOM_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_MUSHROOM_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_MEAT_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_MEAT_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_MEAT_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_PEPPERONI_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_MUSHROOM_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_MUSHROOM_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_MEAT_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_MEAT_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_MEAT_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_FISH_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_FISH_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_FISH_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_FISH_FISH, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_PEPPERONI_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_MUSHROOM_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_MUSHROOM_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_MEAT_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_MEAT_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_MEAT_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_FISH_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_FISH_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_FISH_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_FISH_FISH, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_CHICKEN_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_CHICKEN_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_CHICKEN_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_CHICKEN_FISH, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_CHICKEN_CHICKEN, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_PEPPERONI_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MUSHROOM_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MUSHROOM_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH_FISH, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_FISH, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN_CHICKEN, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_PEPPERONI, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MUSHROOM, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_MEAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_FISH, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_CHICKEN, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA, RenderType.cutoutMipped());
+        }
+
         @SubscribeEvent
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
             MenuScreens.register(TileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, GuiFunctionalBookcase::new);
@@ -55,6 +114,11 @@ public class ClientStuff {
             ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_8, RenderType.cutoutMipped());
 
             ItemBlockRenderTypes.setRenderLayer(Blocks.OMNI_CHEST, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.VAT, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_CHEESE, RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_MILK, RenderType.cutoutMipped());
+
+            pizzaRenderLayers();
 
             registerItemModelsProperties();
 
@@ -115,11 +179,11 @@ public class ClientStuff {
             ItemProperties.register(Items.ITEM_GRAB_HOOK, new ResourceLocation("pull"), grabHookPull);
             ItemProperties.register(Items.ITEM_GRAB_HOOK, new ResourceLocation("pulling"), pulling);
             ItemProperties.register(Items.ITEM_GRAB_HOOK, new ResourceLocation("cast"), (stack, worldIn, entityIn, i) -> {
-                    if(!stack.hasTag()) return 0.0f;
-                    CompoundTag tag = stack.getTag();
-                    if(!tag.contains("cast")) return 0.0f;
-                    return tag.getBoolean("cast") ? 1.0F : 0.0F;
-                }
+                        if(!stack.hasTag()) return 0.0f;
+                        CompoundTag tag = stack.getTag();
+                        if(!tag.contains("cast")) return 0.0f;
+                        return tag.getBoolean("cast") ? 1.0F : 0.0F;
+                    }
             );
 
             ItemProperties.register(Items.ITEM_STONE_WARHAMMER, new ResourceLocation("pull"), warhammerPull);

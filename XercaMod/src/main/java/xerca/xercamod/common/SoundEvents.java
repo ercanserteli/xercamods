@@ -29,6 +29,7 @@ public class SoundEvents {
     public final static SoundEvent HOLY = null;
     public final static SoundEvent SPARKLES = null;
     public final static SoundEvent ABSORB = null;
+    public final static SoundEvent FIZZY = null;
 
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = new ResourceLocation(XercaMod.MODID, soundName);
@@ -39,7 +40,6 @@ public class SoundEvents {
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
-//            System.out.println("REGISTER SOUND EVENTS CALLED");
             event.getRegistry().registerAll(
                     createSoundEvent("tomato_splash"),
                     createSoundEvent("sneak_hit"),
@@ -60,7 +60,8 @@ public class SoundEvents {
                     createSoundEvent("behead"),
                     createSoundEvent("holy"),
                     createSoundEvent("sparkles"),
-                    createSoundEvent("absorb")
+                    createSoundEvent("absorb"),
+                    createSoundEvent("fizzy")
             );
         }
     }

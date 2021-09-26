@@ -1,4 +1,6 @@
-
 {
-  "parent": "xercamod:block/cheese_uneaten"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercamod:item/cheese_wheel"
+  }
 }

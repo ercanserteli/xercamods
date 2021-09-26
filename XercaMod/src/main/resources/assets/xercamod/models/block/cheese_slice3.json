@@ -1,23 +1,22 @@
 {
-    "textures": {
-        "particle": "xercamod:block/cheese_surface",
-        "bottom": "xercamod:block/cheese_surface",
-        "top": "xercamod:block/cheese_surface",
-        "side": "xercamod:block/cheese_surface",
-        "inside": "xercamod:block/cheese_surface"
-    },
-    "elements": [
-        {
-          "from": [8, 0, 8],
-          "to": [15, 8, 15],
-            "faces": {
-                "down":  { "texture": "#bottom", "cullface": "down" },
-                "up":    { "texture": "#top" },
-                "north": { "texture": "#side" },
-                "south": { "texture": "#side" },
-                "west":  { "texture": "#inside" },
-                "east":  { "texture": "#side" }
-            }
-        }
-    ]
+	"textures": {
+		"bottom": "xercamod:block/cheese_wheel_top",
+		"side": "xercamod:block/cheese_wheel_side",
+		"particle": "xercamod:block/cheese_wheel_inside",
+		"inside": "xercamod:block/cheese_wheel_inside"
+	},
+	"elements": [
+		{
+			"from": [8, 0, 8],
+			"to": [15, 8, 15],
+			"faces": {
+				"north": {"uv": [1, 4, 8, 12], "texture": "#inside"},
+				"east": {"uv": [1, 4, 8, 12], "texture": "#side"},
+				"south": {"uv": [8, 4, 15, 12], "texture": "#side"},
+				"west": {"uv": [8, 4, 15, 12], "texture": "#inside"},
+				"up": {"uv": [8, 8, 15, 15], "texture": "#bottom"},
+				"down": {"uv": [8, 1, 15, 8], "texture": "#bottom", "cullface": "down"}
+			}
+		}
+	]
 }

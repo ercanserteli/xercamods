@@ -1,0 +1,39 @@
+
+{
+  "parent": "xercamod:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercamod:food/smoking_pizza_chicken_fish_meat"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": ["xercamod:raw_pizza_chicken_fish_meat"]}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercamod:food/smoking_pizza_chicken_fish_meat"
+      }
+    },
+    "config": {
+      "trigger": "xercamod:config_check",
+      "conditions":{
+        "config": "food"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ],
+    ["config"]
+  ]
+}
+            

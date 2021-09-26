@@ -165,5 +165,12 @@
         "name": "xercamod:absorb"
       }
     ]
+  },
+  "fizzy": {
+    "sounds": [
+      {
+        "name": "xercamod:fizzy"
+      }
+    ]
   }
 }

@@ -21,6 +21,7 @@ import xerca.xercamod.common.Config;
 import xerca.xercamod.common.DecoCreativeTab;
 import xerca.xercamod.common.TeaCreativeTab;
 import xerca.xercamod.common.XercaMod;
+import xerca.xercamod.common.block.BlockPizza;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.crafting.*;
 import xerca.xercamod.common.enchantments.*;
@@ -56,11 +57,7 @@ public final class Items {
     public static final Item RICEBALL = null;
     public static final Item SUSHI = null;
     public static final Item COOKED_RICE = null;
-    public static final Item PIZZA_DOUGH = null;
-    public static final Item RAW_PLAIN_PIZZA = null;
-    public static final Item RAW_MUSH_PIZZA = null;
-    public static final Item RAW_MUSH_SAUSAGE_PIZZA = null;
-    public static final Item RAW_SAUSAGE_PIZZA = null;
+    public static final Item CARBONATED_WATER = null;
     public static final ItemGrabHook ITEM_GRAB_HOOK = null;
     public static final ItemWarhammer ITEM_NETHERITE_WARHAMMER = null;
     public static final ItemWarhammer ITEM_DIAMOND_WARHAMMER = null;
@@ -317,15 +314,12 @@ public final class Items {
     }
 
     static Item makeContainedFoodItem(String name, FoodProperties food, Item container, int stackSize){
-        Item item = new ItemConditionedContainedFood(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food).craftRemainder(container), container, stackSize);
-        item.setRegistryName(name);
-        return item;
+        return new ItemConditionedContainedFood(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food).
+                craftRemainder(container), container, stackSize).setRegistryName(name);
     }
 
     static Item makeDrinkItem(String name, FoodProperties food, Item container){
-        Item item = new ItemDrink(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), container);
-        item.setRegistryName(name);
-        return item;
+        return new ItemDrink(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), container).setRegistryName(name);
     }
 
     static void registerCompostable(float chance, ItemLike itemIn) {
@@ -484,10 +478,13 @@ public final class Items {
                     makeDrinkItem("item_tomato_juice", Foods.TOMATO_JUICE, glass),
                     makeDrinkItem("item_wheat_juice", Foods.WHEAT_JUICE, glass),
                     makeDrinkItem("item_glass_of_milk", Foods.GLASS_OF_MILK, glass),
-                    makeDrinkItem("item_glass_of_water", Foods.GLASS_OF_WATER, glass),
+                    new ItemGlassOfWater(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.GLASS_OF_WATER), glass).setRegistryName("item_glass_of_water"),
                     makeDrinkItem("sweet_berry_juice", Foods.SWEET_BERRY_JUICE, glass),
                     makeDrinkItem("item_ayran", Foods.AYRAN, glass),
                     makeDrinkItem("sake", Foods.SAKE, glass),
+                    makeDrinkItem("carbonated_water", Foods.CARBONATED_WATER, glass),
+                    makeDrinkItem("soda", Foods.SODA, glass),
+                    makeDrinkItem("cola", Foods.COLA, glass),
                     makeContainedFoodItem("oyakodon", Foods.OYAKODON, net.minecraft.world.item.Items.BOWL, 16),
                     makeContainedFoodItem("beef_donburi", Foods.BEEF_DONBURI, net.minecraft.world.item.Items.BOWL, 16),
                     makeFoodItem("egg_sushi", Foods.EGG_SUSHI),
@@ -510,11 +507,67 @@ public final class Items {
                     makeContainedFoodItem("item_alexander", Foods.ALEXANDER, net.minecraft.world.item.Items.BOWL, 16),
                     makeFoodItem("raw_shish_kebab", Foods.RAW_SHISH_KEBAB),
                     makeFoodItem("cheese_slice", Foods.CHEESE_SLICE),
-                    makeFoodItem("pizza_dough", Foods.PIZZA_DOUGH),
-                    makeFoodItem("raw_plain_pizza", Foods.RAW_PLAIN_PIZZA),
-                    makeFoodItem("raw_mush_pizza", Foods.RAW_MUSH_PIZZA),
-                    makeFoodItem("raw_mush_sausage_pizza", Foods.RAW_MUSH_SAUSAGE_PIZZA),
-                    makeFoodItem("raw_sausage_pizza", Foods.RAW_SAUSAGE_PIZZA),
+                    makeFoodItem("cheese_toast", Foods.CHEESE_TOAST),
+
+                    // PIZZA RAW REGISTER BEGIN
+                    new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, Foods.RAW_PIZZA_3),
+                    new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
+                    new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
+                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
+                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
+                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
+                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
+                    new ItemRawPizza(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_0),
+
+                    // PIZZA RAW REGISTER END
 
                     new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
                     new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),
@@ -533,10 +586,66 @@ public final class Items {
                     new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.WHITE_CUSHION).setRegistryName("white_cushion"),
                     new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.YELLOW_CUSHION).setRegistryName("yellow_cushion"),
 
-                    new BlockConditionedItem(Blocks.PLAIN_PIZZA, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("plain_pizza"),
-                    new BlockConditionedItem(Blocks.MUSH_PIZZA, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("mush_pizza"),
-                    new BlockConditionedItem(Blocks.MUSH_SAUSAGE_PIZZA, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("mush_sausage_pizza"),
-                    new BlockConditionedItem(Blocks.SAUSAGE_PIZZA, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("sausage_pizza"),
+                    // PIZZA REGISTER BEGIN
+                    new ItemPizza(Blocks.PIZZA_PEPPERONI_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_MUSHROOM_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_MEAT_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_MEAT_MEAT_PEPPERONI, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_MEAT_MEAT_MUSHROOM, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_MEAT_MEAT_MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
+                    new ItemPizza(Blocks.PIZZA_FISH_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_FISH_MEAT_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_FISH_MEAT_MUSHROOM, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_FISH_MEAT_MEAT, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
+                    new ItemPizza(Blocks.PIZZA_FISH_FISH_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_FISH_FISH_MUSHROOM, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_FISH_FISH_MEAT, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT),
+                    new ItemPizza(Blocks.PIZZA_FISH_FISH_FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_MEAT, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_MEAT, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_FISH, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_MEAT, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_FISH, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN),
+                    new ItemPizza(Blocks.PIZZA_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_MEAT_PEPPERONI, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_MEAT_MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_FISH_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_FISH_MEAT, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_FISH_FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
+                    new ItemPizza(Blocks.PIZZA, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
+
+                    // PIZZA REGISTER END
+
                     new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("item_apple_pie"),
                     new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("sweet_berry_pie"),
                     new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),

@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_smoking_food",
+    
+    "ingredient": [
+        {"item": "xercamod:raw_pizza_mushroom_mushroom_mushroom"}
+    ],
+    "result": "xercamod:pizza_mushroom_mushroom_mushroom",
+    "experience": 0.2,
+    "cookingtime": 150
+}
+        

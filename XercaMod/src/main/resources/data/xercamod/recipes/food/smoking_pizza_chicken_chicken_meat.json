@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_smoking_food",
+    
+    "ingredient": [
+        {"item": "xercamod:raw_pizza_chicken_chicken_meat"}
+    ],
+    "result": "xercamod:pizza_chicken_chicken_meat",
+    "experience": 0.2,
+    "cookingtime": 150
+}
+        

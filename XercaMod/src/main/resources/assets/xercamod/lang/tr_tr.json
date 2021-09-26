@@ -7,6 +7,7 @@
   "item.xercamod.diamond_scythe": "Elmas Tırpan",
   "item.xercamod.netherite_scythe": "Netherite Tırpan",
 
+  "item.xercamod.cheese_toast": "Peynirli Tost",
   "item.xercamod.cheese_slice": "Peynir Dilimi",
   "item.xercamod.raw_shish_kebab": "Çiğ şiş kebap",
   "item.xercamod.item_yoghurt": "Yoğurt",
@@ -73,12 +74,10 @@
   "item.xercamod.item_potato_fries": "Patates Kızartması",
   "item.xercamod.item_shish_kebab": "Çöp Şiş",
   "item.xercamod.item_tomato_slices": "Dilimlenmiş Domates",
-  "item.xercamod.pizza_dough": "Pizza Hamuru",
-  "item.xercamod.raw_plain_pizza": "Çiğ Pizza Margarita",
-  "item.xercamod.raw_mush_pizza": "Çiğ Mantarlı Pizza",
-  "item.xercamod.raw_mush_sausage_pizza": "Çiğ Karışık Pizza",
-  "item.xercamod.raw_sausage_pizza": "Çiğ Sosisli Pizza",
 
+  "item.xercamod.cola": "Kola",
+  "item.xercamod.soda": "Gazoz",
+  "item.xercamod.carbonated_water": "Maden Suyu",
   "item.xercamod.item_ice_tea": "Buzlu Çay",
   "item.xercamod.item_glass_of_water": "Su",
   "item.xercamod.item_apple_juice": "Elma Suyu",
@@ -317,5 +316,15 @@
   "xercamod.grap_hook_tooltip": "Canlıları kendine çekmeni sağlar. Sağ tuşa basılı tutarak menzili arttır",
   "xercamod.cushion_tooltip": "Üstüne oturmalık",
   "xercamod.ender_bow_tooltip": "Atmalık veya kalıcı iksirler ile doldur",
-  "xercamod.empty_teapot_tooltip": "Çay yapmak için kuru çay yaprakları ve su ile doldurup pişir"
+  "xercamod.empty_teapot_tooltip": "Çay yapmak için kuru çay yaprakları ve su ile doldurup pişir",
+
+  "xercamod.pizza": "Pizza",
+  "xercamod.pizza_plain": "Pizza Margarita",
+  "xercamod.pizza_raw": "Çiğ Pizza",
+  "xercamod.pizza_raw_plain": "Çiğ Pizza Temeli",
+  "xercamod.ingredient.chicken": "Tavuk",
+  "xercamod.ingredient.meat": "Döner",
+  "xercamod.ingredient.fish": "Balık",
+  "xercamod.ingredient.pepperoni": "Peperoni",
+  "xercamod.ingredient.mushroom": "Mantar"
 }

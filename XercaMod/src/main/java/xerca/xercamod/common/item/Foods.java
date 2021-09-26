@@ -5,11 +5,11 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 
 public class Foods {
-    public static FoodProperties RAW_SAUSAGE_PIZZA = makeFood(2, 0.4f, true).build();
-    public static FoodProperties RAW_MUSH_SAUSAGE_PIZZA = makeFood(2, 0.4f, true).build();
-    public static FoodProperties RAW_MUSH_PIZZA = makeFood(2, 0.4f, false).build();
-    public static FoodProperties RAW_PLAIN_PIZZA = makeFood(1, 0.4f, false).build();
-    public static FoodProperties PIZZA_DOUGH = makeFood(1, 0.3f, false).build();
+    public static FoodProperties CHEESE_TOAST = makeFood(6, 1.0f, false).build();
+    public static FoodProperties RAW_PIZZA_0 = makeFood(1, 0.4f, false).build();
+    public static FoodProperties RAW_PIZZA_1 = makeFood(2, 0.4f, false).build();
+    public static FoodProperties RAW_PIZZA_2 = makeFood(3, 0.4f, false).build();
+    public static FoodProperties RAW_PIZZA_3 = makeFood(4, 0.4f, false).build();
     public static FoodProperties CHEESE_SLICE = makeFood(1, 0.5f, true).build();
     public static FoodProperties RAW_SHISH_KEBAB = makeFood(1, 0.4f, true).build();
     public static FoodProperties YOGHURT = makeFood(4, 0.5f, false).build();
@@ -33,6 +33,9 @@ public class Foods {
     public static FoodProperties NIGIRI_SUSHI = makeFood(3, 0.7f, true).build();
     public static FoodProperties OMURICE = makeFood(10, 1.0f, false).build();
     public static FoodProperties SAKE = makeFood(3, 0.6f, false).alwaysEat().effect(new MobEffectInstance(MobEffects.CONFUSION, 280, 1), 0.8f).build();
+    public static FoodProperties CARBONATED_WATER = makeFood(0, 0.3f, false).alwaysEat().build();
+    public static FoodProperties SODA = makeFood(2, 0.5f, false).alwaysEat().build();
+    public static FoodProperties COLA = makeFood(3, 0.5f, false).alwaysEat().build();
     public static FoodProperties RICEBALL = makeFood(3, 0.7f, false).build();
     public static FoodProperties SUSHI = makeFood(4, 0.7f, true).build();
     public static FoodProperties COOKED_RICE = makeFood(4, 0.7f, false).build();
@@ -81,7 +84,7 @@ public class Foods {
     public static FoodProperties TOMATO_JUICE = makeFood(3, 0.6f, false).alwaysEat().build();
     public static FoodProperties WHEAT_JUICE = makeFood(3, 0.6f, false).alwaysEat().effect(new MobEffectInstance(MobEffects.CONFUSION, 180, 0), 0.3f).build();
     public static FoodProperties GLASS_OF_MILK = makeFood(3, 0.6f, false).alwaysEat().build();
-    public static FoodProperties GLASS_OF_WATER = makeFood(0, 0.5f, false).alwaysEat().build();
+    public static FoodProperties GLASS_OF_WATER = makeFood(0, 0.3f, false).alwaysEat().build();
     public static FoodProperties TEACUP0 = makeFood(0, 0.3f, false).alwaysEat().effect(new MobEffectInstance(MobEffects.DIG_SPEED, 1200, 1), 1.0f).build();
     public static FoodProperties TEACUP1 = makeFood(1, 0.4f, false).alwaysEat().effect(new MobEffectInstance(MobEffects.DIG_SPEED, 1200, 1), 1.0f).build();
     public static FoodProperties TEACUP2 = makeFood(2, 0.4f, false).alwaysEat().effect(new MobEffectInstance(MobEffects.DIG_SPEED, 1200, 1), 1.0f).build();

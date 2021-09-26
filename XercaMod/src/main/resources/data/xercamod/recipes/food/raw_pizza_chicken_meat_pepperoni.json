@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_food",
+    "group": "pizza",
+    "ingredients": [{"item": "xercamod:raw_pizza"}, {"item": "minecraft:chicken"}, {"item": "xercamod:doner_slice"}, {"item": "xercamod:item_raw_sausage"}],
+    "result": {"item": "xercamod:raw_pizza_chicken_meat_pepperoni"}
+}
+        
