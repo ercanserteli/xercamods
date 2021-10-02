@@ -6,9 +6,13 @@ import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -105,6 +109,16 @@ public class XercaMod {
 
         Items.registerCompostables();
         DecoCreativeTab.initItemList();
+        registerPotions(event);
+    }
+
+    private void registerPotions(FMLCommonSetupEvent event) {
+        event.enqueueWork( () -> {
+            BrewingRecipeRegistry.addRecipe(
+                    Ingredient.of(PotionUtils.setPotion(new ItemStack(net.minecraft.world.item.Items.POTION), Potions.WATER)),
+                    Ingredient.of(new ItemStack(Items.COLA_POWDER)),
+                    new ItemStack(Items.COLA_EXTRACT));
+        } );
     }
 
     private void registerTriggers() {

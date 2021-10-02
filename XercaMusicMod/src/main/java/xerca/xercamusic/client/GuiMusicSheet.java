@@ -701,7 +701,6 @@ public class GuiMusicSheet extends Screen {
             if (note != 0) {
                 if(play){
                     playSound(note - 1, previewInstrument);
-//                    editingPlayer.world.playSound(editingPlayer, editingPlayer.getPosition(), SoundEvents.harp_mcs[note - 1], SoundCategory.PLAYERS, 3.0f, 1.0f);
                 }
                 if (x > length - 1) {
                     length = x + 1;

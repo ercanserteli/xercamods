@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        "www",
+        "wew",
+        "www"
+    ],
+    "key": {"w": {"item": "xercamod:carbonated_water"}, "e": {"item": "xercamod:cola_extract"}},
+    "result": {"item": "xercamod:cola", "count": 8}
+}
+        

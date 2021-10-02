@@ -57,6 +57,9 @@ public final class Items {
     public static final Item RICEBALL = null;
     public static final Item SUSHI = null;
     public static final Item COOKED_RICE = null;
+    public static final Item COLA = null;
+    public static final Item COLA_EXTRACT = null;
+    public static final Item COLA_POWDER = null;
     public static final Item CARBONATED_WATER = null;
     public static final ItemGrabHook ITEM_GRAB_HOOK = null;
     public static final ItemWarhammer ITEM_NETHERITE_WARHAMMER = null;
@@ -439,6 +442,7 @@ public final class Items {
                     makeFoodItem("item_carrot_cupcake", Foods.CARROT_CUPCAKE),
                     makeFoodItem("item_fancy_apple_cupcake", Foods.FANCY_APPLE_CUPCAKE),
                     makeFoodItem("item_fancy_pumpkin_cupcake", Foods.FANCY_PUMPKIN_CUPCAKE),
+                    makeFoodItem("glowberry_cupcake", Foods.GLOWBERRY_CUPCAKE),
                     makeFoodItem("item_donut", Foods.DONUT),
                     makeFoodItem("item_fancy_donut", Foods.FANCY_DONUT),
                     makeFoodItem("item_sprinkles", Foods.SPRINKLES),
@@ -508,6 +512,7 @@ public final class Items {
                     makeFoodItem("raw_shish_kebab", Foods.RAW_SHISH_KEBAB),
                     makeFoodItem("cheese_slice", Foods.CHEESE_SLICE),
                     makeFoodItem("cheese_toast", Foods.CHEESE_TOAST),
+                    makeContainedFoodItem("squid_ink_paella", Foods.SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16),
 
                     // PIZZA RAW REGISTER BEGIN
                     new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
@@ -792,7 +797,10 @@ public final class Items {
                     new ItemScythe(Tiers.IRON, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("iron_scythe"),
                     new ItemScythe(Tiers.GOLD, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("golden_scythe"),
                     new ItemScythe(Tiers.DIAMOND, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("diamond_scythe"),
-                    new ItemScythe(Tiers.NETHERITE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()).setRegistryName("netherite_scythe")
+                    new ItemScythe(Tiers.NETHERITE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()).setRegistryName("netherite_scythe"),
+
+                    new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE)).setRegistryName("cola_extract"),
+                    new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING)).setRegistryName("cola_powder")
             );
         }
 

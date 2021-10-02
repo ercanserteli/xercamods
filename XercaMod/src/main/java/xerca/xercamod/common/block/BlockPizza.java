@@ -88,7 +88,7 @@ public class BlockPizza extends Block {
         if (!player.canEat(false)) {
             return InteractionResult.PASS;
         } else {
-            player.getFoodData().eat(hungerFilled, 0.1F);
+            player.getFoodData().eat(hungerFilled, 1.0F);
             int i = blockState.getValue(BITES);
             levelAccessor.gameEvent(player, GameEvent.EAT, blockPos);
             if (i < MAX_BITES) {

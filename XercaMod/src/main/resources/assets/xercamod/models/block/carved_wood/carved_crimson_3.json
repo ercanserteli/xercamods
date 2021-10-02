@@ -1,9 +1,9 @@
 {
   "parent": "xercamod:block/carved_wood/carved_crimson",
   "textures": {
-    "up": "xercamod:block/carved_wood/carved_crimson_3_top",
-    "down": "xercamod:block/carved_wood/carved_crimson_3_top",
-    "north": "xercamod:block/carved_wood/carved_crimson_3_side_c",
+    "up": "xercamod:block/carved_wood/carved_crimson_3_side_c_top",
+    "down": "xercamod:block/carved_wood/carved_crimson_3_side_bottom",
+    "north": "xercamod:block/carved_wood/carved_crimson_3_side_c_top",
     "south": "xercamod:block/carved_wood/carved_crimson_3_side_a",
     "west":  "xercamod:block/carved_wood/carved_crimson_3_side_d",
     "east":  "xercamod:block/carved_wood/carved_crimson_3_side_b"

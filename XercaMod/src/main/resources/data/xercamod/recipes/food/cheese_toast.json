@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        "b",
+        "c",
+        "b"
+    ],
+    "key": {"b": {"item": "xercamod:item_bun"}, "c": {"item": "xercamod:cheese_slice"}},
+    "result": {"item": "xercamod:cheese_toast"}
+}
+        

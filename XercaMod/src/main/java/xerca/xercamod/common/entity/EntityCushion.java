@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -167,5 +168,10 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
             }
             return InteractionResult.SUCCESS;
         }
+    }
+
+    @Override
+    public ItemStack getPickResult() {
+        return new ItemStack(item);
     }
 }

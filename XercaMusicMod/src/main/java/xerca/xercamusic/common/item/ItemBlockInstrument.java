@@ -44,6 +44,7 @@ public class ItemBlockInstrument extends ItemInstrument{
     /**
      * Called when this item is used when targetting a Block
      */
+    @Override
     public InteractionResult useOn(UseOnContext context) {
         BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
         if(blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_INSTRUMENT)){
@@ -196,6 +197,7 @@ public class ItemBlockInstrument extends ItemInstrument{
     /**
      * Returns the unlocalized name of this item.
      */
+    @Override
     public String getDescriptionId() {
         return this.getBlock().getDescriptionId();
     }
@@ -203,6 +205,7 @@ public class ItemBlockInstrument extends ItemInstrument{
     /**
      * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
      */
+    @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if (this.allowdedIn(group)) {
             this.getBlock().fillItemCategory(group, items);
@@ -214,6 +217,7 @@ public class ItemBlockInstrument extends ItemInstrument{
      * allows items to add custom lines of information to the mouseover description
      */
     @OnlyIn(Dist.CLIENT)
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         this.getBlock().appendHoverText(stack, worldIn, tooltip, flagIn);

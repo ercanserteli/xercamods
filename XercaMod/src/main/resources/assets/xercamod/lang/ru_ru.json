@@ -21,6 +21,7 @@
   "item.xercamod.sweet_berry_cupcake_fancy": "Украшенный ягодный кекс",
   "item.xercamod.sweet_berry_cupcake": "Ягодный кекс",
   "item.xercamod.ender_cupcake": "Кекс из плодов хоруса",
+  "item.xercamod.glowberry_cupcake": "Кекс со светящимися ягодами ",
   "item.xercamod.sashimi": "Сашими",
   "item.xercamod.oyakodon": "Оякодон",
   "item.xercamod.beef_donburi": "Миска говядины",
@@ -72,6 +73,7 @@
   "item.xercamod.item_potato_fries": "Картошка Фри",
   "item.xercamod.item_shish_kebab": "Шашлык",
   "item.xercamod.item_tomato_slices": "Ломтики помидора",
+  "item.xercamod.squid_ink_paella": "Паэлья с чернилами кальмара",
 
   "item.xercamod.item_ice_tea": "холодный чай",
   "item.xercamod.item_glass_of_water": "Вода",
@@ -213,6 +215,22 @@
   "block.xercamod.carved_spruce_6": "Резная ель",
   "block.xercamod.carved_spruce_7": "Резная ель",
   "block.xercamod.carved_spruce_8": "Резная ель",
+  "block.xercamod.carved_crimson_1": "Резная Багровая ножка",
+  "block.xercamod.carved_crimson_2": "Резная Багровая ножка",
+  "block.xercamod.carved_crimson_3": "Резная Багровая ножка",
+  "block.xercamod.carved_crimson_4": "Резная Багровая ножка",
+  "block.xercamod.carved_crimson_5": "Резная Багровая ножка",
+  "block.xercamod.carved_crimson_6": "Резная Багровая ножка",
+  "block.xercamod.carved_crimson_7": "Резная Багровая ножка",
+  "block.xercamod.carved_crimson_8": "Резная Багровая ножка",
+  "block.xercamod.carved_warped_1": "Резная Искажённая ножка",
+  "block.xercamod.carved_warped_2": "Резная Искажённая ножка",
+  "block.xercamod.carved_warped_3": "Резная Искажённая ножка",
+  "block.xercamod.carved_warped_4": "Резная Искажённая ножка",
+  "block.xercamod.carved_warped_5": "Резная Искажённая ножка",
+  "block.xercamod.carved_warped_6": "Резная Искажённая ножка",
+  "block.xercamod.carved_warped_7": "Резная Искажённая ножка",
+  "block.xercamod.carved_warped_8": "Резная Искажённая ножка",
 
   "block.xercamod.terratile": "Блок терракотовой плитки",
   "block.xercamod.terratile_slab": "Полублок терракотовой плитки",
@@ -369,6 +387,9 @@
   "enchantment.xercamod.enchantment_capacity.desc": "Зачарование Эндер-бутылочки и Зельемета. Увеличивает емкость зелья.",
   "enchantment.xercamod.enchantment_range.desc": "Зачарование Зельемета. Увеличивает дальность и скорость броска зелья.",
   "enchantment.xercamod.enchantment_chug.desc": "Зачарование Эндер-бутылочки. Увеличивает скорость питья.",
+  "enchantment.xercamod.enchantment_devour": "Истребить",
+  "enchantment.xercamod.enchantment_devour.desc": "Slain mobs drop hearts that replenish health when picked up, with a chance to drop hearts on non-lethal hits as well. Higher levels increase the amount dropped on death and the drop chance on non-lethal hits.",
+
 
   "entity.xercamod.cushion": "Подушка",
 
@@ -399,5 +420,28 @@
   "xercamod.ender_flask_tooltip": "Залейте зельями - объедините бутылочки с зельями с эндер-флаской на верстаке.",
   "xercamod.ender_bow_tooltip": "Зарядите взрывными или туманными зельями.",
   "xercamod.empty_teapot_tooltip": "Залейте сушеными чайными листьями и водой, затем сварите ее, чтобы заварить чай.",
-  "xercamod.rope_tooltip": "Можно карабкаться"
+  "xercamod.rope_tooltip": "Можно карабкаться",
+
+  "item.xercamod.cheese_toast": "Сырный тост",
+  "item.xercamod.cheese_slice": "Ломтик сыра",
+  "item.xercamod.cola_powder": "Секретная формула колы",
+  "item.xercamod.cola_extract": "Экстракт колы",
+  "item.xercamod.cola": "Кола",
+  "item.xercamod.soda": "Газировка",
+  "item.xercamod.carbonated_water": "Содовая",
+  "block.xercamod.block_doner": "Блок Донера",
+  "block.xercamod.vat": "Чан для сыра",
+  "block.xercamod.cheese_wheel": "Колесо сыра",
+  "block.xercamod.omni_chest": "Омни сундук",
+  "container.xercamod.omni_chest": "Омни сундук",
+
+  "xercamod.pizza": "Пицца",
+  "xercamod.pizza_plain": "Пицца маргарита",
+  "xercamod.pizza_raw": "Сырая пицца",
+  "xercamod.pizza_raw_plain": "Сырая основа для пиццы",
+  "xercamod.ingredient.chicken": "Курица",
+  "xercamod.ingredient.meat": "Донер",
+  "xercamod.ingredient.fish": "Рыба",
+  "xercamod.ingredient.pepperoni": "Пепперони",
+  "xercamod.ingredient.mushroom": "Гриб"
 }

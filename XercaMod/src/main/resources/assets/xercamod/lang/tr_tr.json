@@ -24,6 +24,7 @@
   "item.xercamod.sweet_berry_cupcake_fancy": "Süslü Tatlı Orman Meyveli Küçük Kek",
   "item.xercamod.sweet_berry_cupcake": "Tatlı Orman Meyveli Küçük Kek",
   "item.xercamod.ender_cupcake": "Nakaratlı Küçük Kek",
+  "item.xercamod.glowberry_cupcake": "Parlayan Meyveli Küçük Kek",
   "item.xercamod.sashimi": "Saşimi",
   "item.xercamod.oyakodon": "Analı kızlı",
   "item.xercamod.beef_donburi": "Dana kasesi",
@@ -75,6 +76,8 @@
   "item.xercamod.item_shish_kebab": "Çöp Şiş",
   "item.xercamod.item_tomato_slices": "Dilimlenmiş Domates",
 
+  "item.xercamod.cola_powder": "Gizli Kola Formülü",
+  "item.xercamod.cola_extract": "Kola Özütü",
   "item.xercamod.cola": "Kola",
   "item.xercamod.soda": "Gazoz",
   "item.xercamod.carbonated_water": "Maden Suyu",
@@ -137,10 +140,7 @@
   "block.xercamod.carving_station": "Oyma Tezgahı",
   "block.xercamod.vat": "Süt Kesme Kazanı",
   "block.xercamod.cheese_wheel": "Peynir Tekeri",
-  "block.xercamod.plain_pizza": "Pizza Margarita",
-  "block.xercamod.mush_pizza": "Mantarlı Pizza",
-  "block.xercamod.mush_sausage_pizza": "Karışık Pizza",
-  "block.xercamod.sausage_pizza": "Sosisli Pizza",
+  "item.xercamod.squid_ink_paella": "Kalamar Mürekkepli Paella",
 
   "container.xercamod.bookcase": "Kitaplık",
   "container.xercamod.carving_station": "Oyma Tezgahı",
