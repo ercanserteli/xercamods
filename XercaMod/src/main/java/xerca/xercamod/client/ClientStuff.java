@@ -5,14 +5,19 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -31,9 +36,15 @@ import xerca.xercamod.common.item.ItemWarhammer;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.tile_entity.TileEntities;
 
+import static xerca.xercamod.common.XercaMod.LOGGER;
+
 public class ClientStuff {
     private static final ResourceLocation blackTexture = new ResourceLocation(XercaMod.MODID, "textures/misc/black.png");
     private static Minecraft mc;
+
+    public static boolean getDoubleLayer(RenderType layerToCheck) {
+        return layerToCheck == RenderType.cutout() || layerToCheck == RenderType.translucent();
+    }
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
     static class ModBusSubscriber{
@@ -118,11 +129,47 @@ public class ClientStuff {
             ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_CHEESE, RenderType.cutoutMipped());
             ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_MILK, RenderType.cutoutMipped());
 
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_1, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_2, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_3, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_4, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_5, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_6, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_7, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_8, ClientStuff::getDoubleLayer);
+
             pizzaRenderLayers();
 
             registerItemModelsProperties();
 
             mc = Minecraft.getInstance();
+        }
+
+        @SubscribeEvent
+        public static void onModelBakeEvent(ModelBakeEvent event) {
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_1, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_2, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_3, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_4, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_5, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_6, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_7, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_8, event);
+        }
+
+        private static void bakeCrimsonModel(Block crimson, ModelBakeEvent event){
+            for (BlockState blockState : crimson.getStateDefinition().getPossibleStates()) {
+                ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
+                BakedModel existingModel = event.getModelRegistry().get(variantMRL);
+                if (existingModel == null) {
+                    LOGGER.warn("Did not find the expected vanilla baked model(s) for CarvedCrimsonBakedModel in registry");
+                } else if (existingModel instanceof CarvedCrimsonBakedModel) {
+                    LOGGER.warn("Tried to replace CarvedCrimsonBakedModel twice");
+                } else {
+                    CarvedCrimsonBakedModel customModel = new CarvedCrimsonBakedModel(existingModel);
+                    event.getModelRegistry().put(variantMRL, customModel);
+                }
+            }
         }
 
         @SubscribeEvent
@@ -244,7 +291,7 @@ public class ClientStuff {
 
         @SubscribeEvent
         public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
-            XercaMod.LOGGER.debug("ClientLoggedOut Event");
+            LOGGER.debug("ClientLoggedOut Event");
             Config.bakeConfig();
         }
 

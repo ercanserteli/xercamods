@@ -1,11 +1,59 @@
 {
-  "parent": "xercamod:block/carved_wood/carved_crimson",
+  "loader": "forge:multi-layer",
+  "parent": "block/block",
   "textures": {
-    "up": "xercamod:block/carved_wood/carved_crimson_2_top",
-    "down": "xercamod:block/carved_wood/carved_crimson_2_top",
-    "north": "xercamod:block/carved_wood/carved_crimson_2_side_c",
-    "south": "xercamod:block/carved_wood/carved_crimson_2_side_a",
-    "west":  "xercamod:block/carved_wood/carved_crimson_2_side_d",
-    "east":  "xercamod:block/carved_wood/carved_crimson_2_side_b"
+    "particle": "block/stripped_crimson_stem_top"
+  },
+  "layers": {
+    "cutout": {
+      "textures": {
+        "up": "xercamod:block/carved_wood/crimson_bg/carved_crimson_2_top",
+        "down": "xercamod:block/carved_wood/crimson_bg/carved_crimson_2_top",
+        "north": "xercamod:block/carved_wood/crimson_bg/carved_crimson_2_side_c",
+        "south": "xercamod:block/carved_wood/crimson_bg/carved_crimson_2_side_a",
+        "west":  "xercamod:block/carved_wood/crimson_bg/carved_crimson_2_side_d",
+        "east":  "xercamod:block/carved_wood/crimson_bg/carved_crimson_2_side_b"
+      },
+      "elements": [
+        {
+          "name": "base",
+          "from": [0, 0, 0],
+          "to": [16, 16, 16],
+          "faces": {
+            "north": {"texture": "#north"},
+            "east": {"texture": "#east"},
+            "south": {"texture": "#south"},
+            "west": {"texture": "#west"},
+            "up": {"texture": "#up"},
+            "down": {"texture": "#down"}
+          }
+        }
+      ]
+    },
+    "translucent": {
+      "textures": {
+        "up": "xercamod:block/carved_wood/carved_crimson_2_top_o",
+        "down": "xercamod:block/carved_wood/carved_crimson_2_top_o",
+        "north": "xercamod:block/carved_wood/carved_crimson_2_side_c_o",
+        "south": "xercamod:block/carved_wood/carved_crimson_2_side_a_o",
+        "west":  "xercamod:block/carved_wood/carved_crimson_2_side_d_o",
+        "east":  "xercamod:block/carved_wood/carved_crimson_2_side_b_o"
+      },
+      "elements": [
+        {
+          "name": "overlay",
+          "from": [0, 0, 0],
+          "to": [16, 16, 16],
+          "faces": {
+            "north": {"texture": "#north"},
+            "east": {"texture": "#east"},
+            "south": {"texture": "#south"},
+            "west": {"texture": "#west"},
+            "up": {"texture": "#up"},
+            "down": {"texture": "#down"}
+          }
+        }
+      ]
+    }
   }
 }
