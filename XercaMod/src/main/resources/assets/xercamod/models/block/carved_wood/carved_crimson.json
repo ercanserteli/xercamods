@@ -7,7 +7,12 @@
   "layers": {
     "cutout": {
       "textures": {
-        "base": "block/stripped_crimson_stem"
+        "up": "xercamod:block/carved_wood/crimson_bg/carved_crimson_1_top",
+        "down": "xercamod:block/carved_wood/crimson_bg/carved_crimson_1_top",
+        "north": "xercamod:block/carved_wood/crimson_bg/carved_crimson_1_side_c",
+        "south": "xercamod:block/carved_wood/crimson_bg/carved_crimson_1_side_a",
+        "west":  "xercamod:block/carved_wood/crimson_bg/carved_crimson_1_side_d",
+        "east":  "xercamod:block/carved_wood/crimson_bg/carved_crimson_1_side_b"
       },
       "elements": [
         {
@@ -15,33 +20,37 @@
           "from": [0, 0, 0],
           "to": [16, 16, 16],
           "faces": {
-            "north": {"texture": "#base"},
-            "east": {"texture": "#base"},
-            "south": {"texture": "#base"},
-            "west": {"texture": "#base"},
-            "up": {"texture": "#base"},
-            "down": {"texture": "#base"}
+            "north": {"texture": "#north"},
+            "east": {"texture": "#east"},
+            "south": {"texture": "#south"},
+            "west": {"texture": "#west"},
+            "up": {"texture": "#up"},
+            "down": {"texture": "#down"}
           }
         }
       ]
     },
     "translucent": {
       "textures": {
-        "overlay": "xercamod:block/carved_wood/carved_crimson_1_side_a_top_o"
+        "up": "xercamod:block/carved_wood/carved_crimson_1_side_a_top_o",
+        "down": "xercamod:block/carved_wood/carved_crimson_1_side_a_top_o",
+        "north": "xercamod:block/carved_wood/carved_crimson_1_side_c_o",
+        "south": "xercamod:block/carved_wood/carved_crimson_1_side_a_top_o",
+        "west":  "xercamod:block/carved_wood/carved_crimson_1_side_d_o",
+        "east":  "xercamod:block/carved_wood/carved_crimson_1_side_b_o"
       },
       "elements": [
         {
           "name": "overlay",
           "from": [0, 0, 0],
           "to": [16, 16, 16],
-          "shade": false,
           "faces": {
-            "north": {"texture": "#overlay"},
-            "east": {"texture": "#overlay"},
-            "south": {"texture": "#overlay"},
-            "west": {"texture": "#overlay"},
-            "up": {"texture": "#overlay"},
-            "down": {"texture": "#overlay"}
+            "north": {"texture": "#north"},
+            "east": {"texture": "#east"},
+            "south": {"texture": "#south"},
+            "west": {"texture": "#west"},
+            "up": {"texture": "#up"},
+            "down": {"texture": "#down"}
           }
         }
       ]

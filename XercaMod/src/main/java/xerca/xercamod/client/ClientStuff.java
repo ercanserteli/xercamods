@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -129,6 +130,13 @@ public class ClientStuff {
             ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_MILK, RenderType.cutoutMipped());
 
             ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_1, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_2, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_3, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_4, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_5, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_6, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_7, ClientStuff::getDoubleLayer);
+            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_8, ClientStuff::getDoubleLayer);
 
             pizzaRenderLayers();
 
@@ -139,7 +147,18 @@ public class ClientStuff {
 
         @SubscribeEvent
         public static void onModelBakeEvent(ModelBakeEvent event) {
-            for (BlockState blockState : Blocks.CARVED_CRIMSON_1.getStateDefinition().getPossibleStates()) {
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_1, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_2, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_3, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_4, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_5, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_6, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_7, event);
+            bakeCrimsonModel(Blocks.CARVED_CRIMSON_8, event);
+        }
+
+        private static void bakeCrimsonModel(Block crimson, ModelBakeEvent event){
+            for (BlockState blockState : crimson.getStateDefinition().getPossibleStates()) {
                 ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
                 BakedModel existingModel = event.getModelRegistry().get(variantMRL);
                 if (existingModel == null) {

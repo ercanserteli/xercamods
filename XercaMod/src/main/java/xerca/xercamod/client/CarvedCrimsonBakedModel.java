@@ -32,7 +32,7 @@ public class CarvedCrimsonBakedModel implements BakedModel {
                 BakedQuad quad = quads.get(i);
                 int[] vertexData = quad.getVertices();
                 for(int j = 0; j < 4; j++) {
-                    vertexData[8 * j + 6] = getLightValue(15, 15);
+                    vertexData[8 * j + 6] = Math.max(getLightValue(0, 12), vertexData[8 * j + 6]);
                 }
                 quads.set(i, new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(), quad.getSprite(), quad.isShade()));
             }
