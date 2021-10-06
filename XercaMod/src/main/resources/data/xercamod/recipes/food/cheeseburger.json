@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        " b ",
+        "dhc",
+        " b "
+    ],
+    "key": {"b": {"item": "xercamod:item_bun"}, "d": {"item": "xercamod:item_tomato_slices"}, "h": {"item": "xercamod:item_cooked_patty"}, "c": {"item": "xercamod:cheese_slice"}},
+    "result": {"item": "xercamod:cheeseburger"}
+}
+        

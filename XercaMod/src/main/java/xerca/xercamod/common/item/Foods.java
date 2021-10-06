@@ -5,7 +5,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 
 public class Foods {
-    public static FoodProperties SQUID_INK_PAELLA = makeFood(15, 1.1f, true).build();
+    public static FoodProperties GLOW_SQUID_INK_PAELLA = makeFood(14, 1.1f, true).effect(()->new MobEffectInstance(MobEffects.GLOWING, 1200, 1), 1.0f).build();
+    public static FoodProperties SQUID_INK_PAELLA = makeFood(14, 1.1f, true).build();
+    public static FoodProperties CHEESEBURGER = makeFood(12, 1.4f, true).build();
     public static FoodProperties CHEESE_TOAST = makeFood(6, 1.0f, false).build();
     public static FoodProperties RAW_PIZZA_0 = makeFood(1, 0.4f, false).build();
     public static FoodProperties RAW_PIZZA_1 = makeFood(2, 0.4f, false).build();

@@ -59,6 +59,7 @@
   "item.xercamod.item_ultimate_top": "Nihai Burger Üstü",
   "item.xercamod.item_ultimate_burger": "Nihai Burger",
   "item.xercamod.item_rotten_burger": "Çürük Burger",
+  "item.xercamod.cheeseburger": "Çizburger",
 
   "item.xercamod.item_raw_sausage": "Çiğ Sosis",
   "item.xercamod.item_cooked_sausage": "Pişmiş Sosis",
@@ -141,6 +142,7 @@
   "block.xercamod.vat": "Süt Kesme Kazanı",
   "block.xercamod.cheese_wheel": "Peynir Tekeri",
   "item.xercamod.squid_ink_paella": "Kalamar Mürekkepli Paella",
+  "item.xercamod.glow_squid_ink_paella": "Parlayan Kalamar Mürekkepli Paella",
 
   "container.xercamod.bookcase": "Kitaplık",
   "container.xercamod.carving_station": "Oyma Tezgahı",
