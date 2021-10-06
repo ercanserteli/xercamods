@@ -57,6 +57,7 @@
   "item.xercamod.item_ultimate_top": "Верх огромного бургера",
   "item.xercamod.item_ultimate_burger": "ОГРОМНЫЙ БУРГЕР!",
   "item.xercamod.item_rotten_burger": "Испоченный бургер",
+  "item.xercamod.cheeseburger": "Чизбургер",
 
   "item.xercamod.item_raw_sausage": "Сырая сосиска",
   "item.xercamod.item_cooked_sausage": "Приготовленная сосиска",
@@ -74,6 +75,7 @@
   "item.xercamod.item_shish_kebab": "Шашлык",
   "item.xercamod.item_tomato_slices": "Ломтики помидора",
   "item.xercamod.squid_ink_paella": "Паэлья с чернилами кальмара",
+  "item.xercamod.glow_squid_ink_paella": "Паэлья со светящимися чернилами кальмара",
 
   "item.xercamod.item_ice_tea": "холодный чай",
   "item.xercamod.item_glass_of_water": "Вода",

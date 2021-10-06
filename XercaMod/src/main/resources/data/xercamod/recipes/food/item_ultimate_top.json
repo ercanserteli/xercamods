@@ -4,10 +4,10 @@
     
     "pattern": [
         " b ",
-        "ttt",
+        "tst",
         " c "
     ],
-    "key": {"b": {"item": "xercamod:item_bun"}, "c": {"item": "xercamod:item_cooked_chicken_patty"}, "t": {"item": "xercamod:item_tomato_slices"}},
+    "key": {"b": {"item": "xercamod:item_bun"}, "c": {"item": "xercamod:item_cooked_chicken_patty"}, "t": {"item": "xercamod:item_tomato_slices"}, "s": {"item": "xercamod:cheese_slice"}},
     "result": {"item": "xercamod:item_ultimate_top"}
 }
         

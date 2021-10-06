@@ -2,7 +2,7 @@
 {
     "type": "xercamod:crafting_condition_shapeless_food",
     
-    "ingredients": [{"item": "xercamod:cooked_rice"}, {"item": "minecraft:cooked_cod"}, {"item": "minecraft:ink_sac"}, {"item": "minecraft:bowl"}],
+    "ingredients": [{"item": "xercamod:cooked_rice"}, {"item": "minecraft:cooked_cod"}, {"item": "minecraft:ink_sac"}, {"item": "minecraft:kelp"}, {"item": "minecraft:bowl"}],
     "result": {"item": "xercamod:squid_ink_paella"}
 }
         

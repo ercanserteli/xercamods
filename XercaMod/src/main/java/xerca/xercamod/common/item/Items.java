@@ -257,8 +257,6 @@ public final class Items {
     public static final Item VAT = null;
     public static final Item CHEESE_WHEEL = null;
     public static final Item CHEESE_SLICE = null;
-//    public static final Item VAT_MILK = null;
-//    public static final Item VAT_CHEESE = null;
 
     public static final BlockItemOmniChest OMNI_CHEST = null;
 
@@ -457,6 +455,7 @@ public final class Items {
                     makeFoodItem("item_mushroom_burger", Foods.MUSHROOM_BURGER),
                     makeFoodItem("item_ultimate_bottom", Foods.ULTIMATE_BOTTOM),
                     makeFoodItem("item_ultimate_top", Foods.ULTIMATE_TOP),
+                    makeFoodItem("cheeseburger", Foods.CHEESEBURGER),
                     new ItemUltimateBurger(),
                     new ItemEnderCupcake(),
                     makeFoodItem( "item_rotten_burger", Foods.ROTTEN_BURGER),
@@ -513,6 +512,7 @@ public final class Items {
                     makeFoodItem("cheese_slice", Foods.CHEESE_SLICE),
                     makeFoodItem("cheese_toast", Foods.CHEESE_TOAST),
                     makeContainedFoodItem("squid_ink_paella", Foods.SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16),
+                    makeContainedFoodItem("glow_squid_ink_paella", Foods.GLOW_SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16),
 
                     // PIZZA RAW REGISTER BEGIN
                     new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
@@ -775,7 +775,7 @@ public final class Items {
                     new BlockConditionedItem(Blocks.YELLOW_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("yellow_terratile_stairs"),
                     new BlockConditionedItem(Blocks.TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile_stairs"),
 
-                    new BlockItem(Blocks.CARVING_STATION, new Item.Properties().tab(Items.decoTab)).setRegistryName("carving_station"),
+                    new BlockConditionedItem(Blocks.CARVING_STATION, new Item.Properties().tab(Items.decoTab), Config::isCarvedWoodEnabled).setRegistryName("carving_station"),
 
                     new BlockItemOmniChest(Blocks.OMNI_CHEST, new Item.Properties().tab(Items.decoTab)).setRegistryName("omni_chest"),
 
