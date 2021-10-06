@@ -5,6 +5,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -17,6 +18,7 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicEndedPacket;
 
 public class ClientStuff {
+
     static public void showMusicGui(){
         LocalPlayer player = Minecraft.getInstance().player;
         ItemStack heldItem = player.getMainHandItem();
@@ -55,12 +57,25 @@ public class ClientStuff {
         }
     }
 
-    // Registration for loot modifier (used for Voice of God in desert temples)
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, value= Dist.CLIENT, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandlerClient {
+    public static class ClientModEventHandler {
         @SubscribeEvent
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
+        }
+
+//        @SubscribeEvent
+//        public static void setupEvent(final FMLClientSetupEvent event) {
+//            soundController = new SoundController();
+//            soundController.start();
+//        }
+    }
+
+    public static void task(SoundEvent soundEvent){
+//        XercaMusic.LOGGER.warn("TASK CTM:   " + System.currentTimeMillis());
+        Player p = Minecraft.getInstance().player;
+        if(p != null){
+            playNote(soundEvent, p.getX(), p.getY(), p.getZ());
         }
     }
 }

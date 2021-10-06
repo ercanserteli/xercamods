@@ -1,7 +1,6 @@
 package xerca.xercamusic.common.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -11,13 +10,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
-import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
+import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
@@ -35,6 +32,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     private boolean isPlaying = true;
     private BlockInstrument blockInstrument = null;
     private BlockPos blockInsPos = null;
+    private SoundController soundController = null;
 
     public EntityMusicSpirit(Level worldIn) {
         super(Entities.MUSIC_SPIRIT, worldIn);
@@ -53,6 +51,8 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             mLength = comp.getInt("length");
             mPause = comp.getByte("pause");
         }
+        this.soundController = new SoundController(music);
+        this.soundController.start();
     }
 
     public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, ItemInstrument instrument) {
@@ -192,59 +192,59 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
 
     @Override
     public void tick() {
-        if (!this.level.isClientSide) {
-            if (body == null || !isPlaying) {
-                this.remove(RemovalReason.DISCARDED);
-                return;
-            }
-            if (!isBodyHandLegit()) {
-                isPlaying = false;
-                this.remove(RemovalReason.DISCARDED);
-                return;
-            }
-
-            if(blockInsPos != null && blockInstrument != null){
-                if(level.getBlockState(blockInsPos).getBlock() != blockInstrument){
-                    this.remove(RemovalReason.DISCARDED);
-                    return;
-                }
-                if(this.position().distanceTo(this.body.position()) > 4){
-                    this.remove(RemovalReason.DISCARDED);
-                    return;
-                }
-            }
-        }
-        super.tick();
-        if(blockInsPos == null || blockInstrument == null){
-            if(body != null) {  // this check is added to work around a strange crash
-                this.setPos(body.getX(), body.getY(), body.getZ());
-            }
-        }
-        if (this.level.isClientSide) {
-            if(mPause == 0){
-                System.err.println("EntityMusicSpirit mPause is 0! THIS SHOULD NOT HAPPEN!");
-                return;
-            }
-            if (this.tickCount % mPause == 0) {
-                if (mTime == mLength) {
-//                    XercaMusic.proxy.endMusic(getId(), body.getId());
-                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientStuff.endMusic(getId(), body.getId()));
-                    this.remove(RemovalReason.DISCARDED);
-                    return;
-                }
-                if (music[mTime] != 0 && music[mTime] <= 48) {
-                    if(instrument.shouldCutOff && lastPlayed != null){
-                        lastPlayed.stopSound();
-                    }
-//                    lastPlayed = XercaMusic.proxy.playNote(instrument.getSound(music[mTime] - 1), getX(), getY() + 0.5d, getZ());
-                    lastPlayed = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
-                            ClientStuff.playNote(instrument.getSound(music[mTime] - 1), getX(), getY() + 0.5d, getZ()));
-                    this.level.addParticle(ParticleTypes.NOTE, getX(), getY() + 2.2D, getZ(), (music[mTime] -1) / 24.0D, 0.0D, 0.0D);
-
-                }
-                mTime++;
-            }
-        }
+//        if (!this.level.isClientSide) {
+//            if (body == null || !isPlaying) {
+//                this.remove(RemovalReason.DISCARDED);
+//                return;
+//            }
+//            if (!isBodyHandLegit()) {
+//                isPlaying = false;
+//                this.remove(RemovalReason.DISCARDED);
+//                return;
+//            }
+//
+//            if(blockInsPos != null && blockInstrument != null){
+//                if(level.getBlockState(blockInsPos).getBlock() != blockInstrument){
+//                    this.remove(RemovalReason.DISCARDED);
+//                    return;
+//                }
+//                if(this.position().distanceTo(this.body.position()) > 4){
+//                    this.remove(RemovalReason.DISCARDED);
+//                    return;
+//                }
+//            }
+//        }
+//        super.tick();
+//        if(blockInsPos == null || blockInstrument == null){
+//            if(body != null) {  // this check is added to work around a strange crash
+//                this.setPos(body.getX(), body.getY(), body.getZ());
+//            }
+//        }
+//        if (this.level.isClientSide) {
+//            if(mPause == 0){
+//                System.err.println("EntityMusicSpirit mPause is 0! THIS SHOULD NOT HAPPEN!");
+//                return;
+//            }
+//            if (this.tickCount % mPause == 0) {
+//                if (mTime == mLength) {
+////                    XercaMusic.proxy.endMusic(getId(), body.getId());
+//                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientStuff.endMusic(getId(), body.getId()));
+//                    this.remove(RemovalReason.DISCARDED);
+//                    return;
+//                }
+//                if (music[mTime] != 0 && music[mTime] <= 48) {
+//                    if(instrument.shouldCutOff && lastPlayed != null){
+//                        lastPlayed.stopSound();
+//                    }
+////                    lastPlayed = XercaMusic.proxy.playNote(instrument.getSound(music[mTime] - 1), getX(), getY() + 0.5d, getZ());
+//                    lastPlayed = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+//                            ClientStuff.playNote(instrument.getSound(music[mTime] - 1), getX(), getY() + 0.5d, getZ()));
+//                    this.level.addParticle(ParticleTypes.NOTE, getX(), getY() + 2.2D, getZ(), (music[mTime] -1) / 24.0D, 0.0D, 0.0D);
+//
+//                }
+//                mTime++;
+//            }
+//        }
     }
 
     public boolean isPlaying() {
