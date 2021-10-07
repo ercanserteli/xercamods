@@ -1,5 +1,6 @@
 */out
 */build
-*/.gradle
-run/*
-.idea
+.gradle/
+run/
+.idea/
+builds/
