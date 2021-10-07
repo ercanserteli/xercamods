@@ -44,6 +44,10 @@ public class ClientStuff {
         return playNote(event, x, y, z, SoundSource.PLAYERS, 3.5f, 1.0f);
     }
 
+    static public NoteSound playNoteTE(SoundEvent event, double x, double y, double z) {
+        return playNote(event, x, y, z, SoundSource.RECORDS, 4.0f, 1.0f);
+    }
+
     static public NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch) {
         NoteSound sound = new NoteSound(event, category, (float)x, (float)y, (float)z, volume, pitch);
         Minecraft.getInstance().getSoundManager().play(sound);
@@ -63,16 +67,9 @@ public class ClientStuff {
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
         }
-
-//        @SubscribeEvent
-//        public static void setupEvent(final FMLClientSetupEvent event) {
-//            soundController = new SoundController();
-//            soundController.start();
-//        }
     }
 
-    public static void task(SoundEvent soundEvent){
-//        XercaMusic.LOGGER.warn("TASK CTM:   " + System.currentTimeMillis());
+    public static void playAtPlayer(SoundEvent soundEvent){
         Player p = Minecraft.getInstance().player;
         if(p != null){
             playNote(soundEvent, p.getX(), p.getY(), p.getZ());

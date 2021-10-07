@@ -26,7 +26,6 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     private ItemInstrument instrument;
     private byte[] music;
     private int mLength;
-    private int mTime;
     private byte mPause;
     private NoteSound lastPlayed = null;
     private boolean isPlaying = true;
@@ -43,7 +42,6 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         this.body = body;
         this.instrument = instrument;
         setNoteFromBody();
-        this.mTime = 0;
         this.setPos(body.getX(), body.getY(), body.getZ());
         if (note.hasTag() && note.getTag().contains("music")) {
             CompoundTag comp = note.getTag();
@@ -51,8 +49,6 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             mLength = comp.getInt("length");
             mPause = comp.getByte("pause");
         }
-        this.soundController = new SoundController(music);
-        this.soundController.start();
     }
 
     public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, ItemInstrument instrument) {
@@ -166,7 +162,6 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         if(by >= 0){
             setBlockPosAndInstrument(new BlockPos(bx, by ,bz));
         }
-        this.mTime = 0;
 
         if(blockInsPos != null){
             this.instrument = blockInstrument.getItemInstrument();
@@ -183,6 +178,11 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             mLength = comp.getInt("length");
             mPause = comp.getByte("pause");
         }
+
+        if(level.isClientSide){
+            this.soundController = new SoundController(music, getX(), getY(), getZ(), instrument, mPause, getId());
+            this.soundController.start();
+        }
     }
 
     @Override
@@ -191,60 +191,52 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
+    public void remove(Entity.RemovalReason reason) {
+        super.remove(reason);
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+
+        if(soundController != null){
+            soundController.setStop();
+        }
+    }
+
+    @Override
     public void tick() {
-//        if (!this.level.isClientSide) {
-//            if (body == null || !isPlaying) {
-//                this.remove(RemovalReason.DISCARDED);
-//                return;
-//            }
-//            if (!isBodyHandLegit()) {
-//                isPlaying = false;
-//                this.remove(RemovalReason.DISCARDED);
-//                return;
-//            }
-//
-//            if(blockInsPos != null && blockInstrument != null){
-//                if(level.getBlockState(blockInsPos).getBlock() != blockInstrument){
-//                    this.remove(RemovalReason.DISCARDED);
-//                    return;
-//                }
-//                if(this.position().distanceTo(this.body.position()) > 4){
-//                    this.remove(RemovalReason.DISCARDED);
-//                    return;
-//                }
-//            }
-//        }
-//        super.tick();
-//        if(blockInsPos == null || blockInstrument == null){
-//            if(body != null) {  // this check is added to work around a strange crash
-//                this.setPos(body.getX(), body.getY(), body.getZ());
-//            }
-//        }
-//        if (this.level.isClientSide) {
-//            if(mPause == 0){
-//                System.err.println("EntityMusicSpirit mPause is 0! THIS SHOULD NOT HAPPEN!");
-//                return;
-//            }
-//            if (this.tickCount % mPause == 0) {
-//                if (mTime == mLength) {
-////                    XercaMusic.proxy.endMusic(getId(), body.getId());
-//                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientStuff.endMusic(getId(), body.getId()));
-//                    this.remove(RemovalReason.DISCARDED);
-//                    return;
-//                }
-//                if (music[mTime] != 0 && music[mTime] <= 48) {
-//                    if(instrument.shouldCutOff && lastPlayed != null){
-//                        lastPlayed.stopSound();
-//                    }
-////                    lastPlayed = XercaMusic.proxy.playNote(instrument.getSound(music[mTime] - 1), getX(), getY() + 0.5d, getZ());
-//                    lastPlayed = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
-//                            ClientStuff.playNote(instrument.getSound(music[mTime] - 1), getX(), getY() + 0.5d, getZ()));
-//                    this.level.addParticle(ParticleTypes.NOTE, getX(), getY() + 2.2D, getZ(), (music[mTime] -1) / 24.0D, 0.0D, 0.0D);
-//
-//                }
-//                mTime++;
-//            }
-//        }
+        if (!this.level.isClientSide) {
+            if (body == null || !isPlaying) {
+                this.remove(RemovalReason.DISCARDED);
+                return;
+            }
+            if (!isBodyHandLegit()) {
+                isPlaying = false;
+                this.remove(RemovalReason.DISCARDED);
+                return;
+            }
+
+            if(blockInsPos != null && blockInstrument != null){
+                if(level.getBlockState(blockInsPos).getBlock() != blockInstrument){
+                    this.remove(RemovalReason.DISCARDED);
+                    return;
+                }
+                if(this.position().distanceTo(this.body.position()) > 4){
+                    this.remove(RemovalReason.DISCARDED);
+                    return;
+                }
+            }
+        }
+        super.tick();
+        if(blockInsPos == null || blockInstrument == null){
+            if(body != null) {  // this check is added to work around a strange crash
+                this.setPos(body.getX(), body.getY(), body.getZ());
+                if(soundController != null) {
+                    soundController.setPos(getX(), getY(), getZ());
+                }
+            }
+        }
     }
 
     public boolean isPlaying() {
