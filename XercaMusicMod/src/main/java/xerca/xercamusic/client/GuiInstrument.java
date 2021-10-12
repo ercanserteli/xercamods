@@ -1,14 +1,11 @@
 package xerca.xercamusic.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -94,11 +91,10 @@ public class GuiInstrument extends Screen {
             int octave = (mouseX - buttonBaseX) / (guiOctaveWidth);
             int note = ((mouseX - buttonBaseX) % guiOctaveWidth) / guiNoteWidth;
             if(note < 12){
-                int playNote = octave * 12 + note;
-                if(playNote >= 0 && playNote < 48){
-                    playSound(playNote);
-                    pushedButton = playNote;
-                }
+                int noteId = octave * 12 + note;
+                int playNote = ItemInstrument.idToNote(noteId);
+                playSound(playNote);
+                pushedButton = noteId;
             }
 
         }
@@ -113,12 +109,15 @@ public class GuiInstrument extends Screen {
     }
 
     private void playSound(int note){
-        if(instrument.shouldCutOff && lastPlayed != null){
+        if(instrument.isLong && lastPlayed != null){
             lastPlayed.stopSound();
         }
 
-        SoundEvent noteSound = instrument.getSound(note);
-        lastPlayed = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound, player.getX(), player.getY(), player.getZ()));
+        ItemInstrument.InsSound noteSound = instrument.getSound(note);
+        if(noteSound == null){
+            return;
+        }
+        lastPlayed = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, player.getX(), player.getY(), player.getZ(), 1.0f, noteSound.pitch));
         player.level.addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
 
         SingleNotePacket pack = new SingleNotePacket(note, instrument);

@@ -2,67 +2,87 @@ package xerca.xercamusic.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
+import java.util.ArrayList;
+
 public class SoundController extends Thread {
-    private byte[] music;
+    private ArrayList<NoteEvent> notes;
     private volatile boolean doStop = false;
     private volatile double x;
     private volatile double y;
     private volatile double z;
     private ItemInstrument instrument;
-    private byte pause;
+    private byte bps;
     private int spiritID;
+    private float volume;
     private NoteSound lastPlayed = null;
     private TileEntityMusicBox musicBox = null;
 
-    public SoundController(byte[] music, double x, double y, double z, ItemInstrument instrument, byte pause, int spiritID){
-        this.music = music;
+    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, ItemInstrument instrument, byte bps, float volume, int spiritID){
+        this.notes = notes;
         this.x = x;
         this.y = y;
         this.z = z;
         this.instrument = instrument;
-        this.pause = pause;
+        this.bps = bps;
+        this.volume = volume;
         this.spiritID = spiritID;
     }
-    public SoundController(byte[] music, double x, double y, double z, ItemInstrument instrument, byte pause, TileEntityMusicBox musicBox){
-        this(music, x, y, z, instrument, pause, -1);
+    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, ItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox){
+        this(notes, x, y, z, instrument, bps, volume, -1);
         this.musicBox = musicBox;
+    }
+
+    private int beatsToTicks(int beats){
+        return Math.round(((float)beats) * 20.0f / ((float)bps));
     }
 
     @Override
     public void run() {
-        for (byte b : music) {
+        for (int i=0; i<notes.size(); i++) {
+            NoteEvent event = notes.get(i);
+            NoteEvent nextEvent = null;
+            if(i + 1 < notes.size()) {
+                nextEvent = notes.get(i+1);
+            }
+
             if (doStop){
                 return;
             }
 
-            if(pause == 0){
-                System.err.println("pause is 0! THIS SHOULD NOT HAPPEN!");
+            if(bps == 0){
+                System.err.println("BPS is 0! This should not happen!");
                 return;
             }
 
-            if (b > 0 && b <= 48) {
-                if(instrument.shouldCutOff && lastPlayed != null){
-                    Minecraft.getInstance().submitAsync(() -> {
-                        lastPlayed.stopSound();
-                    });
-                }
-                final byte note = b;
+            if (event.note >= ItemInstrument.minNote && event.note <= ItemInstrument.maxNote) {
+                final byte note = event.note;
                 Minecraft.getInstance().submitAsync(() -> {
+                    ItemInstrument.InsSound insSound = instrument.getSound(note);
+                    if(insSound == null){
+                        return;
+                    }
+
                     if(musicBox == null){
-                        lastPlayed = ClientStuff.playNote(instrument.getSound(note - 1), x, y, z);
-                        Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note - 1) / 24.0D, 0.0D, 0.0D);
+                        lastPlayed = ClientStuff.playNote(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
+                        Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note) / 24.0D, 0.0D, 0.0D);
                     }
                     else{
-                        lastPlayed = ClientStuff.playNoteTE(instrument.getSound(note - 1), x, y, z);
-                        Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x+0.5D, y + 2.2D, z+0.5D, (note - 1) / 24.0D, 0.0D, 0.0D);
+                        lastPlayed = ClientStuff.playNoteTE(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
+                        Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x+0.5D, y + 2.2D, z+0.5D, (note) / 24.0D, 0.0D, 0.0D);
                     }
                 });
             }
             try {
-                sleep(pause*50);
+                if(nextEvent != null){
+                    long delay = (long)((nextEvent.time - event.time)*1000.f/(float)bps);
+                    if(delay > 0){
+                        sleep(delay);
+                    }
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

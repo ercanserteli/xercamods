@@ -15,11 +15,14 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercamusic.client.SoundController;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicBoxUpdatePacket;
+
+import java.util.ArrayList;
 
 public class TileEntityMusicBox extends BlockEntity {
     private boolean isPlaying = false;
@@ -29,11 +32,12 @@ public class TileEntityMusicBox extends BlockEntity {
 
     private ItemStack noteStack = ItemStack.EMPTY;
     private ItemInstrument instrument;
-    private byte[] music;
-    private byte mPause;
+    private ArrayList<NoteEvent> notes = new ArrayList<>();
+    private byte mBPS;
+    private float mVolume;
     private int poweringAge = 0;
     private int playingAge = 0;
-    private int mLength = 0;
+    private int mLengthBeats = 0;
     private SoundController soundController = null;
 
     public TileEntityMusicBox(BlockPos blockPos, BlockState blockState) {
@@ -138,10 +142,14 @@ public class TileEntityMusicBox extends BlockEntity {
 
         if(t.isPlaying){
             t.playingAge ++;
-            if(t.playingAge >= t.mLength*t.mPause){
+            if(t.playingAge >= t.beatsToTicks(t.mLengthBeats)){
                 musicOver(t, state);
             }
         }
+    }
+
+    private int beatsToTicks(int beats){
+        return Math.round(((float)beats) * 20.0f / ((float)mBPS));
     }
 
     public static void musicOver(TileEntityMusicBox t, BlockState state) {
@@ -165,7 +173,7 @@ public class TileEntityMusicBox extends BlockEntity {
                 if(t.soundController != null){
                     t.soundController.setStop();
                 }
-                t.soundController = new SoundController(t.music, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.mPause, t);
+                t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.mBPS, t.mVolume, t);
                 t.soundController.start();
             }
         }
@@ -182,11 +190,12 @@ public class TileEntityMusicBox extends BlockEntity {
             }
 
             this.noteStack = noteStack;
-            if (noteStack.hasTag() && noteStack.getTag().contains("music")) {
+            if (noteStack.hasTag() && noteStack.getTag().contains("notes") && noteStack.getTag().contains("bps") && noteStack.getTag().contains("l")) {
                 CompoundTag comp = noteStack.getTag();
-                music = comp.getByteArray("music");
-                mPause = comp.getByte("pause");
-                mLength = comp.getByte("length");
+                NoteEvent.fillArrayFromNBT(notes, comp);
+                mBPS = comp.getByte("bps");
+                mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
+                mLengthBeats = comp.getByte("l");
             }
             setChanged();
         }

@@ -1,9 +1,9 @@
 package xerca.xercamusic.common.packets;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
@@ -31,9 +31,6 @@ public class SingleNoteClientPacket {
             int instrumentId = buf.readInt();
             int playerId = buf.readInt();
 
-            if(result.note < 0 || result.note >= 48){
-                throw new IndexOutOfBoundsException("Invalid note: " + result.note);
-            }
             if(instrumentId < 0 || instrumentId >= Items.instruments.length){
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }

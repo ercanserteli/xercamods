@@ -36,8 +36,8 @@ import java.util.Map;
 
 public class ItemBlockInstrument extends ItemInstrument{
     private final Block block;
-    ItemBlockInstrument(String name, boolean shouldCutOff, int instrumentId, Block block) {
-        super(name, shouldCutOff, instrumentId);
+    ItemBlockInstrument(String name, boolean shouldCutOff, int instrumentId, Block block, int minOctave, int maxOctave) {
+        super(name, shouldCutOff, instrumentId, minOctave, maxOctave);
         this.block = block;
     }
 

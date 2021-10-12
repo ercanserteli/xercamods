@@ -18,7 +18,6 @@ import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMetronome;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
-import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class TileEntityMetronome extends BlockEntity {
                     if(metronome.level.isClientSide){// note: doesn't work if this function is only called in server
                         // Client side
                         DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
-                                ClientStuff.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat()*0.1f));
+                                ClientStuff.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat()*0.1f, (byte)-1));
 
                         level.addParticle(ParticleTypes.NOTE, (double) metronome.worldPosition.getX() + 0.5D, (double) metronome.worldPosition.getY() + 1.2D, (double) metronome.worldPosition.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
                     }

@@ -15,18 +15,22 @@ import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.client.SoundController;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
+import java.util.ArrayList;
+
 public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnData {
     private Player body;
     private ItemStack note;
     private ItemInstrument instrument;
-    private byte[] music;
-    private int mLength;
-    private byte mPause;
+    private ArrayList<NoteEvent> notes = new ArrayList<>();
+    private int mLengthBeats;
+    private float mVolume;
+    private byte mBPS;
     private NoteSound lastPlayed = null;
     private boolean isPlaying = true;
     private BlockInstrument blockInstrument = null;
@@ -43,11 +47,12 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         this.instrument = instrument;
         setNoteFromBody();
         this.setPos(body.getX(), body.getY(), body.getZ());
-        if (note.hasTag() && note.getTag().contains("music")) {
+        if (note.hasTag() && note.getTag().contains("notes") && note.getTag().contains("l") && note.getTag().contains("bps")) {
             CompoundTag comp = note.getTag();
-            music = comp.getByteArray("music");
-            mLength = comp.getInt("length");
-            mPause = comp.getByte("pause");
+            NoteEvent.fillArrayFromNBT(notes, comp);
+            mLengthBeats = comp.getInt("l");
+            mBPS = comp.getByte("bps");
+            mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
         }
     }
 
@@ -105,26 +110,28 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tagCompound) {
-        this.music = tagCompound.getByteArray("music");
-        this.mLength = tagCompound.getInt("length");
-        this.mPause = tagCompound.getByte("pause");
-        this.isPlaying = tagCompound.getBoolean("playing");
-        if(tagCompound.contains("bX") && tagCompound.contains("bY") && tagCompound.contains("bZ")){
-            setBlockPosAndInstrument(new BlockPos(tagCompound.getInt("bX"), tagCompound.getInt("bY"), tagCompound.getInt("bZ")));
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        NoteEvent.fillArrayFromNBT(notes, tag);
+        this.mLengthBeats = tag.getInt("l");
+        this.mBPS = tag.getByte("bps");
+        this.mVolume = tag.getFloat("vol");
+        this.isPlaying = tag.getBoolean("playing");
+        if(tag.contains("bX") && tag.contains("bY") && tag.contains("bZ")){
+            setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")));
         }
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tagCompound) {
-        tagCompound.putByteArray("music", this.music);
-        tagCompound.putInt("length", mLength);
-        tagCompound.putByte("pause", mPause);
-        tagCompound.putBoolean("playing", isPlaying);
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        NoteEvent.fillNBTFromArray(notes, tag);
+        tag.putInt("l", mLengthBeats);
+        tag.putByte("bps", mBPS);
+        tag.putFloat("vol", mVolume);
+        tag.putBoolean("playing", isPlaying);
         if(blockInstrument != null && blockInsPos != null){
-            tagCompound.putInt("bX", blockInsPos.getX());
-            tagCompound.putInt("bY", blockInsPos.getY());
-            tagCompound.putInt("bZ", blockInsPos.getZ());
+            tag.putInt("bX", blockInsPos.getX());
+            tag.putInt("bY", blockInsPos.getY());
+            tag.putInt("bZ", blockInsPos.getZ());
         }
     }
 
@@ -172,15 +179,16 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             this.note = body.getOffhandItem();
             this.setPos(body.getX(), body.getY(), body.getZ());
         }
-        if (note.hasTag() && note.getTag().contains("music")) {
+        if (note.hasTag() && note.getTag().contains("notes") && note.getTag().contains("l") && note.getTag().contains("bps")) {
             CompoundTag comp = note.getTag();
-            music = comp.getByteArray("music");
-            mLength = comp.getInt("length");
-            mPause = comp.getByte("pause");
+            NoteEvent.fillArrayFromNBT(notes, comp);
+            mLengthBeats = comp.getInt("l");
+            mBPS = comp.getByte("bps");
+            mVolume = comp.getFloat("vol");
         }
 
         if(level.isClientSide){
-            this.soundController = new SoundController(music, getX(), getY(), getZ(), instrument, mPause, getId());
+            this.soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, mBPS, mVolume, getId());
             this.soundController.start();
         }
     }

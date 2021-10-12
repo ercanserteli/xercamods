@@ -4,10 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -24,11 +20,9 @@ import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercamusic.common.block.Blocks;
-import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.*;
 
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 
@@ -122,181 +116,5 @@ public class XercaMusic
     @SuppressWarnings({"ConstantConditions", "SameReturnValue"})
     public static <T> T Null() {
         return null;
-    }
-
-    /// Remapping events for migrating saves from the old mod
-
-    @SubscribeEvent
-    public void remapBlocks(final RegistryEvent.MissingMappings<Block> event) {
-        for (RegistryEvent.MissingMappings.Mapping<Block> miss : event.getAllMappings()) {
-            XercaMusic.LOGGER.info("Missing block entry found: " + miss.key);
-            if(miss.key.toString().equals("xercamod:block_metronome")){
-                miss.remap(Blocks.BLOCK_METRONOME);
-            }
-            else if(miss.key.toString().equals("xercamod:music_box")){
-                miss.remap(Blocks.MUSIC_BOX);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void remapItems(final RegistryEvent.MissingMappings<Item> event) {
-        for (RegistryEvent.MissingMappings.Mapping<Item> miss : event.getAllMappings()) {
-            XercaMusic.LOGGER.info("Missing item entry found: " + miss.key);
-            if(miss.key.toString().equals("xercamod:item_metronome")){
-                miss.remap(Blocks.BLOCK_METRONOME.asItem());
-            }
-            else if(miss.key.toString().equals("xercamod:music_box")){
-                miss.remap(Blocks.MUSIC_BOX.asItem());
-            }
-            else if(miss.key.toString().equals("xercamod:item_note")){
-                miss.remap(Items.MUSIC_SHEET);
-            }
-
-            else if(miss.key.toString().equals("xercamod:item_guitar")){
-                miss.remap(Items.GUITAR);
-            }
-            else if(miss.key.toString().equals("xercamod:item_banjo")){
-                miss.remap(Items.BANJO);
-            }
-            else if(miss.key.toString().equals("xercamod:item_drum")){
-                miss.remap(Items.DRUM);
-            }
-            else if(miss.key.toString().equals("xercamod:item_flute")){
-                miss.remap(Items.FLUTE);
-            }
-            else if(miss.key.toString().equals("xercamod:item_god")){
-                miss.remap(Items.GOD);
-            }
-            else if(miss.key.toString().equals("xercamod:item_lyre")){
-                miss.remap(Items.LYRE);
-            }
-            else if(miss.key.toString().equals("xercamod:item_sansula")){
-                miss.remap(Items.SANSULA);
-            }
-            else if(miss.key.toString().equals("xercamod:item_saxophone")){
-                miss.remap(Items.SAXOPHONE);
-            }
-            else if(miss.key.toString().equals("xercamod:item_tubular_bell")){
-                miss.remap(Items.TUBULAR_BELL);
-            }
-            else if(miss.key.toString().equals("xercamod:item_violin")){
-                miss.remap(Items.VIOLIN);
-            }
-            else if(miss.key.toString().equals("xercamod:item_xylophone")){
-                miss.remap(Items.XYLOPHONE);
-            }
-
-            if(miss.key.toString().equals("xercamusic:item_metronome")){
-                miss.remap(Blocks.BLOCK_METRONOME.asItem());
-            }
-            else if(miss.key.toString().equals("xercamusic:item_note")){
-                miss.remap(Items.MUSIC_SHEET);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_guitar")){
-                miss.remap(Items.GUITAR);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_banjo")){
-                miss.remap(Items.BANJO);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_drum")){
-                miss.remap(Items.DRUM);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_flute")){
-                miss.remap(Items.FLUTE);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_god")){
-                miss.remap(Items.GOD);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_lyre")){
-                miss.remap(Items.LYRE);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_sansula")){
-                miss.remap(Items.SANSULA);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_saxophone")){
-                miss.remap(Items.SAXOPHONE);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_tubular_bell")){
-                miss.remap(Items.TUBULAR_BELL);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_violin")){
-                miss.remap(Items.VIOLIN);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_xylophone")){
-                miss.remap(Items.XYLOPHONE);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void remapEntities(final RegistryEvent.MissingMappings<EntityType<?>> event) {
-        for (RegistryEvent.MissingMappings.Mapping<EntityType<?>> miss : event.getAllMappings()) {
-            XercaMusic.LOGGER.info("Missing entity entry found: " + miss.key);
-            if(miss.key.toString().equals("xercamod:music_spirit")){
-                miss.remap(Entities.MUSIC_SPIRIT);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void remapSoundEvents(final RegistryEvent.MissingMappings<SoundEvent> event) {
-        for (RegistryEvent.MissingMappings.Mapping<SoundEvent> miss : event.getAllMappings()) {
-            if(miss.key.getNamespace().equals("xercamod")){
-                if(miss.key.getPath().equals("metronome_set")){
-                    miss.remap(SoundEvents.METRONOME_SET);
-                }
-                else if(miss.key.getPath().equals("tick")){
-                    miss.remap(SoundEvents.TICK);
-                }
-                else{
-                    try{
-                        String[] part = miss.key.getPath().split("(?<=\\D)(?=\\d)");
-                        switch (part[0]) {
-                            case "banjo":
-                                miss.remap(SoundEvents.banjos[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "guitar":
-                                miss.remap(SoundEvents.guitars[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "drum":
-                                miss.remap(SoundEvents.drums[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "lyre":
-                                miss.remap(SoundEvents.lyres[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "flute":
-                                miss.remap(SoundEvents.flutes[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "saxophone":
-                                miss.remap(SoundEvents.saxophones[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "god":
-                                miss.remap(SoundEvents.gods[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "harp_mc":
-                                miss.remap(SoundEvents.harp_mcs[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "sansula":
-                                miss.remap(SoundEvents.sansulas[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "tubular_bell":
-                                miss.remap(SoundEvents.tubular_bells[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "violin":
-                                miss.remap(SoundEvents.violins[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "xylophone":
-                                miss.remap(SoundEvents.xylophones[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "cello":
-                                miss.remap(SoundEvents.cellos[Integer.parseInt(part[1]) - 1]);
-                                break;
-                        }
-                    }
-                    catch(PatternSyntaxException ignored){}
-                }
-            }
-        }
     }
 }

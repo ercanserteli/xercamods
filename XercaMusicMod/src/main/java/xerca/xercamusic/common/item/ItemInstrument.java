@@ -16,32 +16,38 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemInstrument extends Item {
-    private SoundEvent[] sounds;
-    public boolean shouldCutOff;
+    private ArrayList<Pair<Integer, SoundEvent>> sounds;
+    private InsSound[] insSounds;
+    public static final int totalNotes = 96;
+    public static final int minNote = 21;
+    public static final int maxNote = 117;
+    public boolean isLong;
+    public int minOctave;
+    public int maxOctave;
 
     private final int instrumentId;
 
-    ItemInstrument(String name, boolean shouldCutOff, int instrumentId) {
+    public ItemInstrument(String name, boolean isLong, int instrumentId, int minOctave, int maxOctave) {
         super(new Properties().tab(Items.musicTab));
         this.setRegistryName(name);
-        this.shouldCutOff = shouldCutOff;
+        this.isLong = isLong;
         this.instrumentId = instrumentId;
+        this.minOctave = minOctave;
+        this.maxOctave = maxOctave;
     }
 
     public int getInstrumentId() {
         return instrumentId;
-    }
-
-    public SoundEvent getSound(int i) {
-        return sounds[i];
     }
 
     // Should be called from the server side
@@ -53,10 +59,6 @@ public class ItemInstrument extends Item {
         else if(canStop){
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
         }
-    }
-
-    public void setSounds(SoundEvent[] sounds){
-        this.sounds = sounds;
     }
 
     @Override
@@ -103,9 +105,82 @@ public class ItemInstrument extends Item {
         Level world = attacker.level;
         if (!world.isClientSide) {
             for (int i = 0; i < 3; i++) {
-                world.playSound(null, target.blockPosition(), sounds[world.random.nextInt(48)], SoundSource.PLAYERS, 3.0f, 1.0f);
+                InsSound randomSound = insSounds[world.random.nextInt(totalNotes)];
+                world.playSound(null, target.blockPosition(), randomSound.sound, SoundSource.PLAYERS, 3.0f, randomSound.pitch);
             }
         }
         return true;
     }
+
+    public static int idToNote(int id){
+        return id + minNote;
+    }
+
+    public static int noteToId(int note){
+        return note - minNote;
+    }
+
+    public void setSounds(ArrayList<Pair<Integer, SoundEvent>> sounds){
+        this.sounds = sounds;
+        insSounds = new InsSound[totalNotes];
+        for(int i=0; i<totalNotes; i++){
+            int note = idToNote(i);
+            int index = getClosest(note);
+            if(index < 0 || index >= sounds.size()){
+                XercaMusic.LOGGER.error("Invalid sound index in Instrument construction");
+            }
+            int octave = i/12;
+            if(octave >= minOctave && octave <= maxOctave){
+                float pitch = (float)Math.pow(1.05946314465679, note - sounds.get(index).first);
+                insSounds[i] = new InsSound(sounds.get(index).second, pitch);
+            }
+        }
+    }
+
+    private int getClosest(int note) {
+        int minDiff = 100;
+        int bestIndex = -1;
+        for(int i=0; i<sounds.size(); i++){
+            int diff = Math.abs(sounds.get(i).first - note);
+            if(diff < minDiff){
+                minDiff = diff;
+                bestIndex = i;
+            }
+        }
+        return bestIndex;
+    }
+
+    public InsSound getSound(int note) {
+        int id = noteToId(note);
+        if(id >= 0 && id < totalNotes) {
+            return insSounds[id];
+        }
+        XercaMusic.LOGGER.warn("Requested invalid note from Instrument getSound: " + note);
+        return null;
+    }
+
+    static public class InsSound {
+        public SoundEvent sound;
+        public float pitch;
+
+        public InsSound(SoundEvent sound, float pitch){
+            this.sound = sound;
+            this.pitch = pitch;
+        }
+    }
+
+    public record Pair<F, S>(F first, S second) {
+        public static <F, S> Pair<F, S> of(F first, S second) {
+            if (first == null || second == null) {
+                throw new IllegalArgumentException("Pair.of requires non null values.");
+            }
+            return new Pair<>(first, second);
+        }
+
+        @Override
+        public int hashCode() {
+            return first.hashCode() * 37 + second.hashCode();
+        }
+    }
+
 }

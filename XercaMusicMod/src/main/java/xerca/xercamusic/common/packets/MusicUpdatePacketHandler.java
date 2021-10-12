@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
 
@@ -30,9 +31,10 @@ public class MusicUpdatePacketHandler {
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
             CompoundTag comp = note.getOrCreateTag();
 
-            comp.putByteArray("music", msg.getMusic());
-            comp.putInt("length", msg.getLength());
-            comp.putByte("pause", msg.getPause());
+            NoteEvent.fillNBTFromArray(msg.getNotes(), comp);
+            comp.putInt("l", msg.getLengthBeats());
+            comp.putByte("bps", msg.getBps());
+            comp.putFloat("vol", msg.getVolume());
             comp.putInt("generation", 0);
             comp.putByte("prevIns", msg.getPrevInstrument());
             comp.putBoolean("piLocked", msg.getPrevInsLocked());

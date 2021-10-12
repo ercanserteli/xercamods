@@ -2,7 +2,6 @@ package xerca.xercamusic.common.packets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -11,7 +10,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.item.ItemInstrument;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,15 +33,18 @@ public class SingleNoteClientPacketHandler {
     private static void processMessage(SingleNoteClientPacket msg) {
         Player playerEntity = msg.getPlayerEntity();
         if(!playerEntity.equals(Minecraft.getInstance().player)){
-            SoundEvent sound = msg.getInstrumentItem().getSound(msg.getNote());
+            ItemInstrument.InsSound sound = msg.getInstrumentItem().getSound(msg.getNote());
+            if(sound == null){
+                return;
+            }
             double x = playerEntity.getX();
             double y = playerEntity.getY();
             double z = playerEntity.getZ();
-//            NoteSound noteSound = XercaMusic.proxy.playNote(sound, x, y, z, SoundSource.PLAYERS, 1.5f, 1.0f);
-            NoteSound noteSound = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
-                    ClientStuff.playNote(sound, x, y, z, SoundSource.PLAYERS, 1.5f, 1.0f));
 
-            if(msg.getInstrumentItem().shouldCutOff){
+            NoteSound noteSound = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+                    ClientStuff.playNote(sound.sound, x, y, z, SoundSource.PLAYERS, 1.5f, sound.pitch, (byte) -1));
+
+            if(msg.getInstrumentItem().isLong){
                 NoteSoundEntry oldNoteSoundEntry = noteSounds.get(playerEntity);
                 if(oldNoteSoundEntry != null){
                     oldNoteSoundEntry.noteSound.stopSound();

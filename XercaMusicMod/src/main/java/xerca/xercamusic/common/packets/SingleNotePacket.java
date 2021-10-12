@@ -24,9 +24,6 @@ public class SingleNotePacket {
         try {
             result.note = buf.readInt();
             int instrumentId = buf.readInt();
-            if(result.note < 0 || result.note >= 48){
-                throw new IndexOutOfBoundsException("Invalid note: " + result.note);
-            }
             if(instrumentId < 0 || instrumentId >= Items.instruments.length){
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }

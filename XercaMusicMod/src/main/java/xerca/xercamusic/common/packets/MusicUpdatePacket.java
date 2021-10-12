@@ -1,29 +1,30 @@
 package xerca.xercamusic.common.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.NoteEvent;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 public class MusicUpdatePacket {
-    private byte[] music;
-    private int length;
-    private byte pause;
+    private ArrayList<NoteEvent> notes;
+    private short lengthBeats;
+    private byte bps;
+    private float volume;
     private boolean signed;
     private String title;
     private byte prevInstrument;
     private boolean prevInsLocked;
     private boolean messageIsValid;
 
-    public MusicUpdatePacket(byte[] music, int length, byte pause, boolean signed, String title, byte prevInstrument, boolean prevInsLocked) {
-        this.music = Arrays.copyOfRange(music, 0, length);
-        this.length = length;
-        this.pause = pause;
+    public MusicUpdatePacket(ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked) {
+        this.notes = notes;
+        this.lengthBeats = lengthBeats;
+        this.bps = bps;
+        this.volume = volume;
         this.signed = signed;
         this.title = title;
         this.prevInstrument = prevInstrument;
         this.prevInsLocked = prevInsLocked;
-        XercaMusic.LOGGER.debug("MusicUpdatePacket length: " + length + " music length: " + this.music.length);
     }
 
     public MusicUpdatePacket() {
@@ -35,10 +36,14 @@ public class MusicUpdatePacket {
         try {
             result.title = buf.readUtf(255);
             result.signed = buf.readBoolean();
-            result.pause = buf.readByte();
-            result.length = buf.readInt();
-            result.music = new byte[result.length];
-            buf.readBytes(result.music, 0, result.length);
+            result.bps = buf.readByte();
+            result.volume = buf.readFloat();
+            result.lengthBeats = buf.readShort();
+            int eventCount = buf.readInt();
+            result.notes = new ArrayList<>(eventCount);
+            for(int i=0; i<eventCount; i++){
+                result.notes.add(NoteEvent.fromBuffer(buf));
+            }
             result.prevInstrument = buf.readByte();
             result.prevInsLocked = buf.readBoolean();
         } catch (IndexOutOfBoundsException ioe) {
@@ -52,23 +57,31 @@ public class MusicUpdatePacket {
     public static void encode(MusicUpdatePacket pkt, FriendlyByteBuf buf) {
         buf.writeUtf(pkt.title);
         buf.writeBoolean(pkt.signed);
-        buf.writeByte(pkt.pause);
-        buf.writeInt(pkt.length);
-        buf.writeBytes(pkt.music);
+        buf.writeByte(pkt.bps);
+        buf.writeFloat(pkt.volume);
+        buf.writeShort(pkt.lengthBeats);
+        buf.writeInt(pkt.notes.size());
+        for(NoteEvent event : pkt.notes){
+            event.encodeToBuffer(buf);
+        }
         buf.writeByte(pkt.prevInstrument);
         buf.writeBoolean(pkt.prevInsLocked);
     }
 
-    public byte[] getMusic() {
-        return music;
+    public ArrayList<NoteEvent> getNotes() {
+        return notes;
     }
 
-    public int getLength() {
-        return length;
+    public short getLengthBeats() {
+        return lengthBeats;
     }
 
-    public byte getPause() {
-        return pause;
+    public byte getBps() {
+        return bps;
+    }
+
+    public float getVolume() {
+        return volume;
     }
 
     public boolean getSigned() {

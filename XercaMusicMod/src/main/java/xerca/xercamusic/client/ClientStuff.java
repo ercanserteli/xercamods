@@ -5,7 +5,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -40,16 +39,20 @@ public class ClientStuff {
         Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, new TranslatableComponent("item.xercamusic.instrument_gui")));
     }
 
-    static public NoteSound playNote(SoundEvent event, double x, double y, double z) {
-        return playNote(event, x, y, z, SoundSource.PLAYERS, 3.5f, 1.0f);
+    static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
+        return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, lengthTicks);
     }
 
-    static public NoteSound playNoteTE(SoundEvent event, double x, double y, double z) {
-        return playNote(event, x, y, z, SoundSource.RECORDS, 4.0f, 1.0f);
+    static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch) {
+        return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, (byte)-1);
     }
 
-    static public NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch) {
-        NoteSound sound = new NoteSound(event, category, (float)x, (float)y, (float)z, volume, pitch);
+    static public NoteSound playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
+        return playNote(event, x, y, z, SoundSource.RECORDS, volume, pitch, lengthTicks);
+    }
+
+    static public NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch, byte lengthTicks) {
+        NoteSound sound = new NoteSound(event, category, (float)x, (float)y, (float)z, volume, pitch, lengthTicks);
         Minecraft.getInstance().getSoundManager().play(sound);
         return sound;
     }
@@ -66,13 +69,6 @@ public class ClientStuff {
         @SubscribeEvent
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
-        }
-    }
-
-    public static void playAtPlayer(SoundEvent soundEvent){
-        Player p = Minecraft.getInstance().player;
-        if(p != null){
-            playNote(soundEvent, p.getX(), p.getY(), p.getZ());
         }
     }
 }

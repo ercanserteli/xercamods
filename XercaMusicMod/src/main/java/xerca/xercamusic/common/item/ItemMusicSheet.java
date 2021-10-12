@@ -21,7 +21,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import xerca.xercamusic.client.ClientStuff;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
@@ -80,11 +79,21 @@ public class ItemMusicSheet extends Item {
         return null;
     }
 
-    public static int getPause(@Nonnull ItemStack stack) {
+//    public static int getPause(@Nonnull ItemStack stack) {
+//        if (stack.hasTag()) {
+//            CompoundTag nbttagcompound = stack.getTag();
+//            if(nbttagcompound != null && nbttagcompound.contains("pause")){
+//                return nbttagcompound.getByte("pause");
+//            }
+//        }
+//        return -1;
+//    }
+
+    public static int getBPS(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag nbttagcompound = stack.getTag();
-            if(nbttagcompound != null && nbttagcompound.contains("pause")){
-                return nbttagcompound.getByte("pause");
+            if(nbttagcompound != null && nbttagcompound.contains("bps")){
+                return nbttagcompound.getByte("bps");
             }
         }
         return -1;
