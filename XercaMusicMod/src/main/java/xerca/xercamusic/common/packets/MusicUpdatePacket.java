@@ -4,6 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercamusic.common.NoteEvent;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MusicUpdatePacket {
     private ArrayList<NoteEvent> notes;
@@ -13,10 +14,13 @@ public class MusicUpdatePacket {
     private boolean signed;
     private String title;
     private byte prevInstrument;
+    private UUID id;
+    private int version;
     private boolean prevInsLocked;
     private boolean messageIsValid;
 
-    public MusicUpdatePacket(ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked) {
+    public MusicUpdatePacket(ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed,
+                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version) {
         this.notes = notes;
         this.lengthBeats = lengthBeats;
         this.bps = bps;
@@ -25,6 +29,8 @@ public class MusicUpdatePacket {
         this.title = title;
         this.prevInstrument = prevInstrument;
         this.prevInsLocked = prevInsLocked;
+        this.id = id;
+        this.version = version;
     }
 
     public MusicUpdatePacket() {
@@ -46,6 +52,8 @@ public class MusicUpdatePacket {
             }
             result.prevInstrument = buf.readByte();
             result.prevInsLocked = buf.readBoolean();
+            result.id = buf.readUUID();
+            result.version = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
             return null;
@@ -66,6 +74,8 @@ public class MusicUpdatePacket {
         }
         buf.writeByte(pkt.prevInstrument);
         buf.writeBoolean(pkt.prevInsLocked);
+        buf.writeUUID(pkt.id);
+        buf.writeInt(pkt.version);
     }
 
     public ArrayList<NoteEvent> getNotes() {
@@ -104,4 +114,19 @@ public class MusicUpdatePacket {
         return messageIsValid;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 }

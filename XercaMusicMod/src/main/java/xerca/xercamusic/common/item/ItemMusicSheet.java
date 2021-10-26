@@ -18,29 +18,50 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.client.MusicManagerClient;
+import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
-import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ItemMusicSheet extends Item {
-    public static int[] pauseToBPMLevel = new int[21];
-
-    static {
-        for(int i = 0; i < TileEntityMetronome.pauseLevels.length; i++){
-            pauseToBPMLevel[TileEntityMetronome.pauseLevels[i]] = i;
-        }
-    }
-
     ItemMusicSheet() {
         super(new Properties().tab(Items.musicTab).stacksTo(1));
         this.setRegistryName("music_sheet");
+    }
+
+    public void verifyTagAfterLoad(CompoundTag nbt) {
+        XercaMusic.LOGGER.warn("verifyTagAfterLoad " + nbt);
+        if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.CLIENT){ //this doesn't work at all
+//        if(FMLEnvironment.dist == Dist.CLIENT){ this doesn't work at all either
+            XercaMusic.LOGGER.warn("verifyTagAfterLoad on client");
+            if(nbt.contains("id") && nbt.contains("ver")){
+                UUID id = nbt.getUUID("id");
+                int version = nbt.getInt("ver");
+                MusicManagerClient.checkMusicData(id, version);
+            }
+        }
+    }
+
+    public CompoundTag getShareTag(ItemStack stack)
+    {
+        XercaMusic.LOGGER.warn("getShareTag " + stack.getTag());
+        return stack.getTag();
+    }
+
+    public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
+    {
+        XercaMusic.LOGGER.warn("readShareTag " + nbt);
+        stack.setTag(nbt);
     }
 
     @Nonnull
@@ -48,7 +69,6 @@ public class ItemMusicSheet extends Item {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if(worldIn.isClientSide){
-//            XercaMusic.proxy.showMusicGui();
             DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientStuff::showMusicGui);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
@@ -58,9 +78,9 @@ public class ItemMusicSheet extends Item {
     @Override
     public Component getName(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundTag nbttagcompound = stack.getTag();
-            if(nbttagcompound != null){
-                String s = nbttagcompound.getString("title");
+            CompoundTag tag = stack.getTag();
+            if(tag != null){
+                String s = tag.getString("title");
                 if (!StringUtil.isNullOrEmpty(s)) {
                     return new TextComponent(s);
                 }
@@ -71,29 +91,31 @@ public class ItemMusicSheet extends Item {
 
     public static byte[] getMusic(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundTag nbttagcompound = stack.getTag();
-            if(nbttagcompound != null && nbttagcompound.contains("music")){
-                return nbttagcompound.getByteArray("music");
+            CompoundTag tag = stack.getTag();
+            if(tag != null && tag.contains("music")){
+                return tag.getByteArray("music");
             }
         }
         return null;
     }
 
-//    public static int getPause(@Nonnull ItemStack stack) {
-//        if (stack.hasTag()) {
-//            CompoundTag nbttagcompound = stack.getTag();
-//            if(nbttagcompound != null && nbttagcompound.contains("pause")){
-//                return nbttagcompound.getByte("pause");
-//            }
-//        }
-//        return -1;
-//    }
+    public static ArrayList<NoteEvent> getNotes(@Nonnull ItemStack stack) {
+        if (stack.hasTag()) {
+            CompoundTag tag = stack.getTag();
+            if(tag != null && tag.contains("notes")){
+                ArrayList<NoteEvent> notes = new ArrayList<>();
+                NoteEvent.fillArrayFromNBT(notes, tag);
+                return notes;
+            }
+        }
+        return null;
+    }
 
     public static int getBPS(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundTag nbttagcompound = stack.getTag();
-            if(nbttagcompound != null && nbttagcompound.contains("bps")){
-                return nbttagcompound.getByte("bps");
+            CompoundTag tag = stack.getTag();
+            if(tag != null && tag.contains("bps")){
+                return tag.getByte("bps");
             }
         }
         return -1;
@@ -101,9 +123,9 @@ public class ItemMusicSheet extends Item {
 
     public static int getPrevInstrument(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundTag nbttagcompound = stack.getTag();
-            if(nbttagcompound != null && nbttagcompound.contains("prevIns")){
-                return nbttagcompound.getByte("prevIns");
+            CompoundTag tag = stack.getTag();
+            if(tag != null && tag.contains("prevIns")){
+                return tag.getByte("prevIns");
             }
         }
         return -1;
@@ -120,10 +142,9 @@ public class ItemMusicSheet extends Item {
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
+            CompoundTag tag = stack.getOrCreateTag();
             String s = tag.getString("author");
 
             if (!StringUtil.isNullOrEmpty(s)) {
@@ -134,6 +155,22 @@ public class ItemMusicSheet extends Item {
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
                 tooltip.add((new TranslatableComponent("note.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
+            }
+
+            if(tag.contains("l")) {
+                int lengthBeats = tag.getInt("l");
+                tooltip.add((new TranslatableComponent("note.length", lengthBeats)).withStyle(ChatFormatting.GRAY));
+            }
+            if(tag.contains("bps")) {
+                int bps = tag.getInt("bps");
+                tooltip.add((new TranslatableComponent("note.tempo", bps*60)).withStyle(ChatFormatting.GRAY));
+            }
+            if(tag.contains("prevIns")){
+                byte ins = tag.getByte("prevIns");
+                if(ins >= 0 && ins < Items.instruments.length){
+                    Component name = Items.instruments[ins].getName(new ItemStack(Items.instruments[ins]));
+                    tooltip.add((new TranslatableComponent("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
+                }
             }
         }
     }
@@ -163,7 +200,6 @@ public class ItemMusicSheet extends Item {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public boolean isFoil(ItemStack stack) {
         if(stack.hasTag()){
             CompoundTag ntc = stack.getTag();

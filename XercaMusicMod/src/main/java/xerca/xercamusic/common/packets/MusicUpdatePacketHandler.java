@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
-import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
 
@@ -18,7 +18,7 @@ public class MusicUpdatePacketHandler {
         }
         ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
-            System.err.println("EntityPlayerMP was null when MusicUpdatePacket was received");
+            System.err.println("ServerPlayer was null when MusicUpdatePacket was received");
             return;
         }
 
@@ -30,8 +30,10 @@ public class MusicUpdatePacketHandler {
         ItemStack note = pl.getMainHandItem();
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
             CompoundTag comp = note.getOrCreateTag();
+            MusicManager.setMusicData(msg.getId(), msg.getVersion(), msg.getNotes(), pl.server);
 
-            NoteEvent.fillNBTFromArray(msg.getNotes(), comp);
+            comp.putUUID("id", msg.getId());
+            comp.putInt("ver", msg.getVersion());
             comp.putInt("l", msg.getLengthBeats());
             comp.putByte("bps", msg.getBps());
             comp.putFloat("vol", msg.getVolume());

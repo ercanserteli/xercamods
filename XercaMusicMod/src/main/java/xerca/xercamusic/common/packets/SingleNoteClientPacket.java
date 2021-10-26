@@ -12,12 +12,14 @@ public class SingleNoteClientPacket {
     private int note;
     private ItemInstrument instrumentItem;
     private Player playerEntity;
+    private boolean isStop;
     private boolean messageIsValid;
 
-    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, Player playerEntity) {
+    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, Player playerEntity, boolean isStop) {
         this.note = note;
         this.instrumentItem = itemInstrument;
         this.playerEntity = playerEntity;
+        this.isStop = isStop;
     }
 
     public SingleNoteClientPacket() {
@@ -30,6 +32,7 @@ public class SingleNoteClientPacket {
             result.note = buf.readInt();
             int instrumentId = buf.readInt();
             int playerId = buf.readInt();
+            result.isStop = buf.readBoolean();
 
             if(instrumentId < 0 || instrumentId >= Items.instruments.length){
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
@@ -58,6 +61,7 @@ public class SingleNoteClientPacket {
         buf.writeInt(pkt.getNote());
         buf.writeInt(instrumentId);
         buf.writeInt(playerId);
+        buf.writeBoolean(pkt.isStop());
     }
 
     public boolean isMessageValid() {
@@ -87,6 +91,14 @@ public class SingleNoteClientPacket {
 
     public void setPlayerEntity(Player playerEntity) {
         this.playerEntity = playerEntity;
+    }
+
+    public boolean isStop() {
+        return isStop;
+    }
+
+    public void setStop(boolean stop) {
+        isStop = stop;
     }
 
 

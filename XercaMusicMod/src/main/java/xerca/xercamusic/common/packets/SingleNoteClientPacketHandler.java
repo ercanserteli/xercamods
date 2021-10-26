@@ -5,19 +5,19 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.ItemInstrument.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class SingleNoteClientPacketHandler {
-    static Map<Player, NoteSoundEntry> noteSounds = new HashMap<>();
+    static Map<Pair<Player, Integer>, NoteSoundEntry> noteSounds = new HashMap<>();
 
     public static void handle(final SingleNoteClientPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
@@ -29,7 +29,6 @@ public class SingleNoteClientPacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    @OnlyIn(Dist.CLIENT)
     private static void processMessage(SingleNoteClientPacket msg) {
         Player playerEntity = msg.getPlayerEntity();
         if(!playerEntity.equals(Minecraft.getInstance().player)){
@@ -37,22 +36,22 @@ public class SingleNoteClientPacketHandler {
             if(sound == null){
                 return;
             }
-            double x = playerEntity.getX();
-            double y = playerEntity.getY();
-            double z = playerEntity.getZ();
+            if(!msg.isStop()){
+                double x = playerEntity.getX();
+                double y = playerEntity.getY();
+                double z = playerEntity.getZ();
 
-            NoteSound noteSound = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
-                    ClientStuff.playNote(sound.sound, x, y, z, SoundSource.PLAYERS, 1.5f, sound.pitch, (byte) -1));
-
-            if(msg.getInstrumentItem().isLong){
-                NoteSoundEntry oldNoteSoundEntry = noteSounds.get(playerEntity);
-                if(oldNoteSoundEntry != null){
+                NoteSound noteSound = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+                        ClientStuff.playNote(sound.sound, x, y, z, SoundSource.PLAYERS, 1.5f, sound.pitch, (byte) -1));
+                noteSounds.put(Pair.of(playerEntity, msg.getNote()), new NoteSoundEntry(noteSound, playerEntity));
+                playerEntity.level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (msg.getNote()) / 24.0D, 0.0D, 0.0D);
+            }
+            else{
+                NoteSoundEntry oldNoteSoundEntry = noteSounds.get(Pair.of(playerEntity, msg.getNote()));
+                if(oldNoteSoundEntry != null && !oldNoteSoundEntry.noteSound.isStopped()){
                     oldNoteSoundEntry.noteSound.stopSound();
                 }
-                noteSounds.put(playerEntity, new NoteSoundEntry(noteSound, playerEntity));
             }
-
-            playerEntity.level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (msg.getNote()) / 24.0D, 0.0D, 0.0D);
         }
     }
 

@@ -111,7 +111,6 @@ public class GuiCanvasEdit extends BasePalette {
             this.canvasTitle = canvasTag.getString("title");
             this.name = canvasTag.getString("name");
             this.version = canvasTag.getInt("v");
-            this.version = canvasTag.getInt("v");
 
             this.pixels =  Arrays.copyOfRange(nbtPixels, 0, canvasPixelArea);
         } else {

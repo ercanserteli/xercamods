@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -69,6 +70,15 @@ public class ClientStuff {
         @SubscribeEvent
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    static class ForgeBusSubscriber {
+        @SubscribeEvent
+        public static void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
+            XercaMusic.LOGGER.debug("onPlayerLoggedIn Event");
+            MusicManagerClient.load();
         }
     }
 }

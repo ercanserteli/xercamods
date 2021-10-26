@@ -6,8 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercamusic.common.XercaMusic;
 
@@ -26,7 +24,6 @@ public class ImportMusicPacketHandler {
         ctx.get().setPacketHandled(true);
     }
 
-    @OnlyIn(Dist.CLIENT)
     private static void processMessage(ImportMusicPacket msg) {
         String filename = msg.getName() + ".sheet";
         String filepath = "music_sheets/" + filename;

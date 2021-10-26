@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import xerca.xercamusic.common.SoundEvents;
-import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 
@@ -80,8 +79,8 @@ public class BlockMetronome extends BaseEntityBlock {
             }
 
             if(!note.isEmpty() && note.hasTag()){
-                int pause = note.getTag().getInt("pause");
-                setBpm(state, worldIn, pos, ItemMusicSheet.pauseToBPMLevel[pause]);
+//                int pause = note.getTag().getInt("pause");
+//                setBpm(state, worldIn, pos, ItemMusicSheet.pauseToBPMLevel[pause]);
                 return InteractionResult.SUCCESS;
             }
             else{

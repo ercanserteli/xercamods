@@ -44,6 +44,9 @@
   "note.toggleTooltip": "Toggle neighbor sheets",
   "note.lockTooltip": "Lock preview instrument",
   "note.previewTooltip": "Preview music",
+  "note.length": "Length: %1$s",
+  "note.tempo": "Tempo: %1$s bpm",
+  "note.preview_instrument": "Instrument: %1$s",
 
   "export.success": "Music sheet exported to %1$s",
   "export.fail": "Could not export music sheet",
