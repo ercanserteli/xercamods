@@ -6,6 +6,7 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.XercaMusic;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -29,10 +30,13 @@ public class MusicDataRequestPacketHandler {
         UUID id = msg.getId();
         int version = msg.getVersion();
         MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.server);
+        PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(()->pl);
+        MusicDataResponsePacket packet;
         if(data != null) {
-            PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(()->pl);
-            MusicDataResponsePacket packet = new MusicDataResponsePacket(id, data.version, data.notes);
-            XercaMusic.NETWORK_HANDLER.send(target, packet);
+            packet = new MusicDataResponsePacket(id, data.version, data.notes);
+        } else {
+            packet = new MusicDataResponsePacket(id, 0, new ArrayList<>());
         }
+        XercaMusic.NETWORK_HANDLER.send(target, packet);
     }
 }

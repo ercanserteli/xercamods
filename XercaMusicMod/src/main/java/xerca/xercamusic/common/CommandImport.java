@@ -15,6 +15,12 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.ImportMusicPacket;
+import xerca.xercamusic.common.packets.MusicDataResponsePacket;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
+import static xerca.xercamusic.common.item.ItemMusicSheet.convertFromOld;
 
 public class CommandImport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -22,11 +28,11 @@ public class CommandImport {
                 Commands.literal("musicimport")
                         .requires((p) -> p.hasPermission(1))
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> paintImport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes((p) -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
-    private static int paintImport(CommandSourceStack stack, String name){
+    private static int musicImport(CommandSourceStack stack, String name){
         XercaMusic.LOGGER.debug("Music import called. name: " + name);
 
         ImportMusicPacket pack = new ImportMusicPacket(name);
@@ -45,6 +51,32 @@ public class CommandImport {
     public static void doImport(CompoundTag tag, ServerPlayer player){
         if(tag.getInt("generation") > 0){
             tag.putInt("generation", tag.getInt("generation") + 1);
+        }
+        if(tag.contains("notes") && tag.contains("id") && tag.contains("ver")) {
+            ArrayList<NoteEvent> notes = new ArrayList<>();
+            NoteEvent.fillArrayFromNBT(notes, tag);
+            UUID id = tag.getUUID("id");
+            int ver = tag.getInt("ver");
+            MusicManager.setMusicData(id, ver, notes, player.server);
+
+            MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
+            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(()->player), packet);
+            tag.remove("notes");
+        }
+        else if(tag.contains("music")){
+            // Old version
+            XercaMusic.LOGGER.info("Old music file version");
+            ArrayList<NoteEvent> notes = convertFromOld(tag, player.server);
+            UUID id = tag.getUUID("id");
+            int ver = tag.getInt("ver");
+
+            MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
+            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(()->player), packet);
+            tag.remove("notes"); // Just in case
+        }
+        else {
+            XercaMusic.LOGGER.warn("Broken music file");
+            return;
         }
 
         if(player.isCreative()){

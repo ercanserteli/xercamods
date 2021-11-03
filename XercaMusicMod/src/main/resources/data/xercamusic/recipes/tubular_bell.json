@@ -6,7 +6,7 @@
         "sss",
         "g g"
     ],
-    "key": {"s": {"item": "minecraft:stick"}, "g": {"item": "minecraft:gold_ingot"}},
+    "key": {"s": {"item": "minecraft:stick"}, "g": {"item": "minecraft:gold_nugget"}},
     "result": {"item": "xercamusic:tubular_bell"}
 }
         

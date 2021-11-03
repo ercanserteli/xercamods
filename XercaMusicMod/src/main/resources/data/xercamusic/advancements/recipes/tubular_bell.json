@@ -11,7 +11,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["minecraft:gold_ingot"]}
+          {"items": ["minecraft:gold_nugget"]}
         ]
       }
     },

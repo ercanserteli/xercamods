@@ -2,7 +2,6 @@ package xerca.xercamusic.common.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -15,11 +14,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
+import xerca.xercamusic.common.packets.TripleNoteClientPacket;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -104,10 +105,13 @@ public class ItemInstrument extends Item {
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         Level world = attacker.level;
         if (!world.isClientSide) {
-            for (int i = 0; i < 3; i++) {
-                InsSound randomSound = insSounds[world.random.nextInt(totalNotes)];
-                world.playSound(null, target.blockPosition(), randomSound.sound, SoundSource.PLAYERS, 3.0f, randomSound.pitch);
-            }
+            int note1 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
+            int note2 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
+            int note3 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
+
+            PacketDistributor.PacketTarget networkTarget = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(target.getX(), target.getY(), target.getZ(), 24.0D, target.level.dimension()));
+            TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, this, target);
+            XercaMusic.NETWORK_HANDLER.send(networkTarget, packet);
         }
         return true;
     }

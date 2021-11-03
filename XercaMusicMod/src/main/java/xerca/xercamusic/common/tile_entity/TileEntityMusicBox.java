@@ -14,7 +14,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
+import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
+import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
@@ -23,6 +25,7 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicBoxUpdatePacket;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class TileEntityMusicBox extends BlockEntity {
     private boolean isPlaying = false;
@@ -70,7 +73,7 @@ public class TileEntityMusicBox extends BlockEntity {
         if (parent.contains("note", 10)) {
             CompoundTag noteTag = parent.getCompound("note");
             ItemStack note = ItemStack.of(noteTag);
-            setNoteStack(note);
+            setNoteStack(note, false);
         }
         if (parent.contains("instrument_id", 8)) {
             this.setInstrument(ForgeRegistries.ITEMS.getValue(new ResourceLocation(parent.getString("instrument_id"))));
@@ -95,6 +98,29 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState state, TileEntityMusicBox t) {
+        if(level != null && !t.noteStack.isEmpty() && t.notes.isEmpty() && t.noteStack.hasTag()) {
+            CompoundTag comp = t.noteStack.getTag();
+            if (comp != null && comp.contains("id") && comp.contains("ver") && comp.contains("bps") && comp.contains("l")) {
+                UUID id = comp.getUUID("id");
+                int ver = comp.getInt("ver");
+                if (level.isClientSide) {
+                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                        if (data != null) {
+                            t.notes.clear();
+                            t.notes.addAll(data.notes);
+                        }
+                    });
+                } else {
+                    MusicManager.MusicData data = MusicManager.getMusicData(id, ver, level.getServer());
+                    if (data != null) {
+                        t.notes.clear();
+                        t.notes.addAll(data.notes);
+                    }
+                }
+            }
+        }
+
         // Powering state timer should work in all cases
         if(t.isPowering){
             if(t.poweringAge >= 20){
@@ -183,19 +209,23 @@ public class TileEntityMusicBox extends BlockEntity {
         return noteStack;
     }
 
-    public void setNoteStack(ItemStack noteStack) {
+    public void setNoteStack(ItemStack noteStack, boolean updateClient) {
+        XercaMusic.LOGGER.warn("setNoteStack: " + noteStack.getTag());
         if(noteStack.getItem() instanceof ItemMusicSheet){
-            if(level != null && !level.isClientSide){
+            if(updateClient && level != null && !level.isClientSide){
                 updateClient(noteStack, instrument);
             }
 
             this.noteStack = noteStack;
-            if (noteStack.hasTag() && noteStack.getTag().contains("notes") && noteStack.getTag().contains("bps") && noteStack.getTag().contains("l")) {
+            if (noteStack.hasTag() && noteStack.getTag().contains("id") && noteStack.getTag().contains("ver") &&
+                    noteStack.getTag().contains("bps") && noteStack.getTag().contains("l")) {
                 CompoundTag comp = noteStack.getTag();
-                NoteEvent.fillArrayFromNBT(notes, comp);
                 mBPS = comp.getByte("bps");
                 mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
-                mLengthBeats = comp.getByte("l");
+                mLengthBeats = comp.getInt("l");
+            }
+            else {
+                this.notes.clear();
             }
             setChanged();
         }
@@ -208,6 +238,7 @@ public class TileEntityMusicBox extends BlockEntity {
             }
 
             this.noteStack = ItemStack.EMPTY;
+            this.notes.clear();
             setChanged();
         }
     }

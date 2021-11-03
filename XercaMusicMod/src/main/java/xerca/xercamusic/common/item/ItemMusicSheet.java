@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,48 +20,116 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
+import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 import xerca.xercamusic.client.ClientStuff;
-import xerca.xercamusic.client.MusicManagerClient;
+import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public class ItemMusicSheet extends Item {
+    static final private HashMap<ItemInstrument.Pair<String, String>, UUID> convertMap = new HashMap<>();
+    static final private int addToOldEnd = 8;
+
     ItemMusicSheet() {
         super(new Properties().tab(Items.musicTab).stacksTo(1));
         this.setRegistryName("music_sheet");
     }
 
+    public static ArrayList<NoteEvent> oldMusicToNotes(byte[] music){
+        ArrayList<NoteEvent> notes = new ArrayList<>();
+        for(int i=0; i<music.length; i++){
+            if(music[i] > 0){
+                int nextTime = -1;
+                for(int j=i+1; j<music.length; j++){
+                    if(music[j] > 0){
+                        nextTime = j;
+                        break;
+                    }
+                }
+                int l = 1;
+                if(nextTime > i && (nextTime - i) < 20){
+                    l = nextTime - i;
+                }
+                else if(i == music.length-1){
+                    l = addToOldEnd;
+                }
+
+                byte note = (byte)(music[i] + 32);
+                notes.add(new NoteEvent(note, (short)i, (byte)64, (byte)l));
+            }
+        }
+        return notes;
+    }
+
+    public static ArrayList<NoteEvent> convertFromOld(CompoundTag nbt, MinecraftServer server){
+        int length = nbt.getInt("length");
+        byte pause = nbt.getByte("pause");
+        byte[] music = nbt.getByteArray("music");
+
+        byte bps = (byte)Math.round(20.f/(float)pause);
+        ArrayList<NoteEvent> notes = oldMusicToNotes(music);
+
+        nbt.putInt("l", length + addToOldEnd);
+        nbt.putByte("bps", bps);
+        UUID id;
+        if(nbt.contains("author") && nbt.contains("title")){
+            String author = nbt.getString("author");
+            String title = nbt.getString("title");
+            ItemInstrument.Pair<String, String> key = new ItemInstrument.Pair<>(author, title);
+            if(convertMap.containsKey(key)){
+                id = convertMap.get(key);
+            }
+            else{
+                id = UUID.randomUUID();
+                convertMap.put(key, id);
+                MusicManager.setMusicData(id, 1, notes, server);
+            }
+        }
+        else {
+            id = UUID.randomUUID();
+            MusicManager.setMusicData(id, 1, notes, server);
+        }
+
+        nbt.putUUID("id", id);
+        nbt.putInt("ver", 1);
+
+        nbt.remove("length");
+        nbt.remove("pause");
+        nbt.remove("music");
+        return notes;
+    }
+
     public void verifyTagAfterLoad(CompoundTag nbt) {
-        XercaMusic.LOGGER.warn("verifyTagAfterLoad " + nbt);
-        if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.CLIENT){ //this doesn't work at all
-//        if(FMLEnvironment.dist == Dist.CLIENT){ this doesn't work at all either
-            XercaMusic.LOGGER.warn("verifyTagAfterLoad on client");
-            if(nbt.contains("id") && nbt.contains("ver")){
-                UUID id = nbt.getUUID("id");
-                int version = nbt.getInt("ver");
-                MusicManagerClient.checkMusicData(id, version);
+//        XercaMusic.LOGGER.info("verifyTagAfterLoad " + nbt);
+        if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER){
+            if(nbt.contains("music")){
+                // Old version
+                MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
+                convertFromOld(nbt, server);
             }
         }
     }
 
     public CompoundTag getShareTag(ItemStack stack)
     {
-        XercaMusic.LOGGER.warn("getShareTag " + stack.getTag());
+//        XercaMusic.LOGGER.info("getShareTag " + stack.getTag());
         return stack.getTag();
     }
 
     public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
     {
-        XercaMusic.LOGGER.warn("readShareTag " + nbt);
+//        XercaMusic.LOGGER.info("readShareTag " + nbt);
         stack.setTag(nbt);
     }
 
@@ -69,6 +138,7 @@ public class ItemMusicSheet extends Item {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if(worldIn.isClientSide){
+            playerIn.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + worldIn.random.nextFloat()*0.4f);
             DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientStuff::showMusicGui);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
@@ -94,18 +164,6 @@ public class ItemMusicSheet extends Item {
             CompoundTag tag = stack.getTag();
             if(tag != null && tag.contains("music")){
                 return tag.getByteArray("music");
-            }
-        }
-        return null;
-    }
-
-    public static ArrayList<NoteEvent> getNotes(@Nonnull ItemStack stack) {
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            if(tag != null && tag.contains("notes")){
-                ArrayList<NoteEvent> notes = new ArrayList<>();
-                NoteEvent.fillArrayFromNBT(notes, tag);
-                return notes;
             }
         }
         return null;
@@ -154,7 +212,8 @@ public class ItemMusicSheet extends Item {
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltip.add((new TranslatableComponent("note.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
+                tooltip.add((new TranslatableComponent("note.generation." + (generation - 1)))
+                        .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
             }
 
             if(tag.contains("l")) {
@@ -171,6 +230,11 @@ public class ItemMusicSheet extends Item {
                     Component name = Items.instruments[ins].getName(new ItemStack(Items.instruments[ins]));
                     tooltip.add((new TranslatableComponent("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
                 }
+            }
+
+
+            if(tag.contains("HEDE")) {
+                tooltip.add(new TextComponent("HEDE"));
             }
         }
     }

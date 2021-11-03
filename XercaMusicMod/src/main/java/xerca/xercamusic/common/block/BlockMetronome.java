@@ -28,13 +28,13 @@ import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 import javax.annotation.Nullable;
 
 public class BlockMetronome extends BaseEntityBlock {
-    public static final IntegerProperty BPM = IntegerProperty.create("bpm", 0, 10);
+    public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public BlockMetronome() {
         super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD));
-        this.registerDefaultState(this.stateDefinition.any().setValue(BPM, 0).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any().setValue(BPS, 6).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
         this.setRegistryName("block_metronome");
     }
 
@@ -56,10 +56,10 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
 
-    public void setBpm(BlockState state, Level worldIn, BlockPos pos, int bpm) {
+    public void setBps(BlockState state, Level worldIn, BlockPos pos, int bps) {
         if (!worldIn.isClientSide) {
-            if (bpm >= 0 && bpm <= 10) {
-                state = state.setValue(BPM, bpm);
+            if (bps >= 1 && bps <= 50) {
+                state = state.setValue(BPS, bps);
                 worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
             }
         }
@@ -78,13 +78,13 @@ public class BlockMetronome extends BaseEntityBlock {
                 note = player.getOffhandItem();
             }
 
-            if(!note.isEmpty() && note.hasTag()){
-//                int pause = note.getTag().getInt("pause");
-//                setBpm(state, worldIn, pos, ItemMusicSheet.pauseToBPMLevel[pause]);
+            if(!note.isEmpty() && note.getTag() != null && note.getTag().contains("bps")){
+                int bps = note.getTag().getInt("bps");
+                setBps(state, worldIn, pos, bps);
                 return InteractionResult.SUCCESS;
             }
             else{
-                state = state.cycle(BPM); //cycle
+                state = state.cycle(BPS); //cycle
                 worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
                 return InteractionResult.SUCCESS;
             }
@@ -93,7 +93,7 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BPM, POWERED, FACING);
+        builder.add(BPS, POWERED, FACING);
     }
 
     @Nullable

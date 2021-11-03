@@ -22,7 +22,6 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 import java.util.List;
 
 public class TileEntityMetronome extends BlockEntity {
-    public final static int[] pauseLevels = {20, 15, 12, 10, 8, 6, 5, 4, 3, 2, 1};
     private final static Vec3i halfRange = new Vec3i(8, 2, 8);
 
     private int age = 0;
@@ -40,9 +39,6 @@ public class TileEntityMetronome extends BlockEntity {
     }
 
     @Override
-//    public void load(BlockState state, CompoundTag parent) {
-//		super.load(state, parent);
-//    }
     public void load(CompoundTag parent) {
 		super.load(parent);
     }
@@ -56,8 +52,9 @@ public class TileEntityMetronome extends BlockEntity {
                     metronome.countDown = 0;
                 }
 
-                int bpmLevel = state.getValue(BlockMetronome.BPM);
-                if (metronome.age % pauseLevels[bpmLevel] == 0) {
+                final int bps = Math.max(state.getValue(BlockMetronome.BPS), 1);
+                int pause = Math.max(40 / bps, 1);
+                if (metronome.age % pause == 0) {
                     if(metronome.level.isClientSide){// note: doesn't work if this function is only called in server
                         // Client side
                         DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
@@ -67,11 +64,11 @@ public class TileEntityMetronome extends BlockEntity {
                     }
                     else{
                         // Server side
-                        if(metronome.countDown >= 3){
+                        if(metronome.countDown == 3){
                             List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
                                     player -> player.getMainHandItem().getItem() instanceof ItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
-                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag().getInt("pause") == pauseLevels[bpmLevel] );
-                            XercaMusic.LOGGER.warn("Metronome found " + players.size() + " players");
+                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag().getInt("bps") == bps);
+                            XercaMusic.LOGGER.info("Metronome found " + players.size() + " players");
                             for(Player player : players){
                                 ItemInstrument.playMusic(level, player, false);
                             }

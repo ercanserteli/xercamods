@@ -11,11 +11,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.ExportMusicPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -23,11 +25,11 @@ public class CommandExport {
                 Commands.literal("musicexport")
                 .requires((p) -> p.hasPermission(1))
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes((p) -> musicExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
-    private static int paintExport(CommandSourceStack stack, String name){
+    private static int musicExport(CommandSourceStack stack, String name){
         XercaMusic.LOGGER.debug("Music export called. name: " + name);
         if(stack.getEntity() == null){
             XercaMusic.LOGGER.error("Command entity is not found");
@@ -56,13 +58,23 @@ public class CommandExport {
         for(ItemStack s : player.getHandSlots()){
             if(s.getItem() instanceof ItemMusicSheet){
                 if(s.hasTag()){
-                    try {
-                        CompoundTag tag = s.getTag().copy();
-                        NbtIo.write(tag, new File(filepath));
-                        return true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    CompoundTag tag = s.getTag().copy();
+                    if(tag.contains("id") && tag.contains("ver")){
+                        UUID id = tag.getUUID("id");
+                        int ver = tag.getInt("ver");
+                        MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                            MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                            if(data != null){
+                                NoteEvent.fillNBTFromArray(data.notes, tag);
+                                try {
+                                    NbtIo.write(tag, new File(filepath));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                     }
+                    return true;
                 }
             }
         }

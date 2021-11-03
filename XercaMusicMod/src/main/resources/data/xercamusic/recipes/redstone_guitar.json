@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " s ",
+        "pip",
+        "rpr"
+    ],
+    "key": {"p": {"item": "minecraft:oak_planks"}, "s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:string"}, "r": {"item": "minecraft:redstone"}},
+    "result": {"item": "xercamusic:redstone_guitar"}
+}
+        

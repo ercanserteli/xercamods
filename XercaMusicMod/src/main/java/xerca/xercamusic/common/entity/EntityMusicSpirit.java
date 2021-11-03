@@ -13,8 +13,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.client.SoundController;
+import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
@@ -22,12 +24,13 @@ import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnData {
     private Player body;
     private ItemStack note;
     private ItemInstrument instrument;
-    private ArrayList<NoteEvent> notes = new ArrayList<>();
+    private final ArrayList<NoteEvent> notes = new ArrayList<>();
     private int mLengthBeats;
     private float mVolume;
     private byte mBPS;
@@ -47,13 +50,6 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         this.instrument = instrument;
         setNoteFromBody();
         this.setPos(body.getX(), body.getY(), body.getZ());
-        if (note.hasTag() && note.getTag().contains("notes") && note.getTag().contains("l") && note.getTag().contains("bps")) {
-            CompoundTag comp = note.getTag();
-            NoteEvent.fillArrayFromNBT(notes, comp);
-            mLengthBeats = comp.getInt("l");
-            mBPS = comp.getByte("bps");
-            mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
-        }
     }
 
     public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, ItemInstrument instrument) {
@@ -157,8 +153,8 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        int id = buffer.readInt();
-        Entity ent = level.getEntity(id);
+        int entityId = buffer.readInt();
+        Entity ent = level.getEntity(entityId);
         if (ent instanceof Player) {
             body = (Player) ent;
         }
@@ -179,17 +175,26 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             this.note = body.getOffhandItem();
             this.setPos(body.getX(), body.getY(), body.getZ());
         }
-        if (note.hasTag() && note.getTag().contains("notes") && note.getTag().contains("l") && note.getTag().contains("bps")) {
+
+        if (note.hasTag() && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l") && note.getTag().contains("bps")) {
             CompoundTag comp = note.getTag();
-            NoteEvent.fillArrayFromNBT(notes, comp);
             mLengthBeats = comp.getInt("l");
             mBPS = comp.getByte("bps");
             mVolume = comp.getFloat("vol");
-        }
+            UUID id = comp.getUUID("id");
+            int ver = comp.getInt("ver");
 
-        if(level.isClientSide){
-            this.soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, mBPS, mVolume, getId());
-            this.soundController.start();
+            if(level.isClientSide){
+                MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                    MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                    if(data != null){
+                        notes.addAll(data.notes);
+                    }
+
+                    soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, mBPS, mVolume, getId());
+                    soundController.start();
+                });
+            }
         }
     }
 
@@ -230,7 +235,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
                     this.remove(RemovalReason.DISCARDED);
                     return;
                 }
-                if(this.position().distanceTo(this.body.position()) > 4){
+                if(this.position().distanceToSqr(this.body.position()) > 16){
                     this.remove(RemovalReason.DISCARDED);
                     return;
                 }

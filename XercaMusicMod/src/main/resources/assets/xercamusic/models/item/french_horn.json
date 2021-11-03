@@ -1,0 +1,6 @@
+{
+  "parent": "xercamusic:item/instrument",
+    "textures": {
+        "layer0": "xercamusic:item/instruments/french_horn"
+    }
+}

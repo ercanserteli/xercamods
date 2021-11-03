@@ -33,8 +33,7 @@ public class MusicBoxUpdatePacketHandler {
         }
 
         BlockEntity te =  world.getBlockEntity(msg.getPos());
-        if(te instanceof TileEntityMusicBox){
-            TileEntityMusicBox tileEntityMusicBox = (TileEntityMusicBox) te;
+        if(te instanceof TileEntityMusicBox tileEntityMusicBox){
 
             if(msg.getNoteStackNBT() != null){
                 if(msg.getNoteStackNBT().isEmpty()){
@@ -43,7 +42,7 @@ public class MusicBoxUpdatePacketHandler {
                 else{
                     ItemStack noteStack = new ItemStack(Items.MUSIC_SHEET);
                     noteStack.setTag(msg.getNoteStackNBT());
-                    tileEntityMusicBox.setNoteStack(noteStack);
+                    tileEntityMusicBox.setNoteStack(noteStack, false);
                 }
             }
 

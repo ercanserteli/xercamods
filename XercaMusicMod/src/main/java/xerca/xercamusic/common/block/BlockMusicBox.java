@@ -28,7 +28,6 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
-import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
 import javax.annotation.Nullable;
@@ -110,7 +109,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     public static void insertMusic(LevelAccessor worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
         BlockEntity tileentity = worldIn.getBlockEntity(pos);
         if (tileentity instanceof TileEntityMusicBox) {
-            ((TileEntityMusicBox) tileentity).setNoteStack(noteStack);
+            ((TileEntityMusicBox) tileentity).setNoteStack(noteStack, true);
             worldIn.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.TRUE), 3);
         }
     }

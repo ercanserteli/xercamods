@@ -41,6 +41,7 @@ public class GuiInstrument extends Screen {
     private final Player player;
     private final ItemInstrument instrument;
     private NoteSound lastPlayed = null;
+    private final MidiHandler midiHandler;
 
     GuiInstrument(Player player, ItemInstrument instrument, Component title) {
         super(title);
@@ -48,6 +49,7 @@ public class GuiInstrument extends Screen {
         this.instrument = instrument;
         this.buttonPushStates = new boolean[ItemInstrument.totalNotes];
         this.noteSounds = new NoteSound[ItemInstrument.totalNotes];
+        this.midiHandler = new MidiHandler(this::playSound, this::stopSound);
     }
 
     @Override
@@ -123,6 +125,12 @@ public class GuiInstrument extends Screen {
     }
 
     private void playSound(int noteId){
+        playSound(new MidiHandler.MidiData(noteId, 0.8f));
+    }
+
+    private void playSound(MidiHandler.MidiData data){
+        int noteId = data.noteId();
+
         if(noteId >= 0 && noteId < buttonPushStates.length && !buttonPushStates[noteId]) {
             int note = ItemInstrument.idToNote(noteId);
 
@@ -130,7 +138,7 @@ public class GuiInstrument extends Screen {
             if (noteSound == null) {
                 return;
             }
-            noteSounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, player.getX(), player.getY(), player.getZ(), 1.0f, noteSound.pitch));
+            noteSounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch));
             player.level.addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
             buttonPushStates[noteId] = true;
 
@@ -155,7 +163,7 @@ public class GuiInstrument extends Screen {
 
     @Override
     public boolean mouseClicked(double dmouseX, double dmouseY, int mouseButton) {
-//        XercaMusic.LOGGER.warn("Click pos: " + dmouseX);
+//        XercaMusic.LOGGER.info("Click pos: " + dmouseX);
         int mouseX = (int)Math.round(dmouseX);
         int mouseY = (int)Math.round(dmouseY);
 
@@ -177,7 +185,7 @@ public class GuiInstrument extends Screen {
 
     @Override
     public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-//        XercaMusic.LOGGER.warn("Drag pos: " + posX + " del: " + deltaX);
+//        XercaMusic.LOGGER.info("Drag pos: " + posX + " del: " + deltaX);
         int mouseX = (int)Math.round(posX);
         int mouseY = (int)Math.round(posY);
         int prevMouseX = (int)Math.round(posX - deltaX);
@@ -235,4 +243,8 @@ public class GuiInstrument extends Screen {
         return true;
     }
 
+    @Override
+    public void removed() {
+        midiHandler.closeDevices();
+    }
 }

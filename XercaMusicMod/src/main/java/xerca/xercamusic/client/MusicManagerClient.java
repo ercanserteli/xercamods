@@ -16,6 +16,7 @@ import java.util.UUID;
 
 public class MusicManagerClient {
     static Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
+    static Map<UUID, Runnable> taskMap = new HashMap<>();
     static final String cacheDir = "music_sheets/.cache/";
 
     public static void load() {
@@ -31,7 +32,7 @@ public class MusicManagerClient {
                 try {
                     UUID id = UUID.fromString(fileName);
                     CompoundTag tag = NbtIo.readCompressed(file);
-                    if(tag.contains("id") && id == tag.getUUID("id") && tag.contains("ver") && tag.contains("notes")){
+                    if(tag.contains("id") && id.equals(tag.getUUID("id")) && tag.contains("ver") && tag.contains("notes")){
                         int version = tag.getInt("ver");
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, tag);
@@ -46,6 +47,20 @@ public class MusicManagerClient {
                 }
             }
         }
+    }
+
+    public static void checkMusicDataAndRun(UUID id, int ver, Runnable task) {
+        if(musicMap.containsKey(id)){
+            MusicManager.MusicData data = musicMap.get(id);
+            if(data.version >= ver){
+                task.run();
+                return;
+            }
+        }
+        taskMap.put(id, task);
+        // Request music data from server
+        MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
+        XercaMusic.NETWORK_HANDLER.sendToServer(packet);
     }
 
     public static void checkMusicData(UUID id, int ver) {
@@ -93,6 +108,12 @@ public class MusicManagerClient {
         } catch (IOException e) {
             XercaMusic.LOGGER.warn("Could not write music data to cache file: " + filepath);
             e.printStackTrace();
+        }
+
+        if(taskMap.containsKey(id)){
+            Runnable task = taskMap.get(id);
+            taskMap.remove(id);
+            task.run();
         }
     }
 }

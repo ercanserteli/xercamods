@@ -7,6 +7,22 @@
       }
     ]
   },
+  "close_scroll": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:close_scroll"
+      }
+    ]
+  },
+  "open_scroll": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:open_scroll"
+      }
+    ]
+  },
   "metronome_set": {
     "category": "block",
     "sounds": [
@@ -29,7 +45,6 @@
   "guitar28": {"category": "player","sounds": [{"name": "xercamusic:guitar/guitar28", "attenuation_distance": 48}]},
   "guitar34": {"category": "player","sounds": [{"name": "xercamusic:guitar/guitar34", "attenuation_distance": 48}]},
   "guitar40": {"category": "player","sounds": [{"name": "xercamusic:guitar/guitar40", "attenuation_distance": 48}]},
-  "guitar43": {"category": "player","sounds": [{"name": "xercamusic:guitar/guitar43", "attenuation_distance": 48}]},
   "guitar48": {"category": "player","sounds": [{"name": "xercamusic:guitar/guitar48", "attenuation_distance": 48}]},
   "guitar54": {"category": "player","sounds": [{"name": "xercamusic:guitar/guitar54", "attenuation_distance": 48}]},
   "guitar55": {"category": "player","sounds": [{"name": "xercamusic:guitar/guitar55", "attenuation_distance": 48}]},
@@ -52,13 +67,7 @@
   "drum69": {"category": "player","sounds": [{"name": "xercamusic:drum/drum69", "attenuation_distance": 48}]},
   "drum75": {"category": "player","sounds": [{"name": "xercamusic:drum/drum75", "attenuation_distance": 48}]},
   "drum81": {"category": "player","sounds": [{"name": "xercamusic:drum/drum81", "attenuation_distance": 48}]},
-  "drum87": {"category": "player","sounds": [{"name": "xercamusic:drum/drum87", "attenuation_distance": 48}]},
-  "drum93": {"category": "player","sounds": [{"name": "xercamusic:drum/drum93", "attenuation_distance": 48}]},
-  "drum99": {"category": "player","sounds": [{"name": "xercamusic:drum/drum99", "attenuation_distance": 48}]},
-  "drum105": {"category": "player","sounds": [{"name": "xercamusic:drum/drum105", "attenuation_distance": 48}]},
-  "drum111": {"category": "player","sounds": [{"name": "xercamusic:drum/drum111", "attenuation_distance": 48}]},
 
-  "lyre27": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre27", "attenuation_distance": 48}]},
   "lyre33": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre33", "attenuation_distance": 48}]},
   "lyre39": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre39", "attenuation_distance": 48}]},
   "lyre45": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre45", "attenuation_distance": 48}]},
@@ -70,9 +79,6 @@
   "lyre81": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre81", "attenuation_distance": 48}]},
   "lyre87": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre87", "attenuation_distance": 48}]},
   "lyre93": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre93", "attenuation_distance": 48}]},
-  "lyre99": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre99", "attenuation_distance": 48}]},
-  "lyre105": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre105", "attenuation_distance": 48}]},
-  "lyre111": {"category": "player","sounds": [{"name": "xercamusic:lyre/lyre111", "attenuation_distance": 48}]},
 
   "flute35": {"category": "player","sounds": [{"name": "xercamusic:flute/flute35", "attenuation_distance": 48}]},
   "flute41": {"category": "player","sounds": [{"name": "xercamusic:flute/flute41", "attenuation_distance": 48}]},
@@ -100,11 +106,6 @@
   "banjo69": {"category": "player","sounds": [{"name": "xercamusic:banjo/banjo69", "attenuation_distance": 48}]},
   "banjo75": {"category": "player","sounds": [{"name": "xercamusic:banjo/banjo75", "attenuation_distance": 48}]},
   "banjo81": {"category": "player","sounds": [{"name": "xercamusic:banjo/banjo81", "attenuation_distance": 48}]},
-  "banjo87": {"category": "player","sounds": [{"name": "xercamusic:banjo/banjo87", "attenuation_distance": 48}]},
-  "banjo93": {"category": "player","sounds": [{"name": "xercamusic:banjo/banjo93", "attenuation_distance": 48}]},
-  "banjo99": {"category": "player","sounds": [{"name": "xercamusic:banjo/banjo99", "attenuation_distance": 48}]},
-  "banjo105": {"category": "player","sounds": [{"name": "xercamusic:banjo/banjo105", "attenuation_distance": 48}]},
-  "banjo111": {"category": "player","sounds": [{"name": "xercamusic:banjo/banjo111", "attenuation_distance": 48}]},
 
   "saxophone24": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone24", "attenuation_distance": 48}]},
   "saxophone30": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone30", "attenuation_distance": 48}]},
@@ -120,11 +121,6 @@
   "saxophone65": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone65", "attenuation_distance": 48}]},
   "saxophone72": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone72", "attenuation_distance": 48}]},
   "saxophone78": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone78", "attenuation_distance": 48}]},
-  "saxophone84": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone84", "attenuation_distance": 48}]},
-  "saxophone90": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone90", "attenuation_distance": 48}]},
-  "saxophone96": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone96", "attenuation_distance": 48}]},
-  "saxophone102": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone102", "attenuation_distance": 48}]},
-  "saxophone108": {"category": "player","sounds": [{"name": "xercamusic:saxophone/saxophone108", "attenuation_distance": 48}]},
 
   "god27": {"category": "player","sounds": [{"name": "xercamusic:god/god27", "attenuation_distance": 48}]},
   "god33": {"category": "player","sounds": [{"name": "xercamusic:god/god33", "attenuation_distance": 48}]},
@@ -137,10 +133,6 @@
   "god75": {"category": "player","sounds": [{"name": "xercamusic:god/god75", "attenuation_distance": 48}]},
   "god81": {"category": "player","sounds": [{"name": "xercamusic:god/god81", "attenuation_distance": 48}]},
   "god87": {"category": "player","sounds": [{"name": "xercamusic:god/god87", "attenuation_distance": 48}]},
-  "god93": {"category": "player","sounds": [{"name": "xercamusic:god/god93", "attenuation_distance": 48}]},
-  "god99": {"category": "player","sounds": [{"name": "xercamusic:god/god99", "attenuation_distance": 48}]},
-  "god105": {"category": "player","sounds": [{"name": "xercamusic:god/god105", "attenuation_distance": 48}]},
-  "god111": {"category": "player","sounds": [{"name": "xercamusic:god/god111", "attenuation_distance": 48}]},
 
   "harp_mc27": {"category": "player","sounds": [{"name": "xercamusic:harp_mc/harp_mc27", "attenuation_distance": 48}]},
   "harp_mc33": {"category": "player","sounds": [{"name": "xercamusic:harp_mc/harp_mc33", "attenuation_distance": 48}]},
@@ -158,7 +150,6 @@
   "harp_mc105": {"category": "player","sounds": [{"name": "xercamusic:harp_mc/harp_mc105", "attenuation_distance": 48}]},
   "harp_mc111": {"category": "player","sounds": [{"name": "xercamusic:harp_mc/harp_mc111", "attenuation_distance": 48}]},
 
-  "sansula27": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula27", "attenuation_distance": 48}]},
   "sansula33": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula33", "attenuation_distance": 48}]},
   "sansula39": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula39", "attenuation_distance": 48}]},
   "sansula45": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula45", "attenuation_distance": 48}]},
@@ -169,12 +160,7 @@
   "sansula75": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula75", "attenuation_distance": 48}]},
   "sansula81": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula81", "attenuation_distance": 48}]},
   "sansula87": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula87", "attenuation_distance": 48}]},
-  "sansula93": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula93", "attenuation_distance": 48}]},
-  "sansula99": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula99", "attenuation_distance": 48}]},
-  "sansula105": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula105", "attenuation_distance": 48}]},
-  "sansula111": {"category": "player","sounds": [{"name": "xercamusic:sansula/sansula111", "attenuation_distance": 48}]},
 
-  "tubular_bell27": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell27", "attenuation_distance": 48}]},
   "tubular_bell33": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell33", "attenuation_distance": 48}]},
   "tubular_bell39": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell39", "attenuation_distance": 48}]},
   "tubular_bell45": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell45", "attenuation_distance": 48}]},
@@ -184,11 +170,6 @@
   "tubular_bell69": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell69", "attenuation_distance": 48}]},
   "tubular_bell75": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell75", "attenuation_distance": 48}]},
   "tubular_bell81": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell81", "attenuation_distance": 48}]},
-  "tubular_bell87": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell87", "attenuation_distance": 48}]},
-  "tubular_bell93": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell93", "attenuation_distance": 48}]},
-  "tubular_bell99": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell99", "attenuation_distance": 48}]},
-  "tubular_bell105": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell105", "attenuation_distance": 48}]},
-  "tubular_bell111": {"category": "player","sounds": [{"name": "xercamusic:tubular_bell/tubular_bell111", "attenuation_distance": 48}]},
 
   "violin37": {"category": "player","sounds": [{"name": "xercamusic:violin/violin37", "attenuation_distance": 48}]},
   "violin43": {"category": "player","sounds": [{"name": "xercamusic:violin/violin43", "attenuation_distance": 48}]},
@@ -206,9 +187,6 @@
   "violin85": {"category": "player","sounds": [{"name": "xercamusic:violin/violin85", "attenuation_distance": 48}]},
   "violin88": {"category": "player","sounds": [{"name": "xercamusic:violin/violin88", "attenuation_distance": 48}]},
   "violin91": {"category": "player","sounds": [{"name": "xercamusic:violin/violin91", "attenuation_distance": 48}]},
-  "violin94": {"category": "player","sounds": [{"name": "xercamusic:violin/violin94", "attenuation_distance": 48}]},
-  "violin100": {"category": "player","sounds": [{"name": "xercamusic:violin/violin100", "attenuation_distance": 48}]},
-  "violin106": {"category": "player","sounds": [{"name": "xercamusic:violin/violin106", "attenuation_distance": 48}]},
 
   "xylophone27": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone27", "attenuation_distance": 48}]},
   "xylophone33": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone33", "attenuation_distance": 48}]},
@@ -221,10 +199,6 @@
   "xylophone75": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone75", "attenuation_distance": 48}]},
   "xylophone81": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone81", "attenuation_distance": 48}]},
   "xylophone87": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone87", "attenuation_distance": 48}]},
-  "xylophone93": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone93", "attenuation_distance": 48}]},
-  "xylophone99": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone99", "attenuation_distance": 48}]},
-  "xylophone105": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone105", "attenuation_distance": 48}]},
-  "xylophone111": {"category": "player","sounds": [{"name": "xercamusic:xylophone/xylophone111", "attenuation_distance": 48}]},
 
   "cello25": {"category": "player","sounds": [{"name": "xercamusic:cello/cello25", "attenuation_distance": 48}]},
   "cello31": {"category": "player","sounds": [{"name": "xercamusic:cello/cello31", "attenuation_distance": 48}]},
@@ -248,8 +222,6 @@
   "cello94": {"category": "player","sounds": [{"name": "xercamusic:cello/cello94", "attenuation_distance": 48}]},
   "cello97": {"category": "player","sounds": [{"name": "xercamusic:cello/cello97", "attenuation_distance": 48}]},
   "cello100": {"category": "player","sounds": [{"name": "xercamusic:cello/cello100", "attenuation_distance": 48}]},
-  "cello106": {"category": "player","sounds": [{"name": "xercamusic:cello/cello106", "attenuation_distance": 48}]},
-  "cello112": {"category": "player","sounds": [{"name": "xercamusic:cello/cello112", "attenuation_distance": 48}]},
 
   "drum_kit21": {"category": "player", "sounds": [{"name": "xercamusic:drum_kit/drum_kit21", "attenuation_distance": 48}]},
   "drum_kit22": {"category": "player", "sounds": [{"name": "xercamusic:drum_kit/drum_kit22", "attenuation_distance": 48}]},
@@ -379,6 +351,60 @@
   "piano90": {"category": "player", "sounds": [{"name": "xercamusic:piano/piano90", "attenuation_distance": 48}]},
   "piano95": {"category": "player", "sounds": [{"name": "xercamusic:piano/piano95", "attenuation_distance": 48}]},
   "piano103": {"category": "player", "sounds": [{"name": "xercamusic:piano/piano103", "attenuation_distance": 48}]},
-  "piano109": {"category": "player", "sounds": [{"name": "xercamusic:piano/piano109", "attenuation_distance": 48}]}
+  "piano109": {"category": "player", "sounds": [{"name": "xercamusic:piano/piano109", "attenuation_distance": 48}]},
 
+  "oboe23": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe23", "attenuation_distance": 48}]},
+  "oboe29": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe29", "attenuation_distance": 48}]},
+  "oboe35": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe35", "attenuation_distance": 48}]},
+  "oboe37": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe37", "attenuation_distance": 48}]},
+  "oboe39": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe39", "attenuation_distance": 48}]},
+  "oboe40": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe40", "attenuation_distance": 48}]},
+  "oboe42": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe42", "attenuation_distance": 48}]},
+  "oboe44": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe44", "attenuation_distance": 48}]},
+  "oboe46": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe46", "attenuation_distance": 48}]},
+  "oboe48": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe48", "attenuation_distance": 48}]},
+  "oboe50": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe50", "attenuation_distance": 48}]},
+  "oboe52": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe52", "attenuation_distance": 48}]},
+  "oboe54": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe54", "attenuation_distance": 48}]},
+  "oboe55": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe55", "attenuation_distance": 48}]},
+  "oboe57": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe57", "attenuation_distance": 48}]},
+  "oboe59": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe59", "attenuation_distance": 48}]},
+  "oboe60": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe60", "attenuation_distance": 48}]},
+  "oboe62": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe62", "attenuation_distance": 48}]},
+  "oboe64": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe64", "attenuation_distance": 48}]},
+  "oboe65": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe65", "attenuation_distance": 48}]},
+  "oboe71": {"category": "player", "sounds": [{"name": "xercamusic:oboe/oboe71", "attenuation_distance": 48}]},
+
+  "redstone_guitar27": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar27", "attenuation_distance": 48}]},
+  "redstone_guitar33": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar33", "attenuation_distance": 48}]},
+  "redstone_guitar39": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar39", "attenuation_distance": 48}]},
+  "redstone_guitar45": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar45", "attenuation_distance": 48}]},
+  "redstone_guitar51": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar51", "attenuation_distance": 48}]},
+  "redstone_guitar57": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar57", "attenuation_distance": 48}]},
+  "redstone_guitar63": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar63", "attenuation_distance": 48}]},
+  "redstone_guitar69": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar69", "attenuation_distance": 48}]},
+  "redstone_guitar75": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar75", "attenuation_distance": 48}]},
+  "redstone_guitar81": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar81", "attenuation_distance": 48}]},
+  "redstone_guitar87": {"category": "player", "sounds": [{"name": "xercamusic:redstone_guitar/redstone_guitar87", "attenuation_distance": 48}]},
+
+  "french_horn27": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn27", "attenuation_distance": 48}]},
+  "french_horn33": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn33", "attenuation_distance": 48}]},
+  "french_horn39": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn39", "attenuation_distance": 48}]},
+  "french_horn45": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn45", "attenuation_distance": 48}]},
+  "french_horn51": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn51", "attenuation_distance": 48}]},
+  "french_horn57": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn57", "attenuation_distance": 48}]},
+  "french_horn63": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn63", "attenuation_distance": 48}]},
+  "french_horn69": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn69", "attenuation_distance": 48}]},
+  "french_horn75": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn75", "attenuation_distance": 48}]},
+  "french_horn81": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn81", "attenuation_distance": 48}]},
+  "french_horn87": {"category": "player", "sounds": [{"name": "xercamusic:french_horn/french_horn87", "attenuation_distance": 48}]},
+
+  "bass_guitar33": {"category": "player", "sounds": [{"name": "xercamusic:bass_guitar/bass_guitar33", "attenuation_distance": 48}]},
+  "bass_guitar39": {"category": "player", "sounds": [{"name": "xercamusic:bass_guitar/bass_guitar39", "attenuation_distance": 48}]},
+  "bass_guitar45": {"category": "player", "sounds": [{"name": "xercamusic:bass_guitar/bass_guitar45", "attenuation_distance": 48}]},
+  "bass_guitar51": {"category": "player", "sounds": [{"name": "xercamusic:bass_guitar/bass_guitar51", "attenuation_distance": 48}]},
+  "bass_guitar57": {"category": "player", "sounds": [{"name": "xercamusic:bass_guitar/bass_guitar57", "attenuation_distance": 48}]},
+  "bass_guitar63": {"category": "player", "sounds": [{"name": "xercamusic:bass_guitar/bass_guitar63", "attenuation_distance": 48}]},
+  "bass_guitar69": {"category": "player", "sounds": [{"name": "xercamusic:bass_guitar/bass_guitar69", "attenuation_distance": 48}]},
+  "bass_guitar75": {"category": "player", "sounds": [{"name": "xercamusic:bass_guitar/bass_guitar75", "attenuation_distance": 48}]}
 }

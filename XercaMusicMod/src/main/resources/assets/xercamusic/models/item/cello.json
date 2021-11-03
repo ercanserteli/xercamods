@@ -1,28 +1,18 @@
 {
-  "parent": "xercamusic:item/instrument",
+  "parent": "xercamusic:item/instrument_string",
   "textures": {
     "layer0": "xercamusic:item/instruments/cello"
   },
   "display": {
     "thirdperson_righthand": {
-      "rotation": [ 0, -90, 55 ],
-      "translation": [ 0, 6, 1 ],
+      "rotation": [86, 2, -12],
+      "translation": [-2.75, 0.5, 4.75],
       "scale": [ 1.2, 1.2, 1.2 ]
     },
     "thirdperson_lefthand": {
-      "rotation": [ 0, 90, -55 ],
-      "translation": [ 0, 6, 1 ],
+      "rotation": [86, -2, -97],
+      "translation": [-3.25, 0.25, 5],
       "scale": [ 1.2, 1.2, 1.2 ]
-    },
-    "firstperson_righthand": {
-      "rotation": [ 0, -90, 25 ],
-      "translation": [ 0.93, 3.2, 1.13],
-      "scale": [ 1.1, 1.1, 1.1 ]
-    },
-    "firstperson_lefthand": {
-      "rotation": [ 0, 90, -25 ],
-      "translation": [ 0.93, 3.2, 1.13],
-      "scale": [ 1.1, 1.1, 1.1 ]
     }
   }
 }

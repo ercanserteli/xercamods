@@ -7,7 +7,7 @@
         "sis",
         "ppp"
     ],
-    "key": {"s": {"item": "minecraft:string"}, "i": {"item": "minecraft:iron_ingot"}, "p": {"tag": "minecraft:planks"}},
+    "key": {"s": {"item": "minecraft:string"}, "i": {"item": "minecraft:iron_nugget"}, "p": {"tag": "minecraft:planks"}},
     "result": {"item": "xercamusic:piano"}
 }
         

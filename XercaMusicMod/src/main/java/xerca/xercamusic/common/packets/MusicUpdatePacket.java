@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MusicUpdatePacket {
+    private FieldFlag availability;
     private ArrayList<NoteEvent> notes;
     private short lengthBeats;
     private byte bps;
@@ -19,8 +20,9 @@ public class MusicUpdatePacket {
     private boolean prevInsLocked;
     private boolean messageIsValid;
 
-    public MusicUpdatePacket(ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed,
+    public MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed,
                              String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version) {
+        this.availability = availability;
         this.notes = notes;
         this.lengthBeats = lengthBeats;
         this.bps = bps;
@@ -40,20 +42,24 @@ public class MusicUpdatePacket {
     public static MusicUpdatePacket decode(FriendlyByteBuf buf) {
         MusicUpdatePacket result = new MusicUpdatePacket();
         try {
-            result.title = buf.readUtf(255);
-            result.signed = buf.readBoolean();
-            result.bps = buf.readByte();
-            result.volume = buf.readFloat();
-            result.lengthBeats = buf.readShort();
-            int eventCount = buf.readInt();
-            result.notes = new ArrayList<>(eventCount);
-            for(int i=0; i<eventCount; i++){
-                result.notes.add(NoteEvent.fromBuffer(buf));
+            FieldFlag flag = FieldFlag.fromInt(buf.readInt());
+            result.availability = flag;
+            if(flag.hasTitle) result.title = buf.readUtf(255);
+            if(flag.hasSigned) result.signed = buf.readBoolean();
+            if(flag.hasBps) result.bps = buf.readByte();
+            if(flag.hasVolume) result.volume = buf.readFloat();
+            if(flag.hasLength) result.lengthBeats = buf.readShort();
+            if(flag.hasNotes){
+                int eventCount = buf.readInt();
+                result.notes = new ArrayList<>(eventCount);
+                for(int i=0; i<eventCount; i++){
+                    result.notes.add(NoteEvent.fromBuffer(buf));
+                }
             }
-            result.prevInstrument = buf.readByte();
-            result.prevInsLocked = buf.readBoolean();
-            result.id = buf.readUUID();
-            result.version = buf.readInt();
+            if(flag.hasPrevIns) result.prevInstrument = buf.readByte();
+            if(flag.hasPrevInsLocked) result.prevInsLocked = buf.readBoolean();
+            if(flag.hasId) result.id = buf.readUUID();
+            if(flag.hasVersion) result.version = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
             return null;
@@ -63,19 +69,22 @@ public class MusicUpdatePacket {
     }
 
     public static void encode(MusicUpdatePacket pkt, FriendlyByteBuf buf) {
-        buf.writeUtf(pkt.title);
-        buf.writeBoolean(pkt.signed);
-        buf.writeByte(pkt.bps);
-        buf.writeFloat(pkt.volume);
-        buf.writeShort(pkt.lengthBeats);
-        buf.writeInt(pkt.notes.size());
-        for(NoteEvent event : pkt.notes){
-            event.encodeToBuffer(buf);
+        buf.writeInt(pkt.availability.toInt());
+        if(pkt.availability.hasTitle) buf.writeUtf(pkt.title);
+        if(pkt.availability.hasSigned) buf.writeBoolean(pkt.signed);
+        if(pkt.availability.hasBps) buf.writeByte(pkt.bps);
+        if(pkt.availability.hasVolume) buf.writeFloat(pkt.volume);
+        if(pkt.availability.hasLength) buf.writeShort(pkt.lengthBeats);
+        if(pkt.availability.hasNotes){
+            buf.writeInt(pkt.notes.size());
+            for(NoteEvent event : pkt.notes){
+                event.encodeToBuffer(buf);
+            }
         }
-        buf.writeByte(pkt.prevInstrument);
-        buf.writeBoolean(pkt.prevInsLocked);
-        buf.writeUUID(pkt.id);
-        buf.writeInt(pkt.version);
+        if(pkt.availability.hasPrevIns) buf.writeByte(pkt.prevInstrument);
+        if(pkt.availability.hasPrevInsLocked) buf.writeBoolean(pkt.prevInsLocked);
+        if(pkt.availability.hasId) buf.writeUUID(pkt.id);
+        if(pkt.availability.hasVersion) buf.writeInt(pkt.version);
     }
 
     public ArrayList<NoteEvent> getNotes() {
@@ -128,5 +137,94 @@ public class MusicUpdatePacket {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public FieldFlag getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(FieldFlag availability) {
+        this.availability = availability;
+    }
+
+    public static class FieldFlag {
+        private static final int notesFlag = 1;
+        private static final int lengthFlag = 1 << 1;
+        private static final int bpsFlag = 1 << 2;
+        private static final int volumeFlag = 1 << 3;
+        private static final int signedFlag = 1 << 4;
+        private static final int titleFlag = 1 << 5;
+        private static final int prevInsFlag = 1 << 6;
+        private static final int prevInsLockedFlag = 1 << 7;
+        private static final int idFlag = 1 << 8;
+        private static final int versionFlag = 1 << 9;
+
+        public boolean hasNotes;
+        public boolean hasLength;
+        public boolean hasBps;
+        public boolean hasVolume;
+        public boolean hasSigned;
+        public boolean hasTitle;
+        public boolean hasPrevIns;
+        public boolean hasPrevInsLocked;
+        public boolean hasId;
+        public boolean hasVersion;
+
+        public FieldFlag(boolean hasNotes, boolean hasLength, boolean hasBps, boolean hasVolume, boolean hasSigned,
+                         boolean hasTitle, boolean hasPrevIns, boolean hasPrevInsLocked, boolean hasId, boolean hasVersion){
+            this.hasNotes = hasNotes;
+            this.hasLength = hasLength;
+            this.hasBps = hasBps;
+            this.hasVolume = hasVolume;
+            this.hasSigned = hasSigned;
+            this.hasTitle = hasTitle;
+            this.hasPrevIns = hasPrevIns;
+            this.hasPrevInsLocked = hasPrevInsLocked;
+            this.hasId = hasId;
+            this.hasVersion = hasVersion;
+        }
+
+        public FieldFlag(){
+        }
+
+        public int toInt(){
+            return (hasNotes ? notesFlag : 0) |
+                   (hasLength ? lengthFlag : 0) |
+                   (hasBps ? bpsFlag : 0) |
+                   (hasVolume ? volumeFlag : 0) |
+                   (hasSigned ? signedFlag : 0) |
+                   (hasTitle ? titleFlag : 0) |
+                   (hasPrevIns ? prevInsFlag : 0) |
+                   (hasPrevInsLocked ? prevInsLockedFlag : 0) |
+                   (hasId ? idFlag : 0) |
+                   (hasVersion ? versionFlag : 0);
+        }
+
+        static public FieldFlag fromInt(int packed){
+            return new FieldFlag(
+                    (packed & notesFlag) != 0,
+                    (packed & lengthFlag) != 0,
+                    (packed & bpsFlag) != 0,
+                    (packed & volumeFlag) != 0,
+                    (packed & signedFlag) != 0,
+                    (packed & titleFlag) != 0,
+                    (packed & prevInsFlag) != 0,
+                    (packed & prevInsLockedFlag) != 0,
+                    (packed & idFlag) != 0,
+                    (packed & versionFlag) != 0
+                    );
+        }
+
+        public boolean hasAny() {
+            return hasNotes || hasLength || hasBps || hasVolume || hasSigned || hasTitle || hasPrevIns ||
+                    hasPrevInsLocked || hasId || hasVersion;
+        }
+
+        public String toString() {
+            return "" + (hasNotes ? "Notes, " : "") + (hasLength ? "Length, " : "") + (hasBps ? "Bps, " : "")
+                    + (hasVolume ? "Volume, " : "") + (hasSigned ? "Signed, " : "") + (hasTitle ? "Title, " : "")
+                    + (hasPrevIns ? "PrevIns, " : "") + (hasPrevInsLocked ? "PrevInsLocked, " : "")
+                    + (hasId ? "Id, " : "") + (hasVersion ? "Version, " : "");
+        }
     }
 }

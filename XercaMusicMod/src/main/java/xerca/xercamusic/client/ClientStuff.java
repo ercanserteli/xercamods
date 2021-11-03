@@ -2,6 +2,7 @@ package xerca.xercamusic.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -17,13 +18,23 @@ import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicEndedPacket;
 
+import java.util.UUID;
+
 public class ClientStuff {
 
     static public void showMusicGui(){
         LocalPlayer player = Minecraft.getInstance().player;
         ItemStack heldItem = player.getMainHandItem();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet){
-            Minecraft.getInstance().setScreen(new GuiMusicSheet(player, heldItem.getTag(), new TranslatableComponent("item.xercamusic.music_sheet")));
+            CompoundTag noteTag = heldItem.getTag();
+            if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
+                UUID id = noteTag.getUUID("id");
+                int version = noteTag.getInt("ver");
+                MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet"))));
+            }
+            else{
+                Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet")));
+            }
         }
     }
 
