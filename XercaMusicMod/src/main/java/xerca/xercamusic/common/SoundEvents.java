@@ -143,12 +143,12 @@ public class SoundEvents {
             addSound(banjos, "banjo", 75, event);
             addSound(banjos, "banjo", 81, event);
 
-            addSound(drums, "drum", 27, event);
             addSound(drums, "drum", 33, event);
             addSound(drums, "drum", 39, event);
-            addSound(drums, "drum", 45, event);
-            addSound(drums, "drum", 51, event);
-            addSound(drums, "drum", 57, event);
+            addSound(drums, "drum", 43, event);
+            addSound(drums, "drum", 50, event);
+            addSound(drums, "drum", 55, event);
+            addSound(drums, "drum", 58, event);
             addSound(drums, "drum", 63, event);
             addSound(drums, "drum", 69, event);
             addSound(drums, "drum", 75, event);

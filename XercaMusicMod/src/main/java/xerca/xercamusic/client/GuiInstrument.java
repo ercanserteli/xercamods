@@ -3,6 +3,7 @@ package xerca.xercamusic.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,8 +12,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.packets.SingleNotePacket;
+
+import javax.annotation.Nullable;
 
 public class GuiInstrument extends Screen {
     private static final ResourceLocation insGuiTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/instrument_gui.png");
@@ -40,16 +44,18 @@ public class GuiInstrument extends Screen {
 
     private final Player player;
     private final ItemInstrument instrument;
+    private final BlockPos blockInsPos;
     private NoteSound lastPlayed = null;
     private final MidiHandler midiHandler;
 
-    GuiInstrument(Player player, ItemInstrument instrument, Component title) {
+    GuiInstrument(Player player, ItemInstrument instrument, Component title, @Nullable BlockPos blockInsPos) {
         super(title);
         this.player = player;
         this.instrument = instrument;
         this.buttonPushStates = new boolean[ItemInstrument.totalNotes];
         this.noteSounds = new NoteSound[ItemInstrument.totalNotes];
         this.midiHandler = new MidiHandler(this::playSound, this::stopSound);
+        this.blockInsPos = blockInsPos;
     }
 
     @Override
@@ -66,6 +72,16 @@ public class GuiInstrument extends Screen {
     @Override
     public void tick() {
         super.tick();
+        if(blockInsPos != null && minecraft != null ){
+            if(player.level.getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns){
+                if(blockIns.getItemInstrument() != instrument){
+                    minecraft.setScreen(null);
+                }
+            }
+            else{
+                minecraft.setScreen(null);
+            }
+        }
     }
 
     @Override

@@ -17,9 +17,11 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercamusic.common.block.Blocks;
+import xerca.xercamusic.common.data.BlockTags;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.*;
 
@@ -102,6 +104,11 @@ public class XercaMusic
         @SubscribeEvent
         public static void registerLootModifiers(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
             event.getRegistry().register(new TempleLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"temple_vog")));
+        }
+
+        @SubscribeEvent
+        public static void registerDataEvent(final GatherDataEvent event) {
+            event.getGenerator().addProvider(new BlockTags(event.getGenerator(), event.getExistingFileHelper()));
         }
     }
 

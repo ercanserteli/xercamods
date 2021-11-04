@@ -64,6 +64,8 @@ public class GuiMusicSheet extends Screen {
     private final static int bpmButH = 10;
     private final static int bpmButX = 250;
     private final static int bpmButY = 12;
+    private final static int hlButX = 266;
+    private final static int hlButY = 23;
     private final static int[] octaveColors = {0xFF5B3200, 0xFFFF0000, 0xFF0AEE00, 0xFF0059FF, 0xFF7B00FF, 0xFFEF00B7, 0xFF00E2DF, 0XFFF4E800};
     private final static int[] octaveColorsTrans = {0x165B3200,0x16FF0000, 0x160AEE00, 0x160059FF, 0x167B00FF, 0x16EF00B7, 0x1600E2DF, 0X16F4E800};
     private static final int maxLengthBeats = 32000;
@@ -72,6 +74,7 @@ public class GuiMusicSheet extends Screen {
     private int noteImageLeftX;
     private int noteImageY;
     private int currentOctave = 2;
+    private byte highlightInterval = 12;
     private boolean isSigned;
     private int generation;
     private boolean gettingSigned;
@@ -88,6 +91,8 @@ public class GuiMusicSheet extends Screen {
     private Button bpmDown;
     private Button octaveUp;
     private Button octaveDown;
+    private Button hlUp;
+    private Button hlDown;
     private Button buttonSign;
     private Button buttonCancel;
     private Button buttonFinalize;
@@ -154,6 +159,9 @@ public class GuiMusicSheet extends Screen {
             this.prevInsLocked = noteTag.getBoolean("piLocked");
             if(noteTag.contains("prevIns")){
                 this.previewInstrument = noteTag.getByte("prevIns");
+            }
+            if(noteTag.contains("hl")) {
+                this.highlightInterval = noteTag.getByte("hl");
             }
 
             if(authorName.equals(player.getName().getString())){
@@ -275,7 +283,7 @@ public class GuiMusicSheet extends Screen {
                     cumMillis *= (float)(bps-1)/(float)bps;
                 }
             }
-        }));
+        }, (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("note.tempoTooltip"), x, y)));
         this.bpmDown = this.addRenderableWidget(new Button(noteImageLeftX + bpmButX, noteImageY + bpmButY + 1 + bpmButH, bpmButW, bpmButH, new TranslatableComponent("note.downButton"), button -> {
             if (!isSigned || selfSigned || generation > 1) {
                 if(bps > 1){
@@ -285,7 +293,7 @@ public class GuiMusicSheet extends Screen {
                     cumMillis *= (float)(bps+1)/(float)bps;
                 }
             }
-        }));
+        }, (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("note.tempoTooltip"), x, y)));
         this.buttonPreview = this.addRenderableWidget(new ChangeableImageButton(noteImageLeftX + 50, 16, 16, 16, 224, 0, 16, noteGuiTextures, button -> {
             if (!previewing) {
                 startPreview();
@@ -334,13 +342,26 @@ public class GuiMusicSheet extends Screen {
             sliderPosition = (int)(slider.sliderValue * (double)maxSliderPosition);
         }));
 
-        this.sliderVolume = this.addRenderableWidget(new Slider(noteImageLeftX + noteRegionRight - 50, noteImageY + 15, 50, 10,
+        this.sliderVolume = this.addRenderableWidget(new Slider(noteImageLeftX + noteRegionRight - 50, noteImageY + 12, 50, 10,
                 new TextComponent("Vol "), TextComponent.EMPTY, 0, 100, volume*100.f, false, true, b -> {}, (slider) -> {
             if(!isSigned || selfSigned || generation > 1) {
                 volume = ((float) slider.sliderValue);
                 dirtyFlag.hasVolume = true;
             }
         }));
+
+        this.hlDown = this.addRenderableWidget(new Button(noteImageLeftX + hlButX, noteImageY + hlButY, bpmButW, bpmButH, new TranslatableComponent("note.leftButton"), button -> {
+            if((!isSigned || selfSigned || generation > 1) && highlightInterval > 1){
+                highlightInterval --;
+                dirtyFlag.hasHlInterval = true;
+            }
+        }, (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("note.measureTooltip"), x, y)));
+        this.hlUp = this.addRenderableWidget(new Button(noteImageLeftX + hlButX + 40, noteImageY + hlButY, bpmButW, bpmButH, new TranslatableComponent("note.rightButton"), button -> {
+            if((!isSigned || selfSigned || generation > 1) && highlightInterval < 24){
+                highlightInterval ++;
+                dirtyFlag.hasHlInterval = true;
+            }
+        }, (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("note.measureTooltip"), x, y)));
 
         this.noteEditBox = this.addRenderableWidget(new NoteEditBox(0, 0, 60, 45, TextComponent.EMPTY));
 
@@ -367,6 +388,10 @@ public class GuiMusicSheet extends Screen {
         this.octaveDown.visible =  !this.gettingSigned;
         this.octaveUp.visible =  !this.gettingSigned;
         this.sliderTime.visible =  !this.gettingSigned;
+        this.hlUp.visible =  !this.gettingSigned && (!this.isSigned || this.selfSigned || this.generation > 1);
+        this.hlUp.active = !this.isSigned || this.selfSigned || this.generation > 1;
+        this.hlDown.visible =  !this.gettingSigned && (!this.isSigned || this.selfSigned || this.generation > 1);
+        this.hlDown.active = !this.isSigned || this.selfSigned || this.generation > 1;
 
         this.buttonHideNeighbors.visible = (this.neighborNotes.size() > 0) && !this.gettingSigned;
     }
@@ -546,26 +571,31 @@ public class GuiMusicSheet extends Screen {
             }
 
             // Draw measure lines
-            for(int i = sliderPosition; i<sliderPosition + beatsInScreen; i++){
-                int x = (i - sliderPosition)*3 + noteImageLeftX + noteRegionLeft + 1;
-                if(i % 12 == 0){
-                    fill(matrixStack, x, noteImageY + noteRegionTop - 1, x+1, noteImageY + noteRegionBottom + 3, 0xFF998A7B);
+            if(highlightInterval > 1){
+                for(int i = sliderPosition; i<sliderPosition + beatsInScreen; i++){
+                    int x = (i - sliderPosition)*3 + noteImageLeftX + noteRegionLeft + 1;
+                    if(i % highlightInterval == 0){
+                        fill(matrixStack, x, noteImageY + noteRegionTop - 1, x+1, noteImageY + noteRegionBottom + 3, 0xFF88796A);
+                    }
                 }
+
+                // Draw measure numbers
+                matrixStack.pushPose();
+                matrixStack.scale(0.5f, 0.5f, 0.5f);
+                for(int i = sliderPosition; i<sliderPosition + beatsInScreen; i++) {
+                    if (i % highlightInterval == 0) {
+                        final int x = (i - sliderPosition) * 3 + noteImageLeftX + noteRegionLeft;
+                        final int y = noteImageY + noteRegionTop - 5;
+                        final String name = ""+((i/highlightInterval)+1);
+                        final int w = font.width(name);
+                        font.draw(matrixStack, name, (x - (w-6.0f)/4.0f)*2.f, y*2, 0xFF444400);
+                    }
+                }
+                matrixStack.popPose();
             }
 
-            // Draw measure numbers
-            matrixStack.pushPose();
-            matrixStack.scale(0.5f, 0.5f, 0.5f);
-            for(int i = sliderPosition; i<sliderPosition + beatsInScreen; i++) {
-                if (i % 12 == 0) {
-                    final int x = (i - sliderPosition) * 3 + noteImageLeftX + noteRegionLeft;
-                    final int y = noteImageY + noteRegionTop - 5;
-                    final String name = ""+((i/12)+1);
-                    final int w = font.width(name);
-                    font.draw(matrixStack, name, (x - (w-6.0f)/4.0f)*2.f, y*2, 0xFF444400);
-                }
-            }
-            matrixStack.popPose();
+            this.font.draw(matrixStack, "M:", noteImageLeftX + hlButX + 12, noteImageY + hlButY + 2, 0xFF000000);
+            this.font.draw(matrixStack, "" + (highlightInterval > 1 ? highlightInterval : "-"), noteImageLeftX + hlButX + 22, noteImageY + hlButY + 2, 0xFF000000);
 
             this.font.draw(matrixStack, "Tempo", noteImageLeftX + bpmButX - 30, noteImageY + bpmButY, 0xFF000000);
             this.font.draw(matrixStack, "" + bpm, noteImageLeftX + bpmButX - 30, noteImageY + bpmButY + 10, 0xFF000000);
@@ -842,12 +872,9 @@ public class GuiMusicSheet extends Screen {
     }
 
     private int findNote(byte note, short time) {
-        for(int i=0; i<notes.size(); i++) {
+        for(int i=notes.size()-1; i>=0; i--) {
             NoteEvent event = notes.get(i);
-            if(event.time > time){
-                break;
-            }
-            if((event.time + event.length > time) && event.note == note) {
+            if((event.time <= time && event.endTime() >= time) && event.note == note) {
                 return i;
             }
         }
@@ -953,7 +980,7 @@ public class GuiMusicSheet extends Screen {
         editCursorEnd = editCursor;
     }
 
-    private void decodeFromClipboard(){
+    private void decodeFromClipboard(boolean pushBack){
         String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getWindow().getWindow());
         if(encodedMusic != null && !encodedMusic.isEmpty()){
             byte[] byteArray;
@@ -1002,10 +1029,12 @@ public class GuiMusicSheet extends Screen {
                 }
             }
 
-            // Push back the existing future note events
-            for(NoteEvent event : notes){
-                if(event.time >= editCursor){
-                    event.time += length;
+            if(pushBack) {
+                // Push back the existing future note events
+                for(NoteEvent event : notes){
+                    if(event.time >= editCursor){
+                        event.time += length;
+                    }
                 }
             }
 
@@ -1015,9 +1044,24 @@ public class GuiMusicSheet extends Screen {
             }
 
             sortNotes();
+            if(!pushBack) {
+                // Remove duplicates
+                for(int i=0; i<notes.size()-1; i++) {
+                    NoteEvent event1 = notes.get(i);
+                    NoteEvent event2 = notes.get(i+1);
+                    if (event1.time == event2.time && event1.note == event2.note &&  event1.length == event2.length) {
+                        notes.remove(i);
+                        i--;
+                    }
+                }
+            }
+
             updateLength();
             editCursor += length + 1;
             editCursorEnd = editCursor;
+
+            dirtyFlag.hasNotes = true;
+            dirtyFlag.hasLength = true;
         }
     }
 
@@ -1053,7 +1097,7 @@ public class GuiMusicSheet extends Screen {
         setFocused(null);
         super.keyPressed(keyCode, scanCode, modifiers);
 
-        // Copying when viewing self signed
+        // Copying when viewing self-signed
         boolean viewingSelfSigned = isSigned && selfSigned;
         if(viewingSelfSigned){
             if(keyCode == GLFW.GLFW_KEY_C && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
@@ -1149,7 +1193,7 @@ public class GuiMusicSheet extends Screen {
                         break;
                     case GLFW.GLFW_KEY_V:
                         if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
-                            decodeFromClipboard();
+                            decodeFromClipboard(!((modifiers & GLFW.GLFW_MOD_SHIFT) == GLFW.GLFW_MOD_SHIFT));
                         }
                         break;
                     case GLFW.GLFW_KEY_A:
@@ -1306,7 +1350,7 @@ public class GuiMusicSheet extends Screen {
             }
 
             MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, notes, lengthBeats, bps, volume, isSigned,
-                    noteTitle, (byte)previewInstrument, prevInsLocked, id, version);
+                    noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
 
         }

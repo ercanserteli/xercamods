@@ -41,6 +41,7 @@ public class MusicUpdatePacketHandler {
             if(flag.hasVolume) comp.putFloat("vol", msg.getVolume());
             if(flag.hasPrevIns) comp.putByte("prevIns", msg.getPrevInstrument());
             if(flag.hasPrevInsLocked) comp.putBoolean("piLocked", msg.getPrevInsLocked());
+            if(flag.hasHlInterval) comp.putByte("hl", msg.getHighlightInterval());
             if(flag.hasSigned && msg.getSigned()) {
                 if(flag.hasTitle) comp.putString("title", msg.getTitle().trim());
                 comp.putString("author", pl.getName().getString());
@@ -50,7 +51,15 @@ public class MusicUpdatePacketHandler {
             if(!comp.contains("generation")){
                 comp.putInt("generation", 0);
             }
-            if(flag.hasNotes) MusicManager.setMusicData(comp.getUUID("id"), comp.getInt("ver"), msg.getNotes(), pl.server);
+            if(flag.hasNotes){
+                MusicManager.setMusicData(comp.getUUID("id"), comp.getInt("ver"), msg.getNotes(), pl.server);
+//                if(!comp.contains("vol")) {
+//                    comp.putFloat("vol", 1.0f);
+//                }
+                if(!comp.contains("bps")) {
+                    comp.putByte("bps", (byte)8);
+                }
+            }
         }
     }
 }

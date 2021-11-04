@@ -70,7 +70,7 @@ public final class Items {
                     new ItemInstrument("guitar", false, 0, 0, 6),
                     new ItemInstrument("lyre", false, 1, 1, 5),
                     new ItemInstrument("banjo", false, 2, 0, 4),
-                    new ItemInstrument("drum", false, 3, 0, 4),
+                    new ItemInstrument("drum", false, 3, 1, 4),
                     new ItemInstrument("cymbal", false, 4, 0, 4),
                     new ItemBlockInstrument("drum_kit", false, 5, Blocks.DRUM_KIT, 0, 7),
                     new ItemInstrument("xylophone", false, 6, 0, 5),

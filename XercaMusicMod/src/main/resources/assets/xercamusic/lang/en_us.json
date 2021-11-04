@@ -42,6 +42,8 @@
   "note.generation.2": "Copy of copy",
   "note.upButton": "▲",
   "note.downButton": "▼",
+  "note.leftButton": "◀",
+  "note.rightButton": "▶",
   "note.startPreviewButton": "►",
   "note.stopPreviewButton": "■",
   "note.hideNeighborsButton": "N",
@@ -51,6 +53,8 @@
   "note.length": "Length: %1$s beats",
   "note.tempo": "Tempo: %1$s BPM",
   "note.preview_instrument": "Instrument: %1$s",
+  "note.tempoTooltip": "Set tempo in beats per minute",
+  "note.measureTooltip": "Set measure interval for visual indication",
 
   "export.success": "Music sheet exported to %1$s",
   "export.fail": "Could not export music sheet",

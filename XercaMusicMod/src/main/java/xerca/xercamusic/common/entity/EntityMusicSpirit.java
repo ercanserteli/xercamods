@@ -176,11 +176,11 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             this.setPos(body.getX(), body.getY(), body.getZ());
         }
 
-        if (note.hasTag() && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l") && note.getTag().contains("bps")) {
+        if (note.hasTag() && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
             CompoundTag comp = note.getTag();
             mLengthBeats = comp.getInt("l");
-            mBPS = comp.getByte("bps");
-            mVolume = comp.getFloat("vol");
+            mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
+            mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
             UUID id = comp.getUUID("id");
             int ver = comp.getInt("ver");
 

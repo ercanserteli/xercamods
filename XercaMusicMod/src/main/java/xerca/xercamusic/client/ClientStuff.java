@@ -2,6 +2,7 @@ package xerca.xercamusic.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
@@ -42,13 +43,13 @@ public class ClientStuff {
         LocalPlayer player = Minecraft.getInstance().player;
         ItemStack heldItem = player.getMainHandItem();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemInstrument){
-            Minecraft.getInstance().setScreen(new GuiInstrument(player, (ItemInstrument) heldItem.getItem(), new TranslatableComponent("item.xercamusic.instrument_gui")));
+            Minecraft.getInstance().setScreen(new GuiInstrument(player, (ItemInstrument) heldItem.getItem(), new TranslatableComponent("item.xercamusic.instrument_gui"), null));
         }
     }
 
-    static public void showInstrumentGui(ItemInstrument instrument){
+    static public void showInstrumentGui(ItemInstrument instrument, BlockPos blockInsPos){
         LocalPlayer player = Minecraft.getInstance().player;
-        Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, new TranslatableComponent("item.xercamusic.instrument_gui")));
+        Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, new TranslatableComponent("item.xercamusic.instrument_gui"), blockInsPos));
     }
 
     static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {

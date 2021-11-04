@@ -15,13 +15,14 @@ public class MusicUpdatePacket {
     private boolean signed;
     private String title;
     private byte prevInstrument;
+    private boolean prevInsLocked;
     private UUID id;
     private int version;
-    private boolean prevInsLocked;
+    private byte highlightInterval;
     private boolean messageIsValid;
 
     public MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed,
-                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version) {
+                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) {
         this.availability = availability;
         this.notes = notes;
         this.lengthBeats = lengthBeats;
@@ -33,6 +34,7 @@ public class MusicUpdatePacket {
         this.prevInsLocked = prevInsLocked;
         this.id = id;
         this.version = version;
+        this.highlightInterval = highlightInterval;
     }
 
     public MusicUpdatePacket() {
@@ -60,6 +62,7 @@ public class MusicUpdatePacket {
             if(flag.hasPrevInsLocked) result.prevInsLocked = buf.readBoolean();
             if(flag.hasId) result.id = buf.readUUID();
             if(flag.hasVersion) result.version = buf.readInt();
+            if(flag.hasHlInterval) result.highlightInterval = buf.readByte();
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
             return null;
@@ -85,6 +88,7 @@ public class MusicUpdatePacket {
         if(pkt.availability.hasPrevInsLocked) buf.writeBoolean(pkt.prevInsLocked);
         if(pkt.availability.hasId) buf.writeUUID(pkt.id);
         if(pkt.availability.hasVersion) buf.writeInt(pkt.version);
+        if(pkt.availability.hasHlInterval) buf.writeByte(pkt.highlightInterval);
     }
 
     public ArrayList<NoteEvent> getNotes() {
@@ -139,6 +143,14 @@ public class MusicUpdatePacket {
         this.version = version;
     }
 
+    public byte getHighlightInterval() {
+        return highlightInterval;
+    }
+
+    public void setHighlightInterval(byte highlightInterval) {
+        this.highlightInterval = highlightInterval;
+    }
+
     public FieldFlag getAvailability() {
         return availability;
     }
@@ -158,6 +170,7 @@ public class MusicUpdatePacket {
         private static final int prevInsLockedFlag = 1 << 7;
         private static final int idFlag = 1 << 8;
         private static final int versionFlag = 1 << 9;
+        private static final int hlIntervalFlag = 1 << 10;
 
         public boolean hasNotes;
         public boolean hasLength;
@@ -169,9 +182,11 @@ public class MusicUpdatePacket {
         public boolean hasPrevInsLocked;
         public boolean hasId;
         public boolean hasVersion;
+        public boolean hasHlInterval;
 
         public FieldFlag(boolean hasNotes, boolean hasLength, boolean hasBps, boolean hasVolume, boolean hasSigned,
-                         boolean hasTitle, boolean hasPrevIns, boolean hasPrevInsLocked, boolean hasId, boolean hasVersion){
+                         boolean hasTitle, boolean hasPrevIns, boolean hasPrevInsLocked, boolean hasId,
+                         boolean hasVersion, boolean hasHlInterval){
             this.hasNotes = hasNotes;
             this.hasLength = hasLength;
             this.hasBps = hasBps;
@@ -182,6 +197,7 @@ public class MusicUpdatePacket {
             this.hasPrevInsLocked = hasPrevInsLocked;
             this.hasId = hasId;
             this.hasVersion = hasVersion;
+            this.hasHlInterval = hasHlInterval;
         }
 
         public FieldFlag(){
@@ -197,7 +213,8 @@ public class MusicUpdatePacket {
                    (hasPrevIns ? prevInsFlag : 0) |
                    (hasPrevInsLocked ? prevInsLockedFlag : 0) |
                    (hasId ? idFlag : 0) |
-                   (hasVersion ? versionFlag : 0);
+                   (hasVersion ? versionFlag : 0) |
+                   (hasHlInterval ? hlIntervalFlag : 0);
         }
 
         static public FieldFlag fromInt(int packed){
@@ -211,20 +228,21 @@ public class MusicUpdatePacket {
                     (packed & prevInsFlag) != 0,
                     (packed & prevInsLockedFlag) != 0,
                     (packed & idFlag) != 0,
-                    (packed & versionFlag) != 0
+                    (packed & versionFlag) != 0,
+                    (packed & hlIntervalFlag) != 0
                     );
         }
 
         public boolean hasAny() {
             return hasNotes || hasLength || hasBps || hasVolume || hasSigned || hasTitle || hasPrevIns ||
-                    hasPrevInsLocked || hasId || hasVersion;
+                    hasPrevInsLocked || hasId || hasVersion || hasHlInterval;
         }
 
         public String toString() {
             return "" + (hasNotes ? "Notes, " : "") + (hasLength ? "Length, " : "") + (hasBps ? "Bps, " : "")
                     + (hasVolume ? "Volume, " : "") + (hasSigned ? "Signed, " : "") + (hasTitle ? "Title, " : "")
                     + (hasPrevIns ? "PrevIns, " : "") + (hasPrevInsLocked ? "PrevInsLocked, " : "")
-                    + (hasId ? "Id, " : "") + (hasVersion ? "Version, " : "");
+                    + (hasId ? "Id, " : "") + (hasVersion ? "Version, " : "") + (hasHlInterval ? "HL Interval" : "");
         }
     }
 }
