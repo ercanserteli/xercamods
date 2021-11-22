@@ -1,5 +1,6 @@
 package xerca.xercamusic.client;
 
+import net.minecraft.client.Minecraft;
 import xerca.xercamusic.common.XercaMusic;
 
 import javax.sound.midi.*;
@@ -12,6 +13,7 @@ public class MidiHandler
     ArrayList<MidiDevice> devices = new ArrayList<>();
     Consumer<MidiData> noteOnHandler;
     Consumer<Integer> noteOffHandler;
+    public volatile int currentOctave;
 
     public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler)
     {
@@ -57,7 +59,7 @@ public class MidiHandler
         public String name;
         public static final int NOTE_ON = 0x90;
         public static final int NOTE_OFF = 0x80;
-        static final float ym = 0.8f;
+        static final float ym = 0.7f;
         static final float b = (1.f/ym - 1) * (1.f/ym - 1);
 
         public MidiInputReceiver(String name) {
@@ -71,7 +73,7 @@ public class MidiHandler
         @Override
         public void send(MidiMessage msg, long timeStamp) {
             if (msg instanceof ShortMessage sm) {
-                int key = sm.getData1() - 24;
+                int key = sm.getData1() - 21 + 12*currentOctave;
                 int velocity = sm.getData2();
                 if(key < 0 || key > 95){
                     return;
@@ -80,11 +82,9 @@ public class MidiHandler
                 if (sm.getCommand() == NOTE_ON && velocity > 0) {
                     float vel = ((float)velocity)/128.0f;
                     float vol = volumeCurve(vel);
-
-                    noteOnHandler.accept(new MidiData(key, vol));
-
+                    Minecraft.getInstance().submitAsync(() -> noteOnHandler.accept(new MidiData(key, vol)));
                 } else if (sm.getCommand() == NOTE_OFF || (sm.getCommand() == NOTE_ON && velocity == 0)) {
-                    noteOffHandler.accept(key);
+                    Minecraft.getInstance().submitAsync(() -> noteOffHandler.accept(key));
                 }
             }
         }

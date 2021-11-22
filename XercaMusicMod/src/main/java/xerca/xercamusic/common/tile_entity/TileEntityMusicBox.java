@@ -123,7 +123,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
         // Powering state timer should work in all cases
         if(t.isPowering){
-            if(t.poweringAge >= 20){
+            if(t.poweringAge >= 10){
                 t.stopPowering();
                 return;
             }
@@ -210,7 +210,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     public void setNoteStack(ItemStack noteStack, boolean updateClient) {
-        XercaMusic.LOGGER.warn("setNoteStack: " + noteStack.getTag());
+//        XercaMusic.LOGGER.debug("setNoteStack: " + noteStack.getTag());
         if(noteStack.getItem() instanceof ItemMusicSheet){
             if(updateClient && level != null && !level.isClientSide){
                 updateClient(noteStack, instrument);

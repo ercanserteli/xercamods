@@ -94,4 +94,9 @@ public class NoteEvent implements INBTSerializable<CompoundTag> {
     public float floatVolume() {
         return ((float)volume)/127.0f;
     }
+
+    @Override
+    public NoteEvent clone() {
+        return new NoteEvent(note, time, volume, length);
+    }
 }

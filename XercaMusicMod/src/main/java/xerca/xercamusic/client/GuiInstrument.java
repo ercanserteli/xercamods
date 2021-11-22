@@ -2,10 +2,12 @@ package xerca.xercamusic.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,9 +25,11 @@ public class GuiInstrument extends Screen {
 
     private int guiBaseX = 45;
     private int guiBaseY = 80;
-    private boolean[] buttonPushStates;
-    private NoteSound[] noteSounds;
-    private int currentKeyboardOctave = 2;
+    private final boolean[] buttonPushStates;
+    private final NoteSound[] noteSounds;
+    private static int currentKeyboardOctave = 0;
+    private Button octaveUp;
+    private Button octaveDown;
 
     private static final int guiHeight = 201;
     private static final int guiWidth = 401;
@@ -41,11 +45,12 @@ public class GuiInstrument extends Screen {
     private static final int guiOctaveBlockY = 212;
     private static final int guiOctaveBlockWidth = 95;
     private static final int guiOctaveBlockHeight = 82;
+    private int octaveButtonX;
+    private final int octaveButtonY = 30;
 
     private final Player player;
     private final ItemInstrument instrument;
     private final BlockPos blockInsPos;
-    private NoteSound lastPlayed = null;
     private final MidiHandler midiHandler;
 
     GuiInstrument(Player player, ItemInstrument instrument, Component title, @Nullable BlockPos blockInsPos) {
@@ -56,6 +61,13 @@ public class GuiInstrument extends Screen {
         this.noteSounds = new NoteSound[ItemInstrument.totalNotes];
         this.midiHandler = new MidiHandler(this::playSound, this::stopSound);
         this.blockInsPos = blockInsPos;
+        if(currentKeyboardOctave < instrument.minOctave) {
+            currentKeyboardOctave = instrument.minOctave;
+        }
+        else if(currentKeyboardOctave > instrument.maxOctave) {
+            currentKeyboardOctave = instrument.maxOctave;
+        }
+        midiHandler.currentOctave = currentKeyboardOctave;
     }
 
     @Override
@@ -67,6 +79,15 @@ public class GuiInstrument extends Screen {
     public void init() {
         guiBaseX = (this.width - guiWidth) / 2;
         guiBaseY = (this.height - guiHeight) / 2;
+        octaveButtonX = guiBaseX - 10;
+
+        this.octaveUp = this.addRenderableWidget(new Button(octaveButtonX, octaveButtonY, 10, 10,
+                new TranslatableComponent("note.upButton"), button -> increaseOctave(),
+                (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("ins.octaveTooltip"), x, y)));
+
+        this.octaveDown = this.addRenderableWidget(new Button(octaveButtonX, octaveButtonY + 25, 10, 10,
+                new TranslatableComponent("note.downButton"), button -> decreaseOctave(),
+                (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("ins.octaveTooltip"), x, y)));
     }
 
     @Override
@@ -104,7 +125,8 @@ public class GuiInstrument extends Screen {
             }
         }
 
-        int octaveHighlightX = guiBaseX + guiMarginWidth + currentKeyboardOctave * guiOctaveWidth - 1;
+        int currentKeyboardOctaveDraw = Math.max(0, currentKeyboardOctave);
+        int octaveHighlightX = guiBaseX + guiMarginWidth + currentKeyboardOctaveDraw * guiOctaveWidth - 1;
         int octaveHighlightY = guiBaseY + 3;
         if(currentKeyboardOctave > 3){
             octaveHighlightX -= 4 * guiOctaveWidth;
@@ -123,6 +145,9 @@ public class GuiInstrument extends Screen {
                 blit(matrixStack, x, y, this.getBlitOffset(), guiOctaveBlockX, guiOctaveBlockY, guiOctaveBlockWidth, guiOctaveBlockHeight, 512, 512);
             }
         }
+
+        drawCenteredString(matrixStack, this.font, "" + (currentKeyboardOctave), octaveButtonX + 4, octaveButtonY + 14, 0xFFFFFFFF);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     private int noteIdFromPos(int mouseX, int mouseY) {
@@ -177,6 +202,12 @@ public class GuiInstrument extends Screen {
         }
     }
 
+    private void stopAllSounds(){
+        for(int noteId=0; noteId<buttonPushStates.length; noteId++) {
+            stopSound(noteId);
+        }
+    }
+
     @Override
     public boolean mouseClicked(double dmouseX, double dmouseY, int mouseButton) {
 //        XercaMusic.LOGGER.info("Click pos: " + dmouseX);
@@ -223,37 +254,39 @@ public class GuiInstrument extends Screen {
         super.keyPressed(keyCode, scanCode, modifiers);
 
         if (scanCode >= 16 && scanCode <= 27) {
-            int noteId = scanCode - 16 + 12 * currentKeyboardOctave;
+            int noteId = scanCode - 16 + 12 * Math.max(0, currentKeyboardOctave);
             playSound(noteId);
         }
 
         if(keyCode == GLFW.GLFW_KEY_A){
-            for(int i=0; i<12; i++){
-                stopSound(12*currentKeyboardOctave + i);
-            }
-
-            currentKeyboardOctave --;
-            if(currentKeyboardOctave < instrument.minOctave){
-                currentKeyboardOctave = instrument.minOctave;
-            }
+            decreaseOctave();
         }
         else if(keyCode == GLFW.GLFW_KEY_S){
-            for(int i=0; i<12; i++){
-                stopSound(12*currentKeyboardOctave + i);
-            }
-
-            currentKeyboardOctave ++;
-            if(currentKeyboardOctave > instrument.maxOctave){
-                currentKeyboardOctave = instrument.maxOctave;
-            }
+            increaseOctave();
         }
         return true;
+    }
+
+    private void decreaseOctave() {
+        if(currentKeyboardOctave > -3) { // instrument.minOctave){
+            currentKeyboardOctave --;
+            midiHandler.currentOctave = currentKeyboardOctave;
+            stopAllSounds();
+        }
+    }
+
+    private void increaseOctave() {
+        if(currentKeyboardOctave < instrument.maxOctave){
+            currentKeyboardOctave ++;
+            midiHandler.currentOctave = currentKeyboardOctave;
+            stopAllSounds();
+        }
     }
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers){
         if (scanCode >= 16 && scanCode <= 27) {
-            int noteId = scanCode - 16 + 12 * currentKeyboardOctave;
+            int noteId = scanCode - 16 + 12 * Math.max(0, currentKeyboardOctave);
             stopSound(noteId);
         }
         return true;

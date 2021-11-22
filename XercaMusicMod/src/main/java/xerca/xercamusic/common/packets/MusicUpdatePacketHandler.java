@@ -6,7 +6,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.Triggers;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.function.Supplier;
@@ -33,7 +32,7 @@ public class MusicUpdatePacketHandler {
             CompoundTag comp = note.getOrCreateTag();
 
             MusicUpdatePacket.FieldFlag flag = msg.getAvailability();
-            XercaMusic.LOGGER.info(flag);
+//            XercaMusic.LOGGER.info(flag);
             if(flag.hasId) comp.putUUID("id", msg.getId());
             if(flag.hasVersion) comp.putInt("ver", msg.getVersion());
             if(flag.hasLength) comp.putInt("l", msg.getLengthBeats());
@@ -53,9 +52,6 @@ public class MusicUpdatePacketHandler {
             }
             if(flag.hasNotes){
                 MusicManager.setMusicData(comp.getUUID("id"), comp.getInt("ver"), msg.getNotes(), pl.server);
-//                if(!comp.contains("vol")) {
-//                    comp.putFloat("vol", 1.0f);
-//                }
                 if(!comp.contains("bps")) {
                     comp.putByte("bps", (byte)8);
                 }

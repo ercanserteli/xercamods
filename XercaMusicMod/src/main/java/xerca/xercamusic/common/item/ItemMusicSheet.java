@@ -189,6 +189,16 @@ public class ItemMusicSheet extends Item {
         return -1;
     }
 
+    public static float getVolume(@Nonnull ItemStack stack) {
+        if (stack.hasTag()) {
+            CompoundTag tag = stack.getTag();
+            if(tag != null && tag.contains("vol")){
+                return tag.getFloat("vol");
+            }
+        }
+        return 1.0f;
+    }
+
     /**
      * Gets the generation of the book (how many times it has been cloned)
      */
