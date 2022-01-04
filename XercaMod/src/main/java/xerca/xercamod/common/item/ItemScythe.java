@@ -243,14 +243,13 @@ public class ItemScythe extends DiggerItem {
             boolean cooledAttack = cooldownStrength > 0.9F;
 
             // Handle devour
-            if (entity instanceof LivingEntity) {
-                LivingEntity target = (LivingEntity) entity;
+            if (entity instanceof LivingEntity target) {
                 int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, stack);
                 if(devourLevel > 0){
                     if(cooledAttack){
                         if(!player.level.isClientSide){
                             if(player.getRandom().nextFloat() < 0.25f * devourLevel){
-                                EntityHealthOrb.award((ServerLevel) player.level, entity, 1);
+                                EntityHealthOrb.award((ServerLevel) player.level, target, player, 1);
                                 player.level.playSound(null, player, xerca.xercamod.common.SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 0.8f, 0.9f+player.getRandom().nextFloat()*0.2f);
                             }
                         }

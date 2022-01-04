@@ -127,12 +127,12 @@ class EventHandler {
     @SubscribeEvent
     public static void onDeath(LivingDeathEvent event) {
         DamageSource s = event.getSource();
-        if (s.getEntity() instanceof Player player) {
+        if (s.getEntity() instanceof Player attacker) {
             // Handle scythe devour
-            if(player.getMainHandItem().getItem() instanceof ItemScythe){
-                int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, player.getMainHandItem());
+            if(attacker.getMainHandItem().getItem() instanceof ItemScythe){
+                int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, attacker.getMainHandItem());
                 if(devourLevel > 0 && !s.isExplosion() && !s.isFall() && !s.isFire() && !s.isMagic() && !s.isProjectile()){
-                    EntityHealthOrb.award((ServerLevel) player.level, event.getEntity(), devourLevel*2);
+                    EntityHealthOrb.award((ServerLevel) attacker.level, event.getEntity(), attacker, devourLevel*2);
                 }
             }
         }
