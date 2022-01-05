@@ -98,6 +98,8 @@
   "note.helpText17b": "Double the tempo and stretch notes",
   "note.helpText18a": "SHIFT+Click Tempo Down: ",
   "note.helpText18b": "Halve the tempo and shrink notes",
+  "note.helpText19a": "ALT: ",
+  "note.helpText19b": "Start/stop recording",
 
   "ins.octaveTooltip": "Change keyboard octave",
 

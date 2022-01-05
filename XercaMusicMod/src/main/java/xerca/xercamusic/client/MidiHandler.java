@@ -13,12 +13,14 @@ public class MidiHandler
     ArrayList<MidiDevice> devices = new ArrayList<>();
     Consumer<MidiData> noteOnHandler;
     Consumer<Integer> noteOffHandler;
+    Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
     public volatile int currentOctave;
 
-    public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler)
+    public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler, Consumer<GuiMusicSheet.MidiControl> midiControlHandler)
     {
         this.noteOnHandler = noteOnHandler;
         this.noteOffHandler = noteOffHandler;
+        this.midiControlHandler = midiControlHandler;
 
         MidiDevice device;
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
@@ -47,6 +49,11 @@ public class MidiHandler
         }
     }
 
+    public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler)
+    {
+        this(noteOnHandler, noteOffHandler, null);
+    }
+
     public void closeDevices() {
         for(MidiDevice device : devices){
             if(device.isOpen()){
@@ -59,6 +66,12 @@ public class MidiHandler
         public String name;
         public static final int NOTE_ON = 0x90;
         public static final int NOTE_OFF = 0x80;
+        public static final int CONTROL = 176;
+        public static final int DATA_RECORD = 107;
+        public static final int DATA_PREVIEW = 106;
+        public static final int DATA_STOP = 105;
+        public static final int DATA_END = 104;
+        public static final int DATA_BEGINNING = 103;
         static final float ym = 0.7f;
         static final float b = (1.f/ym - 1) * (1.f/ym - 1);
 
@@ -73,6 +86,18 @@ public class MidiHandler
         @Override
         public void send(MidiMessage msg, long timeStamp) {
             if (msg instanceof ShortMessage sm) {
+                if(((ShortMessage) msg).getCommand() == CONTROL && midiControlHandler != null){
+                    int data = sm.getData1();
+                    switch (data){
+                        case DATA_BEGINNING -> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.BEGINNING));
+                        case DATA_END-> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.END));
+                        case DATA_STOP -> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.STOP));
+                        case DATA_PREVIEW -> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.PREVIEW));
+                        case DATA_RECORD -> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.RECORD));
+                    }
+                    return;
+                }
+
                 int key = sm.getData1() - 21 + 12*currentOctave;
                 int velocity = sm.getData2();
                 if(key < 0 || key > 95){
