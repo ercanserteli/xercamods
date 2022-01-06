@@ -47,5 +47,6 @@
   "note.hideNeighborsButton": "N",
   "note.toggleTooltip": "Attiva/Disattiva gli spartiti vicini",
   "note.lockTooltip": "Blocca l'anteprima dello strumento",
-  "note.previewTooltip": "Anteprima musica"
+  "note.previewTooltip": "Anteprima musica",
+  "note.recordTooltip": "Registra musica"
 }

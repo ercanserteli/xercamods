@@ -47,5 +47,6 @@
   "note.hideNeighborsButton": "N",
   "note.toggleTooltip": "Alternar hojas vecinas",
   "note.lockTooltip": "Definir instrumento de previsualización",
-  "note.previewTooltip": "Previsualizar música"
+  "note.previewTooltip": "Previsualizar música",
+  "note.recordTooltip": "Grabar música"
 }

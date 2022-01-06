@@ -548,7 +548,7 @@ public class GuiMusicSheet extends Screen {
         this.buttonHelp.active = (this.buttonHelp.visible = !this.isSigned && !this.gettingSigned) && (!this.recording && !this.preRecording);
         this.buttonHideNeighbors.visible = (this.neighborNotes.size() > 0) && !this.gettingSigned;
         this.buttonHideNeighbors.active = (!this.recording && !this.preRecording);
-        this.buttonRecord.visible = !this.gettingSigned;
+        this.buttonRecord.visible = !this.gettingSigned && !this.isSigned;
         this.buttonRecord.active = this.recording || this.preRecording || !this.previewing;
     }
 
@@ -894,6 +894,9 @@ public class GuiMusicSheet extends Screen {
         }
         else if(buttonPreview.isHovered()){
             renderTooltip(matrixStack, new TranslatableComponent("note.previewTooltip"), mouseX, mouseY);
+        }
+        else if(buttonRecord.isHovered()){
+            renderTooltip(matrixStack, new TranslatableComponent("note.recordTooltip"), mouseX, mouseY);
         }
         else if(bpmDown.isHovered() || bpmUp.isHovered()){
             renderTooltip(matrixStack, new TranslatableComponent("note.tempoTooltip"), mouseX, mouseY);

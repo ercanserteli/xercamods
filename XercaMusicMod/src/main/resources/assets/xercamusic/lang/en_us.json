@@ -51,6 +51,7 @@
   "note.toggleTooltip": "Toggle neighbor sheets",
   "note.lockTooltip": "Lock preview instrument",
   "note.previewTooltip": "Preview music",
+  "note.recordTooltip": "Record music",
   "note.length": "Length: %1$s beats",
   "note.tempo": "Tempo: %1$s BPM",
   "note.preview_instrument": "Instrument: %1$s",

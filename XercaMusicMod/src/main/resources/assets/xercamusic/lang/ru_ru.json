@@ -47,5 +47,6 @@
   "note.hideNeighborsButton": "N",
   "note.toggleTooltip": "Переключить отображение соседних листов",
   "note.lockTooltip": "Установить инструмент предварительного прослушивания",
-  "note.previewTooltip": "Прослушать мелодию"
+  "note.previewTooltip": "Прослушать мелодию",
+  "note.recordTooltip": "Записывать музыку"
 }
