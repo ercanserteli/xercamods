@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
@@ -51,8 +51,8 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag parent) {
-        super.save(parent); // The super call is required to save and load the tileEntity's location
+    public void saveAdditional(CompoundTag parent) {
+        super.saveAdditional(parent);
 
         if (!this.noteStack.isEmpty()) {
             CompoundTag noteTag = new CompoundTag();
@@ -63,8 +63,6 @@ public class TileEntityMusicBox extends BlockEntity {
             ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.instrument);
             parent.putString("instrument_id", resourcelocation == null ? "minecraft:air" : resourcelocation.toString());
         }
-
-        return parent;
     }
 
     @Override
@@ -82,7 +80,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        return this.saveWithFullMetadata();
     }
 
     @Override
@@ -280,12 +278,10 @@ public class TileEntityMusicBox extends BlockEntity {
         //send update only on first block update to not send more packets than needed as updateClient() already does most of the functionality
         if (firstBlockUpdate) {
             firstBlockUpdate = false;
-            CompoundTag nbt = new CompoundTag();
-            this.save(nbt);
             if(level != null && getBlockState().getValue(BlockMusicBox.POWERING)){
                 stopPowering();
             }
-            return new ClientboundBlockEntityDataPacket(this.getBlockPos(), 0, nbt);
+            return ClientboundBlockEntityDataPacket.create(this);
         }
         else return null;
     }
