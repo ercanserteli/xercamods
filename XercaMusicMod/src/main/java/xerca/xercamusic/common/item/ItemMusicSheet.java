@@ -19,10 +19,10 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
-import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
@@ -115,7 +115,7 @@ public class ItemMusicSheet extends Item {
         if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER){
             if(nbt.contains("music")){
                 // Old version
-                MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
+                MinecraftServer server = LogicalSidedProvider.CLIENTWORLD.get(LogicalSide.SERVER).orElseThrow().getServer();
                 convertFromOld(nbt, server);
             }
         }

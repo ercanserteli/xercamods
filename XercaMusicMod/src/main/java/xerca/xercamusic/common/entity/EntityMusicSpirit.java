@@ -10,9 +10,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.network.NetworkHooks;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.client.SoundController;
@@ -61,7 +61,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         super(type, world);
     }
 
-    public EntityMusicSpirit(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityMusicSpirit(PlayMessages.SpawnEntity spawnEntity, Level world) {
         this(world);
     }
 

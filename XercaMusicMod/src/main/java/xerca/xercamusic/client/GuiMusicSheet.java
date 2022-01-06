@@ -24,8 +24,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.gui.widget.Slider;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fmlclient.gui.widget.Slider;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.MusicManager;
@@ -886,31 +886,31 @@ public class GuiMusicSheet extends Screen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        if(buttonHideNeighbors.isHovered()){
+        if(buttonHideNeighbors.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.toggleTooltip"), mouseX, mouseY);
         }
-        else if(buttonLockPrevIns.isHovered()){
+        else if(buttonLockPrevIns.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.lockTooltip"), mouseX, mouseY);
         }
-        else if(buttonPreview.isHovered()){
+        else if(buttonPreview.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.previewTooltip"), mouseX, mouseY);
         }
-        else if(buttonRecord.isHovered()){
+        else if(buttonRecord.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.recordTooltip"), mouseX, mouseY);
         }
-        else if(bpmDown.isHovered() || bpmUp.isHovered()){
+        else if(bpmDown.isHoveredOrFocused() || bpmUp.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.tempoTooltip"), mouseX, mouseY);
         }
-        else if(hlDown.isHovered() || hlUp.isHovered()){
+        else if(hlDown.isHoveredOrFocused() || hlUp.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.measureTooltip"), mouseX, mouseY);
         }
-        else if(sliderSheetVolume.isHovered()){
+        else if(sliderSheetVolume.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.sheetVolumeTooltip"), mouseX, mouseY);
         }
-        else if(sliderNoteVolume.isHovered()){
+        else if(sliderNoteVolume.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.noteVolumeTooltip"), mouseX, mouseY);
         }
-        else if(buttonHelp.isHovered()){
+        else if(buttonHelp.isHoveredOrFocused()){
             renderTooltip(matrixStack, new TranslatableComponent("note.helpTooltip"), mouseX, mouseY);
         }
 
@@ -1859,7 +1859,7 @@ public class GuiMusicSheet extends Screen {
             RenderSystem.setShaderTexture(0, this.resourceLocation);
             GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
-            if (this.isHovered() && this.active) {
+            if (this.isHovered && this.active) {
                 yTexStartNew += this.yDiffText;
             }
             return yTexStartNew;
@@ -2007,10 +2007,10 @@ public class GuiMusicSheet extends Screen {
                     widget.render(poseStack, mouseX, mouseY, partialTicks);
                 }
 
-                if(buttonPrev.isHovered()) {
+                if(buttonPrev.isHoveredOrFocused()) {
                     renderTooltip(poseStack, new TranslatableComponent("note.previewNoteTooltip"), mouseX, mouseY);
                 }
-                else if(buttonExit.isHovered()) {
+                else if(buttonExit.isHoveredOrFocused()) {
                     renderTooltip(poseStack, new TranslatableComponent("note.closeNoteTooltip"), mouseX, mouseY);
                 }
             }

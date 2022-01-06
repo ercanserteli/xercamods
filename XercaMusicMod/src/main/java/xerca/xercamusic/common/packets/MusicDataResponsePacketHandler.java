@@ -1,6 +1,6 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.common.NoteEvent;
 
