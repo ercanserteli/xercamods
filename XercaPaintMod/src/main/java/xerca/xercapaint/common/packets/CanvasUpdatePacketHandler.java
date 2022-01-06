@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.item.ItemCanvas;

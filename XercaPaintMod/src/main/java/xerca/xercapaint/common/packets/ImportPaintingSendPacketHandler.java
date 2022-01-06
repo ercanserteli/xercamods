@@ -1,7 +1,7 @@
 package xerca.xercapaint.common.packets;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xerca.xercapaint.common.CommandImport;
 
 import java.util.function.Supplier;

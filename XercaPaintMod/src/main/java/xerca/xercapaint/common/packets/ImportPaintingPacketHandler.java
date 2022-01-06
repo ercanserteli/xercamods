@@ -8,7 +8,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xerca.xercapaint.common.XercaPaint;
 
 import java.io.File;

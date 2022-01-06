@@ -3,7 +3,7 @@ package xerca.xercapaint.common.packets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xerca.xercapaint.common.item.Items;
 
 import java.util.function.Supplier;
