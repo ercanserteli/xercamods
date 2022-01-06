@@ -27,7 +27,7 @@ public class CarvedCrimsonBakedModel implements BakedModel {
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
     {
         List<BakedQuad> quads = this.model.getQuads(state, side, rand, extraData);
-        if(MinecraftForgeClient.getRenderLayer() == RenderType.translucent()) {
+        if(MinecraftForgeClient.getRenderType() == RenderType.translucent()) {
             for(int i = 0; i < quads.size(); i++) {
                 BakedQuad quad = quads.get(i);
                 int[] vertexData = quad.getVertices();

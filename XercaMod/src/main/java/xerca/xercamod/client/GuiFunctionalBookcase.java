@@ -11,8 +11,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.ContainerFunctionalBookcase;
 import xerca.xercamod.common.XercaMod;
 
-import static net.minecraftforge.fmlclient.gui.GuiUtils.drawTexturedModalRect;
-
 @OnlyIn(Dist.CLIENT)
 public class GuiFunctionalBookcase extends AbstractContainerScreen<ContainerFunctionalBookcase> {
 

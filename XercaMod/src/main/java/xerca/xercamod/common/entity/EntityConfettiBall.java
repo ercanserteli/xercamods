@@ -14,8 +14,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.network.NetworkHooks;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
 
@@ -37,7 +37,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
         super(Entities.CONFETTI_BALL, worldIn);
     }
 
-    public EntityConfettiBall(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityConfettiBall(PlayMessages.SpawnEntity spawnEntity, Level world) {
         super(Entities.CONFETTI_BALL, world);
     }
 

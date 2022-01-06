@@ -45,7 +45,7 @@ public class ItemTeapot extends BlockItem {
     }
 
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return false;
     }
 

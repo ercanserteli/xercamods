@@ -151,12 +151,12 @@ public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> impl
     }
 
     @Override
-    public BlockState updateShape(BlockState p_53160_, Direction p_53161_, BlockState p_53162_, LevelAccessor p_53163_, BlockPos p_53164_, BlockPos p_53165_) {
-        if (p_53160_.getValue(WATERLOGGED)) {
-            p_53163_.getLiquidTicks().scheduleTick(p_53164_, Fluids.WATER, Fluids.WATER.getTickDelay(p_53163_));
+    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos1) {
+        if (blockState.getValue(WATERLOGGED)) {
+            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
         }
 
-        return super.updateShape(p_53160_, p_53161_, p_53162_, p_53163_, p_53164_, p_53165_);
+        return super.updateShape(blockState, direction, blockState1, levelAccessor, blockPos, blockPos1);
     }
 
     @Override

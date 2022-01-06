@@ -68,7 +68,7 @@ public class BlockRope extends PipeBlock {
     @Nonnull
     public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (!stateIn.canSurvive(worldIn, currentPos)) {
-            worldIn.getBlockTicks().scheduleTick(currentPos, this, 1);
+            worldIn.scheduleTick(currentPos, this, 1);
             return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
         } else {
             return stateIn.setValue(PROPERTY_BY_DIRECTION.get(facing), isConnectable(worldIn, currentPos, facing));

@@ -2,7 +2,7 @@ package xerca.xercamod.common.tile_entity;
 
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,8 +32,8 @@ public class TileEntities {
 
         @SubscribeEvent
         public static void registerContainers(final RegistryEvent.Register<MenuType<?>> event) {
-            event.getRegistry().register(IForgeContainerType.create(ContainerFunctionalBookcase::new).setRegistryName("container_functional_bookcase"));
-            event.getRegistry().register(IForgeContainerType.create(ContainerCarvingStation::new).setRegistryName("container_carving_station"));
+            event.getRegistry().register(IForgeMenuType.create(ContainerFunctionalBookcase::new).setRegistryName("container_functional_bookcase"));
+            event.getRegistry().register(IForgeMenuType.create(ContainerCarvingStation::new).setRegistryName("container_carving_station"));
         }
     }
 }
