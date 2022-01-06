@@ -2,7 +2,7 @@ package xerca.xercapaint.common.packets;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xerca.xercapaint.common.entity.EntityCanvas;
 
 import java.util.function.Supplier;

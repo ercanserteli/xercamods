@@ -20,9 +20,9 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.PlayMessages;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
@@ -51,7 +51,7 @@ public class EntityEasel extends Entity {
         super(entityCanvasEntityType, world);
     }
 
-    public EntityEasel(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityEasel(PlayMessages.SpawnEntity spawnEntity, Level world) {
         super(Entities.EASEL, world);
     }
 

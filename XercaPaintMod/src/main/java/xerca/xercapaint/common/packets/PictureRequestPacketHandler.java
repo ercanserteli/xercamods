@@ -1,8 +1,8 @@
 package xerca.xercapaint.common.packets;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityCanvas;
 
