@@ -16,9 +16,9 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.network.NetworkHooks;
 import xerca.xercamod.common.block.BlockCushion;
 import xerca.xercamod.common.item.ItemCushion;
 
@@ -49,7 +49,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
         this.cushionIndex = block.cushionIndex;
     }
 
-    public EntityCushion(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityCushion(PlayMessages.SpawnEntity spawnEntity, Level world) {
         this(world);
     }
 

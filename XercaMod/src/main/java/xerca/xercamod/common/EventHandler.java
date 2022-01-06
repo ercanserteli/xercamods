@@ -15,14 +15,14 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.BasicTrade;
+import net.minecraftforge.common.BasicItemListing;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import xerca.xercamod.common.entity.EntityHealthOrb;
 import xerca.xercamod.common.item.ItemScythe;
 import xerca.xercamod.common.item.Items;
@@ -38,14 +38,14 @@ class EventHandler {
     public static void villagerTradesEvent(VillagerTradesEvent ev) {
         if(Config.isFoodEnabled()){
             if(ev.getType().equals(VillagerProfession.FARMER)){
-                ev.getTrades().get(1).add(new BasicTrade(new ItemStack(Items.ITEM_RICE_SEEDS, 24), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
-                ev.getTrades().get(1).add(new BasicTrade(new ItemStack(Items.ITEM_TOMATO, 22), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
-                ev.getTrades().get(1).add(new BasicTrade(new ItemStack(Items.ITEM_TEA_LEAF, 18), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
+                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_RICE_SEEDS, 24), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
+                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_TOMATO, 22), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
+                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_TEA_LEAF, 18), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
             }
         }
         if(Config.isScytheEnabled()){
             if(ev.getType().equals(VillagerProfession.TOOLSMITH)){
-                ev.getTrades().get(1).add(new BasicTrade(1, new ItemStack(Items.STONE_SCYTHE), 12, 1, 0.2f));
+                ev.getTrades().get(1).add(new BasicItemListing(1, new ItemStack(Items.STONE_SCYTHE), 12, 1, 0.2f));
                 ev.getTrades().get(3).add(new EnchantedItemTrade(Items.IRON_SCYTHE, 2, 3, 10, 0.2F));
                 ev.getTrades().get(4).add(new EnchantedItemTrade(Items.DIAMOND_SCYTHE, 5, 3, 15, 0.2F));
             }

@@ -25,9 +25,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.network.NetworkHooks;
 import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
@@ -99,7 +99,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         this.xRotO = this.getXRot();
     }
 
-    public EntityHook(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityHook(PlayMessages.SpawnEntity spawnEntity, Level world) {
         this(world);
     }
 

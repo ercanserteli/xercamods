@@ -1,6 +1,5 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -11,12 +10,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.Triggers;
 import xerca.xercamod.common.XercaMod;
-import xerca.xercamod.common.entity.EntityHealthOrb;
 import xerca.xercamod.common.item.ItemScythe;
 import xerca.xercamod.common.item.Items;
 

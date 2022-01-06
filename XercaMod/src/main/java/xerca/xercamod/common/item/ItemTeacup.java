@@ -52,7 +52,7 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return false;
     }
 

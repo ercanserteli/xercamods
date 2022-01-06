@@ -15,8 +15,8 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.network.NetworkHooks;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
 
@@ -38,7 +38,7 @@ public class EntityTomato extends ThrowableItemProjectile {
         super(Entities.TOMATO, worldIn);
     }
 
-    public EntityTomato(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityTomato(PlayMessages.SpawnEntity spawnEntity, Level world) {
         this(world);
     }
 

@@ -4,7 +4,7 @@ import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import xerca.xercamod.common.item.ItemConfetti;
 import xerca.xercamod.common.packets.ConfettiParticlePacket;
 

@@ -17,9 +17,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.network.NetworkHooks;
 import xerca.xercamod.common.SoundEvents;
 
 import javax.annotation.Nullable;
@@ -49,7 +49,7 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
         super(entityType, level);
     }
 
-    public EntityHealthOrb(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityHealthOrb(PlayMessages.SpawnEntity spawnEntity, Level world) {
         this(world);
     }
 

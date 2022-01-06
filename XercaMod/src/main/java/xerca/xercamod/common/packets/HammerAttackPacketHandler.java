@@ -13,7 +13,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.ItemWarhammer;
 import xerca.xercamod.common.item.Items;

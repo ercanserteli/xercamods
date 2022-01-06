@@ -262,7 +262,7 @@ public class ClientStuff {
 
         @SubscribeEvent
         public static void handleTextureStitch(TextureStitchEvent.Pre event) {
-            if(event.getMap().location().equals(Sheets.CHEST_SHEET)){
+            if(event.getAtlas().location().equals(Sheets.CHEST_SHEET)){
                 event.addSprite(OmniChestTileEntityRenderer.texture);
             }
         }
@@ -296,7 +296,7 @@ public class ClientStuff {
         }
 
         @SubscribeEvent
-        public static void inputUpdateEvent(InputUpdateEvent updateEvent) {
+        public static void inputUpdateEvent(MovementInputUpdateEvent updateEvent) {
             ItemStack activeItem = updateEvent.getPlayer().getUseItem();
             if(activeItem.getItem() instanceof ItemWarhammer && updateEvent.getPlayer().isUsingItem()){
                 int legerityLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_QUICK, activeItem);
@@ -304,8 +304,8 @@ public class ClientStuff {
                     legerityLevel = 4;
                 }
                 float bonus = 3F + 0.5F*legerityLevel;
-                updateEvent.getMovementInput().leftImpulse *= bonus;
-                updateEvent.getMovementInput().forwardImpulse *= bonus;
+                updateEvent.getInput().leftImpulse *= bonus;
+                updateEvent.getInput().forwardImpulse *= bonus;
             }
         }
     }

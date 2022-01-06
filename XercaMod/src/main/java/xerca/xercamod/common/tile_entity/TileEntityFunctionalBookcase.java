@@ -67,11 +67,10 @@ public class TileEntityFunctionalBookcase extends BlockEntity implements MenuPro
 
     @Nonnull
     @Override
-    public CompoundTag save(CompoundTag parentNBTTagCompound) {
-        super.save(parentNBTTagCompound); // The super call is required to save and load the tileEntity's location
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         CompoundTag inventoryTagCompound = this.inventory.serializeNBT();
-        parentNBTTagCompound.put("inventory", inventoryTagCompound);
-        return parentNBTTagCompound;
+        tag.put("inventory", inventoryTagCompound);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class TileEntityFunctionalBookcase extends BlockEntity implements MenuPro
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(this.getBlockPos(), 0, this.getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -118,7 +117,7 @@ public class TileEntityFunctionalBookcase extends BlockEntity implements MenuPro
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        return this.saveWithFullMetadata();
     }
 
     @Override
