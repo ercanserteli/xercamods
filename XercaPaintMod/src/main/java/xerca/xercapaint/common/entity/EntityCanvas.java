@@ -25,9 +25,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
 import org.apache.commons.lang3.Validate;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.XercaPaint;
@@ -79,7 +79,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         super(entityCanvasEntityType, world);
     }
 
-    public EntityCanvas(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityCanvas(PlayMessages.SpawnEntity spawnEntity, Level world) {
         super(Entities.CANVAS, world);
     }
 

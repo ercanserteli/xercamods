@@ -774,12 +774,12 @@ public class GuiCanvasEdit extends BasePalette {
             RenderSystem.setShaderTexture(0, this.resourceLocation);
             GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
-            if (this.isHovered()) {
+            if (this.isHovered) {
                 yTexStartNew += this.yDiffText;
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
             blit(matrixStack, this.x, this.y, (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
-            if (this.isHovered()) {
+            if (this.isHovered) {
                 this.renderToolTip(matrixStack, p_230431_2_, p_230431_3_);
             }
             postRender();
