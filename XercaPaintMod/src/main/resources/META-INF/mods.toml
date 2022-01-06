@@ -25,7 +25,7 @@ displayURL="https://ercanserteli.com/joy-of-painting/" #optional
 displayName="Joy of Painting" #mandatory
 
 # A text field displayed in the mod UI
-credits="" #optional
+credits="Ported to 1.18 by Pickle_Face5" #optional (You can remove this if needed)
 
 # A text field displayed in the mod UI
 authors="xerca" #optional
