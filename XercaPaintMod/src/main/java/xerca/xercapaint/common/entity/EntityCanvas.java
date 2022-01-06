@@ -48,7 +48,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     private boolean canvasSigned;
     private int tickCounter1 = 0;
     private CanvasType canvasType;
-    private static final DataParameter<Integer> ROTATION = EntityDataManager.createKey(EntityCanvas.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> ROTATION = EntityDataManager.defineId(EntityCanvas.class, DataSerializers.INT);
     public static final Map<String, Picture> PICTURES = Maps.newHashMap();
     public static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
 
@@ -67,7 +67,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         this.canvasType = canvasType;
         this.setRotation(rotation);
 
-        this.updateFacingWithBoundingBox(facing);
+        this.setDirection(facing);
 
         Picture picture = PICTURES.get(canvasName);
         if(picture == null || picture.version < canvasVersion){
@@ -87,17 +87,17 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 //        return canvasNBT;
 //    }
 
-    protected void registerData() {
-        this.getDataManager().register(ROTATION, 0);
+    protected void defineSynchedData() {
+        this.getEntityData().define(ROTATION, 0);
     }
 
     @Override
-    public int getWidthPixels() {
+    public int getWidth() {
         return CanvasType.getWidth(canvasType);
     }
 
     @Override
-    public int getHeightPixels() {
+    public int getHeight() {
         return CanvasType.getHeight(canvasType);
     }
 
@@ -115,12 +115,12 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     @Override
-    public void onBroken(@Nullable Entity brokenEntity) {
-        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            this.playSound(SoundEvents.ENTITY_PAINTING_BREAK, 1.0F, 1.0F);
+    public void dropItem(@Nullable Entity brokenEntity) {
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             if (brokenEntity instanceof PlayerEntity) {
                 PlayerEntity playerentity = (PlayerEntity)brokenEntity;
-                if (playerentity.abilities.isCreativeMode) {
+                if (playerentity.abilities.instabuild) {
                     return;
                 }
             }
@@ -155,43 +155,43 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
             }
 
             canvasItem.setTag(nbt);
-            this.entityDropItem(canvasItem);
+            this.spawnAtLocation(canvasItem);
         }
     }
 
     public void tick() {
-        this.prevPosX = this.getPosX();
-        this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();
-        if (this.tickCounter1++ == 50 && !this.world.isRemote) {
+        this.xo = this.getX();
+        this.yo = this.getY();
+        this.zo = this.getZ();
+        if (this.tickCounter1++ == 50 && !this.level.isClientSide) {
             this.tickCounter1 = 0;
-            if (this.isAlive() && !this.onValidSurface()) {
+            if (this.isAlive() && !this.survives()) {
                 this.remove();
-                this.onBroken(null);
+                this.dropItem(null);
             }
         }
     }
 
     @Override
-    public void playPlaceSound() {
-        this.playSound(SoundEvents.ENTITY_PAINTING_PLACE, 1.0F, 1.0F);
+    public void playPlacementSound() {
+        this.playSound(SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
     }
 
     @Override
-    protected void updateFacingWithBoundingBox(Direction facingDirectionIn) {
+    protected void setDirection(Direction facingDirectionIn) {
         Validate.notNull(facingDirectionIn);
-        this.facingDirection = facingDirectionIn;
+        this.direction = facingDirectionIn;
         if (facingDirectionIn.getAxis().isHorizontal()) {
-            this.rotationPitch = 0.0F;
-            this.rotationYaw = (float)(this.facingDirection.getHorizontalIndex() * 90);
+            this.xRot = 0.0F;
+            this.yRot = (float)(this.direction.get2DDataValue() * 90);
         } else {
-            this.rotationPitch = (float)(-90 * facingDirectionIn.getAxisDirection().getOffset());
-            this.rotationYaw = 0.0F;
+            this.xRot = (float)(-90 * facingDirectionIn.getAxisDirection().getStep());
+            this.yRot = 0.0F;
         }
 
-        this.prevRotationPitch = this.rotationPitch;
-        this.prevRotationYaw = this.rotationYaw;
-        this.updateBoundingBox();
+        this.xRotO = this.xRot;
+        this.yRotO = this.yRot;
+        this.recalculateBoundingBox();
     }
 
     private double offs(int l) {
@@ -199,29 +199,29 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     @Override
-    protected void updateBoundingBox(){
+    protected void recalculateBoundingBox(){
         if(canvasType != null){
-            if (this.facingDirection != null) {
-                double d1 = (double)this.hangingPosition.getX() + 0.5D - (double)this.facingDirection.getXOffset() * 0.46875D;
-                double d2 = (double)this.hangingPosition.getY() + 0.5D - (double)this.facingDirection.getYOffset() * 0.46875D;
-                double d3 = (double)this.hangingPosition.getZ() + 0.5D - (double)this.facingDirection.getZOffset() * 0.46875D;
+            if (this.direction != null) {
+                double d1 = (double)this.pos.getX() + 0.5D - (double)this.direction.getStepX() * 0.46875D;
+                double d2 = (double)this.pos.getY() + 0.5D - (double)this.direction.getStepY() * 0.46875D;
+                double d3 = (double)this.pos.getZ() + 0.5D - (double)this.direction.getStepZ() * 0.46875D;
 
-                if(this.facingDirection.getAxis().isHorizontal()){
-                    double d4 = this.offs(this.getWidthPixels());
-                    double d5 = this.offs(this.getHeightPixels());
+                if(this.direction.getAxis().isHorizontal()){
+                    double d4 = this.offs(this.getWidth());
+                    double d5 = this.offs(this.getHeight());
                     d2 = d2 + d5;
-                    Direction direction = this.facingDirection.rotateYCCW();
-                    d1 = d1 + d4 * (double)direction.getXOffset();
-                    d3 = d3 + d4 * (double)direction.getZOffset();
+                    Direction direction = this.direction.getCounterClockWise();
+                    d1 = d1 + d4 * (double)direction.getStepX();
+                    d3 = d3 + d4 * (double)direction.getStepZ();
                 }else{
 
                 }
 
-                this.setRawPosition(d1, d2, d3);
-                double d6 = this.getWidthPixels()-2;
-                double d7 = this.getHeightPixels()-2;
-                double d8 = this.getWidthPixels()-2;
-                Direction.Axis direction$axis = this.facingDirection.getAxis();
+                this.setPosRaw(d1, d2, d3);
+                double d6 = this.getWidth()-2;
+                double d7 = this.getHeight()-2;
+                double d8 = this.getWidth()-2;
+                Direction.Axis direction$axis = this.direction.getAxis();
                 switch(direction$axis) {
                     case X:
                         d6 = 1.0D;
@@ -242,35 +242,35 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     @Override
-    public boolean onValidSurface() {
-        if(facingDirection.getAxis().isHorizontal()){
-            return super.onValidSurface();
+    public boolean survives() {
+        if(direction.getAxis().isHorizontal()){
+            return super.survives();
         }
-        if (!this.world.hasNoCollisions(this)) {
+        if (!this.level.noCollision(this)) {
             return false;
         } else {
-            BlockState blockstate = this.world.getBlockState(this.hangingPosition.offset(this.facingDirection.getOpposite()));
+            BlockState blockstate = this.level.getBlockState(this.pos.relative(this.direction.getOpposite()));
             return blockstate.getMaterial().isSolid() ||
-                    this.facingDirection.getAxis().isHorizontal() && RedstoneDiodeBlock.isDiode(blockstate) ? this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox(), IS_HANGING_ENTITY).isEmpty() : false;
+                    this.direction.getAxis().isHorizontal() && RedstoneDiodeBlock.isDiode(blockstate) ? this.level.getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty() : false;
         }
     }
 
     public int getRotation() {
-        return this.getDataManager().get(ROTATION);
+        return this.getEntityData().get(ROTATION);
     }
 
     private void setRotation(int rotation) {
-        this.getDataManager().set(ROTATION, rotation % 4);
+        this.getEntityData().set(ROTATION, rotation % 4);
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void readAdditional(CompoundNBT tagCompound) {
-        this.hangingPosition = new BlockPos(tagCompound.getInt("TileX"), tagCompound.getInt("TileY"), tagCompound.getInt("TileZ"));
+    public void readAdditionalSaveData(CompoundNBT tagCompound) {
+        this.pos = new BlockPos(tagCompound.getInt("TileX"), tagCompound.getInt("TileY"), tagCompound.getInt("TileZ"));
         CompoundNBT canvasNBT = tagCompound;
         if(tagCompound.contains("canvas")){
             canvasNBT = tagCompound.getCompound("canvas");
@@ -293,18 +293,18 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         this.canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
         if(tagCompound.contains("Facing") && !tagCompound.contains("RealFace")){
             int facing = tagCompound.getByte("Facing");
-            Direction horizontal = Direction.byHorizontalIndex(facing);
-            this.updateFacingWithBoundingBox(horizontal);
+            Direction horizontal = Direction.from2DDataValue(facing);
+            this.setDirection(horizontal);
         }
         else{
-            this.updateFacingWithBoundingBox(Direction.byIndex(tagCompound.getByte("RealFace")));
+            this.setDirection(Direction.from3DDataValue(tagCompound.getByte("RealFace")));
         }
         this.setRotation(tagCompound.getByte("Rotation"));
     }
 
     @Override
-    public void writeAdditional(CompoundNBT tagCompound) {
-        BlockPos blockpos = this.getHangingPosition();
+    public void addAdditionalSaveData(CompoundNBT tagCompound) {
+        BlockPos blockpos = this.getPos();
         tagCompound.putInt("TileX", blockpos.getX());
         tagCompound.putInt("TileY", blockpos.getY());
         tagCompound.putInt("TileZ", blockpos.getZ());
@@ -316,7 +316,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
             tagCompound.putInt("generation", canvasGeneration);
         }
         tagCompound.putByte("ctype", (byte)canvasType.ordinal());
-        tagCompound.putByte("RealFace", (byte)this.facingDirection.getIndex());
+        tagCompound.putByte("RealFace", (byte)this.direction.get3DDataValue());
         tagCompound.putByte("Rotation", (byte)this.getRotation());
 
         Picture picture = PICTURES.get(canvasName);
@@ -327,11 +327,11 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     @Override
     public void writeSpawnData(PacketBuffer buffer) {
-        buffer.writeString(canvasName);
+        buffer.writeUtf(canvasName);
         buffer.writeInt(canvasVersion);
-        buffer.writeInt(facingDirection.getIndex());
+        buffer.writeInt(direction.get3DDataValue());
         buffer.writeByte(canvasType.ordinal());
-        buffer.writeBlockPos(hangingPosition); // this has to be written, otherwise pos gets broken
+        buffer.writeBlockPos(pos); // this has to be written, otherwise pos gets broken
         buffer.writeByte((byte)this.getRotation());
 //        XercaPaint.LOGGER.debug("writeSpawnData Pos: " + this.hangingPosition.toString() + " posY: " + this.posY);
     }
@@ -346,25 +346,25 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     @Override
     public void readSpawnData(PacketBuffer buffer) {
-        canvasName = buffer.readString();
+        canvasName = buffer.readUtf();
         canvasVersion = buffer.readInt();
 
         Picture picture = PICTURES.get(canvasName);
         if(picture == null || picture.version < canvasVersion){
             requestPicture();
         }
-        facingDirection = Direction.byIndex(buffer.readInt());
+        direction = Direction.from3DDataValue(buffer.readInt());
         canvasType = CanvasType.fromByte(buffer.readByte());
-        hangingPosition = buffer.readBlockPos();
+        pos = buffer.readBlockPos();
         setRotation(buffer.readByte());
 
-        updateFacingWithBoundingBox(facingDirection);
+        setDirection(direction);
 //        XercaPaint.LOGGER.debug("readSpawnData Pos: " + this.hangingPosition.toString() + " posY: " + this.posY);
     }
 
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
+    public ActionResultType interact(PlayerEntity player, Hand hand) {
         if(canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE){
-            if (!this.world.isRemote) {
+            if (!this.level.isClientSide) {
                 setRotation(getRotation() + 1);
             }
             return ActionResultType.SUCCESS;

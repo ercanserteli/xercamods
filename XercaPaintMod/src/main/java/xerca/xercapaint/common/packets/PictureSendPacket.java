@@ -21,7 +21,7 @@ public class PictureSendPacket {
     }
 
     public static void encode(PictureSendPacket pkt, PacketBuffer buf) {
-        buf.writeString(pkt.name);
+        buf.writeUtf(pkt.name);
         buf.writeInt(pkt.version);
         buf.writeVarIntArray(pkt.pixels);
     }
@@ -29,7 +29,7 @@ public class PictureSendPacket {
     public static PictureSendPacket decode(PacketBuffer buf) {
         PictureSendPacket result = new PictureSendPacket();
         try {
-            result.name = buf.readString(64);
+            result.name = buf.readUtf(64);
             result.version = buf.readInt();
             result.pixels = buf.readVarIntArray(1024);
         } catch (IndexOutOfBoundsException ioe) {

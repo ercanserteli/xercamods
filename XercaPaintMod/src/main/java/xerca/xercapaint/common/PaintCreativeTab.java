@@ -16,7 +16,7 @@ public class PaintCreativeTab extends ItemGroup {
     @Override
     @Nonnull
     @OnlyIn(Dist.CLIENT)
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         return new ItemStack(Items.ITEM_PALETTE);
     }
 }

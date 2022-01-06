@@ -15,13 +15,13 @@ public class PictureRequestPacket {
     }
 
     public static void encode(PictureRequestPacket pkt, PacketBuffer buf) {
-        buf.writeString(pkt.name);
+        buf.writeUtf(pkt.name);
     }
 
     public static PictureRequestPacket decode(PacketBuffer buf) {
         PictureRequestPacket result = new PictureRequestPacket();
         try {
-            result.name = buf.readString(64);
+            result.name = buf.readUtf(64);
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading PictureRequestPacket: " + ioe);
             return null;

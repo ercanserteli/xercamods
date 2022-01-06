@@ -21,17 +21,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemPalette extends Item {
     ItemPalette(String name) {
-        super(new Properties().group(Items.paintTab).maxStackSize(1));
+        super(new Properties().tab(Items.paintTab).stacksTo(1));
         this.setRegistryName(name);
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
         XercaPaint.proxy.showCanvasGui(playerIn);
-        return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getItemInHand(hand));
     }
 
     /**
@@ -39,8 +41,8 @@ public class ItemPalette extends Item {
      */
     @Override
     @ParametersAreNonnullByDefault
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.allowdedIn(group)) {
             // Empty palette
             items.add(new ItemStack(this));
 
@@ -55,7 +57,7 @@ public class ItemPalette extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (stack.hasTag()) {
             CompoundNBT tag = stack.getTag();
             if(tag != null){
@@ -65,7 +67,7 @@ public class ItemPalette extends Item {
                     for(byte basicColor : basicColors){
                         basicCount += basicColor;
                     }
-                    tooltip.add(new TranslationTextComponent("palette.basic_count", String.valueOf(basicCount)).mergeStyle(TextFormatting.GRAY));
+                    tooltip.add(new TranslationTextComponent("palette.basic_count", String.valueOf(basicCount)).withStyle(TextFormatting.GRAY));
                 }
 
                 int[] ns = tag.getIntArray("n");
@@ -77,12 +79,12 @@ public class ItemPalette extends Item {
                             fullCount++;
                         }
                     }
-                    tooltip.add(new TranslationTextComponent("palette.custom_count", String.valueOf(fullCount)).mergeStyle(TextFormatting.GRAY));
+                    tooltip.add(new TranslationTextComponent("palette.custom_count", String.valueOf(fullCount)).withStyle(TextFormatting.GRAY));
                 }
             }
         }
         else{
-            tooltip.add(new TranslationTextComponent("palette.empty").mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("palette.empty").withStyle(TextFormatting.GRAY));
         }
     }
 }

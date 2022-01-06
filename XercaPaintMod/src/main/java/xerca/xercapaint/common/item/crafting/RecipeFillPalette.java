@@ -36,8 +36,8 @@ public class RecipeFillPalette extends SpecialRecipe {
 
     @Nullable
     private int findPalette(CraftingInventory inv){
-        for(int i = 0; i < inv.getSizeInventory(); ++i) {
-            ItemStack stack = inv.getStackInSlot(i);
+        for(int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack stack = inv.getItem(i);
             if(isPalette(stack)){
                 return i;
             }
@@ -48,11 +48,11 @@ public class RecipeFillPalette extends SpecialRecipe {
     @Nullable
     private ArrayList<ItemStack> findDyes(CraftingInventory inv, int paletteId){
         ArrayList<ItemStack> dyes = new ArrayList<>();
-        for(int i = 0; i < inv.getSizeInventory(); ++i) {
+        for(int i = 0; i < inv.getContainerSize(); ++i) {
             if(i == paletteId){
                 continue;
             }
-            ItemStack stack = inv.getStackInSlot(i);
+            ItemStack stack = inv.getItem(i);
             if(isDye(stack)){
                 dyes.add(stack);
             }
@@ -81,7 +81,7 @@ public class RecipeFillPalette extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingInventory inv) {
         int paletteId = findPalette(inv);
         if(paletteId < 0){
             return ItemStack.EMPTY;
@@ -92,7 +92,7 @@ public class RecipeFillPalette extends SpecialRecipe {
         }
 
         byte[] basicColors;
-        ItemStack inputPalette = inv.getStackInSlot(paletteId);
+        ItemStack inputPalette = inv.getItem(paletteId);
         CompoundNBT orgTag = inputPalette.getOrCreateTag().copy();
         if(orgTag.contains("basic")){
             basicColors = orgTag.getByteArray("basic");
@@ -121,7 +121,7 @@ public class RecipeFillPalette extends SpecialRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        return NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        return NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class RecipeFillPalette extends SpecialRecipe {
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 2 && height >= 2;
     }
 }

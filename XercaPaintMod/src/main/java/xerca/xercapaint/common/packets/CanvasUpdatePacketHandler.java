@@ -29,8 +29,8 @@ public class CanvasUpdatePacketHandler {
     }
 
     private static void processMessage(CanvasUpdatePacket msg, ServerPlayerEntity pl) {
-        ItemStack canvas = pl.getHeldItemMainhand();
-        ItemStack palette = pl.getHeldItemOffhand();
+        ItemStack canvas = pl.getMainHandItem();
+        ItemStack palette = pl.getOffhandItem();
         if(canvas.getItem() == Items.ITEM_PALETTE){
             ItemStack temp = canvas;
             canvas = palette;

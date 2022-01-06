@@ -21,7 +21,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     public RecipeTaglessShaped(ShapedRecipe shapedRecipe){
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getRecipeOutput());
+        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem());
     }
 
     /**
@@ -30,8 +30,8 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     @Override
     public boolean matches(CraftingInventory inv, World worldIn) {
         if(super.matches(inv, worldIn)){
-            for(int j = 0; j < inv.getSizeInventory(); ++j) {
-                ItemStack stackInSlot = inv.getStackInSlot(j);
+            for(int j = 0; j < inv.getContainerSize(); ++j) {
+                ItemStack stackInSlot = inv.getItem(j);
                 if (!stackInSlot.isEmpty() && stackInSlot.hasTag()) {
                     return false;
                 }
@@ -46,11 +46,11 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
-        ItemStack result = super.getCraftingResult(inv);
+    public ItemStack assemble(CraftingInventory inv) {
+        ItemStack result = super.assemble(inv);
         if(!result.isEmpty()){
-            for(int j = 0; j < inv.getSizeInventory(); ++j) {
-                ItemStack stackInSlot = inv.getStackInSlot(j);
+            for(int j = 0; j < inv.getContainerSize(); ++j) {
+                ItemStack stackInSlot = inv.getItem(j);
                 if (!stackInSlot.isEmpty() && stackInSlot.hasTag()) {
                     return ItemStack.EMPTY;
                 }
@@ -71,18 +71,18 @@ public class RecipeTaglessShaped extends ShapedRecipe {
 
         public TaglessSerializer(){}
 
-        public RecipeTaglessShaped read(ResourceLocation recipeId, JsonObject json) {
-            ShapedRecipe shapedRecipe = shapedSerializer.read(recipeId, json);
+        public RecipeTaglessShaped fromJson(ResourceLocation recipeId, JsonObject json) {
+            ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);
             return new RecipeTaglessShaped(shapedRecipe);
         }
 
-        public RecipeTaglessShaped read(ResourceLocation recipeId, PacketBuffer buffer) {
-            ShapedRecipe shapedRecipe = shapedSerializer.read(recipeId, buffer);
+        public RecipeTaglessShaped fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+            ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(recipeId, buffer);
             return new RecipeTaglessShaped(shapedRecipe);
         }
 
-        public void write(PacketBuffer buffer, RecipeTaglessShaped recipe) {
-            shapedSerializer.write(buffer, recipe);
+        public void toNetwork(PacketBuffer buffer, RecipeTaglessShaped recipe) {
+            shapedSerializer.toNetwork(buffer, recipe);
         }
 
     }

@@ -46,7 +46,7 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void onClose() {
+    public void removed() {
         if (dirty) {
             PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
             XercaPaint.NETWORK_HANDLER.sendToServer(pack);

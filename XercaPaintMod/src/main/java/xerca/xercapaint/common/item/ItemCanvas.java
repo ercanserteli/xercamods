@@ -30,12 +30,14 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import net.minecraft.item.Item.Properties;
+
 @NonnullDefault
 public class ItemCanvas extends HangingEntityItem {
     private CanvasType canvasType;
 
     ItemCanvas(String name, CanvasType canvasType) {
-        super(Entities.CANVAS, new Properties().group(Items.paintTab).maxStackSize(1).setISTER(() -> new Callable<ItemStackTileEntityRenderer>()
+        super(Entities.CANVAS, new Properties().tab(Items.paintTab).stacksTo(1).setISTER(() -> new Callable<ItemStackTileEntityRenderer>()
         {
             @Nullable
             CanvasItemRenderer r = null;
@@ -53,22 +55,22 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
         XercaPaint.proxy.showCanvasGui(playerIn);
-        return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getItemInHand(hand));
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        BlockPos blockpos = context.getPos();
-        Direction direction = context.getFace();
-        BlockPos pos = blockpos.offset(direction);
+    public ActionResultType useOn(ItemUseContext context) {
+        BlockPos blockpos = context.getClickedPos();
+        Direction direction = context.getClickedFace();
+        BlockPos pos = blockpos.relative(direction);
         PlayerEntity playerentity = context.getPlayer();
-        ItemStack itemstack = context.getItem();
-        if (playerentity != null && !this.canPlace(playerentity, direction, itemstack, pos)) {
+        ItemStack itemstack = context.getItemInHand();
+        if (playerentity != null && !this.mayPlace(playerentity, direction, itemstack, pos)) {
             XercaPaint.proxy.showCanvasGui(playerentity);
         } else {
-            World world = context.getWorld();
+            World world = context.getLevel();
 
             CompoundNBT tag = itemstack.getTag();
             if(tag == null || !tag.contains("pixels") || !tag.contains("name")){
@@ -78,8 +80,8 @@ public class ItemCanvas extends HangingEntityItem {
 
             int rotation = 0;
             if(direction.getAxis() == Direction.Axis.Y){
-                double xDiff = blockpos.getX() - playerentity.getPosX();
-                double zDiff = blockpos.getZ() - playerentity.getPosZ();
+                double xDiff = blockpos.getX() - playerentity.getX();
+                double zDiff = blockpos.getZ() - playerentity.getZ();
                 if(Math.abs(xDiff) > Math.abs(zDiff)){
                     if(xDiff > 0){
                         rotation = 1;
@@ -98,12 +100,12 @@ public class ItemCanvas extends HangingEntityItem {
                 }
             }
 
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
 
-                if (entityCanvas.onValidSurface()) {
-                    entityCanvas.playPlaceSound();
-                    world.addEntity(entityCanvas);
+                if (entityCanvas.survives()) {
+                    entityCanvas.playPlacementSound();
+                    world.addFreshEntity(entityCanvas);
                     itemstack.shrink(1);
                 }
             }
@@ -113,7 +115,7 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getName(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
             CompoundNBT tag = stack.getTag();
             if(tag != null){
@@ -123,12 +125,12 @@ public class ItemCanvas extends HangingEntityItem {
                 }
             }
         }
-        return super.getDisplayName(stack);
+        return super.getName(stack);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (stack.hasTag()) {
             CompoundNBT tag = stack.getTag();
             String s = tag.getString("author");
@@ -140,16 +142,16 @@ public class ItemCanvas extends HangingEntityItem {
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltip.add((new TranslationTextComponent("canvas.generation." + (generation - 1))).mergeStyle(TextFormatting.GRAY));
+                tooltip.add((new TranslationTextComponent("canvas.generation." + (generation - 1))).withStyle(TextFormatting.GRAY));
             }
         }else{
-            tooltip.add(new TranslationTextComponent("canvas.empty").mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("canvas.empty").withStyle(TextFormatting.GRAY));
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         if(stack.hasTag()){
             CompoundNBT tag = stack.getTag();
             if(tag != null) {
@@ -172,12 +174,12 @@ public class ItemCanvas extends HangingEntityItem {
         return canvasType;
     }
 
-    protected boolean canPlace(PlayerEntity playerIn, Direction directionIn, ItemStack itemStackIn, BlockPos posIn) {
+    protected boolean mayPlace(PlayerEntity playerIn, Direction directionIn, ItemStack itemStackIn, BlockPos posIn) {
         if(canvasType == CanvasType.SMALL){
-            return !World.isOutsideBuildHeight(posIn) && playerIn.canPlayerEdit(posIn, directionIn, itemStackIn);
+            return !World.isOutsideBuildHeight(posIn) && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         }
         else{
-            return !directionIn.getAxis().isVertical() && playerIn.canPlayerEdit(posIn, directionIn, itemStackIn);
+            return !directionIn.getAxis().isVertical() && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         }
     }
 }

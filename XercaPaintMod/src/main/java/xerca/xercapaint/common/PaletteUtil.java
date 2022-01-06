@@ -41,7 +41,7 @@ public class PaletteUtil {
         }
 
         public void setGLColor(){
-            GlStateManager.color4f(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
+            GlStateManager._color4f(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
         }
     }
     public static class CustomColor {

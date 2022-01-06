@@ -1,8 +1,6 @@
 package xerca.xercapaint.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
@@ -10,9 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -24,9 +20,6 @@ import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 public class ClientProxy extends Proxy {
 
     @Override
@@ -35,8 +28,8 @@ public class ClientProxy extends Proxy {
     }
 
     public void showCanvasGui(PlayerEntity player){
-        final ItemStack heldItem = player.getHeldItemMainhand();
-        final ItemStack offhandItem = player.getHeldItemOffhand();
+        final ItemStack heldItem = player.getMainHandItem();
+        final ItemStack offhandItem = player.getOffhandItem();
         final Minecraft minecraft = Minecraft.getInstance();
 
         if(heldItem.isEmpty() || (minecraft.player != null && !minecraft.player.getGameProfile().getId().equals(player.getGameProfile().getId()))){
@@ -46,22 +39,22 @@ public class ClientProxy extends Proxy {
         if(heldItem.getItem() instanceof ItemCanvas){
             CompoundNBT tag = heldItem.getTag();
             if(offhandItem.isEmpty() || (tag != null && tag.getInt("generation") > 0)){
-                minecraft.displayGuiScreen(new GuiCanvasView(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
+                minecraft.setScreen(new GuiCanvasView(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }else if(offhandItem.getItem() instanceof ItemPalette){
-                minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
+                minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
                         tag, offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType()));
             }
         }
         else if(heldItem.getItem() instanceof ItemPalette){
             if(offhandItem.isEmpty()){
-                minecraft.displayGuiScreen(new GuiPalette(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_palette")));
+                minecraft.setScreen(new GuiPalette(heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_palette")));
             }else if(offhandItem.getItem() instanceof ItemCanvas){
                 CompoundNBT tag = offhandItem.getTag();
                 if(tag != null && tag.getInt("generation") > 0){
-                    minecraft.displayGuiScreen(new GuiCanvasView(offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
+                    minecraft.setScreen(new GuiCanvasView(offhandItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
                 }
                 else{
-                    minecraft.displayGuiScreen(new GuiCanvasEdit(minecraft.player,
+                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
                             tag, heldItem.getTag(), new TranslationTextComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType()));
                 }
             }
@@ -77,10 +70,10 @@ public class ClientProxy extends Proxy {
                 else return 1.0F;
             };
 
-            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-            ItemModelsProperties.registerProperty(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.register(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.register(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.register(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+            ItemModelsProperties.register(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
         }
     }
 }

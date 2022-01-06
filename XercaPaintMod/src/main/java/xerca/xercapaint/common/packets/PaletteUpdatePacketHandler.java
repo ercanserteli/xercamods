@@ -27,7 +27,7 @@ public class PaletteUpdatePacketHandler {
     }
 
     private static void processMessage(PaletteUpdatePacket msg, ServerPlayerEntity pl) {
-        ItemStack palette = pl.getHeldItemMainhand();
+        ItemStack palette = pl.getMainHandItem();
 
         if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
             CompoundNBT paletteComp = palette.getOrCreateTag();

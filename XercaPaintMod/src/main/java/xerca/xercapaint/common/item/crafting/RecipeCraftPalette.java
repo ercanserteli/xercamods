@@ -36,7 +36,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
         int plankCount = 0;
         for(int j = 0; j < inv.getWidth(); ++j) {
             int id = row*inv.getWidth() + j;
-            ItemStack stack = inv.getStackInSlot(id);
+            ItemStack stack = inv.getItem(id);
             if(isPlank(stack)){
                 plankCount++;
             }
@@ -62,7 +62,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
             }
             for(int j = 0; j < inv.getWidth(); ++j) {
                 int id = i*inv.getWidth() + j;
-                ItemStack stack = inv.getStackInSlot(id);
+                ItemStack stack = inv.getItem(id);
                 if(isDye(stack)){
                     dyes.add(stack);
                 }
@@ -96,7 +96,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingInventory inv) {
         int plankRow = findPlankRow(inv);
         if(plankRow < 0){
             return ItemStack.EMPTY;
@@ -119,7 +119,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        NonNullList<ItemStack> list = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> list = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         return list;
     }
@@ -133,7 +133,7 @@ public class RecipeCraftPalette extends SpecialRecipe {
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 3 && height >= 3;
     }
 }

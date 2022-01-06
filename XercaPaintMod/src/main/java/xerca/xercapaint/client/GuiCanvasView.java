@@ -83,11 +83,11 @@ public class GuiCanvasView extends Screen {
         }
         
         if(generation > 0 && !canvasTitle.isEmpty()){
-            String title = canvasTitle + " " + I18n.format("canvas.byAuthor", authorName);
-            String gen = "(" + I18n.format("canvas.generation." + (generation - 1)) + ")";
+            String title = canvasTitle + " " + I18n.get("canvas.byAuthor", authorName);
+            String gen = "(" + I18n.get("canvas.generation." + (generation - 1)) + ")";
 
-            int titleWidth = this.font.getStringWidth(title);
-            int genWidth = this.font.getStringWidth(gen);
+            int titleWidth = this.font.width(title);
+            int genWidth = this.font.width(gen);
 
             float titleX = (canvasX + (canvasWidth - titleWidth) / 2.0f);
             float genX = (canvasX + (canvasWidth - genWidth) / 2.0f);
@@ -96,8 +96,8 @@ public class GuiCanvasView extends Screen {
 
             fill(matrixStack, (int)(minX - 10), canvasY - 30, (int)(maxX + 10), canvasY - 4, 0xFFEEEEEE);
 
-            this.font.drawString(matrixStack, title, titleX, canvasY - 25, 0xFF111111);
-            this.font.drawString(matrixStack, gen, genX, canvasY - 14, 0xFF444444);
+            this.font.draw(matrixStack, title, titleX, canvasY - 25, 0xFF111111);
+            this.font.draw(matrixStack, gen, genX, canvasY - 14, 0xFF444444);
         }
     }
 }

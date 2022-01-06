@@ -32,7 +32,7 @@ public final class Items {
     public static PaintCreativeTab paintTab;
 
     static Item makeItem(String name, ItemGroup tab){
-        Item item = new Item(new Item.Properties().group(tab));
+        Item item = new Item(new Item.Properties().tab(tab));
         item.setRegistryName(name);
         return item;
     }

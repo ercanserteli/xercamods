@@ -16,7 +16,7 @@ public class CanvasItemRenderer extends ItemStackTileEntityRenderer
 {
     @Override
 //    public void render(ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
-    public void func_239207_a_(ItemStack stack, ItemCameraTransforms.TransformType p_239207_2_, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+    public void renderByItem(ItemStack stack, ItemCameraTransforms.TransformType p_239207_2_, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
         if (stack.getItem() instanceof ItemCanvas) {
             CompoundNBT nbt = stack.getTag();
             if(nbt != null){

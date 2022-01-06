@@ -19,8 +19,8 @@ public class Entities {
         @SubscribeEvent
         public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
             final EntityType<EntityCanvas> canvasEntityType = build("canvas",
-                    EntityType.Builder.<EntityCanvas>create((EntityCanvas::new), EntityClassification.MISC).
-                            setCustomClientFactory(EntityCanvas::new).size(0.5f, 0.5f).setUpdateInterval(2147483647).setTrackingRange(10).setShouldReceiveVelocityUpdates(false)
+                    EntityType.Builder.<EntityCanvas>of((EntityCanvas::new), EntityClassification.MISC).
+                            setCustomClientFactory(EntityCanvas::new).sized(0.5f, 0.5f).setUpdateInterval(2147483647).setTrackingRange(10).setShouldReceiveVelocityUpdates(false)
             );
             event.getRegistry().register(canvasEntityType);
         }

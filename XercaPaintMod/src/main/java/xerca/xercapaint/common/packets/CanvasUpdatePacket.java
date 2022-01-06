@@ -37,8 +37,8 @@ public class CanvasUpdatePacket {
         }
         buf.writeByte(pkt.canvasType.ordinal());
         buf.writeInt(pkt.version);
-        buf.writeString(pkt.name);
-        buf.writeString(pkt.title);
+        buf.writeUtf(pkt.name);
+        buf.writeUtf(pkt.title);
         buf.writeBoolean(pkt.signed);
         buf.writeVarIntArray(pkt.pixels);
     }
@@ -52,8 +52,8 @@ public class CanvasUpdatePacket {
             }
             result.canvasType = CanvasType.fromByte(buf.readByte());
             result.version = buf.readInt();
-            result.name = buf.readString(64);
-            result.title = buf.readString(32);
+            result.name = buf.readUtf(64);
+            result.title = buf.readUtf(32);
             result.signed = buf.readBoolean();
             int area = CanvasType.getHeight(result.canvasType)*CanvasType.getWidth(result.canvasType);
             result.pixels = buf.readVarIntArray(area);

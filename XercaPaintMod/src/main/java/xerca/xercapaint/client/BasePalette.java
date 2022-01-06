@@ -142,7 +142,7 @@ public abstract class BasePalette extends Screen {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        Minecraft.getInstance().getTextureManager().bindTexture(paletteTextures);
+        Minecraft.getInstance().getTextureManager().bind(paletteTextures);
 
         // Draw basic colors
         for(int i=0; i<basicColorFlags.length; i++){
@@ -152,7 +152,7 @@ public abstract class BasePalette extends Screen {
             if(basicColorFlags[i]){
                 fill(matrixStack, x-r, y-r, x+r+1, y+r+1, basicColors[i].rgbVal());
 
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 blit(matrixStack, x - 8, y - 8, dyeSpriteX, i*dyeSpriteSize, dyeSpriteSize, dyeSpriteSize);
             }
             else{
@@ -167,7 +167,7 @@ public abstract class BasePalette extends Screen {
             fill(matrixStack, x-6, y-7, x+7, y+6, customColors[i].getColor().rgbVal());
         }
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         blit(matrixStack, paletteX, paletteY, 0, 0, paletteWidth, paletteHeight);
 
         // Draw color picker
@@ -306,7 +306,7 @@ public abstract class BasePalette extends Screen {
     }
 
     protected void playSound(ISound sound){
-        Minecraft.getInstance().getSoundHandler().play(sound);
+        Minecraft.getInstance().getSoundManager().play(sound);
     }
 
     protected void playSound(SoundEvent soundEvent){
@@ -315,9 +315,9 @@ public abstract class BasePalette extends Screen {
 
     protected void playSound(SoundEvent soundEvent, float volume){
         Minecraft m = Minecraft.getInstance();
-        if(m.world != null){
-            m.getSoundHandler().play(new SimpleSound(soundEvent, SoundCategory.MASTER, volume,
-                    0.8f + m.world.rand.nextFloat()*0.4f, Minecraft.getInstance().player.getPosition()));
+        if(m.level != null){
+            m.getSoundManager().play(new SimpleSound(soundEvent, SoundCategory.MASTER, volume,
+                    0.8f + m.level.random.nextFloat()*0.4f, Minecraft.getInstance().player.blockPosition()));
         }
     }
 

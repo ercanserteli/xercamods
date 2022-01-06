@@ -107,7 +107,7 @@ public class GuiCanvasEdit extends BasePalette {
             Arrays.fill(this.pixels, basicColors[15].rgbVal());
 
             long secs = System.currentTimeMillis()/1000;
-            this.name = "" + player.getUniqueID().toString() + "_" + secs;
+            this.name = "" + player.getUUID().toString() + "_" + secs;
         }
 
         if(paletteComplete){
@@ -209,7 +209,7 @@ public class GuiCanvasEdit extends BasePalette {
         brushMeterX = canvasX + canvasWidth + 2;
 
         // Hide mouse cursor
-        GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         int x = canvasX;
         int y = canvasY + canvasHeight + 10;
@@ -218,7 +218,7 @@ public class GuiCanvasEdit extends BasePalette {
                 gettingSigned = true;
                 updateButtons();
 
-                GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }));
         this.buttonFinalize = this.addButton(new Button( canvasX - 100, 100, 98, 20, new TranslationTextComponent("canvas.finalizeButton"), button -> {
@@ -226,7 +226,7 @@ public class GuiCanvasEdit extends BasePalette {
                 dirty = true;
                 isSigned = true;
                 if(minecraft != null){
-                    minecraft.displayGuiScreen(null);
+                    minecraft.setScreen(null);
                 }
             }
 
@@ -236,7 +236,7 @@ public class GuiCanvasEdit extends BasePalette {
                 gettingSigned = false;
                 updateButtons();
 
-                GLFW.glfwSetInputMode(this.getMinecraft().getMainWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
         }));
 
@@ -282,7 +282,7 @@ public class GuiCanvasEdit extends BasePalette {
                 int y = brushMeterY + i*brushSpriteSize;
                 fill(matrixStack, brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
             }
-            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
             blit(matrixStack, brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
             blit(matrixStack, brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
 
@@ -311,7 +311,7 @@ public class GuiCanvasEdit extends BasePalette {
             drawOutline(matrixStack, mouseX, mouseY, brushSize);
             fill(matrixStack, mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
-            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = brushSpriteY - brushSpriteSize*brushSize;
             blit(matrixStack, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize);
         }
@@ -353,7 +353,7 @@ public class GuiCanvasEdit extends BasePalette {
                 textureVec = outlinePoss2[brushSize];
             }
 
-            GlStateManager.color4f(0.3F, 0.3F, 0.3F, 1.0F);
+            GlStateManager._color4f(0.3F, 0.3F, 0.3F, 1.0F);
             blit(matrixStack, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
         }
     }
@@ -372,15 +372,15 @@ public class GuiCanvasEdit extends BasePalette {
                 s = s + "" + TextFormatting.GRAY + "_";
             }
         }
-        String s1 = I18n.format("canvas.editTitle");
-        int k = this.font.getStringWidth(s1);
-        this.font.drawString(matrixStack, s1, i + 26 + (116 - k) / 2.0f, j + 16 + 16, 0);
-        int l = this.font.getStringWidth(s);
-        this.font.drawString(matrixStack, s, i + 26 + (116 - l) / 2.0f, j + 48, 0);
-        String s2 = I18n.format("canvas.byAuthor", this.editingPlayer.getName().getString());
-        int i1 = this.font.getStringWidth(s2);
-        this.font.drawString(matrixStack, TextFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2, j + 48 + 10, 0);
-        this.font.func_238418_a_(new TranslationTextComponent("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
+        String s1 = I18n.get("canvas.editTitle");
+        int k = this.font.width(s1);
+        this.font.draw(matrixStack, s1, i + 26 + (116 - k) / 2.0f, j + 16 + 16, 0);
+        int l = this.font.width(s);
+        this.font.draw(matrixStack, s, i + 26 + (116 - l) / 2.0f, j + 48, 0);
+        String s2 = I18n.get("canvas.byAuthor", this.editingPlayer.getName().getString());
+        int i1 = this.font.width(s2);
+        this.font.draw(matrixStack, TextFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2, j + 48 + 10, 0);
+        this.font.drawWordWrap(new TranslationTextComponent("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
     }
 
     private void playBrushSound(){
@@ -402,7 +402,7 @@ public class GuiCanvasEdit extends BasePalette {
                     if (!this.canvasTitle.isEmpty()) {
                         dirty = true;
                         this.isSigned = true;
-                        this.minecraft.displayGuiScreen(null);
+                        this.minecraft.setScreen(null);
                     }
                     break;
                 default:
@@ -428,7 +428,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         if (!this.isSigned) {
             if (this.gettingSigned) {
-                if (this.canvasTitle.length() < 16 && SharedConstants.isAllowedCharacter(typedChar)) {
+                if (this.canvasTitle.length() < 16 && SharedConstants.isAllowedChatCharacter(typedChar)) {
                     this.canvasTitle = this.canvasTitle + typedChar;
                     this.updateButtons();
                 }
@@ -550,7 +550,7 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public void onClose() {
+    public void removed() {
         if (dirty) {
             version ++;
             CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, customColors, canvasType);

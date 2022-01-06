@@ -9,6 +9,8 @@ import xerca.xercapaint.common.SoundEvents;
 
 import java.util.Random;
 
+import net.minecraft.client.audio.ISound.AttenuationType;
+
 @OnlyIn(Dist.CLIENT)
 public class BrushSound extends TickableSound {
     private int age = 0;
@@ -21,10 +23,10 @@ public class BrushSound extends TickableSound {
         super(SoundEvents.STROKE_LOOP, SoundCategory.MASTER);
         volume = 1.0f;
         pitch = 1.0F;
-        repeat = true;
-        attenuationType = AttenuationType.NONE;
-        if(Minecraft.getInstance().world != null) {
-            random = Minecraft.getInstance().world.getRandom();
+        looping = true;
+        attenuation = AttenuationType.NONE;
+        if(Minecraft.getInstance().level != null) {
+            random = Minecraft.getInstance().level.getRandom();
         }
     }
 
@@ -41,7 +43,7 @@ public class BrushSound extends TickableSound {
     public void tick() {
         age++;
         if(fadingTicks <= 0 && age > 300){
-            this.finishPlaying();
+            this.stop();
         }
         if(fadingTicks >= 0){
             if(fadingTicks < fadeVolumes.length){
