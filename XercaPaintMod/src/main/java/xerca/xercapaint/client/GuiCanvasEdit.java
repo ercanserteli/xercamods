@@ -2,13 +2,17 @@ package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,44 +22,59 @@ import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
+import xerca.xercapaint.common.entity.EntityEasel;
+import xerca.xercapaint.common.packets.CanvasMiniUpdatePacket;
 import xerca.xercapaint.common.packets.CanvasUpdatePacket;
+import xerca.xercapaint.common.packets.EaselLeftPacket;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
+import java.util.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCanvasEdit extends BasePalette {
-    private int canvasX;
-    private int canvasY = 40;
-    private int canvasWidth;
-    private int canvasHeight;
-    private int brushMeterX = 420;
-    private int brushMeterY = 120;
-    private int canvasPixelScale;
-    private int canvasPixelWidth;
-    private int canvasPixelHeight;
+    private double canvasX;
+    private double canvasY;
+    private static final double[] canvasXs = {-1000, -1000, -1000, -1000};
+    private static final double[] canvasYs = {-1000, -1000, -1000, -1000};
+    private final int canvasWidth;
+    private final int canvasHeight;
+    private int brushMeterX;
+    private int brushMeterY;
+    private int brushOpacityMeterX;
+    private int brushOpacityMeterY;
+    private final int canvasPixelScale;
+    private final int canvasPixelWidth;
+    private final int canvasPixelHeight;
     private int brushSize = 0;
     private boolean touchedCanvas = false;
     private boolean undoStarted = false;
     private boolean gettingSigned;
+    private boolean isCarryingCanvas;
     private Button buttonSign;
     private Button buttonCancel;
     private Button buttonFinalize;
+    private Button buttonHelpToggle;
     private int updateCount;
     private BrushSound brushSound = null;
+    private final int canvasHolderHeight = 10;
+    private static int brushOpacitySetting = 0;
+    private static final float[] brushOpacities = {1.f, 0.75f, 0.5f, 0.25f};
+    private static boolean showHelp = false;
+    private final Set<Integer> draggedPoints = new HashSet<>();
 
     private final PlayerEntity editingPlayer;
 
-    private CanvasType canvasType;
+    private final CanvasType canvasType;
     private boolean isSigned = false;
     private int[] pixels;
     private String authorName = "";
     private String canvasTitle = "";
     private String name = "";
     private int version = 0;
+    private final EntityEasel easel;
+    private int timeSinceLastUpdate = 0;
+    private boolean skippedUpdate = false;
 
     private static final Vector2f[] outlinePoss1 = {
             new Vector2f(0.f, 199.0f),
@@ -74,7 +93,7 @@ public class GuiCanvasEdit extends BasePalette {
     private static final int maxUndoLength = 16;
     private Deque<int[]> undoStack = new ArrayDeque<>(maxUndoLength);
 
-    protected GuiCanvasEdit(PlayerEntity player, CompoundNBT canvasTag, CompoundNBT paletteTag, ITextComponent title, CanvasType canvasType) {
+    protected GuiCanvasEdit(PlayerEntity player, CompoundNBT canvasTag, CompoundNBT paletteTag, ITextComponent title, CanvasType canvasType, EntityEasel easel) {
         super(title, paletteTag);
         updateCount = 0;
 
@@ -85,9 +104,7 @@ public class GuiCanvasEdit extends BasePalette {
         int canvasPixelArea = canvasPixelHeight*canvasPixelWidth;
         this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
         this.canvasHeight = this.canvasPixelHeight * this.canvasPixelScale;
-        if(canvasType.equals(CanvasType.LONG)){
-            this.canvasY += 40;
-        }
+        this.easel = easel;
 
         this.editingPlayer = player;
         if (canvasTag != null && !canvasTag.isEmpty()) {
@@ -107,7 +124,7 @@ public class GuiCanvasEdit extends BasePalette {
             Arrays.fill(this.pixels, basicColors[15].rgbVal());
 
             long secs = System.currentTimeMillis()/1000;
-            this.name = "" + player.getUUID().toString() + "_" + secs;
+            this.name = "" + player.getUUID() + "_" + secs;
         }
 
         if(paletteComplete){
@@ -115,113 +132,34 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    private int getPixelAt(int x, int y){
-        return this.pixels[y*canvasPixelWidth + x];
-    }
-
-    private void setPixelAt(int x, int y, PaletteUtil.Color color){
-        if(x >= 0 && y >= 0 && x < canvasPixelWidth && y < canvasPixelHeight){
-            this.pixels[y*canvasPixelWidth + x] = color.rgbVal();
-        }
-    }
-
-    private void setPixelsAt(int mouseX, int mouseY, PaletteUtil.Color color, int brushSize){
-        int x, y;
-        final int pixelHalf = canvasPixelScale/2;
-        switch (brushSize){
-            case 0:
-                x = (mouseX - canvasX)/ canvasPixelScale;
-                y = (mouseY - canvasY)/ canvasPixelScale;
-
-                setPixelAt(x, y, color);
-                break;
-            case 1:
-                x = (mouseX - canvasX + pixelHalf)/ canvasPixelScale;
-                y = (mouseY - canvasY + pixelHalf)/ canvasPixelScale;
-
-                setPixelAt(x, y, color);
-                setPixelAt(x-1, y, color);
-                setPixelAt(x, y-1, color);
-                setPixelAt(x-1, y-1, color);
-                break;
-            case 2:
-                x = (mouseX - canvasX + pixelHalf)/ canvasPixelScale;
-                y = (mouseY - canvasY + pixelHalf)/ canvasPixelScale;
-
-                setPixelAt(x-1, y+1, color);
-                setPixelAt(x, y+1, color);
-
-                setPixelAt(x-2, y, color);
-                setPixelAt(x-1, y, color);
-                setPixelAt(x, y, color);
-                setPixelAt(x+1, y, color);
-
-                setPixelAt(x-2, y-1, color);
-                setPixelAt(x-1, y-1, color);
-                setPixelAt(x, y-1, color);
-                setPixelAt(x+1, y-1, color);
-
-                setPixelAt(x-1, y-2, color);
-                setPixelAt(x, y-2, color);
-                break;
-            case 3:
-                x = (mouseX - canvasX)/ canvasPixelScale;
-                y = (mouseY - canvasY)/ canvasPixelScale;
-
-                setPixelAt(x-1, y+2, color);
-                setPixelAt(x+0, y+2, color);
-                setPixelAt(x+1, y+2, color);
-
-                setPixelAt(x-2, y+1, color);
-                setPixelAt(x-1, y+1, color);
-                setPixelAt(x+0, y+1, color);
-                setPixelAt(x+1, y+1, color);
-                setPixelAt(x+2, y+1, color);
-
-                setPixelAt(x-2, y, color);
-                setPixelAt(x-1, y, color);
-                setPixelAt(x+0, y, color);
-                setPixelAt(x+1, y, color);
-                setPixelAt(x+2, y, color);
-
-                setPixelAt(x-2, y-1, color);
-                setPixelAt(x-1, y-1, color);
-                setPixelAt(x+0, y-1, color);
-                setPixelAt(x+1, y-1, color);
-                setPixelAt(x+2, y-1, color);
-
-                setPixelAt(x-1, y-2, color);
-                setPixelAt(x+0, y-2, color);
-                setPixelAt(x+1, y-2, color);
-                break;
-        }
-    }
-
     @Override
     public void init() {
-        final int padding = 40;
-        final int paletteCanvasX = (this.width - (paletteWidth + canvasWidth + padding)) / 2;
-        canvasX = paletteCanvasX + paletteWidth + padding;
+        canvasX = canvasXs[canvasType.ordinal()];
+        canvasY = canvasYs[canvasType.ordinal()];
+        paletteX = paletteXs[canvasType.ordinal()];
+        paletteY = paletteYs[canvasType.ordinal()];
+        if(canvasX == -1000 || canvasY == -1000 || paletteX == -1000 || paletteY == -1000){
+            resetPositions();
+        }
 
-        paletteX = paletteCanvasX;
-        paletteY = 40;
-
-        brushMeterX = canvasX + canvasWidth + 2;
+        updateCanvasPos(0, 0);
+        updatePalettePos(0, 0);
 
         // Hide mouse cursor
         GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-        int x = canvasX;
-        int y = canvasY + canvasHeight + 10;
-        this.buttonSign = this.addButton(new Button( x, y, 98, 20, new TranslationTextComponent("canvas.signButton"), button -> {
+        int x = getMinecraft().getWindow().getGuiScaledWidth() - 120;
+        int y = getMinecraft().getWindow().getGuiScaledHeight() - 30;
+        this.buttonSign = this.addButton(new Button(x, y, 98, 20, new TranslationTextComponent("canvas.signButton"), button -> {
             if (!isSigned) {
                 gettingSigned = true;
+                resetPositions();
                 updateButtons();
 
                 GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }));
-        this.buttonFinalize = this.addButton(new Button( canvasX - 100, 100, 98, 20, new TranslationTextComponent("canvas.finalizeButton"), button -> {
+        this.buttonFinalize = this.addButton(new Button( (int)canvasX - 100, 100, 98, 20, new TranslationTextComponent("canvas.finalizeButton"), button -> {
             if (!isSigned) {
                 dirty = true;
                 isSigned = true;
@@ -231,7 +169,7 @@ public class GuiCanvasEdit extends BasePalette {
             }
 
         }));
-        this.buttonCancel = this.addButton(new Button( canvasX - 100, 130, 98, 20, new TranslationTextComponent("gui.cancel"), button -> {
+        this.buttonCancel = this.addButton(new Button( (int)canvasX - 100, 130, 98, 20, new TranslationTextComponent("gui.cancel"), button -> {
             if (!isSigned) {
                 gettingSigned = false;
                 updateButtons();
@@ -239,6 +177,13 @@ public class GuiCanvasEdit extends BasePalette {
                 GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
         }));
+
+        x = (int)(getMinecraft().getWindow().getGuiScaledWidth()*0.95) - 21;
+        y = (int)(getMinecraft().getWindow().getGuiScaledHeight()*0.05);
+        this.buttonHelpToggle = this.addButton(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
+                paletteTextures, 256, 256, button -> {
+            showHelp = !showHelp;
+        }, (button, poseStack, i, j) -> renderTooltip(poseStack, new StringTextComponent("Toggle help tooltips"), i, j)));
 
         updateButtons();
     }
@@ -249,12 +194,116 @@ public class GuiCanvasEdit extends BasePalette {
             this.buttonCancel.visible = this.gettingSigned;
             this.buttonFinalize.visible = this.gettingSigned;
             this.buttonFinalize.active = !this.canvasTitle.trim().isEmpty();
+
+            this.buttonFinalize.x = (int)canvasX - 100;
+            this.buttonCancel.x = (int)canvasX - 100;
         }
+    }
+
+    private int getPixelAt(int x, int y){
+        return this.pixels[y*canvasPixelWidth + x];
+    }
+
+    private void setPixelAt(int x, int y, PaletteUtil.Color color, float opacity){
+        if(x >= 0 && y >= 0 && x < canvasPixelWidth && y < canvasPixelHeight){
+            if(!draggedPoints.contains(y*canvasPixelWidth + x)){
+                draggedPoints.add(y*canvasPixelWidth + x);
+                this.pixels[y*canvasPixelWidth + x] = PaletteUtil.Color.mix(color, new PaletteUtil.Color(this.pixels[y*canvasPixelWidth + x]), opacity).rgbVal();
+            }
+        }
+    }
+
+    private void setPixelsAt(int mouseX, int mouseY, PaletteUtil.Color color, int brushSize, float opacity){
+        int x, y;
+        final int pixelHalf = canvasPixelScale/2;
+        switch (brushSize){
+            case 0:
+                x = (mouseX - (int) canvasX)/ canvasPixelScale;
+                y = (mouseY - (int) canvasY)/ canvasPixelScale;
+                setPixelAt(x, y, color, opacity);
+                break;
+            case 1:
+                x = (mouseX - (int) canvasX + pixelHalf)/ canvasPixelScale;
+                y = (mouseY - (int) canvasY + pixelHalf)/ canvasPixelScale;
+                setPixelAt(x, y, color, opacity);
+                setPixelAt(x - 1, y, color, opacity);
+                setPixelAt(x, y - 1, color, opacity);
+                setPixelAt(x - 1, y - 1, color, opacity);
+                break;
+            case 2:
+                x = (mouseX - (int) canvasX + pixelHalf)/ canvasPixelScale;
+                y = (mouseY - (int) canvasY + pixelHalf)/ canvasPixelScale;
+                setPixelAt(x - 1, y + 1, color, opacity);
+                setPixelAt(x, y + 1, color, opacity);
+                setPixelAt(x - 2, y, color, opacity);
+                setPixelAt(x - 1, y, color, opacity);
+                setPixelAt(x, y, color, opacity);
+                setPixelAt(x + 1, y, color, opacity);
+                setPixelAt(x - 2, y - 1, color, opacity);
+                setPixelAt(x - 1, y - 1, color, opacity);
+                setPixelAt(x, y - 1, color, opacity);
+                setPixelAt(x + 1, y - 1, color, opacity);
+                setPixelAt(x - 1, y - 2, color, opacity);
+                setPixelAt(x, y - 2, color, opacity);
+                break;
+            case 3:
+                x = (mouseX - (int) canvasX)/ canvasPixelScale;
+                y = (mouseY - (int) canvasY)/ canvasPixelScale;
+                setPixelAt(x - 1, y + 2, color, opacity);
+                setPixelAt(x + 0, y + 2, color, opacity);
+                setPixelAt(x + 1, y + 2, color, opacity);
+                setPixelAt(x - 2, y + 1, color, opacity);
+                setPixelAt(x - 1, y + 1, color, opacity);
+                setPixelAt(x + 0, y + 1, color, opacity);
+                setPixelAt(x + 1, y + 1, color, opacity);
+                setPixelAt(x + 2, y + 1, color, opacity);
+                setPixelAt(x - 2, y, color, opacity);
+                setPixelAt(x - 1, y, color, opacity);
+                setPixelAt(x + 0, y, color, opacity);
+                setPixelAt(x + 1, y, color, opacity);
+                setPixelAt(x + 2, y, color, opacity);
+                setPixelAt(x - 2, y - 1, color, opacity);
+                setPixelAt(x - 1, y - 1, color, opacity);
+                setPixelAt(x + 0, y - 1, color, opacity);
+                setPixelAt(x + 1, y - 1, color, opacity);
+                setPixelAt(x + 2, y - 1, color, opacity);
+                setPixelAt(x - 1, y - 2, color, opacity);
+                setPixelAt(x + 0, y - 2, color, opacity);
+                setPixelAt(x + 1, y - 2, color, opacity);
+                break;
+        }
+    }
+
+    private void resetPositions(){
+        final int padding = 40;
+        final int paletteCanvasX = (this.width - (paletteWidth + canvasWidth + padding)) / 2;
+        canvasX = paletteCanvasX + paletteWidth + padding;
+        if(canvasType.equals(CanvasType.LONG)){
+            canvasY = 80;
+        }
+        else{
+            canvasY = 40;
+        }
+
+        paletteX = paletteCanvasX;
+        paletteY = 40;
     }
 
     @Override
     public void tick() {
         ++this.updateCount;
+        ++this.timeSinceLastUpdate;
+
+        if(easel != null){
+            if(easel.getItem().isEmpty() || !easel.isAlive() || easel.distanceToSqr(editingPlayer) > 64){
+                this.onClose();
+            }
+            if(skippedUpdate && timeSinceLastUpdate > 20 && dirty){
+                updateCanvas(false);
+                skippedUpdate = false;
+            }
+        }
+
         super.tick();
     }
 
@@ -267,17 +316,20 @@ public class GuiCanvasEdit extends BasePalette {
             super.superRender(matrixStack, mouseX, mouseY, f);
         }
 
+        // Draw the canvas holder
+        fill(matrixStack, (int)(canvasX + canvasWidth*0.25), (int)canvasY - canvasHolderHeight, (int)(canvasX + canvasWidth*0.75), (int)canvasY, 0xffe1e1e1);
+
         // Draw the canvas
         for(int i=0; i<canvasPixelHeight; i++){
             for(int j=0; j<canvasPixelWidth; j++){
-                int y = canvasY + i* canvasPixelScale;
-                int x = canvasX + j* canvasPixelScale;
+                int y = (int)canvasY + i* canvasPixelScale;
+                int x = (int)canvasX + j* canvasPixelScale;
                 fill(matrixStack, x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
             }
         }
 
-        // Draw brush meter
         if(!gettingSigned){
+            // Draw brush meter
             for(int i=0; i<4; i++){
                 int y = brushMeterY + i*brushSpriteSize;
                 fill(matrixStack, brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
@@ -286,8 +338,41 @@ public class GuiCanvasEdit extends BasePalette {
             blit(matrixStack, brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
             blit(matrixStack, brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
 
+            // Draw opacity meter
+            blit(matrixStack, brushOpacityMeterX, brushOpacityMeterY, brushOpacitySpriteX, brushOpacitySpriteY, brushOpacitySpriteSize, brushOpacitySpriteSize*4+3);
+            blit(matrixStack, brushOpacityMeterX-1, brushOpacityMeterY-1 + brushOpacitySetting*(brushOpacitySpriteSize+1), 212, 240, 16, 16);
+
             // Draw brush and outline
             renderCursor(matrixStack, mouseX, mouseY);
+            if(showHelp){
+                if(inBrushMeter(mouseX, mouseY)){
+                    int selectedSize = 3 - (mouseY - brushMeterY)/brushSpriteSize;
+                    if(selectedSize <= 3 && selectedSize >= 0){
+//                        this.renderTooltip(matrixStack, new StringTextComponent("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, new TranslationTextComponent("canvas.brushSize", (selectedSize+1)), mouseX, mouseY);
+                    }
+                }
+                else if(inBrushOpacityMeter(mouseX, mouseY)){
+                    int relativeY = mouseY - brushOpacityMeterY;
+                    int selectedOpacity = relativeY/(brushOpacitySpriteSize+1);
+                    if(selectedOpacity >= 0 && selectedOpacity <= 3){
+                        int percentage = 100 - 25*selectedOpacity;
+//                        this.renderTooltip(matrixStack, new StringTextComponent("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, new TranslationTextComponent("canvas.brushOpacity", percentage), mouseX, mouseY);
+                    }
+                }
+                else if(inColorPicker(mouseX-(int)paletteX, mouseY-(int)paletteY)){
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TranslationTextComponent("canvas.colorPicker.title"),
+                            new TranslationTextComponent("canvas.colorPicker.desc").withStyle(TextFormatting.GRAY)), mouseX, mouseY);
+                }
+                else if(inWater(mouseX-(int)paletteX, mouseY-(int)paletteY)){
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TranslationTextComponent("canvas.colorCleaner.title"),
+                            new TranslationTextComponent("canvas.colorCleaner.desc").withStyle(TextFormatting.GRAY)), mouseX, mouseY);
+                }else if(inCanvasHolder(mouseX, mouseY)){
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TranslationTextComponent("canvas.canvasHolder.title"),
+                            new TranslationTextComponent("canvas.canvasHolder.desc").withStyle(TextFormatting.GRAY)), mouseX, mouseY);
+                }
+            }
         }
         else{
             drawSigning(matrixStack);
@@ -325,23 +410,23 @@ public class GuiCanvasEdit extends BasePalette {
             int outlineSize = 0;
             int pixelHalf = canvasPixelScale/2;
             if(brushSize == 0){
-                x = ((mouseX - canvasX)/ canvasPixelScale)*canvasPixelScale + canvasX - 1;
-                y = ((mouseY - canvasY)/ canvasPixelScale)*canvasPixelScale + canvasY - 1;
+                x = ((mouseX - (int)canvasX)/ canvasPixelScale)*canvasPixelScale + (int)canvasX - 1;
+                y = ((mouseY - (int)canvasY)/ canvasPixelScale)*canvasPixelScale + (int)canvasY - 1;
                 outlineSize = canvasPixelScale + 2;
             }
             if(brushSize == 1){
-                x = (((mouseX - canvasX + pixelHalf) / canvasPixelScale) - 1)*canvasPixelScale + canvasX - 1;
-                y = (((mouseY - canvasY + pixelHalf) / canvasPixelScale) - 1)*canvasPixelScale + canvasY - 1;
+                x = (((mouseX - (int)canvasX + pixelHalf) / canvasPixelScale) - 1)*canvasPixelScale + (int)canvasX - 1;
+                y = (((mouseY - (int)canvasY + pixelHalf) / canvasPixelScale) - 1)*canvasPixelScale + (int)canvasY - 1;
                 outlineSize = canvasPixelScale*2 + 2;
             }
             if(brushSize == 2){
-                x = (((mouseX - canvasX + pixelHalf) / canvasPixelScale) - 2)*canvasPixelScale + canvasX - 1;
-                y = (((mouseY - canvasY + pixelHalf) / canvasPixelScale) - 2)*canvasPixelScale + canvasY - 1;
+                x = (((mouseX - (int)canvasX + pixelHalf) / canvasPixelScale) - 2)*canvasPixelScale + (int)canvasX - 1;
+                y = (((mouseY - (int)canvasY + pixelHalf) / canvasPixelScale) - 2)*canvasPixelScale + (int)canvasY - 1;
                 outlineSize = canvasPixelScale*4 + 2;
             }
             if(brushSize == 3){
-                x = (((mouseX - canvasX)/ canvasPixelScale) - 2)*canvasPixelScale + canvasX - 1;
-                y = (((mouseY - canvasY)/ canvasPixelScale) - 2)*canvasPixelScale + canvasY - 1;
+                x = (((mouseX - (int)canvasX)/ canvasPixelScale) - 2)*canvasPixelScale + (int)canvasX - 1;
+                y = (((mouseY - (int)canvasY)/ canvasPixelScale) - 2)*canvasPixelScale + (int)canvasY - 1;
                 outlineSize = canvasPixelScale*5 + 2;
             }
 
@@ -359,8 +444,8 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     private void drawSigning(MatrixStack matrixStack) {
-        int i = canvasX;
-        int j = canvasY;
+        int i = (int)canvasX;
+        int j = (int)canvasY;
 
         fill(matrixStack, i + 10, j + 10, i + 150, j + 150, 0xFFEEEEEE);
         String s = this.canvasTitle;
@@ -414,9 +499,18 @@ public class GuiCanvasEdit extends BasePalette {
             if (keyCode == GLFW.GLFW_KEY_Z && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
                 if (undoStack.size() > 0) {
                     pixels = undoStack.pop();
+                    if(easel != null){
+                        updateCanvas(false);
+                    }
                 }
                 return true;
             } else {
+                if(keyCode == GLFW_KEY_O){
+                    brushOpacitySetting += 1;
+                    if(brushOpacitySetting >= 4){
+                        brushOpacitySetting = 0;
+                    }
+                }
                 return super.keyPressed(keyCode, scanCode, modifiers);
             }
         }
@@ -439,16 +533,26 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public boolean mouseScrolled(double x, double y, double scroll) {
+    public boolean mouseScrolled(double posX, double posY, double scroll) {
+        int mouseX = (int)Math.floor(posX);
+        int mouseY = (int)Math.floor(posY);
         if (!gettingSigned && scroll != 0.d) {
-            //System.out.println("wheel: "+wheelState);
-            final int maxBrushSize = 3;
-            brushSize += scroll > 0 ? 1 : -1;
-            if (brushSize > maxBrushSize) brushSize = 0;
-            else if (brushSize < 0) brushSize = maxBrushSize;
-            return true;
+            if(inBrushOpacityMeter(mouseX, mouseY)){
+                final int maxBrushOpacity = 3;
+                brushOpacitySetting += scroll < 0 ? 1 : -1;
+                if (brushOpacitySetting > maxBrushOpacity) brushOpacitySetting = 0;
+                else if (brushOpacitySetting < 0) brushOpacitySetting = maxBrushOpacity;
+                return true;
+            }
+            else{
+                final int maxBrushSize = 3;
+                brushSize += scroll > 0 ? 1 : -1;
+                if (brushSize > maxBrushSize) brushSize = 0;
+                else if (brushSize < 0) brushSize = maxBrushSize;
+                return true;
+            }
         }
-        return super.mouseScrolled(x, y, scroll);
+        return super.mouseScrolled(posX, posY, scroll);
     }
 
     // Mouse button 0: left, 1: right
@@ -470,8 +574,8 @@ public class GuiCanvasEdit extends BasePalette {
 
         if(inCanvas(mouseX, mouseY)){
             if(isPickingColor){
-                int x = (mouseX - canvasX)/ canvasPixelScale;
-                int y = (mouseY - canvasY)/ canvasPixelScale;
+                int x = (mouseX - (int)canvasX)/ canvasPixelScale;
+                int y = (mouseY - (int)canvasY)/ canvasPixelScale;
                 if(x >= 0 && y >= 0 && x < canvasPixelWidth && y < canvasPixelHeight){
                     int color = getPixelAt(x, y);
                     carriedColor = new PaletteUtil.Color(color);
@@ -483,13 +587,26 @@ public class GuiCanvasEdit extends BasePalette {
                 clickedCanvas(mouseX, mouseY, mouseButton);
                 playBrushSound();
             }
+            return super.superMouseClicked(mouseX, mouseY, mouseButton);
         }
 
         if(inBrushMeter(mouseX, mouseY)){
             int selectedSize = 3 - (mouseY - brushMeterY)/brushSpriteSize;
-            if(selectedSize >= 0){
+            if(selectedSize <= 3 && selectedSize >= 0){
                 brushSize = selectedSize;
             }
+            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+        }
+        if(inBrushOpacityMeter(mouseX, mouseY)){
+            int relativeY = mouseY - brushOpacityMeterY;
+            int selectedOpacity = relativeY/(brushOpacitySpriteSize+1);
+            if(selectedOpacity >= 0 && selectedOpacity <= 3){
+                brushOpacitySetting = selectedOpacity;
+            }
+            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+        }
+        if(inCanvasHolder(mouseX, mouseY)){
+            isCarryingCanvas = true;
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -497,19 +614,21 @@ public class GuiCanvasEdit extends BasePalette {
     private void clickedCanvas(int mouseX, int mouseY, int mouseButton){
         touchedCanvas = true;
         if(mouseButton == GLFW_MOUSE_BUTTON_LEFT){
-            setPixelsAt(mouseX, mouseY, currentColor, brushSize);
+            setPixelsAt(mouseX, mouseY, currentColor, brushSize, brushOpacities[brushOpacitySetting]);
         }else if(mouseButton == GLFW_MOUSE_BUTTON_RIGHT){
             // "Erase" with right click
-            setPixelsAt(mouseX, mouseY, PaletteUtil.Color.WHITE, brushSize);
+            setPixelsAt(mouseX, mouseY, PaletteUtil.Color.WHITE, brushSize, 1.0f);
         }
         dirty = true;
     }
 
     @Override
     public boolean mouseReleased(double posX, double posY, int mouseButton) {
+        isCarryingCanvas = false;
         if(gettingSigned){
             return super.superMouseReleased(posX, posY, mouseButton);
         }
+        draggedPoints.clear();
 
         if(undoStarted && !touchedCanvas){
             undoStarted = false;
@@ -519,6 +638,11 @@ public class GuiCanvasEdit extends BasePalette {
         if(brushSound != null){
             brushSound.stopSound();
         }
+
+        if(easel != null){
+            updateCanvas(false);
+        }
+
         return super.mouseReleased(posX, posY, mouseButton);
     }
 
@@ -527,7 +651,7 @@ public class GuiCanvasEdit extends BasePalette {
         if(gettingSigned){
             return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
         }
-        if(!isCarryingColor && !isCarryingWater && !isPickingColor){
+        if(!isCarryingColor && !isCarryingWater && !isPickingColor && !isCarryingPalette && !isCarryingCanvas){
             int mouseX = (int)Math.floor(posX);
             int mouseY = (int)Math.floor(posY);
             if(inCanvas(mouseX, mouseY)){
@@ -538,23 +662,129 @@ public class GuiCanvasEdit extends BasePalette {
                 brushSound.refreshFade();
             }
         }
+        else if(isCarryingCanvas){
+            updateCanvasPos(deltaX, deltaY);
+            return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        }
+        else if(isCarryingPalette){
+            boolean ret = super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            updatePalettePos(deltaX, deltaY);
+            return ret;
+        }
         return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+    }
+
+    private void updateCanvasPos(double deltaX, double deltaY){
+        canvasX += deltaX;
+        canvasY += deltaY;
+
+        brushMeterX = (int)canvasX + canvasWidth + 2;
+        brushMeterY = (int)canvasY + canvasHeight/2 + 30;
+
+        brushOpacityMeterX = (int)canvasX + canvasWidth + 2;
+        brushOpacityMeterY = (int)canvasY;
+
+        canvasXs[canvasType.ordinal()] = canvasX;
+        canvasYs[canvasType.ordinal()] = canvasY;
+    }
+
+    private void updatePalettePos(double deltaX, double deltaY){
+        paletteX += deltaX;
+        paletteY += deltaY;
+
+        paletteXs[canvasType.ordinal()] = paletteX;
+        paletteYs[canvasType.ordinal()] = paletteY;
     }
 
     private boolean inCanvas(int x, int y) {
         return x < canvasX + canvasWidth && x >= canvasX && y < canvasY + canvasHeight && y >= canvasY;
     }
 
+    private boolean inCanvasHolder(int x, int y) {
+        return x < canvasX + ((double)canvasWidth)*0.75 && x >= canvasX + ((double)canvasWidth)*0.25 && y < canvasY && y >= canvasY - canvasHolderHeight;
+    }
+
     private boolean inBrushMeter(int x, int y) {
         return x < brushMeterX + brushSpriteSize && x >= brushMeterX && y < brushMeterY + brushSpriteSize*4 && y >= brushMeterY;
     }
 
+    private boolean inBrushOpacityMeter(int x, int y) {
+        return x < brushOpacityMeterX + brushOpacitySpriteSize && x >= brushOpacityMeterX && y < brushOpacityMeterY + brushOpacitySpriteSize*4+3 && y >= brushOpacityMeterY;
+    }
+
     @Override
     public void removed() {
-        if (dirty) {
-            version ++;
-            CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, customColors, canvasType);
-            XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+        updateCanvas(true);
+    }
+
+    private void updateCanvas(boolean closing){
+        if(closing){
+            if (dirty) {
+                version++;
+                CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, easel, customColors, canvasType);
+                XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+            }
+            else if(easel != null){
+                EaselLeftPacket pack = new EaselLeftPacket(easel);
+                XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+            }
+        }
+        else {
+            if (dirty) {
+                if (timeSinceLastUpdate < 10) {
+                    skippedUpdate = true;
+                } else {
+                    version++;
+                    CanvasMiniUpdatePacket pack = new CanvasMiniUpdatePacket(pixels, name, version, easel, canvasType);
+                    XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+                    dirty = false;
+                    timeSinceLastUpdate = 0;
+                }
+            }
+        }
+    }
+
+    public class ToggleHelpButton extends Button {
+        protected final ResourceLocation resourceLocation;
+        protected int xTexStart;
+        protected int yTexStart;
+        protected final int yDiffText;
+        protected final int texWidth;
+        protected final int texHeight;
+
+        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, IPressable onClick, ITooltip onTooltip) {
+            super(x, y, width, height, StringTextComponent.EMPTY, onClick, onTooltip);
+            this.texWidth = texWidth;
+            this.texHeight = texHeight;
+            this.xTexStart = xTexStart;
+            this.yTexStart = yTexStart;
+            this.yDiffText = yDiffText;
+            this.resourceLocation = texture;
+        }
+
+        public void setTexStarts(int x, int y) {
+            this.xTexStart = x;
+            this.yTexStart = y;
+        }
+
+        protected void postRender(){
+            GlStateManager._enableDepthTest();
+        }
+
+        @Override
+        public void renderButton(MatrixStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+            Minecraft.getInstance().textureManager.bind(this.resourceLocation);
+            GlStateManager._disableDepthTest();
+            int yTexStartNew = this.yTexStart;
+            if (this.isHovered()) {
+                yTexStartNew += this.yDiffText;
+            }
+            int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
+            blit(matrixStack, this.x, this.y, (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            if (this.isHovered()) {
+                this.renderToolTip(matrixStack, p_230431_2_, p_230431_3_);
+            }
+            postRender();
         }
     }
 }

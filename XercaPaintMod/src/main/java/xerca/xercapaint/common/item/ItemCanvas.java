@@ -1,11 +1,10 @@
 package xerca.xercapaint.common.item;
 
+import io.netty.util.internal.StringUtil;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HangingEntityItem;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,8 +19,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercapaint.client.CanvasItemRenderer;
+import xerca.xercapaint.client.ClientStuff;
 import xerca.xercapaint.common.CanvasType;
-import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityCanvas;
 
@@ -29,8 +28,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import net.minecraft.item.Item.Properties;
 
 @NonnullDefault
 public class ItemCanvas extends HangingEntityItem {
@@ -56,7 +53,9 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        XercaPaint.proxy.showCanvasGui(playerIn);
+        if(worldIn.isClientSide){
+            ClientStuff.showCanvasGui(playerIn);
+        }
         return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getItemInHand(hand));
     }
 
@@ -68,13 +67,17 @@ public class ItemCanvas extends HangingEntityItem {
         PlayerEntity playerentity = context.getPlayer();
         ItemStack itemstack = context.getItemInHand();
         if (playerentity != null && !this.mayPlace(playerentity, direction, itemstack, pos)) {
-            XercaPaint.proxy.showCanvasGui(playerentity);
+            if(playerentity.level.isClientSide){
+                ClientStuff.showCanvasGui(playerentity);
+            }
         } else {
             World world = context.getLevel();
 
             CompoundNBT tag = itemstack.getTag();
             if(tag == null || !tag.contains("pixels") || !tag.contains("name")){
-                XercaPaint.proxy.showCanvasGui(playerentity);
+                if(world.isClientSide && playerentity != null){
+                    ClientStuff.showCanvasGui(playerentity);
+                }
                 return ActionResultType.SUCCESS;
             }
 
@@ -113,17 +116,68 @@ public class ItemCanvas extends HangingEntityItem {
         return ActionResultType.SUCCESS;
     }
 
-    @Nonnull
-    @Override
-    public ITextComponent getName(@Nonnull ItemStack stack) {
+    public static boolean hasTitle(@Nonnull ItemStack stack){
         if (stack.hasTag()) {
             CompoundNBT tag = stack.getTag();
             if(tag != null){
                 String s = tag.getString("title");
-                if (!StringUtils.isNullOrEmpty(s)) {
+                return !StringUtil.isNullOrEmpty(s);
+            }
+        }
+        return false;
+    }
+
+    public static ITextComponent getFullLabel(@Nonnull ItemStack stack){
+//        TextComponent label = new TextComponent("");
+        String labelString = "";
+        int generation = 0;
+        ITextComponent title = getCustomTitle(stack);
+        if(title != null){
+            labelString += (title.getString() + " ");
+        }
+        if (stack.hasTag()) {
+            CompoundNBT tag = stack.getTag();
+            String s = tag.getString("author");
+
+            if (!StringUtil.isNullOrEmpty(s)) {
+                labelString += (new TranslationTextComponent("canvas.byAuthor", s)).getString() + " ";
+            }
+
+            generation = tag.getInt("generation");
+//            if(generation > 0){
+//                labelString += (new TranslatableComponent("canvas.generation." + (generation - 1))).getString();
+//            }
+        }
+        StringTextComponent label = new StringTextComponent(labelString);
+        if(generation == 1){
+            label.withStyle(TextFormatting.YELLOW);
+        }
+        else if(generation >= 3){
+            label.withStyle(TextFormatting.GRAY);
+        }
+        return label;
+    }
+
+    @Nullable
+    public static ITextComponent getCustomTitle(@Nonnull ItemStack stack){
+        if (stack.hasTag()) {
+            CompoundNBT tag = stack.getTag();
+            if(tag != null){
+                String s = tag.getString("title");
+                if (!StringUtil.isNullOrEmpty(s)) {
                     return new StringTextComponent(s);
                 }
             }
+        }
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getName(@Nonnull ItemStack stack) {
+        ITextComponent comp = getCustomTitle(stack);
+        if(comp != null){
+            return comp;
         }
         return super.getName(stack);
     }

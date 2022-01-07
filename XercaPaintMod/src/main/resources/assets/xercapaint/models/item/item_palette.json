@@ -1,7 +1,25 @@
-
 {
     "parent": "item/generated",
     "textures": {
         "layer0": "xercapaint:item/item_palette"
-    }
+    },
+  "overrides": [
+    { "predicate": { "xercapaint:colors": 0.0000 }, "model": "xercapaint:item/item_palette" },
+    { "predicate": { "xercapaint:colors": 0.0625 }, "model": "xercapaint:item/item_palette1" },
+    { "predicate": { "xercapaint:colors": 0.1250 }, "model": "xercapaint:item/item_palette2" },
+    { "predicate": { "xercapaint:colors": 0.1875 }, "model": "xercapaint:item/item_palette3" },
+    { "predicate": { "xercapaint:colors": 0.2500 }, "model": "xercapaint:item/item_palette4" },
+    { "predicate": { "xercapaint:colors": 0.3125 }, "model": "xercapaint:item/item_palette5" },
+    { "predicate": { "xercapaint:colors": 0.3750 }, "model": "xercapaint:item/item_palette6" },
+    { "predicate": { "xercapaint:colors": 0.4375 }, "model": "xercapaint:item/item_palette7" },
+    { "predicate": { "xercapaint:colors": 0.5000 }, "model": "xercapaint:item/item_palette8" },
+    { "predicate": { "xercapaint:colors": 0.5625 }, "model": "xercapaint:item/item_palette9" },
+    { "predicate": { "xercapaint:colors": 0.6250 }, "model": "xercapaint:item/item_palette10" },
+    { "predicate": { "xercapaint:colors": 0.6875 }, "model": "xercapaint:item/item_palette11" },
+    { "predicate": { "xercapaint:colors": 0.7500 }, "model": "xercapaint:item/item_palette12" },
+    { "predicate": { "xercapaint:colors": 0.8125 }, "model": "xercapaint:item/item_palette13" },
+    { "predicate": { "xercapaint:colors": 0.8750 }, "model": "xercapaint:item/item_palette14" },
+    { "predicate": { "xercapaint:colors": 0.9375 }, "model": "xercapaint:item/item_palette15" },
+    { "predicate": { "xercapaint:colors": 1.0000 }, "model": "xercapaint:item/item_palette16" }
+  ]
 }

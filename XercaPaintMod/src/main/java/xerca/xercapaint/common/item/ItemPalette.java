@@ -6,22 +6,23 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xerca.xercapaint.common.XercaPaint;
+import xerca.xercapaint.client.ClientStuff;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
-
-import net.minecraft.item.Item.Properties;
 
 public class ItemPalette extends Item {
     ItemPalette(String name) {
@@ -32,7 +33,9 @@ public class ItemPalette extends Item {
     @Nonnull
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        XercaPaint.proxy.showCanvasGui(playerIn);
+        if(worldIn.isClientSide){
+            ClientStuff.showCanvasGui(playerIn);
+        }
         return new ActionResult<>(ActionResultType.SUCCESS, playerIn.getItemInHand(hand));
     }
 
@@ -53,6 +56,28 @@ public class ItemPalette extends Item {
             fullPalette.getOrCreateTag().putByteArray("basic", basicColors);
             items.add(fullPalette);
         }
+    }
+
+    public static boolean isFull(ItemStack stack){
+        return basicColorCount(stack) == 16;
+    }
+
+    public static int basicColorCount(ItemStack stack){
+        if(stack.getItem() != Items.ITEM_PALETTE){
+            return 0;
+        }
+        CompoundNBT tag = stack.getTag();
+        if(tag != null && tag.contains("basic")){
+            byte[] basicColors = tag.getByteArray("basic");
+            if (basicColors.length == 16) {
+                int basicCount = 0;
+                for(byte basicColor : basicColors){
+                    basicCount += basicColor;
+                }
+                return basicCount;
+            }
+        }
+        return 0;
     }
 
     @Override

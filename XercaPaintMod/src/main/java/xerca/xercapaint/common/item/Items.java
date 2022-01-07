@@ -23,6 +23,7 @@ public final class Items {
     public static final ItemCanvas ITEM_CANVAS_LARGE = null;
     public static final ItemCanvas ITEM_CANVAS_LONG = null;
     public static final ItemCanvas ITEM_CANVAS_TALL = null;
+    public static final ItemEasel ITEM_EASEL = null;
 
     public static final IRecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = null;
     public static final IRecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_FILLING = null;
@@ -56,7 +57,8 @@ public final class Items {
                     new ItemCanvas("item_canvas", CanvasType.SMALL),
                     new ItemCanvas("item_canvas_large", CanvasType.LARGE),
                     new ItemCanvas("item_canvas_long", CanvasType.LONG),
-                    new ItemCanvas("item_canvas_tall", CanvasType.TALL)
+                    new ItemCanvas("item_canvas_tall", CanvasType.TALL),
+                    new ItemEasel(new Item.Properties().tab(Items.paintTab).stacksTo(1)).setRegistryName("item_easel")
             );
         }
     }

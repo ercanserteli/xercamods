@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 

@@ -11,3 +11,14 @@
 * Check crafting and filling palettes
 * Signing, cancel during signing
 * Copying
+* While painting, check opacity, brush size, color dropper and sound effects
+* Place down easel, it should face the player
+* Place each empty canvas on easels
+* Place painted canvas and signed canvas on easels
+* Right click easels with empty hand (view)
+* Right click easels with palette (edit)
+* Check if the painting in easel updates after each stroke (up to twice per second)
+* Check if multiple players can't edit the same painting
+* Check that closing the edit gui releases the easel
+* Check that logging off releases the easel
+* Check that killing the painter releases the easel

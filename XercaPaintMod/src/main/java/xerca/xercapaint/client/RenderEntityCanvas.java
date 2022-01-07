@@ -4,7 +4,8 @@ import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -70,7 +71,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         }
     }
 
-    public void updateMapTexture(String name, int version) {
+    public void updateTexture(String name, int version) {
         Instance instance = this.getMapInstanceIfExists(name);
         if(instance != null){
             instance.updateCanvasTexture(name, version);

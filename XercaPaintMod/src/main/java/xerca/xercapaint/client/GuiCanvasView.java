@@ -1,13 +1,18 @@
 package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercapaint.common.CanvasType;
+import xerca.xercapaint.common.XercaPaint;
+import xerca.xercapaint.common.entity.EntityEasel;
+import xerca.xercapaint.common.packets.EaselLeftPacket;
 
 import java.util.Arrays;
 
@@ -29,8 +34,10 @@ public class GuiCanvasView extends Screen {
     private String name = "";
     private int version = 0;
     private int generation = 0;
+    private EntityEasel easel;
+    private PlayerEntity player;
 
-    protected GuiCanvasView(CompoundNBT canvasTag, ITextComponent title, CanvasType canvasType) {
+    protected GuiCanvasView(CompoundNBT canvasTag, ITextComponent title, CanvasType canvasType, EntityEasel easel) {
         super(title);
 
         this.canvasType = canvasType;
@@ -40,6 +47,8 @@ public class GuiCanvasView extends Screen {
         int canvasPixelArea = canvasPixelHeight*canvasPixelWidth;
         this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
         this.canvasHeight = this.canvasPixelHeight * this.canvasPixelScale;
+        this.easel = easel;
+        this.player = Minecraft.getInstance().player;
 
         if (canvasTag != null && !canvasTag.isEmpty()) {
             int[] nbtPixels = canvasTag.getIntArray("pixels");
@@ -98,6 +107,24 @@ public class GuiCanvasView extends Screen {
 
             this.font.draw(matrixStack, title, titleX, canvasY - 25, 0xFF111111);
             this.font.draw(matrixStack, gen, genX, canvasY - 14, 0xFF444444);
+        }
+    }
+
+    @Override
+    public void tick() {
+        if(easel != null){
+            if(easel.getItem().isEmpty() || !easel.isAlive() || easel.distanceToSqr(player) > 64){
+                this.onClose();
+            }
+        }
+        super.tick();
+    }
+
+    @Override
+    public void removed() {
+        if(easel != null){
+            EaselLeftPacket pack = new EaselLeftPacket(easel);
+            XercaPaint.NETWORK_HANDLER.sendToServer(pack);
         }
     }
 }

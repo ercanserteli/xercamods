@@ -9,8 +9,6 @@ import xerca.xercapaint.common.SoundEvents;
 
 import java.util.Random;
 
-import net.minecraft.client.audio.ISound.AttenuationType;
-
 @OnlyIn(Dist.CLIENT)
 public class BrushSound extends TickableSound {
     private int age = 0;

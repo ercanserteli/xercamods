@@ -3,6 +3,7 @@ package xerca.xercapaint.common.packets;
 import net.minecraft.network.PacketBuffer;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.PaletteUtil;
+import xerca.xercapaint.common.entity.EntityEasel;
 
 import java.util.Arrays;
 
@@ -14,9 +15,10 @@ public class CanvasUpdatePacket {
     private CanvasType canvasType;
     private String name; //name must be unique
     private int version;
+    private int easelId;
     private boolean messageIsValid;
 
-    public CanvasUpdatePacket(int[] pixels, boolean signed, String title, String name, int version, PaletteUtil.CustomColor[] paletteColors, CanvasType canvasType) {
+    public CanvasUpdatePacket(int[] pixels, boolean signed, String title, String name, int version, EntityEasel easel, PaletteUtil.CustomColor[] paletteColors, CanvasType canvasType) {
         this.paletteColors = Arrays.copyOfRange(paletteColors, 0, 12);
         this.signed = signed;
         this.title = title;
@@ -25,6 +27,11 @@ public class CanvasUpdatePacket {
         this.canvasType = canvasType;
         int area = CanvasType.getHeight(canvasType)*CanvasType.getWidth(canvasType);
         this.pixels = Arrays.copyOfRange(pixels, 0, area);
+        if(easel == null){
+            easelId = -1;
+        }else{
+            easelId = easel.getId();
+        }
     }
 
     public CanvasUpdatePacket() {
@@ -35,6 +42,7 @@ public class CanvasUpdatePacket {
         for(PaletteUtil.CustomColor color : pkt.paletteColors){
             color.writeToBuffer(buf);
         }
+        buf.writeInt(pkt.easelId);
         buf.writeByte(pkt.canvasType.ordinal());
         buf.writeInt(pkt.version);
         buf.writeUtf(pkt.name);
@@ -50,6 +58,7 @@ public class CanvasUpdatePacket {
             for(int i=0; i<result.paletteColors.length; i++){
                 result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
             }
+            result.easelId = buf.readInt();
             result.canvasType = CanvasType.fromByte(buf.readByte());
             result.version = buf.readInt();
             result.name = buf.readUtf(64);
@@ -91,6 +100,10 @@ public class CanvasUpdatePacket {
 
     public int getVersion() {
         return version;
+    }
+
+    public int getEaselId() {
+        return easelId;
     }
 
     public CanvasType getCanvasType() {

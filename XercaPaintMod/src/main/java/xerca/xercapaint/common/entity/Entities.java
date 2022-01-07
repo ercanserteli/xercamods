@@ -13,6 +13,7 @@ import xerca.xercapaint.common.XercaPaint;
 @ObjectHolder(XercaPaint.MODID)
 public class Entities {
     public static final EntityType<EntityCanvas> CANVAS = null;
+    public static final EntityType<EntityEasel> EASEL = null;
 
     @Mod.EventBusSubscriber(modid = XercaPaint.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
@@ -22,7 +23,11 @@ public class Entities {
                     EntityType.Builder.<EntityCanvas>of((EntityCanvas::new), EntityClassification.MISC).
                             setCustomClientFactory(EntityCanvas::new).sized(0.5f, 0.5f).setUpdateInterval(2147483647).setTrackingRange(10).setShouldReceiveVelocityUpdates(false)
             );
-            event.getRegistry().register(canvasEntityType);
+            final EntityType<EntityEasel> easelEntityType = build("easel",
+                    EntityType.Builder.<EntityEasel>of((EntityEasel::new), EntityClassification.MISC).
+                            setCustomClientFactory(EntityEasel::new).sized(0.8f, 1.975F).clientTrackingRange(10)
+            );
+            event.getRegistry().registerAll(canvasEntityType, easelEntityType);
         }
     }
 

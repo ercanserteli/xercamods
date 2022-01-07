@@ -13,13 +13,17 @@ public class GuiPalette extends BasePalette {
 
     protected GuiPalette(CompoundNBT paletteTag, ITextComponent title) {
         super(title, paletteTag);
-
-        paletteX = 140;
-        paletteY = 40;
     }
 
     @Override
     public void init() {
+        paletteX = paletteXs[paletteXs.length - 1];
+        paletteY = paletteYs[paletteYs.length - 1];
+        if(paletteX == -1000 || paletteY == -1000){
+            paletteX = 140;
+            paletteY = 40;
+        }
+        updatePalettePos(0, 0);
     }
 
     @Override
@@ -43,6 +47,24 @@ public class GuiPalette extends BasePalette {
             waterColor.setGLColor();
             blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
         }
+    }
+
+    @Override
+    public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        if(isCarryingPalette){
+            boolean ret = super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            updatePalettePos(deltaX, deltaY);
+            return ret;
+        }
+        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+    }
+
+    private void updatePalettePos(double deltaX, double deltaY){
+        paletteX += deltaX;
+        paletteY += deltaY;
+
+        paletteXs[paletteXs.length - 1] = paletteX;
+        paletteYs[paletteYs.length - 1] = paletteY;
     }
 
     @Override

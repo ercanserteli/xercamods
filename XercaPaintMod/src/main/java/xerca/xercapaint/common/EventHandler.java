@@ -1,8 +1,25 @@
 package xerca.xercapaint.common;
 
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = XercaPaint.MODID)
 class EventHandler {
+    @SubscribeEvent
+    public static void onRegisterCommandEvent(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSource> commandDispatcher = event.getDispatcher();
+        CommandImport.register(commandDispatcher);
+        CommandExport.register(commandDispatcher);
+    }
+}
 
+@Mod.EventBusSubscriber(modid = XercaPaint.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+class EventHandlerMod {
+    @SubscribeEvent
+    public static void onAttributeCreationEvent(EntityAttributeCreationEvent event) {
+    }
 }
