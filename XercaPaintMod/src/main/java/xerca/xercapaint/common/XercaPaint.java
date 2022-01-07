@@ -48,6 +48,7 @@ public class XercaPaint {
         NETWORK_HANDLER.registerMessage(msg_id++, OpenGuiPacket.class, OpenGuiPacket::encode, OpenGuiPacket::decode, OpenGuiPacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, CloseGuiPacket.class, CloseGuiPacket::encode, CloseGuiPacket::decode, CloseGuiPacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, CanvasMiniUpdatePacket.class, CanvasMiniUpdatePacket::encode, CanvasMiniUpdatePacket::decode, CanvasMiniUpdatePacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, EaselLeftPacket.class, EaselLeftPacket::encode, EaselLeftPacket::decode, EaselLeftPacketHandler::handle);
     }
 
     private void setup(final FMLCommonSetupEvent event)
