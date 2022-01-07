@@ -55,17 +55,19 @@ public class ClientStuff {
 
         if(heldItem.getItem() instanceof ItemCanvas){
             CompoundTag tag = heldItem.getTag();
-            if(offhandItem.isEmpty() || (tag != null && tag.getInt("generation") > 0)){
+            if(offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemPalette) || (tag != null && tag.getInt("generation") > 0)){
                 minecraft.setScreen(new GuiCanvasView(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
-            }else if(offhandItem.getItem() instanceof ItemPalette){
+            }
+            else{
                 minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
                         tag, offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
             }
         }
         else if(heldItem.getItem() instanceof ItemPalette){
-            if(offhandItem.isEmpty()){
+            if(offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas)){
                 minecraft.setScreen(new GuiPalette(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_palette")));
-            }else if(offhandItem.getItem() instanceof ItemCanvas){
+            }
+            else{
                 CompoundTag tag = offhandItem.getTag();
                 if(tag != null && tag.getInt("generation") > 0){
                     minecraft.setScreen(new GuiCanvasView(offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType(), null));

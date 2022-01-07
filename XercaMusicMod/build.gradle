@@ -124,8 +124,8 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 tasks.register('buildCopy', Copy) {
     dependsOn build
-    from "E:/Mine/Mine Mods/XercaMusicMod/build/libs/${archivesBaseName}-${version}.jar"
-    into "E:/Mine/Mine Mods/builds"
+    from "${buildDir}/libs/${archivesBaseName}-${version}.jar"
+    into "${buildDir}/../../builds"
 }
 
 

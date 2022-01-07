@@ -24,6 +24,7 @@ import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.packets.CanvasMiniUpdatePacket;
 import xerca.xercapaint.common.packets.CanvasUpdatePacket;
+import xerca.xercapaint.common.packets.EaselLeftPacket;
 
 import java.util.*;
 
@@ -58,7 +59,7 @@ public class GuiCanvasEdit extends BasePalette {
     private final int canvasHolderHeight = 10;
     private static int brushOpacitySetting = 0;
     private static float[] brushOpacities = {1.f, 0.75f, 0.5f, 0.25f};
-    private static boolean showHelp = true;
+    private static boolean showHelp = false;
     private Set<Integer> draggedPoints = new HashSet<>();
 
     private final Player editingPlayer;
@@ -502,6 +503,7 @@ public class GuiCanvasEdit extends BasePalette {
             if (keyCode == GLFW.GLFW_KEY_Z && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
                 if (undoStack.size() > 0) {
                     pixels = undoStack.pop();
+                    dirty = true;
                     if(easel != null){
                         updateCanvas(false);
                     }
@@ -722,9 +724,15 @@ public class GuiCanvasEdit extends BasePalette {
 
     private void updateCanvas(boolean closing){
         if(closing){
-            version ++;
-            CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, easel, customColors, canvasType);
-            XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+            if (dirty) {
+                version++;
+                CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, easel, customColors, canvasType);
+                XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+            }
+            else if(easel != null){
+                EaselLeftPacket pack = new EaselLeftPacket(easel);
+                XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+            }
         }
         else{
             if (dirty) {
@@ -742,7 +750,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    public class ToggleHelpButton extends Button {
+    public static class ToggleHelpButton extends Button {
         protected final ResourceLocation resourceLocation;
         protected int xTexStart;
         protected int yTexStart;
