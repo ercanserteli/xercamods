@@ -25,7 +25,8 @@ import xerca.xercamusic.common.packets.MusicEndedPacket;
 public class ClientStuff {
 
     static public void showMusicGui(){
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+    	Minecraft mc = Minecraft.getInstance();
+        ClientPlayerEntity player = mc.player;
         ItemStack heldItem = player.getHeldItemMainhand();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet){
             CompoundNBT noteTag = heldItem.getTag();
@@ -41,7 +42,8 @@ public class ClientStuff {
     }
 
     static public void showInstrumentGui(){
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+    	Minecraft mc = Minecraft.getInstance();
+        ClientPlayerEntity player = mc.player;
         ItemStack heldItem = player.getHeldItemMainhand();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemInstrument){
             Minecraft.getInstance().displayGuiScreen(new GuiInstrument(player, (ItemInstrument) heldItem.getItem(), new TranslationTextComponent("item.xercamusic.instrument_gui"), null));
@@ -49,8 +51,8 @@ public class ClientStuff {
     }
 
     static public void showInstrumentGui(ItemInstrument instrument, BlockPos blockInsPos){
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        Minecraft.getInstance().displayGuiScreen(new GuiInstrument(player, instrument, new TranslationTextComponent("item.xercamusic.instrument_gui"), blockInsPos));
+    	Minecraft mc = Minecraft.getInstance();
+        mc.displayGuiScreen(new GuiInstrument(mc.player, instrument, new TranslationTextComponent("item.xercamusic.instrument_gui"), blockInsPos));
     }
 
     static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
@@ -72,7 +74,8 @@ public class ClientStuff {
     }
 
     static public void endMusic(int spiritID, int playerID) {
-        if (playerID == Minecraft.getInstance().player.getEntityId()) {
+    	Minecraft mc = Minecraft.getInstance();
+        if (playerID == mc.player.getEntityId()) {
             MusicEndedPacket pack = new MusicEndedPacket(spiritID);
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
         }

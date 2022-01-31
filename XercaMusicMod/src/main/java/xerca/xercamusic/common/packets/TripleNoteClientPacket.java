@@ -28,6 +28,7 @@ public class TripleNoteClientPacket {
     }
 
     public static TripleNoteClientPacket decode(PacketBuffer buf) {
+    	Minecraft mc = Minecraft.getInstance();
         TripleNoteClientPacket result = new TripleNoteClientPacket();
         try {
             result.note1 = buf.readInt();
@@ -40,7 +41,7 @@ public class TripleNoteClientPacket {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
-            result.entity = Minecraft.getInstance().world.getEntityByID(entityId);
+            result.entity = mc.world.getEntityByID(entityId);
             result.instrumentItem = Items.instruments[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
             XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: " + ioe);

@@ -27,6 +27,7 @@ public class SingleNoteClientPacket {
     }
 
     public static SingleNoteClientPacket decode(PacketBuffer buf) {
+    	Minecraft mc = Minecraft.getInstance();
         SingleNoteClientPacket result = new SingleNoteClientPacket();
         try {
             result.note = buf.readInt();
@@ -38,7 +39,7 @@ public class SingleNoteClientPacket {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
-            Entity entity = Minecraft.getInstance().world.getEntityByID(playerId);
+            Entity entity = mc.world.getEntityByID(playerId);
             if(!(entity instanceof PlayerEntity)){
                 throw new IndexOutOfBoundsException("Invalid playerId: " + playerId);
             }

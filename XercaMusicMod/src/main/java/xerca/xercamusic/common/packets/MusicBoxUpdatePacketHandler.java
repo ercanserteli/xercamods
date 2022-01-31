@@ -27,7 +27,8 @@ public class MusicBoxUpdatePacketHandler {
 
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(MusicBoxUpdatePacket msg) {
-        World world = Minecraft.getInstance().world;
+    	Minecraft mc = Minecraft.getInstance();
+        World world = mc.world;
         if(!world.isBlockLoaded(msg.getPos())){
             return;
         }

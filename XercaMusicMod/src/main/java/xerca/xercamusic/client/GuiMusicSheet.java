@@ -736,6 +736,7 @@ public class GuiMusicSheet extends Screen {
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        Minecraft mc = Minecraft.getInstance();
         if (previewing || recording || preRecording) {
             long currentMillis = System.currentTimeMillis();
 
@@ -793,9 +794,9 @@ public class GuiMusicSheet extends Screen {
         }
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        Minecraft.getInstance().getTextureManager().bindTexture(noteGuiLeftTexture);
+        mc.getTextureManager().bindTexture(noteGuiLeftTexture);
         blit(matrixStack, noteImageLeftX, noteImageY + 7, noteImageLeftTexX, noteImageLeftTexY, noteImageLeftWidth, noteImageLeftHeight);
-        Minecraft.getInstance().getTextureManager().bindTexture(noteGuiTextures);
+        mc.getTextureManager().bindTexture(noteGuiTextures);
         blit(matrixStack, noteImageX, noteImageY, noteImageTexX, noteImageTexY, noteImageWidth, noteImageHeight);
         if (gettingSigned) {
             drawSigning(matrixStack);

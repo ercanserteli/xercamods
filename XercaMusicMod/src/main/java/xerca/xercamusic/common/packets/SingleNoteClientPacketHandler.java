@@ -30,8 +30,9 @@ public class SingleNoteClientPacketHandler {
     }
 
     private static void processMessage(SingleNoteClientPacket msg) {
+    	Minecraft mc = Minecraft.getInstance();
         PlayerEntity playerEntity = msg.getPlayerEntity();
-        if(!playerEntity.equals(Minecraft.getInstance().player)){
+        if(!playerEntity.equals(mc.player)){
             ItemInstrument.InsSound sound = msg.getInstrumentItem().getSound(msg.getNote());
             if(sound == null){
                 return;

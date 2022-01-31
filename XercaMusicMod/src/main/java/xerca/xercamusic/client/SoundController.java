@@ -44,6 +44,7 @@ public class SoundController extends Thread {
 
     @Override
     public void run() {
+    	Minecraft mc = Minecraft.getInstance();
         if(bps == 0){
             XercaMusic.LOGGER.error("BPS is 0! This should not happen!");
             return;
@@ -61,10 +62,10 @@ public class SoundController extends Thread {
             while (event.time > currentBeat) {
                 accurateSleep(msPerBeat);
                 currentBeat++;
-                while (Minecraft.getInstance().isGamePaused()) {
+                while (mc.isGamePaused()) {
                     inaccurateSleep(1);
                 }
-                if (doStop || Minecraft.getInstance().world == null) {
+                if (doStop || mc.world == null) {
                     return;
                 }
             }
@@ -73,14 +74,15 @@ public class SoundController extends Thread {
 
         // Music over
         if(spiritID >= 0){
-            Minecraft.getInstance().runAsync(() -> ClientStuff.endMusic(spiritID, Minecraft.getInstance().player.getEntityId()));
+            mc.runAsync(() -> ClientStuff.endMusic(spiritID, Minecraft.getInstance().player.getEntityId()));
         }
     }
 
     private void playNote(NoteEvent event){
+    	Minecraft mc = Minecraft.getInstance();
         if (event.note >= ItemInstrument.minNote && event.note <= ItemInstrument.maxNote) {
             final byte note = event.note;
-            Minecraft.getInstance().runAsync(() -> {
+            mc.runAsync(() -> {
                 ItemInstrument.InsSound insSound = instrument.getSound(note);
                 if(insSound == null){
                     return;
@@ -88,11 +90,11 @@ public class SoundController extends Thread {
 
                 if(musicBox == null){
                     lastPlayed = ClientStuff.playNote(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
-                    Minecraft.getInstance().world.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note) / 24.0D, 0.0D, 0.0D);
+                    mc.world.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note) / 24.0D, 0.0D, 0.0D);
                 }
                 else{
                     lastPlayed = ClientStuff.playNoteTE(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
-                    Minecraft.getInstance().world.addParticle(ParticleTypes.NOTE, x+0.5D, y + 2.2D, z+0.5D, (note) / 24.0D, 0.0D, 0.0D);
+                    mc.world.addParticle(ParticleTypes.NOTE, x+0.5D, y + 2.2D, z+0.5D, (note) / 24.0D, 0.0D, 0.0D);
                 }
             });
         }
