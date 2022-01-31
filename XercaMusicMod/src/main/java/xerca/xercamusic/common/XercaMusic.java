@@ -17,6 +17,7 @@ import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -27,6 +28,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import xerca.xercamusic.client.ClientProxy;
 import xerca.xercamusic.client.RenderNothingFactory;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.data.BlockTags;
@@ -54,6 +56,7 @@ import xerca.xercamusic.common.packets.SingleNotePacket;
 import xerca.xercamusic.common.packets.SingleNotePacketHandler;
 import xerca.xercamusic.common.packets.TripleNoteClientPacket;
 import xerca.xercamusic.common.packets.TripleNoteClientPacketHandler;
+import xerca.xercamusic.server.ServerProxy;
 
 
 @Mod(XercaMusic.MODID)
@@ -61,7 +64,7 @@ public class XercaMusic
 {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
-    //public static Proxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+    public static Proxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
@@ -95,20 +98,12 @@ public class XercaMusic
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
-    
-    @OnlyIn(Dist.CLIENT)
-    private void setupClientRendering() {
-    	RenderingRegistry.registerEntityRenderingHandler(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
-    }
 
     private void setup(final FMLCommonSetupEvent event)
     {
         networkRegistry();
-
-        setupClientRendering();
-        
+        proxy.preInit();
         Items.setup();
-
         Blocks.setup();
         registerTriggers();
     }
