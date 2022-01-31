@@ -44,10 +44,6 @@ public final class Items {
 
     public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = Null();
 
-
-    public static void setup() {
-    }
-
     static Item makeItem(String name, CreativeModeTab tab){
         Item item = new Item(new Item.Properties().tab(tab));
         item.setRegistryName(name);

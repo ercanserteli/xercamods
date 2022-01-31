@@ -109,39 +109,40 @@ public class ClientStuff {
 
         @SubscribeEvent
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
-            MenuScreens.register(TileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, GuiFunctionalBookcase::new);
-            MenuScreens.register(TileEntities.CONTAINER_CARVING_STATION, CarvingStationScreen::new);
+            event.enqueueWork(()->{
+                MenuScreens.register(TileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, GuiFunctionalBookcase::new);
+                MenuScreens.register(TileEntities.CONTAINER_CARVING_STATION, CarvingStationScreen::new);
 
-            ItemBlockRenderTypes.setRenderLayer(Blocks.BLOCK_TEA_PLANT, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.BLOCK_TOMATO_PLANT, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.BLOCK_RICE_PLANT, RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_1, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_2, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_3, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_4, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_5, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_6, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_7, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_8, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.BLOCK_TEA_PLANT, RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.BLOCK_TOMATO_PLANT, RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.BLOCK_RICE_PLANT, RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_1, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_2, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_3, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_4, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_5, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_6, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_7, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_ACACIA_8, RenderType.cutoutMipped());
 
-            ItemBlockRenderTypes.setRenderLayer(Blocks.OMNI_CHEST, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.VAT, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_CHEESE, RenderType.cutoutMipped());
-            ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_MILK, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.OMNI_CHEST, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.VAT, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_CHEESE, RenderType.cutoutMipped());
+                ItemBlockRenderTypes.setRenderLayer(Blocks.VAT_MILK, RenderType.cutoutMipped());
 
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_1, ClientStuff::getDoubleLayer);
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_2, ClientStuff::getDoubleLayer);
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_3, ClientStuff::getDoubleLayer);
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_4, ClientStuff::getDoubleLayer);
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_5, ClientStuff::getDoubleLayer);
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_6, ClientStuff::getDoubleLayer);
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_7, ClientStuff::getDoubleLayer);
-            ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_8, ClientStuff::getDoubleLayer);
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_1, ClientStuff::getDoubleLayer);
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_2, ClientStuff::getDoubleLayer);
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_3, ClientStuff::getDoubleLayer);
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_4, ClientStuff::getDoubleLayer);
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_5, ClientStuff::getDoubleLayer);
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_6, ClientStuff::getDoubleLayer);
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_7, ClientStuff::getDoubleLayer);
+                ItemBlockRenderTypes.setRenderLayer(Blocks.CARVED_CRIMSON_8, ClientStuff::getDoubleLayer);
 
-            pizzaRenderLayers();
+                pizzaRenderLayers();
 
-            registerItemModelsProperties();
-
+                registerItemModelsProperties();
+            });
             mc = Minecraft.getInstance();
         }
 

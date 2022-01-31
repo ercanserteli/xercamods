@@ -81,35 +81,37 @@ public class XercaMod {
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        networkRegistry();
+        event.enqueueWork(()->{
+            networkRegistry();
 
-        registerTriggers();
+            registerTriggers();
 
-        // Making confetti ball dispensable by dispenser
-        DispenserBlock.registerBehavior(Items.ITEM_CONFETTI_BALL, new AbstractProjectileDispenseBehavior()
-        {
-            @Nonnull
-            protected Projectile getProjectile(@Nonnull Level worldIn, @Nonnull Position position, @Nonnull ItemStack stackIn)
+            // Making confetti ball dispensable by dispenser
+            DispenserBlock.registerBehavior(Items.ITEM_CONFETTI_BALL, new AbstractProjectileDispenseBehavior()
             {
-                return new EntityConfettiBall(worldIn, position.x(), position.y(), position.z());
-            }
-        });
-        // Making tomato dispensable by dispenser
-        DispenserBlock.registerBehavior(Items.ITEM_TOMATO, new AbstractProjectileDispenseBehavior()
-        {
-            @Nonnull
-            protected Projectile getProjectile(@Nonnull Level worldIn, @Nonnull Position position, @Nonnull ItemStack stackIn)
+                @Nonnull
+                protected Projectile getProjectile(@Nonnull Level worldIn, @Nonnull Position position, @Nonnull ItemStack stackIn)
+                {
+                    return new EntityConfettiBall(worldIn, position.x(), position.y(), position.z());
+                }
+            });
+            // Making tomato dispensable by dispenser
+            DispenserBlock.registerBehavior(Items.ITEM_TOMATO, new AbstractProjectileDispenseBehavior()
             {
-                return new EntityTomato(worldIn, position.x(), position.y(), position.z());
-            }
+                @Nonnull
+                protected Projectile getProjectile(@Nonnull Level worldIn, @Nonnull Position position, @Nonnull ItemStack stackIn)
+                {
+                    return new EntityTomato(worldIn, position.x(), position.y(), position.z());
+                }
+            });
+
+            // Making confetti dispensable by dispenser
+            DispenserBlock.registerBehavior(Items.ITEM_CONFETTI, new ConfettiDispenseItemBehavior());
+
+            Items.registerCompostables();
+            DecoCreativeTab.initItemList();
+            registerPotions(event);
         });
-
-        // Making confetti dispensable by dispenser
-        DispenserBlock.registerBehavior(Items.ITEM_CONFETTI, new ConfettiDispenseItemBehavior());
-
-        Items.registerCompostables();
-        DecoCreativeTab.initItemList();
-        registerPotions(event);
     }
 
     private void registerPotions(FMLCommonSetupEvent event) {
