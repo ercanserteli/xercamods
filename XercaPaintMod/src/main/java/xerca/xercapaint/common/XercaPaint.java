@@ -53,7 +53,7 @@ public class XercaPaint {
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        networkRegistry();
+        event.enqueueWork(this::networkRegistry);
     }
 
 

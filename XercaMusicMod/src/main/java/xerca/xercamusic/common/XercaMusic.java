@@ -70,12 +70,10 @@ public class XercaMusic
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        networkRegistry();
-
-        Items.setup();
-
-        Blocks.setup();
-        registerTriggers();
+        event.enqueueWork(()->{
+            networkRegistry();
+            registerTriggers();
+        });
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
