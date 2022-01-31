@@ -1,6 +1,19 @@
 {
-  "parent": "xercamusic:item/instrument",
+  "parent": "xercamusic:item/instrument_string",
     "textures": {
         "layer0": "xercamusic:item/instruments/lyre"
+    },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [85, 0, 0],
+      "translation": [-2.75, 0.5, 4.75]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [85, 0, 0],
+      "translation": [-3.25, 0.25, 5]
+    },
+    "firstperson_righthand": {
+      "rotation": [0, 0, 0]
     }
-}
+  }
+  }

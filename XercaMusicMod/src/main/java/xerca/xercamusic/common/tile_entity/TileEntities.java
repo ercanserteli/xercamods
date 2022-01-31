@@ -23,6 +23,5 @@ public class TileEntities {
             event.getRegistry().register(TileEntityType.Builder.create(TileEntityMetronome::new, Blocks.BLOCK_METRONOME).build(null).setRegistryName(XercaMusic.MODID, "metronome"));
             event.getRegistry().register(TileEntityType.Builder.create(TileEntityMusicBox::new, Blocks.MUSIC_BOX).build(null).setRegistryName(XercaMusic.MODID, "music_box"));
         }
-
     }
 }

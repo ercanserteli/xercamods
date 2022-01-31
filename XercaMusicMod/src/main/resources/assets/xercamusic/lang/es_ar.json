@@ -17,6 +17,10 @@
   "item.xercamusic.cello": "Violonchelo",
   "item.xercamusic.drum_kit": "Kit de batería",
   "item.xercamusic.cymbal": "Platillo",
+  "item.xercamusic.oboe": "Oboe",
+  "item.xercamusic.redstone_guitar": "Guitarra Redstone",
+  "item.xercamusic.french_horn": "Trompa",
+  "item.xercamusic.bass_guitar": "Bajo Redstone",
 
   "block.xercamusic.block_metronome": "Metrónomo",
   "block.xercamusic.music_box": "Caja musical",
@@ -43,5 +47,6 @@
   "note.hideNeighborsButton": "N",
   "note.toggleTooltip": "Alternar hojas vecinas",
   "note.lockTooltip": "Definir instrumento de previsualización",
-  "note.previewTooltip": "Previsualizar música"
+  "note.previewTooltip": "Previsualizar música",
+  "note.recordTooltip": "Grabar música"
 }

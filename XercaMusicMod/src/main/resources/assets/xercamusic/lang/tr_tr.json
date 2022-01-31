@@ -17,6 +17,10 @@
   "item.xercamusic.drum_kit": "Bateri Seti",
   "item.xercamusic.cymbal": "Büyük Zil",
   "item.xercamusic.item_cello": "Çello",
+  "item.xercamusic.oboe": "Obua",
+  "item.xercamusic.redstone_guitar": "Kızıltaş Gitar",
+  "item.xercamusic.french_horn": "Korno",
+  "item.xercamusic.bass_guitar": "Bas gitar",
 
   "block.xercamusic.block_metronome": "Metronom",
   "block.xercamusic.music_box": "Müzik Kutusu",
@@ -40,5 +44,11 @@
   "note.downButton": "▼",
   "note.startPreviewButton": "►",
   "note.stopPreviewButton": "■",
-  "note.hideNeighborsButton": "N"
+  "note.hideNeighborsButton": "N",
+
+  "export.success": "Müzik kağıdı dışa aktarıldı (%1$s)",
+  "export.fail": "Müzik kağıdı dışa aktarılamadı",
+  "import.success": "Müzik kağıdı içe aktarıldı",
+  "import.fail.1": "Hayatta kalma modunda müzik kağıdını içe aktarmak için elinde boş müzik kağıdı olmalı",
+  "import.fail.4": "Komut anlaşılamadı veya müzik kağıdı dosyası okunamadı (%1$s)"
 }

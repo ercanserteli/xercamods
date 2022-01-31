@@ -1,7 +1,8 @@
 package xerca.xercamusic.common.block;
 
 
-import com.sun.javafx.geom.Vec3d;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,12 +13,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import xerca.xercamusic.common.XercaMusic;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
-
-import java.util.List;
 
 public abstract class BlockInstrument extends Block {
     public BlockInstrument(Properties properties) {
@@ -39,7 +40,9 @@ public abstract class BlockInstrument extends Block {
         else{
             ItemStack offhandStack = player.getHeldItem(Hand.values()[(hand.ordinal() + 1)%2]);
             if(!(offhandStack.getItem() instanceof ItemMusicSheet)){
-                XercaMusic.proxy.showInstrumentGui(getItemInstrument());
+                if (worldIn.isRemote) {
+                    ClientStuff.showInstrumentGui(getItemInstrument(), pos);
+                }
                 return ActionResultType.SUCCESS;
             }
         }

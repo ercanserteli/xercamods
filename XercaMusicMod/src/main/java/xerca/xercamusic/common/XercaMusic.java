@@ -1,39 +1,59 @@
 package xerca.xercamusic.common;
 
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.mojang.brigadier.CommandDispatcher;
+
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.ICriterionTrigger;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import xerca.xercamusic.client.ClientProxy;
+import xerca.xercamusic.client.RenderNothingFactory;
 import xerca.xercamusic.common.block.Blocks;
+import xerca.xercamusic.common.data.BlockTags;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.Items;
-import xerca.xercamusic.common.packets.*;
-import xerca.xercamusic.server.ServerProxy;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
+import xerca.xercamusic.common.packets.ExportMusicPacket;
+import xerca.xercamusic.common.packets.ExportMusicPacketHandler;
+import xerca.xercamusic.common.packets.ImportMusicPacket;
+import xerca.xercamusic.common.packets.ImportMusicPacketHandler;
+import xerca.xercamusic.common.packets.ImportMusicSendPacket;
+import xerca.xercamusic.common.packets.ImportMusicSendPacketHandler;
+import xerca.xercamusic.common.packets.MusicBoxUpdatePacket;
+import xerca.xercamusic.common.packets.MusicBoxUpdatePacketHandler;
+import xerca.xercamusic.common.packets.MusicDataRequestPacket;
+import xerca.xercamusic.common.packets.MusicDataRequestPacketHandler;
+import xerca.xercamusic.common.packets.MusicDataResponsePacket;
+import xerca.xercamusic.common.packets.MusicDataResponsePacketHandler;
+import xerca.xercamusic.common.packets.MusicEndedPacket;
+import xerca.xercamusic.common.packets.MusicEndedPacketHandler;
+import xerca.xercamusic.common.packets.MusicUpdatePacket;
+import xerca.xercamusic.common.packets.MusicUpdatePacketHandler;
+import xerca.xercamusic.common.packets.SingleNoteClientPacket;
+import xerca.xercamusic.common.packets.SingleNoteClientPacketHandler;
+import xerca.xercamusic.common.packets.SingleNotePacket;
+import xerca.xercamusic.common.packets.SingleNotePacketHandler;
+import xerca.xercamusic.common.packets.TripleNoteClientPacket;
+import xerca.xercamusic.common.packets.TripleNoteClientPacketHandler;
 
 
 @Mod(XercaMusic.MODID)
@@ -41,7 +61,7 @@ public class XercaMusic
 {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static Proxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+    //public static Proxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
@@ -58,7 +78,13 @@ public class XercaMusic
         NETWORK_HANDLER.registerMessage(msg_id++, MusicEndedPacket.class, MusicEndedPacket::encode, MusicEndedPacket::decode, MusicEndedPacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, MusicBoxUpdatePacket.class, MusicBoxUpdatePacket::encode, MusicBoxUpdatePacket::decode, MusicBoxUpdatePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, SingleNotePacket.class, SingleNotePacket::encode, SingleNotePacket::decode, SingleNotePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id, SingleNoteClientPacket.class, SingleNoteClientPacket::encode, SingleNoteClientPacket::decode, SingleNoteClientPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, SingleNoteClientPacket.class, SingleNoteClientPacket::encode, SingleNoteClientPacket::decode, SingleNoteClientPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ExportMusicPacket.class, ExportMusicPacket::encode, ExportMusicPacket::decode, ExportMusicPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ImportMusicPacket.class, ImportMusicPacket::encode, ImportMusicPacket::decode, ImportMusicPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, ImportMusicSendPacket.class, ImportMusicSendPacket::encode, ImportMusicSendPacket::decode, ImportMusicSendPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, MusicDataRequestPacket.class, MusicDataRequestPacket::encode, MusicDataRequestPacket::decode, MusicDataRequestPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, MusicDataResponsePacket.class, MusicDataResponsePacket::encode, MusicDataResponsePacket::decode, MusicDataResponsePacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, TripleNoteClientPacket.class, TripleNoteClientPacket::encode, TripleNoteClientPacket::decode, TripleNoteClientPacketHandler::handle);
     }
 
     public XercaMusic() {
@@ -69,15 +95,19 @@ public class XercaMusic
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
+    
+    @OnlyIn(Dist.CLIENT)
+    private void setupClientRendering() {
+    	RenderingRegistry.registerEntityRenderingHandler(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
+    }
 
     private void setup(final FMLCommonSetupEvent event)
     {
         networkRegistry();
-        proxy.preInit();
 
+        setupClientRendering();
+        
         Items.setup();
-
-        proxy.init();
 
         Blocks.setup();
         registerTriggers();
@@ -97,20 +127,9 @@ public class XercaMusic
     }
 
     private void registerTriggers() {
-        Method method;
-        method = ObfuscationReflectionHelper.findMethod(CriteriaTriggers.class, "func_192118_a", ICriterionTrigger.class);
-        method.setAccessible(true);
-
-        for (int i=0; i < Triggers.TRIGGER_ARRAY.length; i++)
+        for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++)
         {
-            try
-            {
-                method.invoke(null, Triggers.TRIGGER_ARRAY[i]);
-            }
-            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-            {
-                e.printStackTrace();
-            }
+            CriteriaTriggers.register(Triggers.TRIGGER_ARRAY[i]);
         }
     }
 
@@ -121,187 +140,26 @@ public class XercaMusic
         public static void registerLootModifiers(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
             event.getRegistry().register(new TempleLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"temple_vog")));
         }
+
+        @SubscribeEvent
+        public static void registerDataEvent(final GatherDataEvent event) {
+            event.getGenerator().addProvider(new BlockTags(event.getGenerator(), event.getExistingFileHelper()));
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = XercaMusic.MODID)
+    public static class ForgeEventHandler {
+        @SubscribeEvent
+        public static void onRegisterCommandEvent(RegisterCommandsEvent event) {
+            CommandDispatcher<CommandSource> commandDispatcher = event.getDispatcher();
+            CommandImport.register(commandDispatcher);
+            CommandExport.register(commandDispatcher);
+        }
     }
 
     // This is for conveniently initializing object holders without annoying the IDE
     @SuppressWarnings({"ConstantConditions", "SameReturnValue"})
     public static <T> T Null() {
         return null;
-    }
-
-    /// Remapping events for migrating saves from the old mod
-
-    @SubscribeEvent
-    public void remapBlocks(final RegistryEvent.MissingMappings<Block> event) {
-        for (RegistryEvent.MissingMappings.Mapping<Block> miss : event.getAllMappings()) {
-            XercaMusic.LOGGER.info("Missing block entry found: " + miss.key);
-            if(miss.key.toString().equals("xercamod:block_metronome")){
-                miss.remap(Blocks.BLOCK_METRONOME);
-            }
-            else if(miss.key.toString().equals("xercamod:music_box")){
-                miss.remap(Blocks.MUSIC_BOX);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void remapItems(final RegistryEvent.MissingMappings<Item> event) {
-        for (RegistryEvent.MissingMappings.Mapping<Item> miss : event.getAllMappings()) {
-            XercaMusic.LOGGER.info("Missing item entry found: " + miss.key);
-            if(miss.key.toString().equals("xercamod:item_metronome")){
-                miss.remap(Blocks.BLOCK_METRONOME.asItem());
-            }
-            else if(miss.key.toString().equals("xercamod:music_box")){
-                miss.remap(Blocks.MUSIC_BOX.asItem());
-            }
-            else if(miss.key.toString().equals("xercamod:item_note")){
-                miss.remap(Items.MUSIC_SHEET);
-            }
-
-            else if(miss.key.toString().equals("xercamod:item_guitar")){
-                miss.remap(Items.GUITAR);
-            }
-            else if(miss.key.toString().equals("xercamod:item_banjo")){
-                miss.remap(Items.BANJO);
-            }
-            else if(miss.key.toString().equals("xercamod:item_drum")){
-                miss.remap(Items.DRUM);
-            }
-            else if(miss.key.toString().equals("xercamod:item_flute")){
-                miss.remap(Items.FLUTE);
-            }
-            else if(miss.key.toString().equals("xercamod:item_god")){
-                miss.remap(Items.GOD);
-            }
-            else if(miss.key.toString().equals("xercamod:item_lyre")){
-                miss.remap(Items.LYRE);
-            }
-            else if(miss.key.toString().equals("xercamod:item_sansula")){
-                miss.remap(Items.SANSULA);
-            }
-            else if(miss.key.toString().equals("xercamod:item_saxophone")){
-                miss.remap(Items.SAXOPHONE);
-            }
-            else if(miss.key.toString().equals("xercamod:item_tubular_bell")){
-                miss.remap(Items.TUBULAR_BELL);
-            }
-            else if(miss.key.toString().equals("xercamod:item_violin")){
-                miss.remap(Items.VIOLIN);
-            }
-            else if(miss.key.toString().equals("xercamod:item_xylophone")){
-                miss.remap(Items.XYLOPHONE);
-            }
-
-            if(miss.key.toString().equals("xercamusic:item_metronome")){
-                miss.remap(Blocks.BLOCK_METRONOME.asItem());
-            }
-            else if(miss.key.toString().equals("xercamusic:item_note")){
-                miss.remap(Items.MUSIC_SHEET);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_guitar")){
-                miss.remap(Items.GUITAR);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_banjo")){
-                miss.remap(Items.BANJO);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_drum")){
-                miss.remap(Items.DRUM);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_flute")){
-                miss.remap(Items.FLUTE);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_god")){
-                miss.remap(Items.GOD);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_lyre")){
-                miss.remap(Items.LYRE);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_sansula")){
-                miss.remap(Items.SANSULA);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_saxophone")){
-                miss.remap(Items.SAXOPHONE);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_tubular_bell")){
-                miss.remap(Items.TUBULAR_BELL);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_violin")){
-                miss.remap(Items.VIOLIN);
-            }
-            else if(miss.key.toString().equals("xercamusic:item_xylophone")){
-                miss.remap(Items.XYLOPHONE);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void remapEntities(final RegistryEvent.MissingMappings<EntityType<?>> event) {
-        for (RegistryEvent.MissingMappings.Mapping<EntityType<?>> miss : event.getAllMappings()) {
-            XercaMusic.LOGGER.info("Missing entity entry found: " + miss.key);
-            if(miss.key.toString().equals("xercamod:music_spirit")){
-                miss.remap(Entities.MUSIC_SPIRIT);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void remapSoundEvents(final RegistryEvent.MissingMappings<SoundEvent> event) {
-        for (RegistryEvent.MissingMappings.Mapping<SoundEvent> miss : event.getAllMappings()) {
-            if(miss.key.getNamespace().equals("xercamod")){
-                if(miss.key.getPath().equals("metronome_set")){
-                    miss.remap(SoundEvents.METRONOME_SET);
-                }
-                else if(miss.key.getPath().equals("tick")){
-                    miss.remap(SoundEvents.TICK);
-                }
-                else{
-                    try{
-                        String[] part = miss.key.getPath().split("(?<=\\D)(?=\\d)");
-                        switch (part[0]) {
-                            case "banjo":
-                                miss.remap(SoundEvents.banjos[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "guitar":
-                                miss.remap(SoundEvents.guitars[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "drum":
-                                miss.remap(SoundEvents.drums[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "lyre":
-                                miss.remap(SoundEvents.lyres[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "flute":
-                                miss.remap(SoundEvents.flutes[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "saxophone":
-                                miss.remap(SoundEvents.saxophones[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "god":
-                                miss.remap(SoundEvents.gods[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "harp_mc":
-                                miss.remap(SoundEvents.harp_mcs[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "sansula":
-                                miss.remap(SoundEvents.sansulas[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "tubular_bell":
-                                miss.remap(SoundEvents.tubular_bells[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "violin":
-                                miss.remap(SoundEvents.violins[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "xylophone":
-                                miss.remap(SoundEvents.xylophones[Integer.parseInt(part[1]) - 1]);
-                                break;
-                            case "cello":
-                                miss.remap(SoundEvents.cellos[Integer.parseInt(part[1]) - 1]);
-                                break;
-                        }
-                    }
-                    catch(PatternSyntaxException ignored){}
-                }
-            }
-        }
     }
 }

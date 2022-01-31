@@ -1,8 +1,23 @@
 package xerca.xercamusic.client;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.UUID;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.glfw.GLFW;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.fonts.Font;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -10,14 +25,20 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedConstants;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.*;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.glfw.GLFW;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.client.gui.widget.Slider;
+import xerca.xercamusic.common.MusicManager;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.ItemInstrument;
@@ -25,115 +46,117 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.MusicUpdatePacket;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-
-@OnlyIn(Dist.CLIENT)
 public class GuiMusicSheet extends Screen {
+    public enum MidiControl {
+        BEGINNING, END, STOP, PREVIEW, RECORD
+    }
+    private static final String[] octaveNames = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
+    private static final ResourceLocation noteGuiLeftTexture = new ResourceLocation(XercaMusic.MODID, "textures/gui/music_sheet_left.png");
     private static final ResourceLocation noteGuiTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/music_sheet.png");
     private static final ResourceLocation instrumentTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/instruments.png");
     private final PlayerEntity editingPlayer;
-    public final static int beatsInTab = 48;
-    public final static int tabAmount = 5;
-    private final static int totalBeats = beatsInTab * tabAmount;
-    private final static int noteImageWidth = 180;
-    private final static int noteImageHeight = 241;
-    private final static int tabHeight = 39;
-    private final static int startingX = 20;
-    private final static int startingY = 36;
-    private final static int endingX = 163;
-    private final static int endingY = 230;
-    private final static int paletteX = 20;
-    private final static int paletteY = 31;
-    private final static int paletteWidth = 5;
+    public final static int beatsInScreen = 91;
+    private final static int noteImageLeftTexX = 175;
+    private final static int noteImageLeftTexY = 51;
+    private final static int noteImageLeftWidth = 81;
+    private final static int noteImageLeftHeight = 205;
+    private final static int noteImageTexX = 0;
+    private final static int noteImageTexY = 44;
+    private final static int noteImageWidth = 256;
+    private final static int noteImageHeight = 210;
+    private final static int noteRegionLeft = 44;
+    private final static int noteRegionTop = 39;
+    private final static int noteRegionRight = 316;
+    private final static int noteRegionBottom = 182;
     private final static int bpmButW = 10;
     private final static int bpmButH = 10;
-    private final static int bpmButX = 155;
-    private final static int bpmButY = 16;
-    private final static int[] octaveColors = {0xFFFF0000, 0xFF0CFF00, 0xFF0059FF, 0xFF7B00FF};
-    private final static int[] octaveColorsTrans = {0x36FF0000, 0x360CFF00, 0x360059FF, 0x367B00FF};
-    private int noteImageX = (this.width - noteImageWidth) / 2;
-    private int noteImageY = 2;
-    private int currentOctave = 1;
+    private final static int bpmButX = 245;
+    private final static int bpmButY = 12;
+    private final static int hlButX = 261;
+    private final static int hlButY = 23;
+    private final static int[] octaveColors = {0xFF5B3200, 0xFFFF0000, 0xFF0AEE00, 0xFF0059FF, 0xFF7B00FF, 0xFFEF00B7, 0xFF00E2DF, 0XFFF4E800};
+    private final static int[] octaveColorsTrans = {0x165B3200,0x16FF0000, 0x160AEE00, 0x160059FF, 0x167B00FF, 0x16EF00B7, 0x1600E2DF, 0X16F4E800};
+    private static final int maxLengthBeats = 32000;
+    private static final byte copyBeginByte = (byte)50;
+    private int noteImageX;
+    private int noteImageLeftX;
+    private int noteImageY;
+    static private int currentOctave = 1;
+    private byte highlightInterval = 12;
     private boolean isSigned;
+    private int generation;
     private boolean gettingSigned;
     private boolean previewing;
     private boolean previewStarted;
+    private boolean recording;
+    private boolean preRecording;
+    private boolean preRecordPlayTick;
     private int previewCursor;
+    private int previewCursorStart;
+    private int oldPreRecordBeat;
     private int editCursor;
     private int editCursorEnd;
     private int selectionStart; // where the first right click happened when selecting
-    private int updateCount;
+    private int tickCount;
     private String noteTitle = "";
     private Button bpmUp;
     private Button bpmDown;
+    private Button octaveUp;
+    private Button octaveDown;
+    private Button hlUp;
+    private Button hlDown;
     private Button buttonSign;
     private Button buttonCancel;
     private Button buttonFinalize;
+    private Button buttonHelp;
+    private Slider sliderTime;
+    private Slider sliderSheetVolume;
+    private Slider sliderNoteVolume;
+    private NoteEditBox noteEditBox;
     private ChangeableImageButton buttonPreview;
+    private ChangeableImageButton buttonRecord;
     private ChangeableImageButton buttonHideNeighbors;
     private LockImageButton buttonLockPrevIns;
-    private NoteSound lastPlayed = null;
     private boolean neighborsHidden = false;
     private boolean prevInsLocked = false;
     private boolean selfSigned = false;
+    private final NoteSound[] notePlaySounds;
+    private final ArrayList<NoteEvent> recordingNotes = new ArrayList<>();
+    private final boolean[] buttonPushStates = new boolean[ItemInstrument.totalNotes];
 
-    private byte[] music;
-    private int length;
+    private final UUID id;
+    private int version;
+    private ArrayList<NoteEvent> notes = new ArrayList<>();
+    private short lengthBeats = 0;
+    private byte bps;
     private int bpm;
-    private byte pause;
-    private boolean dirty = false;
+    private final MusicUpdatePacket.FieldFlag dirtyFlag = new MusicUpdatePacket.FieldFlag();
     private int previewInstrument = -1;
-    private String authorName = null;
+    private long lastMillis = 0;
+    private long cumMillis = 0;
+    private int previewNextNoteID = 0;
+    private NoteEvent currentlyAddedNote;
+    private int sliderPosition = 0;
+    private int maxSliderPosition = 500;
+    private int currentOctavePos = 1;
+    private float volume = 1.f;
+    private static float brushVolume = 0.5f;
+    private static final int maxNoteLength = 60;
+    private boolean helpOn = false;
 
-    private ArrayList<byte[]> neighborMusics = new ArrayList<>();
-    private ArrayList<Integer> neighborPrevInstruments = new ArrayList<>();
-    private ArrayList<NoteSound> neighborLastPlayeds = new ArrayList<>();
+    private static final int maxUndoLength = 16;
+    private final Deque<ArrayList<NoteEvent>> undoStack = new ArrayDeque<>(maxUndoLength);
 
-    private static class Note {
-        private int tab;
-        private int time;
-        private int pitch;
-
-        Note() {
-        }
-
-        Note(int time, int pitch) {
-            this.time = time;
-            this.pitch = pitch;
-            this.tab = time / beatsInTab;
-        }
-
-        int getNoteX() {
-            return time;
-        }
-
-        int getNoteY() {
-            return pitch;
-        }
-
-        void setNoteCoords(int pixelX, int pixelY) {
-            int noteX = (pixelX - startingX) / 3;
-            tab = (pixelY - startingY) / tabHeight;
-            time = noteX + tab * beatsInTab;
-            pitch = 12 - (pixelY - startingY - tab * tabHeight) / 3;
-            //System.out.println("time: "+time+" pitch: "+pitch+" tab: "+tab);
-        }
-
-        int getPixelX(int imageX) {
-            return imageX + (time - tab * beatsInTab) * 3 + startingX;
-        }
-
-        int getPixelY(int imageY) {
-            return imageY + (12 - pitch) * 3 + startingY + tab * tabHeight;
-        }
-    }
+    private final ArrayList<ArrayList<NoteEvent>> neighborNotes = new ArrayList<>();
+    private final ArrayList<Float> neighborVolumes = new ArrayList<>();
+    private final ArrayList<Integer> neighborPreviewNextNoteIDs = new ArrayList<>();
+    private final ArrayList<Integer> neighborPrevInstruments = new ArrayList<>();
+    private final MidiHandler midiHandler;
 
     private int getCurrentOffhandInsIndex(){
         Item offhand = editingPlayer.getHeldItemOffhand().getItem();
         if (offhand instanceof ItemInstrument) {
-            ItemInstrument ins = (ItemInstrument) offhand;
+        	ItemInstrument ins = (ItemInstrument) offhand;
             return ArrayUtils.indexOf(Items.instruments, ins);
         }
         return -1;
@@ -142,43 +165,59 @@ public class GuiMusicSheet extends Screen {
     GuiMusicSheet(PlayerEntity player, CompoundNBT noteTag, ITextComponent title) {
         super(title);
         this.editingPlayer = player;
-        if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("music")) {
-            byte[] nbtMusic = noteTag.getByteArray("music");
-            this.length = noteTag.getInt("length");
-            this.pause = noteTag.getByte("pause");
-            if(pause <= 0 || pause > 20){
-                pause = 5;
+        if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
+            this.id = noteTag.getUniqueId("id");
+            this.version = noteTag.getInt("ver");
+            // Read notes from cache or server using id
+            MusicManager.MusicData data = MusicManagerClient.getMusicData(id, version);
+            if(data != null){
+                notes.addAll(data.notes);
             }
-            this.isSigned = noteTag.getInt("generation") > 0;
+
+            this.lengthBeats = noteTag.getShort("l");
+            this.bps = noteTag.getByte("bps");
+            if(noteTag.contains("vol")){
+                this.volume = noteTag.getFloat("vol");
+            }
+            this.generation = noteTag.getInt("generation");
+            this.isSigned = generation > 0;
             this.noteTitle = noteTag.getString("title");
-            this.authorName = noteTag.getString("author");
+            String authorName = noteTag.getString("author");
             this.prevInsLocked = noteTag.getBoolean("piLocked");
             if(noteTag.contains("prevIns")){
                 this.previewInstrument = noteTag.getByte("prevIns");
             }
-
-            if(this.authorName.equals(player.getName().getString())){
-                this.selfSigned = true;
+            if(noteTag.contains("hl")) {
+                this.highlightInterval = noteTag.getByte("hl");
             }
 
-            this.music =  Arrays.copyOfRange(nbtMusic, 0, totalBeats);
+            if(authorName.equals(player.getName().getString())){
+                this.selfSigned = true;
+            }
         } else {
             this.isSigned = false;
+            this.id = UUID.randomUUID();
+            this.version = 0;
+            dirtyFlag.hasId = true;
+            dirtyFlag.hasVersion = true;
         }
 
-        if (this.music == null) {
-            this.music = new byte[totalBeats];
-            this.length = 0;
-            this.pause = 5;
+        if(this.notes.isEmpty()){
+            this.lengthBeats = 0;
         }
-        this.bpm = 1200 / pause;
-        this.updateCount = 0;
+        if(this.bps == 0){
+            this.bps = 8;
+        }
+        this.bpm = bps*60;
+        this.tickCount = 0;
 
         if(!prevInsLocked) {
             int index = getCurrentOffhandInsIndex();
             if (index != previewInstrument) {
                 previewInstrument = index;
-                dirty = true;
+                if(!isSigned || selfSigned || generation > 1){
+                    dirtyFlag.hasPrevIns = true;
+                }
             }
         }
 
@@ -192,6 +231,67 @@ public class GuiMusicSheet extends Screen {
         if(added){
             addNeighborSheet(getStackInSlot(currentSlot + 2));
         }
+
+        this.midiHandler = new MidiHandler(this::startSound, this::endSound, this::midiControlCommand);
+        midiHandler.currentOctave = currentOctave;
+        this.notePlaySounds = new NoteSound[ItemInstrument.totalNotes];
+    }
+
+    private void startSound(MidiHandler.MidiData data){
+        int noteId = data.noteId;
+        byte volume = (byte)(data.volume*128.f);
+        startSound(noteId, volume);
+    }
+
+    private void startSound(int noteId, byte volume) {
+        if(noteId >= 0 && noteId < buttonPushStates.length && !buttonPushStates[noteId]) {
+            buttonPushStates[noteId] = true;
+            int note = ItemInstrument.idToNote(noteId);
+            for(NoteEvent noteEvent : recordingNotes){
+                if(noteEvent.note == note){
+                    return;
+                }
+            }
+
+            ItemInstrument.InsSound noteSound;
+            if(previewInstrument >= 0 && previewInstrument < Items.instruments.length){
+                ItemInstrument ins = Items.instruments[previewInstrument];
+                noteSound = ins.getSound(note);
+            }
+            else {
+                noteSound = SoundEvents.fakeHarpIns.getSound(note);
+            }
+            if(noteSound == null){
+                return;
+            }
+            notePlaySounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, editingPlayer.getPosX(), editingPlayer.getPosY(), editingPlayer.getPosZ(), ((float)volume)/128.f, noteSound.pitch));
+            if(recording) {
+                NoteEvent newNote = new NoteEvent((byte)note, (short)(Math.max(0, previewCursor-1)), volume, (byte)1);
+                addRecordingNote(newNote);
+                previewNextNoteID++;
+                dirtyFlag.hasNotes = true;
+                dirtyFlag.hasLength = true;
+            }
+        }
+    }
+
+    private void endSound(int noteId){
+        if(noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
+            buttonPushStates[noteId] = false;
+            if (notePlaySounds[noteId] != null) {
+                notePlaySounds[noteId].stopSound();
+                notePlaySounds[noteId] = null;
+            }
+            if(recording) {
+                int note = ItemInstrument.idToNote(noteId);
+                for(int i=0; i<recordingNotes.size(); i++){
+                    if(recordingNotes.get(i).note == note){
+                        recordingNotes.remove(i);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -201,11 +301,22 @@ public class GuiMusicSheet extends Screen {
 
     private boolean addNeighborSheet(ItemStack neighbor){
         if(!neighbor.isEmpty() && neighbor.getItem() instanceof ItemMusicSheet){
-            int neighbor_pause = ItemMusicSheet.getPause(neighbor);
-            if(neighbor_pause == pause){
-                neighborMusics.add(ItemMusicSheet.getMusic(neighbor));
-                neighborPrevInstruments.add(ItemMusicSheet.getPrevInstrument(neighbor));
-                neighborLastPlayeds.add(null);
+            int neighborBPS = ItemMusicSheet.getBPS(neighbor);
+            if(neighborBPS == bps){
+                CompoundNBT tag = neighbor.getTag();
+                if(tag != null && tag.contains("id") && tag.contains("ver")) {
+                    UUID id = tag.getUniqueId("id");
+                    int ver = tag.getInt("ver");
+                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                        if(data != null){
+                            neighborNotes.add((ArrayList<NoteEvent>) data.notes.clone());
+                            neighborPrevInstruments.add(ItemMusicSheet.getPrevInstrument(neighbor));
+                            neighborPreviewNextNoteIDs.add(-1);
+                            neighborVolumes.add(ItemMusicSheet.getVolume(neighbor));
+                        }
+                    });
+                }
                 return true;
             }
         }
@@ -225,110 +336,233 @@ public class GuiMusicSheet extends Screen {
      */
     @Override
     public void init() {
-        noteImageX = (this.width - noteImageWidth) / 2;
+        noteImageX = ((this.width - (noteImageWidth + noteImageLeftWidth)) / 2) + noteImageLeftWidth;
+        noteImageLeftX = noteImageX - noteImageLeftWidth;
         noteImageY = 2;
         if (!this.isSigned) {
-            this.bpmUp = this.addButton(new Button(noteImageX + bpmButX, noteImageY + bpmButY, bpmButW, bpmButH, new TranslationTextComponent("note.upButton"), button -> {
+            this.buttonSign = this.addButton(new Button( noteImageLeftX + 112, noteImageY + noteImageHeight, 98, 20, new TranslationTextComponent("note.signButton"), button -> {
                 if (!isSigned) {
-                    dirty = true;
-                    if (pause == 20) {
-                        pause -= 5;
-                    } else if (pause == 15) {
-                        pause -= 3;
-                    } else if (pause >= 8) {
-                        pause -= 2;
-                    } else if (pause >= 2) {
-                        pause--;
-                    }
-                    bpm = 1200 / pause;
-                }
-            }));
-
-            this.bpmDown = this.addButton(new Button(noteImageX + bpmButX, noteImageY + bpmButY + 1 + bpmButH, bpmButW, bpmButH, new TranslationTextComponent("note.downButton"), button -> {
-                if (!isSigned) {
-                    dirty = true;
-                    if (pause <= 5) {
-                        pause++;
-                    } else if (pause <= 10) {
-                        pause += 2;
-                    } else if (pause == 12) {
-                        pause += 3;
-                    } else if (pause == 15) {
-                        pause += 5;
-                    }
-                    bpm = 1200 / pause;
-                }
-            }));
-            this.buttonSign = this.addButton(new Button( noteImageX - 100, 100, 98, 20, new TranslationTextComponent("note.signButton"), button -> {
-                if (!isSigned) {
-                    //System.out.println("Sign button pressed!");
                     gettingSigned = true;
                     updateButtons();
                 }
-
             }));
-            this.buttonFinalize = this.addButton(new Button( noteImageX - 100, 100, 98, 20, new TranslationTextComponent("note.finalizeButton"), button -> {
+            this.buttonFinalize = this.addButton(new Button( noteImageLeftX + 112, 145, 98, 20, new TranslationTextComponent("note.finalizeButton"), button -> {
                 if (!isSigned) {
-                    //this.sendBookToServer(true);
-                    dirty = true;
+                    dirtyFlag.hasSigned = true;
+                    dirtyFlag.hasTitle = true;
                     isSigned = true;
-                    minecraft.displayGuiScreen(null);
+                    if(minecraft != null){
+                        minecraft.displayGuiScreen(null);
+                    }
                 }
-
             }));
-            this.buttonCancel = this.addButton(new Button( noteImageX - 100, 130, 98, 20, new TranslationTextComponent("gui.cancel"), button -> {
+            this.buttonCancel = this.addButton(new Button( noteImageLeftX + 112, 170, 98, 20, new TranslationTextComponent("gui.cancel"), button -> {
                 if (!isSigned) {
-                    //this.sendBookToServer(true);
                     gettingSigned = false;
                     updateButtons();
                 }
-
             }));
         }
-        this.buttonPreview = this.addButton(new ChangeableImageButton(noteImageX + 67, 23, 16, 16, 224, 0, 16, noteGuiTextures, button -> {
-            if (!previewing) {
-                startPreview();
-            } else {
-                stopPreview();
-            }
+        this.buttonPreview = this.addButton(new ChangeableImageButton(noteImageLeftX + 50, 16, 16, 16, 224, 0, 16, noteGuiTextures, button -> {
+            previewButton();
         }));
 
-        this.buttonHideNeighbors = this.addButton(new ChangeableImageButton( noteImageX + 87, 23, 16, 16, 224, 32, 16, noteGuiTextures, button -> {
+        this.buttonRecord = this.addButton(new ChangeableImageButton(noteImageLeftX + 70, 16, 16, 16, 176, 0, 16, noteGuiTextures, button -> {
+            recordButton();
+        }));
+
+        this.buttonHideNeighbors = this.addButton(new ChangeableImageButton(noteImageLeftX + 90, 16, 16, 16, 192, 0, 16, noteGuiTextures, button -> {
             neighborsHidden = !neighborsHidden;
-            if(neighborsHidden){
-                this.buttonHideNeighbors.setTexStarts(240,32);
-            }else{
-                this.buttonHideNeighbors.setTexStarts(224,32);
+            if (neighborsHidden) {
+                this.buttonHideNeighbors.setTexStarts(208, 0);
+            } else {
+                this.buttonHideNeighbors.setTexStarts(192, 0);
             }
         }));
 
-        this.buttonLockPrevIns = this.addButton(new LockImageButton( noteImageX + 107, 23, 16, 16, previewInstrument*16 +16, 0, 16, instrumentTextures, button -> {
-            prevInsLocked = !prevInsLocked;
-            dirty = true;
-            if(!prevInsLocked){
-                int index = getCurrentOffhandInsIndex();
-                if (index != previewInstrument) {
-                    previewInstrument = index;
-                    this.buttonLockPrevIns.setTexStarts(previewInstrument*16 +16, 0);
+        this.buttonLockPrevIns = this.addButton(new LockImageButton( noteImageLeftX + 110, 16, 16, 16, previewInstrument*16 + 16, 32*((previewInstrument+1)/16), 16, instrumentTextures, button -> {
+            if(!isSigned || selfSigned || generation > 1){
+                prevInsLocked = !prevInsLocked;
+                dirtyFlag.hasPrevInsLocked = true;
+                if(!prevInsLocked){
+                    int index = getCurrentOffhandInsIndex();
+                    if (index != previewInstrument) {
+                        previewInstrument = index;
+                        this.buttonLockPrevIns.setTexStarts(previewInstrument*16 + 16, 32*((previewInstrument+1)/16));
+                        dirtyFlag.hasPrevIns = true;
+                    }
                 }
             }
         }));
+
+        this.bpmUp = this.addButton(new Button(noteImageLeftX + bpmButX, noteImageY + bpmButY, bpmButW, bpmButH, new TranslationTextComponent("note.upButton"), button -> {
+            if (!isSigned || selfSigned || generation > 1) {
+                if(hasShiftDown()){
+                    int mult = hasControlDown() ? 3 : 2;
+                    if(bps*mult <= 50){
+                        pushUndo();
+
+                        bps *= mult;
+                        dirtyFlag.hasBps = true;
+                        previewing = false;
+                        previewCursor = previewCursorStart;
+                        for(NoteEvent note : notes){
+                            note.time *= mult;
+                            note.length = (byte)Math.min(maxNoteLength, note.length*mult);
+                        }
+                        updateLength();
+                    }
+                }
+                else {
+                    if(bps < 50){
+                        bps ++;
+                        dirtyFlag.hasBps = true;
+                        cumMillis *= (float)(bps-1)/(float)bps;
+                    }
+                }
+                bpm = 60*bps;
+            }
+        }));
+        this.bpmDown = this.addButton(new Button(noteImageLeftX + bpmButX, noteImageY + bpmButY + 1 + bpmButH, bpmButW, bpmButH, new TranslationTextComponent("note.downButton"), button -> {
+            if (!isSigned || selfSigned || generation > 1) {
+                if(hasShiftDown()){
+                    float mult = hasControlDown() ? 0.33f : 0.5f;
+                    if(Math.round(bps*mult) >= 1){
+                        pushUndo();
+
+                        bps = (byte)Math.round(bps*mult);
+                        dirtyFlag.hasBps = true;
+                        previewing = false;
+                        previewCursor = previewCursorStart;
+                        for(NoteEvent note : notes){
+                            note.time = (short)Math.round(note.time*mult);
+                            note.length = (byte)Math.max(Math.round(note.length*mult), 1);
+                        }
+                        updateLength();
+                        removeDuplicates();
+                    }
+                }
+                else {
+                    if(bps > 1){
+                        bps --;
+                        dirtyFlag.hasBps = true;
+                        cumMillis *= (float)(bps+1)/(float)bps;
+                    }
+                }
+                bpm = 60*bps;
+            }
+        }));
+
+        this.octaveUp = this.addButton(new Button(noteImageLeftX + 15, noteImageY + 30, bpmButW, bpmButH, new TranslationTextComponent("note.upButton"), button -> {
+            if(currentOctavePos < 4){
+                currentOctavePos ++;
+            }
+        }));
+
+        this.octaveDown = this.addButton(new Button(noteImageLeftX + 15, noteImageY + noteRegionBottom, bpmButW, bpmButH, new TranslationTextComponent("note.downButton"), button -> {
+            if(currentOctavePos > 0){
+                currentOctavePos --;
+            }
+        }));
+
+        this.sliderTime = this.addButton(new Slider(noteImageLeftX + noteRegionLeft, noteImageY + noteRegionBottom + 4, noteRegionRight-noteRegionLeft, 10,
+                StringTextComponent.EMPTY, StringTextComponent.EMPTY, 0, 1, 0, false, false, b -> {}, (slider) -> {
+            sliderPosition = (int)(slider.sliderValue * (double)maxSliderPosition);
+        }));
+
+        this.sliderSheetVolume = this.addButton(new Slider(noteImageLeftX + noteRegionRight - 55, noteImageY + 12, 54, 10,
+                new StringTextComponent("S Vol "), StringTextComponent.EMPTY, 0, 100, volume*100.f, false, true, b -> {}, (slider) -> {
+            if(!isSigned || selfSigned || generation > 1) {
+                volume = ((float) slider.sliderValue);
+                dirtyFlag.hasVolume = true;
+            }
+        }));
+
+        this.sliderNoteVolume = this.addButton(new Slider(noteImageLeftX + 130, noteImageY + 12, 54, 10,
+                new StringTextComponent("N Vol "), StringTextComponent.EMPTY, 0, 100, brushVolume*100.f, false, true, b -> {}, (slider) -> {
+            if(!isSigned) {
+                brushVolume = ((float) slider.sliderValue);
+            }
+        }));
+
+        this.hlDown = this.addButton(new Button(noteImageLeftX + hlButX, noteImageY + hlButY, bpmButW, bpmButH, new TranslationTextComponent("note.leftButton"), button -> {
+            if((!isSigned || selfSigned || generation > 1) && highlightInterval > 1){
+                highlightInterval --;
+                dirtyFlag.hasHlInterval = true;
+            }
+        }));
+        this.hlUp = this.addButton(new Button(noteImageLeftX + hlButX + 44, noteImageY + hlButY, bpmButW, bpmButH, new TranslationTextComponent("note.rightButton"), button -> {
+            if((!isSigned || selfSigned || generation > 1) && highlightInterval < 24){
+                highlightInterval ++;
+                dirtyFlag.hasHlInterval = true;
+            }
+        }));
+
+        this.noteEditBox = this.addButton(new NoteEditBox(0, 0, 70, 55, StringTextComponent.EMPTY));
+
+        this.buttonHelp = this.addButton(new Button(noteImageLeftX + noteRegionRight + 30, noteImageY + bpmButY, 20, 20, new StringTextComponent("?"), button -> {
+            toggleHelp();
+        }));
+
         updateButtons();
+
+        updateLength();
+    }
+
+    private void previewButton() {
+        if (!previewing) {
+            startPreview();
+        } else {
+            stopPreview();
+        }
+    }
+
+    private void recordButton() {
+        if(!recording && !preRecording){
+            startPreRecording();
+        }
+        else{
+            stopRecording();
+        }
     }
 
     private void updateButtons() {
         if (!this.isSigned) {
-            this.bpmDown.visible = this.bpmUp.visible = !this.gettingSigned;
             this.buttonSign.visible = !this.gettingSigned;
+            this.buttonSign.active = !helpOn && (!this.recording && !this.preRecording);
             this.buttonCancel.visible = this.gettingSigned;
             this.buttonFinalize.visible = this.gettingSigned;
             this.buttonFinalize.active = !this.noteTitle.trim().isEmpty();
         }
+        this.bpmDown.visible = this.bpmUp.visible = !this.gettingSigned && (!this.isSigned || this.selfSigned || this.generation > 1);
+        this.bpmDown.active = this.bpmUp.active = (!this.recording && !this.preRecording);
         this.buttonPreview.visible = !this.gettingSigned;
-        this.buttonLockPrevIns.visible = true;
-        this.buttonLockPrevIns.active = !this.isSigned;
+        this.buttonPreview.active = (!this.recording && !this.preRecording);
+        this.buttonLockPrevIns.visible =  !this.gettingSigned;
+        this.buttonLockPrevIns.active = (!this.isSigned || this.selfSigned || this.generation > 1) && (!this.recording && !this.preRecording);
+        this.sliderSheetVolume.visible =  !this.gettingSigned;
+        this.sliderSheetVolume.active = (!this.isSigned || this.selfSigned || this.generation > 1) && (!this.recording && !this.preRecording);
+        this.noteEditBox.visible = false;
+        this.noteEditBox.active = false;
+        this.octaveDown.visible =  !this.gettingSigned;
+        this.octaveUp.visible =  !this.gettingSigned;
+        this.sliderTime.visible =  !this.gettingSigned;
+        this.sliderTime.active =  (!this.recording && !this.preRecording);
+        this.hlUp.visible =  !this.gettingSigned && (!this.isSigned || this.selfSigned || this.generation > 1);
+        this.hlUp.active = (!this.isSigned || this.selfSigned || this.generation > 1) && (!this.recording && !this.preRecording);
+        this.hlDown.visible =  !this.gettingSigned && (!this.isSigned || this.selfSigned || this.generation > 1);
+        this.hlDown.active = (!this.isSigned || this.selfSigned || this.generation > 1) && (!this.recording && !this.preRecording);
+        this.sliderNoteVolume.active = (this.sliderNoteVolume.visible = !this.isSigned && !this.gettingSigned) && (!this.recording && !this.preRecording);
+        this.buttonHelp.active = (this.buttonHelp.visible = !this.isSigned && !this.gettingSigned) && (!this.recording && !this.preRecording);
+        this.buttonHideNeighbors.visible = (this.neighborNotes.size() > 0) && !this.gettingSigned;
+        this.buttonHideNeighbors.active = (!this.recording && !this.preRecording);
+        this.buttonRecord.visible = !this.gettingSigned && !this.isSigned;
+        this.buttonRecord.active = this.recording || this.preRecording || !this.previewing;
+    }
 
-        this.buttonHideNeighbors.visible = this.neighborMusics.size() > 0;
+    private void toggleHelp() {
+        helpOn = !helpOn;
+        updateButtons();
     }
 
     /**
@@ -337,428 +571,945 @@ public class GuiMusicSheet extends Screen {
     @Override
     public void tick() {
         super.tick();
-        ++this.updateCount;
-        if (previewing) {
-            if (updateCount % this.pause == 0) {
-                previewStarted = true;
-                if (previewCursor >= length ||(editCursorEnd != editCursor && previewCursor > editCursorEnd)) {
-                    stopPreview();
-                    return;
-                }
-                playPrevSound();
-                previewCursor++;
-            }
+        ++this.tickCount;
+    }
+
+    private void playMetronomeTick(){
+        DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+                ClientStuff.playNote(SoundEvents.TICK, editingPlayer.getPosX(), editingPlayer.getPosY(), editingPlayer.getPosZ(), SoundCategory.PLAYERS, 1.0f, 0.975f + editingPlayer.world.rand.nextFloat()*0.05f, (byte)-1));
+    }
+
+    private NoteSound playSound(NoteEvent event, int previewInstrument){
+        return playSound(event, previewInstrument, volume);
+    }
+
+    private NoteSound playSound(NoteEvent event, int previewInstrument, float sheetVolume){
+        if(event.note < ItemInstrument.minNote || event.note > ItemInstrument.maxNote){
+            XercaMusic.LOGGER.warn("Note is invalid: " + event.note);
+            return null;
         }
-    }
 
-    private void playSound(int note, int previewInstrument){
-        playSound(note, previewInstrument, -1);
-    }
-
-    private void playSound(int note, int previewInstrument, int neighborId){
-        SoundEvent noteSound;
+        ItemInstrument.InsSound insSound;
         if(previewInstrument >= 0 && previewInstrument < Items.instruments.length){
             ItemInstrument ins = Items.instruments[previewInstrument];
-            noteSound = ins.getSound(note);
-
-            if(ins.shouldCutOff){
-                if(neighborId >= 0 && neighborId < neighborLastPlayeds.size() && neighborLastPlayeds.get(neighborId) != null){
-                    neighborLastPlayeds.get(neighborId).stopSound();
-                }
-                else if(lastPlayed != null){
-                    lastPlayed.stopSound();
-                }
-            }
-        }else{
-            noteSound = SoundEvents.harp_mcs[note];
+            insSound = ins.getSound(event.note);
         }
-        NoteSound sound = XercaMusic.proxy.playNote(noteSound, editingPlayer.getPosX(), editingPlayer.getPosY(), editingPlayer.getPosZ());
-
-        if(neighborId >= 0 && neighborId < neighborLastPlayeds.size()){
-            neighborLastPlayeds.set(neighborId, sound);
-        }else{
-            lastPlayed = sound;
+        else {
+            insSound = SoundEvents.fakeHarpIns.getSound(event.note);
         }
+        if(insSound == null){
+            return null;
+        }
+
+        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+                ClientStuff.playNote(insSound.sound, editingPlayer.getPosX(), editingPlayer.getPosY(), editingPlayer.getPosZ(), volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length)));
     }
 
-    private void playPrevSound() {
-        if (music[previewCursor] != 0 && music[previewCursor] <= 48) {
-            playSound(music[previewCursor] - 1, previewInstrument);
+    private int beatsToTicks(int beats){
+        return Math.round(((float)beats) * 20.0f / ((float)bps));
+    }
+
+    private void playPreviewSound(int curStart, int curEnd) {
+        if(previewNextNoteID < notes.size()) {
+            NoteEvent event = notes.get(previewNextNoteID);
+            while (event.time >= curStart && event.time < curEnd) {
+                if(!recordingNotes.contains(event)){
+                    playSound(event, previewInstrument);
+                }
+                previewNextNoteID++;
+                if (previewNextNoteID >= notes.size()) {
+                    break;
+                }
+                event = notes.get(previewNextNoteID);
+            }
         }
 
         // Play neighbors too
         if(!neighborsHidden){
-            for(int i = 0; i < neighborMusics.size(); i++){
-                byte[] m = neighborMusics.get(i);
-                int ins = neighborPrevInstruments.get(i);
-                if(previewCursor < m.length && m[previewCursor] != 0 && m[previewCursor] <= 48){
-                    playSound(m[previewCursor] - 1, ins, i);
+            for(int i = 0; i < neighborNotes.size(); i++){
+                ArrayList<NoteEvent> nn = neighborNotes.get(i);
+                int nPrevNoteID = neighborPreviewNextNoteIDs.get(i);
+                if(nPrevNoteID >= 0 && nPrevNoteID < nn.size()){
+                    NoteEvent n = nn.get(nPrevNoteID);
+                    int ins = neighborPrevInstruments.get(i);
+                    while (n.time >= curStart && n.time < curEnd) {
+                        playSound(n, ins, neighborVolumes.get(i));
+                        nPrevNoteID++;
+                        if (nPrevNoteID >= nn.size()) {
+                            break;
+                        }
+                        n = nn.get(nPrevNoteID);
+                    }
+                    neighborPreviewNextNoteIDs.set(i, nPrevNoteID);
                 }
             }
         }
     }
 
     private void drawSigning(MatrixStack matrixStack) {
-        int i = noteImageX;
+        int i = noteImageLeftX;
         int j = noteImageY;
 
-        fill(matrixStack, i + 30, j + 30, i + 150, j + 150, 0xFFFFFFFF);
-        String s = this.noteTitle;
+        final int left = i + 100;
+        final int top = j + 40;
+        final int width = 120;
+        final int height = 100;
+        fill(matrixStack, left, top, left + width, top + height, 0xFFFFFFFF);
+        String titleStr = this.noteTitle;
 
         if (!this.isSigned) {
-            if (this.updateCount / 6 % 2 == 0) {
-                s = s + "" + TextFormatting.BLACK + "_";
+            if (this.tickCount / 6 % 2 == 0) {
+                titleStr = titleStr + "" + TextFormatting.BLACK + "_";
             } else {
-                s = s + "" + TextFormatting.GRAY + "_";
+                titleStr = titleStr + "" + TextFormatting.GRAY + "_";
             }
         }
-        String s1 = I18n.format("note.editTitle");
-        int k = this.font.getStringWidth(s1);
-        this.font.drawString(matrixStack, s1, i + 36 + (116 - k) / 2.0f, j + 16 + 16, 0);
-        int l = this.font.getStringWidth(s);
-        this.font.drawString(matrixStack, s, i + 36 + (116 - l) / 2.0f, j + 48, 0);
-        String s2 = I18n.format("note.byAuthor", this.editingPlayer.getName().getString());
-        int i1 = this.font.getStringWidth(s2);
-        this.font.drawString(matrixStack, TextFormatting.DARK_GRAY + s2, i + 36 + (116 - i1) / 2, j + 48 + 10, 0);
-        this.font.func_238418_a_(new TranslationTextComponent("note.finalizeWarning"), i + 36, j + 80, 116, 0);
+        String writeTitleStr = I18n.format("note.editTitle");
+        int k = this.font.getStringWidth(writeTitleStr);
+        this.font.drawString(matrixStack, writeTitleStr, left + (width - k) / 2.0f, top + 16, 0);
+        int l = this.font.getStringWidth(titleStr);
+        this.font.drawString(matrixStack, titleStr, left + (width - l) / 2.0f, top + 30, 0);
+        String authorStr = I18n.format("note.byAuthor", this.editingPlayer.getName().getString());
+        int i1 = this.font.getStringWidth(authorStr);
+        this.font.drawString(matrixStack, TextFormatting.DARK_GRAY + authorStr, left + (116 - i1) / 2, top + 42, 0);
+        this.font.func_238418_a_(new TranslationTextComponent("note.finalizeWarning"), left + 10, top + 60, 116, 0); //TODO: Doesn't wordwrap.
+    }
+
+    private int noteToPixelX(int noteX) {
+        return noteImageLeftX + noteRegionLeft + noteX*3;
     }
 
     private void drawCursor(MatrixStack matrixStack, int cursorX, int color){
-        Note note = new Note(cursorX, 11);
-        int x = note.getPixelX(noteImageX);
-        int y = note.getPixelY(noteImageY);
-        fill(matrixStack, x + 1, y, x + 2, y + 36, color);
+        if(inScreen(cursorX)){
+            int x = noteToPixelX(cursorX - sliderPosition);
+            int y = noteImageY + noteRegionTop;
+
+            fill(matrixStack, x + 1, y, x + 2, y + 48*3, color);
+        }
+    }
+
+    public void midiControlCommand(MidiControl controlType) {
+        switch (controlType){
+            case BEGINNING: {
+                if(!previewing && !recording && !preRecording){
+                    editCursor = 0;
+                    editCursorEnd = 0;
+                    if(!inScreen(editCursor)){
+                        setSliderPos(editCursor);
+                    }
+                }
+                break;
+            }
+            case END: {
+                if(!previewing && !recording && !preRecording){
+                    editCursor = lengthBeats-1;
+                    editCursorEnd = lengthBeats-1;
+                    if(!inScreen(editCursor)){
+                        setSliderPos(editCursor);
+                    }
+                }
+                break;
+            }
+            case STOP: {
+                if(recording || preRecording){
+                    stopRecording();
+                }
+                else if(previewing){
+                    stopPreview();
+                }
+                break;
+            }
+            case PREVIEW: {
+                if(buttonPreview.active){
+                    previewButton();
+                }
+                break;
+            }
+            case RECORD: {
+                if(buttonRecord.active){
+                    recordButton();
+                }
+                break;
+            }
+        }
     }
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        Minecraft.getInstance().getTextureManager().bindTexture(noteGuiTextures);
-        blit(matrixStack, noteImageX, noteImageY, 0, 0, noteImageWidth, noteImageHeight);
-        if (this.gettingSigned) {
-            drawSigning(matrixStack);
-        } else {
-            this.font.drawString(matrixStack, "Tempo", noteImageX + bpmButX - 30, noteImageY + bpmButY, 0xFF000000);
-            this.font.drawString(matrixStack, "" + bpm, noteImageX + bpmButX - 30, noteImageY + bpmButY + 10, 0xFF000000);
-            if (!this.isSigned) {
-                this.font.drawString(matrixStack, "Octave", noteImageX + paletteX, noteImageY + paletteY - 8, 0xFF000000);
-                int j = currentOctave;
-                for (int i = 0; i < 4; i++) {
-                    if (i == j) continue;
-                    fill(matrixStack, noteImageX + paletteX + (i * paletteWidth), noteImageY + paletteY, noteImageX + paletteX + (i * paletteWidth) + paletteWidth, noteImageY + paletteY + paletteWidth, octaveColors[i]);
+        if (previewing || recording || preRecording) {
+            long currentMillis = System.currentTimeMillis();
+
+            long delta = currentMillis - lastMillis;
+            lastMillis = currentMillis;
+            cumMillis += delta;
+            int currentBeat = (int)(cumMillis*bps)/1000;
+            if(preRecording){
+                if(currentBeat > oldPreRecordBeat){
+                    for(int i=0; i<currentBeat-oldPreRecordBeat; i++){
+                        if(preRecordPlayTick){
+                            preRecordPlayTick = false;
+                            playMetronomeTick();
+                        }
+                        else{
+                            preRecordPlayTick = true;
+                        }
+                    }
+                    if((currentBeat % 8 == 0 && cumMillis > 1500) || (currentBeat % 4 == 0 && cumMillis > 1950)){
+                        startRecording();
+                    }
+                    oldPreRecordBeat = currentBeat;
                 }
-                fill(matrixStack, noteImageX + paletteX + (j * paletteWidth) - 1, noteImageY + paletteY - 1, noteImageX + paletteX + (j * paletteWidth) + paletteWidth + 1, noteImageY + paletteY + paletteWidth + 1, 0xFFFFFF00);
-                fill(matrixStack, noteImageX + paletteX + (j * paletteWidth), noteImageY + paletteY, noteImageX + paletteX + (j * paletteWidth) + paletteWidth, noteImageY + paletteY + paletteWidth, octaveColors[j]);
+            }
+            else{
+                // Previewing or recording
+                int oldPreviewCursor = previewCursor;
+                previewCursor = previewCursorStart + currentBeat;
 
-                drawCursor(matrixStack, editCursor, 0xFFAA2222);
+                if(previewCursor > sliderPosition + beatsInScreen - 12 && (lengthBeats > sliderPosition + beatsInScreen || recording)){
+                    setSliderPos(previewCursor - 24);
+                }
 
-                if(editCursor != editCursorEnd){
-                    drawCursor(matrixStack, editCursorEnd, 0xFFAA2222);
-
-                    // Render selection rectangle
-                    int selectionColor = 0x882222AA;
-                    Note beginNote = new Note(editCursor, 11);
-                    Note endNote = new Note(editCursorEnd, 11);
-                    int x1 = beginNote.getPixelX(noteImageX);
-                    int y1 = beginNote.getPixelY(noteImageY);
-                    int x2 = endNote.getPixelX(noteImageX);
-                    int y2 = endNote.getPixelY(noteImageY);
-
-                    if(y1 == y2){
-                        fill(matrixStack, x1 + 1, y1, x2 + 2, y1 + 36, selectionColor);
+                if(oldPreviewCursor != previewCursor){
+                    if (!recording && (previewCursor > lengthBeats || (editCursorEnd != editCursor && previewCursor > editCursorEnd+1))) {
+                        stopPreview();
                     }
                     else{
-                        int x_end = new Note(beatsInTab-1, 11).getPixelX(noteImageX);
-                        int x_begin = new Note(0, 11).getPixelX(noteImageX);
-                        fill(matrixStack, x1 + 1, y1, x_end + 2, y1 + 36, selectionColor);
-                        fill(matrixStack, x_begin + 1, y2, x2 + 2, y2 + 36, selectionColor);
+                        previewStarted = true;
+                        playPreviewSound(oldPreviewCursor, previewCursor);
+                    }
 
-                        for(int y = y1 + tabHeight; y <= y2 - tabHeight; y += tabHeight){
-                            fill(matrixStack, x_begin + 1, y, x_end + 2, y + 36, selectionColor);
+                    if(recording){
+                        for(NoteEvent note : recordingNotes){
+                            if(previewCursor - note.time > 1){
+                                note.length += previewCursor - oldPreviewCursor;
+                                if(note.length > maxNoteLength) {
+                                    note.length = maxNoteLength;
+                                }
+                            }
                         }
                     }
                 }
+            }
+        }
+
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        Minecraft.getInstance().getTextureManager().bindTexture(noteGuiLeftTexture);
+        blit(matrixStack, noteImageLeftX, noteImageY + 7, noteImageLeftTexX, noteImageLeftTexY, noteImageLeftWidth, noteImageLeftHeight);
+        Minecraft.getInstance().getTextureManager().bindTexture(noteGuiTextures);
+        blit(matrixStack, noteImageX, noteImageY, noteImageTexX, noteImageTexY, noteImageWidth, noteImageHeight);
+        if (gettingSigned) {
+            drawSigning(matrixStack);
+        } else {
+            // Draw octave tints
+            int x1 = noteImageLeftX + noteRegionLeft;
+            int x2 = noteImageLeftX + noteRegionRight;
+            for(int i=0; i<4; i++){
+                int y1 = noteImageY + noteRegionTop + (4-i)*12*3;
+                int y2 = noteImageY + noteRegionTop + (3-i)*12*3;
+                fill(matrixStack, x1, y1, x2, y2, octaveColorsTrans[i + currentOctavePos]);
+            }
+
+            // Draw octave lines
+            for(int i=0; i<4; i++){
+                for(int j=0; j<6; j++){
+                    int y = noteImageY + noteRegionBottom - i*36 - j*6;
+                    fill(matrixStack, x1, y-1, x2+1, y, octaveColors[i + currentOctavePos]);
+                }
+            }
+
+            // Draw octave names
+            for(int i=0; i<4; i++){
+                final int x = x1 - 24;
+                final int y = noteImageY + noteRegionBottom - 18 - i*36;
+                if(currentOctave == i + currentOctavePos){
+                    fill(matrixStack, x-10, y-4, x+10, y+12, 0xAAFFFFAA);
+                }
+                drawCenteredString(matrixStack, font, octaveNames[i + currentOctavePos], x, y, octaveColors[i + currentOctavePos]);
+            }
+
+            // Draw measure lines
+            if(highlightInterval > 1){
+                for(int i = sliderPosition; i<sliderPosition + beatsInScreen; i++){
+                    int x = (i - sliderPosition)*3 + noteImageLeftX + noteRegionLeft + 1;
+                    if(i % highlightInterval == 0){
+                        fill(matrixStack, x, noteImageY + noteRegionTop - 1, x+1, noteImageY + noteRegionBottom + 3, 0xFF88796A);
+                    }
+                }
+
+                // Draw measure numbers
+                matrixStack.push();
+                matrixStack.scale(0.5f, 0.5f, 0.5f);
+                for(int i = sliderPosition; i<sliderPosition + beatsInScreen; i++) {
+                    if (i % highlightInterval == 0) {
+                        final int x = (i - sliderPosition) * 3 + noteImageLeftX + noteRegionLeft;
+                        final int y = noteImageY + noteRegionTop - 5;
+                        final String name = ""+((i/highlightInterval)+1);
+                        final int w = font.getStringWidth(name);
+                        font.drawString(matrixStack, name, (x - (w-6.0f)/4.0f)*2.f, y*2, 0xFF444400);
+                    }
+                }
+                matrixStack.pop();
+            }
+
+            this.font.drawString(matrixStack, "M:", noteImageLeftX + hlButX + 14, noteImageY + hlButY + 2, 0xFF000000);
+            this.font.drawString(matrixStack, "" + (highlightInterval > 1 ? highlightInterval : "-"), noteImageLeftX + hlButX + 22, noteImageY + hlButY + 2, 0xFF000000);
+
+            this.font.drawString(matrixStack, "Tempo", noteImageLeftX + bpmButX - 30, noteImageY + bpmButY, 0xFF000000);
+            this.font.drawString(matrixStack, "" + bpm, noteImageLeftX + bpmButX - 30, noteImageY + bpmButY + 10, 0xFF000000);
+            drawCursor(matrixStack, editCursor, 0xFFAA2222);
+            if (!this.isSigned) {
+                if(editCursor != editCursorEnd){
+                    drawCursor(matrixStack, editCursorEnd, 0xFFAA2222);
+                    drawSelectionRect(matrixStack);
+                }
             } else {
                 int k = this.font.getStringWidth(noteTitle);
-                this.font.drawString(matrixStack, noteTitle, (noteImageX + (noteImageWidth - k) / 2.0f), noteImageY + 12, 0xFF000000);
+                this.font.drawString(matrixStack, noteTitle, (noteImageLeftX + (noteImageWidth + noteImageLeftWidth - k) / 2.0f), noteImageY + 14, 0xFF990000);
 
                 if(this.selfSigned){
                     drawCursor(matrixStack, editCursor, 0xFFAA2222);
 
                     if(editCursor != editCursorEnd){
                         drawCursor(matrixStack, editCursorEnd, 0xFFAA2222);
-
-                        // Render selection rectangle
-                        int selectionColor = 0x882222AA;
-                        Note beginNote = new Note(editCursor, 11);
-                        Note endNote = new Note(editCursorEnd, 11);
-                        int x1 = beginNote.getPixelX(noteImageX);
-                        int y1 = beginNote.getPixelY(noteImageY);
-                        int x2 = endNote.getPixelX(noteImageX);
-                        int y2 = endNote.getPixelY(noteImageY);
-
-                        if(y1 == y2){
-                            fill(matrixStack, x1 + 1, y1, x2 + 2, y1 + 36, selectionColor);
-                        }
-                        else{
-                            int x_end = new Note(beatsInTab-1, 11).getPixelX(noteImageX);
-                            int x_begin = new Note(0, 11).getPixelX(noteImageX);
-                            fill(matrixStack, x1 + 1, y1, x_end + 2, y1 + 36, selectionColor);
-                            fill(matrixStack, x_begin + 1, y2, x2 + 2, y2 + 36, selectionColor);
-
-                            for(int y = y1 + tabHeight; y <= y2 - tabHeight; y += tabHeight){
-                                fill(matrixStack, x_begin + 1, y, x_end + 2, y + 36, selectionColor);
-                            }
-                        }
+                        drawSelectionRect(matrixStack);
                     }
                 }
             }
 
             // Neighbor notes
             if(!neighborsHidden) {
-                for (byte[] m : neighborMusics) {
-                    for (int i = 0; i < m.length; i++) {
-                        drawNote(matrixStack, i, m, octaveColorsTrans);
+                for (ArrayList<NoteEvent> nn : neighborNotes) {
+                    for (NoteEvent event : nn) {
+                        drawNote(matrixStack, event, true);
                     }
                 }
             }
 
             // The notes
-            for (int i = 0; i < length; i++) {
-                drawNote(matrixStack, i, music, octaveColors);
+            for (NoteEvent note : notes) {
+                drawNote(matrixStack, note, false);
             }
         }
         if (previewStarted) {
             int i = previewCursor - 1;
 
-            Note note = new Note(i, 11);
-            int x = note.getPixelX(noteImageX);
-            int y = note.getPixelY(noteImageY);
-            fill(matrixStack, x + 1, y, x + 2, y + 36, 0xFFAA8822);
-            if (music[i] != 0) {
-                note = new Note(i, (music[i] - 1) % 12);
-                x = note.getPixelX(noteImageX);
-                y = note.getPixelY(noteImageY);
-                fill(matrixStack, x, y, x + 3, y + 3, 0xFF000000);
-            }
-            //	}
+            drawCursor(matrixStack, i, 0xFFAA8822);
         }
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        if (!gettingSigned && !isSigned && validClick(mouseX - noteImageX, mouseY - noteImageY)) {
-            fill(matrixStack, mouseX - 1, mouseY - 1, mouseX + 2, mouseY + 2, octaveColors[currentOctave]);
-        }
 
-        if(buttonHideNeighbors.isHovered()){
+        if(buttonHideNeighbors.isHovered() || buttonHideNeighbors.isFocused()){
             renderTooltip(matrixStack, new TranslationTextComponent("note.toggleTooltip"), mouseX, mouseY);
         }
-        if(buttonLockPrevIns.isHovered()){
+        else if(buttonLockPrevIns.isHovered() || buttonLockPrevIns.isFocused()){
             renderTooltip(matrixStack, new TranslationTextComponent("note.lockTooltip"), mouseX, mouseY);
         }
-        if(buttonPreview.isHovered()){
+        else if(buttonPreview.isHovered() || buttonPreview.isFocused()){
             renderTooltip(matrixStack, new TranslationTextComponent("note.previewTooltip"), mouseX, mouseY);
+        }
+        else if(buttonRecord.isHovered() || buttonRecord.isFocused()){
+            renderTooltip(matrixStack, new TranslationTextComponent("note.recordTooltip"), mouseX, mouseY);
+        }
+        else if(bpmDown.isHovered() || bpmDown.isFocused() || bpmUp.isHovered() || bpmUp.isFocused()){
+            renderTooltip(matrixStack, new TranslationTextComponent("note.tempoTooltip"), mouseX, mouseY);
+        }
+        else if(hlDown.isHovered() || hlDown.isFocused() || hlUp.isHovered() || hlUp.isFocused()){
+            renderTooltip(matrixStack, new TranslationTextComponent("note.measureTooltip"), mouseX, mouseY);
+        }
+        else if(sliderSheetVolume.isHovered() || sliderSheetVolume.isFocused()){
+            renderTooltip(matrixStack, new TranslationTextComponent("note.sheetVolumeTooltip"), mouseX, mouseY);
+        }
+        else if(sliderNoteVolume.isHovered() || sliderNoteVolume.isFocused()){
+            renderTooltip(matrixStack, new TranslationTextComponent("note.noteVolumeTooltip"), mouseX, mouseY);
+        }
+        else if(buttonHelp.isHovered() || buttonHelp.isFocused()){
+            renderTooltip(matrixStack, new TranslationTextComponent("note.helpTooltip"), mouseX, mouseY);
+        }
+
+        if(helpOn) {
+            int x = noteImageLeftX + 15;
+            int y = noteImageY;
+            fill(matrixStack, x, y, x + 315, y + 220, 0xEE333333);
+            matrixStack.push();
+            matrixStack.scale(1.2f, 1.2f, 1.2f);
+            drawString(matrixStack, font, new TranslationTextComponent("note.helpText0"), (int)((x + 10)/1.2f), (int)((y + 5)/1.2f), 0xFFEEEE11);
+            matrixStack.pop();
+            for(int i=1; i<=19; i++){
+                TranslationTextComponent leftSide = new TranslationTextComponent("note.helpText" + i + "a");
+                TranslationTextComponent rightSide = new TranslationTextComponent("note.helpText" + i + "b");
+                drawString(matrixStack, font, leftSide, x + 10, y + 10 + 10*i, 0xFFEEEE11);
+                drawString(matrixStack, font, rightSide, x + 10 + font.getStringWidth(leftSide.getString()), y + 10 + 10*i, 0xFFEEEEEE);
+            }
         }
     }
 
-    private void drawNote(MatrixStack matrixStack, int i, byte[] music, int[] octaveColors) {
-        if (music[i] != 0) {
-            int value = music[i];
-            int height = (value - 1) % 12;
-            Note note = new Note(i, height);
-            int x = note.getPixelX(noteImageX);
-            int y = note.getPixelY(noteImageY);
-            fill(matrixStack, x, y, x + 3, y + 3, octaveColors[(value - 1) / 12]);
+    private void drawSelectionRect(MatrixStack matrixStack) {
+        if(inScreen(editCursor) || inScreen(editCursorEnd) || (editCursor < sliderPosition && editCursorEnd >= sliderPosition + beatsInScreen)){
+            final int selectionColor = 0x882222AA;
+            int timeDrawBeginning = Math.max(editCursor - sliderPosition, 0);
+            int timeDrawEnd = Math.min(editCursorEnd - sliderPosition, beatsInScreen);
+
+            int x1 = noteToPixelX(timeDrawBeginning);
+            int x2 = noteToPixelX(timeDrawEnd);
+            int y1 = noteImageY + noteRegionTop;
+            int y2 = y1 + 36*4;
+
+            fill(matrixStack, x1 + 1, y1, x2 + 2, y2, selectionColor);
+        }
+    }
+
+    private boolean inScreen(int time){
+        return time >= sliderPosition && time < sliderPosition + beatsInScreen;
+    }
+
+    private static int octaveFromNote(byte note) {
+        return (note - ItemInstrument.minNote) / 12;
+    }
+
+    private void drawNote(MatrixStack matrixStack, NoteEvent event, boolean isNeighbor) {
+        int octave = octaveFromNote(event.note);
+        if((octave >= currentOctavePos && octave < currentOctavePos + 4) && (inScreen(event.time) || inScreen(event.time + event.length))){
+            int timeDrawBeginning = Math.max(event.time - sliderPosition, 0);
+            int timeDrawEnd = Math.min(event.time - sliderPosition + event.length, beatsInScreen);
+
+            int xBegin = noteImageLeftX + noteRegionLeft + timeDrawBeginning*3;
+            int xEnd = noteImageLeftX + noteRegionLeft + timeDrawEnd*3;
+            if(xBegin == xEnd){
+                return;
+            }
+            int xFillBegin = timeDrawBeginning == event.time - sliderPosition ? xBegin + 1 : xBegin;
+            int xFillEnd = timeDrawEnd == event.time - sliderPosition + event.length ? xEnd - 1 : xEnd;
+
+            int y = noteImageY + noteRegionTop + (47 - event.note + ItemInstrument.minNote)*3 + currentOctavePos*36;
+            final int outlineColor = (event == currentlyAddedNote || isNeighbor) ? 0x77000000 : 0xFF000000;
+            int red = event.volume >= 64 ? 255 : event.volume * 4;
+            int green = event.volume < 64 ? 255 : 255 - event.volume * 4;
+            final int fillColor = ((event == currentlyAddedNote || isNeighbor) ? 0x77000000 : 0xFF000000) | red << 16 | green << 8;
+
+            fill(matrixStack, xBegin, y, xEnd, y + 3, outlineColor);
+            fill(matrixStack, xFillBegin, y+1, xFillEnd, y + 2, fillColor);
         }
     }
 
     private void startPreview() {
-        this.previewStarted = false;
-        this.previewing = true;
         this.previewCursor = editCursor;
-        this.updateCount = 0;
-        this.buttonPreview.setTexStarts(240, 0);
+        boolean noteFound = false;
+        for(int i=0; i<notes.size(); i++){
+            if(notes.get(i).time >= previewCursor){
+                previewNextNoteID = i;
+                noteFound = true;
+                break;
+            }
+        }
+        // Only start preview if you find a note to play next
+        if(noteFound){
+            if(!neighborsHidden) {
+                for (int i=0; i<neighborNotes.size(); i++){
+                    ArrayList<NoteEvent> nn = neighborNotes.get(i);
+                    for(int j=0; j<nn.size(); j++){
+                        if(nn.get(j).time >= previewCursor){
+                            neighborPreviewNextNoteIDs.set(i, j);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            this.previewCursorStart = editCursor;
+            this.previewStarted = false;
+            this.previewing = true;
+            this.cumMillis = 0;
+            this.lastMillis = System.currentTimeMillis();
+            this.buttonPreview.setTexStarts(240, 0);
+
+            if(!inScreen(previewCursorStart)){
+                setSliderPos(previewCursorStart);
+            }
+        }
+        updateButtons();
+    }
+
+    private void startPreRecording() {
+        preRecording = true;
+        this.previewCursor = editCursor;
+        for(int i=0; i<notes.size(); i++){
+            if(notes.get(i).time >= previewCursor){
+                previewNextNoteID = i;
+                break;
+            }
+        }
+        if(!neighborsHidden) {
+            for (int i=0; i<neighborNotes.size(); i++){
+                ArrayList<NoteEvent> nn = neighborNotes.get(i);
+                for(int j=0; j<nn.size(); j++){
+                    if(nn.get(j).time >= previewCursor){
+                        neighborPreviewNextNoteIDs.set(i, j);
+                        break;
+                    }
+                }
+            }
+        }
+
+        this.previewCursorStart = editCursor;
+        this.previewStarted = false;
+        this.cumMillis = 0;
+        this.oldPreRecordBeat = 0;
+        this.lastMillis = System.currentTimeMillis();
+        this.buttonRecord.setTexStarts(240, 0);
+
+        if(!inScreen(previewCursorStart)){
+            setSliderPos(previewCursorStart);
+        }
+        updateButtons();
+    }
+
+    private void startRecording() {
+        this.preRecording = false;
+        this.previewing = true;
+        this.recording = true;
+        this.cumMillis = 0;
+        this.lastMillis = System.currentTimeMillis();
+        this.buttonRecord.setTexStarts(240, 0);
+
+        if(!inScreen(previewCursorStart)){
+            setSliderPos(previewCursorStart);
+        }
+        updateButtons();
+    }
+
+    private void stopRecording() {
+        this.preRecording = false;
+        this.previewing = false;
+        this.recording = false;
+        this.previewStarted = false;
+        this.buttonRecord.setTexStarts(176, 0);
+        updateLength();
+        recordingNotes.clear();
+        updateButtons();
+    }
+
+    private void setSliderPos(int time){
+        time = Math.min(Math.max(time, 0), maxSliderPosition);
+
+        sliderTime.setValue((float)(time)/(float)maxSliderPosition);
+        sliderTime.updateSlider();
     }
 
     private void stopPreview() {
         this.previewing = false;
         this.previewStarted = false;
         this.buttonPreview.setTexStarts(224, 0);
+        updateButtons();
     }
 
     private void updateLength() {
-        for (int i = length - 1; i >= 0; i--) {
-            if (this.music[i] != 0) {
-                length = i + 1;
-                return;
-            }
-        }
-        length = 0;
+        updateLength(true);
     }
 
-    /**
-     * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
-     */
+    private void updateLength(boolean updateSliderPos) {
+        lengthBeats = 0;
+        if(!notes.isEmpty()){
+            for(NoteEvent event : notes){
+                lengthBeats = (short)(event.time + event.length) > lengthBeats ? (short)(event.time + event.length) : lengthBeats;
+            }
+
+            if(updateSliderPos) {
+                // Update slider
+                int oldMaxSliderPos = maxSliderPosition;
+                maxSliderPosition = Math.min(Math.max(lengthBeats + beatsInScreen, 680), maxLengthBeats);
+                if(maxSliderPosition > oldMaxSliderPos){
+                    setSliderPos(sliderPosition);
+                }
+                else if(maxSliderPosition < oldMaxSliderPos){
+                    setSliderPos(maxSliderPosition - beatsInScreen);
+                }
+            }
+        }
+    }
+
     @Override
     public boolean mouseClicked(double dmouseX, double dmouseY, int mouseButton) {
-        //System.out.println("Mouse clicked: "+mouseX+", "+mouseY+" with "+mouseButton);
+        if(helpOn) {
+            helpOn = false;
+            return true;
+        }
+
+        // mouseButton: 0 = left click, 1 = right click, 2 = middle click
+        if(super.mouseClicked(dmouseX, dmouseY, mouseButton)){
+            this.setDragging(true);
+            return true;
+        }
+
         int mouseX = (int)Math.round(dmouseX);
         int mouseY = (int)Math.round(dmouseY);
 
         boolean viewingSelfSigned = isSigned && selfSigned;
         boolean composing = !isSigned && !gettingSigned;
 
-        if(composing || viewingSelfSigned){
+        if(!gettingSigned){
             if (mouseButton == 1) {
-                int mx = mouseX - noteImageX;
+                int mx = mouseX - noteImageLeftX;
                 int my = mouseY - noteImageY;
                 if (validClick(mx, my)) {
-                    Note note = new Note();
-                    note.setNoteCoords(mx, my);
-                    selectionStart = editCursorEnd = editCursor = note.getNoteX();
+                    selectionStart = editCursorEnd = editCursor = ((mx - noteRegionLeft)/3) + sliderPosition;
                 }
             }
-            if (mouseButton == 0 && viewingSelfSigned){
+        }
+
+        if(viewingSelfSigned){
+            if (mouseButton == 0){
                 editCursorEnd = editCursor;
             }
         }
         if (composing) {
-            ///1 = right click, 0 = left click
-            if (mouseButton == 0) {
-                int mx = mouseX - noteImageX;
-                int my = mouseY - noteImageY;
-                if (validClick(mx, my)) {
-                    //System.out.println("length: "+length);
-                    Note note = new Note();
-                    note.setNoteCoords(mx, my);
-                    int x = note.getNoteX();
-                    int y = note.getNoteY();
-                    if (y == 12) return false;
-                    byte value = (byte) (y + 1 + (currentOctave * 12));
-                    if (value == this.music[x]) {
-                        changeNote(x, (byte) 0);
-                    } else {
-                        changeNote(x, value);
-                    }
-                    //dirty=true;
+            int mx = mouseX - noteImageLeftX;
+            int my = mouseY - noteImageY;
+            if (validClick(mx, my)) {
+                int nrx = mx - noteRegionLeft;
+                int nry = my - noteRegionTop;
+
+                int time = (nrx / 3) + sliderPosition;
+                int note = 47 - (nry / 3) + ItemInstrument.minNote + currentOctavePos*12;
+                if (mouseButton == 0) {
+                    addNote((byte) note, (short) time);
+                    dirtyFlag.hasNotes = true;
+                    dirtyFlag.hasLength = true;
 
                     editCursorEnd = editCursor;
                 }
-                if (mouseX >= paletteX + noteImageX && mouseX < paletteX + noteImageX + (4 * paletteWidth) && mouseY >= paletteY + noteImageY && mouseY < paletteY + noteImageY + paletteWidth) {
-                    currentOctave = (mouseX - (noteImageX + paletteX)) / paletteWidth;
-                    //System.out.println("Current octave set: "+currentOctave);
-                    editCursorEnd = editCursor;
+                else if (mouseButton == 2) {
+                    int i = findNote((byte) note, (short) time);
+                    if(i >= 0){
+                        NoteEvent event = notes.get(i);
+                        noteEditBox.appear(mouseX, mouseY, event);
+                    }
+                }
+            }
+            else {
+                // Test current octave clicks
+                for(int i=0; i<4; i++) {
+                    final int x = noteRegionLeft - 24;
+                    final int y = noteRegionBottom - 18 - i*36;
+                    if(mx >= x-10 && mx <= x+10 && my >= y-4 && my <= y+12) {
+                        currentOctave =  currentOctavePos + i;
+                        midiHandler.currentOctave = currentOctave;
+                        if(recording) {
+                            recordingNotes.clear();
+                        }
+                        break;
+                    }
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return true;
+    }
+
+    private void pushUndo() {
+        if(undoStack.size() >= maxUndoLength){
+            undoStack.removeLast();
+        }
+        ArrayList<NoteEvent> stackNotes = new ArrayList<>(notes.size());
+        for(NoteEvent note : notes) {
+            stackNotes.add(note.clone());
+        }
+        undoStack.push(stackNotes);
+    }
+
+
+    private void addNote(byte note, short time) {
+        addNote(note, time, true);
+    }
+
+    private void addNote(byte note, short time, boolean pushUndo) {
+        if(pushUndo) {
+            pushUndo();
+        }
+        int i = findNote(note, time);
+        if(i < 0){
+            addNote(note, time, (byte)(127.f*brushVolume), (byte)1);
+        }
+        else{
+            notes.remove(i);
+        }
+        updateLength();
+    }
+
+    private void addNote(byte note, short time, byte volume, byte length) {
+        NoteEvent newEvent = new NoteEvent(note, time, volume, length);
+        currentlyAddedNote = newEvent;
+        for(int i=0; i<notes.size(); i++){
+            if(notes.get(i).time > time){
+                notes.add(i, newEvent);
+                return;
+            }
+        }
+        notes.add(newEvent);
+    }
+
+    private void addRecordingNote(NoteEvent noteEvent) {
+        for(int i=0; i<notes.size(); i++){
+            if(notes.get(i).time > noteEvent.time){
+                notes.add(i, noteEvent);
+                recordingNotes.add(noteEvent);
+                return;
+            }
+        }
+        notes.add(noteEvent);
+        recordingNotes.add(noteEvent);
+    }
+
+    private void finishAddingNote() {
+        if(currentlyAddedNote == null){
+            return;
+        }
+        playSound(currentlyAddedNote, previewInstrument);
+        currentlyAddedNote = null;
+        updateLength();
+    }
+
+    private int findNote(byte note, short time) {
+        for(int i=notes.size()-1; i>=0; i--) {
+            NoteEvent event = notes.get(i);
+            if((event.time <= time && event.endTime() >= time) && event.note == note) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        if(this.getListener() != null && this.isDragging()){
+            this.getListener().mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return true;
+        }
+
+        if(this.tickCount < 10) {
+            // This check is for preventing the annoying selection at start problem
+            return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        }
+        int mouseX = (int) Math.round(posX);
+        int mouseY = (int) Math.round(posY);
+
+        int mx = mouseX - noteImageLeftX;
+        int my = mouseY - noteImageY;
+
         // if right button is pressed
         if(mouseButton == 1){
-            // This check is for preventing the annoying selection at start problem
-            if(this.updateCount > 10) {
-                int mouseX = (int) Math.round(posX);
-                int mouseY = (int) Math.round(posY);
-
-                int mx = mouseX - noteImageX;
-                int my = mouseY - noteImageY;
-                if (validClick(mx, my)) {
-                    Note note = new Note();
-                    note.setNoteCoords(mx, my);
-                    int noteX = note.getNoteX();
-                    if (selectionStart > noteX) {
-                        editCursor = noteX;
-                    } else {
-                        editCursorEnd = noteX;
-                    }
+            if (validClick(mx, my)) {
+                int noteX = ((mx - noteRegionLeft)/3) + sliderPosition;
+                if (selectionStart > noteX) {
+                    editCursor = noteX;
+                } else {
+                    editCursorEnd = noteX;
+                }
+            }
+        }
+        else if(mouseButton == 0) {
+            if (currentlyAddedNote != null && validClick(mx, my)) {
+                int time = ((mx - noteRegionLeft)/3) + sliderPosition;
+                if(currentlyAddedNote.time < time && time - currentlyAddedNote.time <= maxNoteLength){
+                    currentlyAddedNote.length = (byte)(time - currentlyAddedNote.time);
                 }
             }
         }
 
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        return true;
     }
 
-    private void changeNote(int x, byte note) {
-        changeNote(x, note, true);
-    }
-
-    private void changeNote(int x, byte note, boolean play) {
-        if (note >= 0 && note <= 48) {
-            music[x] = note;
-            if (note != 0) {
-                if(play){
-                    playSound(note - 1, previewInstrument);
-//                    editingPlayer.world.playSound(editingPlayer, editingPlayer.getPosition(), SoundEvents.harp_mcs[note - 1], SoundCategory.PLAYERS, 3.0f, 1.0f);
-                }
-                if (x > length - 1) {
-                    length = x + 1;
-                }
-            } else if (x == length - 1) {
-                updateLength();
-            }
-            dirty = true;
+    @Override
+    public boolean mouseReleased(double posX, double posY, int mouseButton) {
+        this.setDragging(false);
+        if(noteEditBox.active){
+            noteEditBox.mouseReleased(posX, posY, mouseButton);
+            return true;
         }
+        sliderTime.dragging = false;
+        sliderSheetVolume.dragging = false;
+        sliderNoteVolume.dragging = false;
+        if(mouseButton == 0) {
+            finishAddingNote();
+        }
+
+        return true;
     }
 
     private void putSpace(int x) {
-        if (x == totalBeats - 1) return;
+        if (x == maxLengthBeats - 1) return;
         addEditCursor(1);
-        if (length == 0 || length <= x) {
+        if (lengthBeats == 0 || lengthBeats <= x) {
             return;
         }
-        dirty = true;
-        boolean full = false;
-        int l = length;
-        if (l == totalBeats) {
-            full = true;
-            l--;
-        } else {
-            length++;
+
+        pushUndo();
+        dirtyFlag.hasNotes = true;
+        dirtyFlag.hasLength = true;
+        for(int i=0; i<notes.size(); i++){
+            NoteEvent event = notes.get(i);
+            if(event.time > x) {
+                event.time += 1;
+                if(event.time + event.length > maxLengthBeats) {
+                    notes.remove(i);
+                    i --;
+                }
+            }
         }
-        for (int i = l - 1; i >= x; i--) {
-            music[i + 1] = music[i];
-        }
-        music[x] = 0;
-        if (full) {
-            updateLength();
-        }
+        updateLength();
     }
 
     private void encodeToClipboard(){
-        String encodeBytes = Base64.getEncoder().encodeToString(Arrays.copyOfRange(music, editCursor, editCursorEnd + 1));
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+        ArrayList<NoteEvent> toBeCopied = new ArrayList<>();
+        for (NoteEvent event : notes) {
+            if (event.time >= editCursor && event.time <= editCursorEnd && event.endTime() >= editCursor && event.endTime() <= editCursorEnd) {
+                toBeCopied.add(event);
+            }
+        }
+        buffer.writeByte(copyBeginByte);
+        buffer.writeInt(editCursorEnd - editCursor);
+        buffer.writeInt(toBeCopied.size());
+        for(NoteEvent event : toBeCopied){
+            event.time -= editCursor; // Convert time to according to cursor
+            event.encodeToBuffer(buffer);
+            event.time += editCursor; // Convert time back to normal
+        }
+        String encodeBytes = Base64.getEncoder().encodeToString(buffer.array());
         GLFW.glfwSetClipboardString(Minecraft.getInstance().getMainWindow().getHandle(), encodeBytes);
 
         editCursorEnd = editCursor;
     }
 
-    private void decodeFromClipboard(){
+    private void decodeFromClipboard(boolean pushBack){
         String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getMainWindow().getHandle());
         if(encodedMusic != null && !encodedMusic.isEmpty()){
-            byte[] musicPiece;
+            byte[] byteArray;
             try { // Try because this can fail with weird clipboard content
-                musicPiece = Base64.getDecoder().decode(encodedMusic);
+                byteArray = Base64.getDecoder().decode(encodedMusic);
             }
             catch (IllegalArgumentException ex){
                 return;
             }
 
-            // Check if all values are valid
-            for (byte b : musicPiece) {
-                if (b < 0 || b > 48) {
-                    XercaMusic.LOGGER.info("User tried to copy invalid data into music: " + b);
-                    return;
+            int length = 0;
+            ArrayList<NoteEvent> toBePasted;
+            // Check begin byte
+            if(byteArray[0] != copyBeginByte){
+                // Old version
+
+                // Check if all values are valid
+                for (byte b : byteArray) {
+                    if (b < 0 || b > 48) {
+                        XercaMusic.LOGGER.info("User tried to copy invalid data into music: " + b);
+                        return;
+                    }
+                }
+
+                // Copy values
+                toBePasted = ItemMusicSheet.oldMusicToNotes(byteArray);
+                if(!toBePasted.isEmpty()) {
+                    for (NoteEvent event : toBePasted) {
+                        length = (short) (event.time + event.length) > length ? (short) (event.time + event.length) : length;
+                    }
+                }
+            }
+            else {
+                // New version
+                PacketBuffer buffer = new PacketBuffer(Unpooled.copiedBuffer(byteArray));
+                buffer.readByte();
+
+                // Read copied time length and note event count
+                length = buffer.readInt();
+                int count = buffer.readInt();
+
+                // Read the note events into an array
+                toBePasted = new ArrayList<>(count);
+                for(int i=0; i<count; i++){
+                    toBePasted.add(NoteEvent.fromBuffer(buffer));
                 }
             }
 
-            // Copy values
-            for (byte b : musicPiece) {
-                putSpace(editCursor);
-                changeNote(editCursor - 1, b, false);
+            pushUndo();
+            if(pushBack) {
+                // Push back the existing future note events
+                for(NoteEvent event : notes){
+                    if(event.time >= editCursor){
+                        event.time += length;
+                    }
+                }
+            }
+
+            for(NoteEvent event : toBePasted){
+                event.time += editCursor;
+                notes.add(event);
+            }
+
+            sortNotes();
+            if(!pushBack) {
+                removeDuplicates();
+            }
+
+            updateLength();
+            editCursor += length + 1;
+            editCursorEnd = editCursor;
+
+            dirtyFlag.hasNotes = true;
+            dirtyFlag.hasLength = true;
+        }
+    }
+
+    private void removeDuplicates() {
+        for(int i=0; i<notes.size()-1; i++) {
+            NoteEvent event1 = notes.get(i);
+            NoteEvent event2 = notes.get(i+1);
+            if (event1.time == event2.time && event1.note == event2.note &&  event1.length == event2.length) {
+                notes.remove(i);
+                i--;
             }
         }
+    }
+
+    private void delAtCursor(int x){
+        boolean doSort = false;
+        for(int i=0; i<notes.size(); i++){
+            NoteEvent event = notes.get(i);
+            if(event.time > x) {
+                event.time -= 1;
+                doSort = true;
+            }
+            else if(event.time < x && event.time + event.length > x){
+                event.length --;
+            }
+            else if(event.time == x) {
+                if(event.length == 1){
+                    notes.remove(i);
+                    i--;
+                }
+                else{
+                    event.length --;
+                }
+            }
+        }
+        if(doSort){
+            sortNotes();
+        }
+        updateLength();
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        setListener(null);
+        super.keyReleased(keyCode, scanCode, modifiers);
+//        return this.getFocused() != null && this.getFocused().keyReleased(keyCode, scanCode, modifiers);
+
+        if (scanCode >= 16 && scanCode <= 27) {
+            if(currentOctave >= 0){
+                if(recording){
+                    endSound(ItemInstrument.noteToId((byte) ((scanCode - 15 + ItemInstrument.minNote) + 12 * currentOctave)));
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -766,7 +1517,7 @@ public class GuiMusicSheet extends Screen {
         setListener(null);
         super.keyPressed(keyCode, scanCode, modifiers);
 
-        // Copying when viewing self signed
+        // Copying when viewing self-signed
         boolean viewingSelfSigned = isSigned && selfSigned;
         if(viewingSelfSigned){
             if(keyCode == GLFW.GLFW_KEY_C && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
@@ -774,13 +1525,11 @@ public class GuiMusicSheet extends Screen {
             }
             if(keyCode == GLFW.GLFW_KEY_A && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
                 editCursor = 0;
-                editCursorEnd = length - 1;
+                editCursorEnd = lengthBeats - 1;
             }
         }
 
         if (!this.isSigned) {
-//            System.out.println("keyPressed key code: " + keyCode);
-//            System.out.println("keyPressed scanCode: " + scanCode);
             if (this.gettingSigned) {
                 switch (keyCode) {
                     case GLFW.GLFW_KEY_BACKSPACE:
@@ -791,7 +1540,8 @@ public class GuiMusicSheet extends Screen {
                         break;
                     case GLFW.GLFW_KEY_ENTER:
                         if (!this.noteTitle.isEmpty()) {
-                            dirty = true;
+                            dirtyFlag.hasSigned = true;
+                            dirtyFlag.hasTitle = true;
                             this.isSigned = true;
                             this.minecraft.displayGuiScreen(null);
                         }
@@ -805,60 +1555,63 @@ public class GuiMusicSheet extends Screen {
                 boolean resetEditCursorEnd = true;
                 switch (keyCode) {
                     case GLFW.GLFW_KEY_DELETE:
-                        if (length == 0 || length <= x) break;
-                        dirty = true;
+                        if (lengthBeats == 0 || lengthBeats <= x) break;
+                        pushUndo();
+
+                        dirtyFlag.hasNotes = true;
+                        dirtyFlag.hasLength = true;
                         if(editCursorEnd == x){
-                            for (int i = x; i < length - 1; i++) {
-                                music[i] = music[i + 1];
-                            }
-                            music[length - 1] = 0;
-                            length--;
-                        }else{
+                            delAtCursor(x);
+                        }
+                        else {
                             deleteSelected();
+                            updateLength();
                         }
                         break;
                     case GLFW.GLFW_KEY_BACKSPACE:
-                        if(editCursorEnd == x) {
-                            if (x == 0) break;
-                            addEditCursor(-1);
-                            if (length == 0 || length < x) break;
-                            dirty = true;
-                            // manual array copy required, don't change
-                            for (int i = x - 1; i < length - 1; i++) {
-                                music[i] = music[i + 1];
+                        if(editCursorEnd == x){
+                            if(x == 0){
+                                break;
                             }
-                            music[length - 1] = 0;
-                            length--;
-                        }else{
-                            if (length == 0 || length < x) break;
-                            dirty = true;
+                            if (lengthBeats == 0 || lengthBeats < x){
+                                addEditCursor(-1);
+                                break;
+                            }
+                            else{
+                                pushUndo();
+
+                                dirtyFlag.hasNotes = true;
+                                dirtyFlag.hasLength = true;
+                                addEditCursor(-1);
+                                delAtCursor(editCursor);
+                            }
+                        }
+                        else {
+                            pushUndo();
+
+                            dirtyFlag.hasNotes = true;
+                            dirtyFlag.hasLength = true;
                             deleteSelected();
+                            updateLength();
                         }
                         break;
                     case GLFW.GLFW_KEY_SPACE:
-                        putSpace(x);
+                        putSpace(x-1);
                         break;
                     case GLFW.GLFW_KEY_RIGHT:
                         addEditCursor(1);
-                        if (editCursor >= totalBeats) setEditCursor(0);
+                        if (editCursor > maxLengthBeats - 1) setEditCursor(maxLengthBeats - 1);
                         break;
                     case GLFW.GLFW_KEY_LEFT:
                         addEditCursor(-1);
-                        if (editCursor < 0) setEditCursor(totalBeats - 1);
-                        break;
-                    case GLFW.GLFW_KEY_DOWN:
-                        addEditCursor(beatsInTab);
-                        if (editCursor >= totalBeats) addEditCursor(-totalBeats);
-                        break;
-                    case GLFW.GLFW_KEY_UP:
-                        addEditCursor(-beatsInTab);
-                        if (editCursor < 0) addEditCursor(totalBeats);
+                        if (editCursor < 0) setEditCursor(0);
                         break;
                     case GLFW.GLFW_KEY_ENTER:
-                        if (!previewing)
-                            startPreview();
-                        else
-                            stopPreview();
+                        previewButton();
+                        break;
+                    case GLFW.GLFW_KEY_LEFT_ALT:
+                    case GLFW.GLFW_KEY_RIGHT_ALT:
+                        recordButton();
                         break;
                     case GLFW.GLFW_KEY_C:
                         if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
@@ -867,17 +1620,87 @@ public class GuiMusicSheet extends Screen {
                         break;
                     case GLFW.GLFW_KEY_V:
                         if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
-                            decodeFromClipboard();
+                            decodeFromClipboard(!((modifiers & GLFW.GLFW_MOD_SHIFT) == GLFW.GLFW_MOD_SHIFT));
+                        }
+                        break;
+                    case GLFW.GLFW_KEY_H:
+                        toggleHelp();
+                        break;
+                    case GLFW.GLFW_KEY_Z:
+                        if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
+                            if(noteEditBox.active) {
+                                break;
+                            }
+                            if(!undoStack.isEmpty()) {
+                                notes = undoStack.pop();
+                                updateLength(false);
+                            }
                         }
                         break;
                     case GLFW.GLFW_KEY_A:
                         if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
                             editCursor = 0;
-                            editCursorEnd = length - 1;
+                            editCursorEnd = lengthBeats - 1;
                             resetEditCursorEnd = false;
                         }
                         else{
-                            currentOctave = 0;
+                            if(editCursor == editCursorEnd){
+                                currentOctave --;
+                                if(currentOctave < -2){
+                                    currentOctave = -2;
+                                }
+                                midiHandler.currentOctave = currentOctave;
+                                if(recording) {
+                                    recordingNotes.clear();
+                                }
+                            }
+                            else{
+                                boolean changed = false;
+                                for (NoteEvent event : notes) {
+                                    if (event.endTime() >= editCursor && event.time <= editCursorEnd) {
+                                        if (ItemInstrument.noteToId(event.note) / 12 > 0) {
+                                            if(!changed) {
+                                                pushUndo();
+                                                dirtyFlag.hasNotes = true;
+                                                dirtyFlag.hasLength = true;
+
+                                                changed = true;
+                                            }
+                                            event.note -= 12;
+                                        }
+                                    }
+                                }
+                                resetEditCursorEnd = false;
+                            }
+                        }
+                        break;
+                    case GLFW.GLFW_KEY_S:
+                        if(editCursor == editCursorEnd){
+                            currentOctave ++;
+                            if(currentOctave > 7){
+                                currentOctave = 7;
+                            }
+                            midiHandler.currentOctave = currentOctave;
+                            if(recording) {
+                                recordingNotes.clear();
+                            }
+                        } else{
+                            boolean changed = false;
+                            for (NoteEvent event : notes) {
+                                if (event.endTime() >= editCursor && event.time <= editCursorEnd) {
+                                    if (ItemInstrument.noteToId(event.note) / 12 < 7) {
+                                        if(!changed) {
+                                            pushUndo();
+                                            dirtyFlag.hasNotes = true;
+                                            dirtyFlag.hasLength = true;
+
+                                            changed = true;
+                                        }
+                                        event.note += 12;
+                                    }
+                                }
+                            }
+                            resetEditCursorEnd = false;
                         }
                         break;
                     case GLFW.GLFW_KEY_LEFT_CONTROL:
@@ -886,12 +1709,16 @@ public class GuiMusicSheet extends Screen {
                         break;
                     default:
                         if (scanCode >= 16 && scanCode <= 27) {
-                            putSpace(x);
-                            changeNote(x, (byte) (scanCode - 15 + 12 * currentOctave));
-                            break;
-                        }
-                        if (scanCode >= 30 && scanCode <= 33) {
-                            currentOctave = scanCode - 30;
+                            if(currentOctave >= 0){
+                                if(recording){
+                                    startSound(ItemInstrument.noteToId((byte) ((scanCode - 15 + ItemInstrument.minNote) + 12 * currentOctave)), (byte)100);
+                                }
+                                else{
+                                    putSpace(x-1);
+                                    addNote((byte) ((scanCode - 15 + ItemInstrument.minNote) + 12 * currentOctave), (short)(x), false);
+                                    finishAddingNote();
+                                }
+                            }
                             break;
                         }
                 }
@@ -904,18 +1731,36 @@ public class GuiMusicSheet extends Screen {
     }
 
     private void deleteSelected() {
-        int diff = editCursorEnd - editCursor + 1;
-        int deleted = 0;
-        for(int i = editCursor; i < length; i++){
-            if(i + diff < length){
-                music[i] = music[i + diff];
+        boolean doSort = false;
+        for(int i=0; i<notes.size(); i++) {
+            NoteEvent event = notes.get(i);
+            if(event.time >= editCursor && event.endTime() <= editCursorEnd) {
+                notes.remove(i);
+                i--;
             }
-            else{
-                music[i] = 0;
-                deleted++;
+            else if(event.time < editCursor && event.endTime() >= editCursor && event.endTime() <= editCursorEnd) {
+                event.length = (byte)(editCursor - event.time);
+            }
+            else if(event.time >= editCursor && event.time <= editCursorEnd && event.endTime() > editCursorEnd) {
+                event.length = (byte)(event.endTime() - editCursorEnd);
+                event.time = (short)(editCursor + 1);
+                doSort = true;
+            }
+            else if(event.time < editCursor && event.endTime() > editCursorEnd) {
+                event.length = (byte)(editCursor - event.time);
+            }
+            else if(event.time > editCursorEnd){
+                event.time -= editCursorEnd - editCursor;
+                doSort = true;
             }
         }
-        length -= deleted;
+        if(doSort) {
+            sortNotes();
+        }
+    }
+
+    private void sortNotes(){
+        notes.sort(Comparator.comparingInt(NoteEvent::startTime));
     }
 
     private void setEditCursor(int x){
@@ -951,10 +1796,14 @@ public class GuiMusicSheet extends Screen {
     @Override
     public boolean mouseScrolled(double x, double y, double scroll){
         if (scroll != 0.d) {
-            //System.out.println("wheel: "+wheelState);
-            currentOctave += scroll > 0 ? 1 : -1;
-            if (currentOctave > 3) currentOctave = 0;
-            else if (currentOctave < 0) currentOctave = 3;
+            if(scroll > 0){
+                octaveUp.playDownSound(Minecraft.getInstance().getSoundHandler());
+                octaveUp.onPress();
+            }
+            else if(scroll < 0){
+                octaveDown.playDownSound(Minecraft.getInstance().getSoundHandler());
+                octaveDown.onPress();
+            }
             return true;
         }
         return super.mouseScrolled(x, y, scroll);
@@ -965,18 +1814,30 @@ public class GuiMusicSheet extends Screen {
      */
     @Override
     public void onClose() {
-        if (dirty) {
-            MusicUpdatePacket pack = new MusicUpdatePacket(music, length, pause, isSigned, noteTitle, (byte)previewInstrument, prevInsLocked);
+        if (dirtyFlag.hasAny()) {
+            if(recording){
+                stopRecording();
+            }
+            if(dirtyFlag.hasNotes || dirtyFlag.hasLength) {
+                version++;
+                dirtyFlag.hasVersion = true;
+                MusicManagerClient.setMusicData(id, version, notes);
+            }
+
+            MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, notes, lengthBeats, bps, volume, isSigned,
+                    noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
+
         }
+        editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.world.rand.nextFloat()*0.4f);
     }
 
     private boolean validClick(int x, int y) {
-        return x <= endingX && x >= startingX && y <= endingY && y >= startingY;
+        return x <= noteRegionRight && x >= noteRegionLeft && y <= noteRegionBottom && y >= noteRegionTop;
     }
 
 
-    public class ChangeableImageButton extends Button {
+    public static class ChangeableImageButton extends Button {
         protected final ResourceLocation resourceLocation;
         protected int xTexStart;
         protected int yTexStart;
@@ -1008,11 +1869,10 @@ public class GuiMusicSheet extends Screen {
         }
 
         protected int preRender(){
-            Minecraft lvt_4_1_ = Minecraft.getInstance();
-            lvt_4_1_.getTextureManager().bindTexture(this.resourceLocation);
+            Minecraft.getInstance().getTextureManager().bindTexture(this.resourceLocation);
             GlStateManager.disableDepthTest();
             int yTexStartNew = this.yTexStart;
-            if (this.isHovered()) {
+            if (this.isHovered && this.active) {
                 yTexStartNew += this.yDiffText;
             }
             return yTexStartNew;
@@ -1057,4 +1917,194 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
+     public class NoteEditBox extends Button {
+        public Button buttonNoteDown;
+        public Button buttonNoteUp;
+        public Button buttonLengthDown;
+        public Button buttonLengthUp;
+        public Button buttonExit;
+        public Button buttonPrev;
+        public Slider sliderVelocity;
+        private NoteEvent event;
+        private final int noteY = 18;
+        private final int lengthY = 29;
+        private final int sliderY = 41;
+        private final Button[] children = new Button[7];
+        private NoteSound previewSound;
+        private boolean changed = false;
+
+        public NoteEditBox(int x, int y, int w, int h, ITextComponent msg) {
+            super(x, y, w, h, msg, (o) -> {}); //TODO: Unknown if this works or not.
+            sliderVelocity = new Slider(10, 0, 50, 10, new StringTextComponent("Vol "), StringTextComponent.EMPTY, 0, 100, 50, false, true, (o) -> {
+            }, (slider) -> {
+                setChanged();
+                event.volume = (byte)Math.round(sliderVelocity.sliderValue * 127.0f);
+            });
+            buttonNoteDown = new Button(0, 0, 10, 8, new TranslationTextComponent("note.leftButton"), (button) -> {
+                if(event.note > 0) {
+                	setChanged();
+                    event.note--;
+                    playPrev();
+                }
+            });
+            buttonNoteUp = new Button(0, 0, 10, 8, new TranslationTextComponent("note.rightButton"), (button) -> {
+                if(event.note < 95) {
+                	setChanged();
+                    event.note++;
+                    playPrev();
+                }
+            });
+            buttonLengthDown = new Button(0, 0, 10, 8, new TranslationTextComponent("note.leftButton"), (button) -> {
+                if(event.length > 1) {
+                	setChanged();
+                    event.length--;
+                    playPrev();
+                }
+            });
+            buttonLengthUp = new Button(0, 0, 10, 8, new TranslationTextComponent("note.rightButton"), (button) -> {
+                if(event.length < maxNoteLength) {
+                	setChanged();
+                    event.length++;
+                    playPrev();
+                }
+            });
+            buttonExit = new Button(0, 0, 10, 10, new TranslationTextComponent("note.exitButton"), (button) -> {
+                this.visible = false;
+                this.active = false;
+                if(previewSound != null && !previewSound.isDonePlaying()) {
+                    previewSound.stopSound();
+                }
+            });
+            buttonPrev = new Button(0, 0, 10, 10, new TranslationTextComponent("note.startPreviewButton"), (button) -> {
+                playPrev();
+            });
+
+            children[0] = sliderVelocity;
+            children[1] = buttonNoteDown;
+            children[2] = buttonNoteUp;
+            children[3] = buttonLengthDown;
+            children[4] = buttonLengthUp;
+            children[5] = buttonExit;
+            children[6] = buttonPrev;
+        }
+
+        private void setChanged() {
+            if(!changed) {
+                changed = true;
+                dirtyFlag.hasNotes = true;
+                dirtyFlag.hasLength = true;
+                pushUndo();
+            }
+        }
+
+        private void playPrev() {
+            if(previewSound != null && !previewSound.isDonePlaying()) {
+                previewSound.stopSound();
+            }
+            previewSound = playSound(event, previewInstrument);
+        }
+
+        @Override
+        public void render(MatrixStack poseStack, int mouseX, int mouseY, float partialTicks) {
+            if (this.visible && event != null) {
+                fill(poseStack, x, y, x + width, y + height, 0xFFEEEEEE);
+                Minecraft minecraft = Minecraft.getInstance();
+                FontRenderer font = minecraft.fontRenderer;
+                int noteId = ItemInstrument.noteToId(event.note);
+                int octave = noteId / 12;
+                font.drawString(poseStack, noteNames[noteId % 12] + (noteId % 12 < 3 ? octave : octave + 1) , x + 15, y + noteY, 0xFFD3C200);
+                font.drawString(poseStack, noteNamesSolfege[noteId % 12], x + 35, y + noteY, 0xFFD3C200);
+                font.drawString(poseStack, ("" + event.length) + (event.length == 1 ? " Beat" : " Beats"), x + 15, y + lengthY, 0xFF495EE5);
+
+                for(Button widget : children) {
+                    widget.render(poseStack, mouseX, mouseY, partialTicks);
+                }
+
+                if(buttonPrev.isHovered() || buttonPrev.isFocused()) {
+                    renderTooltip(poseStack, new TranslationTextComponent("note.previewNoteTooltip"), mouseX, mouseY);
+                }
+                else if(buttonExit.isHovered() || buttonExit.isFocused()) {
+                    renderTooltip(poseStack, new TranslationTextComponent("note.closeNoteTooltip"), mouseX, mouseY);
+                }
+            }
+        }
+
+        public void appear(int x, int y, NoteEvent event) {
+            changed = false;
+            this.x = x;
+            this.y = y;
+            this.visible = true;
+            this.active = true;
+            this.event = event;
+            sliderVelocity.x = x + 10;
+            sliderVelocity.y = y + sliderY;
+            sliderVelocity.setValue(event.floatVolume() * 100.0f);
+            sliderVelocity.updateSlider();
+
+            buttonNoteDown.x = x + 3;
+            buttonNoteDown.y = y + noteY;
+            buttonNoteUp.x = x + 59;
+            buttonNoteUp.y = y + noteY;
+
+            buttonLengthDown.x = x + 3;
+            buttonLengthDown.y = y + lengthY;
+            buttonLengthUp.x = x + 59;
+            buttonLengthUp.y = y + lengthY;
+
+            buttonExit.x = x + 59;
+            buttonExit.y = y + 2;
+
+            buttonPrev.x = x + 3;
+            buttonPrev.y = y + 2;
+
+            playPrev();
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+            if (this.active && this.visible) {
+                if(mouseButton == 2){
+                    this.visible = false;
+                    this.active = false;
+                }
+
+                for(Button widget : children) {
+                    if(mouseX >= widget.x && mouseX < widget.x + widget.getWidth() &&
+                            mouseY >= widget.y && mouseY < widget.y + widget.getHeightRealms()){
+                        widget.mouseClicked(mouseX, mouseY, mouseButton);
+                        return true;
+                    }
+                }
+
+                boolean flag = this.clicked(mouseX, mouseY);
+                if (flag) {
+                    this.onClick(mouseX, mouseY);
+                }
+                else{
+                    this.visible = false;
+                    this.active = false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+            if(posX >= sliderVelocity.x && posX < sliderVelocity.x + sliderVelocity.getWidth() &&
+                    posY >= sliderVelocity.y && posY < sliderVelocity.y + sliderVelocity.getHeightRealms()){
+                sliderVelocity.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean mouseReleased(double posX, double posY, int mouseButton) {
+            sliderVelocity.onRelease(posX, posY);
+            return true;
+        }
+
+        private final String[] noteNames = {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
+        private final String[] noteNamesSolfege = {"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
+    }
 }

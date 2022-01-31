@@ -1,14 +1,11 @@
 package xerca.xercamusic.common.packets;
 
+import java.util.function.Supplier;
+
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.item.Items;
-
-import java.util.function.Supplier;
 
 public class SingleNotePacketHandler {
     public static void handle(final SingleNotePacket message, Supplier<NetworkEvent.Context> ctx) {
@@ -28,7 +25,7 @@ public class SingleNotePacketHandler {
 
     private static void processMessage(SingleNotePacket msg, ServerPlayerEntity pl) {
         PacketDistributor.PacketTarget target = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pl.getPosX(), pl.getPosY(), pl.getPosZ(), 24.0D, pl.getServerWorld().getDimensionKey()));
-        SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.getNote(), msg.getInstrumentItem(), pl);
+        SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.getNote(), msg.getInstrumentItem(), pl, msg.isStop());
         XercaMusic.NETWORK_HANDLER.send(target, packet);
     }
 }

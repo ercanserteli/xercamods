@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
-class RenderNothingFactory implements IRenderFactory<EntityMusicSpirit> {
+public class RenderNothingFactory implements IRenderFactory<EntityMusicSpirit> {
 
     @Override
     public EntityRenderer<EntityMusicSpirit> createRenderFor(EntityRendererManager manager) {

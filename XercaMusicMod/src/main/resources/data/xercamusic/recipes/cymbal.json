@@ -7,7 +7,7 @@
         "gig",
         " g "
     ],
-    "key": {"g": {"item": "minecraft:gold_ingot"}, "i": {"item": "minecraft:iron_ingot"}},
+    "key": {"g": {"item": "minecraft:gold_nugget"}, "i": {"item": "minecraft:iron_nugget"}},
     "result": {"item": "xercamusic:cymbal"}
 }
         

@@ -8,11 +8,13 @@ import xerca.xercamusic.common.item.Items;
 public class SingleNotePacket {
     private int note;
     private ItemInstrument instrumentItem;
+    private boolean isStop;
     private boolean messageIsValid;
 
-    public SingleNotePacket(int note, ItemInstrument itemInstrument) {
+    public SingleNotePacket(int note, ItemInstrument itemInstrument, boolean isStop) {
         this.note = note;
         this.instrumentItem = itemInstrument;
+        this.isStop = isStop;
     }
 
     public SingleNotePacket() {
@@ -24,9 +26,7 @@ public class SingleNotePacket {
         try {
             result.note = buf.readInt();
             int instrumentId = buf.readInt();
-            if(result.note < 0 || result.note >= 48){
-                throw new IndexOutOfBoundsException("Invalid note: " + result.note);
-            }
+            result.isStop = buf.readBoolean();
             if(instrumentId < 0 || instrumentId >= Items.instruments.length){
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
@@ -42,6 +42,7 @@ public class SingleNotePacket {
     public static void encode(SingleNotePacket pkt, PacketBuffer buf) {
         buf.writeInt(pkt.note);
         buf.writeInt(pkt.instrumentItem.getInstrumentId());
+        buf.writeBoolean(pkt.isStop());
     }
 
     public boolean isMessageValid() {
@@ -62,5 +63,13 @@ public class SingleNotePacket {
 
     public void setInstrumentItem(ItemInstrument instrumentItem) {
         this.instrumentItem = instrumentItem;
+    }
+
+    public boolean isStop() {
+        return isStop;
+    }
+
+    public void setStop(boolean stop) {
+        isStop = stop;
     }
 }

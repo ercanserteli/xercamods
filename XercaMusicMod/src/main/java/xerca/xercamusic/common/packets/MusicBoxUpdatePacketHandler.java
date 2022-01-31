@@ -1,10 +1,11 @@
 package xerca.xercamusic.common.packets;
 
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -12,8 +13,6 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
-
-import java.util.function.Supplier;
 
 public class MusicBoxUpdatePacketHandler {
     public static void handle(final MusicBoxUpdatePacket message, Supplier<NetworkEvent.Context> ctx) {
@@ -33,10 +32,9 @@ public class MusicBoxUpdatePacketHandler {
             return;
         }
 
-        TileEntity te =  world.getTileEntity(msg.getPos());
+        TileEntity te = world.getTileEntity(msg.getPos());
         if(te instanceof TileEntityMusicBox){
-            TileEntityMusicBox tileEntityMusicBox = (TileEntityMusicBox) te;
-
+        	TileEntityMusicBox tileEntityMusicBox = (TileEntityMusicBox)te;
             if(msg.getNoteStackNBT() != null){
                 if(msg.getNoteStackNBT().isEmpty()){
                     tileEntityMusicBox.removeNoteStack();
@@ -44,7 +42,7 @@ public class MusicBoxUpdatePacketHandler {
                 else{
                     ItemStack noteStack = new ItemStack(Items.MUSIC_SHEET);
                     noteStack.setTag(msg.getNoteStackNBT());
-                    tileEntityMusicBox.setNoteStack(noteStack);
+                    tileEntityMusicBox.setNoteStack(noteStack, false);
                 }
             }
 

@@ -18,5 +18,4 @@ class RenderNothing extends EntityRenderer {
     public ResourceLocation getEntityTexture(Entity entity) {
         return null;
     }
-
 }

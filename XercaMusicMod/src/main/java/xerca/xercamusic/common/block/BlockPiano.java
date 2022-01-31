@@ -22,16 +22,16 @@ import xerca.xercamusic.common.item.Items;
 public class BlockPiano extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
     private static final VoxelShape[] shapes = {
-            VoxelShapes.or(
+    		VoxelShapes.or(
                     Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
                     Block.makeCuboidShape(0.0D, 10.0D, 7.0D, 16.0D, 16.0D, 16.0D)),
-            VoxelShapes.or(
+    		VoxelShapes.or(
                     Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
                     Block.makeCuboidShape(0.0D, 10.0D, 0.0D, 16.0D, 16.0D, 9.0D)),
-            VoxelShapes.or(
+    		VoxelShapes.or(
                     Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
                     Block.makeCuboidShape(7.0D, 10.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            VoxelShapes.or(
+    		VoxelShapes.or(
                     Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
                     Block.makeCuboidShape(0.0D, 10.0D, 0.0D, 9.0D, 16.0D, 16.0D)),
     };

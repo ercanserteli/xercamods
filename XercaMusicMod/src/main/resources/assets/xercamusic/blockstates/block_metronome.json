@@ -1,58 +1,258 @@
 {
   "variants": {
-    "facing=north,bpm=0": { "model": "xercamusic:block/block_metronome_0" },
-    "facing=south,bpm=0": { "model": "xercamusic:block/block_metronome_0", "y": 180 },
-    "facing=west,bpm=0":  { "model": "xercamusic:block/block_metronome_0", "y": 270 },
-    "facing=east,bpm=0":  { "model": "xercamusic:block/block_metronome_0", "y": 90 },
+    "facing=north,bps=1": { "model": "xercamusic:block/block_metronome_1" },
+    "facing=south,bps=1": { "model": "xercamusic:block/block_metronome_1", "y": 180 },
+    "facing=west,bps=1":  { "model": "xercamusic:block/block_metronome_1", "y": 270 },
+    "facing=east,bps=1":  { "model": "xercamusic:block/block_metronome_1", "y": 90 },
 
-    "facing=north,bpm=1": { "model": "xercamusic:block/block_metronome_1" },
-    "facing=south,bpm=1": { "model": "xercamusic:block/block_metronome_1", "y": 180 },
-    "facing=west,bpm=1":  { "model": "xercamusic:block/block_metronome_1", "y": 270 },
-    "facing=east,bpm=1":  { "model": "xercamusic:block/block_metronome_1", "y": 90 },
+    "facing=north,bps=2": { "model": "xercamusic:block/block_metronome_2" },
+    "facing=south,bps=2": { "model": "xercamusic:block/block_metronome_2", "y": 180 },
+    "facing=west,bps=2":  { "model": "xercamusic:block/block_metronome_2", "y": 270 },
+    "facing=east,bps=2":  { "model": "xercamusic:block/block_metronome_2", "y": 90 },
 
-    "facing=north,bpm=2": { "model": "xercamusic:block/block_metronome_2" },
-    "facing=south,bpm=2": { "model": "xercamusic:block/block_metronome_2", "y": 180 },
-    "facing=west,bpm=2":  { "model": "xercamusic:block/block_metronome_2", "y": 270 },
-    "facing=east,bpm=2":  { "model": "xercamusic:block/block_metronome_2", "y": 90 },
+    "facing=north,bps=3": { "model": "xercamusic:block/block_metronome_3" },
+    "facing=south,bps=3": { "model": "xercamusic:block/block_metronome_3", "y": 180 },
+    "facing=west,bps=3":  { "model": "xercamusic:block/block_metronome_3", "y": 270 },
+    "facing=east,bps=3":  { "model": "xercamusic:block/block_metronome_3", "y": 90 },
 
-    "facing=north,bpm=3": { "model": "xercamusic:block/block_metronome_3" },
-    "facing=south,bpm=3": { "model": "xercamusic:block/block_metronome_3", "y": 180 },
-    "facing=west,bpm=3":  { "model": "xercamusic:block/block_metronome_3", "y": 270 },
-    "facing=east,bpm=3":  { "model": "xercamusic:block/block_metronome_3", "y": 90 },
+    "facing=north,bps=4": { "model": "xercamusic:block/block_metronome_4" },
+    "facing=south,bps=4": { "model": "xercamusic:block/block_metronome_4", "y": 180 },
+    "facing=west,bps=4":  { "model": "xercamusic:block/block_metronome_4", "y": 270 },
+    "facing=east,bps=4":  { "model": "xercamusic:block/block_metronome_4", "y": 90 },
 
-    "facing=north,bpm=4": { "model": "xercamusic:block/block_metronome_4" },
-    "facing=south,bpm=4": { "model": "xercamusic:block/block_metronome_4", "y": 180 },
-    "facing=west,bpm=4":  { "model": "xercamusic:block/block_metronome_4", "y": 270 },
-    "facing=east,bpm=4":  { "model": "xercamusic:block/block_metronome_4", "y": 90 },
+    "facing=north,bps=5": { "model": "xercamusic:block/block_metronome_5" },
+    "facing=south,bps=5": { "model": "xercamusic:block/block_metronome_5", "y": 180 },
+    "facing=west,bps=5":  { "model": "xercamusic:block/block_metronome_5", "y": 270 },
+    "facing=east,bps=5":  { "model": "xercamusic:block/block_metronome_5", "y": 90 },
 
-    "facing=north,bpm=5": { "model": "xercamusic:block/block_metronome_5" },
-    "facing=south,bpm=5": { "model": "xercamusic:block/block_metronome_5", "y": 180 },
-    "facing=west,bpm=5":  { "model": "xercamusic:block/block_metronome_5", "y": 270 },
-    "facing=east,bpm=5":  { "model": "xercamusic:block/block_metronome_5", "y": 90 },
+    "facing=north,bps=6": { "model": "xercamusic:block/block_metronome_6" },
+    "facing=south,bps=6": { "model": "xercamusic:block/block_metronome_6", "y": 180 },
+    "facing=west,bps=6":  { "model": "xercamusic:block/block_metronome_6", "y": 270 },
+    "facing=east,bps=6":  { "model": "xercamusic:block/block_metronome_6", "y": 90 },
 
-    "facing=north,bpm=6": { "model": "xercamusic:block/block_metronome_6" },
-    "facing=south,bpm=6": { "model": "xercamusic:block/block_metronome_6", "y": 180 },
-    "facing=west,bpm=6":  { "model": "xercamusic:block/block_metronome_6", "y": 270 },
-    "facing=east,bpm=6":  { "model": "xercamusic:block/block_metronome_6", "y": 90 },
+    "facing=north,bps=7": { "model": "xercamusic:block/block_metronome_7" },
+    "facing=south,bps=7": { "model": "xercamusic:block/block_metronome_7", "y": 180 },
+    "facing=west,bps=7":  { "model": "xercamusic:block/block_metronome_7", "y": 270 },
+    "facing=east,bps=7":  { "model": "xercamusic:block/block_metronome_7", "y": 90 },
 
-    "facing=north,bpm=7": { "model": "xercamusic:block/block_metronome_7" },
-    "facing=south,bpm=7": { "model": "xercamusic:block/block_metronome_7", "y": 180 },
-    "facing=west,bpm=7":  { "model": "xercamusic:block/block_metronome_7", "y": 270 },
-    "facing=east,bpm=7":  { "model": "xercamusic:block/block_metronome_7", "y": 90 },
+    "facing=north,bps=8": { "model": "xercamusic:block/block_metronome_8" },
+    "facing=south,bps=8": { "model": "xercamusic:block/block_metronome_8", "y": 180 },
+    "facing=west,bps=8":  { "model": "xercamusic:block/block_metronome_8", "y": 270 },
+    "facing=east,bps=8":  { "model": "xercamusic:block/block_metronome_8", "y": 90 },
 
-    "facing=north,bpm=8": { "model": "xercamusic:block/block_metronome_8" },
-    "facing=south,bpm=8": { "model": "xercamusic:block/block_metronome_8", "y": 180 },
-    "facing=west,bpm=8":  { "model": "xercamusic:block/block_metronome_8", "y": 270 },
-    "facing=east,bpm=8":  { "model": "xercamusic:block/block_metronome_8", "y": 90 },
+    "facing=north,bps=9": { "model": "xercamusic:block/block_metronome_9" },
+    "facing=south,bps=9": { "model": "xercamusic:block/block_metronome_9", "y": 180 },
+    "facing=west,bps=9":  { "model": "xercamusic:block/block_metronome_9", "y": 270 },
+    "facing=east,bps=9":  { "model": "xercamusic:block/block_metronome_9", "y": 90 },
 
-    "facing=north,bpm=9": { "model": "xercamusic:block/block_metronome_9" },
-    "facing=south,bpm=9": { "model": "xercamusic:block/block_metronome_9", "y": 180 },
-    "facing=west,bpm=9":  { "model": "xercamusic:block/block_metronome_9", "y": 270 },
-    "facing=east,bpm=9":  { "model": "xercamusic:block/block_metronome_9", "y": 90 },
 
-    "facing=north,bpm=10": { "model": "xercamusic:block/block_metronome_10" },
-    "facing=south,bpm=10": { "model": "xercamusic:block/block_metronome_10", "y": 180 },
-    "facing=west,bpm=10":  { "model": "xercamusic:block/block_metronome_10", "y": 270 },
-    "facing=east,bpm=10":  { "model": "xercamusic:block/block_metronome_10", "y": 90 }
+    "facing=north,bps=10": { "model": "xercamusic:block/block_metronome_10" },
+    "facing=south,bps=10": { "model": "xercamusic:block/block_metronome_10", "y": 180 },
+    "facing=west,bps=10":  { "model": "xercamusic:block/block_metronome_10", "y": 270 },
+    "facing=east,bps=10":  { "model": "xercamusic:block/block_metronome_10", "y": 90 },
+    
+    "facing=north,bps=11": { "model": "xercamusic:block/block_metronome_11" },
+    "facing=south,bps=11": { "model": "xercamusic:block/block_metronome_11", "y": 180 },
+    "facing=west,bps=11":  { "model": "xercamusic:block/block_metronome_11", "y": 270 },
+    "facing=east,bps=11":  { "model": "xercamusic:block/block_metronome_11", "y": 90 },
+
+    "facing=north,bps=12": { "model": "xercamusic:block/block_metronome_12" },
+    "facing=south,bps=12": { "model": "xercamusic:block/block_metronome_12", "y": 180 },
+    "facing=west,bps=12":  { "model": "xercamusic:block/block_metronome_12", "y": 270 },
+    "facing=east,bps=12":  { "model": "xercamusic:block/block_metronome_12", "y": 90 },
+
+    "facing=north,bps=13": { "model": "xercamusic:block/block_metronome_13" },
+    "facing=south,bps=13": { "model": "xercamusic:block/block_metronome_13", "y": 180 },
+    "facing=west,bps=13":  { "model": "xercamusic:block/block_metronome_13", "y": 270 },
+    "facing=east,bps=13":  { "model": "xercamusic:block/block_metronome_13", "y": 90 },
+
+    "facing=north,bps=14": { "model": "xercamusic:block/block_metronome_14" },
+    "facing=south,bps=14": { "model": "xercamusic:block/block_metronome_14", "y": 180 },
+    "facing=west,bps=14":  { "model": "xercamusic:block/block_metronome_14", "y": 270 },
+    "facing=east,bps=14":  { "model": "xercamusic:block/block_metronome_14", "y": 90 },
+
+    "facing=north,bps=15": { "model": "xercamusic:block/block_metronome_15" },
+    "facing=south,bps=15": { "model": "xercamusic:block/block_metronome_15", "y": 180 },
+    "facing=west,bps=15":  { "model": "xercamusic:block/block_metronome_15", "y": 270 },
+    "facing=east,bps=15":  { "model": "xercamusic:block/block_metronome_15", "y": 90 },
+
+    "facing=north,bps=16": { "model": "xercamusic:block/block_metronome_16" },
+    "facing=south,bps=16": { "model": "xercamusic:block/block_metronome_16", "y": 180 },
+    "facing=west,bps=16":  { "model": "xercamusic:block/block_metronome_16", "y": 270 },
+    "facing=east,bps=16":  { "model": "xercamusic:block/block_metronome_16", "y": 90 },
+
+    "facing=north,bps=17": { "model": "xercamusic:block/block_metronome_17" },
+    "facing=south,bps=17": { "model": "xercamusic:block/block_metronome_17", "y": 180 },
+    "facing=west,bps=17":  { "model": "xercamusic:block/block_metronome_17", "y": 270 },
+    "facing=east,bps=17":  { "model": "xercamusic:block/block_metronome_17", "y": 90 },
+
+    "facing=north,bps=18": { "model": "xercamusic:block/block_metronome_18" },
+    "facing=south,bps=18": { "model": "xercamusic:block/block_metronome_18", "y": 180 },
+    "facing=west,bps=18":  { "model": "xercamusic:block/block_metronome_18", "y": 270 },
+    "facing=east,bps=18":  { "model": "xercamusic:block/block_metronome_18", "y": 90 },
+
+    "facing=north,bps=19": { "model": "xercamusic:block/block_metronome_19" },
+    "facing=south,bps=19": { "model": "xercamusic:block/block_metronome_19", "y": 180 },
+    "facing=west,bps=19":  { "model": "xercamusic:block/block_metronome_19", "y": 270 },
+    "facing=east,bps=19":  { "model": "xercamusic:block/block_metronome_19", "y": 90 },
+
+
+    "facing=north,bps=20": { "model": "xercamusic:block/block_metronome_20" },
+    "facing=south,bps=20": { "model": "xercamusic:block/block_metronome_20", "y": 180 },
+    "facing=west,bps=20":  { "model": "xercamusic:block/block_metronome_20", "y": 270 },
+    "facing=east,bps=20":  { "model": "xercamusic:block/block_metronome_20", "y": 90 },
+    
+    "facing=north,bps=21": { "model": "xercamusic:block/block_metronome_21" },
+    "facing=south,bps=21": { "model": "xercamusic:block/block_metronome_21", "y": 180 },
+    "facing=west,bps=21":  { "model": "xercamusic:block/block_metronome_21", "y": 270 },
+    "facing=east,bps=21":  { "model": "xercamusic:block/block_metronome_21", "y": 90 },
+
+    "facing=north,bps=22": { "model": "xercamusic:block/block_metronome_22" },
+    "facing=south,bps=22": { "model": "xercamusic:block/block_metronome_22", "y": 180 },
+    "facing=west,bps=22":  { "model": "xercamusic:block/block_metronome_22", "y": 270 },
+    "facing=east,bps=22":  { "model": "xercamusic:block/block_metronome_22", "y": 90 },
+
+    "facing=north,bps=23": { "model": "xercamusic:block/block_metronome_23" },
+    "facing=south,bps=23": { "model": "xercamusic:block/block_metronome_23", "y": 180 },
+    "facing=west,bps=23":  { "model": "xercamusic:block/block_metronome_23", "y": 270 },
+    "facing=east,bps=23":  { "model": "xercamusic:block/block_metronome_23", "y": 90 },
+
+    "facing=north,bps=24": { "model": "xercamusic:block/block_metronome_24" },
+    "facing=south,bps=24": { "model": "xercamusic:block/block_metronome_24", "y": 180 },
+    "facing=west,bps=24":  { "model": "xercamusic:block/block_metronome_24", "y": 270 },
+    "facing=east,bps=24":  { "model": "xercamusic:block/block_metronome_24", "y": 90 },
+
+    "facing=north,bps=25": { "model": "xercamusic:block/block_metronome_25" },
+    "facing=south,bps=25": { "model": "xercamusic:block/block_metronome_25", "y": 180 },
+    "facing=west,bps=25":  { "model": "xercamusic:block/block_metronome_25", "y": 270 },
+    "facing=east,bps=25":  { "model": "xercamusic:block/block_metronome_25", "y": 90 },
+
+    "facing=north,bps=26": { "model": "xercamusic:block/block_metronome_26" },
+    "facing=south,bps=26": { "model": "xercamusic:block/block_metronome_26", "y": 180 },
+    "facing=west,bps=26":  { "model": "xercamusic:block/block_metronome_26", "y": 270 },
+    "facing=east,bps=26":  { "model": "xercamusic:block/block_metronome_26", "y": 90 },
+
+    "facing=north,bps=27": { "model": "xercamusic:block/block_metronome_27" },
+    "facing=south,bps=27": { "model": "xercamusic:block/block_metronome_27", "y": 180 },
+    "facing=west,bps=27":  { "model": "xercamusic:block/block_metronome_27", "y": 270 },
+    "facing=east,bps=27":  { "model": "xercamusic:block/block_metronome_27", "y": 90 },
+
+    "facing=north,bps=28": { "model": "xercamusic:block/block_metronome_28" },
+    "facing=south,bps=28": { "model": "xercamusic:block/block_metronome_28", "y": 180 },
+    "facing=west,bps=28":  { "model": "xercamusic:block/block_metronome_28", "y": 270 },
+    "facing=east,bps=28":  { "model": "xercamusic:block/block_metronome_28", "y": 90 },
+
+    "facing=north,bps=29": { "model": "xercamusic:block/block_metronome_29" },
+    "facing=south,bps=29": { "model": "xercamusic:block/block_metronome_29", "y": 180 },
+    "facing=west,bps=29":  { "model": "xercamusic:block/block_metronome_29", "y": 270 },
+    "facing=east,bps=29":  { "model": "xercamusic:block/block_metronome_29", "y": 90 },
+
+
+    "facing=north,bps=30": { "model": "xercamusic:block/block_metronome_30" },
+    "facing=south,bps=30": { "model": "xercamusic:block/block_metronome_30", "y": 180 },
+    "facing=west,bps=30":  { "model": "xercamusic:block/block_metronome_30", "y": 270 },
+    "facing=east,bps=30":  { "model": "xercamusic:block/block_metronome_30", "y": 90 },
+    
+    "facing=north,bps=31": { "model": "xercamusic:block/block_metronome_31" },
+    "facing=south,bps=31": { "model": "xercamusic:block/block_metronome_31", "y": 180 },
+    "facing=west,bps=31":  { "model": "xercamusic:block/block_metronome_31", "y": 270 },
+    "facing=east,bps=31":  { "model": "xercamusic:block/block_metronome_31", "y": 90 },
+
+    "facing=north,bps=32": { "model": "xercamusic:block/block_metronome_32" },
+    "facing=south,bps=32": { "model": "xercamusic:block/block_metronome_32", "y": 180 },
+    "facing=west,bps=32":  { "model": "xercamusic:block/block_metronome_32", "y": 270 },
+    "facing=east,bps=32":  { "model": "xercamusic:block/block_metronome_32", "y": 90 },
+
+    "facing=north,bps=33": { "model": "xercamusic:block/block_metronome_33" },
+    "facing=south,bps=33": { "model": "xercamusic:block/block_metronome_33", "y": 180 },
+    "facing=west,bps=33":  { "model": "xercamusic:block/block_metronome_33", "y": 270 },
+    "facing=east,bps=33":  { "model": "xercamusic:block/block_metronome_33", "y": 90 },
+
+    "facing=north,bps=34": { "model": "xercamusic:block/block_metronome_34" },
+    "facing=south,bps=34": { "model": "xercamusic:block/block_metronome_34", "y": 180 },
+    "facing=west,bps=34":  { "model": "xercamusic:block/block_metronome_34", "y": 270 },
+    "facing=east,bps=34":  { "model": "xercamusic:block/block_metronome_34", "y": 90 },
+
+    "facing=north,bps=35": { "model": "xercamusic:block/block_metronome_35" },
+    "facing=south,bps=35": { "model": "xercamusic:block/block_metronome_35", "y": 180 },
+    "facing=west,bps=35":  { "model": "xercamusic:block/block_metronome_35", "y": 270 },
+    "facing=east,bps=35":  { "model": "xercamusic:block/block_metronome_35", "y": 90 },
+
+    "facing=north,bps=36": { "model": "xercamusic:block/block_metronome_36" },
+    "facing=south,bps=36": { "model": "xercamusic:block/block_metronome_36", "y": 180 },
+    "facing=west,bps=36":  { "model": "xercamusic:block/block_metronome_36", "y": 270 },
+    "facing=east,bps=36":  { "model": "xercamusic:block/block_metronome_36", "y": 90 },
+
+    "facing=north,bps=37": { "model": "xercamusic:block/block_metronome_37" },
+    "facing=south,bps=37": { "model": "xercamusic:block/block_metronome_37", "y": 180 },
+    "facing=west,bps=37":  { "model": "xercamusic:block/block_metronome_37", "y": 270 },
+    "facing=east,bps=37":  { "model": "xercamusic:block/block_metronome_37", "y": 90 },
+
+    "facing=north,bps=38": { "model": "xercamusic:block/block_metronome_38" },
+    "facing=south,bps=38": { "model": "xercamusic:block/block_metronome_38", "y": 180 },
+    "facing=west,bps=38":  { "model": "xercamusic:block/block_metronome_38", "y": 270 },
+    "facing=east,bps=38":  { "model": "xercamusic:block/block_metronome_38", "y": 90 },
+
+    "facing=north,bps=39": { "model": "xercamusic:block/block_metronome_39" },
+    "facing=south,bps=39": { "model": "xercamusic:block/block_metronome_39", "y": 180 },
+    "facing=west,bps=39":  { "model": "xercamusic:block/block_metronome_39", "y": 270 },
+    "facing=east,bps=39":  { "model": "xercamusic:block/block_metronome_39", "y": 90 },
+
+
+    "facing=north,bps=40": { "model": "xercamusic:block/block_metronome_40" },
+    "facing=south,bps=40": { "model": "xercamusic:block/block_metronome_40", "y": 180 },
+    "facing=west,bps=40":  { "model": "xercamusic:block/block_metronome_40", "y": 270 },
+    "facing=east,bps=40":  { "model": "xercamusic:block/block_metronome_40", "y": 90 },
+    
+    "facing=north,bps=41": { "model": "xercamusic:block/block_metronome_41" },
+    "facing=south,bps=41": { "model": "xercamusic:block/block_metronome_41", "y": 180 },
+    "facing=west,bps=41":  { "model": "xercamusic:block/block_metronome_41", "y": 270 },
+    "facing=east,bps=41":  { "model": "xercamusic:block/block_metronome_41", "y": 90 },
+
+    "facing=north,bps=42": { "model": "xercamusic:block/block_metronome_42" },
+    "facing=south,bps=42": { "model": "xercamusic:block/block_metronome_42", "y": 180 },
+    "facing=west,bps=42":  { "model": "xercamusic:block/block_metronome_42", "y": 270 },
+    "facing=east,bps=42":  { "model": "xercamusic:block/block_metronome_42", "y": 90 },
+
+    "facing=north,bps=43": { "model": "xercamusic:block/block_metronome_43" },
+    "facing=south,bps=43": { "model": "xercamusic:block/block_metronome_43", "y": 180 },
+    "facing=west,bps=43":  { "model": "xercamusic:block/block_metronome_43", "y": 270 },
+    "facing=east,bps=43":  { "model": "xercamusic:block/block_metronome_43", "y": 90 },
+
+    "facing=north,bps=44": { "model": "xercamusic:block/block_metronome_44" },
+    "facing=south,bps=44": { "model": "xercamusic:block/block_metronome_44", "y": 180 },
+    "facing=west,bps=44":  { "model": "xercamusic:block/block_metronome_44", "y": 270 },
+    "facing=east,bps=44":  { "model": "xercamusic:block/block_metronome_44", "y": 90 },
+
+    "facing=north,bps=45": { "model": "xercamusic:block/block_metronome_45" },
+    "facing=south,bps=45": { "model": "xercamusic:block/block_metronome_45", "y": 180 },
+    "facing=west,bps=45":  { "model": "xercamusic:block/block_metronome_45", "y": 270 },
+    "facing=east,bps=45":  { "model": "xercamusic:block/block_metronome_45", "y": 90 },
+
+    "facing=north,bps=46": { "model": "xercamusic:block/block_metronome_46" },
+    "facing=south,bps=46": { "model": "xercamusic:block/block_metronome_46", "y": 180 },
+    "facing=west,bps=46":  { "model": "xercamusic:block/block_metronome_46", "y": 270 },
+    "facing=east,bps=46":  { "model": "xercamusic:block/block_metronome_46", "y": 90 },
+
+    "facing=north,bps=47": { "model": "xercamusic:block/block_metronome_47" },
+    "facing=south,bps=47": { "model": "xercamusic:block/block_metronome_47", "y": 180 },
+    "facing=west,bps=47":  { "model": "xercamusic:block/block_metronome_47", "y": 270 },
+    "facing=east,bps=47":  { "model": "xercamusic:block/block_metronome_47", "y": 90 },
+
+    "facing=north,bps=48": { "model": "xercamusic:block/block_metronome_48" },
+    "facing=south,bps=48": { "model": "xercamusic:block/block_metronome_48", "y": 180 },
+    "facing=west,bps=48":  { "model": "xercamusic:block/block_metronome_48", "y": 270 },
+    "facing=east,bps=48":  { "model": "xercamusic:block/block_metronome_48", "y": 90 },
+
+    "facing=north,bps=49": { "model": "xercamusic:block/block_metronome_49" },
+    "facing=south,bps=49": { "model": "xercamusic:block/block_metronome_49", "y": 180 },
+    "facing=west,bps=49":  { "model": "xercamusic:block/block_metronome_49", "y": 270 },
+    "facing=east,bps=49":  { "model": "xercamusic:block/block_metronome_49", "y": 90 },
+
+
+    "facing=north,bps=50": { "model": "xercamusic:block/block_metronome_50" },
+    "facing=south,bps=50": { "model": "xercamusic:block/block_metronome_50", "y": 180 },
+    "facing=west,bps=50":  { "model": "xercamusic:block/block_metronome_50", "y": 270 },
+    "facing=east,bps=50":  { "model": "xercamusic:block/block_metronome_50", "y": 90 }
   }
 }

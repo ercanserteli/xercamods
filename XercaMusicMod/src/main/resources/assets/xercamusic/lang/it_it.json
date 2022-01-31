@@ -17,6 +17,10 @@
   "item.xercamusic.cello": "Violoncello",
   "item.xercamusic.drum_kit": "Batteria",
   "item.xercamusic.cymbal": "Piatto",
+  "item.xercamusic.oboe": "Oboe",
+  "item.xercamusic.redstone_guitar": "Chitarra Redstone",
+  "item.xercamusic.french_horn": "Corno",
+  "item.xercamusic.bass_guitar": "Basso Redstone",
 
   "block.xercamusic.block_metronome": "Metronomo",
   "block.xercamusic.music_box": "Carillon",
@@ -43,5 +47,6 @@
   "note.hideNeighborsButton": "N",
   "note.toggleTooltip": "Attiva/Disattiva gli spartiti vicini",
   "note.lockTooltip": "Blocca l'anteprima dello strumento",
-  "note.previewTooltip": "Anteprima musica"
+  "note.previewTooltip": "Anteprima musica",
+  "note.recordTooltip": "Registra musica"
 }
