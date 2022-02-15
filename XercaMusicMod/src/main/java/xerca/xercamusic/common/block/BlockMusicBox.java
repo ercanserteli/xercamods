@@ -1,9 +1,13 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.material.Material;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -25,9 +29,6 @@ import net.minecraft.world.World;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class BlockMusicBox extends HorizontalBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -102,7 +103,7 @@ public class BlockMusicBox extends HorizontalBlock {
         }
     }
 
-    public static void insertMusic(World worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
+    public static void insertMusic(IWorld worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         if (tileentity instanceof TileEntityMusicBox) {
             ((TileEntityMusicBox) tileentity).setNoteStack(noteStack, true);
@@ -110,7 +111,7 @@ public class BlockMusicBox extends HorizontalBlock {
         }
     }
 
-    public static void insertInstrument(World worldIn, BlockPos pos, BlockState state, Item instrument) {
+    public static void insertInstrument(IWorld worldIn, BlockPos pos, BlockState state, Item instrument) {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         if (tileentity instanceof TileEntityMusicBox) {
             ((TileEntityMusicBox) tileentity).setInstrument(instrument);
@@ -184,5 +185,10 @@ public class BlockMusicBox extends HorizontalBlock {
     @Override
     public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityMusicBox();
+    }
+    
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
     }
 }

@@ -107,6 +107,11 @@ public class BlockMetronome extends HorizontalBlock {
     public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
         return new TileEntityMetronome();
     }
+    
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
@@ -115,12 +120,12 @@ public class BlockMetronome extends HorizontalBlock {
 
     @Override
     public BlockState rotate(BlockState state, Rotation rot) {
-        return state.with(FACING, rot.rotate(state.get(HORIZONTAL_FACING)));
+        return state.with(FACING, rot.rotate(state.get(FACING)));
     }
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.toRotation(state.get(HORIZONTAL_FACING)));
+        return state.rotate(mirrorIn.toRotation(state.get(FACING)));
     }
 
 }
