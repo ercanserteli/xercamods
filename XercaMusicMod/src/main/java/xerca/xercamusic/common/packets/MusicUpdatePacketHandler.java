@@ -4,6 +4,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.network.NetworkEvent;
+import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
 
@@ -17,7 +18,7 @@ public class MusicUpdatePacketHandler {
         }
         ServerPlayerEntity sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
-            System.err.println("EntityPlayerMP was null when MusicUpdatePacket was received");
+            System.err.println("ServerPlayerEntity was null when MusicUpdatePacket was received");
             return;
         }
 
@@ -30,18 +31,30 @@ public class MusicUpdatePacketHandler {
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
             CompoundNBT comp = note.getOrCreateTag();
 
-            comp.putByteArray("music", msg.getMusic());
-            comp.putInt("length", msg.getLength());
-            comp.putByte("pause", msg.getPause());
-            comp.putInt("generation", 0);
-            comp.putByte("prevIns", msg.getPrevInstrument());
-            comp.putBoolean("piLocked", msg.getPrevInsLocked());
-            if (msg.getSigned()) {
+            MusicUpdatePacket.FieldFlag flag = msg.getAvailability();
+//            XercaMusic.LOGGER.info(flag);
+            if(flag.hasId) comp.putUniqueId("id", msg.getId());
+            if(flag.hasVersion) comp.putInt("ver", msg.getVersion());
+            if(flag.hasLength) comp.putInt("l", msg.getLengthBeats());
+            if(flag.hasBps) comp.putByte("bps", msg.getBps());
+            if(flag.hasVolume) comp.putFloat("vol", msg.getVolume());
+            if(flag.hasPrevIns) comp.putByte("prevIns", msg.getPrevInstrument());
+            if(flag.hasPrevInsLocked) comp.putBoolean("piLocked", msg.getPrevInsLocked());
+            if(flag.hasHlInterval) comp.putByte("hl", msg.getHighlightInterval());
+            if(flag.hasSigned && msg.getSigned()) {
+                if(flag.hasTitle) comp.putString("title", msg.getTitle().trim());
                 comp.putString("author", pl.getName().getString());
-                comp.putString("title", msg.getTitle().trim());
                 comp.putInt("generation", 1);
-
                 Triggers.BECOME_MUSICIAN.trigger(pl);
+            }
+            if(!comp.contains("generation")){
+                comp.putInt("generation", 0);
+            }
+            if(flag.hasNotes){
+                MusicManager.setMusicData(comp.getUniqueId("id"), comp.getInt("ver"), msg.getNotes(), pl.server);
+                if(!comp.contains("bps")) {
+                    comp.putByte("bps", (byte)8);
+                }
             }
         }
     }

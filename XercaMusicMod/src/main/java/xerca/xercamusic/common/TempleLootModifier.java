@@ -1,6 +1,9 @@
 package xerca.xercamusic.common;
 
+import java.util.List;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.conditions.ILootCondition;
@@ -8,8 +11,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import xerca.xercamusic.common.item.Items;
-
-import java.util.List;
 
 public class TempleLootModifier extends LootModifier {
 

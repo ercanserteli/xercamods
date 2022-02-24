@@ -1,29 +1,34 @@
 package xerca.xercamusic.common.tile_entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
-import xerca.xercamusic.client.NoteSound;
+import xerca.xercamusic.client.MusicManagerClient;
+import xerca.xercamusic.client.SoundController;
+import xerca.xercamusic.common.MusicManager;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicBoxUpdatePacket;
 
-public class TileEntityMusicBox extends TileEntity implements ITickableTileEntity {
+import java.util.ArrayList;
+import java.util.UUID;
+
+public class TileEntityMusicBox extends TileEntity implements ITickableTileEntity  {
     private boolean isPlaying = false;
     private boolean oldPoweredState = false;
     private boolean isPowering = false;
@@ -31,27 +36,21 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
 
     private ItemStack noteStack = ItemStack.EMPTY;
     private ItemInstrument instrument;
-    private byte[] music;
-    private int mLength;
-    private int mTime = 0;
-    private byte mPause;
-    private int age = 0;
+    private ArrayList<NoteEvent> notes = new ArrayList<>();
+    private byte mBPS;
+    private float mVolume;
     private int poweringAge = 0;
-    private NoteSound lastPlayed = null;
+    private int playingAge = 0;
+    private int mLengthBeats = 0;
+    private SoundController soundController = null;
 
     public TileEntityMusicBox() {
         super(TileEntities.MUSIC_BOX);
     }
 
     @Override
-    public void setPos(BlockPos pos)
-    {
-        super.setPos(pos);
-    }
-
-    @Override
     public CompoundNBT write(CompoundNBT parent) {
-        super.write(parent); // The super call is required to save and load the tileEntity's location
+        super.write(parent);
 
         if (!this.noteStack.isEmpty()) {
             CompoundNBT noteTag = new CompoundNBT();
@@ -62,7 +61,6 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
             ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.instrument);
             parent.putString("instrument_id", resourcelocation == null ? "minecraft:air" : resourcelocation.toString());
         }
-
         return parent;
     }
 
@@ -72,7 +70,7 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
         if (parent.contains("note", 10)) {
             CompoundNBT noteTag = parent.getCompound("note");
             ItemStack note = ItemStack.read(noteTag);
-            setNoteStack(note);
+            setNoteStack(note, false);
         }
         if (parent.contains("instrument_id", 8)) {
             this.setInstrument(ForgeRegistries.ITEMS.getValue(new ResourceLocation(parent.getString("instrument_id"))));
@@ -81,13 +79,11 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
 
     @Override
     public CompoundNBT getUpdateTag() {
-//        XercaMusic.LOGGER.debug("TileEntityMusicBox getUpdateTag called");
         return this.write(new CompoundNBT());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT nbt) {
-//        XercaMusic.LOGGER.debug("TileEntityMusicBox handleUpdateTag called");
         this.read(state, nbt);
     }
 
@@ -100,9 +96,38 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
 
     @Override
     public void tick() {
+    	BlockState state = this.getBlockState();
+    	TileEntity tileEntity = world.getTileEntity(pos);
+    	if(!(tileEntity instanceof TileEntityMusicBox)) {
+    		return;
+    	}
+    	TileEntityMusicBox te = (TileEntityMusicBox)tileEntity;
+        if(!noteStack.isEmpty() && notes.isEmpty() && noteStack.hasTag()) {
+            CompoundNBT comp = noteStack.getTag();
+            if (comp != null && comp.contains("id") && comp.contains("ver") && comp.contains("bps") && comp.contains("l")) {
+                UUID id = comp.getUniqueId("id");
+                int ver = comp.getInt("ver");
+                if (world.isRemote) {
+                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                        if (data != null) {
+                            notes.clear();
+                            notes.addAll(data.notes);
+                        }
+                    });
+                } else {
+                    MusicManager.MusicData data = MusicManager.getMusicData(id, ver, world.getServer());
+                    if (data != null) {
+                        notes.clear();
+                        notes.addAll(data.notes);
+                    }
+                }
+            }
+        }
+
         // Powering state timer should work in all cases
         if(isPowering){
-            if(poweringAge >= 20){
+            if(poweringAge >= 10){
                 stopPowering();
                 return;
             }
@@ -113,88 +138,97 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
 
         // Other things only work if a note stack and an instrument are present
         if(noteStack.isEmpty() || instrument == null){
+            if(soundController != null){
+                soundController.setStop();
+            }
+            isPlaying = false;
             return;
         }
-        BlockState state = this.getBlockState();
-
-//        XercaMusic.LOGGER.debug("oldPoweredState: " + oldPoweredState);
 
         if (state.get(BlockMusicBox.POWERED)) {
             if (!oldPoweredState) {
-//                XercaMusic.LOGGER.debug(this.pos + " Unpowered to powered");
                 // unpowered to powered
                 isPlaying = !isPlaying;
-                age = 0;
-                mTime = 0;
                 poweringAge = 0;
                 oldPoweredState = true;
+                playingAge = 0;
+
+                if(isPlaying){
+                    musicStart(te, pos);
+                }
+                else{
+                    if(soundController != null){
+                        soundController.setStop();
+                    }
+                }
             }
-        }else{
+        }
+        else {
             if (oldPoweredState) {
-//                XercaMusic.LOGGER.debug(this.pos + " Powered to unpowered");
+                // powered to unpowered
                 oldPoweredState = false;
             }
         }
 
-        if (isPlaying) {
-            if (mPause == 0) {
-                XercaMusic.LOGGER.error("TileEntityMusicBox mPause is 0! THIS SHOULD NOT HAPPEN!");
-                return;
-            }
-            if (age % mPause == 0) {
-                if (mTime >= mLength) {
-                    //System.out.println("music bitti!");
-                    age = 0;
-                    mTime = 0;
-                    poweringAge = 0;
-                    isPlaying = false;
-                    isPowering = true;
-
-                    //if(!world.isRemote) {
-                        Direction rightSide = state.get(BlockMusicBox.HORIZONTAL_FACING).rotateY();
-                        world.setBlockState(pos, state.with(BlockMusicBox.POWERING, true));
-
-                        BlockPos neighbor = pos.offset(rightSide);
-                        world.neighborChanged(neighbor, this.getBlockState().getBlock(), pos);
-                        world.notifyNeighborsOfStateExcept(neighbor, this.getBlockState().getBlock(), rightSide.getOpposite());
-
-                    //}
-                    return;
-                }
-
-                if(world.isRemote && mTime < music.length){
-                    if (music[mTime] != 0 && music[mTime] <= 48) {
-
-                        if(instrument.shouldCutOff && lastPlayed != null){
-                            lastPlayed.stopSound();
-                        }
-                        lastPlayed = XercaMusic.proxy.playNote(instrument.getSound(music[mTime] - 1), pos.getX(), pos.getY() + 0.5D, pos.getZ(), SoundCategory.RECORDS, 4.0f, 1.0f);
-
-                        this.world.addParticle(ParticleTypes.NOTE, pos.getX() + 0.5D, pos.getY() + 2.2D, pos.getZ() + 0.5D, (music[mTime] -1) / 24.0D, 0.0D, 0.0D);
-                    }
-                }
-                mTime++;
+        if(isPlaying){
+            playingAge ++;
+            if(playingAge >= beatsToTicks(mLengthBeats)){
+                musicOver(te, state);
             }
         }
-        age++;
+    }
+
+    private int beatsToTicks(int beats){
+        return Math.round(((float)beats) * 20.0f / ((float)mBPS));
+    }
+
+    public static void musicOver(TileEntityMusicBox t, BlockState state) {
+        t.poweringAge = 0;
+        t.isPlaying = false;
+        t.isPowering = true;
+
+        if(t.world != null){
+            Direction rightSide = state.get(BlockMusicBox.HORIZONTAL_FACING).rotateY();
+            t.world.setBlockState(t.pos, state.with(BlockMusicBox.POWERING, true));
+
+            BlockPos neighbor = t.pos.offset(rightSide);
+            t.world.neighborChanged(neighbor, t.getBlockState().getBlock(), t.pos);
+            t.world.notifyNeighborsOfStateExcept(neighbor, t.getBlockState().getBlock(), rightSide.getOpposite());
+        }
+    }
+
+    public static void musicStart(TileEntityMusicBox t, BlockPos blockPos) {
+        if(t.world != null){
+            if(t.world.isRemote){
+                if(t.soundController != null){
+                    t.soundController.setStop();
+                }
+                t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.mBPS, t.mVolume, t);
+                t.soundController.start();
+            }
+        }
     }
 
     public ItemStack getNoteStack() {
         return noteStack;
     }
 
-    public void setNoteStack(ItemStack noteStack) {
+    public void setNoteStack(ItemStack noteStack, boolean updateClient) {
+//        XercaMusic.LOGGER.debug("setNoteStack: " + noteStack.getTag());
         if(noteStack.getItem() instanceof ItemMusicSheet){
-            if(world != null && !world.isRemote){
+            if(updateClient && world != null && !world.isRemote){
                 updateClient(noteStack, instrument);
             }
 
             this.noteStack = noteStack;
-            if (noteStack.hasTag() && noteStack.getTag().contains("music")) {
+            if (noteStack.hasTag() && noteStack.getTag().contains("id") && noteStack.getTag().contains("ver") && noteStack.getTag().contains("l")) {
                 CompoundNBT comp = noteStack.getTag();
-                music = comp.getByteArray("music");
-                mLength = comp.getInt("length");
-                mPause = comp.getByte("pause");
+                mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
+                mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
+                mLengthBeats = comp.getInt("l");
+            }
+            else {
+                this.notes.clear();
             }
             markDirty();
         }
@@ -207,6 +241,7 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
             }
 
             this.noteStack = ItemStack.EMPTY;
+            this.notes.clear();
             markDirty();
         }
     }
@@ -261,7 +296,7 @@ public class TileEntityMusicBox extends TileEntity implements ITickableTileEntit
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(getBlockState(), pkt.getNbtCompound());
+        this.write(pkt.getNbtCompound());
         if(world != null && getBlockState().get(BlockMusicBox.POWERING)){
             stopPowering();
         }

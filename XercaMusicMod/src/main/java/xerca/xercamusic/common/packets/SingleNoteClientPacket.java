@@ -12,12 +12,14 @@ public class SingleNoteClientPacket {
     private int note;
     private ItemInstrument instrumentItem;
     private PlayerEntity playerEntity;
+    private boolean isStop;
     private boolean messageIsValid;
 
-    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, PlayerEntity playerEntity) {
+    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, PlayerEntity playerEntity, boolean isStop) {
         this.note = note;
         this.instrumentItem = itemInstrument;
         this.playerEntity = playerEntity;
+        this.isStop = isStop;
     }
 
     public SingleNoteClientPacket() {
@@ -25,20 +27,19 @@ public class SingleNoteClientPacket {
     }
 
     public static SingleNoteClientPacket decode(PacketBuffer buf) {
+    	Minecraft mc = Minecraft.getInstance();
         SingleNoteClientPacket result = new SingleNoteClientPacket();
         try {
             result.note = buf.readInt();
             int instrumentId = buf.readInt();
             int playerId = buf.readInt();
+            result.isStop = buf.readBoolean();
 
-            if(result.note < 0 || result.note >= 48){
-                throw new IndexOutOfBoundsException("Invalid note: " + result.note);
-            }
             if(instrumentId < 0 || instrumentId >= Items.instruments.length){
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
-            Entity entity = Minecraft.getInstance().world.getEntityByID(playerId);
+            Entity entity = mc.world.getEntityByID(playerId);
             if(!(entity instanceof PlayerEntity)){
                 throw new IndexOutOfBoundsException("Invalid playerId: " + playerId);
             }
@@ -61,6 +62,7 @@ public class SingleNoteClientPacket {
         buf.writeInt(pkt.getNote());
         buf.writeInt(instrumentId);
         buf.writeInt(playerId);
+        buf.writeBoolean(pkt.isStop());
     }
 
     public boolean isMessageValid() {
@@ -90,6 +92,14 @@ public class SingleNoteClientPacket {
 
     public void setPlayerEntity(PlayerEntity playerEntity) {
         this.playerEntity = playerEntity;
+    }
+
+    public boolean isStop() {
+        return isStop;
+    }
+
+    public void setStop(boolean stop) {
+        isStop = stop;
     }
 
 

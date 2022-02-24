@@ -1,0 +1,6 @@
+{
+  "parent": "xercamusic:item/instrument_string",
+  "textures": {
+    "layer0": "xercamusic:item/instruments/redstone_guitar"
+  }
+}

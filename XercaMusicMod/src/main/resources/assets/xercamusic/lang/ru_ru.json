@@ -17,6 +17,10 @@
   "item.xercamusic.cello": "Виолончель",
   "item.xercamusic.drum_kit": "Барабанная установка",
   "item.xercamusic.cymbal": "Тарелка",
+  "item.xercamusic.oboe": "Гобой",
+  "item.xercamusic.redstone_guitar": "Электрогитара",
+  "item.xercamusic.french_horn": "Валторна",
+  "item.xercamusic.bass_guitar": "Бас-гитара",
 
   "block.xercamusic.block_metronome": "Метроном",
   "block.xercamusic.music_box": "Музыкальная шкатулка",
@@ -43,5 +47,6 @@
   "note.hideNeighborsButton": "N",
   "note.toggleTooltip": "Переключить отображение соседних листов",
   "note.lockTooltip": "Установить инструмент предварительного прослушивания",
-  "note.previewTooltip": "Прослушать мелодию"
+  "note.previewTooltip": "Прослушать мелодию",
+  "note.recordTooltip": "Записывать музыку"
 }

@@ -1,5 +1,10 @@
 package xerca.xercamusic.common.item;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -7,7 +12,11 @@ import net.minecraft.block.SoundType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.state.Property;
@@ -26,20 +35,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-
 public class ItemBlockInstrument extends ItemInstrument{
     private final Block block;
-    ItemBlockInstrument(String name, boolean shouldCutOff, int instrumentId, Block block) {
-        super(name, shouldCutOff, instrumentId);
+    ItemBlockInstrument(String name, boolean shouldCutOff, int instrumentId, Block block, int minOctave, int maxOctave) {
+        super(name, shouldCutOff, instrumentId, minOctave, maxOctave);
         this.block = block;
     }
 
     /**
-     * Called when this item is used when targetting a Block
+     * Called when this item is used when targeting a Block
      */
+    @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         BlockState blockState = context.getWorld().getBlockState(context.getPos());
         if(blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.get(BlockMusicBox.HAS_INSTRUMENT)){
@@ -74,7 +80,7 @@ public class ItemBlockInstrument extends ItemInstrument{
                     BlockState blockstate1 = world.getBlockState(blockpos);
                     Block block = blockstate1.getBlock();
                     if (block == blockstate.getBlock()) {
-                        blockstate1 = this.func_219985_a(blockpos, world, itemstack, blockstate1);
+                        blockstate1 = this.updateBlockStateFromTag(blockpos, world, itemstack, blockstate1);
                         this.onBlockPlaced(blockpos, world, playerentity, itemstack, blockstate1);
                         block.onBlockPlacedBy(world, blockpos, blockstate1, playerentity, itemstack);
                         if (playerentity instanceof ServerPlayerEntity) {
@@ -116,7 +122,7 @@ public class ItemBlockInstrument extends ItemInstrument{
         return blockstate != null && this.canPlace(context, blockstate) ? blockstate : null;
     }
 
-    private BlockState func_219985_a(BlockPos p_219985_1_, World p_219985_2_, ItemStack p_219985_3_, BlockState p_219985_4_) {
+    private BlockState updateBlockStateFromTag(BlockPos p_219985_1_, World p_219985_2_, ItemStack p_219985_3_, BlockState p_219985_4_) {
         BlockState blockstate = p_219985_4_;
         CompoundNBT compoundnbt = p_219985_3_.getTag();
         if (compoundnbt != null) {
@@ -127,7 +133,7 @@ public class ItemBlockInstrument extends ItemInstrument{
                 Property<?> property = statecontainer.getProperty(s);
                 if (property != null) {
                     String s1 = compoundnbt1.get(s).getString();
-                    blockstate = func_219988_a(blockstate, property, s1);
+                    blockstate = updateState(blockstate, property, s1);
                 }
             }
         }
@@ -139,7 +145,7 @@ public class ItemBlockInstrument extends ItemInstrument{
         return blockstate;
     }
 
-    private static <T extends Comparable<T>> BlockState func_219988_a(BlockState p_219988_0_, Property<T> p_219988_1_, String p_219988_2_) {
+    private static <T extends Comparable<T>> BlockState updateState(BlockState p_219988_0_, Property<T> p_219988_1_, String p_219988_2_) {
         return p_219988_1_.parseValue(p_219988_2_).map((p_219986_2_) -> p_219988_0_.with(p_219988_1_, p_219986_2_)).orElse(p_219988_0_);
     }
 
@@ -191,6 +197,7 @@ public class ItemBlockInstrument extends ItemInstrument{
     /**
      * Returns the unlocalized name of this item.
      */
+    @Override
     public String getTranslationKey() {
         return this.getBlock().getTranslationKey();
     }
@@ -198,11 +205,11 @@ public class ItemBlockInstrument extends ItemInstrument{
     /**
      * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
      */
+    @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    	if (this.isInGroup(group)) {
             this.getBlock().fillItemGroup(group, items);
         }
-
     }
 
     /**

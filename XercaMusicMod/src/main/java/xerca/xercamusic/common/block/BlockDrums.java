@@ -5,27 +5,18 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.entity.EntityMusicSpirit;
 import xerca.xercamusic.common.item.ItemInstrument;
-import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
-
-import java.util.List;
 
 public class BlockDrums extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;

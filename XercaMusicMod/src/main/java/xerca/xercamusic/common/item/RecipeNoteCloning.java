@@ -1,16 +1,15 @@
 package xerca.xercamusic.common.item;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.WrittenBookItem;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.WrittenBookItem;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
 
 @MethodsReturnNonnullByDefault
 public class RecipeNoteCloning extends SpecialRecipe {

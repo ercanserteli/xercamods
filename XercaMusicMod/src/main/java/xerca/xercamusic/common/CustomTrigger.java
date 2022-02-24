@@ -1,10 +1,14 @@
 package xerca.xercamusic.common;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
@@ -12,10 +16,6 @@ import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
 
 public class CustomTrigger implements ICriterionTrigger<CustomTrigger.Instance>
 {

@@ -1,11 +1,13 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.network.NetworkEvent;
+
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
 import java.util.function.Supplier;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MusicEndedPacketHandler {
     public static void handle(final MusicEndedPacket message, Supplier<NetworkEvent.Context> ctx) {
@@ -27,7 +29,7 @@ public class MusicEndedPacketHandler {
     private static void processMessage(MusicEndedPacket msg, ServerPlayerEntity pl) {
         Entity ent = pl.world.getEntityByID(msg.getPlayerId());
         if(ent instanceof EntityMusicSpirit){
-            EntityMusicSpirit spirit = (EntityMusicSpirit) ent;
+        	EntityMusicSpirit spirit = (EntityMusicSpirit) ent;
             spirit.setPlaying(false);
         }
     }

@@ -1,9 +1,13 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.material.Material;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -25,8 +29,6 @@ import net.minecraft.world.World;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
-
-import javax.annotation.Nonnull;
 
 public class BlockMusicBox extends HorizontalBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -82,7 +84,6 @@ public class BlockMusicBox extends HorizontalBlock {
 //                    ItemStack itemstack1 = itemstack.copy();
                     if(isMusic){
                         entityitem = new ItemEntity(world, (double)pos.getX(), (double)pos.getY() + 1, (double)pos.getZ(), itemstack);
-
                         entityitem.setMotion(world.rand.nextDouble() * 0.2 - 0.1, 0.1, world.rand.nextDouble() * 0.2 - 0.1);
                     }
                     else{
@@ -105,7 +106,7 @@ public class BlockMusicBox extends HorizontalBlock {
     public static void insertMusic(IWorld worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         if (tileentity instanceof TileEntityMusicBox) {
-            ((TileEntityMusicBox) tileentity).setNoteStack(noteStack);
+            ((TileEntityMusicBox) tileentity).setNoteStack(noteStack, true);
             worldIn.setBlockState(pos, state.with(HAS_MUSIC, Boolean.TRUE), 3);
         }
     }
@@ -148,28 +149,12 @@ public class BlockMusicBox extends HorizontalBlock {
             super.onReplaced(state, worldIn, pos, newState, isMoving);
         }
     }
-
+    
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(POWERED, HAS_MUSIC, HAS_INSTRUMENT, HORIZONTAL_FACING, POWERING);
     }
 
-    // Called when the block is placed or loaded client side to get the tile entity for the block
-    // Should return a new instance of the tile entity for the block
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return new TileEntityMusicBox();
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    /**
-     * Can this block provide power. Only wire currently seems to have this change based on its state.
-     * @deprecated call via {@link BlockState#canProvidePower()} whenever possible. Implementing/overriding is fine.
-     */
     @Override
     public boolean canProvidePower(BlockState state) {
         return true;
@@ -194,5 +179,16 @@ public class BlockMusicBox extends HorizontalBlock {
     public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
     {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+        return new TileEntityMusicBox();
+    }
+    
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
     }
 }
