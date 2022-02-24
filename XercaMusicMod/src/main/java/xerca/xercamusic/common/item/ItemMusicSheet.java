@@ -112,23 +112,34 @@ public class ItemMusicSheet extends Item {
         return notes;
     }
 
-    public void verifyTagAfterLoad(CompoundNBT nbt) {
+    @Override
+    public boolean updateItemStackNBT(CompoundNBT nbt) {
 //        XercaMusic.LOGGER.info("verifyTagAfterLoad " + nbt);
         if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER){
             if(nbt.contains("music")){
                 // Old version
-                MinecraftServer server = LogicalSidedProvider.CLIENTWORLD.get(LogicalSide.SERVER);
+                MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
                 convertFromOld(nbt, server);
+                return true;
+            }
+            else if(nbt.contains("tag") && nbt.getCompound("tag").contains("music")){
+                // Old version in tag
+                MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
+                convertFromOld(nbt.getCompound("tag"), server);
+                return true;
             }
         }
+        return false;
     }
 
+    @Override
     public CompoundNBT getShareTag(ItemStack stack)
     {
 //        XercaMusic.LOGGER.info("getShareTag " + stack.getTag());
         return stack.getTag();
     }
 
+    @Override
     public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt)
     {
 //        XercaMusic.LOGGER.info("readShareTag " + nbt);

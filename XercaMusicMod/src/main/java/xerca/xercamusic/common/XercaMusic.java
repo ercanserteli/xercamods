@@ -1,25 +1,15 @@
 package xerca.xercamusic.common;
 
-import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.brigadier.CommandDispatcher;
-
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
@@ -28,35 +18,12 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import xerca.xercamusic.client.ClientProxy;
-import xerca.xercamusic.client.RenderNothingFactory;
-import xerca.xercamusic.common.block.Blocks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import xerca.xercamusic.common.data.BlockTags;
-import xerca.xercamusic.common.entity.Entities;
-import xerca.xercamusic.common.item.Items;
-import xerca.xercamusic.common.packets.ExportMusicPacket;
-import xerca.xercamusic.common.packets.ExportMusicPacketHandler;
-import xerca.xercamusic.common.packets.ImportMusicPacket;
-import xerca.xercamusic.common.packets.ImportMusicPacketHandler;
-import xerca.xercamusic.common.packets.ImportMusicSendPacket;
-import xerca.xercamusic.common.packets.ImportMusicSendPacketHandler;
-import xerca.xercamusic.common.packets.MusicBoxUpdatePacket;
-import xerca.xercamusic.common.packets.MusicBoxUpdatePacketHandler;
-import xerca.xercamusic.common.packets.MusicDataRequestPacket;
-import xerca.xercamusic.common.packets.MusicDataRequestPacketHandler;
-import xerca.xercamusic.common.packets.MusicDataResponsePacket;
-import xerca.xercamusic.common.packets.MusicDataResponsePacketHandler;
-import xerca.xercamusic.common.packets.MusicEndedPacket;
-import xerca.xercamusic.common.packets.MusicEndedPacketHandler;
-import xerca.xercamusic.common.packets.MusicUpdatePacket;
-import xerca.xercamusic.common.packets.MusicUpdatePacketHandler;
-import xerca.xercamusic.common.packets.SingleNoteClientPacket;
-import xerca.xercamusic.common.packets.SingleNoteClientPacketHandler;
-import xerca.xercamusic.common.packets.SingleNotePacket;
-import xerca.xercamusic.common.packets.SingleNotePacketHandler;
-import xerca.xercamusic.common.packets.TripleNoteClientPacket;
-import xerca.xercamusic.common.packets.TripleNoteClientPacketHandler;
-import xerca.xercamusic.server.ServerProxy;
+import xerca.xercamusic.common.packets.*;
+
+import java.util.stream.Collectors;
 
 
 @Mod(XercaMusic.MODID)
@@ -64,7 +31,6 @@ public class XercaMusic
 {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static Proxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
@@ -101,11 +67,12 @@ public class XercaMusic
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        networkRegistry();
-        proxy.preInit();
-        Items.setup();
-        Blocks.setup();
-        registerTriggers();
+        event.enqueueWork(
+            ()->{
+                networkRegistry();
+                registerTriggers();
+            }
+        );
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

@@ -16,6 +16,7 @@ import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.ItemInstrument;
@@ -87,6 +88,14 @@ public class ClientStuff {
         public static void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
             XercaMusic.LOGGER.debug("onPlayerLoggedIn Event");
             MusicManagerClient.load();
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+    static class ModBusSubscriber {
+        @SubscribeEvent
+        public static void clientSetupHandler(final FMLClientSetupEvent event) {
+            RenderingRegistry.registerEntityRenderingHandler(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
         }
     }
 }

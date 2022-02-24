@@ -17,10 +17,6 @@ public class Blocks {
     public static final Block PIANO = Null();
     public static final Block DRUM_KIT = Null();
 
-    public static void setup() {
-
-    }
-
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent

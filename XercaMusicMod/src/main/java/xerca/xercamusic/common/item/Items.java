@@ -44,16 +44,6 @@ public final class Items {
 
     public static final IRecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = Null();
 
-
-    public static void setup() {
-    }
-
-    static Item makeItem(String name, ItemGroup tab){
-        Item item = new Item(new Item.Properties().group(tab));
-        item.setRegistryName(name);
-        return item;
-    }
-
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent

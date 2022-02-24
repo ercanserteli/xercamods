@@ -744,7 +744,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    public class ToggleHelpButton extends Button {
+    public static class ToggleHelpButton extends Button {
         protected final ResourceLocation resourceLocation;
         protected int xTexStart;
         protected int yTexStart;
