@@ -78,7 +78,6 @@ public class ItemBlockInstrument extends ItemInstrument{
                     Block block = blockstate1.getBlock();
                     if (block == blockstate.getBlock()) {
                         blockstate1 = this.updateBlockStateFromTag(blockpos, world, itemstack, blockstate1);
-                        this.onBlockPlaced(blockpos, world, playerentity, itemstack, blockstate1);
                         block.setPlacedBy(world, blockpos, blockstate1, playerentity, itemstack);
                         if (playerentity instanceof ServerPlayer) {
                             CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)playerentity, blockpos, itemstack);
@@ -107,10 +106,6 @@ public class ItemBlockInstrument extends ItemInstrument{
     @Nullable
     public BlockPlaceContext getBlockItemUseContext(BlockPlaceContext context) {
         return context;
-    }
-
-    protected boolean onBlockPlaced(BlockPos pos, Level worldIn, @Nullable Player player, ItemStack stack, BlockState state) {
-        return setTileEntityNBT(worldIn, player, pos, stack);
     }
 
     @Nullable
@@ -158,38 +153,6 @@ public class ItemBlockInstrument extends ItemInstrument{
 
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         return context.getLevel().setBlock(context.getClickedPos(), state, 11);
-    }
-
-    public static boolean setTileEntityNBT(Level worldIn, @Nullable Player player, BlockPos pos, ItemStack stackIn) {
-        MinecraftServer minecraftserver = worldIn.getServer();
-        if (minecraftserver == null) {
-            return false;
-        } else {
-            CompoundTag compoundnbt = stackIn.getTagElement("BlockEntityTag");
-            if (compoundnbt != null) {
-                BlockEntity tileentity = worldIn.getBlockEntity(pos);
-                if (tileentity != null) {
-                    if (!worldIn.isClientSide && tileentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks())) {
-                        return false;
-                    }
-
-                    CompoundTag compoundnbt1 = tileentity.save(new CompoundTag());
-                    CompoundTag compoundnbt2 = compoundnbt1.copy();
-                    compoundnbt1.merge(compoundnbt);
-                    compoundnbt1.putInt("x", pos.getX());
-                    compoundnbt1.putInt("y", pos.getY());
-                    compoundnbt1.putInt("z", pos.getZ());
-                    if (!compoundnbt1.equals(compoundnbt2)) {
-//                        tileentity.load(worldIn.getBlockState(pos), compoundnbt1);
-                        tileentity.load(compoundnbt1); //todo: don't know if right?
-                        tileentity.setChanged();
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
     }
 
     /**

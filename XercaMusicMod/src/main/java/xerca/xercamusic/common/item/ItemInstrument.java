@@ -39,7 +39,11 @@ public class ItemInstrument extends Item {
     private final int instrumentId;
 
     public ItemInstrument(String name, boolean isLong, int instrumentId, int minOctave, int maxOctave) {
-        super(new Properties().tab(Items.musicTab));
+        this(name, isLong, instrumentId, minOctave, maxOctave, new Properties().tab(Items.musicTab));
+    }
+
+    public ItemInstrument(String name, boolean isLong, int instrumentId, int minOctave, int maxOctave, Properties properties) {
+        super(properties);
         this.setRegistryName(name);
         this.isLong = isLong;
         this.instrumentId = instrumentId;

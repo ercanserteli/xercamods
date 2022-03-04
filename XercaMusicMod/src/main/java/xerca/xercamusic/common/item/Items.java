@@ -1,7 +1,6 @@
 package xerca.xercamusic.common.item;
 
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
@@ -17,6 +16,7 @@ import static xerca.xercamusic.common.XercaMusic.Null;
 
 @ObjectHolder(XercaMusic.MODID)
 public final class Items {
+    public static final ItemInstrument HARP_MC = Null();
     public static final ItemInstrument CYMBAL = Null();
     public static final ItemInstrument DRUM_KIT = Null();
     public static final ItemInstrument CELLO = Null();
@@ -43,12 +43,6 @@ public final class Items {
     public static MusicCreativeTab musicTab;
 
     public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = Null();
-
-    static Item makeItem(String name, CreativeModeTab tab){
-        Item item = new Item(new Item.Properties().tab(tab));
-        item.setRegistryName(name);
-        return item;
-    }
 
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
@@ -86,6 +80,7 @@ public final class Items {
 
             event.getRegistry().registerAll(instruments);
             event.getRegistry().registerAll(
+                    new ItemInstrument("harp_mc", false, -1, 0, 7, new Item.Properties()),
                     new ItemMusicSheet(),
                     new BlockItem(Blocks.MUSIC_BOX, new Item.Properties().tab(Items.musicTab)).setRegistryName("music_box"),
                     new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties().tab(Items.musicTab)).setRegistryName("metronome")

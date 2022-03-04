@@ -20,10 +20,9 @@ public class Entities {
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
-            final EntityType<EntityMusicSpirit> musicSpiritEntityType = build("music_spirit",
+            event.getRegistry().register(build("music_spirit",
                     EntityType.Builder.<EntityMusicSpirit>of((EntityMusicSpirit::new), MobCategory.MISC).setCustomClientFactory(EntityMusicSpirit::new).sized(0.25f, 0.25f).setUpdateInterval(10)
-            );
-            event.getRegistry().register(musicSpiritEntityType);
+            ));
         }
     }
 

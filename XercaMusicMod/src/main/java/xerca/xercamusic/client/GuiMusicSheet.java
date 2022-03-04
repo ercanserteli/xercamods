@@ -251,7 +251,7 @@ public class GuiMusicSheet extends Screen {
                 noteSound = ins.getSound(note);
             }
             else {
-                noteSound = SoundEvents.fakeHarpIns.getSound(note);
+                noteSound = Items.HARP_MC.getSound(note);
             }
             if(noteSound == null){
                 return;
@@ -587,7 +587,7 @@ public class GuiMusicSheet extends Screen {
             insSound = ins.getSound(event.note);
         }
         else {
-            insSound = SoundEvents.fakeHarpIns.getSound(event.note);
+            insSound = Items.HARP_MC.getSound(event.note);
         }
         if(insSound == null){
             return null;

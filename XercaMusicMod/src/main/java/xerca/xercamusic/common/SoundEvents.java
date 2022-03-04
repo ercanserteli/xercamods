@@ -41,8 +41,6 @@ public class SoundEvents {
     public static ArrayList<Pair<Integer, SoundEvent>> french_horns;
     public static ArrayList<Pair<Integer, SoundEvent>> bass_guitars;
 
-    public static final ItemInstrument fakeHarpIns = new ItemInstrument("harp_mc", false, -1, 0, 7);
-
     private static SoundEvent createSoundEvent(String soundName, final RegistryEvent.Register<SoundEvent> event) {
         final ResourceLocation soundID = new ResourceLocation(XercaMusic.MODID, soundName);
         final SoundEvent soundEvent = new SoundEvent(soundID).setRegistryName(soundID);
@@ -362,7 +360,7 @@ public class SoundEvents {
             Items.FRENCH_HORN.setSounds(french_horns);
             Items.BASS_GUITAR.setSounds(bass_guitars);
 
-            fakeHarpIns.setSounds(harp_mcs);
+            Items.HARP_MC.setSounds(harp_mcs);
         }
     }
 }
