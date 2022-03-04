@@ -33,12 +33,6 @@ public class TileEntityMetronome extends BlockEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag parent) {
-        super.save(parent);
-        return parent;
-    }
-
-    @Override
     public void load(CompoundTag parent) {
 		super.load(parent);
     }
