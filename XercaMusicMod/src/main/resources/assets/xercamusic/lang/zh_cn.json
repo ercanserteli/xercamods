@@ -36,7 +36,7 @@
   "note.signButton": "署名",
   "note.editTitle": "键入音乐名称：",
   "note.finalizeButton": "署名并关闭",
-  "note.finalizeWarning": "注意！一旦乐谱被署名，它就不可被再次编辑！",
+  "note.finalizeWarning": "注意！在你署名后，它将不能再被修改！",
   "note.generation.0": "原作",
   "note.generation.1": "原作的副本",
   "note.generation.2": "副本的副本",
