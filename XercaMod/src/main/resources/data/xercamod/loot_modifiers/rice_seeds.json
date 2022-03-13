@@ -1,4 +1,5 @@
 {
+  "type": "xercamod:rice_seeds",
   "conditions": [
     {
       "condition": "block_state_property",
