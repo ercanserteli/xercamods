@@ -1,16 +1,17 @@
 package xerca.xercamod.common.item;
 
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -56,7 +57,7 @@ import static xerca.xercamod.common.item.Items.ENCHANTMENT_GUILLOTINE;
 
 @ParametersAreNonnullByDefault
 public class ItemScythe extends DiggerItem {
-    private static final net.minecraft.tags.Tag<Block> EFFECTIVE_ON = net.minecraft.tags.Tag.fromSet(ImmutableSet.of());
+    private static final net.minecraft.tags.TagKey<Block> EFFECTIVE_ON = net.minecraft.tags.TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(XercaMod.MODID, "mineable/scythe"));
 
     public ItemScythe(Tier tier, int attackDamageIn, float attackSpeedIn, Item.Properties builder) {
         super(attackDamageIn, attackSpeedIn, tier, EFFECTIVE_ON, builder.defaultDurability(tier.getUses()));
