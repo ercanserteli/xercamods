@@ -3,21 +3,19 @@ package xerca.xercamusic.common;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
-
-import net.minecraft.advancements.CriterionTrigger.Listener;
 
 public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
 {
@@ -30,20 +28,14 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
         RL = new ResourceLocation(registryName);
     }
 
-    public CustomTrigger(ResourceLocation parRL)
-    {
-        super();
-        RL = parRL;
-    }
-
     @Override
-    public ResourceLocation getId()
+    public @NotNull ResourceLocation getId()
     {
         return RL;
     }
 
     @Override
-    public void addPlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listener)
+    public void addPlayerListener(@NotNull PlayerAdvancements playerAdvancementsIn, @NotNull Listener<Instance> listener)
     {
         CustomTrigger.Listeners myCustomTrigger$listeners = listeners.get(playerAdvancementsIn);
 
@@ -57,15 +49,15 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     }
 
     @Override
-    public void removePlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listener)
+    public void removePlayerListener(@NotNull PlayerAdvancements playerAdvancementsIn, @NotNull Listener<Instance> listener)
     {
-        CustomTrigger.Listeners xercamusictrigger$listeners = listeners.get(playerAdvancementsIn);
+        CustomTrigger.Listeners xercamusicTrigger$listeners = listeners.get(playerAdvancementsIn);
 
-        if (xercamusictrigger$listeners != null)
+        if (xercamusicTrigger$listeners != null)
         {
-            xercamusictrigger$listeners.remove(listener);
+            xercamusicTrigger$listeners.remove(listener);
 
-            if (xercamusictrigger$listeners.isEmpty())
+            if (xercamusicTrigger$listeners.isEmpty())
             {
                 listeners.remove(playerAdvancementsIn);
             }
@@ -73,7 +65,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     }
 
     @Override
-    public void removePlayerListeners(PlayerAdvancements playerAdvancementsIn)
+    public void removePlayerListeners(@NotNull PlayerAdvancements playerAdvancementsIn)
     {
         listeners.remove(playerAdvancementsIn);
     }
@@ -86,7 +78,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
      * @return the tame bird trigger. instance
      */
     @Override
-    public CustomTrigger.Instance createInstance(JsonObject json, DeserializationContext context)
+    public CustomTrigger.@NotNull Instance createInstance(@NotNull JsonObject json, @NotNull DeserializationContext context)
     {
         return new CustomTrigger.Instance(getId());
     }
@@ -98,11 +90,11 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
      */
     public void trigger(ServerPlayer parPlayer)
     {
-        CustomTrigger.Listeners xercamusictrigger$listeners = listeners.get(parPlayer.getAdvancements());
+        CustomTrigger.Listeners xercamusicTrigger$listeners = listeners.get(parPlayer.getAdvancements());
 
-        if (xercamusictrigger$listeners != null)
+        if (xercamusicTrigger$listeners != null)
         {
-            xercamusictrigger$listeners.trigger(parPlayer);
+            xercamusicTrigger$listeners.trigger(parPlayer);
         }
     }
 
@@ -176,9 +168,9 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
         /**
          * Trigger.
          *
-         * @param player the player
+         * @param ignoredPlayer the player
          */
-        public void trigger(ServerPlayer player)
+        public void trigger(ServerPlayer ignoredPlayer)
         {
             ArrayList<Listener<Instance>> list = null;
 

@@ -85,13 +85,13 @@ public class CommandImport {
             player.addItem(itemStack);
         }
         else{
-            ItemStack mainhand = player.getMainHandItem();
+            ItemStack mainHandStack = player.getMainHandItem();
 
-            if(!(mainhand.getItem() instanceof ItemMusicSheet) || (mainhand.hasTag() && !mainhand.getTag().isEmpty())){
+            if(!(mainHandStack.getItem() instanceof ItemMusicSheet) || (mainHandStack.hasTag() && mainHandStack.getTag() != null && !mainHandStack.getTag().isEmpty())){
                 player.sendMessage(new TranslatableComponent("import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
-            mainhand.setTag(tag);
+            mainHandStack.setTag(tag);
         }
         player.sendMessage(new TranslatableComponent("import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
     }

@@ -9,10 +9,10 @@ public class CloseGuiPacket {
         this.messageIsValid = false;
     }
 
-    public static void encode(CloseGuiPacket pkt, FriendlyByteBuf buf) {
+    public static void encode(CloseGuiPacket ignoredPkt, FriendlyByteBuf ignoredBuf) {
     }
 
-    public static CloseGuiPacket decode(FriendlyByteBuf buf) {
+    public static CloseGuiPacket decode(FriendlyByteBuf ignoredBuf) {
         CloseGuiPacket result = new CloseGuiPacket();
         result.messageIsValid = true;
         return result;

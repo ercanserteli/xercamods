@@ -3,6 +3,7 @@ package xerca.xercapaint.common.packets;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -37,7 +38,10 @@ public class ImportPaintingPacketHandler {
             XercaPaint.NETWORK_HANDLER.sendToServer(pack);
         } catch (IOException e) {
             e.printStackTrace();
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("import.fail.4", filepath).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            LocalPlayer player = Minecraft.getInstance().player;
+            if(player != null) {
+                player.sendMessage(new TranslatableComponent("import.fail.4", filepath).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            }
         }
     }
 }

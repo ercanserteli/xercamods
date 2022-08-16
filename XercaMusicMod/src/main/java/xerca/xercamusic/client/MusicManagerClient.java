@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class MusicManagerClient {
     static Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
     static Map<UUID, Runnable> taskMap = new HashMap<>();
@@ -58,18 +59,6 @@ public class MusicManagerClient {
             }
         }
         taskMap.put(id, task);
-        // Request music data from server
-        MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
-        XercaMusic.NETWORK_HANDLER.sendToServer(packet);
-    }
-
-    public static void checkMusicData(UUID id, int ver) {
-        if(musicMap.containsKey(id)){
-            MusicManager.MusicData data = musicMap.get(id);
-            if(data.version >= ver){
-                return;
-            }
-        }
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
         XercaMusic.NETWORK_HANDLER.sendToServer(packet);

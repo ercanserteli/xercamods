@@ -24,14 +24,14 @@ artifacts {
     archives jar
 }
 
-version = "1.18.1-0.7.1"
+version = "1.18.2-1.0.0"
 group= "xerca.xercapaint" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "xercapaint"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: '1.18.1'
+    mappings channel: 'official', version: '1.18.2'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
@@ -87,7 +87,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.18.1-39.0.64'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

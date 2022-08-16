@@ -21,9 +21,11 @@ import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
+import java.util.Objects;
+
 public class ClientStuff {
-    public static ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(new ResourceLocation(XercaPaint.MODID, "easel"), "main");
-    public static ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(new ResourceLocation(XercaPaint.MODID, "easel"), "canvas");
+    public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(new ResourceLocation(XercaPaint.MODID, "easel"), "main");
+    public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(new ResourceLocation(XercaPaint.MODID, "easel"), "canvas");
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette){
         showCanvasGui(easel, palette, Minecraft.getInstance());
@@ -91,11 +93,11 @@ public class ClientStuff {
                 };
                 ItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
                         ((float)ItemPalette.basicColorCount(stack)) / 16.0F;
-                ItemProperties.register(Items.ITEM_CANVAS, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-                ItemProperties.register(Items.ITEM_CANVAS_LARGE, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-                ItemProperties.register(Items.ITEM_CANVAS_LONG, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-                ItemProperties.register(Items.ITEM_CANVAS_TALL, new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-                ItemProperties.register(Items.ITEM_PALETTE, new ResourceLocation(XercaPaint.MODID, "colors"), colors);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_LARGE), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_LONG), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_TALL), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_PALETTE), new ResourceLocation(XercaPaint.MODID, "colors"), colors);
             });
         }
 

@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
@@ -25,7 +26,6 @@ import xerca.xercamusic.common.packets.TripleNoteClientPacket;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-
 public class ItemInstrument extends Item {
     private ArrayList<Pair<Integer, SoundEvent>> sounds;
     private InsSound[] insSounds;
@@ -68,7 +68,7 @@ public class ItemInstrument extends Item {
 
     @Override
     @Nonnull
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
         final ItemStack heldItem = playerIn.getItemInHand(handIn);
         ItemStack off = playerIn.getOffhandItem();
         if (handIn == InteractionHand.MAIN_HAND && off.getItem() == Items.MUSIC_SHEET) {
@@ -88,11 +88,11 @@ public class ItemInstrument extends Item {
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
-        BlockState iblockstate = world.getBlockState(blockpos);
-        if (iblockstate.getBlock() == Blocks.MUSIC_BOX && !iblockstate.getValue(BlockMusicBox.HAS_INSTRUMENT)) {
+        BlockState blockState = world.getBlockState(blockpos);
+        if (blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_INSTRUMENT)) {
             ItemStack itemstack = context.getItemInHand();
             if (!world.isClientSide) {
-                BlockMusicBox.insertInstrument(world, blockpos, iblockstate, itemstack.getItem());
+                BlockMusicBox.insertInstrument(world, blockpos, blockState, itemstack.getItem());
 
                 if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
                     itemstack.shrink(1);
@@ -106,7 +106,7 @@ public class ItemInstrument extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, LivingEntity attacker) {
         Level world = attacker.level;
         if (!world.isClientSide) {
             int note1 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);

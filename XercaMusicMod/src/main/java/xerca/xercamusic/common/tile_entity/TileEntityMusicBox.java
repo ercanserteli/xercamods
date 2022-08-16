@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.MusicManager;
@@ -25,6 +26,7 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicBoxUpdatePacket;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 public class TileEntityMusicBox extends BlockEntity {
@@ -35,7 +37,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
     private ItemStack noteStack = ItemStack.EMPTY;
     private ItemInstrument instrument;
-    private ArrayList<NoteEvent> notes = new ArrayList<>();
+    private final ArrayList<NoteEvent> notes = new ArrayList<>();
     private byte mBPS;
     private float mVolume;
     private int poweringAge = 0;
@@ -44,14 +46,14 @@ public class TileEntityMusicBox extends BlockEntity {
     private SoundController soundController = null;
 
     public TileEntityMusicBox(BlockPos blockPos, BlockState blockState) {
-        super(TileEntities.MUSIC_BOX, blockPos, blockState);
+        super(Objects.requireNonNull(TileEntities.MUSIC_BOX), blockPos, blockState);
         if(blockState.getValue(BlockMusicBox.POWERED)){
             oldPoweredState = true;
         }
     }
 
     @Override
-    public void saveAdditional(CompoundTag parent) {
+    public void saveAdditional(@NotNull CompoundTag parent) {
         super.saveAdditional(parent);
 
         if (!this.noteStack.isEmpty()) {
@@ -66,7 +68,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag parent) {
+    public void load(@NotNull CompoundTag parent) {
         super.load(parent); // The super call is required to save and load the tiles location
         if (parent.contains("note", 10)) {
             CompoundTag noteTag = parent.getCompound("note");
@@ -79,7 +81,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         return this.saveWithFullMetadata();
     }
 
@@ -90,7 +92,9 @@ public class TileEntityMusicBox extends BlockEntity {
 
     private void stopPowering(){
         BlockState state = this.getBlockState();
-        level.setBlockAndUpdate(worldPosition, state.setValue(BlockMusicBox.POWERING, false));
+        if (level != null) {
+            level.setBlockAndUpdate(worldPosition, state.setValue(BlockMusicBox.POWERING, false));
+        }
         isPowering = false;
         poweringAge = 0;
     }
@@ -110,7 +114,7 @@ public class TileEntityMusicBox extends BlockEntity {
                         }
                     });
                 } else {
-                    MusicManager.MusicData data = MusicManager.getMusicData(id, ver, level.getServer());
+                    MusicManager.MusicData data = MusicManager.getMusicData(id, ver, Objects.requireNonNull(level.getServer()));
                     if (data != null) {
                         t.notes.clear();
                         t.notes.addAll(data.notes);
@@ -215,7 +219,7 @@ public class TileEntityMusicBox extends BlockEntity {
             }
 
             this.noteStack = noteStack;
-            if (noteStack.hasTag() && noteStack.getTag().contains("id") && noteStack.getTag().contains("ver") && noteStack.getTag().contains("l")) {
+            if (noteStack.hasTag() && noteStack.getTag() != null && noteStack.getTag().contains("id") && noteStack.getTag().contains("ver") && noteStack.getTag().contains("l")) {
                 CompoundTag comp = noteStack.getTag();
                 mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
                 mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
@@ -269,7 +273,9 @@ public class TileEntityMusicBox extends BlockEntity {
     // Send update to clients
     private void updateClient(ItemStack noteStack, Item itemInstrument){
         MusicBoxUpdatePacket packet = new MusicBoxUpdatePacket(worldPosition, noteStack, itemInstrument);
-        XercaMusic.NETWORK_HANDLER.send(PacketDistributor.TRACKING_CHUNK.with(() -> (LevelChunk) level.getChunk(worldPosition)), packet);
+        if(level != null) {
+            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.TRACKING_CHUNK.with(() -> (LevelChunk) level.getChunk(worldPosition)), packet);
+        }
     }
 
     //fix to sync client state after the block was moved
@@ -288,9 +294,11 @@ public class TileEntityMusicBox extends BlockEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(pkt.getTag());
-        if(level != null && getBlockState().getValue(BlockMusicBox.POWERING)){
-            stopPowering();
+        if (pkt.getTag() != null) {
+            this.load(pkt.getTag());
+            if (level != null && getBlockState().getValue(BlockMusicBox.POWERING)) {
+                stopPowering();
+            }
         }
     }
 

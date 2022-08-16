@@ -1,0 +1,56 @@
+- Instrument GUI
+    - When an instrument is used by itself, the instrument GUI opens
+    - Played notes can be heard by all nearby players
+    - Mouse, keyboard or MIDI instrument can be used to play
+    - Multiple keys can be pressed at once, can be released at different times
+    - Can adjust octave for keyboard/MIDI instrument
+    - Music particle is emitted at player's head when hitting a note
+
+- Music GUI
+    - When an empty note is used, the music GUI opens
+    - In the music gui, user can type notes using mouse or keyboard
+    - Changing the BPM changes the tempo of the music
+    - Changing the sheet volume slider changes the play volume of the entire sheet, both in preview and in playing
+    - Preview button plays the music to the player with the vanilla lyre sounds
+    - Exiting the GUI saves the music
+    - Mouse wheel to scroll through octaves
+    - Middle-clicking a note opens a menu where details are viewed and note can be edited
+    - Note volume effects the color on the note
+    - Right mouse button moves the cursor, can select by dragging
+    - CTRL+C to copy, CTRL+V to paste, CTRL+SHIFT+V to paste without moving notes, CTRL+A to select all
+    - CTRL+Z to undo
+    - Delete or Backspace to delete as in a text editor
+    - ? button at the top right toggles help information
+    - Most GUI elements show a tooltip on hover
+    - Can record using keyboard or MIDI instrument
+    - Notes created with MIDI instrument get volumes based on press velocity
+    - Note brush volume changes the volume new notes you create with mouse or keyboard gets
+    - Can lock the preview instrument to preview even without that instrument
+    - Can change measure interval to adjust the visual separators on the GUI (12 by default)
+    - Settings are saved per sheet
+    - Can see neighboring sheets' (if same tempo) notes and hear them during preview, for up to 2 neighbors in each side
+    - Can toggle neighbor sheets to turn the feature off
+
+- Signing sheets
+    - On the music GUI, when sign button is pressed, user can enter a title to sign it
+    - When a sheet is signed, it becomes glowing, its name changes to the title, its author and originality is shown below its name
+    - When a sheet is signed, it cannot be modified
+    - A signed sheet and an empty sheet can be used to produce a copy unless it is pirated. Original sheet remains after copying.
+
+- Playing sheets
+    - When an instrument in the main hand is used with a note in the other hand, the music is played to all nearby players with that instrument's sound
+    - When holding a sheet, right-clicking an instrument block makes the player play it, going too far away stops the music
+    - Music particles are emitted from the player's head (or the instrument block) whenever a note is struck
+
+- Music box
+    - Can put instrument and sheet inside, visuals change accordingly
+    - Can take out items by right-clicking on its faces
+    - Starts or stops playing when it receives a redstone signal (going from off to on)
+    - When music ends, transmits redstone signal from its side for a second
+    - Does not react to redstone when it is transmitting from the side
+    - Emits music particles when it strikes notes
+
+- Metronome
+    - Can be adjusted manually by right-clicking with empty hand, or automatically by right-clicking with a sheet
+    - Plays ticks on its set interval when powered by redstone
+    - After a few ticks, makes nearby players play music if they have an instrument and note with the same tempo

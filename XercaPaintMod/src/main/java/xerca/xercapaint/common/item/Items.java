@@ -1,6 +1,5 @@
 package xerca.xercapaint.common.item;
 
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
@@ -16,27 +15,23 @@ import xerca.xercapaint.common.item.crafting.RecipeCraftPalette;
 import xerca.xercapaint.common.item.crafting.RecipeFillPalette;
 import xerca.xercapaint.common.item.crafting.RecipeTaglessShaped;
 
+import static xerca.xercapaint.common.XercaPaint.Null;
+
 @ObjectHolder(XercaPaint.MODID)
 public final class Items {
-    public static final ItemPalette ITEM_PALETTE = null;
-    public static final ItemCanvas ITEM_CANVAS = null;
-    public static final ItemCanvas ITEM_CANVAS_LARGE = null;
-    public static final ItemCanvas ITEM_CANVAS_LONG = null;
-    public static final ItemCanvas ITEM_CANVAS_TALL = null;
-    public static final ItemEasel ITEM_EASEL = null;
+    public static final ItemPalette ITEM_PALETTE = Null();
+    public static final ItemCanvas ITEM_CANVAS = Null();
+    public static final ItemCanvas ITEM_CANVAS_LARGE = Null();
+    public static final ItemCanvas ITEM_CANVAS_LONG = Null();
+    public static final ItemCanvas ITEM_CANVAS_TALL = Null();
+    public static final ItemEasel ITEM_EASEL = Null();
 
-    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = null;
-    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_FILLING = null;
-    public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = null;
-    public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = null;
+    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = Null();
+    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_FILLING = Null();
+    public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = Null();
+    public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = Null();
 
     public static PaintCreativeTab paintTab;
-
-    static Item makeItem(String name, CreativeModeTab tab){
-        Item item = new Item(new Item.Properties().tab(tab));
-        item.setRegistryName(name);
-        return item;
-    }
 
     @Mod.EventBusSubscriber(modid = XercaPaint.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {

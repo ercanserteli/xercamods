@@ -19,7 +19,7 @@ public class CloseGuiPacketHandler {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static void processMessage(CloseGuiPacket msg) {
+    private static void processMessage(CloseGuiPacket ignoredMsg) {
         Minecraft.getInstance().setScreen(null);
     }
 }

@@ -331,6 +331,9 @@ public final class Items {
         registerCompostable(0.3f, ITEM_TEA_SEEDS);
         registerCompostable(0.3f, ITEM_TOMATO_SEEDS);
         registerCompostable(0.3f, ITEM_RICE_SEEDS);
+        registerCompostable(0.65f, ITEM_TOMATO);
+        registerCompostable(0.65f, ITEM_TEA_DRIED);
+        registerCompostable(0.65f, ITEM_TEA_LEAF);
     }
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
@@ -655,7 +658,9 @@ public final class Items {
                     new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("sweet_berry_pie"),
                     new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
                     new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_straw"),
-                    new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().tab(Items.decoTab), Config::isBookcaseEnabled).setRegistryName("item_bookcase"),
+                    new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().tab(Items.decoTab), Config::isBookcaseEnabled){
+                        @Override public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {return 300;}
+                    }.setRegistryName("item_bookcase"),
                     new CarvedWoodItem(Blocks.CARVED_OAK_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_oak_1"),
                     new CarvedWoodItem(Blocks.CARVED_OAK_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_oak_2"),
                     new CarvedWoodItem(Blocks.CARVED_OAK_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_oak_3"),
@@ -775,7 +780,9 @@ public final class Items {
                     new BlockConditionedItem(Blocks.YELLOW_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("yellow_terratile_stairs"),
                     new BlockConditionedItem(Blocks.TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile_stairs"),
 
-                    new BlockConditionedItem(Blocks.CARVING_STATION, new Item.Properties().tab(Items.decoTab), Config::isCarvedWoodEnabled).setRegistryName("carving_station"),
+                    new BlockConditionedItem(Blocks.CARVING_STATION, new Item.Properties().tab(Items.decoTab), Config::isCarvedWoodEnabled){
+                        @Override public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {return 300;}
+                    }.setRegistryName("carving_station"),
 
                     new BlockItemOmniChest(Blocks.OMNI_CHEST, new Item.Properties().tab(Items.decoTab)).setRegistryName("omni_chest"),
 

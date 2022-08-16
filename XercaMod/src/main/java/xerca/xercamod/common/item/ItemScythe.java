@@ -29,6 +29,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -42,6 +43,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.ForgeEventFactory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.entity.EntityHealthOrb;
@@ -364,5 +366,14 @@ public class ItemScythe extends DiggerItem {
             TranslatableComponent textGuillotine = new TranslatableComponent("xercamod.guillotine_tooltip");
             tooltip.add(textGuillotine.withStyle(ChatFormatting.YELLOW));
         }
+    }
+
+    @Override
+    public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType)
+    {
+        if(stack.getItem() instanceof ItemScythe scythe && scythe.getTier().equals(Tiers.WOOD)){
+            return 200;
+        }
+        return 0;
     }
 }

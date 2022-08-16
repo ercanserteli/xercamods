@@ -1,6 +1,5 @@
 package xerca.xercapaint.common;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -9,7 +8,7 @@ public class PaletteUtil {
     final public static PaletteUtil.Color emptinessColor = new PaletteUtil.Color(255, 236, 229);
 
     public static class Color {
-        public static Color WHITE = new Color(0xFFFFFFFF);
+        public static final Color WHITE = new Color(0xFFFFFFFF);
 
         public int r, g, b;
 
@@ -33,16 +32,7 @@ public class PaletteUtil {
             return val;
         }
 
-        public int bgrVal() {
-            int val = b;
-            val = (val << 8) + g;
-            val = (val << 8) + r;
-            val += 0xFF000000;
-            return val;
-        }
-
         public void setGLColor(){
-//            GlStateManager._color4f(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
             RenderSystem.setShaderColor(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
         }
 

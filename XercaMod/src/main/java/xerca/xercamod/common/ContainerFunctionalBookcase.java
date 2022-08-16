@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.tile_entity.TileEntities;
 import xerca.xercamod.common.tile_entity.TileEntityFunctionalBookcase;
 
@@ -91,7 +92,7 @@ public class ContainerFunctionalBookcase extends AbstractContainerMenu {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(Player player, int sourceSlotIndex) {
+    public ItemStack quickMoveStack(@NotNull Player player, int sourceSlotIndex) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = slots.get(sourceSlotIndex);
 
@@ -126,7 +127,7 @@ public class ContainerFunctionalBookcase extends AbstractContainerMenu {
     }
 
     @Override
-    public void removed(Player playerIn) {
+    public void removed(@NotNull Player playerIn) {
         super.removed(playerIn);
         this.tileEntity.closeInventory(playerIn);
     }

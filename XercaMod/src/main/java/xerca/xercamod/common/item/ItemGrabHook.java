@@ -10,6 +10,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -105,5 +106,10 @@ public class ItemGrabHook extends FishingRodItem {
             TranslatableComponent textGrappling = new TranslatableComponent("xercamod.grappling_tooltip");
             tooltip.add(textGrappling.withStyle(ChatFormatting.YELLOW));
         }
+    }
+    @Override
+    public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType)
+    {
+        return 300;
     }
 }

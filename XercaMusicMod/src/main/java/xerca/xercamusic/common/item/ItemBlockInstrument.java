@@ -1,11 +1,11 @@
 package xerca.xercamusic.common.item;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -20,18 +20,22 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class ItemBlockInstrument extends ItemInstrument{
     private final Block block;
     ItemBlockInstrument(String name, boolean shouldCutOff, int instrumentId, Block block, int minOctave, int maxOctave) {
@@ -40,10 +44,10 @@ public class ItemBlockInstrument extends ItemInstrument{
     }
 
     /**
-     * Called when this item is used when targetting a Block
+     * Called when this item is used when targeting a Block
      */
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public @NotNull InteractionResult useOn(UseOnContext context) {
         BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
         if(blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_INSTRUMENT)){
             BlockMusicBox.insertInstrument(context.getLevel(), context.getClickedPos(), blockState, this);
@@ -52,40 +56,40 @@ public class ItemBlockInstrument extends ItemInstrument{
             }
             return InteractionResult.SUCCESS;
         }
-        InteractionResult actionresulttype = this.tryPlace(new BlockPlaceContext(context));
-        return actionresulttype != InteractionResult.SUCCESS && this.isEdible() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()).getResult() : actionresulttype;
+        InteractionResult interactionResult = this.tryPlace(new BlockPlaceContext(context));
+        return interactionResult != InteractionResult.SUCCESS && this.isEdible() ? this.use(context.getLevel(), Objects.requireNonNull(context.getPlayer()), context.getHand()).getResult() : interactionResult;
     }
 
     public InteractionResult tryPlace(BlockPlaceContext context) {
         if (!context.canPlace()) {
             return InteractionResult.FAIL;
         } else {
-            BlockPlaceContext blockitemusecontext = this.getBlockItemUseContext(context);
-            if (blockitemusecontext == null) {
+            BlockPlaceContext blockItemUseContext = this.getBlockItemUseContext(context);
+            if (blockItemUseContext == null) {
                 return InteractionResult.FAIL;
             } else {
-                BlockState blockstate = this.getStateForPlacement(blockitemusecontext);
+                BlockState blockstate = this.getStateForPlacement(blockItemUseContext);
                 if (blockstate == null) {
                     return InteractionResult.FAIL;
-                } else if (!this.placeBlock(blockitemusecontext, blockstate)) {
+                } else if (!this.placeBlock(blockItemUseContext, blockstate)) {
                     return InteractionResult.FAIL;
                 } else {
-                    BlockPos blockpos = blockitemusecontext.getClickedPos();
-                    Level world = blockitemusecontext.getLevel();
-                    Player playerentity = blockitemusecontext.getPlayer();
-                    ItemStack itemstack = blockitemusecontext.getItemInHand();
-                    BlockState blockstate1 = world.getBlockState(blockpos);
-                    Block block = blockstate1.getBlock();
+                    BlockPos blockpos = blockItemUseContext.getClickedPos();
+                    Level world = blockItemUseContext.getLevel();
+                    Player player = blockItemUseContext.getPlayer();
+                    ItemStack itemstack = blockItemUseContext.getItemInHand();
+                    BlockState blockState = world.getBlockState(blockpos);
+                    Block block = blockState.getBlock();
                     if (block == blockstate.getBlock()) {
-                        blockstate1 = this.updateBlockStateFromTag(blockpos, world, itemstack, blockstate1);
-                        block.setPlacedBy(world, blockpos, blockstate1, playerentity, itemstack);
-                        if (playerentity instanceof ServerPlayer) {
-                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)playerentity, blockpos, itemstack);
+                        blockState = this.updateBlockStateFromTag(blockpos, world, itemstack, blockState);
+                        block.setPlacedBy(world, blockpos, blockState, player, itemstack);
+                        if (player instanceof ServerPlayer) {
+                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, blockpos, itemstack);
                         }
                     }
 
-                    SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
-                    world.playSound(playerentity, blockpos, this.getPlaceSound(blockstate1, world, blockpos, context.getPlayer()), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                    SoundType soundtype = blockState.getSoundType(world, blockpos, context.getPlayer());
+                    world.playSound(player, blockpos, this.getPlaceSound(blockState, world, blockpos, Objects.requireNonNull(context.getPlayer())), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                     itemstack.shrink(1);
                     return InteractionResult.SUCCESS;
                 }
@@ -110,21 +114,24 @@ public class ItemBlockInstrument extends ItemInstrument{
 
     @Nullable
     protected BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState blockstate = this.getBlock().getStateForPlacement(context);
+        BlockState blockstate = null;
+        if(this.getBlock() != null) {
+            blockstate = this.getBlock().getStateForPlacement(context);
+        }
         return blockstate != null && this.canPlace(context, blockstate) ? blockstate : null;
     }
 
     private BlockState updateBlockStateFromTag(BlockPos p_219985_1_, Level p_219985_2_, ItemStack p_219985_3_, BlockState p_219985_4_) {
         BlockState blockstate = p_219985_4_;
-        CompoundTag compoundnbt = p_219985_3_.getTag();
-        if (compoundnbt != null) {
-            CompoundTag compoundnbt1 = compoundnbt.getCompound("BlockStateTag");
-            StateDefinition<Block, BlockState> statecontainer = p_219985_4_.getBlock().getStateDefinition();
+        CompoundTag tag = p_219985_3_.getTag();
+        if (tag != null) {
+            CompoundTag blockStateTag = tag.getCompound("BlockStateTag");
+            StateDefinition<Block, BlockState> stateDefinition = p_219985_4_.getBlock().getStateDefinition();
 
-            for(String s : compoundnbt1.getAllKeys()) {
-                Property<?> property = statecontainer.getProperty(s);
+            for(String s : blockStateTag.getAllKeys()) {
+                Property<?> property = stateDefinition.getProperty(s);
                 if (property != null) {
-                    String s1 = compoundnbt1.get(s).getAsString();
+                    String s1 = Objects.requireNonNull(blockStateTag.get(s)).getAsString();
                     blockstate = updateState(blockstate, property, s1);
                 }
             }
@@ -142,9 +149,9 @@ public class ItemBlockInstrument extends ItemInstrument{
     }
 
     protected boolean canPlace(BlockPlaceContext context, BlockState state) {
-        Player playerentity = context.getPlayer();
-        CollisionContext iselectioncontext = playerentity == null ? CollisionContext.empty() : CollisionContext.of(playerentity);
-        return (!this.checkPosition() || state.canSurvive(context.getLevel(), context.getClickedPos())) && context.getLevel().isUnobstructed(state, context.getClickedPos(), iselectioncontext);
+        Player player = context.getPlayer();
+        CollisionContext collisionContext = player == null ? CollisionContext.empty() : CollisionContext.of(player);
+        return (!this.checkPosition() || state.canSurvive(context.getLevel(), context.getClickedPos())) && context.getLevel().isUnobstructed(state, context.getClickedPos(), collisionContext);
     }
 
     protected boolean checkPosition() {
@@ -160,7 +167,11 @@ public class ItemBlockInstrument extends ItemInstrument{
      */
     @Override
     public String getDescriptionId() {
-        return this.getBlock().getDescriptionId();
+        Block block = this.getBlock();
+        if(block != null) {
+            return this.getBlock().getDescriptionId();
+        }
+        return "";
     }
 
     /**
@@ -168,10 +179,9 @@ public class ItemBlockInstrument extends ItemInstrument{
      */
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowdedIn(group)) {
+        if (this.allowdedIn(group) && this.getBlock() != null) {
             this.getBlock().fillItemCategory(group, items);
         }
-
     }
 
     /**
@@ -180,13 +190,17 @@ public class ItemBlockInstrument extends ItemInstrument{
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        this.getBlock().appendHoverText(stack, worldIn, tooltip, flagIn);
+        if(this.getBlock() != null) {
+            this.getBlock().appendHoverText(stack, worldIn, tooltip, flagIn);
+        }
     }
 
+    @Nullable
     public Block getBlock() {
         return this.getBlockRaw() == null ? null : this.getBlockRaw().delegate.get();
     }
 
+    @Nullable
     private Block getBlockRaw() {
         return this.block;
     }
@@ -195,7 +209,4 @@ public class ItemBlockInstrument extends ItemInstrument{
         blockToItemMap.put(this.getBlock(), itemIn);
     }
 
-    public void removeFromBlockToItemMap(Map<Block, Item> blockToItemMap, Item itemIn) {
-        blockToItemMap.remove(this.getBlock());
-    }
 }

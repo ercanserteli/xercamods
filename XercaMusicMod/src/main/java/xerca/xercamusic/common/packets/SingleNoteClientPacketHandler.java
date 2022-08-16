@@ -42,7 +42,7 @@ public class SingleNoteClientPacketHandler {
                 double z = playerEntity.getZ();
 
                 NoteSound noteSound = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
-                        ClientStuff.playNote(sound.sound, x, y, z, SoundSource.PLAYERS, 1.5f, sound.pitch, (byte) -1));
+                        ClientStuff.playNote(sound.sound, x, y, z, SoundSource.PLAYERS, msg.getVolume()*1.5f, sound.pitch, (byte) -1));
                 noteSounds.put(Pair.of(playerEntity, msg.getNote()), new NoteSoundEntry(noteSound, playerEntity));
                 playerEntity.level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (msg.getNote()) / 24.0D, 0.0D, 0.0D);
             }

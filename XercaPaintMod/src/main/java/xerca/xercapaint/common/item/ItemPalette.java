@@ -16,6 +16,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.client.ClientStuff;
 
 import javax.annotation.Nonnull;
@@ -32,7 +33,7 @@ public class ItemPalette extends Item {
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
         if(worldIn.isClientSide) {
             ClientStuff.showCanvasGui(playerIn);
         }
@@ -82,7 +83,7 @@ public class ItemPalette extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
             if(tag != null){

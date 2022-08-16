@@ -147,16 +147,8 @@ public class MusicUpdatePacket {
         return highlightInterval;
     }
 
-    public void setHighlightInterval(byte highlightInterval) {
-        this.highlightInterval = highlightInterval;
-    }
-
     public FieldFlag getAvailability() {
         return availability;
-    }
-
-    public void setAvailability(FieldFlag availability) {
-        this.availability = availability;
     }
 
     public static class FieldFlag {

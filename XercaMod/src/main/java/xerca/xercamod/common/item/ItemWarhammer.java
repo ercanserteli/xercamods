@@ -20,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -44,10 +45,10 @@ import java.util.List;
 public class ItemWarhammer extends Item {
     private final float weaponDamage;
     private final float pushAmount;
-    private final Tiers material;
+    private final Tier material;
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
-    public ItemWarhammer(String name, Tiers mat) {
+    public ItemWarhammer(String name, Tier mat) {
         super(mat.equals(Tiers.NETHERITE)
                 ? new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).defaultDurability(mat.getUses()).fireResistant()
                 : new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).defaultDurability(mat.getUses()));
@@ -63,7 +64,7 @@ public class ItemWarhammer extends Item {
         this.attributeModifiers = builder.build();
     }
 
-    private float getPushFromMaterial(Tiers mat) {
+    private float getPushFromMaterial(Tier mat) {
         float push;
         if (mat == Tiers.STONE) {
             push = 0.15f;

@@ -25,9 +25,13 @@ public class ExportMusicPacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(ExportMusicPacket msg) {
         if(CommandExport.doExport(Minecraft.getInstance().player, msg.getName())){
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+            if (Minecraft.getInstance().player != null) {
+                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+            }
         }else{
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.fail", msg.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            if (Minecraft.getInstance().player != null) {
+                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            }
         }
     }
 }

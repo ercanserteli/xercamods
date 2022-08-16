@@ -16,7 +16,6 @@ import xerca.xercapaint.common.packets.*;
 @Mod(XercaPaint.MODID)
 public class XercaPaint {
     public static final String MODID = "xercapaint";
-    public static final String NAME = "Xerca Paint";
 
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
@@ -36,6 +35,7 @@ public class XercaPaint {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @SuppressWarnings({"UnusedAssignment"})
     private void networkRegistry(){
         int msg_id = 0;
         NETWORK_HANDLER.registerMessage(msg_id++, CanvasUpdatePacket.class, CanvasUpdatePacket::encode, CanvasUpdatePacket::decode, CanvasUpdatePacketHandler::handle);
@@ -63,5 +63,11 @@ public class XercaPaint {
 
     private void processIMC(final InterModProcessEvent event)
     {
+    }
+
+    // This is for conveniently initializing object holders without annoying the IDE
+    @SuppressWarnings({"SameReturnValue"})
+    public static <T> T Null() {
+        return null;
     }
 }

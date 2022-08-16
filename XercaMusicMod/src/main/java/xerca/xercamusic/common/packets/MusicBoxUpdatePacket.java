@@ -69,24 +69,12 @@ public class MusicBoxUpdatePacket {
         return noteStackNBT;
     }
 
-    public void setNoteStackNBT(CompoundTag noteStackNBT) {
-        this.noteStackNBT = noteStackNBT;
-    }
-
     public String getInstrumentId() {
         return instrumentId;
     }
 
-    public void setInstrumentId(String instrumentId) {
-        this.instrumentId = instrumentId;
-    }
-
     public BlockPos getPos() {
         return pos;
-    }
-
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
     }
 
 }

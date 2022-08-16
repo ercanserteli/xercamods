@@ -11,10 +11,6 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
     private static final float[] fadeVolumes = {0.0f, 0.02f, 0.12f, 0.3f};
     private final float originalVolume;
 
-    NoteSound(SoundEvent soundEvent, SoundSource category, float x, float y, float z, float volume, float pitch) {
-        this(soundEvent, category, x, y, z, volume, pitch, -1);
-    }
-
     NoteSound(SoundEvent soundEvent, SoundSource category, float x, float y, float z, float volume, float pitch, int lengthTicks) {
         super(soundEvent, category);
         this.volume = this.originalVolume = volume;

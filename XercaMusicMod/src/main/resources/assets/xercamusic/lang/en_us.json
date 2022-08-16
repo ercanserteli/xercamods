@@ -1,6 +1,7 @@
 {
   "itemGroup.music_tab": "Music",
 
+  "item.xercamusic.instrument_gui": "Instrument",
   "item.xercamusic.music_sheet": "Music Sheet",
   "item.xercamusic.guitar": "Guitar",
   "item.xercamusic.flute": "Flute",

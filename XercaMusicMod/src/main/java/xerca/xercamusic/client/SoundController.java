@@ -19,9 +19,7 @@ public class SoundController extends Thread {
     private final byte bps;
     private final int spiritID;
     private final float volume;
-    private NoteSound lastPlayed = null;
     private TileEntityMusicBox musicBox = null;
-    private long startTime = 0;
 
     public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, ItemInstrument instrument, byte bps, float volume, int spiritID){
         this.notes = notes;
@@ -49,7 +47,7 @@ public class SoundController extends Thread {
             return;
         }
 
-        startTime = System.currentTimeMillis();
+//        long startTime = System.currentTimeMillis();
         int msPerBeat = Math.round(1000.0f/(float)bps);
         int currentBeat = 0;
 
@@ -73,7 +71,11 @@ public class SoundController extends Thread {
 
         // Music over
         if(spiritID >= 0){
-            Minecraft.getInstance().submitAsync(() -> ClientStuff.endMusic(spiritID, Minecraft.getInstance().player.getId()));
+            Minecraft.getInstance().submitAsync(() -> {
+                if (Minecraft.getInstance().player != null) {
+                    ClientStuff.endMusic(spiritID, Minecraft.getInstance().player.getId());
+                }
+            });
         }
     }
 
@@ -87,12 +89,16 @@ public class SoundController extends Thread {
                 }
 
                 if(musicBox == null){
-                    lastPlayed = ClientStuff.playNote(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
-                    Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note) / 24.0D, 0.0D, 0.0D);
+                    ClientStuff.playNote(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
+                    if (Minecraft.getInstance().level != null) {
+                        Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note) / 24.0D, 0.0D, 0.0D);
+                    }
                 }
                 else{
-                    lastPlayed = ClientStuff.playNoteTE(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
-                    Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x+0.5D, y + 2.2D, z+0.5D, (note) / 24.0D, 0.0D, 0.0D);
+                    ClientStuff.playNoteTE(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
+                    if (Minecraft.getInstance().level != null) {
+                        Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x+0.5D, y + 2.2D, z+0.5D, (note) / 24.0D, 0.0D, 0.0D);
+                    }
                 }
             });
         }
@@ -118,9 +124,11 @@ public class SoundController extends Thread {
                 e.printStackTrace();
             }
         }
+        //noinspection StatementWithEmptyBody
         while (System.currentTimeMillis() < start + millis){}
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void inaccurateSleep(long millis) {
         if(millis == 0) return;
         try {

@@ -10,10 +10,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 import xerca.xercapaint.common.XercaPaint;
 
+import static xerca.xercapaint.common.XercaPaint.Null;
+
 @ObjectHolder(XercaPaint.MODID)
 public class Entities {
-    public static final EntityType<EntityCanvas> CANVAS = null;
-    public static final EntityType<EntityEasel> EASEL = null;
+    public static final EntityType<EntityCanvas> CANVAS = Null();
+    public static final EntityType<EntityEasel> EASEL = Null();
 
     @Mod.EventBusSubscriber(modid = XercaPaint.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {

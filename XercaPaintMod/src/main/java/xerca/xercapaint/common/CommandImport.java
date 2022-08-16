@@ -18,6 +18,8 @@ import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 import xerca.xercapaint.common.packets.ImportPaintingPacket;
 
+import java.util.Objects;
+
 public class CommandImport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
@@ -67,19 +69,19 @@ public class CommandImport {
             player.addItem(itemStack);
         }
         else{
-            ItemStack mainhand = player.getMainHandItem();
+            ItemStack mainHand = player.getMainHandItem();
             ItemStack offhand = player.getOffhandItem();
 
-            if(!(mainhand.getItem() instanceof ItemCanvas) || (mainhand.hasTag() && !mainhand.getTag().isEmpty())){
+            if(!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.hasTag() && mainHand.getTag() != null && !mainHand.getTag().isEmpty())){
                 player.sendMessage(new TranslatableComponent("import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
-            if(((ItemCanvas)mainhand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
-                Component type = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
+            if(((ItemCanvas)mainHand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
+                Component type = Objects.requireNonNull(Items.ITEM_CANVAS).getName(ItemStack.EMPTY);
                 switch (CanvasType.fromByte(canvasType)){
-                    case LONG -> type = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
-                    case TALL -> type = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
-                    case LARGE -> type = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
+                    case LONG -> type = Objects.requireNonNull(Items.ITEM_CANVAS_LONG).getName(ItemStack.EMPTY);
+                    case TALL -> type = Objects.requireNonNull(Items.ITEM_CANVAS_TALL).getName(ItemStack.EMPTY);
+                    case LARGE -> type = Objects.requireNonNull(Items.ITEM_CANVAS_LARGE).getName(ItemStack.EMPTY);
                 }
                 player.sendMessage(new TranslatableComponent("import.fail.2", type).withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
@@ -88,7 +90,7 @@ public class CommandImport {
                 player.sendMessage(new TranslatableComponent("import.fail.3").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
-            mainhand.setTag(tag);
+            mainHand.setTag(tag);
         }
         player.sendMessage(new TranslatableComponent("import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
     }

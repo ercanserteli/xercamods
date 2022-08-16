@@ -44,7 +44,7 @@ public class MidiHandler
 
                 XercaMusic.LOGGER.debug(device.getDeviceInfo() + " was opened");
 
-            } catch (MidiUnavailableException e) {
+            } catch (MidiUnavailableException ignored) {
             }
         }
     }
@@ -100,6 +100,7 @@ public class MidiHandler
 
                 int key = sm.getData1() - 21 + 12*currentOctave;
                 int velocity = sm.getData2();
+                System.out.println("Note message " + (sm.getCommand() == NOTE_ON ? "on" : "off") + " key: " + key + " vel: " + velocity);
                 if(key < 0 || key > 95){
                     return;
                 }
@@ -118,5 +119,5 @@ public class MidiHandler
         public void close() {}
     }
 
-    public static record MidiData(int noteId, float volume) {}
+    public record MidiData(int noteId, float volume) {}
 }

@@ -1,5 +1,6 @@
 package xerca.xercamusic.common.block;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -26,7 +27,10 @@ import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class BlockMetronome extends BaseEntityBlock {
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -46,13 +50,8 @@ public class BlockMetronome extends BaseEntityBlock {
     public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         boolean flag = worldIn.hasNeighborSignal(pos);
         if (flag != state.getValue(POWERED)) {
-            if (flag) {
-                // unpowered to powered
-            }
-
             worldIn.setBlock(pos, state.setValue(POWERED, flag), 3);
         }
-
     }
 
 
@@ -67,28 +66,26 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (worldIn.isClientSide) {
-            return InteractionResult.SUCCESS;
-        } else {
-            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
+        if (!worldIn.isClientSide) {
+            if (SoundEvents.METRONOME_SET != null) {
+                worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
+            }
             ItemStack note = ItemStack.EMPTY;
-            if(player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET){
+            if (player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET) {
                 note = player.getItemInHand(hand);
-            } else if(player.getOffhandItem().getItem() == Items.MUSIC_SHEET){
+            } else if (player.getOffhandItem().getItem() == Items.MUSIC_SHEET) {
                 note = player.getOffhandItem();
             }
 
-            if(!note.isEmpty() && note.getTag() != null && note.getTag().contains("bps")){
+            if (!note.isEmpty() && note.getTag() != null && note.getTag().contains("bps")) {
                 int bps = note.getTag().getInt("bps");
                 setBps(state, worldIn, pos, bps);
-                return InteractionResult.SUCCESS;
-            }
-            else{
+            } else {
                 state = state.cycle(BPS); //cycle
                 worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
-                return InteractionResult.SUCCESS;
             }
         }
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -104,9 +101,6 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-//        if (level.isClientSide()) {
-//            return null;
-//        }
         return (level1, blockPos, blockState1, t) -> {
             if (t instanceof TileEntityMetronome) {
                 TileEntityMetronome.tick(level1, blockPos, blockState1, (TileEntityMetronome) t);

@@ -9,12 +9,17 @@ public class SingleNotePacket {
     private int note;
     private ItemInstrument instrumentItem;
     private boolean isStop;
+    private float volume;
     private boolean messageIsValid;
 
-    public SingleNotePacket(int note, ItemInstrument itemInstrument, boolean isStop) {
+    public SingleNotePacket(int note, ItemInstrument itemInstrument, boolean isStop, float volume) {
         this.note = note;
         this.instrumentItem = itemInstrument;
         this.isStop = isStop;
+        this.volume = volume;
+    }
+    public SingleNotePacket(int note, ItemInstrument itemInstrument, boolean isStop) {
+        this(note, itemInstrument, isStop, 1f);
     }
 
     public SingleNotePacket() {
@@ -27,6 +32,7 @@ public class SingleNotePacket {
             result.note = buf.readInt();
             int instrumentId = buf.readInt();
             result.isStop = buf.readBoolean();
+            result.volume = buf.readFloat();
             if(instrumentId < 0 || instrumentId >= Items.instruments.length){
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
@@ -43,6 +49,7 @@ public class SingleNotePacket {
         buf.writeInt(pkt.note);
         buf.writeInt(pkt.instrumentItem.getInstrumentId());
         buf.writeBoolean(pkt.isStop());
+        buf.writeFloat(pkt.getVolume());
     }
 
     public boolean isMessageValid() {
@@ -61,15 +68,11 @@ public class SingleNotePacket {
         return instrumentItem;
     }
 
-    public void setInstrumentItem(ItemInstrument instrumentItem) {
-        this.instrumentItem = instrumentItem;
-    }
-
     public boolean isStop() {
         return isStop;
     }
 
-    public void setStop(boolean stop) {
-        isStop = stop;
+    public float getVolume() {
+        return volume;
     }
 }

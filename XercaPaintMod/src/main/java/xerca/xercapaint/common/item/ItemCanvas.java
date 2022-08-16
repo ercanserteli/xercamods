@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HangingEntityItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -23,7 +23,6 @@ import net.minecraftforge.client.IItemRenderProperties;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercapaint.client.ClientStuff;
 import xerca.xercapaint.common.CanvasType;
-import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityCanvas;
 
 import javax.annotation.Nonnull;
@@ -32,11 +31,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @NonnullDefault
-public class ItemCanvas extends HangingEntityItem {
-    private CanvasType canvasType;
+public class ItemCanvas extends Item {
+    private final CanvasType canvasType;
 
     ItemCanvas(String name, CanvasType canvasType) {
-        super(Entities.CANVAS, new Properties().tab(Items.paintTab).stacksTo(1));
+        super(new Properties().tab(Items.paintTab).stacksTo(1));
 
         this.setRegistryName(name);
         this.canvasType = canvasType;
@@ -55,52 +54,52 @@ public class ItemCanvas extends HangingEntityItem {
         BlockPos blockpos = context.getClickedPos();
         Direction direction = context.getClickedFace();
         BlockPos pos = blockpos.relative(direction);
-        Player playerentity = context.getPlayer();
+        Player player = context.getPlayer();
         ItemStack itemstack = context.getItemInHand();
-        if (playerentity != null && !this.mayPlace(playerentity, direction, itemstack, pos)) {
-            if(context.getLevel().isClientSide){
-                ClientStuff.showCanvasGui(playerentity);
-            }
-        } else {
-            Level world = context.getLevel();
-
-            CompoundTag tag = itemstack.getTag();
-            if(tag == null || !tag.contains("pixels") || !tag.contains("name")){
-                if(context.getLevel().isClientSide) {
-                    ClientStuff.showCanvasGui(playerentity);
+        if (player != null) {
+            if (!this.mayPlace(player, direction, itemstack, pos)) {
+                if (context.getLevel().isClientSide) {
+                    ClientStuff.showCanvasGui(player);
                 }
-                return InteractionResult.SUCCESS;
-            }
+            } else {
+                Level world = context.getLevel();
 
-            int rotation = 0;
-            if(direction.getAxis() == Direction.Axis.Y){
-                double xDiff = blockpos.getX() - playerentity.getX();
-                double zDiff = blockpos.getZ() - playerentity.getZ();
-                if(Math.abs(xDiff) > Math.abs(zDiff)){
-                    if(xDiff > 0){
-                        rotation = 1;
-                    }else{
-                        rotation = 3;
+                CompoundTag tag = itemstack.getTag();
+                if (tag == null || !tag.contains("pixels") || !tag.contains("name")) {
+                    if (context.getLevel().isClientSide) {
+                        ClientStuff.showCanvasGui(player);
                     }
-                }else{
-                    if(zDiff > 0){
-                        rotation = 2;
-                    }else{
-                        rotation = 0;
+                    return InteractionResult.SUCCESS;
+                }
+
+                int rotation = 0;
+                if (direction.getAxis() == Direction.Axis.Y) {
+                    double xDiff = blockpos.getX() - player.getX();
+                    double zDiff = blockpos.getZ() - player.getZ();
+                    if (Math.abs(xDiff) > Math.abs(zDiff)) {
+                        if (xDiff > 0) {
+                            rotation = 1;
+                        } else {
+                            rotation = 3;
+                        }
+                    } else {
+                        if (zDiff > 0) {
+                            rotation = 2;
+                        }
+                    }
+                    if (direction == Direction.DOWN && Math.abs(xDiff) < Math.abs(zDiff)) {
+                        rotation += 2;
                     }
                 }
-                if(direction == Direction.DOWN && Math.abs(xDiff) < Math.abs(zDiff)){
-                    rotation += 2;
-                }
-            }
 
-            if (!world.isClientSide) {
-                EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
+                if (!world.isClientSide) {
+                    EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
 
-                if (entityCanvas.survives()) {
-                    entityCanvas.playPlacementSound();
-                    world.addFreshEntity(entityCanvas);
-                    itemstack.shrink(1);
+                    if (entityCanvas.survives()) {
+                        entityCanvas.playPlacementSound();
+                        world.addFreshEntity(entityCanvas);
+                        itemstack.shrink(1);
+                    }
                 }
             }
         }
@@ -126,7 +125,7 @@ public class ItemCanvas extends HangingEntityItem {
         if(title != null){
             labelString += (title.getString() + " ");
         }
-        if (stack.hasTag()) {
+        if (stack.hasTag() && stack.getTag() != null) {
             CompoundTag tag = stack.getTag();
             String s = tag.getString("author");
 
@@ -135,9 +134,6 @@ public class ItemCanvas extends HangingEntityItem {
             }
 
             generation = tag.getInt("generation");
-//            if(generation > 0){
-//                labelString += (new TranslatableComponent("canvas.generation." + (generation - 1))).getString();
-//            }
         }
         TextComponent label = new TextComponent(labelString);
         if(generation == 1){
@@ -176,7 +172,7 @@ public class ItemCanvas extends HangingEntityItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (stack.hasTag()) {
+        if (stack.hasTag() && stack.getTag() != null) {
             CompoundTag tag = stack.getTag();
             String s = tag.getString("author");
 

@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec2;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
@@ -101,12 +102,13 @@ public abstract class BasePalette extends Screen {
     boolean isPickingColor = false;
     boolean isCarryingColor = false;
     boolean isCarryingWater = false;
-    boolean dirty = false;
+    boolean canvasDirty = false;
+    boolean paletteDirty = false;
     PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
     static PaletteUtil.Color currentColor = basicColors[0];
-    PaletteUtil.CustomColor[] customColors;
-    boolean[] basicColorFlags;
+    final PaletteUtil.CustomColor[] customColors;
+    final boolean[] basicColorFlags;
     boolean paletteComplete = false;
     boolean isCarryingPalette = false;
 
@@ -146,7 +148,7 @@ public abstract class BasePalette extends Screen {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
 //        Minecraft.getInstance().getTextureManager().bind(paletteTextures);
@@ -322,7 +324,7 @@ public abstract class BasePalette extends Screen {
                                 playSound(SoundEvents.MIX);
                             }
                         }
-                        dirty = true;
+                        paletteDirty = true;
                         break;
                     }
                 }
@@ -345,9 +347,9 @@ public abstract class BasePalette extends Screen {
 
     protected void playSound(SoundEvent soundEvent, float volume){
         Minecraft m = Minecraft.getInstance();
-        if(m.level != null){
-            m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
-                    0.8f + m.level.random.nextFloat()*0.4f, Minecraft.getInstance().player.blockPosition()));
+        if(m.level != null && m.player != null){
+                m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
+                        0.8f + m.level.random.nextFloat()*0.4f, m.player.blockPosition()));
         }
     }
 

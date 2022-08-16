@@ -17,6 +17,7 @@ import xerca.xercapaint.common.packets.ExportPaintingPacket;
 import java.io.File;
 import java.io.IOException;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
@@ -55,7 +56,7 @@ public class CommandExport {
 
         for(ItemStack s : player.getHandSlots()){
             if(s.getItem() instanceof ItemCanvas){
-                if(s.hasTag()){
+                if(s.hasTag() && s.getTag() != null){
                     try {
                         CompoundTag tag = s.getTag().copy();
                         tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());

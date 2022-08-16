@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
@@ -57,7 +58,7 @@ public class CommandExport {
 
         for(ItemStack s : player.getHandSlots()){
             if(s.getItem() instanceof ItemMusicSheet){
-                if(s.hasTag()){
+                if(s.hasTag() && s.getTag() != null) {
                     CompoundTag tag = s.getTag().copy();
                     if(tag.contains("id") && tag.contains("ver")){
                         UUID id = tag.getUUID("id");

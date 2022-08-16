@@ -1,6 +1,7 @@
 package xerca.xercamusic.common.block;
 
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,8 +19,11 @@ import xerca.xercamusic.common.entity.EntityMusicSpirit;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public abstract class BlockInstrument extends Block {
     public BlockInstrument(Properties properties) {
         super(properties);
@@ -34,7 +38,7 @@ public abstract class BlockInstrument extends Block {
         }
         ItemStack handStack = player.getItemInHand(hand);
         if(handStack.getItem() instanceof ItemMusicSheet){
-            playMusic(worldIn, player, true, pos);
+            playMusic(worldIn, player, pos);
             return InteractionResult.SUCCESS;
         }
         else{
@@ -49,12 +53,12 @@ public abstract class BlockInstrument extends Block {
         return InteractionResult.PASS;
     }
 
-    private void playMusic(Level worldIn, Player playerIn, boolean canStop, BlockPos pos){
+    private void playMusic(Level worldIn, Player playerIn, BlockPos pos){
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
         if(musicSpirits.size() == 0){
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, pos, getItemInstrument()));
         }
-        else if(canStop){
+        else {
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
         }
     }

@@ -34,7 +34,9 @@ public class ImportMusicPacketHandler {
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
         } catch (IOException e) {
             e.printStackTrace();
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("import.fail.4", filepath).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            if (Minecraft.getInstance().player != null) {
+                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("import.fail.4", filepath).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            }
         }
     }
 }
