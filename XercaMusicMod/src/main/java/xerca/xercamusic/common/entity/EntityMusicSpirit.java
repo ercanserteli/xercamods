@@ -1,5 +1,6 @@
 package xerca.xercamusic.common.entity;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,7 +15,6 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
 import xerca.xercamusic.client.MusicManagerClient;
-import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
@@ -23,9 +23,13 @@ import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnData {
     private Player body;
     private ItemStack note;
@@ -34,18 +38,17 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     private int mLengthBeats;
     private float mVolume;
     private byte mBPS;
-    private NoteSound lastPlayed = null;
     private boolean isPlaying = true;
     private BlockInstrument blockInstrument = null;
     private BlockPos blockInsPos = null;
     private SoundController soundController = null;
 
     public EntityMusicSpirit(Level worldIn) {
-        super(Entities.MUSIC_SPIRIT, worldIn);
+        super(Objects.requireNonNull(Entities.MUSIC_SPIRIT), worldIn);
     }
 
     public EntityMusicSpirit(Level worldIn, Player body, ItemInstrument instrument) {
-        super(Entities.MUSIC_SPIRIT, worldIn);
+        super(Objects.requireNonNull(Entities.MUSIC_SPIRIT), worldIn);
         this.body = body;
         this.instrument = instrument;
         setNoteFromBody();
@@ -61,7 +64,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         super(type, world);
     }
 
-    public EntityMusicSpirit(PlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityMusicSpirit(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
         this(world);
     }
 
@@ -176,7 +179,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             this.setPos(body.getX(), body.getY(), body.getZ());
         }
 
-        if (note.hasTag() && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
+        if (note.hasTag() && note.getTag() != null && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
             CompoundTag comp = note.getTag();
             mLengthBeats = comp.getInt("l");
             mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
@@ -252,20 +255,12 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         }
     }
 
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
     public void setPlaying(boolean playing) {
         isPlaying = playing;
     }
 
     public Player getBody() {
         return body;
-    }
-
-    public void setBody(Player body) {
-        this.body = body;
     }
 
 }

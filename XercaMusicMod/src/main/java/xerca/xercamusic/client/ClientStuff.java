@@ -25,25 +25,30 @@ public class ClientStuff {
 
     static public void showMusicGui(){
         LocalPlayer player = Minecraft.getInstance().player;
-        ItemStack heldItem = player.getMainHandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet){
-            CompoundTag noteTag = heldItem.getTag();
-            if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
-                UUID id = noteTag.getUUID("id");
-                int version = noteTag.getInt("ver");
-                MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet"))));
-            }
-            else{
-                Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet")));
+        if (player != null) {
+            ItemStack heldItem = player.getMainHandItem();
+            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet){
+                CompoundTag noteTag = heldItem.getTag();
+                if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
+                    UUID id = noteTag.getUUID("id");
+                    int version = noteTag.getInt("ver");
+                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet"))));
+                }
+                else{
+                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet")));
+                }
             }
         }
+
     }
 
     static public void showInstrumentGui(){
         LocalPlayer player = Minecraft.getInstance().player;
-        ItemStack heldItem = player.getMainHandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemInstrument){
-            Minecraft.getInstance().setScreen(new GuiInstrument(player, (ItemInstrument) heldItem.getItem(), new TranslatableComponent("item.xercamusic.instrument_gui"), null));
+        if (player != null) {
+            ItemStack heldItem = player.getMainHandItem();
+            if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemInstrument) {
+                Minecraft.getInstance().setScreen(new GuiInstrument(player, (ItemInstrument) heldItem.getItem(), new TranslatableComponent("item.xercamusic.instrument_gui"), null));
+            }
         }
     }
 
@@ -60,8 +65,8 @@ public class ClientStuff {
         return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, (byte)-1);
     }
 
-    static public NoteSound playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
-        return playNote(event, x, y, z, SoundSource.RECORDS, volume, pitch, lengthTicks);
+    static public void playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
+        playNote(event, x, y, z, SoundSource.RECORDS, volume, pitch, lengthTicks);
     }
 
     static public NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch, byte lengthTicks) {
@@ -71,7 +76,7 @@ public class ClientStuff {
     }
 
     static public void endMusic(int spiritID, int playerID) {
-        if (playerID == Minecraft.getInstance().player.getId()) {
+        if (Minecraft.getInstance().player != null && playerID == Minecraft.getInstance().player.getId()) {
             MusicEndedPacket pack = new MusicEndedPacket(spiritID);
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
         }

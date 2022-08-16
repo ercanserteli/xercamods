@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 public class CarvedCrimsonBakedModel implements BakedModel {
-    private BakedModel model;
+    private final BakedModel model;
     public CarvedCrimsonBakedModel(BakedModel model)
     {
         this.model = model;

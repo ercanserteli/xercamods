@@ -7,6 +7,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class TempleLootModifier extends LootModifier {
     }
 
     @Override
-    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
+    protected @NotNull List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
         generatedLoot.add(new ItemStack(Items.GOD));
         return generatedLoot;
     }

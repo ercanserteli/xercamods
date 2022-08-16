@@ -190,7 +190,7 @@ public class ClientStuff {
                 if (entityIn == null) {
                     return 0.0F;
                 } else {
-                    return ((entityIn.getUseItem().getItem() instanceof ItemWarhammer)) ? (stack.getUseDuration() - entityIn.getUseItemRemainingTicks()) / 20.0F : 0.0F;
+                    return ((entityIn.getUseItem().getItem() instanceof ItemWarhammer warhammer)) ? (stack.getUseDuration() - entityIn.getUseItemRemainingTicks()) / (20.0F * warhammer.getFullUseSeconds(stack)) : 0.0F;
                 }
             };
             ItemPropertyFunction grabHookPull = (stack, worldIn, entityIn, i) -> {

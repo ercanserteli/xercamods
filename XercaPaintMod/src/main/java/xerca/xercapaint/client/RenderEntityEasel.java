@@ -19,18 +19,18 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.item.ItemCanvas;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
-    protected EaselModel model;
+    protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
     static public RenderEntityEasel theInstance;
     static private final ResourceLocation woodTexture = new ResourceLocation(XercaPaint.MODID, "textures/block/birch_long.png");
@@ -42,13 +42,12 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     }
 
     @Override
-    public EaselModel getModel() {
+    public @NotNull EaselModel getModel() {
         return this.model;
     }
 
-    @Nullable
     @Override
-    public ResourceLocation getTextureLocation(EntityEasel entity) {
+    public @NotNull ResourceLocation getTextureLocation(EntityEasel entity) {
         return woodTexture;
     }
 
@@ -69,7 +68,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
         int i = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
         this.model.renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, i, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.layers.forEach(renderlayer -> renderlayer.render(matrixStackIn, bufferIn, packedLightIn, entity, 0, 0, 0, 0, 0, 0));
+        this.layers.forEach(renderLayer -> renderLayer.render(matrixStackIn, bufferIn, packedLightIn, entity, 0, 0, 0, 0, 0, 0));
 
         matrixStackIn.popPose();
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
@@ -98,7 +97,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
     public static class RenderEntityEaselFactory implements EntityRendererProvider<EntityEasel> {
         @Override
-        public EntityRenderer<EntityEasel> create(Context ctx) {
+        public @NotNull EntityRenderer<EntityEasel> create(Context ctx) {
             theInstance = new RenderEntityEasel(ctx);
             return theInstance;
         }

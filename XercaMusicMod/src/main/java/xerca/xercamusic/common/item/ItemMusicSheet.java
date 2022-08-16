@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
@@ -110,7 +111,7 @@ public class ItemMusicSheet extends Item {
         return notes;
     }
 
-    public void verifyTagAfterLoad(CompoundTag nbt) {
+    public void verifyTagAfterLoad(@NotNull CompoundTag nbt) {
 //        XercaMusic.LOGGER.info("verifyTagAfterLoad " + nbt);
         if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER){
             if(nbt.contains("music")){
@@ -138,7 +139,9 @@ public class ItemMusicSheet extends Item {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if(worldIn.isClientSide){
-            playerIn.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + worldIn.random.nextFloat()*0.4f);
+            if (SoundEvents.OPEN_SCROLL != null) {
+                playerIn.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + worldIn.random.nextFloat()*0.4f);
+            }
             DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientStuff::showMusicGui);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
@@ -157,16 +160,6 @@ public class ItemMusicSheet extends Item {
             }
         }
         return super.getName(stack);
-    }
-
-    public static byte[] getMusic(@Nonnull ItemStack stack) {
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            if(tag != null && tag.contains("music")){
-                return tag.getByteArray("music");
-            }
-        }
-        return null;
     }
 
     public static int getBPS(@Nonnull ItemStack stack) {
@@ -200,17 +193,10 @@ public class ItemMusicSheet extends Item {
     }
 
     /**
-     * Gets the generation of the book (how many times it has been cloned)
-     */
-    public static int getGeneration(ItemStack stack) {
-        return stack.getTag().getInt("generation");
-    }
-
-    /**
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getOrCreateTag();
             String s = tag.getString("author");
@@ -241,11 +227,6 @@ public class ItemMusicSheet extends Item {
                     tooltip.add((new TranslatableComponent("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
                 }
             }
-
-
-            if(tag.contains("HEDE")) {
-                tooltip.add(new TextComponent("HEDE"));
-            }
         }
     }
 
@@ -254,12 +235,12 @@ public class ItemMusicSheet extends Item {
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
-        BlockState iblockstate = world.getBlockState(blockpos);
-        if (iblockstate.getBlock() == Blocks.MUSIC_BOX && !iblockstate.getValue(BlockMusicBox.HAS_MUSIC)) {
+        BlockState blockState = world.getBlockState(blockpos);
+        if (blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_MUSIC)) {
             ItemStack itemstack = context.getItemInHand();
             if (itemstack.hasTag()) {
                 if (!world.isClientSide) {
-                    BlockMusicBox.insertMusic(world, blockpos, iblockstate, itemstack.copy());
+                    BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());
 
                     if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
                         itemstack.shrink(1);
@@ -277,7 +258,7 @@ public class ItemMusicSheet extends Item {
     public boolean isFoil(ItemStack stack) {
         if(stack.hasTag()){
             CompoundTag ntc = stack.getTag();
-            if(ntc.contains("generation")){
+            if (ntc != null && ntc.contains("generation")) {
                 int generation = ntc.getInt("generation");
                 return generation > 0;
             }

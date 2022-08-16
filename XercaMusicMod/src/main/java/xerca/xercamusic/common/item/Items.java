@@ -12,6 +12,8 @@ import xerca.xercamusic.common.MusicCreativeTab;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.Blocks;
 
+import java.util.Objects;
+
 import static xerca.xercamusic.common.XercaMusic.Null;
 
 @ObjectHolder(XercaMusic.MODID)
@@ -62,7 +64,7 @@ public final class Items {
                     new ItemInstrument("banjo", false, 2, 0, 4),
                     new ItemInstrument("drum", false, 3, 1, 4),
                     new ItemInstrument("cymbal", false, 4, 0, 4),
-                    new ItemBlockInstrument("drum_kit", false, 5, Blocks.DRUM_KIT, 0, 7),
+                    new ItemBlockInstrument("drum_kit", false, 5, Objects.requireNonNull(Blocks.DRUM_KIT), 0, 7),
                     new ItemInstrument("xylophone", false, 6, 0, 5),
                     new ItemInstrument("tubular_bell", false, 7, 1, 4),
                     new ItemInstrument("sansula", false, 8, 1, 5),
@@ -71,7 +73,7 @@ public final class Items {
                     new ItemInstrument("flute", true, 11, 1, 6),
                     new ItemInstrument("saxophone", true, 12, 0, 4),
                     new ItemInstrument("god", false, 13, 0, 5),
-                    new ItemBlockInstrument("piano", false, 14, Blocks.PIANO, 0, 7),
+                    new ItemBlockInstrument("piano", false, 14, Objects.requireNonNull(Blocks.PIANO), 0, 7),
                     new ItemInstrument("oboe", true, 15,0, 4),
                     new ItemInstrument("redstone_guitar", true, 16,0, 5),
                     new ItemInstrument("french_horn", true, 17,0, 5),
@@ -82,8 +84,8 @@ public final class Items {
             event.getRegistry().registerAll(
                     new ItemInstrument("harp_mc", false, -1, 0, 7, new Item.Properties()),
                     new ItemMusicSheet(),
-                    new BlockItem(Blocks.MUSIC_BOX, new Item.Properties().tab(Items.musicTab)).setRegistryName("music_box"),
-                    new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties().tab(Items.musicTab)).setRegistryName("metronome")
+                    new BlockItem(Objects.requireNonNull(Blocks.MUSIC_BOX), new Item.Properties().tab(Items.musicTab)).setRegistryName("music_box"),
+                    new BlockItem(Objects.requireNonNull(Blocks.BLOCK_METRONOME), new Item.Properties().tab(Items.musicTab)).setRegistryName("metronome")
             );
 
             for(ItemInstrument i : instruments){

@@ -25,7 +25,7 @@ public class SingleNotePacketHandler {
 
     private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
         PacketDistributor.PacketTarget target = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pl.getX(), pl.getY(), pl.getZ(), 24.0D, pl.getLevel().dimension()));
-        SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.getNote(), msg.getInstrumentItem(), pl, msg.isStop());
+        SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.getNote(), msg.getInstrumentItem(), pl, msg.isStop(), msg.getVolume());
         XercaMusic.NETWORK_HANDLER.send(target, packet);
     }
 }

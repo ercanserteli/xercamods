@@ -31,27 +31,27 @@ public class OpenGuiPacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(OpenGuiPacket msg) {
         Player player = Minecraft.getInstance().player;
-        if(msg.isAllowed()){
-            Entity entity = player.level.getEntity(msg.getEaselId());
-            if(entity instanceof EntityEasel easel){
-                ItemStack itemInHand = player.getItemInHand(msg.getHand());
-                boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
-                if(msg.isEdit()){
-                    if(handHoldsPalette){
-                        ClientStuff.showCanvasGui(easel, itemInHand);
+        if(player != null) {
+            if (msg.isAllowed()) {
+                Entity entity = player.level.getEntity(msg.getEaselId());
+                if (entity instanceof EntityEasel easel) {
+                    ItemStack itemInHand = player.getItemInHand(msg.getHand());
+                    boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
+                    if (msg.isEdit()) {
+                        if (handHoldsPalette) {
+                            ClientStuff.showCanvasGui(easel, itemInHand);
+                        } else {
+                            XercaPaint.LOGGER.error("Could not find palette in hand for editing painting");
+                        }
+                    } else {
+                        ClientStuff.showCanvasGui(easel, ItemStack.EMPTY);
                     }
-                    else{
-                        XercaPaint.LOGGER.error("Could not find palette in hand for editing painting");
-                    }
-                }else{
-                    ClientStuff.showCanvasGui(easel, ItemStack.EMPTY);
+                } else {
+                    XercaPaint.LOGGER.error("Could not find easel");
                 }
-            }else{
-                XercaPaint.LOGGER.error("Could not find easel");
+            } else {
+                player.sendMessage(new TranslatableComponent("easel.deny").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
-        }
-        else{
-            player.sendMessage(new TranslatableComponent("easel.deny").withStyle(ChatFormatting.RED), Util.NIL_UUID);
         }
     }
 }

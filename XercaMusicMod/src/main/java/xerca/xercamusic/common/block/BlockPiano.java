@@ -1,5 +1,6 @@
 package xerca.xercamusic.common.block;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -19,8 +20,11 @@ import net.minecraft.world.level.BlockGetter;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class BlockPiano extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape[] shapes = {
@@ -71,6 +75,6 @@ public class BlockPiano extends BlockInstrument {
 
     @Override
     public ItemInstrument getItemInstrument() {
-        return Items.PIANO;
+        return Objects.requireNonNull(Items.PIANO);
     }
 }

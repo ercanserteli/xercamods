@@ -34,14 +34,13 @@ public class Entities {
      * @param builder The entity type builder to build
      * @return The built entity type
      */
+    @SuppressWarnings("SameParameterValue")
     private static <T extends Entity> EntityType<T> build(final String name, final EntityType.Builder<T> builder) {
         final ResourceLocation registryName = new ResourceLocation(XercaMusic.MODID, name);
 
-        final EntityType<T> entityType = builder
-                .build(registryName.toString());
+        final EntityType<T> entityType = builder.build(registryName.toString());
 
         entityType.setRegistryName(registryName);
-
         return entityType;
     }
 }

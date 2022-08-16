@@ -6,7 +6,7 @@ import net.minecraftforge.client.IItemRenderProperties;
 import xerca.xercapaint.client.CanvasItemRenderer;
 
 public class RenderProp implements IItemRenderProperties {
-    public static RenderProp INSTANCE = new RenderProp();
+    public static final RenderProp INSTANCE = new RenderProp();
 
     @Override
     public BlockEntityWithoutLevelRenderer getItemStackRenderer() {

@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.entity.EntityEasel;
 
@@ -18,22 +19,18 @@ import java.util.Arrays;
 public class GuiCanvasView extends Screen {
     private int canvasX; // = 140;
     private int canvasY = 40;
-    private int canvasWidth;
-    private int canvasHeight;
-    private int canvasPixelScale;
-    private int canvasPixelWidth;
-    private int canvasPixelHeight;
-    private CanvasType canvasType;
+    private final int canvasWidth;
+    private final int canvasPixelScale;
+    private final int canvasPixelWidth;
+    private final int canvasPixelHeight;
+    private final CanvasType canvasType;
 
-    private boolean isSigned = false;
     private int[] pixels;
     private String authorName = "";
     private String canvasTitle = "";
-    private String name = "";
-    private int version = 0;
     private int generation = 0;
-    private EntityEasel easel;
-    private Player player;
+    private final EntityEasel easel;
+    private final Player player;
 
     protected GuiCanvasView(CompoundTag canvasTag, Component title, CanvasType canvasType, EntityEasel easel) {
         super(title);
@@ -44,7 +41,6 @@ public class GuiCanvasView extends Screen {
         this.canvasPixelHeight = CanvasType.getHeight(canvasType);
         int canvasPixelArea = canvasPixelHeight*canvasPixelWidth;
         this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
-        this.canvasHeight = this.canvasPixelHeight * this.canvasPixelScale;
         this.easel = easel;
         this.player = Minecraft.getInstance().player;
 
@@ -52,13 +48,9 @@ public class GuiCanvasView extends Screen {
             int[] nbtPixels = canvasTag.getIntArray("pixels");
             this.authorName = canvasTag.getString("author");
             this.canvasTitle = canvasTag.getString("title");
-            this.name = canvasTag.getString("name");
-            this.version = canvasTag.getInt("v");
             this.generation = canvasTag.getInt("generation");
 
             this.pixels =  Arrays.copyOfRange(nbtPixels, 0, canvasPixelArea);
-        } else {
-            this.isSigned = false;
         }
     }
 
@@ -80,7 +72,7 @@ public class GuiCanvasView extends Screen {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float f) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
         for(int i=0; i<canvasPixelHeight; i++){
             for(int j=0; j<canvasPixelWidth; j++){
                 int x = canvasX + j*canvasPixelScale;

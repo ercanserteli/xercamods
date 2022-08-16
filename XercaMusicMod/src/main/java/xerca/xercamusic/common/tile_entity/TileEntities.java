@@ -17,6 +17,7 @@ public class TileEntities {
 
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
+        @SuppressWarnings("ConstantConditions")
         @SubscribeEvent
         public static void registerTileEntities(final RegistryEvent.Register<BlockEntityType<?>> event) {
             XercaMusic.LOGGER.info("XercaMusic: Registering tile entities");

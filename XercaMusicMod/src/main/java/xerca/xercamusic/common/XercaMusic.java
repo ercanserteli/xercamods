@@ -15,14 +15,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.data.BlockTags;
-import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.*;
 
 import java.util.stream.Collectors;
@@ -33,7 +31,6 @@ public class XercaMusic
 {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
-//    public static Proxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     private static final String PROTOCOL_VERSION = Integer.toString(1);
     public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
@@ -44,6 +41,7 @@ public class XercaMusic
             .simpleChannel();
 
 
+    @SuppressWarnings("UnusedAssignment")
     private void networkRegistry(){
         int msg_id = 0;
         NETWORK_HANDLER.registerMessage(msg_id++, MusicUpdatePacket.class, MusicUpdatePacket::encode, MusicUpdatePacket::decode, MusicUpdatePacketHandler::handle);
@@ -121,7 +119,7 @@ public class XercaMusic
     }
 
     // This is for conveniently initializing object holders without annoying the IDE
-    @SuppressWarnings({"ConstantConditions", "SameReturnValue"})
+    @SuppressWarnings({"SameReturnValue"})
     public static <T> T Null() {
         return null;
     }

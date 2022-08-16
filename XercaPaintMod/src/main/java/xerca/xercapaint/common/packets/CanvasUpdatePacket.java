@@ -106,7 +106,4 @@ public class CanvasUpdatePacket {
         return easelId;
     }
 
-    public CanvasType getCanvasType() {
-        return canvasType;
-    }
 }

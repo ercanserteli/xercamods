@@ -7,14 +7,16 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
+import static xerca.xercapaint.common.XercaPaint.Null;
+
 @ObjectHolder(XercaPaint.MODID)
 public class SoundEvents {
-    public final static SoundEvent STROKE_LOOP = null;
-    public final static SoundEvent MIX = null;
-    public final static SoundEvent COLOR_PICKER = null;
-    public final static SoundEvent COLOR_PICKER_SUCK = null;
-    public final static SoundEvent WATER = null;
-    public final static SoundEvent WATER_DROP = null;
+    public final static SoundEvent STROKE_LOOP = Null();
+    public final static SoundEvent MIX = Null();
+    public final static SoundEvent COLOR_PICKER = Null();
+    public final static SoundEvent COLOR_PICKER_SUCK = Null();
+    public final static SoundEvent WATER = Null();
+    public final static SoundEvent WATER_DROP = Null();
 
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = new ResourceLocation(XercaPaint.MODID, soundName);

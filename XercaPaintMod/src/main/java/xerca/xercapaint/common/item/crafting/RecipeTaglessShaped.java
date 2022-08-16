@@ -4,21 +4,18 @@ import com.google.gson.JsonObject;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 import static xerca.xercapaint.common.item.Items.CRAFTING_TAGLESS_SHAPED;
 
 public class RecipeTaglessShaped extends ShapedRecipe {
-
-    public RecipeTaglessShaped(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn) {
-        super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
-    }
 
     public RecipeTaglessShaped(ShapedRecipe shapedRecipe){
         super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem());
@@ -28,7 +25,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(super.matches(inv, worldIn)){
             for(int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
@@ -46,7 +43,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
         ItemStack result = super.assemble(inv);
         if(!result.isEmpty()){
             for(int j = 0; j < inv.getContainerSize(); ++j) {
@@ -62,8 +59,8 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return CRAFTING_TAGLESS_SHAPED;
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return Objects.requireNonNull(CRAFTING_TAGLESS_SHAPED);
     }
 
     public static class TaglessSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeTaglessShaped> {
@@ -71,17 +68,17 @@ public class RecipeTaglessShaped extends ShapedRecipe {
 
         public TaglessSerializer(){}
 
-        public RecipeTaglessShaped fromJson(ResourceLocation recipeId, JsonObject json) {
+        public @NotNull RecipeTaglessShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);
             return new RecipeTaglessShaped(shapedRecipe);
         }
 
-        public RecipeTaglessShaped fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public RecipeTaglessShaped fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(recipeId, buffer);
-            return new RecipeTaglessShaped(shapedRecipe);
+            return new RecipeTaglessShaped(Objects.requireNonNull(shapedRecipe));
         }
 
-        public void toNetwork(FriendlyByteBuf buffer, RecipeTaglessShaped recipe) {
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RecipeTaglessShaped recipe) {
             shapedSerializer.toNetwork(buffer, recipe);
         }
 

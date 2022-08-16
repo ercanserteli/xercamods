@@ -2,13 +2,11 @@ package xerca.xercapaint.common.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,8 +16,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityEasel;
+
+import java.util.Objects;
 
 public class ItemEasel extends Item {
 
@@ -28,7 +29,7 @@ public class ItemEasel extends Item {
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext ctx) {
+    public @NotNull InteractionResult useOn(UseOnContext ctx) {
         Direction direction = ctx.getClickedFace();
         if (direction == Direction.DOWN) {
             return InteractionResult.FAIL;
@@ -38,10 +39,10 @@ public class ItemEasel extends Item {
             BlockPos blockpos = blockplacecontext.getClickedPos();
             ItemStack itemstack = ctx.getItemInHand();
             Vec3 vec3 = Vec3.atBottomCenterOf(blockpos);
-            AABB aabb = Entities.EASEL.getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
-            if (level.noCollision((Entity)null, aabb) && level.getEntities((Entity)null, aabb).isEmpty()) {
+            AABB aabb = Objects.requireNonNull(Entities.EASEL).getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
+            if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
                 if (level instanceof ServerLevel serverlevel) {
-                    EntityEasel easel = Entities.EASEL.create(serverlevel, itemstack.getTag(), (Component)null, ctx.getPlayer(), blockpos, MobSpawnType.SPAWN_EGG, true, true);
+                    EntityEasel easel = Entities.EASEL.create(serverlevel, itemstack.getTag(), null, ctx.getPlayer(), blockpos, MobSpawnType.SPAWN_EGG, true, true);
                     if (easel == null) {
                         return InteractionResult.FAIL;
                     }

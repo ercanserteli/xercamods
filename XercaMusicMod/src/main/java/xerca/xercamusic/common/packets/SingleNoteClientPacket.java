@@ -8,18 +8,22 @@ import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
+import java.util.Objects;
+
 public class SingleNoteClientPacket {
     private int note;
     private ItemInstrument instrumentItem;
     private Player playerEntity;
     private boolean isStop;
+    private float volume;
     private boolean messageIsValid;
 
-    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, Player playerEntity, boolean isStop) {
+    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, Player playerEntity, boolean isStop, float volume) {
         this.note = note;
         this.instrumentItem = itemInstrument;
         this.playerEntity = playerEntity;
         this.isStop = isStop;
+        this.volume = volume;
     }
 
     public SingleNoteClientPacket() {
@@ -33,12 +37,13 @@ public class SingleNoteClientPacket {
             int instrumentId = buf.readInt();
             int playerId = buf.readInt();
             result.isStop = buf.readBoolean();
+            result.volume = buf.readFloat();
 
             if(instrumentId < 0 || instrumentId >= Items.instruments.length){
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
-            Entity entity = Minecraft.getInstance().level.getEntity(playerId);
+            Entity entity = Objects.requireNonNull(Minecraft.getInstance().level).getEntity(playerId);
             if(!(entity instanceof Player)){
                 throw new IndexOutOfBoundsException("Invalid playerId: " + playerId);
             }
@@ -62,6 +67,7 @@ public class SingleNoteClientPacket {
         buf.writeInt(instrumentId);
         buf.writeInt(playerId);
         buf.writeBoolean(pkt.isStop());
+        buf.writeFloat(pkt.getVolume());
     }
 
     public boolean isMessageValid() {
@@ -81,25 +87,16 @@ public class SingleNoteClientPacket {
         return instrumentItem;
     }
 
-    public void setInstrumentItem(ItemInstrument instrumentItem) {
-        this.instrumentItem = instrumentItem;
-    }
-
     public Player getPlayerEntity() {
         return playerEntity;
-    }
-
-    public void setPlayerEntity(Player playerEntity) {
-        this.playerEntity = playerEntity;
     }
 
     public boolean isStop() {
         return isStop;
     }
 
-    public void setStop(boolean stop) {
-        isStop = stop;
+
+    public float getVolume() {
+        return volume;
     }
-
-
 }

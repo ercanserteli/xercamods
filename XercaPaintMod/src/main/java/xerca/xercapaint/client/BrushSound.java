@@ -7,9 +7,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercapaint.common.SoundEvents;
 
+import java.util.Objects;
 import java.util.Random;
-
-import net.minecraft.client.resources.sounds.SoundInstance.Attenuation;
 
 @OnlyIn(Dist.CLIENT)
 public class BrushSound extends AbstractTickableSoundInstance {
@@ -20,7 +19,7 @@ public class BrushSound extends AbstractTickableSoundInstance {
     private static final float[] fadeVolumes = {0.0f, 0.3f, 0.7f};
 
     public BrushSound() {
-        super(SoundEvents.STROKE_LOOP, SoundSource.MASTER);
+        super(Objects.requireNonNull(SoundEvents.STROKE_LOOP), SoundSource.MASTER);
         volume = 1.0f;
         pitch = 1.0F;
         looping = true;

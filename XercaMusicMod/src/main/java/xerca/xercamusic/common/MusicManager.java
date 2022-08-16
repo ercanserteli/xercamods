@@ -5,6 +5,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MusicManager {
-    public static void load() {
-        // Load from world data
-
-    }
-
     public static MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic::load, SavedDataMusic::new, "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
@@ -78,7 +74,7 @@ public class MusicManager {
         }
 
         @Override
-        public CompoundTag save(CompoundTag tag) {
+        public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
             ListTag musicDataList = new ListTag();
             for(Map.Entry<UUID, MusicData> entry : musicMap.entrySet()){
                 CompoundTag nbt = new CompoundTag();

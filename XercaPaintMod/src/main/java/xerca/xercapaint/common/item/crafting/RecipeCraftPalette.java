@@ -16,16 +16,19 @@ import xerca.xercapaint.common.item.Items;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeCraftPalette extends CustomRecipe {
+    private static final ResourceLocation plank = new ResourceLocation("minecraft:planks");
+
     public RecipeCraftPalette(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
 
     private boolean isPlank(ItemStack stack){
-        return stack.getItem().getTags().contains(new ResourceLocation("minecraft:planks"));
+        return stack.getTags().anyMatch((p)-> p.location().equals(plank));
     }
 
     private boolean isDye(ItemStack stack){
@@ -85,11 +88,7 @@ public class RecipeCraftPalette extends CustomRecipe {
             return false;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, plankRow);
-        if(dyes == null || dyes.isEmpty()){
-            return false;
-        }
-
-        return true;
+        return dyes != null && !dyes.isEmpty();
     }
 
     /**
@@ -119,14 +118,13 @@ public class RecipeCraftPalette extends CustomRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        NonNullList<ItemStack> list = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
-        return list;
+        return NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
     }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_PALETTE_CRAFTING;
+        return Objects.requireNonNull(Items.CRAFTING_SPECIAL_PALETTE_CRAFTING);
     }
 
     /**

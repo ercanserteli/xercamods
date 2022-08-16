@@ -29,6 +29,7 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.Items;
@@ -36,6 +37,7 @@ import xerca.xercapaint.common.packets.PictureRequestPacket;
 
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -53,7 +55,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     public static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
 
     public EntityCanvas(Level world, CompoundTag canvasNBT, BlockPos pos, Direction facing, CanvasType canvasType, int rotation) {
-        super(Entities.CANVAS, world, pos);
+        super(Objects.requireNonNull(Entities.CANVAS), world, pos);
         this.canvasName = canvasNBT.getString("name");
         this.canvasVersion = canvasNBT.getInt("v");
         if(canvasNBT.contains("title") && canvasNBT.contains("author")){
@@ -79,13 +81,9 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         super(entityCanvasEntityType, world);
     }
 
-    public EntityCanvas(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        super(Entities.CANVAS, world);
+    public EntityCanvas(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
+        super(Objects.requireNonNull(Entities.CANVAS), world);
     }
-
-//    public CompoundNBT getCanvasNBT() {
-//        return canvasNBT;
-//    }
 
     protected void defineSynchedData() {
         this.getEntityData().define(ROTATION, 0);
@@ -102,7 +100,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     @Override
-    protected float getEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+    protected float getEyeHeight(@NotNull Pose poseIn, @NotNull EntityDimensions sizeIn) {
         return 0.0F;
     }
 
@@ -118,9 +116,8 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     public void dropItem(@Nullable Entity brokenEntity) {
         if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
-            if (brokenEntity instanceof Player) {
-                Player playerentity = (Player)brokenEntity;
-                if (playerentity.getAbilities().instabuild) {
+            if (brokenEntity instanceof Player player) {
+                if (player.getAbilities().instabuild) {
                     return;
                 }
             }
@@ -178,7 +175,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     @Override
-    protected void setDirection(Direction facingDirectionIn) {
+    protected void setDirection(@NotNull Direction facingDirectionIn) {
         Validate.notNull(facingDirectionIn);
         this.direction = facingDirectionIn;
         if (facingDirectionIn.getAxis().isHorizontal()) {
@@ -201,43 +198,34 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     @Override
     protected void recalculateBoundingBox(){
         if(canvasType != null){
-            if (this.direction != null) {
-                double d1 = (double)this.pos.getX() + 0.5D - (double)this.direction.getStepX() * 0.46875D;
-                double d2 = (double)this.pos.getY() + 0.5D - (double)this.direction.getStepY() * 0.46875D;
-                double d3 = (double)this.pos.getZ() + 0.5D - (double)this.direction.getStepZ() * 0.46875D;
+            double d1 = (double)this.pos.getX() + 0.5D - (double)this.direction.getStepX() * 0.46875D;
+            double d2 = (double)this.pos.getY() + 0.5D - (double)this.direction.getStepY() * 0.46875D;
+            double d3 = (double)this.pos.getZ() + 0.5D - (double)this.direction.getStepZ() * 0.46875D;
 
-                if(this.direction.getAxis().isHorizontal()){
-                    double d4 = this.offs(this.getWidth());
-                    double d5 = this.offs(this.getHeight());
-                    d2 = d2 + d5;
-                    Direction direction = this.direction.getCounterClockWise();
-                    d1 = d1 + d4 * (double)direction.getStepX();
-                    d3 = d3 + d4 * (double)direction.getStepZ();
-                }else{
-
-                }
-
-                this.setPosRaw(d1, d2, d3);
-                double d6 = this.getWidth()-2;
-                double d7 = this.getHeight()-2;
-                double d8 = this.getWidth()-2;
-                Direction.Axis direction$axis = this.direction.getAxis();
-                switch(direction$axis) {
-                    case X:
-                        d6 = 1.0D;
-                        break;
-                    case Y:
-                        d7 = 1.0D;
-                        break;
-                    case Z:
-                        d8 = 1.0D;
-                }
-
-                d6 = d6 / 32.0D;
-                d7 = d7 / 32.0D;
-                d8 = d8 / 32.0D;
-                this.setBoundingBox(new AABB(d1 - d6, d2 - d7, d3 - d8, d1 + d6, d2 + d7, d3 + d8));
+            if(this.direction.getAxis().isHorizontal()){
+                double d4 = this.offs(this.getWidth());
+                double d5 = this.offs(this.getHeight());
+                d2 = d2 + d5;
+                Direction direction = this.direction.getCounterClockWise();
+                d1 = d1 + d4 * (double)direction.getStepX();
+                d3 = d3 + d4 * (double)direction.getStepZ();
             }
+
+            this.setPosRaw(d1, d2, d3);
+            double d6 = this.getWidth()-2;
+            double d7 = this.getHeight()-2;
+            double d8 = this.getWidth()-2;
+            Direction.Axis direction$axis = this.direction.getAxis();
+            switch (direction$axis) {
+                case X -> d6 = 1.0D;
+                case Y -> d7 = 1.0D;
+                case Z -> d8 = 1.0D;
+            }
+
+            d6 = d6 / 32.0D;
+            d7 = d7 / 32.0D;
+            d8 = d8 / 32.0D;
+            this.setBoundingBox(new AABB(d1 - d6, d2 - d7, d3 - d8, d1 + d6, d2 + d7, d3 + d8));
         }
     }
 
@@ -250,8 +238,8 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
             return false;
         } else {
             BlockState blockstate = this.level.getBlockState(this.pos.relative(this.direction.getOpposite()));
-            return blockstate.getMaterial().isSolid() ||
-                    this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(blockstate) ? this.level.getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty() : false;
+            return (blockstate.getMaterial().isSolid() ||
+                    this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(blockstate)) && this.level.getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
         }
     }
 
@@ -264,7 +252,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -362,7 +350,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 //        XercaPaint.LOGGER.debug("readSpawnData Pos: " + this.hangingPosition.toString() + " posY: " + this.posY);
     }
 
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
         if(canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE){
             if (!this.level.isClientSide) {
                 setRotation(getRotation() + 1);
@@ -375,8 +363,8 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     public static class Picture{
-        public int version;
-        public int[] pixels;
+        public final int version;
+        public final int[] pixels;
 
         public Picture(int version, int[] pixels){
             this.version = version;

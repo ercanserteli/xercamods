@@ -28,7 +28,7 @@ public class MusicBoxUpdatePacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(MusicBoxUpdatePacket msg) {
         Level world = Minecraft.getInstance().level;
-        if(!world.hasChunkAt(msg.getPos())){
+        if(world == null || !world.hasChunkAt(msg.getPos())){
             return;
         }
 

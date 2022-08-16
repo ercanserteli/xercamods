@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.XercaMusic;
@@ -20,6 +21,7 @@ import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TileEntityMetronome extends BlockEntity {
     private final static Vec3i halfRange = new Vec3i(8, 2, 8);
@@ -29,15 +31,15 @@ public class TileEntityMetronome extends BlockEntity {
     private int countDown = 0;
 
     public TileEntityMetronome(BlockPos blockPos, BlockState blockState){
-        super(TileEntities.METRONOME, blockPos, blockState);
+        super(Objects.requireNonNull(TileEntities.METRONOME), blockPos, blockState);
     }
 
     @Override
-    public void load(CompoundTag parent) {
+    public void load(@NotNull CompoundTag parent) {
 		super.load(parent);
     }
 
-    public static void tick(Level level, BlockPos blockPos, BlockState blockState, TileEntityMetronome metronome) {
+    public static void tick(Level level, BlockPos ignoredBlockPos, BlockState ignoredBlockState, TileEntityMetronome metronome) {
         if (metronome.level != null) {
             BlockState state = metronome.getBlockState();
             if (state.getValue(BlockMetronome.POWERED)) {
@@ -61,7 +63,7 @@ public class TileEntityMetronome extends BlockEntity {
                         if(metronome.countDown == 3){
                             List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
                                     player -> player.getMainHandItem().getItem() instanceof ItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
-                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag().getInt("bps") == bps);
+                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag() != null && player.getOffhandItem().getTag().getInt("bps") == bps);
                             XercaMusic.LOGGER.info("Metronome found " + players.size() + " players");
                             for(Player player : players){
                                 ItemInstrument.playMusic(level, player, false);

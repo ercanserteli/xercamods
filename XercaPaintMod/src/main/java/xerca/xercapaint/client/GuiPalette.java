@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.packets.PaletteUpdatePacket;
 
@@ -32,7 +33,7 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float f) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
         super.render(matrixStack, mouseX, mouseY, f);
 
         renderCursor(matrixStack, mouseX, mouseY);
@@ -69,7 +70,7 @@ public class GuiPalette extends BasePalette {
 
     @Override
     public void removed() {
-        if (dirty) {
+        if (paletteDirty) {
             PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
             XercaPaint.NETWORK_HANDLER.sendToServer(pack);
         }

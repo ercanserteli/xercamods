@@ -17,6 +17,7 @@ import xerca.xercapaint.common.item.Items;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -33,7 +34,6 @@ public class RecipeFillPalette extends CustomRecipe {
         return stack.getItem() instanceof DyeItem;
     }
 
-    @Nullable
     private int findPalette(CraftingContainer inv){
         for(int i = 0; i < inv.getContainerSize(); ++i) {
             ItemStack stack = inv.getItem(i);
@@ -125,7 +125,7 @@ public class RecipeFillPalette extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_PALETTE_FILLING;
+        return Objects.requireNonNull(Items.CRAFTING_SPECIAL_PALETTE_FILLING);
     }
 
     /**

@@ -53,9 +53,7 @@ public class CanvasMiniUpdatePacketHandler {
             canvas = pl.getMainHandItem();
             palette = pl.getOffhandItem();
             if(canvas.getItem() instanceof ItemPalette){
-                ItemStack temp = canvas;
                 canvas = palette;
-                palette = temp;
             }
         }
 

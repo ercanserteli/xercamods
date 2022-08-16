@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
@@ -28,8 +29,6 @@ public class GuiInstrument extends Screen {
     private final boolean[] buttonPushStates;
     private final NoteSound[] noteSounds;
     private static int currentKeyboardOctave = 0;
-    private Button octaveUp;
-    private Button octaveDown;
 
     private static final int guiHeight = 201;
     private static final int guiWidth = 401;
@@ -81,11 +80,11 @@ public class GuiInstrument extends Screen {
         guiBaseY = (this.height - guiHeight) / 2;
         octaveButtonX = guiBaseX - 10;
 
-        this.octaveUp = this.addRenderableWidget(new Button(octaveButtonX, octaveButtonY, 10, 10,
+        this.addRenderableWidget(new Button(octaveButtonX, octaveButtonY, 10, 10,
                 new TranslatableComponent("note.upButton"), button -> increaseOctave(),
                 (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("ins.octaveTooltip"), x, y)));
 
-        this.octaveDown = this.addRenderableWidget(new Button(octaveButtonX, octaveButtonY + 25, 10, 10,
+        this.addRenderableWidget(new Button(octaveButtonX, octaveButtonY + 25, 10, 10,
                 new TranslatableComponent("note.downButton"), button -> decreaseOctave(),
                 (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("ins.octaveTooltip"), x, y)));
     }
@@ -106,7 +105,7 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, insGuiTextures);
 
@@ -183,7 +182,7 @@ public class GuiInstrument extends Screen {
             player.level.addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
             buttonPushStates[noteId] = true;
 
-            SingleNotePacket pack = new SingleNotePacket(note, instrument, false);
+            SingleNotePacket pack = new SingleNotePacket(note, instrument, false, data.volume());
             XercaMusic.NETWORK_HANDLER.sendToServer(pack);
         }
     }

@@ -6,18 +6,20 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
-import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemInstrument.Pair;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
+import static xerca.xercamusic.common.XercaMusic.Null;
 
 @ObjectHolder(XercaMusic.MODID)
 public class SoundEvents {
-    public static final SoundEvent TICK = null;
-    public static final SoundEvent METRONOME_SET = null;
-    public static final SoundEvent OPEN_SCROLL = null;
-    public static final SoundEvent CLOSE_SCROLL = null;
+    public static final SoundEvent TICK = Null();
+    public static final SoundEvent METRONOME_SET = Null();
+    public static final SoundEvent OPEN_SCROLL = Null();
+    public static final SoundEvent CLOSE_SCROLL = Null();
 
     // Instrument SoPair<Integer, SoundEvent>on
     public static ArrayList<Pair<Integer, SoundEvent>> cymbals;
@@ -340,27 +342,27 @@ public class SoundEvents {
             addSound(bass_guitars, "bass_guitar", 75, event);
 
             // Instrument SoundEvent setting
-            Items.CYMBAL.setSounds(cymbals);
-            Items.DRUM_KIT.setSounds(drum_kits);
-            Items.GUITAR.setSounds(guitars);
-            Items.LYRE.setSounds(lyres);
-            Items.DRUM.setSounds(drums);
-            Items.FLUTE.setSounds(flutes);
-            Items.BANJO.setSounds(banjos);
-            Items.SAXOPHONE.setSounds(saxophones);
-            Items.GOD.setSounds(gods);
-            Items.SANSULA.setSounds(sansulas);
-            Items.TUBULAR_BELL.setSounds(tubular_bells);
-            Items.VIOLIN.setSounds(violins);
-            Items.XYLOPHONE.setSounds(xylophones);
-            Items.CELLO.setSounds(cellos);
-            Items.PIANO.setSounds(pianos);
-            Items.OBOE.setSounds(oboes);
-            Items.REDSTONE_GUITAR.setSounds(redstone_guitars);
-            Items.FRENCH_HORN.setSounds(french_horns);
-            Items.BASS_GUITAR.setSounds(bass_guitars);
+            Objects.requireNonNull(Items.CYMBAL).setSounds(cymbals);
+            Objects.requireNonNull(Items.DRUM_KIT).setSounds(drum_kits);
+            Objects.requireNonNull(Items.GUITAR).setSounds(guitars);
+            Objects.requireNonNull(Items.LYRE).setSounds(lyres);
+            Objects.requireNonNull(Items.DRUM).setSounds(drums);
+            Objects.requireNonNull(Items.FLUTE).setSounds(flutes);
+            Objects.requireNonNull(Items.BANJO).setSounds(banjos);
+            Objects.requireNonNull(Items.SAXOPHONE).setSounds(saxophones);
+            Objects.requireNonNull(Items.GOD).setSounds(gods);
+            Objects.requireNonNull(Items.SANSULA).setSounds(sansulas);
+            Objects.requireNonNull(Items.TUBULAR_BELL).setSounds(tubular_bells);
+            Objects.requireNonNull(Items.VIOLIN).setSounds(violins);
+            Objects.requireNonNull(Items.XYLOPHONE).setSounds(xylophones);
+            Objects.requireNonNull(Items.CELLO).setSounds(cellos);
+            Objects.requireNonNull(Items.PIANO).setSounds(pianos);
+            Objects.requireNonNull(Items.OBOE).setSounds(oboes);
+            Objects.requireNonNull(Items.REDSTONE_GUITAR).setSounds(redstone_guitars);
+            Objects.requireNonNull(Items.FRENCH_HORN).setSounds(french_horns);
+            Objects.requireNonNull(Items.BASS_GUITAR).setSounds(bass_guitars);
 
-            Items.HARP_MC.setSounds(harp_mcs);
+            Objects.requireNonNull(Items.HARP_MC).setSounds(harp_mcs);
         }
     }
 }

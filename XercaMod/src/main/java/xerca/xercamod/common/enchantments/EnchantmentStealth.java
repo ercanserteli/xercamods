@@ -12,46 +12,26 @@ public class EnchantmentStealth extends Enchantment {
         this.setRegistryName("enchantment_stealth");
     }
 
-    /**
-     * Returns the minimal value of enchantability needed on the enchantment level passed.
-     */
     @Override
     public int getMinCost(int enchantmentLevel) {
         return 15 + (enchantmentLevel - 1) * 9;
     }
 
-    /**
-     * Returns the maximum value of enchantability needed on the enchantment level passed.
-     */
     @Override
     public int getMaxCost(int enchantmentLevel) {
         return super.getMinCost(enchantmentLevel) + 50;
     }
 
-    /**
-     * Returns the maximum level that the enchantment can have.
-     */
     @Override
     public int getMaxLevel() {
         return 3;
     }
 
-    /**
-     * This applies specifically to applying at the enchanting table. The other method {@link #canApply(ItemStack)}
-     * applies for <i>all possible</i> enchantments.
-     * @param stack
-     * @return
-     */
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack) {
         return stack.getItem() instanceof ItemKnife;
     }
-    /**
-     * This applies specifically to applying at the enchanting table. The other method {@link #canApply(ItemStack)}
-     * applies for <i>all possible</i> enchantments.
-     * @param stack
-     * @return
-     */
+
     @Override
     public boolean canEnchant(ItemStack stack) {
         return this.canApplyAtEnchantingTable(stack);
