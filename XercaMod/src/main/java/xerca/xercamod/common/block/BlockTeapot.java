@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -28,13 +29,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.ItemTeapot;
 import xerca.xercamod.common.item.Items;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class BlockTeapot extends Block {
     public static final IntegerProperty TEA_AMOUNT = IntegerProperty.create("tea", 0, 7);
@@ -47,11 +48,11 @@ public class BlockTeapot extends Block {
     public BlockTeapot() {
         super(Properties.of(Material.CLAY).strength(0.0F, 1.0F).sound(SoundType.STONE));
         this.registerDefaultState(this.stateDefinition.any().setValue(TEA_AMOUNT, 0));
-        this.setRegistryName("block_teapot");
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random r) {
+    @Override
+    public void animateTick(BlockState stateIn, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull RandomSource r) {
         int teaAmount = stateIn.getValue(TEA_AMOUNT);
         if (teaAmount > 0) {
 //            if(worldIn.getGameTime() % (9 - teaAmount) == 0){
@@ -66,18 +67,18 @@ public class BlockTeapot extends Block {
         }
     }
 
-    // Called when the block is right clicked
+    // Called when the block is right-clicked
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult rayTraceResult) {
         if (worldIn.isClientSide) return InteractionResult.SUCCESS;
 
         if (player instanceof ServerPlayer)
         {
-            if(player.getMainHandItem().getItem() == Items.ITEM_TEACUP && state.getValue(TEA_AMOUNT) > 0){
-                worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
+            if(player.getMainHandItem().getItem() == Items.ITEM_TEACUP.get() && state.getValue(TEA_AMOUNT) > 0){
+                worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR.get(), SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
 
                 player.getMainHandItem().shrink(1);
-                player.addItem(new ItemStack(Items.ITEM_FULL_TEACUP_0));
+                player.addItem(new ItemStack(Items.ITEM_FULL_TEACUP_0.get()));
 
                 worldIn.setBlockAndUpdate(pos, state.setValue(TEA_AMOUNT, state.getValue(TEA_AMOUNT) - 1));
             }
@@ -86,11 +87,11 @@ public class BlockTeapot extends Block {
     }
 
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+    public @NotNull List<ItemStack> getDrops(BlockState state, LootContext.@NotNull Builder builder) {
         int teaAmount = state.getValue(TEA_AMOUNT);
         ItemStack teapotStack;
         if(teaAmount == 0){
-            teapotStack = new ItemStack(Items.ITEM_TEAPOT);
+            teapotStack = new ItemStack(Items.ITEM_TEAPOT.get());
         }else{
             teapotStack = new ItemStack(getItemHotTeapot(teaAmount));
         }
@@ -98,17 +99,17 @@ public class BlockTeapot extends Block {
     }
 
     @Override
-    public boolean canSurvive(BlockState blockState, LevelReader worldReader, BlockPos blockPos) {
+    public boolean canSurvive(@NotNull BlockState blockState, LevelReader worldReader, BlockPos blockPos) {
         return worldReader.getBlockState(blockPos.below()).getMaterial().isSolid();
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState state1, LevelAccessor world, BlockPos blockPos, BlockPos blockPos1) {
+    public @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull Direction direction, @NotNull BlockState state1, @NotNull LevelAccessor world, @NotNull BlockPos blockPos, @NotNull BlockPos blockPos1) {
         return direction == Direction.DOWN && !state.canSurvive(world, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state1, world, blockPos, blockPos1);
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState p_220053_1_, @NotNull BlockGetter p_220053_2_, @NotNull BlockPos p_220053_3_, @NotNull CollisionContext p_220053_4_) {
         return shape;
     }
 
@@ -118,29 +119,20 @@ public class BlockTeapot extends Block {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
     public ItemTeapot getItemHotTeapot(int teaAmount){
-        switch (teaAmount){
-            case 1:
-                return Items.ITEM_HOT_TEAPOT_1;
-            case 2:
-                return Items.ITEM_HOT_TEAPOT_2;
-            case 3:
-                return Items.ITEM_HOT_TEAPOT_3;
-            case 4:
-                return Items.ITEM_HOT_TEAPOT_4;
-            case 5:
-                return Items.ITEM_HOT_TEAPOT_5;
-            case 6:
-                return Items.ITEM_HOT_TEAPOT_6;
-            case 7:
-                return Items.ITEM_HOT_TEAPOT_7;
-            default:
-                return Items.ITEM_HOT_TEAPOT_1;
-        }
+        return switch (teaAmount) {
+            case 2 -> Items.ITEM_HOT_TEAPOT_2.get();
+            case 3 -> Items.ITEM_HOT_TEAPOT_3.get();
+            case 4 -> Items.ITEM_HOT_TEAPOT_4.get();
+            case 5 -> Items.ITEM_HOT_TEAPOT_5.get();
+            case 6 -> Items.ITEM_HOT_TEAPOT_6.get();
+            case 7 -> Items.ITEM_HOT_TEAPOT_7.get();
+            default -> Items.ITEM_HOT_TEAPOT_1.get();
+        };
     }
 }
 

@@ -12,7 +12,7 @@ import org.lwjgl.system.NonnullDefault;
 import javax.annotation.Nonnull;
 
 public class ItemStackableContainedFood extends Item {
-    private Item container;
+    private final Item container;
 
     public ItemStackableContainedFood(Properties properties, Item container, int stackSize) {
         super(properties.stacksTo(stackSize));

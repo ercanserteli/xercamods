@@ -5,6 +5,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,23 +42,19 @@ public class HammerQuakePacketHandler {
     }
 
     private static double rangeForQuake(int quakeLevel){
-        switch (quakeLevel){
-            case 1:
-                return 9.0;
-            case 2:
-                return 16.0;
-            case 3:
-                return 25.0;
-            default:
-                return 0;
-        }
+        return switch (quakeLevel) {
+            case 1 -> 9.0;
+            case 2 -> 16.0;
+            case 3 -> 25.0;
+            default -> 0;
+        };
     }
 
     private static void processMessage(HammerQuakePacket msg, ServerPlayer pl) {
         ItemStack st = pl.getMainHandItem();
         Item item = st.getItem();
         if (item instanceof ItemWarhammer){
-            int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_QUAKE, st);
+            int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_QUAKE.get(), st);
             if(quakeLevel > 0){
                 double range = rangeForQuake(quakeLevel);
                 List<LivingEntity> targets = pl.level.getEntitiesOfClass(LivingEntity.class, new AABB(pl.position().subtract(5, 5, 5), pl.position().add(5, 5, 5)), entity -> (!entity.is(pl) && entity.position().distanceToSqr(msg.getPosition()) < range));
@@ -67,8 +64,10 @@ public class HammerQuakePacketHandler {
 
                 float pull = msg.getPullDuration();
                 float mult = HammerAttackPacketHandler.damageBonusMult(pull);
-                int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_HEAVY, st);
-                float damage = ((float) pl.getAttribute(Attributes.ATTACK_DAMAGE).getValue() + heavyLevel * 0.5f) * mult * 0.5f;
+                int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_HEAVY.get(), st);
+
+                AttributeInstance attackDamage = pl.getAttribute(Attributes.ATTACK_DAMAGE);
+                float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + heavyLevel * 0.5f) * mult * 0.5f;
                 float push = (((ItemWarhammer) item).getPushAmount() + heavyLevel * 0.15f)  * mult;
 
                 float pitch = (2.0f / (damage + heavyLevel));
@@ -82,7 +81,7 @@ public class HammerQuakePacketHandler {
                     target.hurt(DamageSource.playerAttack(pl), damage);
                 }
                 st.hurtAndBreak(1, pl, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-                pl.level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.STOMP, SoundSource.PLAYERS, (float) volume, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);
+                pl.level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.STOMP.get(), SoundSource.PLAYERS, (float) volume, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);
 
                 int particleCount = (int) (volume*64);
                 QuakeParticlePacket pack = new QuakeParticlePacket(particleCount, pos.x, pos.y, pos.z);

@@ -29,11 +29,13 @@ public class ConfettiParticlePacketHandler {
     private static void processMessage(ConfettiParticlePacket pkt) {
         Vec3i dir = pkt.getDirection();
         Level world = Minecraft.getInstance().level;
-        for (int j = 0; j < pkt.getCount(); ++j) {
-            double velX = ((double) world.random.nextFloat() + dir.getX() - 0.5D) * 0.3D;
-            double velY = ((double) world.random.nextFloat() + dir.getY() * 0.5D) * 0.5D;
-            double velZ = ((double) world.random.nextFloat() + dir.getZ() - 0.5D) * 0.3D;
-            world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_CONFETTI)), pkt.getPosX(), pkt.getPosY(), pkt.getPosZ(), velX, velY, velZ);
+        if(world != null) {
+            for (int j = 0; j < pkt.getCount(); ++j) {
+                double velX = ((double) world.random.nextFloat() + dir.getX() - 0.5D) * 0.3D;
+                double velY = ((double) world.random.nextFloat() + dir.getY() * 0.5D) * 0.5D;
+                double velZ = ((double) world.random.nextFloat() + dir.getZ() - 0.5D) * 0.3D;
+                world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_CONFETTI.get())), pkt.getPosX(), pkt.getPosY(), pkt.getPosZ(), velX, velY, velZ);
+            }
         }
     }
 }

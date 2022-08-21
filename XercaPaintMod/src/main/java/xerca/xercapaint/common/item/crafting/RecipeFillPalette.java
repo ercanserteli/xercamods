@@ -17,7 +17,6 @@ import xerca.xercapaint.common.item.Items;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
-import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -113,7 +112,7 @@ public class RecipeFillPalette extends CustomRecipe {
         }
         orgTag.putByteArray("basic", basicColors);
 
-        ItemStack result = new ItemStack(Items.ITEM_PALETTE);
+        ItemStack result = new ItemStack(Items.ITEM_PALETTE.get());
         result.setTag(orgTag);
         return result;
     }
@@ -125,7 +124,7 @@ public class RecipeFillPalette extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Objects.requireNonNull(Items.CRAFTING_SPECIAL_PALETTE_FILLING);
+        return Items.CRAFTING_SPECIAL_PALETTE_FILLING.get();
     }
 
     /**

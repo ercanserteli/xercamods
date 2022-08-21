@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = XercaMod.MODID)
 public class Config {
-    public static Map<String, Supplier<Boolean>> conditionMap;
+    public static final Map<String, Supplier<Boolean>> conditionMap;
     static {
         conditionMap = new HashMap<>(16);
         conditionMap.put("grab_hook", Config::isGrabHookEnabled);
@@ -41,25 +41,25 @@ public class Config {
 
     private static final ForgeConfigSpec.Builder COMMON_BUILD = new ForgeConfigSpec.Builder();
 
-    public static ForgeConfigSpec COMMON_CONFIG;
+    public static final ForgeConfigSpec COMMON_CONFIG;
 
-    private static ForgeConfigSpec.BooleanValue GRAB_HOOK_ENABLE;
-    private static ForgeConfigSpec.BooleanValue WARHAMMER_ENABLE;
-    private static ForgeConfigSpec.BooleanValue CUSHION_ENABLE;
-    private static ForgeConfigSpec.BooleanValue TEA_ENABLE;
-    private static ForgeConfigSpec.BooleanValue FOOD_ENABLE;
-    private static ForgeConfigSpec.BooleanValue CONFETTI_ENABLE;
-    private static ForgeConfigSpec.BooleanValue ENDER_FLASK_ENABLE;
-    private static ForgeConfigSpec.BooleanValue COURTROOM_ENABLE;
-    private static ForgeConfigSpec.BooleanValue CARVED_WOOD_ENABLE;
-    private static ForgeConfigSpec.BooleanValue LEATHER_STRAW_ENABLE;
-    private static ForgeConfigSpec.BooleanValue BOOKCASE_ENABLE;
-    private static ForgeConfigSpec.BooleanValue COINS_ENABLE;
-    private static ForgeConfigSpec.BooleanValue SCYTHE_ENABLE;
-    private static ForgeConfigSpec.BooleanValue SPYGLASS_ENABLE;
-    private static ForgeConfigSpec.BooleanValue ROPE_ENABLE;
-    private static ForgeConfigSpec.BooleanValue TERRACOTTA_TILE_ENABLE;
-    private static ForgeConfigSpec.BooleanValue OMNI_CHEST_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue GRAB_HOOK_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue WARHAMMER_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue CUSHION_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue TEA_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue FOOD_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue CONFETTI_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue ENDER_FLASK_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue COURTROOM_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue CARVED_WOOD_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue LEATHER_STRAW_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue BOOKCASE_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue COINS_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue SCYTHE_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue SPYGLASS_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue ROPE_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue TERRACOTTA_TILE_ENABLE;
+    private static final ForgeConfigSpec.BooleanValue OMNI_CHEST_ENABLE;
 
     private static boolean grabHookEnabled;
     private static boolean warhammerEnabled;

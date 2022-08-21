@@ -1,13 +1,14 @@
 package xerca.xercamusic.common;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.serialization.Codec;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -15,13 +16,19 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.data.BlockTags;
+import xerca.xercamusic.common.entity.Entities;
+import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.*;
+import xerca.xercamusic.common.tile_entity.TileEntities;
 
 import java.util.stream.Collectors;
 
@@ -39,6 +46,11 @@ public class XercaMusic
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .simpleChannel();
+
+    private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLMS =
+            DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
+
+    public static final RegistryObject<Codec<? extends IGlobalLootModifier>> TEMPLE_VOG = GLMS.register("temple_vog", TempleLootModifier.CODEC);
 
 
     @SuppressWarnings("UnusedAssignment")
@@ -64,6 +76,13 @@ public class XercaMusic
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+        Blocks.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Items.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Items.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Entities.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TileEntities.BLOCK_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        GLMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -71,6 +90,8 @@ public class XercaMusic
         event.enqueueWork(()->{
             networkRegistry();
             registerTriggers();
+            Items.setup();
+            SoundEvents.setup();
         });
     }
 
@@ -98,13 +119,8 @@ public class XercaMusic
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
-        public static void registerLootModifiers(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
-            event.getRegistry().register(new TempleLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"temple_vog")));
-        }
-
-        @SubscribeEvent
         public static void registerDataEvent(final GatherDataEvent event) {
-            event.getGenerator().addProvider(new BlockTags(event.getGenerator(), event.getExistingFileHelper()));
+            event.getGenerator().addProvider(event.includeServer(), new BlockTags(event.getGenerator(), event.getExistingFileHelper()));
         }
     }
 

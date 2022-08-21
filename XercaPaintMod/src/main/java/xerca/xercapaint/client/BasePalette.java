@@ -219,7 +219,7 @@ public abstract class BasePalette extends Screen {
                     if(mouseButton == 0){
                         carriedColor = currentColor = basicColors[i];
                         setCarryingColor();
-                        playSound(SoundEvents.MIX, 0.6f);
+                        playSound(SoundEvents.MIX.get(), 0.6f);
                     }
                     didSomething = true;
                     break;
@@ -234,7 +234,7 @@ public abstract class BasePalette extends Screen {
                                 carriedColor = currentColor = customColors[i].getColor();
                                 carriedCustomColorId = i;
                                 setCarryingColor();
-                                playSound(SoundEvents.MIX, 0.3f);
+                                playSound(SoundEvents.MIX.get(), 0.3f);
                             }
                         }
                         didSomething = true;
@@ -247,7 +247,7 @@ public abstract class BasePalette extends Screen {
                 if(sqrDist(clickVec, waterCenter) <= sqrCustomRadius){
                     if(mouseButton == 0) {
                         setCarryingWater();
-                        playSound(SoundEvents.WATER);
+                        playSound(SoundEvents.WATER.get());
                         didSomething = true;
                     }
                 }
@@ -257,7 +257,7 @@ public abstract class BasePalette extends Screen {
                 if(inColorPicker(x, y)){
                     if(mouseButton == 0) {
                         setPickingColor();
-                        playSound(SoundEvents.COLOR_PICKER);
+                        playSound(SoundEvents.COLOR_PICKER.get());
                         didSomething = true;
                     }
                 }
@@ -316,12 +316,12 @@ public abstract class BasePalette extends Screen {
                         PaletteUtil.CustomColor customColor = customColors[i];
                         if(isCarryingWater){
                             customColor.reset();
-                            playSound(SoundEvents.WATER_DROP);
+                            playSound(SoundEvents.WATER_DROP.get());
                         }else{
                             if(carriedCustomColorId != i){
                                 customColor.mix(carriedColor);
                                 currentColor = customColor.getColor();
-                                playSound(SoundEvents.MIX);
+                                playSound(SoundEvents.MIX.get());
                             }
                         }
                         paletteDirty = true;
@@ -349,7 +349,7 @@ public abstract class BasePalette extends Screen {
         Minecraft m = Minecraft.getInstance();
         if(m.level != null && m.player != null){
                 m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
-                        0.8f + m.level.random.nextFloat()*0.4f, m.player.blockPosition()));
+                        0.8f + m.level.random.nextFloat()*0.4f, m.player.getRandom(), m.player.blockPosition()));
         }
     }
 

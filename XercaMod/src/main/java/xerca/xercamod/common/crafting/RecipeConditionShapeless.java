@@ -1,29 +1,23 @@
 package xerca.xercamod.common.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class RecipeConditionShapeless extends ShapelessRecipe {
     private final Supplier<Boolean> condition;
-    private RecipeSerializer serializer;
+    private final RecipeSerializer<?> serializer;
 
-    public RecipeConditionShapeless(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn, NonNullList<Ingredient> recipeItemsIn, Supplier<Boolean> condition) {
-        super(idIn, groupIn, recipeOutputIn, recipeItemsIn);
-        this.condition = condition;
-    }
-
-    public RecipeConditionShapeless(ShapelessRecipe shapedRecipe, Supplier<Boolean> condition, RecipeSerializer serializer){
+    public RecipeConditionShapeless(ShapelessRecipe shapedRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
         super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getResultItem(), shapedRecipe.getIngredients());
         this.condition = condition;
         this.serializer = serializer;
@@ -32,7 +26,7 @@ public class RecipeConditionShapeless extends ShapelessRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(!condition.get()){
             return false;
         }
@@ -42,22 +36,18 @@ public class RecipeConditionShapeless extends ShapelessRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
         if(!condition.get()){
             return ItemStack.EMPTY;
         }
         return super.assemble(inv);
     }
 
-    public RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return serializer;
     }
 
-    public void setSerializer(RecipeSerializer<?> serializer) {
-        this.serializer = serializer;
-    }
-
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeConditionShapeless> {
+    public static class Serializer implements RecipeSerializer<RecipeConditionShapeless> {
         private static final ShapelessRecipe.Serializer shapelessSerializer = new ShapelessRecipe.Serializer();
         private final Supplier<Boolean> condition;
 
@@ -65,20 +55,21 @@ public class RecipeConditionShapeless extends ShapelessRecipe {
             this.condition = condition;
         }
 
-        public RecipeConditionShapeless fromJson(ResourceLocation recipeId, JsonObject json) {
+        @Override
+        public @NotNull RecipeConditionShapeless fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             ShapelessRecipe shapelessRecipe = shapelessSerializer.fromJson(recipeId, json);
             return new RecipeConditionShapeless(shapelessRecipe, condition, this);
         }
 
-        public RecipeConditionShapeless fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        @Override
+        public RecipeConditionShapeless fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             ShapelessRecipe shapelessRecipe = shapelessSerializer.fromNetwork(recipeId, buffer);
-            return new RecipeConditionShapeless(shapelessRecipe, condition, this);
+            return new RecipeConditionShapeless(Objects.requireNonNull(shapelessRecipe), condition, this);
         }
 
-        public void toNetwork(FriendlyByteBuf buffer, RecipeConditionShapeless recipe) {
+        @Override
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RecipeConditionShapeless recipe) {
             shapelessSerializer.toNetwork(buffer, recipe);
         }
-
-
     }
 }

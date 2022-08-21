@@ -12,8 +12,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 @MethodsReturnNonnullByDefault
 public class RecipeNoteCloning extends CustomRecipe {
     public RecipeNoteCloning(ResourceLocation p_i48170_1_) {
@@ -31,13 +29,13 @@ public class RecipeNoteCloning extends CustomRecipe {
         for(int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack stack = inv.getItem(j);
             if (!stack.isEmpty()) {
-                if (stack.getItem() == Items.MUSIC_SHEET && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
+                if (stack.getItem() == Items.MUSIC_SHEET.get() && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
                     if (!orgNote.isEmpty()) {
                         return false;
                     }
 
                     orgNote = stack;
-                } else if (stack.getItem() == Items.MUSIC_SHEET && !stack.hasTag()) {
+                } else if (stack.getItem() == Items.MUSIC_SHEET.get() && !stack.hasTag()) {
                     if (!freshNote.isEmpty()) {
                         return false;
                     }
@@ -61,13 +59,13 @@ public class RecipeNoteCloning extends CustomRecipe {
         for(int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack stack = inv.getItem(j);
             if (!stack.isEmpty()) {
-                if (stack.getItem() == Items.MUSIC_SHEET && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
+                if (stack.getItem() == Items.MUSIC_SHEET.get() && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
                     if (!orgNote.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
 
                     orgNote = stack;
-                } else if (stack.getItem() == Items.MUSIC_SHEET && !stack.hasTag()) {
+                } else if (stack.getItem() == Items.MUSIC_SHEET.get() && !stack.hasTag()) {
                     if (!freshNote.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
@@ -79,7 +77,7 @@ public class RecipeNoteCloning extends CustomRecipe {
 
         int gen = WrittenBookItem.getGeneration(orgNote);
         if (!orgNote.isEmpty() && orgNote.hasTag() && orgNote.getTag() != null && !freshNote.isEmpty() && !freshNote.hasTag() && gen < 3 && gen > 0) {
-            ItemStack resultStack = new ItemStack(Items.MUSIC_SHEET);
+            ItemStack resultStack = new ItemStack(Items.MUSIC_SHEET.get());
             CompoundTag compoundTag = orgNote.getTag().copy();
             compoundTag.putInt("generation", gen + 1);
             resultStack.setTag(compoundTag);
@@ -95,9 +93,9 @@ public class RecipeNoteCloning extends CustomRecipe {
 
         for(int i = 0; i < stacks.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
-            if (itemstack.hasContainerItem()) {
-                stacks.set(i, itemstack.getContainerItem());
-            } else if (itemstack.getItem() == Items.MUSIC_SHEET && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
+            if (itemstack.hasCraftingRemainingItem()) {
+                stacks.set(i, itemstack.getCraftingRemainingItem());
+            } else if (itemstack.getItem() == Items.MUSIC_SHEET.get() && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
                 ItemStack stack = itemstack.copy();
                 stack.setCount(1);
                 stacks.set(i, stack);
@@ -110,7 +108,7 @@ public class RecipeNoteCloning extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Objects.requireNonNull(Items.CRAFTING_SPECIAL_NOTECLONING);
+        return Items.CRAFTING_SPECIAL_NOTECLONING.get();
     }
 
     /**

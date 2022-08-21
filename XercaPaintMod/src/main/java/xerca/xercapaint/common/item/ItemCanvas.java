@@ -5,8 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,7 +18,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercapaint.client.ClientStuff;
 import xerca.xercapaint.common.CanvasType;
@@ -34,10 +33,8 @@ import java.util.function.Consumer;
 public class ItemCanvas extends Item {
     private final CanvasType canvasType;
 
-    ItemCanvas(String name, CanvasType canvasType) {
+    ItemCanvas(CanvasType canvasType) {
         super(new Properties().tab(Items.paintTab).stacksTo(1));
-
-        this.setRegistryName(name);
         this.canvasType = canvasType;
     }
 
@@ -118,7 +115,7 @@ public class ItemCanvas extends Item {
     }
 
     public static Component getFullLabel(@Nonnull ItemStack stack){
-//        TextComponent label = new TextComponent("");
+//        Component label = Component.literal("");
         String labelString = "";
         int generation = 0;
         Component title = getCustomTitle(stack);
@@ -130,12 +127,12 @@ public class ItemCanvas extends Item {
             String s = tag.getString("author");
 
             if (!StringUtil.isNullOrEmpty(s)) {
-                labelString += (new TranslatableComponent("canvas.byAuthor", s)).getString() + " ";
+                labelString += (Component.translatable("canvas.byAuthor", s)).getString() + " ";
             }
 
             generation = tag.getInt("generation");
         }
-        TextComponent label = new TextComponent(labelString);
+        MutableComponent label = Component.literal(labelString);
         if(generation == 1){
             label.withStyle(ChatFormatting.YELLOW);
         }
@@ -152,7 +149,7 @@ public class ItemCanvas extends Item {
             if(tag != null){
                 String s = tag.getString("title");
                 if (!StringUtil.isNullOrEmpty(s)) {
-                    return new TextComponent(s);
+                    return Component.literal(s);
                 }
             }
         }
@@ -177,16 +174,16 @@ public class ItemCanvas extends Item {
             String s = tag.getString("author");
 
             if (!StringUtil.isNullOrEmpty(s)) {
-                tooltip.add(new TranslatableComponent("canvas.byAuthor", s));
+                tooltip.add(Component.translatable("canvas.byAuthor", s));
             }
 
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltip.add((new TranslatableComponent("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
+                tooltip.add((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
             }
         }else{
-            tooltip.add(new TranslatableComponent("canvas.empty").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
     }
 
@@ -225,7 +222,7 @@ public class ItemCanvas extends Item {
     }
 
     @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         super.initializeClient(consumer);
         consumer.accept(RenderProp.INSTANCE);
     }

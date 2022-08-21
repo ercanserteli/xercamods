@@ -1,22 +1,37 @@
 package xerca.xercamod.common;
 
-import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import com.google.common.base.Suppliers;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.function.Supplier;
 
 public class SeedLootModifier extends LootModifier {
     private final Item itemSeed;
     private final boolean isFood;
+    public static final Supplier<Codec<SeedLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst).and(
+            inst.group(
+                    ForgeRegistries.ITEMS.getCodec().fieldOf("seedItem").forGetter(m -> m.itemSeed),
+                    Codec.BOOL.fieldOf("isFood").forGetter(m -> m.isFood)
+            )).apply(inst, SeedLootModifier::new)
+    ));
+
+    public static Codec<SeedLootModifier> makeCodec() {
+        return RecordCodecBuilder.create(inst -> codecStart(inst).and(
+                inst.group(
+                        ForgeRegistries.ITEMS.getCodec().fieldOf("seedItem").forGetter(m -> m.itemSeed),
+                        Codec.BOOL.fieldOf("isFood").forGetter(m -> m.isFood)
+                )).apply(inst, SeedLootModifier::new));
+    }
 
     protected SeedLootModifier(LootItemCondition[] conditionsIn, Item itemSeed, boolean isFood) {
         super(conditionsIn);
@@ -25,7 +40,7 @@ public class SeedLootModifier extends LootModifier {
     }
 
     @Override
-    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
+    protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if((isFood && !Config.isFoodEnabled()) || (!isFood && !Config.isTeaEnabled())){
             return generatedLoot;
         }
@@ -33,21 +48,8 @@ public class SeedLootModifier extends LootModifier {
         return generatedLoot;
     }
 
-    static class Serializer extends GlobalLootModifierSerializer<SeedLootModifier> {
-        @Override
-        public SeedLootModifier read(ResourceLocation name, JsonObject object, LootItemCondition[] conditionsIn) {
-            Item seed = ForgeRegistries.ITEMS.getValue(new ResourceLocation((GsonHelper.getAsString(object, "seedItem"))));
-            boolean isFood = GsonHelper.getAsBoolean(object, "isFood");
-            return new SeedLootModifier(conditionsIn, seed, isFood);
-        }
-
-        @Override
-        public JsonObject write(SeedLootModifier instance) {
-            JsonObject json = new JsonObject();
-            ResourceLocation itemRL = Registry.ITEM.getKey(instance.itemSeed);
-            json.addProperty("seedItem", itemRL.toString());
-            json.addProperty("isFood", instance.isFood);
-            return json;
-        }
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec() {
+        return CODEC.get();
     }
 }

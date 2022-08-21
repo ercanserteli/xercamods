@@ -8,6 +8,8 @@ import xerca.xercamod.common.Config;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemConditionedContainedFood extends ItemStackableContainedFood {
 
     public ItemConditionedContainedFood(Properties properties, Item container, int stackSize) {

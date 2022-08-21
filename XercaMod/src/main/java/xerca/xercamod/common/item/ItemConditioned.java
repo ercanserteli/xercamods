@@ -8,6 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemConditioned extends Item {
     private final Supplier<Boolean> condition;
 

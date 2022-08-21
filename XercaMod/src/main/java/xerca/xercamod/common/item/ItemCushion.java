@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.block.BlockCushion;
 import xerca.xercamod.common.entity.EntityCushion;
@@ -30,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class ItemCushion extends Item {
-    private BlockCushion block;
+    private final BlockCushion block;
 
     public ItemCushion(Properties properties, BlockCushion block) {
         super(properties);
@@ -44,7 +45,7 @@ public class ItemCushion extends Item {
      * Called when this item is used when targetting a Block
      */
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public @NotNull InteractionResult useOn(UseOnContext context) {
         Direction enumfacing = context.getClickedFace();
         if (enumfacing == Direction.DOWN) {
             return InteractionResult.FAIL;
@@ -53,9 +54,9 @@ public class ItemCushion extends Item {
             BlockPlaceContext blockitemusecontext = new BlockPlaceContext(context);
             BlockPos blockpos = blockitemusecontext.getClickedPos();
             if (blockitemusecontext.canPlace()) {
-                double d0 = (double)blockpos.getX();
-                double d1 = (double)blockpos.getY();
-                double d2 = (double)blockpos.getZ();
+                double d0 = blockpos.getX();
+                double d1 = blockpos.getY();
+                double d2 = blockpos.getZ();
                 List<Entity> list = world.getEntities(null, new AABB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D));
                 if (!list.isEmpty()) {
                     return InteractionResult.FAIL;
@@ -90,8 +91,8 @@ public class ItemCushion extends Item {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        TranslatableComponent text = new TranslatableComponent("xercamod.cushion_tooltip");
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        MutableComponent text = Component.translatable("xercamod.cushion_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
     }
 }

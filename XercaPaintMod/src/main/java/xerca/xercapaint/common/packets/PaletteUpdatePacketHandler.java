@@ -29,9 +29,9 @@ public class PaletteUpdatePacketHandler {
     private static void processMessage(PaletteUpdatePacket msg, ServerPlayer pl) {
         ItemStack palette = pl.getMainHandItem();
 
-        if (palette.isEmpty() || palette.getItem() != Items.ITEM_PALETTE) {
+        if (palette.isEmpty() || palette.getItem() != Items.ITEM_PALETTE.get()) {
             palette = pl.getOffhandItem();
-            if (palette.isEmpty() || palette.getItem() != Items.ITEM_PALETTE) {
+            if (palette.isEmpty() || palette.getItem() != Items.ITEM_PALETTE.get()) {
                 return;
             }
         }

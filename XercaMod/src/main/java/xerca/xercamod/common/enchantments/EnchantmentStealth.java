@@ -4,12 +4,14 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.item.ItemKnife;
+
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
 
 public class EnchantmentStealth extends Enchantment {
     public EnchantmentStealth(Rarity rarityIn, EquipmentSlot... slots) {
         super(rarityIn, EnchantmentCategory.WEAPON, slots);
-        this.setRegistryName("enchantment_stealth");
     }
 
     @Override
@@ -33,7 +35,7 @@ public class EnchantmentStealth extends Enchantment {
     }
 
     @Override
-    public boolean canEnchant(ItemStack stack) {
+    public boolean canEnchant(@NotNull ItemStack stack) {
         return this.canApplyAtEnchantingTable(stack);
     }
 }

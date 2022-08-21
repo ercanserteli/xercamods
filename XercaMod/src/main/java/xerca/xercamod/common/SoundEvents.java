@@ -2,67 +2,37 @@ package xerca.xercamod.common;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@ObjectHolder(XercaMod.MODID)
 public class SoundEvents {
-    public final static SoundEvent TOMATO_SPLASH = null;
-    public final static SoundEvent SNEAK_HIT = null;
-    public final static SoundEvent GAVEL = null;
-    public final static SoundEvent OBJECTION = null;
-    public final static SoundEvent HAMMER = null;
-    public final static SoundEvent HOOK_CHAIN = null;
-    public final static SoundEvent HOOK_IMPACT = null;
-    public final static SoundEvent BIG_BURP = null;
-    public final static SoundEvent YAHOO = null;
-    public final static SoundEvent SCARY = null;
-    public final static SoundEvent CRACK = null;
-    public final static SoundEvent CONFETTI = null;
-    public final static SoundEvent STOMP = null;
-    public final static SoundEvent TEA_POUR = null;
-    public final static SoundEvent SIZZLE = null;
-    public final static SoundEvent BIG_SIZZLE = null;
-    public final static SoundEvent BEHEAD = null;
-    public final static SoundEvent HOLY = null;
-    public final static SoundEvent SPARKLES = null;
-    public final static SoundEvent ABSORB = null;
-    public final static SoundEvent FIZZY = null;
+    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, XercaMod.MODID);
 
-    private static SoundEvent createSoundEvent(String soundName) {
+    public final static RegistryObject<SoundEvent> TOMATO_SPLASH = createSoundEvent("tomato_splash");
+    public final static RegistryObject<SoundEvent> SNEAK_HIT = createSoundEvent("sneak_hit");
+    public final static RegistryObject<SoundEvent> GAVEL = createSoundEvent("gavel");
+    public final static RegistryObject<SoundEvent> OBJECTION = createSoundEvent("objection");
+    public final static RegistryObject<SoundEvent> HAMMER = createSoundEvent("hammer");
+    public final static RegistryObject<SoundEvent> HOOK_CHAIN = createSoundEvent("hook_chain");
+    public final static RegistryObject<SoundEvent> HOOK_IMPACT = createSoundEvent("hook_impact");
+    public final static RegistryObject<SoundEvent> BIG_BURP = createSoundEvent("big_burp");
+    public final static RegistryObject<SoundEvent> YAHOO = createSoundEvent("yahoo");
+    public final static RegistryObject<SoundEvent> SCARY = createSoundEvent("scary");
+    public final static RegistryObject<SoundEvent> CRACK = createSoundEvent("crack");
+    public final static RegistryObject<SoundEvent> CONFETTI = createSoundEvent("confetti");
+    public final static RegistryObject<SoundEvent> STOMP = createSoundEvent("stomp");
+    public final static RegistryObject<SoundEvent> TEA_POUR = createSoundEvent("tea_pour");
+    public final static RegistryObject<SoundEvent> SIZZLE = createSoundEvent("sizzle");
+    public final static RegistryObject<SoundEvent> BIG_SIZZLE = createSoundEvent("big_sizzle");
+    public final static RegistryObject<SoundEvent> BEHEAD = createSoundEvent("behead");
+    public final static RegistryObject<SoundEvent> HOLY = createSoundEvent("holy");
+    public final static RegistryObject<SoundEvent> SPARKLES = createSoundEvent("sparkles");
+    public final static RegistryObject<SoundEvent> ABSORB = createSoundEvent("absorb");
+    public final static RegistryObject<SoundEvent> FIZZY = createSoundEvent("fizzy");
+
+    private static RegistryObject<SoundEvent> createSoundEvent(String soundName) {
         final ResourceLocation soundID = new ResourceLocation(XercaMod.MODID, soundName);
-        return new SoundEvent(soundID).setRegistryName(soundID);
-    }
-
-    @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandler {
-        @SubscribeEvent
-        public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
-            event.getRegistry().registerAll(
-                    createSoundEvent("tomato_splash"),
-                    createSoundEvent("sneak_hit"),
-                    createSoundEvent("gavel"),
-                    createSoundEvent("objection"),
-                    createSoundEvent("hammer"),
-                    createSoundEvent("hook_chain"),
-                    createSoundEvent("hook_impact"),
-                    createSoundEvent("big_burp"),
-                    createSoundEvent("yahoo"),
-                    createSoundEvent("scary"),
-                    createSoundEvent("crack"),
-                    createSoundEvent("confetti"),
-                    createSoundEvent("stomp"),
-                    createSoundEvent("tea_pour"),
-                    createSoundEvent("sizzle"),
-                    createSoundEvent("big_sizzle"),
-                    createSoundEvent("behead"),
-                    createSoundEvent("holy"),
-                    createSoundEvent("sparkles"),
-                    createSoundEvent("absorb"),
-                    createSoundEvent("fizzy")
-            );
-        }
+        return SOUND_EVENTS.register(soundName, () -> new SoundEvent(soundID));
     }
 }

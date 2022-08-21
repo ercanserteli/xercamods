@@ -1,11 +1,10 @@
 package xerca.xercamusic.common.packets;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamusic.common.XercaMusic;
 
@@ -35,7 +34,7 @@ public class ImportMusicPacketHandler {
         } catch (IOException e) {
             e.printStackTrace();
             if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("import.fail.4", filepath).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("import.fail.4", filepath).withStyle(ChatFormatting.RED));
             }
         }
     }

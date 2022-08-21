@@ -5,7 +5,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,12 +36,12 @@ public class ClientStuff {
         CompoundTag tag = canvas.getTag();
         if((tag != null && tag.getInt("generation") > 0) || palette.isEmpty()){
             minecraft.setScreen(new GuiCanvasView(canvas.getTag(),
-                    new TranslatableComponent("item.xercapaint.item_canvas"),
+                    Component.translatable("item.xercapaint.item_canvas"),
                     ((ItemCanvas)canvas.getItem()).getCanvasType(), easel));
         }
         else{
             minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvas.getTag(), palette.getTag(),
-                    new TranslatableComponent("item.xercapaint.item_canvas"),
+                    Component.translatable("item.xercapaint.item_canvas"),
                     ((ItemCanvas)canvas.getItem()).getCanvasType(), easel));
         }
     }
@@ -58,25 +58,25 @@ public class ClientStuff {
         if(heldItem.getItem() instanceof ItemCanvas){
             CompoundTag tag = heldItem.getTag();
             if(offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemPalette) || (tag != null && tag.getInt("generation") > 0)){
-                minecraft.setScreen(new GuiCanvasView(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasView(heldItem.getTag(), Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
             }
             else{
                 minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
-                        tag, offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
+                        tag, offhandItem.getTag(), Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas)heldItem.getItem()).getCanvasType(), null));
             }
         }
         else if(heldItem.getItem() instanceof ItemPalette){
             if(offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas)){
-                minecraft.setScreen(new GuiPalette(heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_palette")));
+                minecraft.setScreen(new GuiPalette(heldItem.getTag(), Component.translatable("item.xercapaint.item_palette")));
             }
             else{
                 CompoundTag tag = offhandItem.getTag();
                 if(tag != null && tag.getInt("generation") > 0){
-                    minecraft.setScreen(new GuiCanvasView(offhandItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType(), null));
+                    minecraft.setScreen(new GuiCanvasView(offhandItem.getTag(), Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType(), null));
                 }
                 else{
                     minecraft.setScreen(new GuiCanvasEdit(minecraft.player,
-                            tag, heldItem.getTag(), new TranslatableComponent("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType(), null));
+                            tag, heldItem.getTag(), Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas)offhandItem.getItem()).getCanvasType(), null));
                 }
             }
         }
@@ -93,18 +93,18 @@ public class ClientStuff {
                 };
                 ItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
                         ((float)ItemPalette.basicColorCount(stack)) / 16.0F;
-                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_LARGE), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_LONG), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_TALL), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
-                ItemProperties.register(Objects.requireNonNull(Items.ITEM_PALETTE), new ResourceLocation(XercaPaint.MODID, "colors"), colors);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS.get()), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_LARGE.get()), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_LONG.get()), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_CANVAS_TALL.get()), new ResourceLocation(XercaPaint.MODID, "drawn"), drawn);
+                ItemProperties.register(Objects.requireNonNull(Items.ITEM_PALETTE.get()), new ResourceLocation(XercaPaint.MODID, "colors"), colors);
             });
         }
 
         @SubscribeEvent
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
-            event.registerEntityRenderer(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
+            event.registerEntityRenderer(Entities.CANVAS.get(), new RenderEntityCanvas.RenderEntityCanvasFactory());
+            event.registerEntityRenderer(Entities.EASEL.get(), new RenderEntityEasel.RenderEntityEaselFactory());
         }
 
         @SubscribeEvent

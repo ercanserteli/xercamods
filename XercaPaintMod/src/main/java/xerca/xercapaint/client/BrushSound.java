@@ -1,32 +1,25 @@
 package xerca.xercapaint.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercapaint.common.SoundEvents;
 
-import java.util.Objects;
-import java.util.Random;
-
 @OnlyIn(Dist.CLIENT)
 public class BrushSound extends AbstractTickableSoundInstance {
     private int age = 0;
     private int fadingTicks = 4;
-    private Random random;
 
     private static final float[] fadeVolumes = {0.0f, 0.3f, 0.7f};
 
     public BrushSound() {
-        super(Objects.requireNonNull(SoundEvents.STROKE_LOOP), SoundSource.MASTER);
+        super(SoundEvents.STROKE_LOOP.get(), SoundSource.MASTER, SoundInstance.createUnseededRandom());
         volume = 1.0f;
         pitch = 1.0F;
         looping = true;
         attenuation = Attenuation.NONE;
-        if(Minecraft.getInstance().level != null) {
-            random = Minecraft.getInstance().level.getRandom();
-        }
     }
 
     public void stopSound() {

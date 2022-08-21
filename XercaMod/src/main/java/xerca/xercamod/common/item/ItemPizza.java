@@ -2,7 +2,6 @@ package xerca.xercamod.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -11,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.BlockPizza;
@@ -31,12 +31,15 @@ public class ItemPizza extends BlockConditionedItem {
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
-        this.setRegistryName("pizza" + postfix(slot1, slot2, slot3));
+    }
+
+    public static String genName(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
+        return "pizza" + postfix(slot1, slot2, slot3);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         addPizzaIngredientToTooltip(tooltip, slot1);
         addPizzaIngredientToTooltip(tooltip, slot2);
         addPizzaIngredientToTooltip(tooltip, slot3);
@@ -44,14 +47,14 @@ public class ItemPizza extends BlockConditionedItem {
 
     static void addPizzaIngredientToTooltip(List<Component> tooltip, BlockPizza.Ingredient ingredient){
         if(!ingredient.equals(BlockPizza.Ingredient.EMPTY)) {
-            tooltip.add(new TranslatableComponent(XercaMod.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable(XercaMod.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
         }
     }
 
     @Override
-    public Component getName(ItemStack stack) {
+    public @NotNull Component getName(@NotNull ItemStack stack) {
         if(slot1.equals(BlockPizza.Ingredient.EMPTY) && slot2.equals(BlockPizza.Ingredient.EMPTY) && slot3.equals(BlockPizza.Ingredient.EMPTY))
-            return new TranslatableComponent(XercaMod.MODID + ".pizza_plain");
-        return new TranslatableComponent(XercaMod.MODID + ".pizza");
+            return Component.translatable(XercaMod.MODID + ".pizza_plain");
+        return Component.translatable(XercaMod.MODID + ".pizza");
     }
 }

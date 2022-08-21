@@ -4,16 +4,17 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 public class ConfigTrigger extends SimpleCriterionTrigger<ConfigTrigger.Instance> {
     private static final ResourceLocation ID = new ResourceLocation(XercaMod.MODID, "config_check");
 
-    public ResourceLocation getId() {
+    public @NotNull ResourceLocation getId() {
         return ID;
     }
 
     @Override
-    protected Instance createInstance(JsonObject json, EntityPredicate.Composite entityPredicate, DeserializationContext conditionsParser) {
+    protected @NotNull Instance createInstance(@NotNull JsonObject json, EntityPredicate.@NotNull Composite entityPredicate, @NotNull DeserializationContext conditionsParser) {
         return new ConfigTrigger.Instance(entityPredicate, ConfigPredicate.deserialize(json));
     }
 
@@ -33,7 +34,7 @@ public class ConfigTrigger extends SimpleCriterionTrigger<ConfigTrigger.Instance
             this.predicate = predicate;
         }
 
-        public JsonObject serializeToJson(SerializationContext conditions) {
+        public @NotNull JsonObject serializeToJson(@NotNull SerializationContext conditions) {
             JsonObject jsonobject = super.serializeToJson(conditions);
             jsonobject.add("pred", predicate.serialize());
             return jsonobject;

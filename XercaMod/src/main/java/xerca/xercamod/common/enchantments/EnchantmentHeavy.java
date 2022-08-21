@@ -4,13 +4,15 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemWarhammer;
+
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
 
 public class EnchantmentHeavy extends EnchantmentWithConfig {
     public EnchantmentHeavy(Rarity rarityIn, EquipmentSlot... slots) {
         super(rarityIn, EnchantmentCategory.WEAPON, slots);
-        this.setRegistryName("enchantment_heavy");
     }
 
     /**
@@ -41,7 +43,7 @@ public class EnchantmentHeavy extends EnchantmentWithConfig {
      * Determines if the enchantment passed can be applyied together with this enchantment.
      */
     @Override
-    public boolean checkCompatibility(Enchantment ench) {
+    public boolean checkCompatibility(@NotNull Enchantment ench) {
         return super.checkCompatibility(ench) && !(ench instanceof EnchantmentQuick);
     }
 

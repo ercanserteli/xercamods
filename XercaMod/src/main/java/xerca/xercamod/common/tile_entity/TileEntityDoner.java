@@ -3,6 +3,7 @@ package xerca.xercamod.common.tile_entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,8 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.SoundEvents;
-
-import java.util.Random;
 
 import static net.minecraft.world.level.block.CampfireBlock.LIT;
 import static xerca.xercamod.common.block.BlockDoner.IS_RAW;
@@ -25,22 +24,22 @@ public class TileEntityDoner extends BlockEntity {
     private boolean isSpinning;
 
     public TileEntityDoner(BlockPos blockPos, BlockState blockState) {
-        super(DONER, blockPos, blockState);
+        super(DONER.get(), blockPos, blockState);
         spinTicks = 0;
         cookingTicks = 0;
         sizzleCooldown = 0;
     }
 
-    public static void tick(Level level, BlockPos blockPos, BlockState blockState, TileEntityDoner t) {
+    public static void tick(Level level, BlockPos ignoredBlockPos, BlockState ignoredBlockState, TileEntityDoner t) {
         if (level.hasNeighborSignal(t.worldPosition)) {
-            Random r = level.random;
+            RandomSource r = level.random;
             t.isSpinning = true;
             t.spinTicks++;
             if(t.getBlockState().getValue(IS_RAW) && t.getBlockState().getValue(MEAT_AMOUNT) == 4 && t.gettingRoasted()){
                 t.cookingTicks++;
                 if(t.sizzleCooldown == 0){
                     if(level.isClientSide){
-                        level.playLocalSound(t.getBlockPos().getX(), t.getBlockPos().getY(), t.getBlockPos().getZ(), SoundEvents.SIZZLE, SoundSource.BLOCKS, 1.0f, 0.9f + r.nextFloat()*0.1f, false);
+                        level.playLocalSound(t.getBlockPos().getX(), t.getBlockPos().getY(), t.getBlockPos().getZ(), SoundEvents.SIZZLE.get(), SoundSource.BLOCKS, 1.0f, 0.9f + r.nextFloat()*0.1f, false);
                         for(int i = 0; i < r.nextInt(2) + 1; ++i) {
                             level.addParticle(ParticleTypes.SMOKE,
                                     t.worldPosition.getX() + 0.5D, t.worldPosition.getY() + 0.6D + r.nextDouble()*0.5D, t.worldPosition.getZ() + 0.25D,
@@ -54,7 +53,7 @@ public class TileEntityDoner extends BlockEntity {
                 if(t.cookingTicks > 500){
                     level.setBlockAndUpdate(t.getBlockPos(), t.getBlockState().setValue(IS_RAW, false));
 
-                    level.playSound(null, t.getBlockPos(), SoundEvents.BIG_SIZZLE, SoundSource.BLOCKS, 1.0f, 1.0f);
+                    level.playSound(null, t.getBlockPos(), SoundEvents.BIG_SIZZLE.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
                     for(int i = 0; i < 12; ++i) {
                         level.addParticle(ParticleTypes.SMOKE,
                                 t.worldPosition.getX() + 0.5D, t.worldPosition.getY() + 0.6D + r.nextDouble()*0.5D, t.worldPosition.getZ() + 0.25D,
@@ -74,7 +73,8 @@ public class TileEntityDoner extends BlockEntity {
     }
 
     private boolean gettingRoasted(){
-        return isFire(level.getBlockState(worldPosition.below())) || isFire(level.getBlockState(worldPosition.east())) ||
+        return level != null &&
+               isFire(level.getBlockState(worldPosition.below())) || isFire(level.getBlockState(worldPosition.east())) ||
                isFire(level.getBlockState(worldPosition.west())) || isFire(level.getBlockState(worldPosition.north())) ||
                isFire(level.getBlockState(worldPosition.south())) || isFire(level.getBlockState(worldPosition.offset(0, -1, 1))) ||
                isFire(level.getBlockState(worldPosition.offset(-1, -1, 0))) || isFire(level.getBlockState(worldPosition.offset(1, -1, 0))) ||

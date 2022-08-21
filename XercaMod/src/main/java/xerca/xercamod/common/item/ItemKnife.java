@@ -32,6 +32,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.Triggers;
 import xerca.xercamod.common.XercaMod;
@@ -41,48 +42,64 @@ import javax.annotation.Nonnull;
 
 public class ItemKnife extends Item {
 
-    private static final float defaultBonus = 8.0f;
+    private static final float defaultBonus = 5.0f;
     private static final float weaponDamage = 2.0f;
     private static final int maxDamage = 240;
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
     ItemKnife() {
         super(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS).stacksTo(1).defaultDurability(maxDamage));
-        this.setRegistryName("item_knife");
 
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", weaponDamage, AttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
     }
 
-    @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        float damage = 0.0F;
-        if (attacker.isSteppingCarefully() && Mth.abs(Mth.wrapDegrees(target.getYRot()) - Mth.wrapDegrees(attacker.getYRot())) < 65.0F) {
+    public static float critDamage(LivingEntity target, LivingEntity attacker, ItemStack stack) {
+        float angleDiff = Mth.abs(Mth.wrapDegrees(target.getYRot()) - Mth.wrapDegrees(attacker.getYRot()));
+        if (attacker.isSteppingCarefully() && (angleDiff < 65.0F || angleDiff > 295.0f)) {
             if(!target.level.isClientSide){
                 ClientboundAnimatePacket packetOut = new ClientboundAnimatePacket(target, 4);
                 ((ServerLevel)target.level).getChunkSource().broadcastAndSend(attacker, packetOut);
-
             }
-            attacker.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 1.0f, attacker.level.random.nextFloat() * 0.2F + 0.8F);
-
+            attacker.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.SNEAK_HIT.get(), SoundSource.PLAYERS, 1.0f, attacker.level.random.nextFloat() * 0.2F + 0.8F);
             float bonus = defaultBonus;
             if(stack.isEnchanted()){
-                bonus += EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_STEALTH, stack)*2;
+                bonus += EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_STEALTH.get(), stack)*2;
             }
-
-            damage += bonus;
-            Player player = (Player) attacker;
-            DamageSource damagesource = DamageSource.playerAttack(player);
-            target.hurt(damagesource, damage);
-            if(target.getHealth() <= 0f) {
-                Triggers.ASSASSINATE.trigger((ServerPlayer) player);
-            }
+            return bonus;
         }
+        return 0;
+    }
+
+    @Override
+    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, LivingEntity attacker) {
+//        float damage = 0.0F;
+//        float angleDiff = Mth.abs(Mth.wrapDegrees(target.getYRot()) - Mth.wrapDegrees(attacker.getYRot()));
+//        if (attacker.isSteppingCarefully() && (angleDiff < 65.0F || angleDiff > 295.0f)) {
+//            if(!target.level.isClientSide){
+//                ClientboundAnimatePacket packetOut = new ClientboundAnimatePacket(target, 4);
+//                ((ServerLevel)target.level).getChunkSource().broadcastAndSend(attacker, packetOut);
+//            }
+//            attacker.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.SNEAK_HIT.get(), SoundSource.PLAYERS, 1.0f, attacker.level.random.nextFloat() * 0.2F + 0.8F);
+//
+//            float bonus = defaultBonus;
+//            if(stack.isEnchanted()){
+//                bonus += EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_STEALTH.get(), stack)*2;
+//            }
+//
+//            damage += bonus;
+//            Player player = (Player) attacker;
+//            DamageSource damagesource = DamageSource.playerAttack(player);
+//            target.hurt(damagesource, damage);
+//            if(target.getHealth() <= 0f) {
+//                Triggers.ASSASSINATE.trigger((ServerPlayer) player);
+//            }
+//        }
         stack.hurtAndBreak(1, attacker, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
 
         if(stack.isEnchanted()){
-            int poison = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_POISON, stack);
+            int poison = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_POISON.get(), stack);
             if(poison > 0){
                 target.addEffect(new MobEffectInstance(MobEffects.POISON, 30 + 30 * poison, poison - 1));
             }
@@ -93,7 +110,7 @@ public class ItemKnife extends Item {
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if (hand == InteractionHand.OFF_HAND) {
             playerIn.swing(hand);
@@ -118,13 +135,14 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public boolean hasContainerItem(ItemStack stack)
+    public boolean hasCraftingRemainingItem(ItemStack stack)
     {
         return stack.getItem() == this;
     }
 
+    @SuppressWarnings("CommentedOutCode")
     @Override
-    public ItemStack getContainerItem(ItemStack itemStack) {
+    public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
         ItemStack ret = new ItemStack(this);
         ret.setTag(itemStack.getTag());
 
@@ -149,8 +167,8 @@ public class ItemKnife extends Item {
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
-        return enchantment.category == EnchantmentCategory.BREAKABLE || enchantment == Items.ENCHANTMENT_POISON
-                || enchantment == Items.ENCHANTMENT_STEALTH || enchantment == Enchantments.SHARPNESS
+        return enchantment.category == EnchantmentCategory.BREAKABLE || enchantment == Items.ENCHANTMENT_POISON.get()
+                || enchantment == Items.ENCHANTMENT_STEALTH.get() || enchantment == Enchantments.SHARPNESS
                 || enchantment == Enchantments.MOB_LOOTING;
     }
 }

@@ -11,25 +11,26 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.item.Items;
 
 public class RecipeCarvingStation extends SingleItemRecipe {
     public RecipeCarvingStation(ResourceLocation resourceLocation, String s, Ingredient ingredient, ItemStack stack) {
-        super(Items.CARVING_STATION_TYPE, Items.CARVING, resourceLocation, s, ingredient, stack);
+        super(Items.CARVING_STATION_TYPE.get(), Items.CARVING.get(), resourceLocation, s, ingredient, stack);
     }
 
     /**
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(Container inv, Level worldIn) {
+    public boolean matches(Container inv, @NotNull Level worldIn) {
         return this.ingredient.test(inv.getItem(0));
     }
 
     @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(Blocks.CARVING_STATION);
+    public @NotNull ItemStack getToastSymbol() {
+        return new ItemStack(Blocks.CARVING_STATION.get());
     }
 
     @Override
@@ -37,14 +38,9 @@ public class RecipeCarvingStation extends SingleItemRecipe {
         return true;
     }
 
-    public static class Serializer<T extends RecipeCarvingStation> extends net.minecraftforge.registries.ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
-        public final RecipeCarvingStation.Serializer.IRecipeFactory<T> factory;
-
-        public Serializer(RecipeCarvingStation.Serializer.IRecipeFactory<T> factory) {
-            this.factory = factory;
-        }
-
-        public T fromJson(ResourceLocation recipeId, JsonObject json) {
+    public record Serializer<T extends RecipeCarvingStation>(RecipeCarvingStation.Serializer.IRecipeFactory<T> factory) implements RecipeSerializer<T> {
+        @Override
+        public @NotNull T fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             String s = GsonHelper.getAsString(json, "group", "");
             Ingredient ingredient;
             if (GsonHelper.isArrayNode(json, "ingredient")) {
@@ -59,13 +55,15 @@ public class RecipeCarvingStation extends SingleItemRecipe {
             return this.factory.create(recipeId, s, ingredient, itemstack);
         }
 
-        public T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        @Override
+        public T fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
             String s = buffer.readUtf(32767);
             Ingredient ingredient = Ingredient.fromNetwork(buffer);
             ItemStack itemstack = buffer.readItem();
             return this.factory.create(recipeId, s, ingredient, itemstack);
         }
 
+        @Override
         public void toNetwork(FriendlyByteBuf buffer, T recipe) {
             buffer.writeUtf(recipe.group);
             recipe.ingredient.toNetwork(buffer);

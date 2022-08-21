@@ -1,14 +1,13 @@
 package xerca.xercapaint.common.item.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -60,24 +59,27 @@ public class RecipeTaglessShaped extends ShapedRecipe {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return Objects.requireNonNull(CRAFTING_TAGLESS_SHAPED);
+        return CRAFTING_TAGLESS_SHAPED.get();
     }
 
-    public static class TaglessSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeTaglessShaped> {
+    public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
         private static final ShapedRecipe.Serializer shapedSerializer = new ShapedRecipe.Serializer();
 
         public TaglessSerializer(){}
 
+        @Override
         public @NotNull RecipeTaglessShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);
             return new RecipeTaglessShaped(shapedRecipe);
         }
 
+        @Override
         public RecipeTaglessShaped fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(recipeId, buffer);
             return new RecipeTaglessShaped(Objects.requireNonNull(shapedRecipe));
         }
 
+        @Override
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RecipeTaglessShaped recipe) {
             shapedSerializer.toNetwork(buffer, recipe);
         }

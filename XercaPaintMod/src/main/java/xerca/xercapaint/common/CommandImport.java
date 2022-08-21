@@ -4,12 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
@@ -56,10 +54,10 @@ public class CommandImport {
         if(player.isCreative()){
             ItemStack itemStack;
             switch (CanvasType.fromByte(canvasType)){
-                case SMALL -> itemStack = new ItemStack(Items.ITEM_CANVAS);
-                case LONG -> itemStack = new ItemStack(Items.ITEM_CANVAS_LONG);
-                case TALL -> itemStack = new ItemStack(Items.ITEM_CANVAS_TALL);
-                case LARGE -> itemStack = new ItemStack(Items.ITEM_CANVAS_LARGE);
+                case SMALL -> itemStack = new ItemStack(Items.ITEM_CANVAS.get());
+                case LONG -> itemStack = new ItemStack(Items.ITEM_CANVAS_LONG.get());
+                case TALL -> itemStack = new ItemStack(Items.ITEM_CANVAS_TALL.get());
+                case LARGE -> itemStack = new ItemStack(Items.ITEM_CANVAS_LARGE.get());
                 default -> {
                     XercaPaint.LOGGER.error("Invalid canvas type");
                     return;
@@ -73,25 +71,25 @@ public class CommandImport {
             ItemStack offhand = player.getOffhandItem();
 
             if(!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.hasTag() && mainHand.getTag() != null && !mainHand.getTag().isEmpty())){
-                player.sendMessage(new TranslatableComponent("import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
             if(((ItemCanvas)mainHand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
-                Component type = Objects.requireNonNull(Items.ITEM_CANVAS).getName(ItemStack.EMPTY);
+                Component type = Objects.requireNonNull(Items.ITEM_CANVAS.get()).getName(ItemStack.EMPTY);
                 switch (CanvasType.fromByte(canvasType)){
-                    case LONG -> type = Objects.requireNonNull(Items.ITEM_CANVAS_LONG).getName(ItemStack.EMPTY);
-                    case TALL -> type = Objects.requireNonNull(Items.ITEM_CANVAS_TALL).getName(ItemStack.EMPTY);
-                    case LARGE -> type = Objects.requireNonNull(Items.ITEM_CANVAS_LARGE).getName(ItemStack.EMPTY);
+                    case LONG -> type = Objects.requireNonNull(Items.ITEM_CANVAS_LONG.get()).getName(ItemStack.EMPTY);
+                    case TALL -> type = Objects.requireNonNull(Items.ITEM_CANVAS_TALL.get()).getName(ItemStack.EMPTY);
+                    case LARGE -> type = Objects.requireNonNull(Items.ITEM_CANVAS_LARGE.get()).getName(ItemStack.EMPTY);
                 }
-                player.sendMessage(new TranslatableComponent("import.fail.2", type).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("import.fail.2", type).withStyle(ChatFormatting.RED));
                 return;
             }
             if(!ItemPalette.isFull(offhand)){
-                player.sendMessage(new TranslatableComponent("import.fail.3").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("import.fail.3").withStyle(ChatFormatting.RED));
                 return;
             }
             mainHand.setTag(tag);
         }
-        player.sendMessage(new TranslatableComponent("import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+        player.sendSystemMessage(Component.translatable("import.success").withStyle(ChatFormatting.GREEN));
     }
 }

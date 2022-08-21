@@ -5,6 +5,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,7 +17,7 @@ public class ItemDrink extends ItemStackableContainedFood {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
         return UseAnim.DRINK;
     }
 

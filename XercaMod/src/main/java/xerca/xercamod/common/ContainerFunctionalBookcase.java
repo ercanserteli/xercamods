@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.tile_entity.TileEntities;
 import xerca.xercamod.common.tile_entity.TileEntityFunctionalBookcase;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContainerFunctionalBookcase extends AbstractContainerMenu {
-    public static List<ResourceLocation> acceptedItems = new ArrayList<>(); // This is for other mods (xercamusic) to add items
+    public static final List<ResourceLocation> acceptedItems = new ArrayList<>(); // This is for other mods (xercamusic) to add items
     private TileEntityFunctionalBookcase tileEntity;
 
     public ContainerFunctionalBookcase(int windowId, Inventory inv, FriendlyByteBuf extraData){
@@ -30,7 +31,7 @@ public class ContainerFunctionalBookcase extends AbstractContainerMenu {
     }
 
     public ContainerFunctionalBookcase(int windowId, Inventory invPlayer, BlockEntity tileEntityInventoryBookcase) {
-        super(TileEntities.CONTAINER_FUNCTIONAL_BOOKCASE, windowId);
+        super(TileEntities.CONTAINER_FUNCTIONAL_BOOKCASE.get(), windowId);
         if(!(tileEntityInventoryBookcase instanceof TileEntityFunctionalBookcase)){
             XercaMod.LOGGER.error("TileEntity not an instance of TileEntityFunctionalBookcase!");
             return;
@@ -141,7 +142,7 @@ public class ContainerFunctionalBookcase extends AbstractContainerMenu {
         public boolean mayPlace(@Nonnull ItemStack stack) {
             Item it = stack.getItem();
             return it == Items.BOOK || it == Items.WRITABLE_BOOK || it == Items.WRITTEN_BOOK || it == Items.ENCHANTED_BOOK ||
-                    acceptedItems.contains(it.getRegistryName());
+                    acceptedItems.contains(ForgeRegistries.ITEMS.getKey(it));
         }
 
         @Override

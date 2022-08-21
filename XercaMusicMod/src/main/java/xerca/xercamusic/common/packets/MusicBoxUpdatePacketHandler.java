@@ -40,7 +40,7 @@ public class MusicBoxUpdatePacketHandler {
                     tileEntityMusicBox.removeNoteStack();
                 }
                 else{
-                    ItemStack noteStack = new ItemStack(Items.MUSIC_SHEET);
+                    ItemStack noteStack = new ItemStack(Items.MUSIC_SHEET.get());
                     noteStack.setTag(msg.getNoteStackNBT());
                     tileEntityMusicBox.setNoteStack(noteStack, false);
                 }

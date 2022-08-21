@@ -5,20 +5,21 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.tile_entity.TileEntityOmniChest;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ContainerOmniChest extends SimpleContainer {
-    private Map<Player, TileEntityOmniChest> playerChests;
+    private final Map<Player, TileEntityOmniChest> playerChests;
 
     public ContainerOmniChest() {
         super(27);
         this.playerChests = new HashMap<>();
     }
 
-    public void fromTag(ListTag tags) {
+    public void fromTag(@NotNull ListTag tags) {
         for(int i = 0; i < this.getContainerSize(); ++i) {
             this.setItem(i, ItemStack.EMPTY);
         }
@@ -26,13 +27,13 @@ public class ContainerOmniChest extends SimpleContainer {
         for(int k = 0; k < tags.size(); ++k) {
             CompoundTag compoundtag = tags.getCompound(k);
             int j = compoundtag.getByte("Slot") & 255;
-            if (j >= 0 && j < this.getContainerSize()) {
+            if (j < this.getContainerSize()) {
                 this.setItem(j, ItemStack.of(compoundtag));
             }
         }
     }
 
-    public ListTag createTag() {
+    public @NotNull ListTag createTag() {
         ListTag listtag = new ListTag();
 
         for(int i = 0; i < this.getContainerSize(); ++i) {
@@ -53,11 +54,7 @@ public class ContainerOmniChest extends SimpleContainer {
         playerChests.put(player, chest);
     }
 
-    public boolean isActiveChest(TileEntityOmniChest chest) {
-        return playerChests.containsValue(chest);
-    }
-
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return playerChests.containsKey(player) && playerChests.get(player).stillValid(player);
     }
 

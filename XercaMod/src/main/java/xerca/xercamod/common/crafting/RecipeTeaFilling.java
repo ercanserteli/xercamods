@@ -7,6 +7,7 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.Items;
 
@@ -18,7 +19,7 @@ public class RecipeTeaFilling extends CustomRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(!Config.isTeaEnabled()){
             return false;
         }
@@ -30,7 +31,7 @@ public class RecipeTeaFilling extends CustomRecipe {
         for(int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ITEM_TEAPOT) {
+                if (itemstack.getItem() == Items.ITEM_TEAPOT.get()) {
                     if (!teapotStack.isEmpty()) {
                         return false;
                     }
@@ -41,7 +42,7 @@ public class RecipeTeaFilling extends CustomRecipe {
                     }
                     bucketStack = itemstack;
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
+                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED.get()) {
                         return false;
                     }
 
@@ -56,7 +57,7 @@ public class RecipeTeaFilling extends CustomRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
         if(!Config.isTeaEnabled()){
             return ItemStack.EMPTY;
         }
@@ -68,7 +69,7 @@ public class RecipeTeaFilling extends CustomRecipe {
         for(int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ITEM_TEAPOT) {
+                if (itemstack.getItem() == Items.ITEM_TEAPOT.get()) {
                     if (!teapotStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
@@ -79,7 +80,7 @@ public class RecipeTeaFilling extends CustomRecipe {
                     }
                     bucketStack = itemstack;
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
+                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED.get()) {
                         return ItemStack.EMPTY;
                     }
 
@@ -89,7 +90,7 @@ public class RecipeTeaFilling extends CustomRecipe {
         }
 
         if (!teapotStack.isEmpty() && !bucketStack.isEmpty() && i > 0) {
-            String str = Items.ITEM_FULL_TEAPOT_1.getRegistryName().toString();
+            String str = Items.ITEM_FULL_TEAPOT_1.getId().toString();
             str = str.substring(0, str.length() - 1) + i;
             return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str)));
         } else {
@@ -97,8 +98,8 @@ public class RecipeTeaFilling extends CustomRecipe {
         }
     }
 
-    public RecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_TEA_FILLING;
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return Items.CRAFTING_SPECIAL_TEA_FILLING.get();
     }
 
     /**

@@ -8,9 +8,12 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemTeapot;
 import xerca.xercamod.common.item.Items;
+
+import java.util.Objects;
 
 public class RecipeTeaPouring extends CustomRecipe {
     public RecipeTeaPouring(ResourceLocation p_i48170_1_) {
@@ -20,7 +23,7 @@ public class RecipeTeaPouring extends CustomRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(!Config.isTeaEnabled()){
             return false;
         }
@@ -43,7 +46,7 @@ public class RecipeTeaPouring extends CustomRecipe {
                         return false;
                     }
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEACUP || i > 6) {
+                    if (itemstack.getItem() != Items.ITEM_TEACUP.get() || i > 6) {
                         return false;
                     }
 
@@ -58,7 +61,7 @@ public class RecipeTeaPouring extends CustomRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
         if(!Config.isTeaEnabled()){
             return ItemStack.EMPTY;
         }
@@ -81,7 +84,7 @@ public class RecipeTeaPouring extends CustomRecipe {
                         return ItemStack.EMPTY;
                     }
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEACUP || i > 6) {
+                    if (itemstack.getItem() != Items.ITEM_TEACUP.get() || i > 6) {
                         return ItemStack.EMPTY;
                     }
 
@@ -91,50 +94,49 @@ public class RecipeTeaPouring extends CustomRecipe {
         }
 
         if (!teapotStack.isEmpty() && i >= 1 && teapot != null && (teapot.getTeaAmount() - i) >= 0) {
-            return new ItemStack(Items.ITEM_FULL_TEACUP_0, i);
+            return new ItemStack(Items.ITEM_FULL_TEACUP_0.get(), i);
         } else {
             return ItemStack.EMPTY;
         }
     }
 
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+    public @NotNull NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+        NonNullList<ItemStack> itemStacks = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         int teacupCount = 0;
         for(int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ITEM_TEACUP && teacupCount <= 6) {
+                if (itemstack.getItem() == Items.ITEM_TEACUP.get() && teacupCount <= 6) {
                     ++teacupCount;
                 }
             }
         }
 
-        for(int i = 0; i < nonnulllist.size(); ++i) {
+        for(int i = 0; i < itemStacks.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
-            if (itemstack.hasContainerItem()) {
-                nonnulllist.set(i, itemstack.getContainerItem());
-            } else if (itemstack.getItem() instanceof ItemTeapot) {
-                ItemTeapot oldTeapot = (ItemTeapot) itemstack.getItem();
+            if (itemstack.hasCraftingRemainingItem()) {
+                itemStacks.set(i, itemstack.getCraftingRemainingItem());
+            } else if (itemstack.getItem() instanceof ItemTeapot oldTeapot) {
                 if(oldTeapot.getTeaAmount() > teacupCount){
-                    String str = oldTeapot.getRegistryName().toString();
+                    String str = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(oldTeapot)).toString();
                     str = str.substring(0, str.length() - 1) + (oldTeapot.getTeaAmount() - teacupCount);
                     ItemStack remainingStack = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str)));
                     if(!remainingStack.isEmpty()){
-                        nonnulllist.set(i, remainingStack);
+                        itemStacks.set(i, remainingStack);
                     }
                 }else{
-                    nonnulllist.set(i, new ItemStack(Items.ITEM_TEAPOT));
+                    itemStacks.set(i, new ItemStack(Items.ITEM_TEAPOT.get()));
                 }
                 break;
             }
         }
 
-        return nonnulllist;
+        return itemStacks;
     }
 
-    public RecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_TEA_POURING;
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return Items.CRAFTING_SPECIAL_TEA_POURING.get();
     }
 
     /**

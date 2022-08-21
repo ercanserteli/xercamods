@@ -10,6 +10,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.SoundEvents;
 
@@ -20,15 +21,13 @@ class ItemUltimateBurger extends Item {
 
     public ItemUltimateBurger() {
         super(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ULTIMATE_BURGER));
-        this.setRegistryName("item_ultimate_burger");
     }
 
     @Nonnull
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
-        if (entityLiving instanceof Player) {
-            Player entityPlayer = (Player) entityLiving;
-            worldIn.playSound(null, entityPlayer.getX(), entityPlayer.getY(), entityPlayer.getZ(), SoundEvents.BIG_BURP, SoundSource.PLAYERS, 5.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
+    public ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving) {
+        if (entityLiving instanceof Player entityPlayer) {
+            worldIn.playSound(null, entityPlayer.getX(), entityPlayer.getY(), entityPlayer.getZ(), SoundEvents.BIG_BURP.get(), SoundSource.PLAYERS, 5.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
             if (entityPlayer instanceof ServerPlayer) {
                 CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)entityPlayer, stack);
             }

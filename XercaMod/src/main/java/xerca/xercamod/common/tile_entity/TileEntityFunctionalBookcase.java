@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,6 +17,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.ContainerFunctionalBookcase;
 import xerca.xercamod.common.block.BlockFunctionalBookcase;
 import xerca.xercamod.common.block.Blocks;
@@ -37,18 +37,14 @@ public class TileEntityFunctionalBookcase extends BlockEntity implements MenuPro
     private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 
     public TileEntityFunctionalBookcase(BlockPos blockPos, BlockState blockState) {
-        super(FUNCTIONAL_BOOKCASE, blockPos, blockState);
-    }
-
-    public int getSizeInventory() {
-        return NUMBER_OF_SLOTS;
+        super(FUNCTIONAL_BOOKCASE.get(), blockPos, blockState);
     }
 
     // Return true if the given player is able to use this block. In this case it checks that
     // 1) the world tileentity hasn't been replaced in the meantime, and
     // 2) the player isn't too far away from the centre of the block
     public boolean isUsableByPlayer(Player player) {
-        if (this.level.getBlockEntity(this.worldPosition) != this) return false;
+        if (this.level == null || this.level.getBlockEntity(this.worldPosition) != this) return false;
         final double X_CENTRE_OFFSET = 0.5;
         final double Y_CENTRE_OFFSET = 0.5;
         final double Z_CENTRE_OFFSET = 0.5;
@@ -65,27 +61,28 @@ public class TileEntityFunctionalBookcase extends BlockEntity implements MenuPro
         return super.getCapability(capability, facing);
     }
 
-    @Nonnull
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         super.saveAdditional(tag);
         CompoundTag inventoryTagCompound = this.inventory.serializeNBT();
         tag.put("inventory", inventoryTagCompound);
     }
 
     @Override
-    public void load(CompoundTag parentNBTTagCompound) {
+    public void load(@NotNull CompoundTag parentNBTTagCompound) {
         super.load(parentNBTTagCompound); // The super call is required to save and load the tiles location
         CompoundTag inventoryTagCompound = parentNBTTagCompound.getCompound("inventory");
         this.inventory.deserializeNBT(inventoryTagCompound);
     }
 
-    public void closeInventory(Player player) {
+    public void closeInventory(Player ignoredPlayer) {
         int i = getBookAmount();
-        BlockState st = Blocks.BLOCK_BOOKCASE.defaultBlockState().setValue(BlockFunctionalBookcase.BOOK_AMOUNT, i);
-        this.level.setBlockAndUpdate(this.worldPosition, st);
-        this.level.updateNeighbourForOutputSignal(this.worldPosition, st.getBlock());//todo check if needed
-        this.setChanged();
+        BlockState st = Blocks.BLOCK_BOOKCASE.get().defaultBlockState().setValue(BlockFunctionalBookcase.BOOK_AMOUNT, i);
+        if(this.level != null) {
+            this.level.setBlockAndUpdate(this.worldPosition, st);
+            this.level.updateNeighbourForOutputSignal(this.worldPosition, st.getBlock());
+            this.setChanged();
+        }
     }
 
     private int getBookAmount() {
@@ -98,11 +95,6 @@ public class TileEntityFunctionalBookcase extends BlockEntity implements MenuPro
         return total;
     }
 
-    @Override
-    public void setChanged() {
-        super.setChanged();
-    }
-
 
     @Nullable
     @Override
@@ -112,11 +104,13 @@ public class TileEntityFunctionalBookcase extends BlockEntity implements MenuPro
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        this.load(packet.getTag());
+        if(packet.getTag() != null) {
+            this.load(packet.getTag());
+        }
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         return this.saveWithFullMetadata();
     }
 
@@ -126,13 +120,13 @@ public class TileEntityFunctionalBookcase extends BlockEntity implements MenuPro
     }
 
     @Override
-    public Component getDisplayName() {
-        return new TranslatableComponent(Blocks.BLOCK_BOOKCASE.getDescriptionId() + ".name");
+    public @NotNull Component getDisplayName() {
+        return Component.translatable(Blocks.BLOCK_BOOKCASE.get().getDescriptionId() + ".name");
     }
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+    public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
         return new ContainerFunctionalBookcase(windowId, playerInventory, this);
     }
 }

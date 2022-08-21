@@ -6,7 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.BasicItemListing;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -24,6 +27,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 import xerca.xercamod.common.entity.EntityHealthOrb;
+import xerca.xercamod.common.item.ItemKnife;
 import xerca.xercamod.common.item.ItemScythe;
 import xerca.xercamod.common.item.Items;
 import xerca.xercamod.common.packets.ConfigSyncPacket;
@@ -38,22 +42,22 @@ class EventHandler {
     public static void villagerTradesEvent(VillagerTradesEvent ev) {
         if(Config.isFoodEnabled()){
             if(ev.getType().equals(VillagerProfession.FARMER)){
-                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_RICE_SEEDS, 24), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
-                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_TOMATO, 22), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
-                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_TEA_LEAF, 18), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
+                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_RICE_SEEDS.get(), 24), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
+                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_TOMATO.get(), 22), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
+                ev.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.ITEM_TEA_LEAF.get(), 18), new ItemStack(net.minecraft.world.item.Items.EMERALD), 16, 2, 0.05f));
             }
         }
         if(Config.isScytheEnabled()){
             if(ev.getType().equals(VillagerProfession.TOOLSMITH)){
-                ev.getTrades().get(1).add(new BasicItemListing(1, new ItemStack(Items.STONE_SCYTHE), 12, 1, 0.2f));
-                ev.getTrades().get(3).add(new EnchantedItemTrade(Items.IRON_SCYTHE, 2, 3, 10, 0.2F));
-                ev.getTrades().get(4).add(new EnchantedItemTrade(Items.DIAMOND_SCYTHE, 5, 3, 15, 0.2F));
+                ev.getTrades().get(1).add(new BasicItemListing(1, new ItemStack(Items.STONE_SCYTHE.get()), 12, 1, 0.2f));
+                ev.getTrades().get(3).add(new EnchantedItemTrade(Items.IRON_SCYTHE.get(), 2, 3, 10, 0.2F));
+                ev.getTrades().get(4).add(new EnchantedItemTrade(Items.DIAMOND_SCYTHE.get(), 5, 3, 15, 0.2F));
             }
         }
         if(Config.isWarhammerEnabled()){
             if(ev.getType().equals(VillagerProfession.WEAPONSMITH)){
-                ev.getTrades().get(3).add(new EnchantedItemTrade(Items.ITEM_IRON_WARHAMMER, 3, 3, 20, 0.2F));
-                ev.getTrades().get(5).add(new EnchantedItemTrade(Items.ITEM_DIAMOND_WARHAMMER, 10, 3, 30, 0.2F));
+                ev.getTrades().get(3).add(new EnchantedItemTrade(Items.ITEM_IRON_WARHAMMER.get(), 3, 3, 20, 0.2F));
+                ev.getTrades().get(5).add(new EnchantedItemTrade(Items.ITEM_DIAMOND_WARHAMMER.get(), 10, 3, 30, 0.2F));
             }
         }
     }
@@ -63,10 +67,10 @@ class EventHandler {
     public static void craftEvent(PlayerEvent.ItemCraftedEvent ev) {
         Item result = ev.getCrafting().getItem();
         // Handling knife usage in recipes
-        if (result == Items.ITEM_GRAB_HOOK || result == Items.ITEM_KNIFE || result == Items.CARVING_STATION) {
+        if (result == Items.ITEM_GRAB_HOOK.get() || result == Items.ITEM_KNIFE.get() || result == Items.CARVING_STATION.get()) {
             for (int i = 0; i < ev.getInventory().getContainerSize(); ++i) {
                 ItemStack item = ev.getInventory().getItem(i);
-                if (item.getItem() == Items.ITEM_KNIFE) {
+                if (item.getItem() == Items.ITEM_KNIFE.get()) {
                     ev.getInventory().setItem(i, ItemStack.EMPTY);
                     break;
                 }
@@ -77,7 +81,7 @@ class EventHandler {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         XercaMod.LOGGER.debug("PlayerLoggedIn Event: Syncing config");
-        ServerPlayer serverPlayer = (ServerPlayer) event.getPlayer();
+        ServerPlayer serverPlayer = (ServerPlayer) event.getEntity();
         ConfigSyncPacket pack = Config.makePacket();
         XercaMod.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> serverPlayer), pack);
 
@@ -115,10 +119,10 @@ class EventHandler {
 
     @SubscribeEvent
     public static void onPlayerRightClickedBlock(PlayerInteractEvent.RightClickBlock event) {
-        Level world = event.getWorld();
-        ItemStack heldItem = event.getPlayer().getItemInHand(event.getHand());
+        Level world = event.getLevel();
+        ItemStack heldItem = event.getEntity().getItemInHand(event.getHand());
         if(world.getBlockState(event.getPos()).getBlock() == Blocks.IRON_BARS && heldItem.getItem() == net.minecraft.world.item.Items.MUTTON){
-            world.setBlockAndUpdate(event.getPos(), xerca.xercamod.common.block.Blocks.BLOCK_DONER.defaultBlockState());
+            world.setBlockAndUpdate(event.getPos(), xerca.xercamod.common.block.Blocks.BLOCK_DONER.get().defaultBlockState());
             heldItem.shrink(1);
             world.playSound(null, event.getPos(), SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8f, 0.9f + world.random.nextFloat()*0.1f);
         }
@@ -130,10 +134,23 @@ class EventHandler {
         if (s.getEntity() instanceof Player attacker) {
             // Handle scythe devour
             if(attacker.getMainHandItem().getItem() instanceof ItemScythe){
-                int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, attacker.getMainHandItem());
+                int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR.get(), attacker.getMainHandItem());
                 if(devourLevel > 0 && !s.isExplosion() && !s.isFall() && !s.isFire() && !s.isMagic() && !s.isProjectile()){
                     EntityHealthOrb.award((ServerLevel) attacker.level, event.getEntity(), attacker, devourLevel*2);
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        DamageSource s = event.getSource();
+        if (s.getEntity() instanceof LivingEntity attacker) {
+            // Handle knife crit
+            if(!s.getMsgId().equals("offhand_knife") && attacker.getMainHandItem().getItem() instanceof ItemKnife){
+                LivingEntity target = event.getEntity();
+                float critBonus = ItemKnife.critDamage(target, attacker, attacker.getMainHandItem());
+                event.setAmount(event.getAmount() + critBonus);
             }
         }
     }

@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.Objects;
@@ -13,11 +13,11 @@ public class TripleNoteClientPacket {
     private int note1;
     private int note2;
     private int note3;
-    private ItemInstrument instrumentItem;
+    private IItemInstrument instrumentItem;
     private Entity entity;
     private boolean messageIsValid;
 
-    public TripleNoteClientPacket(int note1, int note2, int note3, ItemInstrument itemInstrument, Entity entity) {
+    public TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument itemInstrument, Entity entity) {
         this.note1 = note1;
         this.note2 = note2;
         this.note3 = note3;
@@ -81,7 +81,7 @@ public class TripleNoteClientPacket {
         return note3;
     }
 
-    public ItemInstrument getInstrumentItem() {
+    public IItemInstrument getInstrumentItem() {
         return instrumentItem;
     }
 

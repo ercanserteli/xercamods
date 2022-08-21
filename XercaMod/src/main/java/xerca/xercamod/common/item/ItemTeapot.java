@@ -2,13 +2,13 @@ package xerca.xercamod.common.item;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.block.BlockTeapot;
 
@@ -25,8 +25,6 @@ public class ItemTeapot extends BlockItem {
         super(blockTeapot, (teaAmount == 7 ? new Item.Properties().tab(Items.teaTab) : new Item.Properties()).defaultDurability(maxTea));
         this.teaAmount = teaAmount;
         this.isHot = isHot;
-        String baseName = isHot ? "item_hot_teapot_" : "item_full_teapot_";
-        this.setRegistryName(baseName + teaAmount);
     }
 
     public int getTeaAmount() {
@@ -39,13 +37,13 @@ public class ItemTeapot extends BlockItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(new TextComponent(isHot ? "Hot" : "Cold"));
-        tooltip.add(new TextComponent("Tea amount: " + teaAmount));
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        tooltip.add(Component.literal(isHot ? "Hot" : "Cold"));
+        tooltip.add(Component.literal("Tea amount: " + teaAmount));
     }
 
     @Override
-    public boolean isBarVisible(ItemStack stack) {
+    public boolean isBarVisible(@NotNull ItemStack stack) {
         return false;
     }
 
@@ -56,7 +54,7 @@ public class ItemTeapot extends BlockItem {
             return;
         }
 //        super.fillItemGroup(group, items);
-        if (this.allowdedIn(group)) {
+        if (this.allowedIn(group)) {
             items.add(new ItemStack(this));
         }
     }
@@ -64,15 +62,15 @@ public class ItemTeapot extends BlockItem {
     @Override
     @Nullable
     protected BlockState getPlacementState(BlockPlaceContext context) {
-        BlockState blockstate;
-        if(context.getItemInHand().getItem() instanceof ItemTeapot){
-            if(!((ItemTeapot) context.getItemInHand().getItem()).isHot){
-                blockstate = null;
+        BlockState blockstate = null;
+        if(context.getItemInHand().getItem() instanceof ItemTeapot) {
+            if(((ItemTeapot) context.getItemInHand().getItem()).isHot) {
+                BlockState blockstateForPlacement = this.getBlock().getStateForPlacement(context);
+                if(blockstateForPlacement != null) {
+                    blockstate = blockstateForPlacement.setValue(BlockTeapot.TEA_AMOUNT, ((ItemTeapot) context.getItemInHand().getItem()).teaAmount);
+                }
             }
-            else{
-                blockstate = this.getBlock().getStateForPlacement(context).setValue(BlockTeapot.TEA_AMOUNT, ((ItemTeapot) context.getItemInHand().getItem()).teaAmount);
-            }
-        }else{
+        } else {
             blockstate = this.getBlock().getStateForPlacement(context);
         }
         return blockstate != null && this.canPlace(context, blockstate) ? blockstate : null;

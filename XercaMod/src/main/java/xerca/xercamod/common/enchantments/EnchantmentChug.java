@@ -6,10 +6,11 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemFlask;
 
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+
 public class EnchantmentChug extends EnchantmentWithConfig {
     public EnchantmentChug(Rarity rarityIn, EquipmentSlot... slots) {
         super(rarityIn, EnchantmentCategory.WEAPON, slots);
-        this.setRegistryName("enchantment_chug");
     }
 
     /**

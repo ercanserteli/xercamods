@@ -14,6 +14,6 @@ public class MusicCreativeTab extends CreativeModeTab {
     @Override
     @Nonnull
     public ItemStack makeIcon() {
-        return new ItemStack(Items.GUITAR);
+        return new ItemStack(Items.GUITAR.get());
     }
 }

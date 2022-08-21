@@ -27,11 +27,13 @@ public class BeheadParticlePacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(BeheadParticlePacket pkt) {
         Level world = Minecraft.getInstance().level;
-        for (int j = 0; j < pkt.getCount(); ++j) {
-            double velX = ((double) world.random.nextFloat() - 0.5D) * 0.25D;
-            double velY = 0.4D + ((double) world.random.nextFloat()) * 0.3D;
-            double velZ = ((double) world.random.nextFloat() - 0.5D) * 0.25D;
-            world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.NETHER_WART_BLOCK)), pkt.getPosX(), pkt.getPosY(), pkt.getPosZ(), velX, velY, velZ);
+        if(world != null) {
+            for (int j = 0; j < pkt.getCount(); ++j) {
+                double velX = ((double) world.random.nextFloat() - 0.5D) * 0.25D;
+                double velY = 0.4D + ((double) world.random.nextFloat()) * 0.3D;
+                double velZ = ((double) world.random.nextFloat() - 0.5D) * 0.25D;
+                world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.NETHER_WART_BLOCK)), pkt.getPosX(), pkt.getPosY(), pkt.getPosZ(), velX, velY, velZ);
+            }
         }
     }
 }

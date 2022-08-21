@@ -13,6 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.ContainerCarvingStation;
 import xerca.xercamod.common.crafting.RecipeCarvingStation;
 
@@ -23,7 +24,7 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/container/stonecutter.png");
     private float sliderProgress;
     /** Is {@code true} if the player clicked on the scroll wheel in the GUI. */
-    private boolean clickedOnSroll;
+    private boolean clickedOnScroll;
     /**
      * The index of the first recipe to display.
      * The number of recipes displayed at any time is 12 (4 recipes per row, and 3 rows). If the player scrolled down one
@@ -38,12 +39,12 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
         --this.titleLabelY;
     }
 
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int x, int y) {
         this.renderBackground(matrixStack);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 //        this.minecraft.getTextureManager().bind(BACKGROUND_TEXTURE);
@@ -61,7 +62,7 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack, int x, int y) {
+    protected void renderTooltip(@NotNull PoseStack matrixStack, int x, int y) {
         super.renderTooltip(matrixStack, x, y);
         if (this.hasItemsInInputSlot) {
             int i = this.leftPos + 52;
@@ -100,40 +101,43 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
     }
 
     private void drawRecipesItems(int left, int top, int recipeIndexOffsetMax) {
-        List<RecipeCarvingStation> list = this.menu.getRecipeList();
+        if (this.minecraft != null) {
+            List<RecipeCarvingStation> list = this.menu.getRecipeList();
 
-        for(int i = this.recipeIndexOffset; i < recipeIndexOffsetMax && i < this.menu.getRecipeListSize(); ++i) {
-            int j = i - this.recipeIndexOffset;
-            int k = left + j % 4 * 16;
-            int l = j / 4;
-            int i1 = top + l * 18 + 2;
-            this.minecraft.getItemRenderer().renderAndDecorateItem(list.get(i).getResultItem(), k, i1);
+            for(int i = this.recipeIndexOffset; i < recipeIndexOffsetMax && i < this.menu.getRecipeListSize(); ++i) {
+                int j = i - this.recipeIndexOffset;
+                int k = left + j % 4 * 16;
+                int l = j / 4;
+                int i1 = top + l * 18 + 2;
+                this.minecraft.getItemRenderer().renderAndDecorateItem(list.get(i).getResultItem(), k, i1);
+            }
         }
-
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int p_231044_5_) {
-        this.clickedOnSroll = false;
-        if (this.hasItemsInInputSlot) {
-            int i = this.leftPos + 52;
-            int j = this.topPos + 14;
-            int k = this.recipeIndexOffset + 12;
+        if(this.minecraft != null && this.minecraft.player != null && this.minecraft.gameMode != null) {
+            this.clickedOnScroll = false;
+            if (this.hasItemsInInputSlot) {
+                int i = this.leftPos + 52;
+                int j = this.topPos + 14;
+                int k = this.recipeIndexOffset + 12;
 
-            for(int l = this.recipeIndexOffset; l < k; ++l) {
-                int i1 = l - this.recipeIndexOffset;
-                double d0 = mouseX - (double)(i + i1 % 4 * 16);
-                double d1 = mouseY - (double)(j + i1 / 4 * 18);
-                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 16.0D && d1 < 18.0D && this.menu.clickMenuButton(this.minecraft.player, l)) {
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
-                    this.minecraft.gameMode.handleInventoryButtonClick((this.menu).containerId, l);
-                    return true;
+                for (int l = this.recipeIndexOffset; l < k; ++l) {
+                    int i1 = l - this.recipeIndexOffset;
+                    double d0 = mouseX - (double) (i + i1 % 4 * 16);
+                    double d1 = mouseY - (double) (j + i1 / 4 * 18);
+                    if (d0 >= 0.0D && d1 >= 0.0D && d0 < 16.0D && d1 < 18.0D && this.menu.clickMenuButton(this.minecraft.player, l)) {
+                        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
+                        this.minecraft.gameMode.handleInventoryButtonClick((this.menu).containerId, l);
+                        return true;
+                    }
                 }
-            }
 
-            i = this.leftPos + 119;
-            j = this.topPos + 9;
-            if (mouseX >= (double)i && mouseX < (double)(i + 12) && mouseY >= (double)j && mouseY < (double)(j + 54)) {
-                this.clickedOnSroll = true;
+                i = this.leftPos + 119;
+                j = this.topPos + 9;
+                if (mouseX >= (double) i && mouseX < (double) (i + 12) && mouseY >= (double) j && mouseY < (double) (j + 54)) {
+                    this.clickedOnScroll = true;
+                }
             }
         }
 
@@ -141,7 +145,7 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
     }
 
     public boolean mouseDragged(double p_231045_1_, double p_231045_3_, int p_231045_5_, double p_231045_6_, double p_231045_8_) {
-        if (this.clickedOnSroll && this.canScroll()) {
+        if (this.clickedOnScroll && this.canScroll()) {
             int i = this.topPos + 14;
             int j = i + 54;
             this.sliderProgress = ((float)p_231045_3_ - (float)i - 7.5F) / ((float)(j - i) - 15.0F);

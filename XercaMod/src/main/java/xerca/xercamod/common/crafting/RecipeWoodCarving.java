@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.item.ItemKnife;
@@ -21,7 +22,7 @@ public class RecipeWoodCarving extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(!Config.isCarvedWoodEnabled()){
             return false;
         }
@@ -77,28 +78,28 @@ public class RecipeWoodCarving extends CustomRecipe {
         Item resultItem;
         if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_OAK_LOG.asItem()){
             if(difX == -1 && difY == -1){
-                resultItem = Blocks.CARVED_OAK_1.asItem();
+                resultItem = Blocks.CARVED_OAK_1.get().asItem();
             }
             else if(difX == 0 && difY == -1){
-                resultItem = Blocks.CARVED_OAK_2.asItem();
+                resultItem = Blocks.CARVED_OAK_2.get().asItem();
             }
             else if(difX == 1 && difY == -1){
-                resultItem = Blocks.CARVED_OAK_3.asItem();
+                resultItem = Blocks.CARVED_OAK_3.get().asItem();
             }
             else if(difX == -1 && difY == 0){
-                resultItem = Blocks.CARVED_OAK_4.asItem();
+                resultItem = Blocks.CARVED_OAK_4.get().asItem();
             }
             else if(difX == 1 && difY == 0){
-                resultItem = Blocks.CARVED_OAK_5.asItem();
+                resultItem = Blocks.CARVED_OAK_5.get().asItem();
             }
             else if(difX == -1 && difY == 1){
-                resultItem = Blocks.CARVED_OAK_6.asItem();
+                resultItem = Blocks.CARVED_OAK_6.get().asItem();
             }
             else if(difX == 0 && difY == 1){
-                resultItem = Blocks.CARVED_OAK_7.asItem();
+                resultItem = Blocks.CARVED_OAK_7.get().asItem();
             }
             else if(difX == 1 && difY == 1){
-                resultItem = Blocks.CARVED_OAK_8.asItem();
+                resultItem = Blocks.CARVED_OAK_8.get().asItem();
             }
             else{
                 return ItemStack.EMPTY;
@@ -106,28 +107,28 @@ public class RecipeWoodCarving extends CustomRecipe {
         }
         else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_BIRCH_LOG.asItem()){
             if(difX == -1 && difY == -1){
-                resultItem = Blocks.CARVED_BIRCH_1.asItem();
+                resultItem = Blocks.CARVED_BIRCH_1.get().asItem();
             }
             else if(difX == 0 && difY == -1){
-                resultItem = Blocks.CARVED_BIRCH_2.asItem();
+                resultItem = Blocks.CARVED_BIRCH_2.get().asItem();
             }
             else if(difX == 1 && difY == -1){
-                resultItem = Blocks.CARVED_BIRCH_3.asItem();
+                resultItem = Blocks.CARVED_BIRCH_3.get().asItem();
             }
             else if(difX == -1 && difY == 0){
-                resultItem = Blocks.CARVED_BIRCH_4.asItem();
+                resultItem = Blocks.CARVED_BIRCH_4.get().asItem();
             }
             else if(difX == 1 && difY == 0){
-                resultItem = Blocks.CARVED_BIRCH_5.asItem();
+                resultItem = Blocks.CARVED_BIRCH_5.get().asItem();
             }
             else if(difX == -1 && difY == 1){
-                resultItem = Blocks.CARVED_BIRCH_6.asItem();
+                resultItem = Blocks.CARVED_BIRCH_6.get().asItem();
             }
             else if(difX == 0 && difY == 1){
-                resultItem = Blocks.CARVED_BIRCH_7.asItem();
+                resultItem = Blocks.CARVED_BIRCH_7.get().asItem();
             }
             else if(difX == 1 && difY == 1){
-                resultItem = Blocks.CARVED_BIRCH_8.asItem();
+                resultItem = Blocks.CARVED_BIRCH_8.get().asItem();
             }
             else{
                 return ItemStack.EMPTY;
@@ -135,28 +136,28 @@ public class RecipeWoodCarving extends CustomRecipe {
         }
         else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_DARK_OAK_LOG.asItem()){
             if(difX == -1 && difY == -1){
-                resultItem = Blocks.CARVED_DARK_OAK_1.asItem();
+                resultItem = Blocks.CARVED_DARK_OAK_1.get().asItem();
             }
             else if(difX == 0 && difY == -1){
-                resultItem = Blocks.CARVED_DARK_OAK_2.asItem();
+                resultItem = Blocks.CARVED_DARK_OAK_2.get().asItem();
             }
             else if(difX == 1 && difY == -1){
-                resultItem = Blocks.CARVED_DARK_OAK_3.asItem();
+                resultItem = Blocks.CARVED_DARK_OAK_3.get().asItem();
             }
             else if(difX == -1 && difY == 0){
-                resultItem = Blocks.CARVED_DARK_OAK_4.asItem();
+                resultItem = Blocks.CARVED_DARK_OAK_4.get().asItem();
             }
             else if(difX == 1 && difY == 0){
-                resultItem = Blocks.CARVED_DARK_OAK_5.asItem();
+                resultItem = Blocks.CARVED_DARK_OAK_5.get().asItem();
             }
             else if(difX == -1 && difY == 1){
-                resultItem = Blocks.CARVED_DARK_OAK_6.asItem();
+                resultItem = Blocks.CARVED_DARK_OAK_6.get().asItem();
             }
             else if(difX == 0 && difY == 1){
-                resultItem = Blocks.CARVED_DARK_OAK_7.asItem();
+                resultItem = Blocks.CARVED_DARK_OAK_7.get().asItem();
             }
             else if(difX == 1 && difY == 1){
-                resultItem = Blocks.CARVED_DARK_OAK_8.asItem();
+                resultItem = Blocks.CARVED_DARK_OAK_8.get().asItem();
             }
             else{
                 return ItemStack.EMPTY;
@@ -164,28 +165,28 @@ public class RecipeWoodCarving extends CustomRecipe {
         }
         else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_ACACIA_LOG.asItem()){
             if(difX == -1 && difY == -1){
-                resultItem = Blocks.CARVED_ACACIA_1.asItem();
+                resultItem = Blocks.CARVED_ACACIA_1.get().asItem();
             }
             else if(difX == 0 && difY == -1){
-                resultItem = Blocks.CARVED_ACACIA_2.asItem();
+                resultItem = Blocks.CARVED_ACACIA_2.get().asItem();
             }
             else if(difX == 1 && difY == -1){
-                resultItem = Blocks.CARVED_ACACIA_3.asItem();
+                resultItem = Blocks.CARVED_ACACIA_3.get().asItem();
             }
             else if(difX == -1 && difY == 0){
-                resultItem = Blocks.CARVED_ACACIA_4.asItem();
+                resultItem = Blocks.CARVED_ACACIA_4.get().asItem();
             }
             else if(difX == 1 && difY == 0){
-                resultItem = Blocks.CARVED_ACACIA_5.asItem();
+                resultItem = Blocks.CARVED_ACACIA_5.get().asItem();
             }
             else if(difX == -1 && difY == 1){
-                resultItem = Blocks.CARVED_ACACIA_6.asItem();
+                resultItem = Blocks.CARVED_ACACIA_6.get().asItem();
             }
             else if(difX == 0 && difY == 1){
-                resultItem = Blocks.CARVED_ACACIA_7.asItem();
+                resultItem = Blocks.CARVED_ACACIA_7.get().asItem();
             }
             else if(difX == 1 && difY == 1){
-                resultItem = Blocks.CARVED_ACACIA_8.asItem();
+                resultItem = Blocks.CARVED_ACACIA_8.get().asItem();
             }
             else{
                 return ItemStack.EMPTY;
@@ -193,28 +194,28 @@ public class RecipeWoodCarving extends CustomRecipe {
         }
         else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_JUNGLE_LOG.asItem()){
             if(difX == -1 && difY == -1){
-                resultItem = Blocks.CARVED_JUNGLE_1.asItem();
+                resultItem = Blocks.CARVED_JUNGLE_1.get().asItem();
             }
             else if(difX == 0 && difY == -1){
-                resultItem = Blocks.CARVED_JUNGLE_2.asItem();
+                resultItem = Blocks.CARVED_JUNGLE_2.get().asItem();
             }
             else if(difX == 1 && difY == -1){
-                resultItem = Blocks.CARVED_JUNGLE_3.asItem();
+                resultItem = Blocks.CARVED_JUNGLE_3.get().asItem();
             }
             else if(difX == -1 && difY == 0){
-                resultItem = Blocks.CARVED_JUNGLE_4.asItem();
+                resultItem = Blocks.CARVED_JUNGLE_4.get().asItem();
             }
             else if(difX == 1 && difY == 0){
-                resultItem = Blocks.CARVED_JUNGLE_5.asItem();
+                resultItem = Blocks.CARVED_JUNGLE_5.get().asItem();
             }
             else if(difX == -1 && difY == 1){
-                resultItem = Blocks.CARVED_JUNGLE_6.asItem();
+                resultItem = Blocks.CARVED_JUNGLE_6.get().asItem();
             }
             else if(difX == 0 && difY == 1){
-                resultItem = Blocks.CARVED_JUNGLE_7.asItem();
+                resultItem = Blocks.CARVED_JUNGLE_7.get().asItem();
             }
             else if(difX == 1 && difY == 1){
-                resultItem = Blocks.CARVED_JUNGLE_8.asItem();
+                resultItem = Blocks.CARVED_JUNGLE_8.get().asItem();
             }
             else{
                 return ItemStack.EMPTY;
@@ -222,28 +223,28 @@ public class RecipeWoodCarving extends CustomRecipe {
         }
         else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_SPRUCE_LOG.asItem()){
             if(difX == -1 && difY == -1){
-                resultItem = Blocks.CARVED_SPRUCE_1.asItem();
+                resultItem = Blocks.CARVED_SPRUCE_1.get().asItem();
             }
             else if(difX == 0 && difY == -1){
-                resultItem = Blocks.CARVED_SPRUCE_2.asItem();
+                resultItem = Blocks.CARVED_SPRUCE_2.get().asItem();
             }
             else if(difX == 1 && difY == -1){
-                resultItem = Blocks.CARVED_SPRUCE_3.asItem();
+                resultItem = Blocks.CARVED_SPRUCE_3.get().asItem();
             }
             else if(difX == -1 && difY == 0){
-                resultItem = Blocks.CARVED_SPRUCE_4.asItem();
+                resultItem = Blocks.CARVED_SPRUCE_4.get().asItem();
             }
             else if(difX == 1 && difY == 0){
-                resultItem = Blocks.CARVED_SPRUCE_5.asItem();
+                resultItem = Blocks.CARVED_SPRUCE_5.get().asItem();
             }
             else if(difX == -1 && difY == 1){
-                resultItem = Blocks.CARVED_SPRUCE_6.asItem();
+                resultItem = Blocks.CARVED_SPRUCE_6.get().asItem();
             }
             else if(difX == 0 && difY == 1){
-                resultItem = Blocks.CARVED_SPRUCE_7.asItem();
+                resultItem = Blocks.CARVED_SPRUCE_7.get().asItem();
             }
             else if(difX == 1 && difY == 1){
-                resultItem = Blocks.CARVED_SPRUCE_8.asItem();
+                resultItem = Blocks.CARVED_SPRUCE_8.get().asItem();
             }
             else{
                 return ItemStack.EMPTY;
@@ -251,28 +252,28 @@ public class RecipeWoodCarving extends CustomRecipe {
         }
         else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_CRIMSON_STEM.asItem()){
             if(difX == -1 && difY == -1){
-                resultItem = Blocks.CARVED_CRIMSON_1.asItem();
+                resultItem = Blocks.CARVED_CRIMSON_1.get().asItem();
             }
             else if(difX == 0 && difY == -1){
-                resultItem = Blocks.CARVED_CRIMSON_2.asItem();
+                resultItem = Blocks.CARVED_CRIMSON_2.get().asItem();
             }
             else if(difX == 1 && difY == -1){
-                resultItem = Blocks.CARVED_CRIMSON_3.asItem();
+                resultItem = Blocks.CARVED_CRIMSON_3.get().asItem();
             }
             else if(difX == -1 && difY == 0){
-                resultItem = Blocks.CARVED_CRIMSON_4.asItem();
+                resultItem = Blocks.CARVED_CRIMSON_4.get().asItem();
             }
             else if(difX == 1 && difY == 0){
-                resultItem = Blocks.CARVED_CRIMSON_5.asItem();
+                resultItem = Blocks.CARVED_CRIMSON_5.get().asItem();
             }
             else if(difX == -1 && difY == 1){
-                resultItem = Blocks.CARVED_CRIMSON_6.asItem();
+                resultItem = Blocks.CARVED_CRIMSON_6.get().asItem();
             }
             else if(difX == 0 && difY == 1){
-                resultItem = Blocks.CARVED_CRIMSON_7.asItem();
+                resultItem = Blocks.CARVED_CRIMSON_7.get().asItem();
             }
             else if(difX == 1 && difY == 1){
-                resultItem = Blocks.CARVED_CRIMSON_8.asItem();
+                resultItem = Blocks.CARVED_CRIMSON_8.get().asItem();
             }
             else{
                 return ItemStack.EMPTY;
@@ -280,28 +281,28 @@ public class RecipeWoodCarving extends CustomRecipe {
         }
         else if(logType == net.minecraft.world.level.block.Blocks.STRIPPED_WARPED_STEM.asItem()){
             if(difX == -1 && difY == -1){
-                resultItem = Blocks.CARVED_WARPED_1.asItem();
+                resultItem = Blocks.CARVED_WARPED_1.get().asItem();
             }
             else if(difX == 0 && difY == -1){
-                resultItem = Blocks.CARVED_WARPED_2.asItem();
+                resultItem = Blocks.CARVED_WARPED_2.get().asItem();
             }
             else if(difX == 1 && difY == -1){
-                resultItem = Blocks.CARVED_WARPED_3.asItem();
+                resultItem = Blocks.CARVED_WARPED_3.get().asItem();
             }
             else if(difX == -1 && difY == 0){
-                resultItem = Blocks.CARVED_WARPED_4.asItem();
+                resultItem = Blocks.CARVED_WARPED_4.get().asItem();
             }
             else if(difX == 1 && difY == 0){
-                resultItem = Blocks.CARVED_WARPED_5.asItem();
+                resultItem = Blocks.CARVED_WARPED_5.get().asItem();
             }
             else if(difX == -1 && difY == 1){
-                resultItem = Blocks.CARVED_WARPED_6.asItem();
+                resultItem = Blocks.CARVED_WARPED_6.get().asItem();
             }
             else if(difX == 0 && difY == 1){
-                resultItem = Blocks.CARVED_WARPED_7.asItem();
+                resultItem = Blocks.CARVED_WARPED_7.get().asItem();
             }
             else if(difX == 1 && difY == 1){
-                resultItem = Blocks.CARVED_WARPED_8.asItem();
+                resultItem = Blocks.CARVED_WARPED_8.get().asItem();
             }
             else{
                 return ItemStack.EMPTY;
@@ -318,7 +319,7 @@ public class RecipeWoodCarving extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(CraftingContainer inv) {
         int invSize = inv.getContainerSize();
         if(invSize != 4 && invSize != 9){
             return ItemStack.EMPTY;
@@ -372,8 +373,8 @@ public class RecipeWoodCarving extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_WOOD_CARVING;
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return Items.CRAFTING_SPECIAL_WOOD_CARVING.get();
     }
 
     /**

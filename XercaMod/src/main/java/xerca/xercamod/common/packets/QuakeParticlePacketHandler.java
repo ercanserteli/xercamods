@@ -25,6 +25,9 @@ public class QuakeParticlePacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(QuakeParticlePacket pkt) {
         Level world = Minecraft.getInstance().level;
+        if(world == null){
+            return;
+        }
         Vec3 centerPos = new Vec3(pkt.getPosX(), pkt.getPosY(), pkt.getPosZ());
         for (int j = 0; j < pkt.getCount(); ++j) {
             double posX = centerPos.x + world.random.nextGaussian();

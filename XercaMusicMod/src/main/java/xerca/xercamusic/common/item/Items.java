@@ -4,96 +4,72 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import xerca.xercamusic.common.MusicCreativeTab;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.Blocks;
 
-import java.util.Objects;
-
-import static xerca.xercamusic.common.XercaMusic.Null;
-
-@ObjectHolder(XercaMusic.MODID)
 public final class Items {
-    public static final ItemInstrument HARP_MC = Null();
-    public static final ItemInstrument CYMBAL = Null();
-    public static final ItemInstrument DRUM_KIT = Null();
-    public static final ItemInstrument CELLO = Null();
-    public static final ItemInstrument GUITAR = Null();
-    public static final ItemInstrument LYRE = Null();
-    public static final ItemInstrument DRUM = Null();
-    public static final ItemInstrument FLUTE = Null();
-    public static final ItemInstrument BANJO = Null();
-    public static final ItemInstrument GOD = Null();
-    public static final ItemInstrument SANSULA = Null();
-    public static final ItemInstrument SAXOPHONE = Null();
-    public static final ItemInstrument TUBULAR_BELL = Null();
-    public static final ItemInstrument VIOLIN = Null();
-    public static final ItemInstrument XYLOPHONE = Null();
-    public static final ItemInstrument PIANO = Null();
-    public static final ItemInstrument OBOE = Null();
-    public static final ItemInstrument REDSTONE_GUITAR = Null();
-    public static final ItemInstrument FRENCH_HORN = Null();
-    public static final ItemInstrument BASS_GUITAR = Null();
-    public static final ItemMusicSheet MUSIC_SHEET = Null();
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, XercaMusic.MODID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, XercaMusic.MODID);
 
-    public static ItemInstrument[] instruments;
+    public static final MusicCreativeTab musicTab = new MusicCreativeTab();
 
-    public static MusicCreativeTab musicTab;
+    public static final RegistryObject<ItemInstrument> HARP_MC = ITEMS.register("harp_mc", () -> new ItemInstrument(false, -1, 0, 7, new Item.Properties()));
+    public static final RegistryObject<ItemMusicSheet> MUSIC_SHEET = ITEMS.register("music_sheet", ItemMusicSheet::new);
 
-    public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = Null();
+    public static final RegistryObject<Item> GUITAR = ITEMS.register("guitar", () -> new ItemInstrument(false, 0, 0, 6));
+    public static final RegistryObject<Item> LYRE = ITEMS.register("lyre", () -> new ItemInstrument(false, 1, 1, 5));
+    public static final RegistryObject<Item> BANJO = ITEMS.register("banjo", () -> new ItemInstrument(false, 2, 0, 4));
+    public static final RegistryObject<Item> DRUM = ITEMS.register("drum", () -> new ItemInstrument(false, 3, 1, 4));
+    public static final RegistryObject<Item> CYMBAL = ITEMS.register("cymbal", () -> new ItemInstrument(false, 4, 0, 4));
+    public static final RegistryObject<Item> DRUM_KIT = ITEMS.register("drum_kit", () -> new ItemBlockInstrument(false, 5, 0, 7, Blocks.DRUM_KIT.get()));
+    public static final RegistryObject<Item> XYLOPHONE = ITEMS.register( "xylophone", () -> new ItemInstrument(false, 6, 0, 5));
+    public static final RegistryObject<Item> TUBULAR_BELL = ITEMS.register( "tubular_bell", () -> new ItemInstrument(false, 7, 1, 4));
+    public static final RegistryObject<Item> SANSULA = ITEMS.register( "sansula", () -> new ItemInstrument(false, 8, 1, 5));
+    public static final RegistryObject<Item> VIOLIN = ITEMS.register( "violin", () -> new ItemInstrument(true, 9, 1, 5));
+    public static final RegistryObject<Item> CELLO = ITEMS.register( "cello", () -> new ItemInstrument(true, 10, 0, 6));
+    public static final RegistryObject<Item> FLUTE = ITEMS.register( "flute", () -> new ItemInstrument(true, 11, 1, 6));
+    public static final RegistryObject<Item> SAXOPHONE = ITEMS.register( "saxophone", () -> new ItemInstrument(true, 12, 0, 4));
+    public static final RegistryObject<Item> GOD = ITEMS.register( "god", () -> new ItemInstrument(false, 13, 0, 5));
+    public static final RegistryObject<Item> PIANO = ITEMS.register("piano", () -> new ItemBlockInstrument(false, 14, 0, 7, Blocks.PIANO.get()));
+    public static final RegistryObject<Item> OBOE = ITEMS.register( "oboe", () -> new ItemInstrument(true, 15,0, 4));
+    public static final RegistryObject<Item> REDSTONE_GUITAR = ITEMS.register( "redstone_guitar", () -> new ItemInstrument(true, 16,0, 5));
+    public static final RegistryObject<Item> FRENCH_HORN = ITEMS.register( "french_horn", () -> new ItemInstrument(true, 17,0, 5));
+    public static final RegistryObject<Item> BASS_GUITAR = ITEMS.register( "bass_guitar", () -> new ItemInstrument(false, 18,1, 4));
 
-    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandler {
-        @SubscribeEvent
-        public static void registerRecipes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeNoteCloning::new).setRegistryName(XercaMusic.MODID + ":crafting_special_notecloning"));
-        }
+    public static final RegistryObject<Item> MUSIC_BOX = ITEMS.register("music_box", () -> new BlockItem(Blocks.MUSIC_BOX.get(), new Item.Properties().tab(musicTab)));
+    public static final RegistryObject<Item> METRONOME = ITEMS.register("metronome", () -> new BlockItem(Blocks.BLOCK_METRONOME.get(), new Item.Properties().tab(musicTab)));
 
-        @SubscribeEvent
-        public static void registerItems(final RegistryEvent.Register<Item> event) {
-            XercaMusic.LOGGER.info("XercaMusic: Registering items");
-            musicTab = new MusicCreativeTab();
+    public static IItemInstrument[] instruments;
 
-            instruments = new ItemInstrument[]{
-                    new ItemInstrument("guitar", false, 0, 0, 6),
-                    new ItemInstrument("lyre", false, 1, 1, 5),
-                    new ItemInstrument("banjo", false, 2, 0, 4),
-                    new ItemInstrument("drum", false, 3, 1, 4),
-                    new ItemInstrument("cymbal", false, 4, 0, 4),
-                    new ItemBlockInstrument("drum_kit", false, 5, Objects.requireNonNull(Blocks.DRUM_KIT), 0, 7),
-                    new ItemInstrument("xylophone", false, 6, 0, 5),
-                    new ItemInstrument("tubular_bell", false, 7, 1, 4),
-                    new ItemInstrument("sansula", false, 8, 1, 5),
-                    new ItemInstrument("violin", true, 9, 1, 5),
-                    new ItemInstrument("cello", true, 10, 0, 6),
-                    new ItemInstrument("flute", true, 11, 1, 6),
-                    new ItemInstrument("saxophone", true, 12, 0, 4),
-                    new ItemInstrument("god", false, 13, 0, 5),
-                    new ItemBlockInstrument("piano", false, 14, Objects.requireNonNull(Blocks.PIANO), 0, 7),
-                    new ItemInstrument("oboe", true, 15,0, 4),
-                    new ItemInstrument("redstone_guitar", true, 16,0, 5),
-                    new ItemInstrument("french_horn", true, 17,0, 5),
-                    new ItemInstrument("bass_guitar", false, 18,1, 4),
-            };
 
-            event.getRegistry().registerAll(instruments);
-            event.getRegistry().registerAll(
-                    new ItemInstrument("harp_mc", false, -1, 0, 7, new Item.Properties()),
-                    new ItemMusicSheet(),
-                    new BlockItem(Objects.requireNonNull(Blocks.MUSIC_BOX), new Item.Properties().tab(Items.musicTab)).setRegistryName("music_box"),
-                    new BlockItem(Objects.requireNonNull(Blocks.BLOCK_METRONOME), new Item.Properties().tab(Items.musicTab)).setRegistryName("metronome")
-            );
+    public static final RegistryObject<RecipeSerializer<RecipeNoteCloning>> CRAFTING_SPECIAL_NOTECLONING = RECIPE_SERIALIZERS.register(
+            "crafting_special_notecloning", () -> new SimpleRecipeSerializer<>(RecipeNoteCloning::new));
 
-            for(ItemInstrument i : instruments){
-                if(i instanceof ItemBlockInstrument){
-                    ((ItemBlockInstrument)i).addToBlockToItemMap(Item.BY_BLOCK, i);
-                }
-            }
-        }
+    public static void setup() {
+        instruments = new IItemInstrument[]{
+                (IItemInstrument)GUITAR.get(),
+                (IItemInstrument)LYRE.get(),
+                (IItemInstrument)BANJO.get(),
+                (IItemInstrument)DRUM.get(),
+                (IItemInstrument)CYMBAL.get(),
+                (IItemInstrument)DRUM_KIT.get(),
+                (IItemInstrument)XYLOPHONE.get(),
+                (IItemInstrument)TUBULAR_BELL.get(),
+                (IItemInstrument)SANSULA.get(),
+                (IItemInstrument)VIOLIN.get(),
+                (IItemInstrument)CELLO.get(),
+                (IItemInstrument)FLUTE.get(),
+                (IItemInstrument)SAXOPHONE.get(),
+                (IItemInstrument)GOD.get(),
+                (IItemInstrument)PIANO.get(),
+                (IItemInstrument)OBOE.get(),
+                (IItemInstrument)REDSTONE_GUITAR.get(),
+                (IItemInstrument)FRENCH_HORN.get(),
+                (IItemInstrument)BASS_GUITAR.get()
+        };
     }
-
 }

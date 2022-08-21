@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.XercaMod;
@@ -25,11 +26,10 @@ public class ItemConfetti extends Item {
 
     ItemConfetti() {
         super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-        this.setRegistryName("item_confetti");
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
 //        worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.CONFETTI, SoundCategory.PLAYERS, 1.0f, worldIn.rand.nextFloat() * 0.2F + 0.8F);
         playSound(worldIn, playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ());
         if(!worldIn.isClientSide){
@@ -46,7 +46,7 @@ public class ItemConfetti extends Item {
     }
 
     static public void playSound(Level world, @Nullable Player player, double x, double y, double z){
-        world.playSound(player, x, y, z, SoundEvents.CONFETTI, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.8F);
+        world.playSound(player, x, y, z, SoundEvents.CONFETTI.get(), SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.8F);
     }
 
     @Override

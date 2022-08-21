@@ -9,6 +9,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemFlask;
 import xerca.xercamod.common.item.Items;
@@ -22,7 +23,7 @@ public class RecipeFlaskMilkFilling extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(!Config.isEnderFlaskEnabled()){
             return false;
         }
@@ -58,7 +59,7 @@ public class RecipeFlaskMilkFilling extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
         if(!Config.isEnderFlaskEnabled()){
             return ItemStack.EMPTY;
         }
@@ -88,7 +89,7 @@ public class RecipeFlaskMilkFilling extends CustomRecipe {
         }
         int oldCharges = ItemFlask.getCharges(flaskStack);
         if (!flaskStack.isEmpty() && i > 0 && (oldCharges + i) <= ItemFlask.getMaxCharges(flaskStack)) {
-            ItemStack resultStack = new ItemStack(Items.FLASK_MILK);
+            ItemStack resultStack = new ItemStack(Items.FLASK_MILK.get());
             resultStack.setTag(flaskStack.getOrCreateTag().copy());
             ItemFlask.setCharges(resultStack, oldCharges + i);
             return resultStack;
@@ -97,8 +98,8 @@ public class RecipeFlaskMilkFilling extends CustomRecipe {
         }
     }
 
-    public RecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_FLASK_MILK_FILLING;
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return Items.CRAFTING_SPECIAL_FLASK_MILK_FILLING.get();
     }
 
 

@@ -17,13 +17,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class OmniChestItemRenderer extends BlockEntityWithoutLevelRenderer
 {
-    BlockEntityRenderDispatcher dispatcher;
+    final BlockEntityRenderDispatcher dispatcher;
     private final TileEntityOmniChest chest;
 
     public OmniChestItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet entityModelSet) {
         super(dispatcher, entityModelSet);
         this.dispatcher = dispatcher;
-        this.chest = new TileEntityOmniChest(BlockPos.ZERO, Blocks.OMNI_CHEST.defaultBlockState());
+        this.chest = new TileEntityOmniChest(BlockPos.ZERO, Blocks.OMNI_CHEST.get().defaultBlockState());
     }
 
     @Override

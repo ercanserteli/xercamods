@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 
 import javax.annotation.Nullable;
@@ -37,7 +38,7 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
     private Player attackingPlayer;
 
     public EntityHealthOrb(Level level, double x, double y, double z, @Nullable Player donorPlayer, @Nullable Player attackingPlayer) {
-        this(Entities.HEALTH_ORB, level);
+        this(Entities.HEALTH_ORB.get(), level);
         this.setPos(x, y, z);
         this.setYRot((float)(this.random.nextDouble() * 360.0D));
         this.setDeltaMovement((this.random.nextDouble() * (double)0.2F - (double)0.1F) * 2.0D, this.random.nextDouble() * 0.2D * 2.0D, (this.random.nextDouble() * (double)0.2F - (double)0.1F) * 2.0D);
@@ -49,15 +50,15 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
         super(entityType, level);
     }
 
-    public EntityHealthOrb(PlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityHealthOrb(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
         this(world);
     }
 
     public EntityHealthOrb(Level worldIn) {
-        super(Entities.HEALTH_ORB, worldIn);
+        super(Entities.HEALTH_ORB.get(), worldIn);
     }
 
-    protected Entity.MovementEmission getMovementEmission() {
+    protected Entity.@NotNull MovementEmission getMovementEmission() {
         return Entity.MovementEmission.NONE;
     }
 
@@ -189,7 +190,7 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
     protected void doWaterSplashEffect() {
     }
 
-    public boolean hurt(DamageSource source, float damage) {
+    public boolean hurt(@NotNull DamageSource source, float damage) {
         if (this.level.isClientSide || this.isRemoved()) return false; //Forge: Fixes MC-53850
         if (this.isInvulnerableTo(source)) {
             return false;
@@ -232,10 +233,10 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
         }
     }
 
-    public void playerTouch(Player player) {
+    public void playerTouch(@NotNull Player player) {
         if (!this.level.isClientSide && !player.equals(donorPlayer) && (age > 80 || player.equals(attackingPlayer))) {
             if (player.takeXpDelay == 0) {
-                player.level.playSound(null, player, SoundEvents.ABSORB, getSoundSource(), 1.0f, 0.8f + random.nextFloat()*0.4f);
+                player.level.playSound(null, player, SoundEvents.ABSORB.get(), getSoundSource(), 1.0f, 0.8f + random.nextFloat()*0.4f);
                 player.takeXpDelay = 1;
                 player.setHealth(player.getHealth() + 1);
 
@@ -253,12 +254,12 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public SoundSource getSoundSource() {
+    public @NotNull SoundSource getSoundSource() {
         return SoundSource.AMBIENT;
     }
 

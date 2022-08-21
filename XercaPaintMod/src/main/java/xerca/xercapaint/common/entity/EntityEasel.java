@@ -32,7 +32,6 @@ import xerca.xercapaint.common.packets.CloseGuiPacket;
 import xerca.xercapaint.common.packets.OpenGuiPacket;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 
 public class EntityEasel extends Entity {
@@ -46,7 +45,7 @@ public class EntityEasel extends Entity {
     }
 
     public EntityEasel(Level world) {
-        super(Objects.requireNonNull(Entities.EASEL), world);
+        super(Entities.EASEL.get(), world);
     }
 
     public EntityEasel(EntityType<EntityEasel> entityCanvasEntityType, Level world) {
@@ -54,7 +53,7 @@ public class EntityEasel extends Entity {
     }
 
     public EntityEasel(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
-        super(Objects.requireNonNull(Entities.EASEL), world);
+        super(Entities.EASEL.get(), world);
     }
 
     public void setPainter(Player painter){
@@ -233,7 +232,7 @@ public class EntityEasel extends Entity {
     }
 
     protected ItemStack getEaselItemStack() {
-        return new ItemStack(Items.ITEM_EASEL);
+        return new ItemStack(Items.ITEM_EASEL.get());
     }
 
     public ItemStack getPickResult() {

@@ -26,15 +26,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockPizza extends Block {
     public enum Ingredient {
         EMPTY, CHICKEN, FISH, MEAT, MUSHROOM, PEPPERONI
     }
-
-    private final Ingredient slot1;
-    private final Ingredient slot2;
-    private final Ingredient slot3;
 
     public static final int MAX_BITES = 3;
     public final int hungerPerBite;
@@ -49,20 +46,16 @@ public class BlockPizza extends Block {
 
     public BlockPizza(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
         super(Properties.of(Material.CAKE, DyeColor.YELLOW).sound(SoundType.WOOL).strength(0.5F));
-        this.slot1 = slot1;
-        this.slot2 = slot2;
-        this.slot3 = slot3;
         this.hungerPerBite = 1 + (slot1.equals(Ingredient.EMPTY) ? 0 : 1) +  (slot2.equals(Ingredient.EMPTY) ? 0 : 1) + (slot3.equals(Ingredient.EMPTY) ? 0 : 1);
-        this.setRegistryName("pizza" + postfix(slot1, slot2, slot3));
     }
 
     @Override
-    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+    public @NotNull VoxelShape getShape(BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
         return SHAPE_BY_BITE[blockState.getValue(BITES)];
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit){
         ItemStack heldItem = player.getItemInHand(handIn);
         if (worldIn.isClientSide) {
             if (eat(worldIn, pos, state, player, hungerPerBite).consumesAction()) {
@@ -103,12 +96,12 @@ public class BlockPizza extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos1) {
+    public @NotNull BlockState updateShape(@NotNull BlockState blockState, @NotNull Direction direction, @NotNull BlockState blockState1, @NotNull LevelAccessor levelAccessor, @NotNull BlockPos blockPos, @NotNull BlockPos blockPos1) {
         return direction == Direction.DOWN && !blockState.canSurvive(levelAccessor, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, direction, blockState1, levelAccessor, blockPos, blockPos1);
     }
 
     @Override
-    public boolean canSurvive(BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
+    public boolean canSurvive(@NotNull BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
         return levelReader.getBlockState(blockPos.below()).getMaterial().isSolid();
     }
 
@@ -118,7 +111,7 @@ public class BlockPizza extends Block {
     }
 
     @Override
-    public boolean isPathfindable(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, PathComputationType computationType) {
+    public boolean isPathfindable(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull PathComputationType computationType) {
         return false;
     }
 

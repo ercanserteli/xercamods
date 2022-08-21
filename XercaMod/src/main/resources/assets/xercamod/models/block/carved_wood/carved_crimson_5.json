@@ -1,11 +1,12 @@
 {
-  "loader": "forge:multi-layer",
+  "loader": "forge:composite",
   "parent": "block/block",
   "textures": {
     "particle": "block/stripped_crimson_stem_top"
   },
-  "layers": {
+  "children": {
     "cutout": {
+      "render_type": "minecraft:cutout",
       "textures": {
         "up": "xercamod:block/carved_wood/crimson_bg/carved_crimson_5_top",
         "down": "xercamod:block/carved_wood/crimson_bg/carved_crimson_5_top",
@@ -31,6 +32,7 @@
       ]
     },
     "translucent": {
+      "render_type": "minecraft:translucent",
       "textures": {
         "up": "xercamod:block/carved_wood/carved_crimson_5_side_d_top_o",
         "down": "xercamod:block/carved_wood/carved_crimson_5_side_d_top_o",

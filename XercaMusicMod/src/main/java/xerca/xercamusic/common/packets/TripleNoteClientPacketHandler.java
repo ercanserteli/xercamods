@@ -6,6 +6,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
 
 import java.util.function.Supplier;
@@ -23,9 +24,9 @@ public class TripleNoteClientPacketHandler {
 
     private static void processMessage(TripleNoteClientPacket msg) {
         Entity entity = msg.getEntity();
-        ItemInstrument.InsSound sound1 = msg.getInstrumentItem().getSound(msg.getNote1());
-        ItemInstrument.InsSound sound2 = msg.getInstrumentItem().getSound(msg.getNote2());
-        ItemInstrument.InsSound sound3 = msg.getInstrumentItem().getSound(msg.getNote3());
+        IItemInstrument.InsSound sound1 = msg.getInstrumentItem().getSound(msg.getNote1());
+        IItemInstrument.InsSound sound2 = msg.getInstrumentItem().getSound(msg.getNote2());
+        IItemInstrument.InsSound sound3 = msg.getInstrumentItem().getSound(msg.getNote3());
         if(sound1 == null || sound2 == null || sound3 == null){
             return;
         }

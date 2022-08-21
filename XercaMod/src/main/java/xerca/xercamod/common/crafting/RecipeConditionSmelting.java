@@ -5,25 +5,20 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class RecipeConditionSmelting extends SmeltingRecipe {
     private final Supplier<Boolean> condition;
-    private RecipeSerializer serializer;
+    private final RecipeSerializer<?> serializer;
 
-    public RecipeConditionSmelting(ResourceLocation idIn, String groupIn, Ingredient ingredientIn, ItemStack resultIn, float experienceIn, int cookTimeIn, Supplier<Boolean> condition) {
-        super(idIn, groupIn, ingredientIn, resultIn, experienceIn, cookTimeIn);
-        this.condition = condition;
-    }
-
-    public RecipeConditionSmelting(SmeltingRecipe furnaceRecipe, Supplier<Boolean> condition, RecipeSerializer serializer){
+    public RecipeConditionSmelting(SmeltingRecipe furnaceRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
         super(furnaceRecipe.getId(), furnaceRecipe.getGroup(), furnaceRecipe.getIngredients().get(0), furnaceRecipe.getResultItem(), furnaceRecipe.getExperience(), furnaceRecipe.getCookingTime());
         this.condition = condition;
         this.serializer = serializer;
@@ -33,7 +28,7 @@ public class RecipeConditionSmelting extends SmeltingRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(Container inv, Level worldIn) {
+    public boolean matches(@NotNull Container inv, @NotNull Level worldIn) {
         if(!condition.get()){
             return false;
         }
@@ -44,7 +39,7 @@ public class RecipeConditionSmelting extends SmeltingRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(Container inv) {
+    public @NotNull ItemStack assemble(@NotNull Container inv) {
         if(!condition.get()){
             return ItemStack.EMPTY;
         }
@@ -52,15 +47,11 @@ public class RecipeConditionSmelting extends SmeltingRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return serializer;
     }
 
-    public void setSerializer(RecipeSerializer<?> serializer) {
-        this.serializer = serializer;
-    }
-
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecipeConditionSmelting> {
+    public static class Serializer implements RecipeSerializer<RecipeConditionSmelting> {
         private static final SimpleCookingSerializer<SmeltingRecipe> furnaceSerializer = RecipeSerializer.SMELTING_RECIPE;
         private final Supplier<Boolean> condition;
 
@@ -68,20 +59,21 @@ public class RecipeConditionSmelting extends SmeltingRecipe {
             this.condition = condition;
         }
 
-        public RecipeConditionSmelting fromJson(ResourceLocation recipeId, JsonObject json) {
+        @Override
+        public @NotNull RecipeConditionSmelting fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             SmeltingRecipe furnaceRecipe = furnaceSerializer.fromJson(recipeId, json);
             return new RecipeConditionSmelting(furnaceRecipe, condition, this);
         }
 
-        public RecipeConditionSmelting fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        @Override
+        public RecipeConditionSmelting fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             SmeltingRecipe furnaceRecipe = furnaceSerializer.fromNetwork(recipeId, buffer);
-            return new RecipeConditionSmelting(furnaceRecipe, condition, this);
+            return new RecipeConditionSmelting(Objects.requireNonNull(furnaceRecipe), condition, this);
         }
 
-        public void toNetwork(FriendlyByteBuf buffer, RecipeConditionSmelting recipe) {
+        @Override
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RecipeConditionSmelting recipe) {
             furnaceSerializer.toNetwork(buffer, recipe);
         }
-
-
     }
 }

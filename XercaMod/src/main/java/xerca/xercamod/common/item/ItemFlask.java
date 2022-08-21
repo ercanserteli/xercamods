@@ -4,8 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -20,6 +19,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 
 import javax.annotation.Nonnull;
@@ -29,11 +29,10 @@ import java.util.List;
 
 public class ItemFlask extends Item {
     private static final int baseMaxCharges = 16;
-    private boolean hasMilk;
+    private final boolean hasMilk;
 
-    public ItemFlask(Properties properties, String registryName, boolean hasMilk) {
+    public ItemFlask(Properties properties, boolean hasMilk) {
         super(properties);
-        this.setRegistryName(registryName);
         this.hasMilk = hasMilk;
     }
 
@@ -41,28 +40,25 @@ public class ItemFlask extends Item {
      * How long it takes to use or consume an item
      */
     @Override
-    public int getUseDuration(ItemStack stack) {
-        int chug = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_CHUG, stack);
-        switch (chug){
-            case 2:
-                return 10;
-            case 1:
-                return 21;
-            default:
-                return 32;
-        }
+    public int getUseDuration(@NotNull ItemStack stack) {
+        int chug = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_CHUG.get(), stack);
+        return switch (chug) {
+            case 2 -> 10;
+            case 1 -> 21;
+            default -> 32;
+        };
     }
 
     /**
-     * returns the action that specifies what animation to play when the items is being used
+     * returns the action that specifies what animation to play when the item is being used
      */
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
         return UseAnim.DRINK;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         if (getCharges(itemstack) > 0) {
             playerIn.startUsingItem(handIn);
@@ -76,11 +72,10 @@ public class ItemFlask extends Item {
      * Called when the player finishes using this Item (E.g. finishes eating.). Not called when the player stops using
      * the Item before the action is complete.
      */
-    public ItemStack finishUsingItem(@Nonnull ItemStack stack, Level worldIn, LivingEntity entityLiving) {
+    public @NotNull ItemStack finishUsingItem(@Nonnull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving) {
         int charges = getCharges(stack);
         if(charges > 0){
-            if (entityLiving instanceof Player) {
-                Player entityplayer = (Player)entityLiving;
+            if (entityLiving instanceof Player entityplayer) {
                 if (!worldIn.isClientSide) {
                     if(hasMilk){
                         entityplayer.curePotionEffects(new ItemStack(net.minecraft.world.item.Items.MILK_BUCKET));
@@ -102,22 +97,20 @@ public class ItemFlask extends Item {
                     entityplayer.getCooldowns().addCooldown(this, (32 - useDuration)/2);
                 }
 
-                stack.hurtAndBreak(1, entityplayer, (playerEntity) -> {
-                    playerEntity.broadcastBreakEvent(playerEntity.getUsedItemHand());
-                });
+                stack.hurtAndBreak(1, entityplayer, (playerEntity) -> playerEntity.broadcastBreakEvent(playerEntity.getUsedItemHand()));
             }
         }
 
         if(hasMilk && getCharges(stack) <= 0){
             CompoundTag tag = stack.getTag();
-            stack = new ItemStack(Items.FLASK);
+            stack = new ItemStack(Items.FLASK.get());
             stack.setTag(tag);
         }
         return stack;
     }
 
     public static int getCharges(ItemStack itemstack){
-        if(itemstack.hasTag()){
+        if(itemstack.hasTag() && itemstack.getTag() != null){
             CompoundTag tag = itemstack.getTag();
             if(tag.contains("charges")){
                 return tag.getInt("charges");
@@ -127,7 +120,7 @@ public class ItemFlask extends Item {
     }
 
     public static int getMaxCharges(ItemStack itemstack){
-        int cap = EnchantmentHelper.getItemEnchantmentLevel(xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY, itemstack);
+        int cap = EnchantmentHelper.getItemEnchantmentLevel(xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY.get(), itemstack);
         return baseMaxCharges * (cap + 1);
     }
 
@@ -138,7 +131,7 @@ public class ItemFlask extends Item {
         }
     }
 
-    private boolean decrementCharges(ItemStack itemstack){
+    private void decrementCharges(ItemStack itemstack){
         CompoundTag tag = itemstack.getOrCreateTag();
         if(tag.contains("charges")){
             int oldCharges = tag.getInt("charges");
@@ -147,10 +140,8 @@ public class ItemFlask extends Item {
                     tag.remove("Potion");
                 }
                 tag.putInt("charges", oldCharges - 1);
-                return true;
             }
         }
-        return false;
     }
 
     /**
@@ -158,7 +149,7 @@ public class ItemFlask extends Item {
      * different names based on their damage or NBT.
      */
     @Override
-    public String getDescriptionId(ItemStack stack) {
+    public @NotNull String getDescriptionId(@NotNull ItemStack stack) {
         if(hasMilk){
             return this.getDescriptionId();
         }
@@ -170,17 +161,17 @@ public class ItemFlask extends Item {
      */
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        TranslatableComponent text = new TranslatableComponent("xercamod.ender_flask_tooltip");
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        MutableComponent text = Component.translatable("xercamod.ender_flask_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
 
         if(hasMilk){
-            tooltip.add(new TextComponent("Calcium for your bones").withStyle(ChatFormatting.YELLOW));
+            tooltip.add(Component.literal("Calcium for your bones").withStyle(ChatFormatting.YELLOW));
         }
         else{
             PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
         }
-        tooltip.add(new TextComponent(getCharges(stack) + " charges").withStyle(ChatFormatting.YELLOW));
+        tooltip.add(Component.literal(getCharges(stack) + " charges").withStyle(ChatFormatting.YELLOW));
     }
 
     /**
@@ -191,7 +182,7 @@ public class ItemFlask extends Item {
      */
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean isFoil(ItemStack stack) {
+    public boolean isFoil(@NotNull ItemStack stack) {
         return super.isFoil(stack);
     }
 
@@ -213,7 +204,7 @@ public class ItemFlask extends Item {
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment ench)
     {
         return ench.category == EnchantmentCategory.BREAKABLE
-                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY
-                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CHUG;
+                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY.get()
+                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CHUG.get();
     }
 }

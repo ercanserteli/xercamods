@@ -85,7 +85,7 @@ public class CanvasUpdatePacketHandler {
                 comp.putInt("generation", 1);
             }
 
-            if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
+            if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE.get()) {
                 CompoundTag paletteComp = palette.getOrCreateTag();
                 writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
             }

@@ -1,17 +1,18 @@
 package xerca.xercamod.client;
 
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.entity.EntityHook;
 
 @OnlyIn(Dist.CLIENT)
 class HookSound extends AbstractTickableSoundInstance {
     private final EntityHook theHook;
-    private boolean repeat = true;
     private final boolean isReturning;
     private int repeatDelay = 0;
     private int age = 0;
@@ -19,7 +20,7 @@ class HookSound extends AbstractTickableSoundInstance {
     private final float pitch;
 
     public HookSound(EntityHook hook, boolean isReturning) {
-        super(SoundEvents.HOOK_CHAIN, SoundSource.PLAYERS);
+        super(SoundEvents.HOOK_CHAIN.get(), SoundSource.PLAYERS, SoundInstance.createUnseededRandom());
         volume = 1.0f;
         pitch = 1.0F;
         theHook = hook;
@@ -53,7 +54,7 @@ class HookSound extends AbstractTickableSoundInstance {
 
     @Override
     public boolean isLooping() {
-        return this.repeat;
+        return true;
     }
 
     @Override
@@ -72,7 +73,7 @@ class HookSound extends AbstractTickableSoundInstance {
     }
 
     @Override
-    public Attenuation getAttenuation() {
+    public @NotNull Attenuation getAttenuation() {
         return Attenuation.LINEAR;
     }
 }

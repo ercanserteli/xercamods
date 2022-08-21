@@ -5,20 +5,20 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.Objects;
 
 public class SingleNoteClientPacket {
     private int note;
-    private ItemInstrument instrumentItem;
+    private IItemInstrument instrumentItem;
     private Player playerEntity;
     private boolean isStop;
     private float volume;
     private boolean messageIsValid;
 
-    public SingleNoteClientPacket(int note, ItemInstrument itemInstrument, Player playerEntity, boolean isStop, float volume) {
+    public SingleNoteClientPacket(int note, IItemInstrument itemInstrument, Player playerEntity, boolean isStop, float volume) {
         this.note = note;
         this.instrumentItem = itemInstrument;
         this.playerEntity = playerEntity;
@@ -83,7 +83,7 @@ public class SingleNoteClientPacket {
         this.note = note;
     }
 
-    public ItemInstrument getInstrumentItem() {
+    public IItemInstrument getInstrumentItem() {
         return instrumentItem;
     }
 

@@ -4,11 +4,10 @@ package xerca.xercamod.common.block;
 import net.minecraft.world.level.block.Block;
 
 public class BlockCushion extends Block {
-    public int cushionIndex;
+    public final int cushionIndex;
 
-    public BlockCushion(Properties properties, int cushionIndex, String registryName) {
+    public BlockCushion(Properties properties, int cushionIndex) {
         super(properties);
         this.cushionIndex = cushionIndex;
-        this.setRegistryName(registryName);
     }
 }
