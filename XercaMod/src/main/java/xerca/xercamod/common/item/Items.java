@@ -2,7 +2,8 @@ package xerca.xercamod.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -13,10 +14,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.DecoCreativeTab;
 import xerca.xercamod.common.TeaCreativeTab;
@@ -27,300 +28,546 @@ import xerca.xercamod.common.crafting.*;
 import xerca.xercamod.common.enchantments.*;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
-@ObjectHolder(XercaMod.MODID)
+
+@SuppressWarnings("unused")
 public final class Items {
-    public static final ItemEnderBow ENDER_BOW = null;
-    public static final Item RAW_SHISH_KEBAB = null;
-    public static final Item ITEM_YOGHURT = null;
-    public static final Item ITEM_HONEYBERRY_YOGHURT = null;
-    public static final Item ITEM_HONEY_CUPCAKE = null;
-    public static final Item ITEM_DONER_WRAP = null;
-    public static final Item ITEM_CHUBBY_DONER = null;
-    public static final Item ITEM_ALEXANDER = null;
-    public static final Item ITEM_AYRAN = null;
-    public static final Item DONER_SLICE = null;
-    public static final Item BAKED_RICE_PUDDING = null;
-    public static final Item SWEET_BERRY_JUICE = null;
-    public static final Item RICE_PUDDING = null;
-    public static final Item SWEET_BERRY_CUPCAKE_FANCY = null;
-    public static final Item SWEET_BERRY_CUPCAKE = null;
-    public static final Item ENDER_CUPCAKE = null;
-    public static final Item SASHIMI = null;
-    public static final Item OYAKODON = null;
-    public static final Item BEEF_DONBURI = null;
-    public static final Item EGG_SUSHI = null;
-    public static final Item NIGIRI_SUSHI = null;
-    public static final Item OMURICE = null;
-    public static final Item SAKE = null;
-    public static final Item RICEBALL = null;
-    public static final Item SUSHI = null;
-    public static final Item COOKED_RICE = null;
-    public static final Item COLA = null;
-    public static final Item COLA_EXTRACT = null;
-    public static final Item COLA_POWDER = null;
-    public static final Item CARBONATED_WATER = null;
-    public static final ItemGrabHook ITEM_GRAB_HOOK = null;
-    public static final ItemWarhammer ITEM_NETHERITE_WARHAMMER = null;
-    public static final ItemWarhammer ITEM_DIAMOND_WARHAMMER = null;
-    public static final ItemWarhammer ITEM_GOLD_WARHAMMER = null;
-    public static final ItemWarhammer ITEM_IRON_WARHAMMER = null;
-    public static final ItemWarhammer ITEM_STONE_WARHAMMER = null;
-    public static final ItemConfettiBall ITEM_CONFETTI_BALL = null;
-    public static final ItemConfetti ITEM_CONFETTI = null;
-    public static final ItemBadge ITEM_PROSECUTOR_BADGE = null;
-    public static final ItemBadge ITEM_ATTORNEY_BADGE = null;
-    public static final Item ITEM_TEACUP = null;
-    public static final ItemTeacup ITEM_FULL_TEACUP_0 = null;
-    public static final ItemTeacup ITEM_FULL_TEACUP_1 = null;
-    public static final ItemTeacup ITEM_FULL_TEACUP_2 = null;
-    public static final ItemTeacup ITEM_FULL_TEACUP_3 = null;
-    public static final ItemTeacup ITEM_FULL_TEACUP_4 = null;
-    public static final ItemTeacup ITEM_FULL_TEACUP_5 = null;
-    public static final ItemTeacup ITEM_FULL_TEACUP_6 = null;
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, XercaMod.MODID);
+    public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, XercaMod.MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, XercaMod.MODID);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, XercaMod.MODID);
 
-    public static final ItemTeapot ITEM_FULL_TEAPOT_1 = null;
-    public static final ItemTeapot ITEM_HOT_TEAPOT_1 = null;
-    public static final ItemTeapot ITEM_HOT_TEAPOT_2 = null;
-    public static final ItemTeapot ITEM_HOT_TEAPOT_3 = null;
-    public static final ItemTeapot ITEM_HOT_TEAPOT_4 = null;
-    public static final ItemTeapot ITEM_HOT_TEAPOT_5 = null;
-    public static final ItemTeapot ITEM_HOT_TEAPOT_6 = null;
-    public static final ItemTeapot ITEM_HOT_TEAPOT_7 = null;
-    public static final ItemEmptyTeapot ITEM_TEAPOT = null;
-    public static final Item ITEM_TEA_SEEDS = null;
-    public static final Item ITEM_TEA_DRIED = null;
-    public static final Item ITEM_CHOCOLATE = null;
-    public static final Item ITEM_TEA_LEAF = null;
+    public static final RegistryObject<ItemGlass> ITEM_GLASS = ITEMS.register("item_glass", ItemGlass::new);
+    public static final RegistryObject<ItemEnderBow> ENDER_BOW = ITEMS.register("ender_bow", ItemEnderBow::new);
+    public static final RegistryObject<Item> ITEM_GOLDEN_COIN_1 = ITEMS.register("item_golden_coin_1", ()->new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_MISC), Config::isCoinsEnabled));
+    public static final RegistryObject<Item> ITEM_GOLDEN_COIN_5 = ITEMS.register("item_golden_coin_5", ()->new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_MISC), Config::isCoinsEnabled));
+    public static final RegistryObject<Item> RAW_SHISH_KEBAB = ITEMS.register("raw_shish_kebab", ()->makeFoodItem(Foods.RAW_SHISH_KEBAB));
+    public static final RegistryObject<Item> ITEM_SHISH_KEBAB = ITEMS.register("item_shish_kebab", ()->makeFoodItem(Foods.SHISH_KEBAB));
+    public static final RegistryObject<Item> ITEM_YOGHURT = ITEMS.register("item_yoghurt", ()->makeContainedFoodItem(Foods.YOGHURT, net.minecraft.world.item.Items.BUCKET, 16));
+    public static final RegistryObject<Item> ITEM_HONEYBERRY_YOGHURT = ITEMS.register("item_honeyberry_yoghurt", ()->makeContainedFoodItem(Foods.HONEYBERRY_YOGHURT, net.minecraft.world.item.Items.BOWL, 16));
+    public static final RegistryObject<Item> ITEM_HONEY_CUPCAKE = ITEMS.register("item_honey_cupcake", ()->makeFoodItem(Foods.HONEY_CUPCAKE));
+    public static final RegistryObject<Item> ITEM_DONER_WRAP = ITEMS.register("item_doner_wrap", ()->makeFoodItem(Foods.DONER_WRAP));
+    public static final RegistryObject<Item> ITEM_CHUBBY_DONER = ITEMS.register("item_chubby_doner", ()->makeFoodItem(Foods.CHUBBY_DONER));
+    public static final RegistryObject<Item> ITEM_ALEXANDER = ITEMS.register("item_alexander", ()->makeContainedFoodItem(Foods.ALEXANDER, net.minecraft.world.item.Items.BOWL, 16));
+    public static final RegistryObject<Item> ITEM_AYRAN = ITEMS.register("item_ayran", ()->makeDrinkItem(Foods.AYRAN, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> DONER_SLICE = ITEMS.register("doner_slice", ()->makeFoodItem(Foods.DONER_SLICE));
+    public static final RegistryObject<Item> BAKED_RICE_PUDDING = ITEMS.register("baked_rice_pudding", ()->makeContainedFoodItem(Foods.BAKED_RICE_PUDDING, net.minecraft.world.item.Items.BOWL, 16));
+    public static final RegistryObject<Item> SWEET_BERRY_JUICE = ITEMS.register("sweet_berry_juice", ()->makeDrinkItem(Foods.SWEET_BERRY_JUICE, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> RICE_PUDDING = ITEMS.register("rice_pudding", ()->makeContainedFoodItem(Foods.RICE_PUDDING, net.minecraft.world.item.Items.BOWL, 16));
+    public static final RegistryObject<Item> SWEET_BERRY_CUPCAKE_FANCY = ITEMS.register("sweet_berry_cupcake_fancy", ()->makeFoodItem(Foods.SWEET_BERRY_CUPCAKE_FANCY));
+    public static final RegistryObject<Item> SWEET_BERRY_CUPCAKE = ITEMS.register("sweet_berry_cupcake", ()->makeFoodItem(Foods.SWEET_BERRY_CUPCAKE));
+    public static final RegistryObject<Item> ENDER_CUPCAKE = ITEMS.register("ender_cupcake", ItemEnderCupcake::new);
+    public static final RegistryObject<Item> SASHIMI = ITEMS.register("sashimi", ()->makeFoodItem(Foods.SASHIMI));
+    public static final RegistryObject<Item> OYAKODON = ITEMS.register("oyakodon", ()->makeContainedFoodItem(Foods.OYAKODON, net.minecraft.world.item.Items.BOWL, 16));
+    public static final RegistryObject<Item> BEEF_DONBURI = ITEMS.register("beef_donburi", ()->makeContainedFoodItem(Foods.BEEF_DONBURI, net.minecraft.world.item.Items.BOWL, 16));
+    public static final RegistryObject<Item> EGG_SUSHI = ITEMS.register("egg_sushi", ()->makeFoodItem(Foods.EGG_SUSHI));
+    public static final RegistryObject<Item> NIGIRI_SUSHI = ITEMS.register("nigiri_sushi", ()->makeFoodItem(Foods.NIGIRI_SUSHI));
+    public static final RegistryObject<Item> OMURICE = ITEMS.register("omurice", ()->makeFoodItem(Foods.OMURICE));
+    public static final RegistryObject<Item> SAKE = ITEMS.register("sake", ()->makeDrinkItem(Foods.SAKE, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> RICEBALL = ITEMS.register("riceball", ()->makeFoodItem(Foods.RICEBALL));
+    public static final RegistryObject<Item> SUSHI = ITEMS.register("sushi", ()->makeFoodItem(Foods.SUSHI));
+    public static final RegistryObject<Item> COOKED_RICE = ITEMS.register("cooked_rice", ()->makeFoodItem(Foods.COOKED_RICE));
+    public static final RegistryObject<Item> COLA = ITEMS.register("cola", ()->makeDrinkItem(Foods.COLA, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_APPLE_CUPCAKE = ITEMS.register("item_apple_cupcake", ()->makeFoodItem(Foods.APPLE_CUPCAKE));
+    public static final RegistryObject<Item> ITEM_PUMPKIN_CUPCAKE = ITEMS.register("item_pumpkin_cupcake", ()->makeFoodItem(Foods.PUMPKIN_CUPCAKE));
+    public static final RegistryObject<Item> ITEM_COCOA_CUPCAKE = ITEMS.register("item_cocoa_cupcake", ()->makeFoodItem(Foods.COCOA_CUPCAKE));
+    public static final RegistryObject<Item> ITEM_MELON_CUPCAKE = ITEMS.register("item_melon_cupcake", ()->makeFoodItem(Foods.MELON_CUPCAKE));
+    public static final RegistryObject<Item> ITEM_CARROT_CUPCAKE = ITEMS.register("item_carrot_cupcake", ()->makeFoodItem(Foods.CARROT_CUPCAKE));
+    public static final RegistryObject<Item> ITEM_FANCY_APPLE_CUPCAKE = ITEMS.register("item_fancy_apple_cupcake", ()->makeFoodItem(Foods.FANCY_APPLE_CUPCAKE));
+    public static final RegistryObject<Item> ITEM_FANCY_PUMPKIN_CUPCAKE = ITEMS.register("item_fancy_pumpkin_cupcake", ()->makeFoodItem(Foods.FANCY_PUMPKIN_CUPCAKE));
+    public static final RegistryObject<Item> GLOWBERRY_CUPCAKE = ITEMS.register("glowberry_cupcake", ()->makeFoodItem(Foods.GLOWBERRY_CUPCAKE));
+    public static final RegistryObject<Item> ITEM_DONUT = ITEMS.register("item_donut", ()->makeFoodItem(Foods.DONUT));
+    public static final RegistryObject<Item> ITEM_FANCY_DONUT = ITEMS.register("item_fancy_donut", ()->makeFoodItem(Foods.FANCY_DONUT));
+    public static final RegistryObject<Item> ITEM_SPRINKLES = ITEMS.register("item_sprinkles", ()->makeFoodItem(Foods.SPRINKLES));
+    public static final RegistryObject<Item> ITEM_CHOCOLATE = ITEMS.register("item_chocolate", ()->makeFoodItem(Foods.CHOCOLATE));
+    public static final RegistryObject<Item> ITEM_BUN = ITEMS.register("item_bun", ()->makeFoodItem(Foods.BUN));
+    public static final RegistryObject<Item> ITEM_RAW_PATTY = ITEMS.register("item_raw_patty", ()->makeFoodItem(Foods.RAW_PATTY));
+    public static final RegistryObject<Item> ITEM_COOKED_PATTY = ITEMS.register("item_cooked_patty", ()->makeFoodItem(Foods.COOKED_PATTY));
+    public static final RegistryObject<Item> ITEM_RAW_CHICKEN_PATTY = ITEMS.register("item_raw_chicken_patty", ()->makeFoodItem(Foods.RAW_CHICKEN_PATTY));
+    public static final RegistryObject<Item> ITEM_COOKED_CHICKEN_PATTY = ITEMS.register("item_cooked_chicken_patty", ()->makeFoodItem(Foods.COOKED_CHICKEN_PATTY));
+    public static final RegistryObject<Item> ITEM_HAMBURGER = ITEMS.register("item_hamburger", ()->makeFoodItem(Foods.HAMBURGER));
+    public static final RegistryObject<Item> ITEM_CHICKEN_BURGER = ITEMS.register("item_chicken_burger", ()->makeFoodItem(Foods.CHICKEN_BURGER));
+    public static final RegistryObject<Item> ITEM_MUSHROOM_BURGER = ITEMS.register("item_mushroom_burger", ()->makeFoodItem(Foods.MUSHROOM_BURGER));
+    public static final RegistryObject<Item> ITEM_ULTIMATE_BOTTOM = ITEMS.register("item_ultimate_bottom", ()->makeFoodItem(Foods.ULTIMATE_BOTTOM));
+    public static final RegistryObject<Item> ITEM_ULTIMATE_TOP = ITEMS.register("item_ultimate_top", ()->makeFoodItem(Foods.ULTIMATE_TOP));
+    public static final RegistryObject<Item> CHEESEBURGER = ITEMS.register("cheeseburger", ()->makeFoodItem(Foods.CHEESEBURGER));
+    public static final RegistryObject<Item> COLA_EXTRACT = ITEMS.register("cola_extract", ()->new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE)));
+    public static final RegistryObject<Item> COLA_POWDER = ITEMS.register("cola_powder", ()->new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING)));
+    public static final RegistryObject<Item> CARBONATED_WATER = ITEMS.register("carbonated_water", ()->makeDrinkItem(Foods.CARBONATED_WATER, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_ULTIMATE_BURGER = ITEMS.register("item_ultimate_burger", ItemUltimateBurger::new);
+    public static final RegistryObject<Item> ITEM_ROTTEN_BURGER = ITEMS.register("item_rotten_burger", ()->makeFoodItem(Foods.ROTTEN_BURGER));
+    public static final RegistryObject<Item> ITEM_COOKED_SAUSAGE = ITEMS.register("item_cooked_sausage", ()->makeFoodItem(Foods.COOKED_SAUSAGE));
+    public static final RegistryObject<Item> ITEM_HOTDOG = ITEMS.register("item_hotdog", ()->makeFoodItem(Foods.HOTDOG));
+    public static final RegistryObject<Item> ITEM_FISH_BREAD = ITEMS.register("item_fish_bread", ()->makeFoodItem(Foods.FISH_BREAD));
+    public static final RegistryObject<Item> ITEM_DAISY_SANDWICH = ITEMS.register("item_daisy_sandwich", ()->makeFoodItem(Foods.DAISY_SANDWICH));
+    public static final RegistryObject<Item> ITEM_CHICKEN_WRAP = ITEMS.register("item_chicken_wrap", ()->makeFoodItem(Foods.CHICKEN_WRAP));
+    public static final RegistryObject<Item> ITEM_RAW_SCHNITZEL = ITEMS.register("item_raw_schnitzel", ()->makeFoodItem(Foods.RAW_SCHNITZEL));
+    public static final RegistryObject<Item> ITEM_COOKED_SCHNITZEL = ITEMS.register("item_cooked_schnitzel", ()->makeFoodItem(Foods.COOKED_SCHNITZEL));
+    public static final RegistryObject<Item> ITEM_FRIED_EGG = ITEMS.register("item_fried_egg", ()->makeFoodItem(Foods.FRIED_EGG));
+    public static final RegistryObject<Item> ITEM_CROISSANT = ITEMS.register("item_croissant", ()->makeFoodItem(Foods.CROISSANT));
+    public static final RegistryObject<Item> ITEM_POTATO_FRIES = ITEMS.register("item_potato_fries", ()->makeFoodItem(Foods.POTATO_FRIES));
+    public static final RegistryObject<Item> ITEM_ICE_TEA = ITEMS.register("item_ice_tea", ()->makeDrinkItem(Foods.ICE_TEA, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_APPLE_JUICE = ITEMS.register("item_apple_juice", ()->makeDrinkItem(Foods.APPLE_JUICE, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_CARROT_JUICE = ITEMS.register("item_carrot_juice", ()->makeDrinkItem(Foods.CARROT_JUICE, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_MELON_JUICE = ITEMS.register("item_melon_juice", ()->makeDrinkItem(Foods.MELON_JUICE, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_PUMPKIN_JUICE = ITEMS.register("item_pumpkin_juice", ()->makeDrinkItem(Foods.PUMPKIN_JUICE, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_TOMATO_JUICE = ITEMS.register("item_tomato_juice", ()->makeDrinkItem(Foods.TOMATO_JUICE, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_WHEAT_JUICE = ITEMS.register("item_wheat_juice", ()->makeDrinkItem(Foods.WHEAT_JUICE, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_GLASS_OF_MILK = ITEMS.register("item_glass_of_milk", ()->makeDrinkItem(Foods.GLASS_OF_MILK, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_GLASS_OF_WATER = ITEMS.register("item_glass_of_water", ()->new ItemGlassOfWater(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.GLASS_OF_WATER), ITEM_GLASS.get()));
+    public static final RegistryObject<Item> SODA = ITEMS.register("soda", ()->makeDrinkItem(Foods.SODA, ITEM_GLASS.get()));
+    public static final RegistryObject<Item> CHEESE_TOAST = ITEMS.register("cheese_toast", ()->makeFoodItem(Foods.CHEESE_TOAST));
+    public static final RegistryObject<Item> SQUID_INK_PAELLA = ITEMS.register("squid_ink_paella", ()->makeContainedFoodItem(Foods.SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16));
+    public static final RegistryObject<Item> GLOW_SQUID_INK_PAELLA = ITEMS.register("glow_squid_ink_paella", ()->makeContainedFoodItem(Foods.GLOW_SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16));
 
-    public static final ItemGoldenCupcake ITEM_GOLDEN_CUPCAKE = null;
+    public static final RegistryObject<Item> ITEM_APPLE_PIE = ITEMS.register("item_apple_pie", ()->new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE.get(), new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled));
+    public static final RegistryObject<Item> SWEET_BERRY_PIE = ITEMS.register("sweet_berry_pie", ()->new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE.get(), new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled));
 
-    public static final ItemKnife ITEM_KNIFE = null;
-    public static final ItemGlass ITEM_GLASS = null;
-    public static final ItemTomato ITEM_TOMATO = null;
-    public static final Item ITEM_TOMATO_SEEDS = null;
-    public static final Item ITEM_RICE_SEEDS = null;
-    public static final ItemGavel ITEM_GAVEL = null;
+    public static final List<RegistryObject<Item>> RAW_PIZZAS = Arrays.<RegistryObject<Item>>asList(
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, Foods.RAW_PIZZA_3)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1)),
+            ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () -> new ItemRawPizza(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_0)));
 
-    public static final Item ITEM_TOMATO_SLICES = null;
-    public static final Item ITEM_POTATO_SLICES = null;
-    public static final Item ITEM_RAW_PATTY = null;
-    public static final Item ITEM_RAW_CHICKEN_PATTY = null;
-    public static final Item ITEM_RAW_SAUSAGE = null;
-    public static final Item ITEM_BUN = null;
+    public static final List<RegistryObject<Item>> PIZZAS = Arrays.<RegistryObject<Item>>asList(
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_PEPPERONI_PEPPERONI_PEPPERONI.get(), BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_MUSHROOM_PEPPERONI_PEPPERONI.get(), BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM_PEPPERONI.get(), BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM_MUSHROOM.get(), BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_MEAT_PEPPERONI_PEPPERONI.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM_PEPPERONI.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM_MUSHROOM.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_MEAT_MEAT_PEPPERONI.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_MEAT_MEAT_MUSHROOM.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT), () ->new ItemPizza(Blocks.PIZZA_MEAT_MEAT_MEAT.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_FISH_PEPPERONI_PEPPERONI.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM_PEPPERONI.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM_MUSHROOM.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_FISH_MEAT_PEPPERONI.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_FISH_MEAT_MUSHROOM.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT), () ->new ItemPizza(Blocks.PIZZA_FISH_MEAT_MEAT.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_FISH_FISH_PEPPERONI.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_FISH_FISH_MUSHROOM.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT), () ->new ItemPizza(Blocks.PIZZA_FISH_FISH_MEAT.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH), () ->new ItemPizza(Blocks.PIZZA_FISH_FISH_FISH.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_PEPPERONI_PEPPERONI.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM_PEPPERONI.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM_MUSHROOM.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_PEPPERONI.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_MUSHROOM.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_MEAT.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_PEPPERONI.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_MUSHROOM.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_MEAT.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_FISH.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_PEPPERONI.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_MUSHROOM.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_MEAT.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_FISH.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_CHICKEN.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_PEPPERONI_PEPPERONI.get(), BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_MUSHROOM_PEPPERONI.get(), BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM.get(), BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_MEAT_PEPPERONI.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_MEAT_MEAT.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_FISH_PEPPERONI.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_FISH_MEAT.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_FISH_FISH.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_PEPPERONI.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_FISH.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_PEPPERONI.get(), BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_MUSHROOM.get(), BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_MEAT.get(), BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_FISH.get(), BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA_CHICKEN.get(), BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY)),
+            ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA.get(), BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY))
+    );
 
-    public static final ItemCushion BLACK_CUSHION = null;
-    public static final ItemCushion BLUE_CUSHION = null;
-    public static final ItemCushion BROWN_CUSHION = null;
-    public static final ItemCushion CYAN_CUSHION = null;
-    public static final ItemCushion GRAY_CUSHION = null;
-    public static final ItemCushion GREEN_CUSHION = null;
-    public static final ItemCushion LIGHT_BLUE_CUSHION = null;
-    public static final ItemCushion LIGHT_GRAY_CUSHION = null;
-    public static final ItemCushion LIME_CUSHION = null;
-    public static final ItemCushion MAGENTA_CUSHION = null;
-    public static final ItemCushion ORANGE_CUSHION = null;
-    public static final ItemCushion PINK_CUSHION = null;
-    public static final ItemCushion PURPLE_CUSHION = null;
-    public static final ItemCushion RED_CUSHION = null;
-    public static final ItemCushion WHITE_CUSHION = null;
-    public static final ItemCushion YELLOW_CUSHION = null;
+    public static final RegistryObject<Item> ITEM_TEACUP = ITEMS.register("item_teacup", ()->new ItemTea(new Item.Properties().tab(Items.teaTab)));
+    public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_0 = ITEMS.register("item_full_teacup_0", ()->new ItemTeacup(0, ITEM_TEACUP.get()));
+    public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_1 = ITEMS.register("item_full_teacup_1", ()->new ItemTeacup(1, ITEM_TEACUP.get()));
+    public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_2 = ITEMS.register("item_full_teacup_2", ()->new ItemTeacup(2, ITEM_TEACUP.get()));
+    public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_3 = ITEMS.register("item_full_teacup_3", ()->new ItemTeacup(3, ITEM_TEACUP.get()));
+    public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_4 = ITEMS.register("item_full_teacup_4", ()->new ItemTeacup(4, ITEM_TEACUP.get()));
+    public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_5 = ITEMS.register("item_full_teacup_5", ()->new ItemTeacup(5, ITEM_TEACUP.get()));
+    public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_6 = ITEMS.register("item_full_teacup_6", ()->new ItemTeacup(6, ITEM_TEACUP.get()));
 
-    public static final ItemFlask FLASK = null;
-    public static final ItemFlask FLASK_MILK = null;
+    public static final RegistryObject<ItemTeapot> ITEM_FULL_TEAPOT_0 = ITEMS.register("item_full_teapot_0", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 0, false));
+    public static final RegistryObject<ItemTeapot> ITEM_FULL_TEAPOT_1 = ITEMS.register("item_full_teapot_1", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 1, false));
+    public static final RegistryObject<ItemTeapot> ITEM_FULL_TEAPOT_2 = ITEMS.register("item_full_teapot_2", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 2, false));
+    public static final RegistryObject<ItemTeapot> ITEM_FULL_TEAPOT_3 = ITEMS.register("item_full_teapot_3", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 3, false));
+    public static final RegistryObject<ItemTeapot> ITEM_FULL_TEAPOT_4 = ITEMS.register("item_full_teapot_4", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 4, false));
+    public static final RegistryObject<ItemTeapot> ITEM_FULL_TEAPOT_5 = ITEMS.register("item_full_teapot_5", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 5, false));
+    public static final RegistryObject<ItemTeapot> ITEM_FULL_TEAPOT_6 = ITEMS.register("item_full_teapot_6", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 6, false));
+    public static final RegistryObject<ItemTeapot> ITEM_FULL_TEAPOT_7 = ITEMS.register("item_full_teapot_7", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 7, false));
+    public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_0 = ITEMS.register("item_hot_teapot_0", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 0, true));
+    public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_1 = ITEMS.register("item_hot_teapot_1", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 1, true));
+    public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_2 = ITEMS.register("item_hot_teapot_2", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 2, true));
+    public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_3 = ITEMS.register("item_hot_teapot_3", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 3, true));
+    public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_4 = ITEMS.register("item_hot_teapot_4", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 4, true));
+    public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_5 = ITEMS.register("item_hot_teapot_5", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 5, true));
+    public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_6 = ITEMS.register("item_hot_teapot_6", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 6, true));
+    public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_7 = ITEMS.register("item_hot_teapot_7", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 7, true));
+    public static final RegistryObject<ItemEmptyTeapot> ITEM_TEAPOT = ITEMS.register("item_teapot", ()->new ItemEmptyTeapot(new Item.Properties().tab(Items.teaTab)));
+    public static final RegistryObject<Item> ITEM_TEA_SEEDS = ITEMS.register("item_tea_seeds", ()->new BlockNamedConditionedItem(Blocks.BLOCK_TEA_PLANT.get(), new Item.Properties().tab(Items.teaTab), Config::isTeaEnabled));
+    public static final RegistryObject<Item> ITEM_TEA_DRIED = ITEMS.register("item_tea_dried", ()->new ItemTea(new Item.Properties().tab(Items.teaTab)));
+    public static final RegistryObject<Item> ITEM_TEA_LEAF = ITEMS.register("item_tea_leaf", ()->new ItemTea(new Item.Properties().tab(Items.teaTab)));
 
-    public static final Item ITEM_BLOCK_LEATHER = null;
-    public static final Item ITEM_BLOCK_STRAW = null;
+    public static final RegistryObject<ItemGoldenCupcake> ITEM_GOLDEN_CUPCAKE = ITEMS.register("item_golden_cupcake", ItemGoldenCupcake::new);
 
-    public static final Item CARVED_OAK_1 = null;
-    public static final Item CARVED_OAK_2 = null;
-    public static final Item CARVED_OAK_3 = null;
-    public static final Item CARVED_OAK_4 = null;
-    public static final Item CARVED_OAK_5 = null;
-    public static final Item CARVED_OAK_6 = null;
-    public static final Item CARVED_OAK_7 = null;
-    public static final Item CARVED_OAK_8 = null;
-    public static final Item CARVED_BIRCH_1 = null;
-    public static final Item CARVED_BIRCH_2 = null;
-    public static final Item CARVED_BIRCH_3 = null;
-    public static final Item CARVED_BIRCH_4 = null;
-    public static final Item CARVED_BIRCH_5 = null;
-    public static final Item CARVED_BIRCH_6 = null;
-    public static final Item CARVED_BIRCH_7 = null;
-    public static final Item CARVED_BIRCH_8 = null;
-    public static final Item CARVED_DARK_OAK_1 = null;
-    public static final Item CARVED_DARK_OAK_2 = null;
-    public static final Item CARVED_DARK_OAK_3 = null;
-    public static final Item CARVED_DARK_OAK_4 = null;
-    public static final Item CARVED_DARK_OAK_5 = null;
-    public static final Item CARVED_DARK_OAK_6 = null;
-    public static final Item CARVED_DARK_OAK_7 = null;
-    public static final Item CARVED_DARK_OAK_8 = null;
-    public static final Item CARVED_ACACIA_1 = null;
-    public static final Item CARVED_ACACIA_2 = null;
-    public static final Item CARVED_ACACIA_3 = null;
-    public static final Item CARVED_ACACIA_4 = null;
-    public static final Item CARVED_ACACIA_5 = null;
-    public static final Item CARVED_ACACIA_6 = null;
-    public static final Item CARVED_ACACIA_7 = null;
-    public static final Item CARVED_ACACIA_8 = null;
-    public static final Item CARVED_JUNGLE_1 = null;
-    public static final Item CARVED_JUNGLE_2 = null;
-    public static final Item CARVED_JUNGLE_3 = null;
-    public static final Item CARVED_JUNGLE_4 = null;
-    public static final Item CARVED_JUNGLE_5 = null;
-    public static final Item CARVED_JUNGLE_6 = null;
-    public static final Item CARVED_JUNGLE_7 = null;
-    public static final Item CARVED_JUNGLE_8 = null;
-    public static final Item CARVED_SPRUCE_1 = null;
-    public static final Item CARVED_SPRUCE_2 = null;
-    public static final Item CARVED_SPRUCE_3 = null;
-    public static final Item CARVED_SPRUCE_4 = null;
-    public static final Item CARVED_SPRUCE_5 = null;
-    public static final Item CARVED_SPRUCE_6 = null;
-    public static final Item CARVED_SPRUCE_7 = null;
-    public static final Item CARVED_SPRUCE_8 = null;
-    public static final Item CARVED_CRIMSON_1 = null;
-    public static final Item CARVED_CRIMSON_2 = null;
-    public static final Item CARVED_CRIMSON_3 = null;
-    public static final Item CARVED_CRIMSON_4 = null;
-    public static final Item CARVED_CRIMSON_5 = null;
-    public static final Item CARVED_CRIMSON_6 = null;
-    public static final Item CARVED_CRIMSON_7 = null;
-    public static final Item CARVED_CRIMSON_8 = null;
-    public static final Item CARVED_WARPED_1 = null;
-    public static final Item CARVED_WARPED_2 = null;
-    public static final Item CARVED_WARPED_3 = null;
-    public static final Item CARVED_WARPED_4 = null;
-    public static final Item CARVED_WARPED_5 = null;
-    public static final Item CARVED_WARPED_6 = null;
-    public static final Item CARVED_WARPED_7 = null;
-    public static final Item CARVED_WARPED_8 = null;
+    public static final RegistryObject<ItemKnife> ITEM_KNIFE = ITEMS.register("item_knife", ItemKnife::new);
+    public static final RegistryObject<ItemTomato> ITEM_TOMATO = ITEMS.register("item_tomato", ItemTomato::new);
+    public static final RegistryObject<Item> ITEM_TOMATO_SEEDS = ITEMS.register("item_tomato_seeds", ()->new BlockNamedConditionedItem(Blocks.BLOCK_TOMATO_PLANT.get(), new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS), Config::isFoodEnabled));
+    public static final RegistryObject<Item> ITEM_RICE_SEEDS = ITEMS.register("item_rice_seeds", ()->new BlockNamedConditionedItem(Blocks.BLOCK_RICE_PLANT.get(), new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS), Config::isFoodEnabled));
+    public static final RegistryObject<ItemGavel> ITEM_GAVEL = ITEMS.register("item_gavel", ItemGavel::new);
+    public static final RegistryObject<ItemBadge> ITEM_PROSECUTOR_BADGE = ITEMS.register("item_prosecutor_badge", ItemBadge::new);
+    public static final RegistryObject<ItemBadge> ITEM_ATTORNEY_BADGE = ITEMS.register("item_attorney_badge", ItemBadge::new);
 
-    public static final Item BLACK_TERRATILE = null;
-    public static final Item BLUE_TERRATILE = null;
-    public static final Item BROWN_TERRATILE = null;
-    public static final Item CYAN_TERRATILE = null;
-    public static final Item GRAY_TERRATILE = null;
-    public static final Item GREEN_TERRATILE = null;
-    public static final Item LIGHT_BLUE_TERRATILE = null;
-    public static final Item LIGHT_GRAY_TERRATILE = null;
-    public static final Item LIME_TERRATILE = null;
-    public static final Item MAGENTA_TERRATILE = null;
-    public static final Item ORANGE_TERRATILE = null;
-    public static final Item PINK_TERRATILE = null;
-    public static final Item PURPLE_TERRATILE = null;
-    public static final Item RED_TERRATILE = null;
-    public static final Item WHITE_TERRATILE = null;
-    public static final Item YELLOW_TERRATILE = null;
-    public static final Item TERRATILE = null;
-    public static final Item BLACK_TERRATILE_SLAB = null;
-    public static final Item BLUE_TERRATILE_SLAB = null;
-    public static final Item BROWN_TERRATILE_SLAB = null;
-    public static final Item CYAN_TERRATILE_SLAB = null;
-    public static final Item GRAY_TERRATILE_SLAB = null;
-    public static final Item GREEN_TERRATILE_SLAB = null;
-    public static final Item LIGHT_BLUE_TERRATILE_SLAB = null;
-    public static final Item LIGHT_GRAY_TERRATILE_SLAB = null;
-    public static final Item LIME_TERRATILE_SLAB = null;
-    public static final Item MAGENTA_TERRATILE_SLAB = null;
-    public static final Item ORANGE_TERRATILE_SLAB = null;
-    public static final Item PINK_TERRATILE_SLAB = null;
-    public static final Item PURPLE_TERRATILE_SLAB = null;
-    public static final Item RED_TERRATILE_SLAB = null;
-    public static final Item WHITE_TERRATILE_SLAB = null;
-    public static final Item YELLOW_TERRATILE_SLAB = null;
-    public static final Item TERRATILE_SLAB = null;
-    public static final Item BLACK_TERRATILE_STAIRS = null;
-    public static final Item BLUE_TERRATILE_STAIRS = null;
-    public static final Item BROWN_TERRATILE_STAIRS = null;
-    public static final Item CYAN_TERRATILE_STAIRS = null;
-    public static final Item GRAY_TERRATILE_STAIRS = null;
-    public static final Item GREEN_TERRATILE_STAIRS = null;
-    public static final Item LIGHT_BLUE_TERRATILE_STAIRS = null;
-    public static final Item LIGHT_GRAY_TERRATILE_STAIRS = null;
-    public static final Item LIME_TERRATILE_STAIRS = null;
-    public static final Item MAGENTA_TERRATILE_STAIRS = null;
-    public static final Item ORANGE_TERRATILE_STAIRS = null;
-    public static final Item PINK_TERRATILE_STAIRS = null;
-    public static final Item PURPLE_TERRATILE_STAIRS = null;
-    public static final Item RED_TERRATILE_STAIRS = null;
-    public static final Item WHITE_TERRATILE_STAIRS = null;
-    public static final Item YELLOW_TERRATILE_STAIRS = null;
-    public static final Item TERRATILE_STAIRS = null;
-    public static final Item CARVING_STATION = null;
-    public static final Item ITEM_BOOKCASE = null;
+    public static final RegistryObject<ItemGrabHook> ITEM_GRAB_HOOK = ITEMS.register("item_grab_hook", ItemGrabHook::new);
+    public static final RegistryObject<ItemWarhammer> ITEM_NETHERITE_WARHAMMER = ITEMS.register("item_netherite_warhammer", ()->new ItemWarhammer(Tiers.NETHERITE));
+    public static final RegistryObject<ItemWarhammer> ITEM_DIAMOND_WARHAMMER = ITEMS.register("item_diamond_warhammer", ()->new ItemWarhammer(Tiers.DIAMOND));
+    public static final RegistryObject<ItemWarhammer> ITEM_GOLD_WARHAMMER = ITEMS.register("item_gold_warhammer", ()->new ItemWarhammer(Tiers.GOLD));
+    public static final RegistryObject<ItemWarhammer> ITEM_IRON_WARHAMMER = ITEMS.register("item_iron_warhammer", ()->new ItemWarhammer(Tiers.IRON));
+    public static final RegistryObject<ItemWarhammer> ITEM_STONE_WARHAMMER = ITEMS.register("item_stone_warhammer", ()->new ItemWarhammer(Tiers.STONE));
+    public static final RegistryObject<ItemConfettiBall> ITEM_CONFETTI_BALL = ITEMS.register("item_confetti_ball", ItemConfettiBall::new);
+    public static final RegistryObject<ItemConfetti> ITEM_CONFETTI = ITEMS.register("item_confetti", ItemConfetti::new);
 
-    public static final Item ROPE = null;
+    public static final RegistryObject<Item> ITEM_TOMATO_SLICES = ITEMS.register("item_tomato_slices", ()->makeFoodItem(Foods.TOMATO_SLICES));
+    public static final RegistryObject<Item> ITEM_POTATO_SLICES = ITEMS.register("item_potato_slices", ()->makeFoodItem(Foods.POTATO_SLICES));
+    public static final RegistryObject<Item> ITEM_RAW_SAUSAGE = ITEMS.register("item_raw_sausage", ()->makeFoodItem(Foods.RAW_SAUSAGE));
 
-    public static final Item VAT = null;
-    public static final Item CHEESE_WHEEL = null;
-    public static final Item CHEESE_SLICE = null;
+    public static final RegistryObject<ItemCushion> BLACK_CUSHION = ITEMS.register("black_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLACK_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> BLUE_CUSHION = ITEMS.register("blue_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLUE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> BROWN_CUSHION = ITEMS.register("brown_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BROWN_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> CYAN_CUSHION = ITEMS.register("cyan_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.CYAN_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> GRAY_CUSHION = ITEMS.register("gray_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.GRAY_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> GREEN_CUSHION = ITEMS.register("green_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.GREEN_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> LIGHT_BLUE_CUSHION = ITEMS.register("light_blue_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIGHT_BLUE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> LIGHT_GRAY_CUSHION = ITEMS.register("light_gray_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIGHT_GRAY_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> LIME_CUSHION = ITEMS.register("lime_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIME_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> MAGENTA_CUSHION = ITEMS.register("magenta_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.MAGENTA_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> ORANGE_CUSHION = ITEMS.register("orange_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.ORANGE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> PINK_CUSHION = ITEMS.register("pink_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.PINK_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> PURPLE_CUSHION = ITEMS.register("purple_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.PURPLE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> RED_CUSHION = ITEMS.register("red_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.RED_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> WHITE_CUSHION = ITEMS.register("white_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.WHITE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> YELLOW_CUSHION = ITEMS.register("yellow_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.YELLOW_CUSHION.get()));
 
-    public static final BlockItemOmniChest OMNI_CHEST = null;
+    public static final RegistryObject<ItemFlask> FLASK = ITEMS.register("flask", ()->new ItemFlask(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).stacksTo(1).durability(160), false));
+    public static final RegistryObject<ItemFlask> FLASK_MILK = ITEMS.register("flask_milk", ()->new ItemFlask(new Item.Properties().stacksTo(1).durability(160), true));
 
-    public static final ItemScythe WOODEN_SCYTHE = null;
-    public static final ItemScythe STONE_SCYTHE = null;
-    public static final ItemScythe IRON_SCYTHE = null;
-    public static final ItemScythe GOLDEN_SCYTHE = null;
-    public static final ItemScythe DIAMOND_SCYTHE = null;
-    public static final ItemScythe NETHERITE_SCYTHE = null;
+    public static final RegistryObject<Item> ITEM_BLOCK_LEATHER = ITEMS.register("item_block_leather", ()->new BlockConditionedItem(Blocks.BLOCK_LEATHER.get(), new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled));
+    public static final RegistryObject<Item> ITEM_BLOCK_STRAW = ITEMS.register("item_block_straw", ()->new BlockConditionedItem(Blocks.BLOCK_STRAW.get(), new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled));
 
-    public static final Enchantment ENCHANTMENT_STEALTH = null;
-    public static final Enchantment ENCHANTMENT_POISON = null;
-    public static final Enchantment ENCHANTMENT_HEAVY = null;
-    public static final Enchantment ENCHANTMENT_MAIM = null;
-    public static final Enchantment ENCHANTMENT_QUICK = null;
-    public static final Enchantment ENCHANTMENT_QUAKE = null;
-    public static final Enchantment ENCHANTMENT_GRAPPLING = null;
-    public static final Enchantment ENCHANTMENT_UPPERCUT = null;
-    public static final Enchantment ENCHANTMENT_TURBO_GRAB = null;
-    public static final Enchantment ENCHANTMENT_GENTLE_GRAB = null;
-    public static final Enchantment ENCHANTMENT_GUILLOTINE = null;
-    public static final Enchantment ENCHANTMENT_RANGE = null;
-    public static final Enchantment ENCHANTMENT_CAPACITY = null;
-    public static final Enchantment ENCHANTMENT_CHUG = null;
-    public static final Enchantment ENCHANTMENT_DEVOUR = null;
+    public static final RegistryObject<Item> CARVED_OAK_1 = ITEMS.register("carved_oak_1", ()->new CarvedWoodItem(Blocks.CARVED_OAK_1.get(), new Item.Properties().tab(Items.decoTab), 1));
+    public static final RegistryObject<Item> CARVED_OAK_2 = ITEMS.register("carved_oak_2", ()->new CarvedWoodItem(Blocks.CARVED_OAK_2.get(), new Item.Properties().tab(Items.decoTab), 2));
+    public static final RegistryObject<Item> CARVED_OAK_3 = ITEMS.register("carved_oak_3", ()->new CarvedWoodItem(Blocks.CARVED_OAK_3.get(), new Item.Properties().tab(Items.decoTab), 3));
+    public static final RegistryObject<Item> CARVED_OAK_4 = ITEMS.register("carved_oak_4", ()->new CarvedWoodItem(Blocks.CARVED_OAK_4.get(), new Item.Properties().tab(Items.decoTab), 4));
+    public static final RegistryObject<Item> CARVED_OAK_5 = ITEMS.register("carved_oak_5", ()->new CarvedWoodItem(Blocks.CARVED_OAK_5.get(), new Item.Properties().tab(Items.decoTab), 5));
+    public static final RegistryObject<Item> CARVED_OAK_6 = ITEMS.register("carved_oak_6", ()->new CarvedWoodItem(Blocks.CARVED_OAK_6.get(), new Item.Properties().tab(Items.decoTab), 6));
+    public static final RegistryObject<Item> CARVED_OAK_7 = ITEMS.register("carved_oak_7", ()->new CarvedWoodItem(Blocks.CARVED_OAK_7.get(), new Item.Properties().tab(Items.decoTab), 7));
+    public static final RegistryObject<Item> CARVED_OAK_8 = ITEMS.register("carved_oak_8", ()->new CarvedWoodItem(Blocks.CARVED_OAK_8.get(), new Item.Properties().tab(Items.decoTab), 8));
+    public static final RegistryObject<Item> CARVED_BIRCH_1 = ITEMS.register("carved_birch_1", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_1.get(), new Item.Properties().tab(Items.decoTab), 1));
+    public static final RegistryObject<Item> CARVED_BIRCH_2 = ITEMS.register("carved_birch_2", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_2.get(), new Item.Properties().tab(Items.decoTab), 2));
+    public static final RegistryObject<Item> CARVED_BIRCH_3 = ITEMS.register("carved_birch_3", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_3.get(), new Item.Properties().tab(Items.decoTab), 3));
+    public static final RegistryObject<Item> CARVED_BIRCH_4 = ITEMS.register("carved_birch_4", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_4.get(), new Item.Properties().tab(Items.decoTab), 4));
+    public static final RegistryObject<Item> CARVED_BIRCH_5 = ITEMS.register("carved_birch_5", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_5.get(), new Item.Properties().tab(Items.decoTab), 5));
+    public static final RegistryObject<Item> CARVED_BIRCH_6 = ITEMS.register("carved_birch_6", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_6.get(), new Item.Properties().tab(Items.decoTab), 6));
+    public static final RegistryObject<Item> CARVED_BIRCH_7 = ITEMS.register("carved_birch_7", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_7.get(), new Item.Properties().tab(Items.decoTab), 7));
+    public static final RegistryObject<Item> CARVED_BIRCH_8 = ITEMS.register("carved_birch_8", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_8.get(), new Item.Properties().tab(Items.decoTab), 8));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_1 = ITEMS.register("carved_dark_oak_1", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_1.get(), new Item.Properties().tab(Items.decoTab), 1));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_2 = ITEMS.register("carved_dark_oak_2", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_2.get(), new Item.Properties().tab(Items.decoTab), 2));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_3 = ITEMS.register("carved_dark_oak_3", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_3.get(), new Item.Properties().tab(Items.decoTab), 3));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_4 = ITEMS.register("carved_dark_oak_4", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_4.get(), new Item.Properties().tab(Items.decoTab), 4));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_5 = ITEMS.register("carved_dark_oak_5", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_5.get(), new Item.Properties().tab(Items.decoTab), 5));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_6 = ITEMS.register("carved_dark_oak_6", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_6.get(), new Item.Properties().tab(Items.decoTab), 6));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_7 = ITEMS.register("carved_dark_oak_7", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_7.get(), new Item.Properties().tab(Items.decoTab), 7));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_8 = ITEMS.register("carved_dark_oak_8", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_8.get(), new Item.Properties().tab(Items.decoTab), 8));
+    public static final RegistryObject<Item> CARVED_ACACIA_1 = ITEMS.register("carved_acacia_1", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_1.get(), new Item.Properties().tab(Items.decoTab), 1));
+    public static final RegistryObject<Item> CARVED_ACACIA_2 = ITEMS.register("carved_acacia_2", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_2.get(), new Item.Properties().tab(Items.decoTab), 2));
+    public static final RegistryObject<Item> CARVED_ACACIA_3 = ITEMS.register("carved_acacia_3", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_3.get(), new Item.Properties().tab(Items.decoTab), 3));
+    public static final RegistryObject<Item> CARVED_ACACIA_4 = ITEMS.register("carved_acacia_4", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_4.get(), new Item.Properties().tab(Items.decoTab), 4));
+    public static final RegistryObject<Item> CARVED_ACACIA_5 = ITEMS.register("carved_acacia_5", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_5.get(), new Item.Properties().tab(Items.decoTab), 5));
+    public static final RegistryObject<Item> CARVED_ACACIA_6 = ITEMS.register("carved_acacia_6", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_6.get(), new Item.Properties().tab(Items.decoTab), 6));
+    public static final RegistryObject<Item> CARVED_ACACIA_7 = ITEMS.register("carved_acacia_7", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_7.get(), new Item.Properties().tab(Items.decoTab), 7));
+    public static final RegistryObject<Item> CARVED_ACACIA_8 = ITEMS.register("carved_acacia_8", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_8.get(), new Item.Properties().tab(Items.decoTab), 8));
+    public static final RegistryObject<Item> CARVED_JUNGLE_1 = ITEMS.register("carved_jungle_1", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_1.get(), new Item.Properties().tab(Items.decoTab), 1));
+    public static final RegistryObject<Item> CARVED_JUNGLE_2 = ITEMS.register("carved_jungle_2", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_2.get(), new Item.Properties().tab(Items.decoTab), 2));
+    public static final RegistryObject<Item> CARVED_JUNGLE_3 = ITEMS.register("carved_jungle_3", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_3.get(), new Item.Properties().tab(Items.decoTab), 3));
+    public static final RegistryObject<Item> CARVED_JUNGLE_4 = ITEMS.register("carved_jungle_4", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_4.get(), new Item.Properties().tab(Items.decoTab), 4));
+    public static final RegistryObject<Item> CARVED_JUNGLE_5 = ITEMS.register("carved_jungle_5", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_5.get(), new Item.Properties().tab(Items.decoTab), 5));
+    public static final RegistryObject<Item> CARVED_JUNGLE_6 = ITEMS.register("carved_jungle_6", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_6.get(), new Item.Properties().tab(Items.decoTab), 6));
+    public static final RegistryObject<Item> CARVED_JUNGLE_7 = ITEMS.register("carved_jungle_7", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_7.get(), new Item.Properties().tab(Items.decoTab), 7));
+    public static final RegistryObject<Item> CARVED_JUNGLE_8 = ITEMS.register("carved_jungle_8", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_8.get(), new Item.Properties().tab(Items.decoTab), 8));
+    public static final RegistryObject<Item> CARVED_SPRUCE_1 = ITEMS.register("carved_spruce_1", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_1.get(), new Item.Properties().tab(Items.decoTab), 1));
+    public static final RegistryObject<Item> CARVED_SPRUCE_2 = ITEMS.register("carved_spruce_2", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_2.get(), new Item.Properties().tab(Items.decoTab), 2));
+    public static final RegistryObject<Item> CARVED_SPRUCE_3 = ITEMS.register("carved_spruce_3", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_3.get(), new Item.Properties().tab(Items.decoTab), 3));
+    public static final RegistryObject<Item> CARVED_SPRUCE_4 = ITEMS.register("carved_spruce_4", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_4.get(), new Item.Properties().tab(Items.decoTab), 4));
+    public static final RegistryObject<Item> CARVED_SPRUCE_5 = ITEMS.register("carved_spruce_5", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_5.get(), new Item.Properties().tab(Items.decoTab), 5));
+    public static final RegistryObject<Item> CARVED_SPRUCE_6 = ITEMS.register("carved_spruce_6", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_6.get(), new Item.Properties().tab(Items.decoTab), 6));
+    public static final RegistryObject<Item> CARVED_SPRUCE_7 = ITEMS.register("carved_spruce_7", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_7.get(), new Item.Properties().tab(Items.decoTab), 7));
+    public static final RegistryObject<Item> CARVED_SPRUCE_8 = ITEMS.register("carved_spruce_8", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_8.get(), new Item.Properties().tab(Items.decoTab), 8));
+    public static final RegistryObject<Item> CARVED_CRIMSON_1 = ITEMS.register("carved_crimson_1", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_1.get(), new Item.Properties().tab(Items.decoTab), 1));
+    public static final RegistryObject<Item> CARVED_CRIMSON_2 = ITEMS.register("carved_crimson_2", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_2.get(), new Item.Properties().tab(Items.decoTab), 2));
+    public static final RegistryObject<Item> CARVED_CRIMSON_3 = ITEMS.register("carved_crimson_3", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_3.get(), new Item.Properties().tab(Items.decoTab), 3));
+    public static final RegistryObject<Item> CARVED_CRIMSON_4 = ITEMS.register("carved_crimson_4", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_4.get(), new Item.Properties().tab(Items.decoTab), 4));
+    public static final RegistryObject<Item> CARVED_CRIMSON_5 = ITEMS.register("carved_crimson_5", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_5.get(), new Item.Properties().tab(Items.decoTab), 5));
+    public static final RegistryObject<Item> CARVED_CRIMSON_6 = ITEMS.register("carved_crimson_6", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_6.get(), new Item.Properties().tab(Items.decoTab), 6));
+    public static final RegistryObject<Item> CARVED_CRIMSON_7 = ITEMS.register("carved_crimson_7", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_7.get(), new Item.Properties().tab(Items.decoTab), 7));
+    public static final RegistryObject<Item> CARVED_CRIMSON_8 = ITEMS.register("carved_crimson_8", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_8.get(), new Item.Properties().tab(Items.decoTab), 8));
+    public static final RegistryObject<Item> CARVED_WARPED_1 = ITEMS.register("carved_warped_1", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_1.get(), new Item.Properties().tab(Items.decoTab), 1));
+    public static final RegistryObject<Item> CARVED_WARPED_2 = ITEMS.register("carved_warped_2", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_2.get(), new Item.Properties().tab(Items.decoTab), 2));
+    public static final RegistryObject<Item> CARVED_WARPED_3 = ITEMS.register("carved_warped_3", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_3.get(), new Item.Properties().tab(Items.decoTab), 3));
+    public static final RegistryObject<Item> CARVED_WARPED_4 = ITEMS.register("carved_warped_4", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_4.get(), new Item.Properties().tab(Items.decoTab), 4));
+    public static final RegistryObject<Item> CARVED_WARPED_5 = ITEMS.register("carved_warped_5", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_5.get(), new Item.Properties().tab(Items.decoTab), 5));
+    public static final RegistryObject<Item> CARVED_WARPED_6 = ITEMS.register("carved_warped_6", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_6.get(), new Item.Properties().tab(Items.decoTab), 6));
+    public static final RegistryObject<Item> CARVED_WARPED_7 = ITEMS.register("carved_warped_7", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_7.get(), new Item.Properties().tab(Items.decoTab), 7));
+    public static final RegistryObject<Item> CARVED_WARPED_8 = ITEMS.register("carved_warped_8", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_8.get(), new Item.Properties().tab(Items.decoTab), 8));
 
-    public static TeaCreativeTab teaTab;
-    public static DecoCreativeTab decoTab;
+    public static final RegistryObject<Item> BLACK_TERRATILE = ITEMS.register("black_terratile", ()->new BlockConditionedItem(Blocks.BLACK_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BLUE_TERRATILE = ITEMS.register("blue_terratile", ()->new BlockConditionedItem(Blocks.BLUE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BROWN_TERRATILE = ITEMS.register("brown_terratile", ()->new BlockConditionedItem(Blocks.BROWN_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> CYAN_TERRATILE = ITEMS.register("cyan_terratile", ()->new BlockConditionedItem(Blocks.CYAN_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> GRAY_TERRATILE = ITEMS.register("gray_terratile", ()->new BlockConditionedItem(Blocks.GRAY_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> GREEN_TERRATILE = ITEMS.register("green_terratile", ()->new BlockConditionedItem(Blocks.GREEN_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE = ITEMS.register("light_blue_terratile", ()->new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE = ITEMS.register("light_gray_terratile", ()->new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIME_TERRATILE = ITEMS.register("lime_terratile", ()->new BlockConditionedItem(Blocks.LIME_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> MAGENTA_TERRATILE = ITEMS.register("magenta_terratile", ()->new BlockConditionedItem(Blocks.MAGENTA_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> ORANGE_TERRATILE = ITEMS.register("orange_terratile", ()->new BlockConditionedItem(Blocks.ORANGE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> PINK_TERRATILE = ITEMS.register("pink_terratile", ()->new BlockConditionedItem(Blocks.PINK_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> PURPLE_TERRATILE = ITEMS.register("purple_terratile", ()->new BlockConditionedItem(Blocks.PURPLE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> RED_TERRATILE = ITEMS.register("red_terratile", ()->new BlockConditionedItem(Blocks.RED_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> WHITE_TERRATILE = ITEMS.register("white_terratile", ()->new BlockConditionedItem(Blocks.WHITE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> YELLOW_TERRATILE = ITEMS.register("yellow_terratile", ()->new BlockConditionedItem(Blocks.YELLOW_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> TERRATILE = ITEMS.register("terratile", ()->new BlockConditionedItem(Blocks.TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
 
-    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING =            null;
-    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING =              null;
-    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING =              null;
-    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING =          null;
-    public static final RecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_FLASK_FILLING =          null;
-    public static final RecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_ENDER_BOW_FILLING =      null;
-    public static final RecipeSerializer<RecipeFlaskMilkFilling> CRAFTING_SPECIAL_FLASK_MILK_FILLING = null;
-    public static final RecipeSerializer<RecipeWoodCarving> CRAFTING_SPECIAL_WOOD_CARVING =            null;
-    public static final RecipeSerializer<RecipeCarvingStation> CARVING =                               null;
+    public static final RegistryObject<Item> BLACK_TERRATILE_SLAB = ITEMS.register("black_terratile_slab", ()->new BlockConditionedItem(Blocks.BLACK_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BLUE_TERRATILE_SLAB = ITEMS.register("blue_terratile_slab", ()->new BlockConditionedItem(Blocks.BLUE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BROWN_TERRATILE_SLAB = ITEMS.register("brown_terratile_slab", ()->new BlockConditionedItem(Blocks.BROWN_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> CYAN_TERRATILE_SLAB = ITEMS.register("cyan_terratile_slab", ()->new BlockConditionedItem(Blocks.CYAN_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> GRAY_TERRATILE_SLAB = ITEMS.register("gray_terratile_slab", ()->new BlockConditionedItem(Blocks.GRAY_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> GREEN_TERRATILE_SLAB = ITEMS.register("green_terratile_slab", ()->new BlockConditionedItem(Blocks.GREEN_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE_SLAB = ITEMS.register("light_blue_terratile_slab", ()->new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE_SLAB = ITEMS.register("light_gray_terratile_slab", ()->new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIME_TERRATILE_SLAB = ITEMS.register("lime_terratile_slab", ()->new BlockConditionedItem(Blocks.LIME_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> MAGENTA_TERRATILE_SLAB = ITEMS.register("magenta_terratile_slab", ()->new BlockConditionedItem(Blocks.MAGENTA_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> ORANGE_TERRATILE_SLAB = ITEMS.register("orange_terratile_slab", ()->new BlockConditionedItem(Blocks.ORANGE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> PINK_TERRATILE_SLAB = ITEMS.register("pink_terratile_slab", ()->new BlockConditionedItem(Blocks.PINK_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> PURPLE_TERRATILE_SLAB = ITEMS.register("purple_terratile_slab", ()->new BlockConditionedItem(Blocks.PURPLE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> RED_TERRATILE_SLAB = ITEMS.register("red_terratile_slab", ()->new BlockConditionedItem(Blocks.RED_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> WHITE_TERRATILE_SLAB = ITEMS.register("white_terratile_slab", ()->new BlockConditionedItem(Blocks.WHITE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> YELLOW_TERRATILE_SLAB = ITEMS.register("yellow_terratile_slab", ()->new BlockConditionedItem(Blocks.YELLOW_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> TERRATILE_SLAB = ITEMS.register("terratile_slab", ()->new BlockConditionedItem(Blocks.TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
 
-    public static final RecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_SCYTHE =  null;
-    public static final RecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_WARHAMMER =  null;
-    public static final RecipeSerializer<RecipeConditionShaped> CRAFTING_CONDITION_SHAPED_OMNI_CHEST =  null;
+    public static final RegistryObject<Item> BLACK_TERRATILE_STAIRS = ITEMS.register("black_terratile_stairs", ()->new BlockConditionedItem(Blocks.BLACK_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BLUE_TERRATILE_STAIRS = ITEMS.register("blue_terratile_stairs", ()->new BlockConditionedItem(Blocks.BLUE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BROWN_TERRATILE_STAIRS = ITEMS.register("brown_terratile_stairs", ()->new BlockConditionedItem(Blocks.BROWN_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> CYAN_TERRATILE_STAIRS = ITEMS.register("cyan_terratile_stairs", ()->new BlockConditionedItem(Blocks.CYAN_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> GRAY_TERRATILE_STAIRS = ITEMS.register("gray_terratile_stairs", ()->new BlockConditionedItem(Blocks.GRAY_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> GREEN_TERRATILE_STAIRS = ITEMS.register("green_terratile_stairs", ()->new BlockConditionedItem(Blocks.GREEN_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE_STAIRS = ITEMS.register("light_blue_terratile_stairs", ()->new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE_STAIRS = ITEMS.register("light_gray_terratile_stairs", ()->new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> LIME_TERRATILE_STAIRS = ITEMS.register("lime_terratile_stairs", ()->new BlockConditionedItem(Blocks.LIME_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> MAGENTA_TERRATILE_STAIRS = ITEMS.register("magenta_terratile_stairs", ()->new BlockConditionedItem(Blocks.MAGENTA_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> ORANGE_TERRATILE_STAIRS = ITEMS.register("orange_terratile_stairs", ()->new BlockConditionedItem(Blocks.ORANGE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> PINK_TERRATILE_STAIRS = ITEMS.register("pink_terratile_stairs", ()->new BlockConditionedItem(Blocks.PINK_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> PURPLE_TERRATILE_STAIRS = ITEMS.register("purple_terratile_stairs", ()->new BlockConditionedItem(Blocks.PURPLE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> RED_TERRATILE_STAIRS = ITEMS.register("red_terratile_stairs", ()->new BlockConditionedItem(Blocks.RED_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> WHITE_TERRATILE_STAIRS = ITEMS.register("white_terratile_stairs", ()->new BlockConditionedItem(Blocks.WHITE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> YELLOW_TERRATILE_STAIRS = ITEMS.register("yellow_terratile_stairs", ()->new BlockConditionedItem(Blocks.YELLOW_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> TERRATILE_STAIRS = ITEMS.register("terratile_stairs", ()->new BlockConditionedItem(Blocks.TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
 
-    public static RecipeType<RecipeCarvingStation> CARVING_STATION_TYPE = RecipeType.register("carving");
+    public static final RegistryObject<Item> CARVING_STATION = ITEMS.register("carving_station", ()->new BlockConditionedItem(Blocks.CARVING_STATION.get(), new Item.Properties().tab(Items.decoTab), Config::isCarvedWoodEnabled){
+        @Override public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {return 300;}
+    });
+    public static final RegistryObject<Item> ITEM_BOOKCASE = ITEMS.register("item_bookcase", ()->new BlockConditionedItem(Blocks.BLOCK_BOOKCASE.get(), new Item.Properties().tab(Items.decoTab), Config::isBookcaseEnabled){
+        @Override public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {return 300;}
+    });
 
-    static Item makeItem(String name, CreativeModeTab tab){
-        Item item = new Item(new Item.Properties().tab(tab));
-        item.setRegistryName(name);
-        return item;
+    public static final RegistryObject<Item> ROPE = ITEMS.register("rope", ()->new BlockConditionedItem(Blocks.ROPE.get(), new Item.Properties().tab(Items.decoTab), Config::isRopeEnabled){
+        public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+            MutableComponent text = Component.translatable("xercamod.rope_tooltip");
+            tooltip.add(text.withStyle(ChatFormatting.BLUE));
+        }
+    });
+
+    public static final RegistryObject<Item> VAT = ITEMS.register("vat", ()->new BlockConditionedItem(Blocks.VAT.get(), new Item.Properties().tab(Items.decoTab), Config::isFoodEnabled));
+    public static final RegistryObject<Item> CHEESE_WHEEL = ITEMS.register("cheese_wheel", ()->new BlockConditionedItem(Blocks.CHEESE_WHEEL.get(), new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled));
+    public static final RegistryObject<Item> CHEESE_SLICE = ITEMS.register("cheese_slice", ()->makeFoodItem(Foods.CHEESE_SLICE));
+
+    public static final RegistryObject<BlockItemOmniChest> OMNI_CHEST = ITEMS.register("omni_chest", ()->new BlockItemOmniChest(Blocks.OMNI_CHEST.get(), new Item.Properties().tab(Items.decoTab)));
+
+    public static final RegistryObject<ItemScythe> WOODEN_SCYTHE = ITEMS.register("wooden_scythe", ()->new ItemScythe(Tiers.WOOD, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+    public static final RegistryObject<ItemScythe> STONE_SCYTHE = ITEMS.register("stone_scythe", ()->new ItemScythe(Tiers.STONE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+    public static final RegistryObject<ItemScythe> IRON_SCYTHE = ITEMS.register("iron_scythe", ()->new ItemScythe(Tiers.IRON, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+    public static final RegistryObject<ItemScythe> GOLDEN_SCYTHE = ITEMS.register("golden_scythe", ()->new ItemScythe(Tiers.GOLD, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+    public static final RegistryObject<ItemScythe> DIAMOND_SCYTHE = ITEMS.register("diamond_scythe", ()->new ItemScythe(Tiers.DIAMOND, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
+    public static final RegistryObject<ItemScythe> NETHERITE_SCYTHE = ITEMS.register("netherite_scythe", ()->new ItemScythe(Tiers.NETHERITE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
+
+    public static final RegistryObject<Enchantment> ENCHANTMENT_HEAVY = ENCHANTMENTS.register("enchantment_heavy", ()->new EnchantmentHeavy(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_MAIM = ENCHANTMENTS.register("enchantment_maim", ()->new EnchantmentMaim(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_QUICK = ENCHANTMENTS.register("enchantment_quick", ()->new EnchantmentQuick(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_QUAKE = ENCHANTMENTS.register("enchantment_quake", ()->new EnchantmentQuake(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_GRAPPLING = ENCHANTMENTS.register("enchantment_grappling", ()->new EnchantmentGrappling(Enchantment.Rarity.VERY_RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_UPPERCUT = ENCHANTMENTS.register("enchantment_uppercut", ()->new EnchantmentUppercut(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_POISON = ENCHANTMENTS.register("enchantment_poison", ()->new EnchantmentPoison(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_STEALTH = ENCHANTMENTS.register("enchantment_stealth", ()->new EnchantmentStealth(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_TURBO_GRAB = ENCHANTMENTS.register("enchantment_turbo_grab", ()->new EnchantmentTurboGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_GENTLE_GRAB = ENCHANTMENTS.register("enchantment_gentle_grab", ()->new EnchantmentGentleGrab(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_GUILLOTINE = ENCHANTMENTS.register("enchantment_guillotine", ()->new EnchantmentGuillotine(Enchantment.Rarity.VERY_RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_CAPACITY = ENCHANTMENTS.register("enchantment_capacity", ()->new EnchantmentCapacity(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_RANGE = ENCHANTMENTS.register("enchantment_range", ()->new EnchantmentRange(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_CHUG = ENCHANTMENTS.register("enchantment_chug", ()->new EnchantmentChug(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+    public static final RegistryObject<Enchantment> ENCHANTMENT_DEVOUR = ENCHANTMENTS.register("enchantment_devour", ()->new EnchantmentDevour(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
+
+    public static final TeaCreativeTab teaTab = new TeaCreativeTab();
+    public static final DecoCreativeTab decoTab = new DecoCreativeTab();
+
+
+    public static final RegistryObject<RecipeSerializer<RecipeTeaSugaring>> CRAFTING_SPECIAL_TEA_SUGARING = RECIPE_SERIALIZERS.register(
+            "crafting_special_tea_sugaring", () -> new SimpleRecipeSerializer<>(RecipeTeaSugaring::new));
+    public static final RegistryObject<RecipeSerializer<RecipeTeaPouring>> CRAFTING_SPECIAL_TEA_POURING = RECIPE_SERIALIZERS.register(
+            "crafting_special_tea_pouring", () -> new SimpleRecipeSerializer<>(RecipeTeaPouring::new));
+    public static final RegistryObject<RecipeSerializer<RecipeTeaFilling>> CRAFTING_SPECIAL_TEA_FILLING = RECIPE_SERIALIZERS.register(
+            "crafting_special_tea_filling", () -> new SimpleRecipeSerializer<>(RecipeTeaFilling::new));
+    public static final RegistryObject<RecipeSerializer<RecipeTeaRefilling>> CRAFTING_SPECIAL_TEA_REFILLING = RECIPE_SERIALIZERS.register(
+            "crafting_special_tea_refilling", () -> new SimpleRecipeSerializer<>(RecipeTeaRefilling::new));
+    public static final RegistryObject<RecipeSerializer<RecipeFlaskFilling>> CRAFTING_SPECIAL_FLASK_FILLING = RECIPE_SERIALIZERS.register(
+            "crafting_special_flask_filling", () -> new SimpleRecipeSerializer<>(RecipeFlaskFilling::new));
+    public static final RegistryObject<RecipeSerializer<RecipeEnderBowFilling>> CRAFTING_SPECIAL_ENDER_BOW_FILLING = RECIPE_SERIALIZERS.register(
+            "crafting_special_ender_bow_filling", () -> new SimpleRecipeSerializer<>(RecipeEnderBowFilling::new));
+    public static final RegistryObject<RecipeSerializer<RecipeFlaskMilkFilling>> CRAFTING_SPECIAL_FLASK_MILK_FILLING = RECIPE_SERIALIZERS.register(
+            "crafting_special_flask_milk_filling", () -> new SimpleRecipeSerializer<>(RecipeFlaskMilkFilling::new));
+    public static final RegistryObject<RecipeSerializer<RecipeWoodCarving>> CRAFTING_SPECIAL_WOOD_CARVING = RECIPE_SERIALIZERS.register(
+            "crafting_special_wood_carving", () -> new SimpleRecipeSerializer<>(RecipeWoodCarving::new));
+
+    public static final RegistryObject<RecipeSerializer<RecipeCarvingStation>> CARVING = RECIPE_SERIALIZERS.register(
+            "carving", () -> new RecipeCarvingStation.Serializer<>(RecipeCarvingStation::new));
+
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_SCYTHE = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_scythe", () -> new RecipeConditionShaped.Serializer(Config::isScytheEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_WARHAMMER = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_warhammer", () -> new RecipeConditionShaped.Serializer(Config::isWarhammerEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShapeless>> CRAFTING_CONDITION_SHAPELESS_GRAB_HOOK = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shapeless_grab_hook", () -> new RecipeConditionShapeless.Serializer(Config::isGrabHookEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_CUSHION = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_cushion", () -> new RecipeConditionShaped.Serializer(Config::isCushionEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_TEA = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_tea", () -> new RecipeConditionShaped.Serializer(Config::isTeaEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShapeless>> CRAFTING_CONDITION_SHAPELESS_TEA = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shapeless_tea", () -> new RecipeConditionShapeless.Serializer(Config::isTeaEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_FOOD = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_food", () -> new RecipeConditionShaped.Serializer(Config::isFoodEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShapeless>> CRAFTING_CONDITION_SHAPELESS_FOOD = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shapeless_food", () -> new RecipeConditionShapeless.Serializer(Config::isFoodEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_ENDER_FLASK = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_ender_flask", () -> new RecipeConditionShaped.Serializer(Config::isEnderFlaskEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_CONFETTI = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_confetti", () -> new RecipeConditionShaped.Serializer(Config::isConfettiEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShapeless>> CRAFTING_CONDITION_SHAPELESS_CONFETTI = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shapeless_confetti", () -> new RecipeConditionShapeless.Serializer(Config::isConfettiEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_COURTROOM = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_courtroom", () -> new RecipeConditionShaped.Serializer(Config::isCourtroomEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShapeless>> CRAFTING_CONDITION_SHAPELESS_COURTROOM = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shapeless_courtroom", () -> new RecipeConditionShapeless.Serializer(Config::isCourtroomEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_CARVED_WOOD = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_carved_wood", () -> new RecipeConditionShaped.Serializer(Config::isCarvedWoodEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_LEATHER_STRAW = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_leather_straw", () -> new RecipeConditionShaped.Serializer(Config::isLeatherStrawEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShapeless>> CRAFTING_CONDITION_SHAPELESS_LEATHER_STRAW = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shapeless_leather_straw", () -> new RecipeConditionShapeless.Serializer(Config::isLeatherStrawEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_BOOKCASE = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_bookcase", () -> new RecipeConditionShaped.Serializer(Config::isBookcaseEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShapeless>> CRAFTING_CONDITION_SHAPELESS_COINS = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shapeless_coins", () -> new RecipeConditionShapeless.Serializer(Config::isCoinsEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShapeless>> CRAFTING_CONDITION_SHAPELESS_ROPE = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shapeless_rope", () -> new RecipeConditionShapeless.Serializer(Config::isRopeEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_TERRACOTTA_TILE = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_terracotta_tile", () -> new RecipeConditionShaped.Serializer(Config::isTerracottaTileEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionShaped>> CRAFTING_CONDITION_SHAPED_OMNI_CHEST = RECIPE_SERIALIZERS.register(
+            "crafting_condition_shaped_omni_chest", () -> new RecipeConditionShaped.Serializer(Config::isOmniChestEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionSmelting>> CRAFTING_CONDITION_SMELTING_FOOD = RECIPE_SERIALIZERS.register(
+            "crafting_condition_smelting_food", () -> new RecipeConditionSmelting.Serializer(Config::isFoodEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionCampfire>> CRAFTING_CONDITION_CAMPFIRE_FOOD = RECIPE_SERIALIZERS.register(
+            "crafting_condition_campfire_food", () -> new RecipeConditionCampfire.Serializer(Config::isFoodEnabled));
+    public static final RegistryObject<RecipeSerializer<RecipeConditionSmoking>> CRAFTING_CONDITION_SMOKING_FOOD = RECIPE_SERIALIZERS.register(
+            "crafting_condition_smoking_food", () -> new RecipeConditionSmoking.Serializer(Config::isFoodEnabled));
+
+    public static final RegistryObject<RecipeType<RecipeCarvingStation>> CARVING_STATION_TYPE = RECIPE_TYPES.register("carving",
+            ()->RecipeType.simple(new ResourceLocation(XercaMod.MODID, "carving")));
+
+
+    static Item makeFoodItem(FoodProperties food){
+        return new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), Config::isFoodEnabled);
     }
 
-    static Item makeFoodItem(String name, FoodProperties food){
-        Item item = new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), Config::isFoodEnabled);
-        item.setRegistryName(name);
-        return item;
-    }
-
-    static Item makeContainedFoodItem(String name, FoodProperties food, Item container, int stackSize){
+    static Item makeContainedFoodItem(FoodProperties food, Item container, @SuppressWarnings("SameParameterValue") int stackSize){
         return new ItemConditionedContainedFood(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food).
-                craftRemainder(container), container, stackSize).setRegistryName(name);
+                craftRemainder(container), container, stackSize);
     }
 
-    static Item makeDrinkItem(String name, FoodProperties food, Item container){
-        return new ItemDrink(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), container).setRegistryName(name);
+    static Item makeDrinkItem(FoodProperties food, Item container){
+        return new ItemDrink(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), container);
     }
 
     static void registerCompostable(float chance, ItemLike itemIn) {
@@ -328,509 +575,11 @@ public final class Items {
     }
 
     public static void registerCompostables() {
-        registerCompostable(0.3f, ITEM_TEA_SEEDS);
-        registerCompostable(0.3f, ITEM_TOMATO_SEEDS);
-        registerCompostable(0.3f, ITEM_RICE_SEEDS);
-        registerCompostable(0.65f, ITEM_TOMATO);
-        registerCompostable(0.65f, ITEM_TEA_DRIED);
-        registerCompostable(0.65f, ITEM_TEA_LEAF);
+        registerCompostable(0.3f, ITEM_TEA_SEEDS.get());
+        registerCompostable(0.3f, ITEM_TOMATO_SEEDS.get());
+        registerCompostable(0.3f, ITEM_RICE_SEEDS.get());
+        registerCompostable(0.65f, ITEM_TOMATO.get());
+        registerCompostable(0.65f, ITEM_TEA_DRIED.get());
+        registerCompostable(0.65f, ITEM_TEA_LEAF.get());
     }
-
-    @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandler {
-        @SubscribeEvent
-        public static void registerRecipes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeTeaSugaring::new).setRegistryName(     XercaMod.MODID + ":crafting_special_tea_sugaring"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeTeaPouring::new).setRegistryName(      XercaMod.MODID + ":crafting_special_tea_pouring"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeTeaFilling::new).setRegistryName(      XercaMod.MODID + ":crafting_special_tea_filling"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeTeaRefilling::new).setRegistryName(    XercaMod.MODID + ":crafting_special_tea_refilling"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeFlaskFilling::new).setRegistryName(    XercaMod.MODID + ":crafting_special_flask_filling"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeEnderBowFilling::new).setRegistryName( XercaMod.MODID + ":crafting_special_ender_bow_filling"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeFlaskMilkFilling::new).setRegistryName(XercaMod.MODID + ":crafting_special_flask_milk_filling"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeWoodCarving::new).setRegistryName(     XercaMod.MODID + ":crafting_special_wood_carving"));
-
-            event.getRegistry().register(new RecipeCarvingStation.Serializer<>(RecipeCarvingStation::new).setRegistryName(XercaMod.MODID + ":carving"));
-
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isScytheEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_scythe"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isWarhammerEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_warhammer"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isGrabHookEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_grab_hook"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isCushionEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_cushion"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isTeaEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_tea"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isTeaEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_tea"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_food"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_food"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isEnderFlaskEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_ender_flask"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isConfettiEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_confetti"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isConfettiEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_confetti"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isCourtroomEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_courtroom"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isCourtroomEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_courtroom"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isCarvedWoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_carved_wood"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isLeatherStrawEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_leather_straw"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isLeatherStrawEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_leather_straw"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isBookcaseEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_bookcase"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isCoinsEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_coins"));
-            event.getRegistry().register(new RecipeConditionShapeless.Serializer(Config::isRopeEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shapeless_rope"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isTerracottaTileEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_terracotta_tile"));
-            event.getRegistry().register(new RecipeConditionShaped.Serializer(Config::isOmniChestEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_shaped_omni_chest"));
-
-            event.getRegistry().register(new RecipeConditionSmelting.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_smelting_food"));
-            event.getRegistry().register(new RecipeConditionCampfire.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_campfire_food"));
-            event.getRegistry().register(new RecipeConditionSmoking.Serializer(Config::isFoodEnabled).setRegistryName(XercaMod.MODID + ":crafting_condition_smoking_food"));
-        }
-
-        @SubscribeEvent
-        public static void registerItems(final RegistryEvent.Register<Item> event) {
-            teaTab = new TeaCreativeTab();
-            decoTab = new DecoCreativeTab();
-            Item glass = new ItemGlass();
-            Item teaCup = new ItemTea(new Item.Properties().tab(Items.teaTab)).setRegistryName("item_teacup");
-
-            event.getRegistry().registerAll(
-                    new ItemEnderBow().setRegistryName("ender_bow"),
-                    new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_1"),
-                    new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_MISC), Config::isCoinsEnabled).setRegistryName("item_golden_coin_5"),
-                    new ItemGrabHook(),
-                    new ItemWarhammer("item_netherite_warhammer", Tiers.NETHERITE),
-                    new ItemWarhammer("item_diamond_warhammer", Tiers.DIAMOND),
-                    new ItemWarhammer("item_gold_warhammer", Tiers.GOLD),
-                    new ItemWarhammer("item_iron_warhammer", Tiers.IRON),
-                    new ItemWarhammer("item_stone_warhammer", Tiers.STONE),
-                    new ItemConfettiBall(),
-                    new ItemConfetti(),
-                    new ItemBadge("item_prosecutor_badge"),
-                    new ItemBadge("item_attorney_badge"),
-                    new ItemGavel(),
-
-                    teaCup,
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 0, true),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 1, true),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 2, true),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 3, true),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 4, true),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 5, true),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 6, true),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 7, true),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 0, false),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 1, false),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 2, false),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 3, false),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 4, false),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 5, false),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 6, false),
-                    new ItemTeapot(Blocks.BLOCK_TEAPOT, 7, false),
-                    new ItemTeacup(0, teaCup),
-                    new ItemTeacup(1, teaCup),
-                    new ItemTeacup(2, teaCup),
-                    new ItemTeacup(3, teaCup),
-                    new ItemTeacup(4, teaCup),
-                    new ItemTeacup(5, teaCup),
-                    new ItemTeacup(6, teaCup),
-                    new ItemEmptyTeapot(new Item.Properties().tab(Items.teaTab)).setRegistryName("item_teapot"),
-                    new BlockNamedConditionedItem(Blocks.BLOCK_TEA_PLANT, new Item.Properties().tab(Items.teaTab), Config::isTeaEnabled).setRegistryName("item_tea_seeds"),
-                    new ItemTea(new Item.Properties().tab(Items.teaTab)).setRegistryName("item_tea_dried"),
-                    new ItemTea(new Item.Properties().tab(Items.teaTab)).setRegistryName("item_tea_leaf"),
-
-                    new ItemKnife(),
-                    glass,
-                    new ItemTomato(),
-                    new BlockNamedConditionedItem(Blocks.BLOCK_TOMATO_PLANT, new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS), Config::isFoodEnabled).setRegistryName("item_tomato_seeds"),
-                    new BlockNamedConditionedItem(Blocks.BLOCK_RICE_PLANT, new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS), Config::isFoodEnabled).setRegistryName("item_rice_seeds"),
-                    new ItemGoldenCupcake(),
-                    makeFoodItem("item_apple_cupcake", Foods.APPLE_CUPCAKE),
-                    makeFoodItem("item_pumpkin_cupcake", Foods.PUMPKIN_CUPCAKE),
-                    makeFoodItem("item_cocoa_cupcake", Foods.COCOA_CUPCAKE),
-                    makeFoodItem("item_melon_cupcake", Foods.MELON_CUPCAKE),
-                    makeFoodItem("item_carrot_cupcake", Foods.CARROT_CUPCAKE),
-                    makeFoodItem("item_fancy_apple_cupcake", Foods.FANCY_APPLE_CUPCAKE),
-                    makeFoodItem("item_fancy_pumpkin_cupcake", Foods.FANCY_PUMPKIN_CUPCAKE),
-                    makeFoodItem("glowberry_cupcake", Foods.GLOWBERRY_CUPCAKE),
-                    makeFoodItem("item_donut", Foods.DONUT),
-                    makeFoodItem("item_fancy_donut", Foods.FANCY_DONUT),
-                    makeFoodItem("item_sprinkles", Foods.SPRINKLES),
-                    makeFoodItem("item_chocolate", Foods.CHOCOLATE),
-                    makeFoodItem("item_bun", Foods.BUN),
-                    makeFoodItem("item_raw_patty", Foods.RAW_PATTY),
-                    makeFoodItem("item_cooked_patty", Foods.COOKED_PATTY),
-                    makeFoodItem("item_raw_chicken_patty", Foods.RAW_CHICKEN_PATTY),
-                    makeFoodItem("item_cooked_chicken_patty", Foods.COOKED_CHICKEN_PATTY),
-                    makeFoodItem("item_hamburger", Foods.HAMBURGER),
-                    makeFoodItem("item_chicken_burger", Foods.CHICKEN_BURGER),
-                    makeFoodItem("item_mushroom_burger", Foods.MUSHROOM_BURGER),
-                    makeFoodItem("item_ultimate_bottom", Foods.ULTIMATE_BOTTOM),
-                    makeFoodItem("item_ultimate_top", Foods.ULTIMATE_TOP),
-                    makeFoodItem("cheeseburger", Foods.CHEESEBURGER),
-                    new ItemUltimateBurger(),
-                    new ItemEnderCupcake(),
-                    makeFoodItem( "item_rotten_burger", Foods.ROTTEN_BURGER),
-                    makeFoodItem("item_raw_sausage", Foods.RAW_SAUSAGE),
-                    makeFoodItem("item_cooked_sausage", Foods.COOKED_SAUSAGE),
-                    makeFoodItem( "item_hotdog", Foods.HOTDOG),
-                    makeFoodItem("item_fish_bread", Foods.FISH_BREAD),
-                    makeFoodItem( "item_daisy_sandwich", Foods.DAISY_SANDWICH),
-                    makeFoodItem("item_chicken_wrap", Foods.CHICKEN_WRAP),
-                    makeFoodItem("item_raw_schnitzel", Foods.RAW_SCHNITZEL),
-                    makeFoodItem("item_cooked_schnitzel", Foods.COOKED_SCHNITZEL),
-                    makeFoodItem("item_fried_egg", Foods.FRIED_EGG),
-                    makeFoodItem( "item_croissant", Foods.CROISSANT),
-                    makeFoodItem( "item_potato_slices", Foods.POTATO_SLICES),
-                    makeFoodItem( "item_potato_fries", Foods.POTATO_FRIES),
-                    makeFoodItem( "item_shish_kebab", Foods.SHISH_KEBAB),
-                    makeFoodItem("item_tomato_slices", Foods.TOMATO_SLICES),
-                    makeDrinkItem("item_ice_tea", Foods.ICE_TEA, glass),
-                    makeDrinkItem("item_apple_juice", Foods.APPLE_JUICE, glass),
-                    makeDrinkItem("item_carrot_juice", Foods.CARROT_JUICE, glass),
-                    makeDrinkItem("item_melon_juice", Foods.MELON_JUICE, glass),
-                    makeDrinkItem("item_pumpkin_juice", Foods.PUMPKIN_JUICE, glass),
-                    makeDrinkItem("item_tomato_juice", Foods.TOMATO_JUICE, glass),
-                    makeDrinkItem("item_wheat_juice", Foods.WHEAT_JUICE, glass),
-                    makeDrinkItem("item_glass_of_milk", Foods.GLASS_OF_MILK, glass),
-                    new ItemGlassOfWater(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.GLASS_OF_WATER), glass).setRegistryName("item_glass_of_water"),
-                    makeDrinkItem("sweet_berry_juice", Foods.SWEET_BERRY_JUICE, glass),
-                    makeDrinkItem("item_ayran", Foods.AYRAN, glass),
-                    makeDrinkItem("sake", Foods.SAKE, glass),
-                    makeDrinkItem("carbonated_water", Foods.CARBONATED_WATER, glass),
-                    makeDrinkItem("soda", Foods.SODA, glass),
-                    makeDrinkItem("cola", Foods.COLA, glass),
-                    makeContainedFoodItem("oyakodon", Foods.OYAKODON, net.minecraft.world.item.Items.BOWL, 16),
-                    makeContainedFoodItem("beef_donburi", Foods.BEEF_DONBURI, net.minecraft.world.item.Items.BOWL, 16),
-                    makeFoodItem("egg_sushi", Foods.EGG_SUSHI),
-                    makeFoodItem("nigiri_sushi", Foods.NIGIRI_SUSHI),
-                    makeFoodItem("omurice", Foods.OMURICE),
-                    makeFoodItem("riceball", Foods.RICEBALL),
-                    makeFoodItem("sushi", Foods.SUSHI),
-                    makeFoodItem("cooked_rice", Foods.COOKED_RICE),
-                    makeFoodItem("sashimi", Foods.SASHIMI),
-                    makeContainedFoodItem("rice_pudding", Foods.RICE_PUDDING, net.minecraft.world.item.Items.BOWL, 16),
-                    makeContainedFoodItem("baked_rice_pudding", Foods.BAKED_RICE_PUDDING, net.minecraft.world.item.Items.BOWL, 16),
-                    makeFoodItem("sweet_berry_cupcake_fancy", Foods.SWEET_BERRY_CUPCAKE_FANCY),
-                    makeFoodItem("sweet_berry_cupcake", Foods.SWEET_BERRY_CUPCAKE),
-                    makeFoodItem("doner_slice", Foods.DONER_SLICE),
-                    makeContainedFoodItem("item_yoghurt", Foods.YOGHURT, net.minecraft.world.item.Items.BUCKET, 16),
-                    makeContainedFoodItem("item_honeyberry_yoghurt", Foods.HONEYBERRY_YOGHURT, net.minecraft.world.item.Items.BOWL, 16),
-                    makeFoodItem("item_honey_cupcake", Foods.HONEY_CUPCAKE),
-                    makeFoodItem("item_doner_wrap", Foods.DONER_WRAP),
-                    makeFoodItem("item_chubby_doner", Foods.CHUBBY_DONER),
-                    makeContainedFoodItem("item_alexander", Foods.ALEXANDER, net.minecraft.world.item.Items.BOWL, 16),
-                    makeFoodItem("raw_shish_kebab", Foods.RAW_SHISH_KEBAB),
-                    makeFoodItem("cheese_slice", Foods.CHEESE_SLICE),
-                    makeFoodItem("cheese_toast", Foods.CHEESE_TOAST),
-                    makeContainedFoodItem("squid_ink_paella", Foods.SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16),
-                    makeContainedFoodItem("glow_squid_ink_paella", Foods.GLOW_SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16),
-
-                    // PIZZA RAW REGISTER BEGIN
-                    new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, Foods.RAW_PIZZA_3),
-                    new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_2),
-                    new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
-                    new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
-                    new ItemRawPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
-                    new ItemRawPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
-                    new ItemRawPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_1),
-                    new ItemRawPizza(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, Foods.RAW_PIZZA_0),
-
-                    // PIZZA RAW REGISTER END
-
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLACK_CUSHION).setRegistryName("black_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLUE_CUSHION).setRegistryName("blue_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BROWN_CUSHION).setRegistryName("brown_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.CYAN_CUSHION).setRegistryName("cyan_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.GRAY_CUSHION).setRegistryName("gray_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.GREEN_CUSHION).setRegistryName("green_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIGHT_BLUE_CUSHION).setRegistryName("light_blue_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIGHT_GRAY_CUSHION).setRegistryName("light_gray_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIME_CUSHION).setRegistryName("lime_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.MAGENTA_CUSHION).setRegistryName("magenta_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.ORANGE_CUSHION).setRegistryName("orange_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.PINK_CUSHION).setRegistryName("pink_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.PURPLE_CUSHION).setRegistryName("purple_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.RED_CUSHION).setRegistryName("red_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.WHITE_CUSHION).setRegistryName("white_cushion"),
-                    new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.YELLOW_CUSHION).setRegistryName("yellow_cushion"),
-
-                    // PIZZA REGISTER BEGIN
-                    new ItemPizza(Blocks.PIZZA_PEPPERONI_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_MUSHROOM_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_MEAT_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_MEAT_MEAT_PEPPERONI, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_MEAT_MEAT_MUSHROOM, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_MEAT_MEAT_MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
-                    new ItemPizza(Blocks.PIZZA_FISH_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_FISH_MEAT_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_FISH_MEAT_MUSHROOM, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_FISH_MEAT_MEAT, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
-                    new ItemPizza(Blocks.PIZZA_FISH_FISH_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_FISH_FISH_MUSHROOM, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_FISH_FISH_MEAT, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT),
-                    new ItemPizza(Blocks.PIZZA_FISH_FISH_FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT_MEAT, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_MEAT, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH_FISH, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_MEAT, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_FISH, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN),
-                    new ItemPizza(Blocks.PIZZA_PEPPERONI_PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_MUSHROOM_PEPPERONI, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_MUSHROOM_MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_MEAT_PEPPERONI, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_MEAT_MUSHROOM, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_MEAT_MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_FISH_PEPPERONI, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_FISH_MUSHROOM, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_FISH_MEAT, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_FISH_FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_PEPPERONI, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_MUSHROOM, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_MEAT, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_FISH, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new ItemPizza(Blocks.PIZZA, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-
-                    // PIZZA REGISTER END
-
-                    new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("item_apple_pie"),
-                    new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("sweet_berry_pie"),
-                    new BlockConditionedItem(Blocks.BLOCK_LEATHER, new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_leather"),
-                    new BlockConditionedItem(Blocks.BLOCK_STRAW, new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled).setRegistryName("item_block_straw"),
-                    new BlockConditionedItem(Blocks.BLOCK_BOOKCASE, new Item.Properties().tab(Items.decoTab), Config::isBookcaseEnabled){
-                        @Override public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {return 300;}
-                    }.setRegistryName("item_bookcase"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_oak_1"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_oak_2"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_oak_3"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_oak_4"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_oak_5"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_oak_6"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_oak_7"),
-                    new CarvedWoodItem(Blocks.CARVED_OAK_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_oak_8"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_birch_1"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_birch_2"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_birch_3"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_birch_4"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_birch_5"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_birch_6"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_birch_7"),
-                    new CarvedWoodItem(Blocks.CARVED_BIRCH_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_birch_8"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_dark_oak_1"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_dark_oak_2"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_dark_oak_3"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_dark_oak_4"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_dark_oak_5"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_dark_oak_6"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_dark_oak_7"),
-                    new CarvedWoodItem(Blocks.CARVED_DARK_OAK_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_dark_oak_8"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_acacia_1"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_acacia_2"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_acacia_3"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_acacia_4"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_acacia_5"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_acacia_6"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_acacia_7"),
-                    new CarvedWoodItem(Blocks.CARVED_ACACIA_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_acacia_8"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_jungle_1"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_jungle_2"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_jungle_3"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_jungle_4"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_jungle_5"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_jungle_6"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_jungle_7"),
-                    new CarvedWoodItem(Blocks.CARVED_JUNGLE_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_jungle_8"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_spruce_1"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_spruce_2"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_spruce_3"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_spruce_4"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_spruce_5"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_spruce_6"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_spruce_7"),
-                    new CarvedWoodItem(Blocks.CARVED_SPRUCE_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_spruce_8"),
-                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_crimson_1"),
-                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_crimson_2"),
-                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_crimson_3"),
-                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_crimson_4"),
-                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_crimson_5"),
-                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_crimson_6"),
-                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_crimson_7"),
-                    new CarvedWoodItem(Blocks.CARVED_CRIMSON_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_crimson_8"),
-                    new CarvedWoodItem(Blocks.CARVED_WARPED_1, new Item.Properties().tab(Items.decoTab), 1).setRegistryName("carved_warped_1"),
-                    new CarvedWoodItem(Blocks.CARVED_WARPED_2, new Item.Properties().tab(Items.decoTab), 2).setRegistryName("carved_warped_2"),
-                    new CarvedWoodItem(Blocks.CARVED_WARPED_3, new Item.Properties().tab(Items.decoTab), 3).setRegistryName("carved_warped_3"),
-                    new CarvedWoodItem(Blocks.CARVED_WARPED_4, new Item.Properties().tab(Items.decoTab), 4).setRegistryName("carved_warped_4"),
-                    new CarvedWoodItem(Blocks.CARVED_WARPED_5, new Item.Properties().tab(Items.decoTab), 5).setRegistryName("carved_warped_5"),
-                    new CarvedWoodItem(Blocks.CARVED_WARPED_6, new Item.Properties().tab(Items.decoTab), 6).setRegistryName("carved_warped_6"),
-                    new CarvedWoodItem(Blocks.CARVED_WARPED_7, new Item.Properties().tab(Items.decoTab), 7).setRegistryName("carved_warped_7"),
-                    new CarvedWoodItem(Blocks.CARVED_WARPED_8, new Item.Properties().tab(Items.decoTab), 8).setRegistryName("carved_warped_8"),
-
-                    new BlockConditionedItem(Blocks.BLACK_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("black_terratile"),
-                    new BlockConditionedItem(Blocks.BLUE_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("blue_terratile"),
-                    new BlockConditionedItem(Blocks.BROWN_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("brown_terratile"),
-                    new BlockConditionedItem(Blocks.CYAN_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("cyan_terratile"),
-                    new BlockConditionedItem(Blocks.GRAY_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("gray_terratile"),
-                    new BlockConditionedItem(Blocks.GREEN_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("green_terratile"),
-                    new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_blue_terratile"),
-                    new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_gray_terratile"),
-                    new BlockConditionedItem(Blocks.LIME_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("lime_terratile"),
-                    new BlockConditionedItem(Blocks.MAGENTA_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("magenta_terratile"),
-                    new BlockConditionedItem(Blocks.ORANGE_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("orange_terratile"),
-                    new BlockConditionedItem(Blocks.PINK_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("pink_terratile"),
-                    new BlockConditionedItem(Blocks.PURPLE_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("purple_terratile"),
-                    new BlockConditionedItem(Blocks.RED_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("red_terratile"),
-                    new BlockConditionedItem(Blocks.WHITE_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("white_terratile"),
-                    new BlockConditionedItem(Blocks.YELLOW_TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("yellow_terratile"),
-                    new BlockConditionedItem(Blocks.TERRATILE, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile"),
-
-                    new BlockConditionedItem(Blocks.BLACK_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("black_terratile_slab"),
-                    new BlockConditionedItem(Blocks.BLUE_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("blue_terratile_slab"),
-                    new BlockConditionedItem(Blocks.BROWN_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("brown_terratile_slab"),
-                    new BlockConditionedItem(Blocks.CYAN_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("cyan_terratile_slab"),
-                    new BlockConditionedItem(Blocks.GRAY_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("gray_terratile_slab"),
-                    new BlockConditionedItem(Blocks.GREEN_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("green_terratile_slab"),
-                    new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_blue_terratile_slab"),
-                    new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_gray_terratile_slab"),
-                    new BlockConditionedItem(Blocks.LIME_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("lime_terratile_slab"),
-                    new BlockConditionedItem(Blocks.MAGENTA_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("magenta_terratile_slab"),
-                    new BlockConditionedItem(Blocks.ORANGE_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("orange_terratile_slab"),
-                    new BlockConditionedItem(Blocks.PINK_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("pink_terratile_slab"),
-                    new BlockConditionedItem(Blocks.PURPLE_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("purple_terratile_slab"),
-                    new BlockConditionedItem(Blocks.RED_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("red_terratile_slab"),
-                    new BlockConditionedItem(Blocks.WHITE_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("white_terratile_slab"),
-                    new BlockConditionedItem(Blocks.YELLOW_TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("yellow_terratile_slab"),
-                    new BlockConditionedItem(Blocks.TERRATILE_SLAB, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile_slab"),
-
-                    new BlockConditionedItem(Blocks.BLACK_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("black_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.BLUE_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("blue_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.BROWN_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("brown_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.CYAN_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("cyan_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.GRAY_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("gray_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.GREEN_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("green_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_blue_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("light_gray_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.LIME_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("lime_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.MAGENTA_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("magenta_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.ORANGE_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("orange_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.PINK_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("pink_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.PURPLE_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("purple_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.RED_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("red_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.WHITE_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("white_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.YELLOW_TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("yellow_terratile_stairs"),
-                    new BlockConditionedItem(Blocks.TERRATILE_STAIRS, new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled).setRegistryName("terratile_stairs"),
-
-                    new BlockConditionedItem(Blocks.CARVING_STATION, new Item.Properties().tab(Items.decoTab), Config::isCarvedWoodEnabled){
-                        @Override public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {return 300;}
-                    }.setRegistryName("carving_station"),
-
-                    new BlockItemOmniChest(Blocks.OMNI_CHEST, new Item.Properties().tab(Items.decoTab)).setRegistryName("omni_chest"),
-
-                    new ItemFlask(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).stacksTo(1).durability(160), "flask", false),
-                    new ItemFlask(new Item.Properties().stacksTo(1).durability(160), "flask_milk", true),
-
-                    new BlockConditionedItem(Blocks.ROPE, new Item.Properties().tab(Items.decoTab), Config::isRopeEnabled){
-                        public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-                            TranslatableComponent text = new TranslatableComponent("xercamod.rope_tooltip");
-                            tooltip.add(text.withStyle(ChatFormatting.BLUE));
-                        }
-                    }.setRegistryName("rope"),
-
-                    new BlockConditionedItem(Blocks.VAT, new Item.Properties().tab(Items.decoTab), Config::isFoodEnabled).setRegistryName("vat"),
-                    new BlockConditionedItem(Blocks.CHEESE_WHEEL, new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled).setRegistryName("cheese_wheel"),
-
-                    new ItemScythe(Tiers.WOOD, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("wooden_scythe"),
-                    new ItemScythe(Tiers.STONE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("stone_scythe"),
-                    new ItemScythe(Tiers.IRON, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("iron_scythe"),
-                    new ItemScythe(Tiers.GOLD, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("golden_scythe"),
-                    new ItemScythe(Tiers.DIAMOND, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)).setRegistryName("diamond_scythe"),
-                    new ItemScythe(Tiers.NETHERITE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()).setRegistryName("netherite_scythe"),
-
-                    new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE)).setRegistryName("cola_extract"),
-                    new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING)).setRegistryName("cola_powder")
-            );
-        }
-
-        @SubscribeEvent
-        public static void registerEnchantments(final RegistryEvent.Register<Enchantment> event){
-            event.getRegistry().registerAll(
-                    new EnchantmentHeavy(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND),
-                    new EnchantmentMaim(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentQuick(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND),
-                    new EnchantmentQuake(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentGrappling(Enchantment.Rarity.VERY_RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentUppercut(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentPoison(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND),
-                    new EnchantmentStealth(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentTurboGrab(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND),
-                    new EnchantmentGentleGrab(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentGuillotine(Enchantment.Rarity.VERY_RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentCapacity(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND),
-                    new EnchantmentRange(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentChug(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND),
-                    new EnchantmentDevour(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND)
-            );
-        }
-    }
-
 }

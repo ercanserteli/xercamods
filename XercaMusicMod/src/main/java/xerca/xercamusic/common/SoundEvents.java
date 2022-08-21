@@ -2,62 +2,65 @@ package xerca.xercamusic.common;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
-import xerca.xercamusic.common.item.ItemInstrument.Pair;
+import net.minecraftforge.registries.RegisterEvent;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static xerca.xercamusic.common.XercaMusic.Null;
 
-@ObjectHolder(XercaMusic.MODID)
 public class SoundEvents {
+    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID+":tick")
     public static final SoundEvent TICK = Null();
+    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID+":metronome_set")
     public static final SoundEvent METRONOME_SET = Null();
+    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID+":open_scroll")
     public static final SoundEvent OPEN_SCROLL = Null();
+    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID+":close_scroll")
     public static final SoundEvent CLOSE_SCROLL = Null();
 
     // Instrument SoPair<Integer, SoundEvent>on
-    public static ArrayList<Pair<Integer, SoundEvent>> cymbals;
-    public static ArrayList<Pair<Integer, SoundEvent>> drum_kits;
-    public static ArrayList<Pair<Integer, SoundEvent>> guitars;
-    public static ArrayList<Pair<Integer, SoundEvent>> lyres;
-    public static ArrayList<Pair<Integer, SoundEvent>> drums;
-    public static ArrayList<Pair<Integer, SoundEvent>> flutes;
-    public static ArrayList<Pair<Integer, SoundEvent>> banjos;
-    public static ArrayList<Pair<Integer, SoundEvent>> saxophones;
-    public static ArrayList<Pair<Integer, SoundEvent>> gods;
-    public static ArrayList<Pair<Integer, SoundEvent>> harp_mcs;
-    public static ArrayList<Pair<Integer, SoundEvent>> sansulas;
-    public static ArrayList<Pair<Integer, SoundEvent>> tubular_bells;
-    public static ArrayList<Pair<Integer, SoundEvent>> violins;
-    public static ArrayList<Pair<Integer, SoundEvent>> xylophones;
-    public static ArrayList<Pair<Integer, SoundEvent>> cellos;
-    public static ArrayList<Pair<Integer, SoundEvent>> pianos;
-    public static ArrayList<Pair<Integer, SoundEvent>> oboes;
-    public static ArrayList<Pair<Integer, SoundEvent>> redstone_guitars;
-    public static ArrayList<Pair<Integer, SoundEvent>> french_horns;
-    public static ArrayList<Pair<Integer, SoundEvent>> bass_guitars;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> cymbals;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> drum_kits;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> guitars;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> lyres;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> drums;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> flutes;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> banjos;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> saxophones;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> gods;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> harp_mcs;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> sansulas;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> tubular_bells;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> violins;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> xylophones;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> cellos;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> pianos;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> oboes;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> redstone_guitars;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> french_horns;
+    public static ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> bass_guitars;
 
-    private static SoundEvent createSoundEvent(String soundName, final RegistryEvent.Register<SoundEvent> event) {
+    private static SoundEvent createSoundEvent(String soundName, final RegisterEvent event) {
         final ResourceLocation soundID = new ResourceLocation(XercaMusic.MODID, soundName);
-        final SoundEvent soundEvent = new SoundEvent(soundID).setRegistryName(soundID);
-        event.getRegistry().register(soundEvent);
+        final SoundEvent soundEvent = new SoundEvent(soundID);
+        event.register(ForgeRegistries.Keys.SOUND_EVENTS, soundID, ()->soundEvent);
         return soundEvent;
     }
 
-    private static void addSound(ArrayList<Pair<Integer, SoundEvent>> array, String insName, int note, final RegistryEvent.Register<SoundEvent> event){
-        array.add(Pair.of(note, createSoundEvent(insName + note, event)));
+    private static void addSound(ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> array, String insName, int note, final RegisterEvent event){
+        array.add(IItemInstrument.Pair.of(note, createSoundEvent(insName + note, event)));
     }
 
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
-        public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
+        public static void registerSoundEvents(final RegisterEvent event) {
             createSoundEvent("tick", event);
             createSoundEvent("metronome_set", event);
             createSoundEvent("open_scroll", event);
@@ -340,29 +343,31 @@ public class SoundEvents {
             addSound(bass_guitars, "bass_guitar", 63, event);
             addSound(bass_guitars, "bass_guitar", 69, event);
             addSound(bass_guitars, "bass_guitar", 75, event);
-
-            // Instrument SoundEvent setting
-            Objects.requireNonNull(Items.CYMBAL).setSounds(cymbals);
-            Objects.requireNonNull(Items.DRUM_KIT).setSounds(drum_kits);
-            Objects.requireNonNull(Items.GUITAR).setSounds(guitars);
-            Objects.requireNonNull(Items.LYRE).setSounds(lyres);
-            Objects.requireNonNull(Items.DRUM).setSounds(drums);
-            Objects.requireNonNull(Items.FLUTE).setSounds(flutes);
-            Objects.requireNonNull(Items.BANJO).setSounds(banjos);
-            Objects.requireNonNull(Items.SAXOPHONE).setSounds(saxophones);
-            Objects.requireNonNull(Items.GOD).setSounds(gods);
-            Objects.requireNonNull(Items.SANSULA).setSounds(sansulas);
-            Objects.requireNonNull(Items.TUBULAR_BELL).setSounds(tubular_bells);
-            Objects.requireNonNull(Items.VIOLIN).setSounds(violins);
-            Objects.requireNonNull(Items.XYLOPHONE).setSounds(xylophones);
-            Objects.requireNonNull(Items.CELLO).setSounds(cellos);
-            Objects.requireNonNull(Items.PIANO).setSounds(pianos);
-            Objects.requireNonNull(Items.OBOE).setSounds(oboes);
-            Objects.requireNonNull(Items.REDSTONE_GUITAR).setSounds(redstone_guitars);
-            Objects.requireNonNull(Items.FRENCH_HORN).setSounds(french_horns);
-            Objects.requireNonNull(Items.BASS_GUITAR).setSounds(bass_guitars);
-
-            Objects.requireNonNull(Items.HARP_MC).setSounds(harp_mcs);
         }
+    }
+
+    public static void setup() {
+        // Instrument SoundEvent setting
+        ((IItemInstrument)Items.CYMBAL.get()).setSounds(cymbals);
+        ((IItemInstrument)Items.DRUM_KIT.get()).setSounds(drum_kits);
+        ((IItemInstrument)Items.GUITAR.get()).setSounds(guitars);
+        ((IItemInstrument)Items.LYRE.get()).setSounds(lyres);
+        ((IItemInstrument)Items.DRUM.get()).setSounds(drums);
+        ((IItemInstrument)Items.FLUTE.get()).setSounds(flutes);
+        ((IItemInstrument)Items.BANJO.get()).setSounds(banjos);
+        ((IItemInstrument)Items.SAXOPHONE.get()).setSounds(saxophones);
+        ((IItemInstrument)Items.GOD.get()).setSounds(gods);
+        ((IItemInstrument)Items.SANSULA.get()).setSounds(sansulas);
+        ((IItemInstrument)Items.TUBULAR_BELL.get()).setSounds(tubular_bells);
+        ((IItemInstrument)Items.VIOLIN.get()).setSounds(violins);
+        ((IItemInstrument)Items.XYLOPHONE.get()).setSounds(xylophones);
+        ((IItemInstrument)Items.CELLO.get()).setSounds(cellos);
+        ((IItemInstrument)Items.PIANO.get()).setSounds(pianos);
+        ((IItemInstrument)Items.OBOE.get()).setSounds(oboes);
+        ((IItemInstrument)Items.REDSTONE_GUITAR.get()).setSounds(redstone_guitars);
+        ((IItemInstrument)Items.FRENCH_HORN.get()).setSounds(french_horns);
+        ((IItemInstrument)Items.BASS_GUITAR.get()).setSounds(bass_guitars);
+
+        Items.HARP_MC.get().setSounds(harp_mcs);
     }
 }

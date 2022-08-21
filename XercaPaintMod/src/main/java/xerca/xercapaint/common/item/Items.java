@@ -1,61 +1,45 @@
 package xerca.xercapaint.common.item;
 
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.CanvasType;
-import xerca.xercapaint.common.PaintCreativeTab;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.crafting.RecipeCanvasCloning;
 import xerca.xercapaint.common.item.crafting.RecipeCraftPalette;
 import xerca.xercapaint.common.item.crafting.RecipeFillPalette;
 import xerca.xercapaint.common.item.crafting.RecipeTaglessShaped;
 
-import static xerca.xercapaint.common.XercaPaint.Null;
-
-@ObjectHolder(XercaPaint.MODID)
 public final class Items {
-    public static final ItemPalette ITEM_PALETTE = Null();
-    public static final ItemCanvas ITEM_CANVAS = Null();
-    public static final ItemCanvas ITEM_CANVAS_LARGE = Null();
-    public static final ItemCanvas ITEM_CANVAS_LONG = Null();
-    public static final ItemCanvas ITEM_CANVAS_TALL = Null();
-    public static final ItemEasel ITEM_EASEL = Null();
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, XercaPaint.MODID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, XercaPaint.MODID);
+    public static final RegistryObject<ItemPalette> ITEM_PALETTE = ITEMS.register("item_palette", ItemPalette::new);
+    public static final RegistryObject<ItemCanvas> ITEM_CANVAS = ITEMS.register("item_canvas", () -> new ItemCanvas(CanvasType.SMALL));
+    public static final RegistryObject<ItemCanvas> ITEM_CANVAS_LARGE = ITEMS.register("item_canvas_large", () -> new ItemCanvas(CanvasType.LARGE));
+    public static final RegistryObject<ItemCanvas> ITEM_CANVAS_LONG = ITEMS.register("item_canvas_long", () -> new ItemCanvas(CanvasType.LONG));
+    public static final RegistryObject<ItemCanvas> ITEM_CANVAS_TALL = ITEMS.register("item_canvas_tall", () -> new ItemCanvas(CanvasType.TALL));
+    public static final RegistryObject<ItemEasel> ITEM_EASEL = ITEMS.register("item_easel", () -> new ItemEasel(new Item.Properties().tab(Items.paintTab).stacksTo(1)));
 
-    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = Null();
-    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_FILLING = Null();
-    public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = Null();
-    public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = Null();
+    public static final RegistryObject<RecipeSerializer<RecipeCraftPalette>> CRAFTING_SPECIAL_PALETTE_CRAFTING = RECIPE_SERIALIZERS.register(
+            "crafting_special_palette_crafting", () -> new SimpleRecipeSerializer<>(RecipeCraftPalette::new));
+    public static final RegistryObject<RecipeSerializer<RecipeFillPalette>> CRAFTING_SPECIAL_PALETTE_FILLING = RECIPE_SERIALIZERS.register(
+            "crafting_special_palette_filling", () -> new SimpleRecipeSerializer<>(RecipeFillPalette::new));
+    public static final RegistryObject<RecipeSerializer<RecipeCanvasCloning>> CRAFTING_SPECIAL_CANVAS_CLONING = RECIPE_SERIALIZERS.register(
+            "crafting_special_canvas_cloning", () -> new SimpleRecipeSerializer<>(RecipeCanvasCloning::new));
+    public static final RegistryObject<RecipeSerializer<RecipeTaglessShaped>> CRAFTING_TAGLESS_SHAPED = RECIPE_SERIALIZERS.register(
+            "crafting_tagless_shaped", RecipeTaglessShaped.TaglessSerializer::new);
 
-    public static PaintCreativeTab paintTab;
-
-    @Mod.EventBusSubscriber(modid = XercaPaint.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandler {
-        @SubscribeEvent
-        public static void registerRecipes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeCraftPalette::new).setRegistryName(XercaPaint.MODID + ":crafting_special_palette_crafting"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeFillPalette::new).setRegistryName(XercaPaint.MODID + ":crafting_special_palette_filling"));
-            event.getRegistry().register(new SimpleRecipeSerializer<>(RecipeCanvasCloning::new).setRegistryName(XercaPaint.MODID + ":crafting_special_canvas_cloning"));
-            event.getRegistry().register(new RecipeTaglessShaped.TaglessSerializer().setRegistryName(XercaPaint.MODID + ":crafting_tagless_shaped"));
+    public static final CreativeModeTab paintTab = new CreativeModeTab("paint_tab") {
+        @Override
+        public @NotNull ItemStack makeIcon() {
+            return new ItemStack(Items.ITEM_PALETTE.get());
         }
-
-        @SubscribeEvent
-        public static void registerItems(final RegistryEvent.Register<Item> event) {
-            paintTab = new PaintCreativeTab();
-
-            event.getRegistry().registerAll(
-                    new ItemPalette("item_palette"),
-                    new ItemCanvas("item_canvas", CanvasType.SMALL),
-                    new ItemCanvas("item_canvas_large", CanvasType.LARGE),
-                    new ItemCanvas("item_canvas_long", CanvasType.LONG),
-                    new ItemCanvas("item_canvas_tall", CanvasType.TALL),
-                    new ItemEasel(new Item.Properties().tab(Items.paintTab).stacksTo(1)).setRegistryName("item_easel")
-            );
-        }
-    }
+    };
 
 }

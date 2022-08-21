@@ -7,9 +7,12 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemTeacup;
 import xerca.xercamod.common.item.Items;
+
+import java.util.Objects;
 
 public class RecipeTeaSugaring extends CustomRecipe {
     public RecipeTeaSugaring(ResourceLocation p_i48170_1_) {
@@ -19,7 +22,7 @@ public class RecipeTeaSugaring extends CustomRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(!Config.isTeaEnabled()){
             return false;
         }
@@ -54,7 +57,7 @@ public class RecipeTeaSugaring extends CustomRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
         if(!Config.isTeaEnabled()){
             return ItemStack.EMPTY;
         }
@@ -84,7 +87,7 @@ public class RecipeTeaSugaring extends CustomRecipe {
         }
 
         if (!teacupStack.isEmpty() && teacup != null && i >= 1 && (teacup.getSugarAmount() + i) <= 6) {
-            String str = teacup.getRegistryName().toString();
+            String str = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(teacup)).toString();
             str = str.substring(0, str.length() - 1) + (teacup.getSugarAmount() + i);
             return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str)));
         } else {
@@ -92,8 +95,8 @@ public class RecipeTeaSugaring extends CustomRecipe {
         }
     }
 
-    public RecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_TEA_SUGARING;
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return Items.CRAFTING_SPECIAL_TEA_SUGARING.get();
     }
 
     /**

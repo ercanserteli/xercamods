@@ -10,21 +10,23 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.world.item.Item.Properties;
+
 class ItemEnderCupcake extends Item {
 
     public ItemEnderCupcake() {
         super(new Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ENDER_CUPCAKE));
-        this.setRegistryName("ender_cupcake");
     }
 
     @Nonnull
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
+    public ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level world, @NotNull LivingEntity entity) {
         ItemStack lvt_4_1_ = super.finishUsingItem(stack, world, entity);
         if (!world.isClientSide) {
             double lvt_5_1_ = entity.getX();

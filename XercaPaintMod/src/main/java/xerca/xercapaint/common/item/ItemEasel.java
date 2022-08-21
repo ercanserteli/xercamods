@@ -20,8 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityEasel;
 
-import java.util.Objects;
-
 public class ItemEasel extends Item {
 
     public ItemEasel(Properties properties) {
@@ -39,10 +37,10 @@ public class ItemEasel extends Item {
             BlockPos blockpos = blockplacecontext.getClickedPos();
             ItemStack itemstack = ctx.getItemInHand();
             Vec3 vec3 = Vec3.atBottomCenterOf(blockpos);
-            AABB aabb = Objects.requireNonNull(Entities.EASEL).getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
+            AABB aabb = Entities.EASEL.get().getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
             if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
                 if (level instanceof ServerLevel serverlevel) {
-                    EntityEasel easel = Entities.EASEL.create(serverlevel, itemstack.getTag(), null, ctx.getPlayer(), blockpos, MobSpawnType.SPAWN_EGG, true, true);
+                    EntityEasel easel = Entities.EASEL.get().create(serverlevel, itemstack.getTag(), null, ctx.getPlayer(), blockpos, MobSpawnType.SPAWN_EGG, true, true);
                     if (easel == null) {
                         return InteractionResult.FAIL;
                     }
@@ -51,7 +49,7 @@ public class ItemEasel extends Item {
                     easel.moveTo(easel.getX(), easel.getY(), easel.getZ(), f, 0.0F);
                     serverlevel.addFreshEntityWithPassengers(easel);
                     level.playSound(null, easel.getX(), easel.getY(), easel.getZ(), SoundEvents.ARMOR_STAND_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
-                    level.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, easel);
+                    level.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, easel.getPosition(0));
                 }
 
                 itemstack.shrink(1);

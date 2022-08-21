@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
@@ -15,6 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.entity.Entities;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicEndedPacket;
@@ -32,29 +33,28 @@ public class ClientStuff {
                 if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
                     UUID id = noteTag.getUUID("id");
                     int version = noteTag.getInt("ver");
-                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet"))));
+                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet"))));
                 }
                 else{
-                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet")));
+                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet")));
                 }
             }
         }
-
     }
 
     static public void showInstrumentGui(){
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
-            if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemInstrument) {
-                Minecraft.getInstance().setScreen(new GuiInstrument(player, (ItemInstrument) heldItem.getItem(), new TranslatableComponent("item.xercamusic.instrument_gui"), null));
+            if (!heldItem.isEmpty() && heldItem.getItem() instanceof IItemInstrument instrument) {
+                Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), null));
             }
         }
     }
 
-    static public void showInstrumentGui(ItemInstrument instrument, BlockPos blockInsPos){
+    static public void showInstrumentGui(IItemInstrument instrument, BlockPos blockInsPos){
         LocalPlayer player = Minecraft.getInstance().player;
-        Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, new TranslatableComponent("item.xercamusic.instrument_gui"), blockInsPos));
+        Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), blockInsPos));
     }
 
     static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
@@ -86,14 +86,14 @@ public class ClientStuff {
     public static class ClientModEventHandler {
         @SubscribeEvent
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
+            event.registerEntityRenderer(Entities.MUSIC_SPIRIT.get(), new RenderNothingFactory());
         }
     }
 
     @Mod.EventBusSubscriber(modid = XercaMusic.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
     static class ForgeBusSubscriber {
         @SubscribeEvent
-        public static void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
+        public static void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
             XercaMusic.LOGGER.debug("onPlayerLoggedIn Event");
             MusicManagerClient.load();
         }

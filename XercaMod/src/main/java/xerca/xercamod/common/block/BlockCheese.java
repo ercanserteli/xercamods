@@ -28,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.item.Items;
 
 class BlockCheese extends Block {
@@ -43,22 +44,21 @@ class BlockCheese extends Block {
 
     public BlockCheese() {
         super(Properties.of(Material.CAKE, DyeColor.YELLOW).sound(SoundType.SLIME_BLOCK).strength(0.5F));
-        this.setRegistryName("cheese_wheel");
     }
 
     @Override
-    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+    public @NotNull VoxelShape getShape(BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
         return SHAPE_BY_BITE[blockState.getValue(BITES)];
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit){
         ItemStack heldItem = player.getItemInHand(handIn);
-        if(heldItem.getItem() == Items.ITEM_KNIFE){
+        if(heldItem.getItem() == Items.ITEM_KNIFE.get()){
             if(!worldIn.isClientSide){
                 slice(worldIn, pos, state, player, handIn, heldItem);
             }
-            worldIn.playSound(player, pos, xerca.xercamod.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat()*0.1f);
+            worldIn.playSound(player, pos, xerca.xercamod.common.SoundEvents.SNEAK_HIT.get(), SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat()*0.1f);
             return InteractionResult.SUCCESS;
         }
 
@@ -106,15 +106,13 @@ class BlockCheese extends Block {
         boost = boost.normalize().scale(0.15d);
 
         ItemEntity sliceEntity = new ItemEntity(level, pos.getX() + 0.5f + boost.x*6, pos.getY() + 0.5f,
-                pos.getZ() + 0.5f + boost.x*6, new ItemStack(Items.CHEESE_SLICE));
+                pos.getZ() + 0.5f + boost.x*6, new ItemStack(Items.CHEESE_SLICE.get()));
         sliceEntity.setDefaultPickUpDelay();
         sliceEntity.push(boost.x, 0, boost.z);
         sliceEntity.hurtMarked = true;
         level.addFreshEntity(sliceEntity);
 
-        heldItem.hurtAndBreak(1, player, (playerEntity) -> {
-            playerEntity.broadcastBreakEvent(hand);
-        });
+        heldItem.hurtAndBreak(1, player, (playerEntity) -> playerEntity.broadcastBreakEvent(hand));
 
         int i = state.getValue(BITES);
         if (i < MAX_BITES) {
@@ -126,12 +124,12 @@ class BlockCheese extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos1) {
+    public @NotNull BlockState updateShape(@NotNull BlockState blockState, @NotNull Direction direction, @NotNull BlockState blockState1, @NotNull LevelAccessor levelAccessor, @NotNull BlockPos blockPos, @NotNull BlockPos blockPos1) {
         return direction == Direction.DOWN && !blockState.canSurvive(levelAccessor, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, direction, blockState1, levelAccessor, blockPos, blockPos1);
     }
 
     @Override
-    public boolean canSurvive(BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
+    public boolean canSurvive(@NotNull BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
         return levelReader.getBlockState(blockPos.below()).getMaterial().isSolid();
     }
 
@@ -141,7 +139,7 @@ class BlockCheese extends Block {
     }
 
     @Override
-    public boolean isPathfindable(BlockState p_51193_, BlockGetter p_51194_, BlockPos p_51195_, PathComputationType p_51196_) {
+    public boolean isPathfindable(@NotNull BlockState p_51193_, @NotNull BlockGetter p_51194_, @NotNull BlockPos p_51195_, @NotNull PathComputationType p_51196_) {
         return false;
     }
 }

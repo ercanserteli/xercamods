@@ -5,450 +5,222 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import xerca.xercamod.common.XercaMod;
 
-@ObjectHolder(XercaMod.MODID)
 public class Blocks {
-    public static final BlockOmniChest OMNI_CHEST = null;
-    public static final BlockCarvingStation CARVING_STATION = null;
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, XercaMod.MODID);
 
-    public static final BlockDoner BLOCK_DONER = null;
-    public static final BlockTeapot BLOCK_TEAPOT = null;
-    public static final BlockTeaPlant BLOCK_TEA_PLANT = null;
-    public static final BlockTomatoPlant BLOCK_TOMATO_PLANT = null;
-    public static final BlockRicePlant BLOCK_RICE_PLANT = null;
-    public static final BlockApplePie BLOCK_APPLE_PIE = null;
-    public static final BlockSweetBerryPie BLOCK_SWEET_BERRY_PIE = null;
-    public static final Block BLOCK_LEATHER = null;
-    public static final Block BLOCK_STRAW = null;
-    public static final Block BLOCK_BOOKCASE = null;
-    public static final BlockCushion BLACK_CUSHION = null;
-    public static final BlockCushion BLUE_CUSHION = null;
-    public static final BlockCushion BROWN_CUSHION = null;
-    public static final BlockCushion CYAN_CUSHION = null;
-    public static final BlockCushion GRAY_CUSHION = null;
-    public static final BlockCushion GREEN_CUSHION = null;
-    public static final BlockCushion LIGHT_BLUE_CUSHION = null;
-    public static final BlockCushion LIGHT_GRAY_CUSHION = null;
-    public static final BlockCushion LIME_CUSHION = null;
-    public static final BlockCushion MAGENTA_CUSHION = null;
-    public static final BlockCushion ORANGE_CUSHION = null;
-    public static final BlockCushion PINK_CUSHION = null;
-    public static final BlockCushion PURPLE_CUSHION = null;
-    public static final BlockCushion RED_CUSHION = null;
-    public static final BlockCushion WHITE_CUSHION = null;
-    public static final BlockCushion YELLOW_CUSHION = null;
-    public static final Block CARVED_OAK_1 = null;
-    public static final Block CARVED_OAK_2 = null;
-    public static final Block CARVED_OAK_3 = null;
-    public static final Block CARVED_OAK_4 = null;
-    public static final Block CARVED_OAK_5 = null;
-    public static final Block CARVED_OAK_6 = null;
-    public static final Block CARVED_OAK_7 = null;
-    public static final Block CARVED_OAK_8 = null;
-    public static final Block CARVED_BIRCH_1 = null;
-    public static final Block CARVED_BIRCH_2 = null;
-    public static final Block CARVED_BIRCH_3 = null;
-    public static final Block CARVED_BIRCH_4 = null;
-    public static final Block CARVED_BIRCH_5 = null;
-    public static final Block CARVED_BIRCH_6 = null;
-    public static final Block CARVED_BIRCH_7 = null;
-    public static final Block CARVED_BIRCH_8 = null;
-    public static final Block CARVED_DARK_OAK_1 = null;
-    public static final Block CARVED_DARK_OAK_2 = null;
-    public static final Block CARVED_DARK_OAK_3 = null;
-    public static final Block CARVED_DARK_OAK_4 = null;
-    public static final Block CARVED_DARK_OAK_5 = null;
-    public static final Block CARVED_DARK_OAK_6 = null;
-    public static final Block CARVED_DARK_OAK_7 = null;
-    public static final Block CARVED_DARK_OAK_8 = null;
-    public static final Block CARVED_ACACIA_1 = null;
-    public static final Block CARVED_ACACIA_2 = null;
-    public static final Block CARVED_ACACIA_3 = null;
-    public static final Block CARVED_ACACIA_4 = null;
-    public static final Block CARVED_ACACIA_5 = null;
-    public static final Block CARVED_ACACIA_6 = null;
-    public static final Block CARVED_ACACIA_7 = null;
-    public static final Block CARVED_ACACIA_8 = null;
-    public static final Block CARVED_JUNGLE_1 = null;
-    public static final Block CARVED_JUNGLE_2 = null;
-    public static final Block CARVED_JUNGLE_3 = null;
-    public static final Block CARVED_JUNGLE_4 = null;
-    public static final Block CARVED_JUNGLE_5 = null;
-    public static final Block CARVED_JUNGLE_6 = null;
-    public static final Block CARVED_JUNGLE_7 = null;
-    public static final Block CARVED_JUNGLE_8 = null;
-    public static final Block CARVED_SPRUCE_1 = null;
-    public static final Block CARVED_SPRUCE_2 = null;
-    public static final Block CARVED_SPRUCE_3 = null;
-    public static final Block CARVED_SPRUCE_4 = null;
-    public static final Block CARVED_SPRUCE_5 = null;
-    public static final Block CARVED_SPRUCE_6 = null;
-    public static final Block CARVED_SPRUCE_7 = null;
-    public static final Block CARVED_SPRUCE_8 = null;
-    public static final Block CARVED_CRIMSON_1 = null;
-    public static final Block CARVED_CRIMSON_2 = null;
-    public static final Block CARVED_CRIMSON_3 = null;
-    public static final Block CARVED_CRIMSON_4 = null;
-    public static final Block CARVED_CRIMSON_5 = null;
-    public static final Block CARVED_CRIMSON_6 = null;
-    public static final Block CARVED_CRIMSON_7 = null;
-    public static final Block CARVED_CRIMSON_8 = null;
-    public static final Block CARVED_WARPED_1 = null;
-    public static final Block CARVED_WARPED_2 = null;
-    public static final Block CARVED_WARPED_3 = null;
-    public static final Block CARVED_WARPED_4 = null;
-    public static final Block CARVED_WARPED_5 = null;
-    public static final Block CARVED_WARPED_6 = null;
-    public static final Block CARVED_WARPED_7 = null;
-    public static final Block CARVED_WARPED_8 = null;
+    public static final RegistryObject<BlockOmniChest> OMNI_CHEST = BLOCKS.register("omni_chest", () -> new BlockOmniChest(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(22.5F, 600.0F).lightLevel((p_50847_) -> 14)));
+    public static final RegistryObject<BlockCarvingStation> CARVING_STATION = BLOCKS.register("carving_station", BlockCarvingStation::new);
+    public static final RegistryObject<BlockDoner> BLOCK_DONER = BLOCKS.register("block_doner", BlockDoner::new);
+    public static final RegistryObject<BlockTeapot> BLOCK_TEAPOT = BLOCKS.register("block_teapot", BlockTeapot::new);
+    public static final RegistryObject<BlockTeaPlant> BLOCK_TEA_PLANT = BLOCKS.register("block_tea_plant", BlockTeaPlant::new);
+    public static final RegistryObject<BlockTomatoPlant> BLOCK_TOMATO_PLANT = BLOCKS.register("block_tomato_plant", BlockTomatoPlant::new);
+    public static final RegistryObject<BlockRicePlant> BLOCK_RICE_PLANT = BLOCKS.register("block_rice_plant", BlockRicePlant::new);
+    public static final RegistryObject<BlockApplePie> BLOCK_APPLE_PIE = BLOCKS.register("block_apple_pie", BlockApplePie::new);
+    public static final RegistryObject<BlockSweetBerryPie> BLOCK_SWEET_BERRY_PIE = BLOCKS.register("block_sweet_berry_pie", BlockSweetBerryPie::new);
+    public static final RegistryObject<Block> BLOCK_LEATHER = BLOCKS.register("block_leather", () -> new Block(Block.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(1.0f)));
+    public static final RegistryObject<Block> BLOCK_STRAW = BLOCKS.register("block_straw", () -> new Block(Block.Properties.of(Material.LEAVES).sound(SoundType.GRASS).strength(0.8f)));
+    public static final RegistryObject<Block> BLOCK_BOOKCASE = BLOCKS.register("block_bookcase", BlockFunctionalBookcase::new);
+    public static final RegistryObject<BlockCushion> BLACK_CUSHION = BLOCKS.register("black_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 0));
+    public static final RegistryObject<BlockCushion> BLUE_CUSHION = BLOCKS.register("blue_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 1));
+    public static final RegistryObject<BlockCushion> BROWN_CUSHION = BLOCKS.register("brown_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 2));
+    public static final RegistryObject<BlockCushion> CYAN_CUSHION = BLOCKS.register("cyan_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 3));
+    public static final RegistryObject<BlockCushion> GRAY_CUSHION = BLOCKS.register("gray_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 4));
+    public static final RegistryObject<BlockCushion> GREEN_CUSHION = BLOCKS.register("green_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 5));
+    public static final RegistryObject<BlockCushion> LIGHT_BLUE_CUSHION = BLOCKS.register("light_blue_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 6));
+    public static final RegistryObject<BlockCushion> LIGHT_GRAY_CUSHION = BLOCKS.register("light_gray_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 7));
+    public static final RegistryObject<BlockCushion> LIME_CUSHION = BLOCKS.register("lime_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 8));
+    public static final RegistryObject<BlockCushion> MAGENTA_CUSHION = BLOCKS.register("magenta_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 9));
+    public static final RegistryObject<BlockCushion> ORANGE_CUSHION = BLOCKS.register("orange_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 10));
+    public static final RegistryObject<BlockCushion> PINK_CUSHION = BLOCKS.register("pink_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 11));
+    public static final RegistryObject<BlockCushion> PURPLE_CUSHION = BLOCKS.register("purple_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 12));
+    public static final RegistryObject<BlockCushion> RED_CUSHION = BLOCKS.register("red_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 13));
+    public static final RegistryObject<BlockCushion> WHITE_CUSHION = BLOCKS.register("white_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 14));
+    public static final RegistryObject<BlockCushion> YELLOW_CUSHION = BLOCKS.register("yellow_cushion", () -> new BlockCushion(Block.Properties.of(Material.WOOL), 15));
+    public static final RegistryObject<Block> CARVED_OAK_1 = BLOCKS.register("carved_oak_1", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_OAK_2 = BLOCKS.register("carved_oak_2", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_OAK_3 = BLOCKS.register("carved_oak_3", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_OAK_4 = BLOCKS.register("carved_oak_4", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_OAK_5 = BLOCKS.register("carved_oak_5", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_OAK_6 = BLOCKS.register("carved_oak_6", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_OAK_7 = BLOCKS.register("carved_oak_7", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_OAK_8 = BLOCKS.register("carved_oak_8", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_BIRCH_1 = BLOCKS.register("carved_birch_1", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_BIRCH_2 = BLOCKS.register("carved_birch_2", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_BIRCH_3 = BLOCKS.register("carved_birch_3", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_BIRCH_4 = BLOCKS.register("carved_birch_4", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_BIRCH_5 = BLOCKS.register("carved_birch_5", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_BIRCH_6 = BLOCKS.register("carved_birch_6", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_BIRCH_7 = BLOCKS.register("carved_birch_7", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_BIRCH_8 = BLOCKS.register("carved_birch_8", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_DARK_OAK_1 = BLOCKS.register("carved_dark_oak_1", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_DARK_OAK_2 = BLOCKS.register("carved_dark_oak_2", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_DARK_OAK_3 = BLOCKS.register("carved_dark_oak_3", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_DARK_OAK_4 = BLOCKS.register("carved_dark_oak_4", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_DARK_OAK_5 = BLOCKS.register("carved_dark_oak_5", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_DARK_OAK_6 = BLOCKS.register("carved_dark_oak_6", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_DARK_OAK_7 = BLOCKS.register("carved_dark_oak_7", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_DARK_OAK_8 = BLOCKS.register("carved_dark_oak_8", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_ACACIA_1 = BLOCKS.register("carved_acacia_1", BlockCarvedAcacia::new);
+    public static final RegistryObject<Block> CARVED_ACACIA_2 = BLOCKS.register("carved_acacia_2", BlockCarvedAcacia::new);
+    public static final RegistryObject<Block> CARVED_ACACIA_3 = BLOCKS.register("carved_acacia_3", BlockCarvedAcacia::new);
+    public static final RegistryObject<Block> CARVED_ACACIA_4 = BLOCKS.register("carved_acacia_4", BlockCarvedAcacia::new);
+    public static final RegistryObject<Block> CARVED_ACACIA_5 = BLOCKS.register("carved_acacia_5", BlockCarvedAcacia::new);
+    public static final RegistryObject<Block> CARVED_ACACIA_6 = BLOCKS.register("carved_acacia_6", BlockCarvedAcacia::new);
+    public static final RegistryObject<Block> CARVED_ACACIA_7 = BLOCKS.register("carved_acacia_7", BlockCarvedAcacia::new);
+    public static final RegistryObject<Block> CARVED_ACACIA_8 = BLOCKS.register("carved_acacia_8", BlockCarvedAcacia::new);
+    public static final RegistryObject<Block> CARVED_JUNGLE_1 = BLOCKS.register("carved_jungle_1", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_JUNGLE_2 = BLOCKS.register("carved_jungle_2", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_JUNGLE_3 = BLOCKS.register("carved_jungle_3", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_JUNGLE_4 = BLOCKS.register("carved_jungle_4", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_JUNGLE_5 = BLOCKS.register("carved_jungle_5", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_JUNGLE_6 = BLOCKS.register("carved_jungle_6", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_JUNGLE_7 = BLOCKS.register("carved_jungle_7", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_JUNGLE_8 = BLOCKS.register("carved_jungle_8", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_SPRUCE_1 = BLOCKS.register("carved_spruce_1", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_SPRUCE_2 = BLOCKS.register("carved_spruce_2", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_SPRUCE_3 = BLOCKS.register("carved_spruce_3", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_SPRUCE_4 = BLOCKS.register("carved_spruce_4", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_SPRUCE_5 = BLOCKS.register("carved_spruce_5", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_SPRUCE_6 = BLOCKS.register("carved_spruce_6", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_SPRUCE_7 = BLOCKS.register("carved_spruce_7", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_SPRUCE_8 = BLOCKS.register("carved_spruce_8", BlockCarvedLog::new);
+    public static final RegistryObject<Block> CARVED_CRIMSON_1 = BLOCKS.register("carved_crimson_1", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_CRIMSON_2 = BLOCKS.register("carved_crimson_2", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_CRIMSON_3 = BLOCKS.register("carved_crimson_3", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_CRIMSON_4 = BLOCKS.register("carved_crimson_4", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_CRIMSON_5 = BLOCKS.register("carved_crimson_5", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_CRIMSON_6 = BLOCKS.register("carved_crimson_6", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_CRIMSON_7 = BLOCKS.register("carved_crimson_7", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_CRIMSON_8 = BLOCKS.register("carved_crimson_8", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_WARPED_1 = BLOCKS.register("carved_warped_1", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_WARPED_2 = BLOCKS.register("carved_warped_2", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_WARPED_3 = BLOCKS.register("carved_warped_3", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_WARPED_4 = BLOCKS.register("carved_warped_4", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_WARPED_5 = BLOCKS.register("carved_warped_5", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_WARPED_6 = BLOCKS.register("carved_warped_6", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_WARPED_7 = BLOCKS.register("carved_warped_7", () -> new BlockCarvedLog(true));
+    public static final RegistryObject<Block> CARVED_WARPED_8 = BLOCKS.register("carved_warped_8", () -> new BlockCarvedLog(true));
 
-    public static final BlockTerracottaTile BLACK_TERRATILE = null;
-    public static final BlockTerracottaTile BLUE_TERRATILE = null;
-    public static final BlockTerracottaTile BROWN_TERRATILE = null;
-    public static final BlockTerracottaTile CYAN_TERRATILE = null;
-    public static final BlockTerracottaTile GRAY_TERRATILE = null;
-    public static final BlockTerracottaTile GREEN_TERRATILE = null;
-    public static final BlockTerracottaTile LIGHT_BLUE_TERRATILE = null;
-    public static final BlockTerracottaTile LIGHT_GRAY_TERRATILE = null;
-    public static final BlockTerracottaTile LIME_TERRATILE = null;
-    public static final BlockTerracottaTile MAGENTA_TERRATILE = null;
-    public static final BlockTerracottaTile ORANGE_TERRATILE = null;
-    public static final BlockTerracottaTile PINK_TERRATILE = null;
-    public static final BlockTerracottaTile PURPLE_TERRATILE = null;
-    public static final BlockTerracottaTile RED_TERRATILE = null;
-    public static final BlockTerracottaTile WHITE_TERRATILE = null;
-    public static final BlockTerracottaTile YELLOW_TERRATILE = null;
-    public static final BlockTerracottaTile TERRATILE = null;
+    public static final RegistryObject<BlockTerracottaTile> BLACK_TERRATILE = BLOCKS.register("black_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_BLACK));
+    public static final RegistryObject<BlockTerracottaTile> BLUE_TERRATILE = BLOCKS.register("blue_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_BLUE));
+    public static final RegistryObject<BlockTerracottaTile> BROWN_TERRATILE = BLOCKS.register("brown_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_BROWN));
+    public static final RegistryObject<BlockTerracottaTile> CYAN_TERRATILE = BLOCKS.register("cyan_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_CYAN));
+    public static final RegistryObject<BlockTerracottaTile> GRAY_TERRATILE = BLOCKS.register("gray_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_GRAY));
+    public static final RegistryObject<BlockTerracottaTile> GREEN_TERRATILE = BLOCKS.register("green_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_GREEN));
+    public static final RegistryObject<BlockTerracottaTile> LIGHT_BLUE_TERRATILE = BLOCKS.register("light_blue_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_LIGHT_BLUE));
+    public static final RegistryObject<BlockTerracottaTile> LIGHT_GRAY_TERRATILE = BLOCKS.register("light_gray_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_LIGHT_GRAY));
+    public static final RegistryObject<BlockTerracottaTile> LIME_TERRATILE = BLOCKS.register("lime_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_LIGHT_GREEN));
+    public static final RegistryObject<BlockTerracottaTile> MAGENTA_TERRATILE = BLOCKS.register("magenta_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_MAGENTA));
+    public static final RegistryObject<BlockTerracottaTile> ORANGE_TERRATILE = BLOCKS.register("orange_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_ORANGE));
+    public static final RegistryObject<BlockTerracottaTile> PINK_TERRATILE = BLOCKS.register("pink_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_PINK));
+    public static final RegistryObject<BlockTerracottaTile> PURPLE_TERRATILE = BLOCKS.register("purple_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_PURPLE));
+    public static final RegistryObject<BlockTerracottaTile> RED_TERRATILE = BLOCKS.register("red_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_RED));
+    public static final RegistryObject<BlockTerracottaTile> WHITE_TERRATILE = BLOCKS.register("white_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_WHITE));
+    public static final RegistryObject<BlockTerracottaTile> YELLOW_TERRATILE = BLOCKS.register("yellow_terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_YELLOW));
+    public static final RegistryObject<BlockTerracottaTile> TERRATILE = BLOCKS.register("terratile", () -> new BlockTerracottaTile(MaterialColor.TERRACOTTA_LIGHT_GRAY));
 
-    public static final BlockTerracottaTileSlab BLACK_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab BLUE_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab BROWN_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab CYAN_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab GRAY_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab GREEN_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab LIGHT_BLUE_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab LIGHT_GRAY_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab LIME_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab MAGENTA_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab ORANGE_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab PINK_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab PURPLE_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab RED_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab WHITE_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab YELLOW_TERRATILE_SLAB = null;
-    public static final BlockTerracottaTileSlab TERRATILE_SLAB = null;
+    public static final RegistryObject<BlockTerracottaTileSlab> BLACK_TERRATILE_SLAB = BLOCKS.register("black_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_BLACK));
+    public static final RegistryObject<BlockTerracottaTileSlab> BLUE_TERRATILE_SLAB = BLOCKS.register("blue_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_BLUE));
+    public static final RegistryObject<BlockTerracottaTileSlab> BROWN_TERRATILE_SLAB = BLOCKS.register("brown_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_BROWN));
+    public static final RegistryObject<BlockTerracottaTileSlab> CYAN_TERRATILE_SLAB = BLOCKS.register("cyan_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_CYAN));
+    public static final RegistryObject<BlockTerracottaTileSlab> GRAY_TERRATILE_SLAB = BLOCKS.register("gray_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_GRAY));
+    public static final RegistryObject<BlockTerracottaTileSlab> GREEN_TERRATILE_SLAB = BLOCKS.register("green_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_GREEN));
+    public static final RegistryObject<BlockTerracottaTileSlab> LIGHT_BLUE_TERRATILE_SLAB = BLOCKS.register("light_blue_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_LIGHT_BLUE));
+    public static final RegistryObject<BlockTerracottaTileSlab> LIGHT_GRAY_TERRATILE_SLAB = BLOCKS.register("light_gray_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_LIGHT_GRAY));
+    public static final RegistryObject<BlockTerracottaTileSlab> LIME_TERRATILE_SLAB = BLOCKS.register("lime_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_LIGHT_GREEN));
+    public static final RegistryObject<BlockTerracottaTileSlab> MAGENTA_TERRATILE_SLAB = BLOCKS.register("magenta_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_MAGENTA));
+    public static final RegistryObject<BlockTerracottaTileSlab> ORANGE_TERRATILE_SLAB = BLOCKS.register("orange_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_ORANGE));
+    public static final RegistryObject<BlockTerracottaTileSlab> PINK_TERRATILE_SLAB = BLOCKS.register("pink_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_PINK));
+    public static final RegistryObject<BlockTerracottaTileSlab> PURPLE_TERRATILE_SLAB = BLOCKS.register("purple_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_PURPLE));
+    public static final RegistryObject<BlockTerracottaTileSlab> RED_TERRATILE_SLAB = BLOCKS.register("red_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_RED));
+    public static final RegistryObject<BlockTerracottaTileSlab> WHITE_TERRATILE_SLAB = BLOCKS.register("white_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_WHITE));
+    public static final RegistryObject<BlockTerracottaTileSlab> YELLOW_TERRATILE_SLAB = BLOCKS.register("yellow_terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_YELLOW));
+    public static final RegistryObject<BlockTerracottaTileSlab> TERRATILE_SLAB = BLOCKS.register("terratile_slab", () -> new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_LIGHT_GRAY));
 
-    public static final BlockTerracottaTileStairs BLACK_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs BLUE_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs BROWN_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs CYAN_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs GRAY_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs GREEN_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs LIGHT_BLUE_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs LIGHT_GRAY_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs LIME_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs MAGENTA_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs ORANGE_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs PINK_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs PURPLE_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs RED_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs WHITE_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs YELLOW_TERRATILE_STAIRS = null;
-    public static final BlockTerracottaTileStairs TERRATILE_STAIRS = null;
+    public static final RegistryObject<BlockTerracottaTileStairs> BLACK_TERRATILE_STAIRS = BLOCKS.register("black_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> BLACK_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_BLACK));
+    public static final RegistryObject<BlockTerracottaTileStairs> BLUE_TERRATILE_STAIRS = BLOCKS.register("blue_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> BLUE_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_BLUE));
+    public static final RegistryObject<BlockTerracottaTileStairs> BROWN_TERRATILE_STAIRS = BLOCKS.register("brown_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> BROWN_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_BROWN));
+    public static final RegistryObject<BlockTerracottaTileStairs> CYAN_TERRATILE_STAIRS = BLOCKS.register("cyan_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> CYAN_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_CYAN));
+    public static final RegistryObject<BlockTerracottaTileStairs> GRAY_TERRATILE_STAIRS = BLOCKS.register("gray_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> GRAY_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_GRAY));
+    public static final RegistryObject<BlockTerracottaTileStairs> GREEN_TERRATILE_STAIRS = BLOCKS.register("green_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> GREEN_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_GREEN));
+    public static final RegistryObject<BlockTerracottaTileStairs> LIGHT_BLUE_TERRATILE_STAIRS = BLOCKS.register("light_blue_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> LIGHT_BLUE_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_BLUE));
+    public static final RegistryObject<BlockTerracottaTileStairs> LIGHT_GRAY_TERRATILE_STAIRS = BLOCKS.register("light_gray_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> LIGHT_GRAY_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_GRAY));
+    public static final RegistryObject<BlockTerracottaTileStairs> LIME_TERRATILE_STAIRS = BLOCKS.register("lime_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> LIME_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_GREEN));
+    public static final RegistryObject<BlockTerracottaTileStairs> MAGENTA_TERRATILE_STAIRS = BLOCKS.register("magenta_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> MAGENTA_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_MAGENTA));
+    public static final RegistryObject<BlockTerracottaTileStairs> ORANGE_TERRATILE_STAIRS = BLOCKS.register("orange_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> ORANGE_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_ORANGE));
+    public static final RegistryObject<BlockTerracottaTileStairs> PINK_TERRATILE_STAIRS = BLOCKS.register("pink_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> PINK_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_PINK));
+    public static final RegistryObject<BlockTerracottaTileStairs> PURPLE_TERRATILE_STAIRS = BLOCKS.register("purple_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> PURPLE_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_PURPLE));
+    public static final RegistryObject<BlockTerracottaTileStairs> RED_TERRATILE_STAIRS = BLOCKS.register("red_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> RED_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_RED));
+    public static final RegistryObject<BlockTerracottaTileStairs> WHITE_TERRATILE_STAIRS = BLOCKS.register("white_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> WHITE_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_WHITE));
+    public static final RegistryObject<BlockTerracottaTileStairs> YELLOW_TERRATILE_STAIRS = BLOCKS.register("yellow_terratile_stairs", () -> new BlockTerracottaTileStairs(() -> YELLOW_TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_YELLOW));
+    public static final RegistryObject<BlockTerracottaTileStairs> TERRATILE_STAIRS = BLOCKS.register("terratile_stairs", () -> new BlockTerracottaTileStairs(() -> TERRATILE.get().defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_GRAY));
 
-    public static final BlockRope ROPE = null;
+    public static final RegistryObject<BlockRope> ROPE = BLOCKS.register("rope", BlockRope::new);
 
-    public static final BlockVat VAT = null;
-    public static final BlockVat VAT_MILK = null;
-    public static final BlockVat VAT_CHEESE = null;
-    public static final BlockCheese CHEESE_WHEEL = null;
-    // PIZZA OBJECT HOLDER BEGIN
-    public static final BlockPizza PIZZA_PEPPERONI_PEPPERONI_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MUSHROOM_PEPPERONI_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MUSHROOM_MUSHROOM_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MUSHROOM_MUSHROOM_MUSHROOM = null;
-    public static final BlockPizza PIZZA_MEAT_PEPPERONI_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MEAT_MUSHROOM_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MEAT_MUSHROOM_MUSHROOM = null;
-    public static final BlockPizza PIZZA_MEAT_MEAT_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MEAT_MEAT_MUSHROOM = null;
-    public static final BlockPizza PIZZA_MEAT_MEAT_MEAT = null;
-    public static final BlockPizza PIZZA_FISH_PEPPERONI_PEPPERONI = null;
-    public static final BlockPizza PIZZA_FISH_MUSHROOM_PEPPERONI = null;
-    public static final BlockPizza PIZZA_FISH_MUSHROOM_MUSHROOM = null;
-    public static final BlockPizza PIZZA_FISH_MEAT_PEPPERONI = null;
-    public static final BlockPizza PIZZA_FISH_MEAT_MUSHROOM = null;
-    public static final BlockPizza PIZZA_FISH_MEAT_MEAT = null;
-    public static final BlockPizza PIZZA_FISH_FISH_PEPPERONI = null;
-    public static final BlockPizza PIZZA_FISH_FISH_MUSHROOM = null;
-    public static final BlockPizza PIZZA_FISH_FISH_MEAT = null;
-    public static final BlockPizza PIZZA_FISH_FISH_FISH = null;
-    public static final BlockPizza PIZZA_CHICKEN_PEPPERONI_PEPPERONI = null;
-    public static final BlockPizza PIZZA_CHICKEN_MUSHROOM_PEPPERONI = null;
-    public static final BlockPizza PIZZA_CHICKEN_MUSHROOM_MUSHROOM = null;
-    public static final BlockPizza PIZZA_CHICKEN_MEAT_PEPPERONI = null;
-    public static final BlockPizza PIZZA_CHICKEN_MEAT_MUSHROOM = null;
-    public static final BlockPizza PIZZA_CHICKEN_MEAT_MEAT = null;
-    public static final BlockPizza PIZZA_CHICKEN_FISH_PEPPERONI = null;
-    public static final BlockPizza PIZZA_CHICKEN_FISH_MUSHROOM = null;
-    public static final BlockPizza PIZZA_CHICKEN_FISH_MEAT = null;
-    public static final BlockPizza PIZZA_CHICKEN_FISH_FISH = null;
-    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_PEPPERONI = null;
-    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_MUSHROOM = null;
-    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_MEAT = null;
-    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_FISH = null;
-    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_CHICKEN = null;
-    public static final BlockPizza PIZZA_PEPPERONI_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MUSHROOM_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MUSHROOM_MUSHROOM = null;
-    public static final BlockPizza PIZZA_MEAT_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MEAT_MUSHROOM = null;
-    public static final BlockPizza PIZZA_MEAT_MEAT = null;
-    public static final BlockPizza PIZZA_FISH_PEPPERONI = null;
-    public static final BlockPizza PIZZA_FISH_MUSHROOM = null;
-    public static final BlockPizza PIZZA_FISH_MEAT = null;
-    public static final BlockPizza PIZZA_FISH_FISH = null;
-    public static final BlockPizza PIZZA_CHICKEN_PEPPERONI = null;
-    public static final BlockPizza PIZZA_CHICKEN_MUSHROOM = null;
-    public static final BlockPizza PIZZA_CHICKEN_MEAT = null;
-    public static final BlockPizza PIZZA_CHICKEN_FISH = null;
-    public static final BlockPizza PIZZA_CHICKEN_CHICKEN = null;
-    public static final BlockPizza PIZZA_PEPPERONI = null;
-    public static final BlockPizza PIZZA_MUSHROOM = null;
-    public static final BlockPizza PIZZA_MEAT = null;
-    public static final BlockPizza PIZZA_FISH = null;
-    public static final BlockPizza PIZZA_CHICKEN = null;
-    public static final BlockPizza PIZZA = null;
+    public static final RegistryObject<BlockVat> VAT = BLOCKS.register("vat", () -> new BlockVat(BlockVat.VatContent.EMPTY));
+    public static final RegistryObject<BlockVat> VAT_MILK = BLOCKS.register("vat_milk", () -> new BlockVat(BlockVat.VatContent.MILK));
+    public static final RegistryObject<BlockVat> VAT_CHEESE = BLOCKS.register("vat_cheese", () -> new BlockVat(BlockVat.VatContent.CHEESE));
+    public static final RegistryObject<BlockCheese> CHEESE_WHEEL = BLOCKS.register("cheese_wheel", BlockCheese::new);
 
-    // PIZZA OBJECT HOLDER END
-
-
-    @Mod.EventBusSubscriber(modid = XercaMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandler {
-        @SubscribeEvent
-        public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-            event.getRegistry().registerAll(
-                    new BlockCarvingStation().setRegistryName("carving_station"),
-
-                    new BlockDoner(),
-                    new BlockTeapot(),
-                    new BlockTeaPlant(),
-                    new BlockTomatoPlant(),
-                    new BlockRicePlant(),
-                    new BlockApplePie(),
-                    new BlockSweetBerryPie(),
-                    new Block(Block.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(1.0f)).setRegistryName("block_leather"),
-                    new Block(Block.Properties.of(Material.LEAVES).sound(SoundType.GRASS).strength(0.8f)).setRegistryName("block_straw"),
-                    new BlockFunctionalBookcase(),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 0, "black_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 1, "blue_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 2, "brown_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 3, "cyan_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 4, "gray_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 5, "green_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 6, "light_blue_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 7, "light_gray_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 8, "lime_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 9, "magenta_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 10, "orange_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 11, "pink_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 12, "purple_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 13, "red_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 14, "white_cushion"),
-                    new BlockCushion(Block.Properties.of(Material.WOOL), 15, "yellow_cushion"),
-                    new BlockCarvedLog("carved_oak_1"),
-                    new BlockCarvedLog("carved_oak_2"),
-                    new BlockCarvedLog("carved_oak_3"),
-                    new BlockCarvedLog("carved_oak_4"),
-                    new BlockCarvedLog("carved_oak_5"),
-                    new BlockCarvedLog("carved_oak_6"),
-                    new BlockCarvedLog("carved_oak_7"),
-                    new BlockCarvedLog("carved_oak_8"),
-                    new BlockCarvedLog("carved_birch_1"),
-                    new BlockCarvedLog("carved_birch_2"),
-                    new BlockCarvedLog("carved_birch_3"),
-                    new BlockCarvedLog("carved_birch_4"),
-                    new BlockCarvedLog("carved_birch_5"),
-                    new BlockCarvedLog("carved_birch_6"),
-                    new BlockCarvedLog("carved_birch_7"),
-                    new BlockCarvedLog("carved_birch_8"),
-                    new BlockCarvedLog("carved_dark_oak_1"),
-                    new BlockCarvedLog("carved_dark_oak_2"),
-                    new BlockCarvedLog("carved_dark_oak_3"),
-                    new BlockCarvedLog("carved_dark_oak_4"),
-                    new BlockCarvedLog("carved_dark_oak_5"),
-                    new BlockCarvedLog("carved_dark_oak_6"),
-                    new BlockCarvedLog("carved_dark_oak_7"),
-                    new BlockCarvedLog("carved_dark_oak_8"),
-                    new BlockCarvedAcacia("carved_acacia_1"),
-                    new BlockCarvedAcacia("carved_acacia_2"),
-                    new BlockCarvedAcacia("carved_acacia_3"),
-                    new BlockCarvedAcacia("carved_acacia_4"),
-                    new BlockCarvedAcacia("carved_acacia_5"),
-                    new BlockCarvedAcacia("carved_acacia_6"),
-                    new BlockCarvedAcacia("carved_acacia_7"),
-                    new BlockCarvedAcacia("carved_acacia_8"),
-                    new BlockCarvedLog("carved_jungle_1"),
-                    new BlockCarvedLog("carved_jungle_2"),
-                    new BlockCarvedLog("carved_jungle_3"),
-                    new BlockCarvedLog("carved_jungle_4"),
-                    new BlockCarvedLog("carved_jungle_5"),
-                    new BlockCarvedLog("carved_jungle_6"),
-                    new BlockCarvedLog("carved_jungle_7"),
-                    new BlockCarvedLog("carved_jungle_8"),
-                    new BlockCarvedLog("carved_spruce_1"),
-                    new BlockCarvedLog("carved_spruce_2"),
-                    new BlockCarvedLog("carved_spruce_3"),
-                    new BlockCarvedLog("carved_spruce_4"),
-                    new BlockCarvedLog("carved_spruce_5"),
-                    new BlockCarvedLog("carved_spruce_6"),
-                    new BlockCarvedLog("carved_spruce_7"),
-                    new BlockCarvedLog("carved_spruce_8"),
-                    new BlockCarvedLog("carved_crimson_1", true),
-                    new BlockCarvedLog("carved_crimson_2", true),
-                    new BlockCarvedLog("carved_crimson_3", true),
-                    new BlockCarvedLog("carved_crimson_4", true),
-                    new BlockCarvedLog("carved_crimson_5", true),
-                    new BlockCarvedLog("carved_crimson_6", true),
-                    new BlockCarvedLog("carved_crimson_7", true),
-                    new BlockCarvedLog("carved_crimson_8", true),
-                    new BlockCarvedLog("carved_warped_1", true),
-                    new BlockCarvedLog("carved_warped_2", true),
-                    new BlockCarvedLog("carved_warped_3", true),
-                    new BlockCarvedLog("carved_warped_4", true),
-                    new BlockCarvedLog("carved_warped_5", true),
-                    new BlockCarvedLog("carved_warped_6", true),
-                    new BlockCarvedLog("carved_warped_7", true),
-                    new BlockCarvedLog("carved_warped_8", true),
-
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_BLACK).setRegistryName("black_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_BLUE).setRegistryName("blue_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_BROWN).setRegistryName("brown_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_CYAN).setRegistryName("cyan_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_GRAY).setRegistryName("gray_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_GREEN).setRegistryName("green_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_LIGHT_BLUE).setRegistryName("light_blue_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_LIGHT_GRAY).setRegistryName("light_gray_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_LIGHT_GREEN).setRegistryName("lime_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_MAGENTA).setRegistryName("magenta_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_ORANGE).setRegistryName("orange_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_PINK).setRegistryName("pink_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_PURPLE).setRegistryName("purple_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_RED).setRegistryName("red_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_WHITE).setRegistryName("white_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_YELLOW).setRegistryName("yellow_terratile"),
-                    new BlockTerracottaTile(MaterialColor.TERRACOTTA_LIGHT_GRAY).setRegistryName("terratile"),
-
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_BLACK).setRegistryName("black_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_BLUE).setRegistryName("blue_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_BROWN).setRegistryName("brown_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_CYAN).setRegistryName("cyan_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_GRAY).setRegistryName("gray_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_GREEN).setRegistryName("green_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_LIGHT_BLUE).setRegistryName("light_blue_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_LIGHT_GRAY).setRegistryName("light_gray_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_LIGHT_GREEN).setRegistryName("lime_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_MAGENTA).setRegistryName("magenta_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_ORANGE).setRegistryName("orange_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_PINK).setRegistryName("pink_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_PURPLE).setRegistryName("purple_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_RED).setRegistryName("red_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_WHITE).setRegistryName("white_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_YELLOW).setRegistryName("yellow_terratile_slab"),
-                    new BlockTerracottaTileSlab(MaterialColor.TERRACOTTA_LIGHT_GRAY).setRegistryName("terratile_slab"),
-
-                    new BlockTerracottaTileStairs(() -> BLACK_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_BLACK).setRegistryName("black_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> BLUE_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_BLUE).setRegistryName("blue_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> BROWN_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_BROWN).setRegistryName("brown_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> CYAN_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_CYAN).setRegistryName("cyan_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> GRAY_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_GRAY).setRegistryName("gray_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> GREEN_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_GREEN).setRegistryName("green_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> LIGHT_BLUE_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_BLUE).setRegistryName("light_blue_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> LIGHT_GRAY_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_GRAY).setRegistryName("light_gray_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> LIME_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_GREEN).setRegistryName("lime_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> MAGENTA_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_MAGENTA).setRegistryName("magenta_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> ORANGE_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_ORANGE).setRegistryName("orange_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> PINK_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_PINK).setRegistryName("pink_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> PURPLE_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_PURPLE).setRegistryName("purple_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> RED_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_RED).setRegistryName("red_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> WHITE_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_WHITE).setRegistryName("white_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> YELLOW_TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_YELLOW).setRegistryName("yellow_terratile_stairs"),
-                    new BlockTerracottaTileStairs(() -> TERRATILE.defaultBlockState(), MaterialColor.TERRACOTTA_LIGHT_GRAY).setRegistryName("terratile_stairs"),
-
-                    new BlockRope().setRegistryName("rope"),
-
-                    new BlockVat(BlockVat.VatContent.EMPTY).setRegistryName("vat"),
-                    new BlockVat(BlockVat.VatContent.MILK).setRegistryName("vat_milk"),
-                    new BlockVat(BlockVat.VatContent.CHEESE).setRegistryName("vat_cheese"),
-                    new BlockCheese(),
-
-                    // PIZZA REGISTER BEGIN
-                    new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN),
-                    new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-                    new BlockPizza(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY),
-
-                    // PIZZA REGISTER END
-
-                    new BlockOmniChest(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(22.5F, 600.0F).lightLevel((p_50847_) -> { return 14;})).setRegistryName("omni_chest")
-            );
-        }
-    }
+    public static final RegistryObject<BlockPizza> PIZZA_PEPPERONI_PEPPERONI_PEPPERONI = BLOCKS.register("pizza_pepperoni_pepperoni_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_MUSHROOM_PEPPERONI_PEPPERONI = BLOCKS.register("pizza_mushroom_pepperoni_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_MUSHROOM_MUSHROOM_PEPPERONI = BLOCKS.register("pizza_mushroom_mushroom_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_MUSHROOM_MUSHROOM_MUSHROOM = BLOCKS.register("pizza_mushroom_mushroom_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_PEPPERONI_PEPPERONI = BLOCKS.register("pizza_meat_pepperoni_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_MUSHROOM_PEPPERONI = BLOCKS.register("pizza_meat_mushroom_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_MUSHROOM_MUSHROOM = BLOCKS.register("pizza_meat_mushroom_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_MEAT_PEPPERONI = BLOCKS.register("pizza_meat_meat_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_MEAT_MUSHROOM = BLOCKS.register("pizza_meat_meat_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_MEAT_MEAT = BLOCKS.register("pizza_meat_meat_meat", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_PEPPERONI_PEPPERONI = BLOCKS.register("pizza_fish_pepperoni_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_MUSHROOM_PEPPERONI = BLOCKS.register("pizza_fish_mushroom_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_MUSHROOM_MUSHROOM = BLOCKS.register("pizza_fish_mushroom_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_MEAT_PEPPERONI = BLOCKS.register("pizza_fish_meat_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_MEAT_MUSHROOM = BLOCKS.register("pizza_fish_meat_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_MEAT_MEAT = BLOCKS.register("pizza_fish_meat_meat", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_FISH_PEPPERONI = BLOCKS.register("pizza_fish_fish_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_FISH_MUSHROOM = BLOCKS.register("pizza_fish_fish_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_FISH_MEAT = BLOCKS.register("pizza_fish_fish_meat", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_FISH_FISH = BLOCKS.register("pizza_fish_fish_fish", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_PEPPERONI_PEPPERONI = BLOCKS.register("pizza_chicken_pepperoni_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_MUSHROOM_PEPPERONI = BLOCKS.register("pizza_chicken_mushroom_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_MUSHROOM_MUSHROOM = BLOCKS.register("pizza_chicken_mushroom_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_MEAT_PEPPERONI = BLOCKS.register("pizza_chicken_meat_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_MEAT_MUSHROOM = BLOCKS.register("pizza_chicken_meat_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_MEAT_MEAT = BLOCKS.register("pizza_chicken_meat_meat", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_FISH_PEPPERONI = BLOCKS.register("pizza_chicken_fish_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_FISH_MUSHROOM = BLOCKS.register("pizza_chicken_fish_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_FISH_MEAT = BLOCKS.register("pizza_chicken_fish_meat", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_FISH_FISH = BLOCKS.register("pizza_chicken_fish_fish", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_CHICKEN_PEPPERONI = BLOCKS.register("pizza_chicken_chicken_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_CHICKEN_MUSHROOM = BLOCKS.register("pizza_chicken_chicken_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_CHICKEN_MEAT = BLOCKS.register("pizza_chicken_chicken_meat", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_CHICKEN_FISH = BLOCKS.register("pizza_chicken_chicken_fish", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_CHICKEN_CHICKEN = BLOCKS.register("pizza_chicken_chicken_chicken", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN));
+    public static final RegistryObject<BlockPizza> PIZZA_PEPPERONI_PEPPERONI = BLOCKS.register("pizza_pepperoni_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_MUSHROOM_PEPPERONI = BLOCKS.register("pizza_mushroom_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_MUSHROOM_MUSHROOM = BLOCKS.register("pizza_mushroom_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_PEPPERONI = BLOCKS.register("pizza_meat_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_MUSHROOM = BLOCKS.register("pizza_meat_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT_MEAT = BLOCKS.register("pizza_meat_meat", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_PEPPERONI = BLOCKS.register("pizza_fish_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_MUSHROOM = BLOCKS.register("pizza_fish_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_MEAT = BLOCKS.register("pizza_fish_meat", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH_FISH = BLOCKS.register("pizza_fish_fish", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_PEPPERONI = BLOCKS.register("pizza_chicken_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_MUSHROOM = BLOCKS.register("pizza_chicken_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_MEAT = BLOCKS.register("pizza_chicken_meat", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_FISH = BLOCKS.register("pizza_chicken_fish", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN_CHICKEN = BLOCKS.register("pizza_chicken_chicken", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_PEPPERONI = BLOCKS.register("pizza_pepperoni", () -> new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_MUSHROOM = BLOCKS.register("pizza_mushroom", () -> new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_MEAT = BLOCKS.register("pizza_meat", () -> new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_FISH = BLOCKS.register("pizza_fish", () -> new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA_CHICKEN = BLOCKS.register("pizza_chicken", () -> new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY));
+    public static final RegistryObject<BlockPizza> PIZZA = BLOCKS.register("pizza", () -> new BlockPizza(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY));
 }

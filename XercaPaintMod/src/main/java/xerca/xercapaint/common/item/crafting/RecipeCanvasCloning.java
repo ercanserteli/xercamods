@@ -14,8 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.Items;
 
-import java.util.Objects;
-
 @MethodsReturnNonnullByDefault
 public class RecipeCanvasCloning extends CustomRecipe {
     public RecipeCanvasCloning(ResourceLocation p_i48170_1_) {
@@ -109,8 +107,8 @@ public class RecipeCanvasCloning extends CustomRecipe {
 
         for(int i = 0; i < stacks.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
-            if (itemstack.hasContainerItem()) {
-                stacks.set(i, itemstack.getContainerItem());
+            if (itemstack.hasCraftingRemainingItem()) {
+                stacks.set(i, itemstack.getCraftingRemainingItem());
             } else if (itemstack.getItem() instanceof ItemCanvas && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
                 ItemStack stack = itemstack.copy();
                 stack.setCount(1);
@@ -124,7 +122,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Objects.requireNonNull(Items.CRAFTING_SPECIAL_CANVAS_CLONING);
+        return Items.CRAFTING_SPECIAL_CANVAS_CLONING.get();
     }
 
     /**

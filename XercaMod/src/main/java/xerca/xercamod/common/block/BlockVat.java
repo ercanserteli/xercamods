@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -24,9 +25,9 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.Random;
 
 public class BlockVat extends AbstractCauldronBlock {
     public enum VatContent {EMPTY, MILK, CHEESE}
@@ -46,18 +47,18 @@ public class BlockVat extends AbstractCauldronBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
         return SHAPE;
     }
 
     @Override
-    public VoxelShape getInteractionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
+    public @NotNull VoxelShape getInteractionShape(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos) {
         return INSIDE;
     }
 
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+    public @NotNull InteractionResult use(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult blockHitResult) {
         ItemStack itemstack = player.getItemInHand(hand);
         switch (content){
             case EMPTY -> {
@@ -67,7 +68,7 @@ public class BlockVat extends AbstractCauldronBlock {
                         player.addItem(new ItemStack(Items.BUCKET));
                     }
 
-                    level.setBlockAndUpdate(blockPos, Blocks.VAT_MILK.defaultBlockState());
+                    level.setBlockAndUpdate(blockPos, Blocks.VAT_MILK.get().defaultBlockState());
                     level.playSound(null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos);
                     return InteractionResult.SUCCESS;
@@ -80,7 +81,7 @@ public class BlockVat extends AbstractCauldronBlock {
                         player.addItem(new ItemStack(Items.MILK_BUCKET));
                     }
 
-                    level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
+                    level.setBlockAndUpdate(blockPos, Blocks.VAT.get().defaultBlockState());
                     level.playSound(null, blockPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
                     return InteractionResult.SUCCESS;
@@ -93,12 +94,12 @@ public class BlockVat extends AbstractCauldronBlock {
                     boost = boost.normalize().scale(0.15);
 
                     ItemEntity entity = new ItemEntity(level, blockPos.getX(), blockPos.getY()+1.0, blockPos.getZ(),
-                            new ItemStack(xerca.xercamod.common.item.Items.CHEESE_WHEEL));
+                            new ItemStack(xerca.xercamod.common.item.Items.CHEESE_WHEEL.get()));
                     entity.setDefaultPickUpDelay();
                     entity.push(boost.x, 0.05, boost.z);
                     entity.hurtMarked = true;
                     level.addFreshEntity(entity);
-                    level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
+                    level.setBlockAndUpdate(blockPos, Blocks.VAT.get().defaultBlockState());
                     level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
                 }
@@ -110,15 +111,15 @@ public class BlockVat extends AbstractCauldronBlock {
     }
 
     @Override
-    public boolean isFull(BlockState blockState) {
+    public boolean isFull(@NotNull BlockState blockState) {
         return content != VatContent.EMPTY;
     }
 
     @Override
-    public void randomTick(BlockState blockState, ServerLevel level, BlockPos blockPos, Random random) {
+    public void randomTick(@NotNull BlockState blockState, @NotNull ServerLevel level, @NotNull BlockPos blockPos, @NotNull RandomSource random) {
         if(content == VatContent.MILK){
 //            XercaMod.LOGGER.info("MILKY TICK");
-            level.setBlockAndUpdate(blockPos, Blocks.VAT_CHEESE.defaultBlockState());
+            level.setBlockAndUpdate(blockPos, Blocks.VAT_CHEESE.get().defaultBlockState());
             level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_STEP, SoundSource.BLOCKS, 0.7F, 0.9F +level.random.nextFloat()*0.2f);
         }
     }

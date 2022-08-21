@@ -39,7 +39,6 @@ public class BlockMetronome extends BaseEntityBlock {
     public BlockMetronome() {
         super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD));
         this.registerDefaultState(this.stateDefinition.any().setValue(BPS, 6).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
-        this.setRegistryName("block_metronome");
     }
 
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -71,9 +70,9 @@ public class BlockMetronome extends BaseEntityBlock {
                 worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
             ItemStack note = ItemStack.EMPTY;
-            if (player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET) {
+            if (player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET.get()) {
                 note = player.getItemInHand(hand);
-            } else if (player.getOffhandItem().getItem() == Items.MUSIC_SHEET) {
+            } else if (player.getOffhandItem().getItem() == Items.MUSIC_SHEET.get()) {
                 note = player.getOffhandItem();
             }
 

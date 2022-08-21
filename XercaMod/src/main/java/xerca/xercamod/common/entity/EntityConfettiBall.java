@@ -14,11 +14,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
-
 
 public class EntityConfettiBall extends ThrowableItemProjectile {
     public EntityConfettiBall(EntityType<? extends EntityConfettiBall> type, Level world) {
@@ -26,24 +26,20 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     }
 
     public EntityConfettiBall(Level worldIn, LivingEntity throwerIn) {
-        super(Entities.CONFETTI_BALL, throwerIn, worldIn);
+        super(Entities.CONFETTI_BALL.get(), throwerIn, worldIn);
     }
 
     public EntityConfettiBall(Level worldIn, double x, double y, double z) {
-        super(Entities.CONFETTI_BALL, x, y, z, worldIn);
+        super(Entities.CONFETTI_BALL.get(), x, y, z, worldIn);
     }
 
-    public EntityConfettiBall(Level worldIn) {
-        super(Entities.CONFETTI_BALL, worldIn);
-    }
-
-    public EntityConfettiBall(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        super(Entities.CONFETTI_BALL, world);
+    public EntityConfettiBall(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
+        super(Entities.CONFETTI_BALL.get(), world);
     }
 
     private void spawnConfetti(double x, double y, double z) {
         for (int j = 0; j < 12; ++j) {
-            this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_CONFETTI)), x, y, z, ((double) this.random.nextFloat() - 0.5D) * 0.3D, ((double) this.random.nextFloat()) * 0.5D, ((double) this.random.nextFloat() - 0.5D) * 0.3D);
+            this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_CONFETTI.get())), x, y, z, ((double) this.random.nextFloat() - 0.5D) * 0.3D, ((double) this.random.nextFloat()) * 0.5D, ((double) this.random.nextFloat() - 0.5D) * 0.3D);
         }
     }
 
@@ -55,7 +51,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     protected void onHit(HitResult result) {
         spawnConfetti(result.getLocation());
         if (!this.level.isClientSide) {
-            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CRACK.get(), SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -70,7 +66,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
         super.tick();
         if(this.tickCount % 4 == 0){
             if(!this.level.isClientSide){
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
+                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CRACK.get(), SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             }
             else{
                 spawnConfetti(this.getX(), this.getY(), this.getZ());
@@ -79,18 +75,18 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     }
 
     @Override
-    protected Item getDefaultItem() {
-        return Items.ITEM_CONFETTI_BALL;
+    protected @NotNull Item getDefaultItem() {
+        return Items.ITEM_CONFETTI_BALL.get();
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ItemStack getItem() {
-        return new ItemStack(Items.ITEM_CONFETTI_BALL);
+    public @NotNull ItemStack getItem() {
+        return new ItemStack(Items.ITEM_CONFETTI_BALL.get());
     }
 
     @Override
-    public Packet<?> getAddEntityPacket()
+    public @NotNull Packet<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

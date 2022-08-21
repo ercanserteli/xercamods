@@ -31,9 +31,6 @@ public class BlockRope extends PipeBlock {
 
     boolean isConnectable(BlockGetter blockReader, BlockPos pos, Direction dir){
         BlockState bs = blockReader.getBlockState(pos.relative(dir));
-//        if(dir == Direction.DOWN && bs.getBlock() == Blocks.LANTERN){
-//            return true;
-//        }
         return bs.getBlock() == this || Block.canSupportCenter((LevelReader) blockReader, pos.relative(dir), dir.getOpposite());
     }
 

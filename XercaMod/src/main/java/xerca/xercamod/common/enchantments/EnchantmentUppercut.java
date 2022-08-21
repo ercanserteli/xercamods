@@ -6,10 +6,11 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemWarhammer;
 
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+
 public class EnchantmentUppercut extends EnchantmentWithConfig {
     public EnchantmentUppercut(Rarity rarityIn, EquipmentSlot... slots) {
         super(rarityIn, EnchantmentCategory.WEAPON, slots);
-        this.setRegistryName("enchantment_uppercut");
     }
 
     /**

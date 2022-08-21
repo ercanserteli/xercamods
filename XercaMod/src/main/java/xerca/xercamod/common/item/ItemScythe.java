@@ -10,7 +10,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -25,6 +25,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
@@ -43,7 +44,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.ForgeEventFactory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.entity.EntityHealthOrb;
@@ -136,7 +136,7 @@ public class ItemScythe extends DiggerItem {
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment ench)
     {
-        return ench.category == EnchantmentCategory.BREAKABLE || ench == Enchantments.BLOCK_FORTUNE || ench == ENCHANTMENT_GUILLOTINE
+        return ench.category == EnchantmentCategory.BREAKABLE || ench == Enchantments.BLOCK_FORTUNE || ench == ENCHANTMENT_GUILLOTINE.get()
                 || ench == Enchantments.SHARPNESS || ench == Enchantments.SMITE || ench == Enchantments.SWEEPING_EDGE
                 || ench == Enchantments.BANE_OF_ARTHROPODS || ench == Enchantments.MOB_LOOTING;
     }
@@ -216,7 +216,7 @@ public class ItemScythe extends DiggerItem {
         CompoundTag headNBT = playerHead.getOrCreateTag();
         headNBT.put("SkullOwner", skullOwner);
         if(nameTransKey != null){
-            playerHead.setHoverName(new TranslatableComponent(nameTransKey));
+            playerHead.setHoverName(Component.translatable(nameTransKey));
         }
         Containers.dropItemStack(world, x, y, z, playerHead);
     }
@@ -247,13 +247,13 @@ public class ItemScythe extends DiggerItem {
 
             // Handle devour
             if (entity instanceof LivingEntity target) {
-                int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR, stack);
+                int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR.get(), stack);
                 if(devourLevel > 0){
                     if(cooledAttack){
                         if(!player.level.isClientSide){
                             if(player.getRandom().nextFloat() < 0.25f * devourLevel){
                                 EntityHealthOrb.award((ServerLevel) player.level, target, player, 1);
-                                player.level.playSound(null, player, xerca.xercamod.common.SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 0.8f, 0.9f+player.getRandom().nextFloat()*0.2f);
+                                player.level.playSound(null, player, xerca.xercamod.common.SoundEvents.SNEAK_HIT.get(), SoundSource.PLAYERS, 0.8f, 0.9f+player.getRandom().nextFloat()*0.2f);
                             }
                         }
                     }
@@ -262,7 +262,11 @@ public class ItemScythe extends DiggerItem {
 
             // Handle sweeping edge
             if(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, stack) > 0){
-                float damage = (float)player.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
+                AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
+                if(attackDamage == null){
+                    return false;
+                }
+                float damage = (float)attackDamage.getValue();
                 float bonusDamage;
                 if (entity instanceof LivingEntity) {
                     bonusDamage = EnchantmentHelper.getDamageBonus(stack, ((LivingEntity)entity).getMobType());
@@ -276,8 +280,6 @@ public class ItemScythe extends DiggerItem {
                 boolean critical = cooledAttack && player.fallDistance > 0.0F && !player.isOnGround() && !player.onClimbable() &&
                         !player.isInWater() && !player.hasEffect(MobEffects.BLINDNESS) && !player.isPassenger() &&
                         entity instanceof LivingEntity  && !player.isSprinting();
-                // net.minecraftforge.event.entity.player.CriticalHitEvent hitResult = net.minecraftforge.common.ForgeHooks.getCriticalHit(player, entity, critical, critical ? 1.5F : 1.0F);
-                // critical = hitResult != null;
 
                 double d0 = player.walkDist - player.walkDistO;
                 boolean sweep = cooledAttack && !critical && !cooledSprintAttack && player.isOnGround() &&
@@ -289,7 +291,7 @@ public class ItemScythe extends DiggerItem {
                     for(LivingEntity livingentity : player.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(1.0D, 0.25D, 1.0D))) {
                         if (livingentity != player && livingentity != entity && !player.isAlliedTo(livingentity) && (!(livingentity instanceof ArmorStand) || !((ArmorStand)livingentity).isMarker()) && player.distanceToSqr(livingentity) < 9.0D) {
 //                        livingentity.knockback(player, 0.4F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
-                            livingentity.knockback(0.4F, (double)Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), (double)(-Mth.cos(player.getYRot() * ((float)Math.PI / 180F))));
+                            livingentity.knockback(0.4F, Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), -Mth.cos(player.getYRot() * ((float)Math.PI / 180F)));
                             livingentity.hurt(DamageSource.playerAttack(player), sweepDamage);
                         }
                     }
@@ -307,7 +309,7 @@ public class ItemScythe extends DiggerItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
-        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE, heldItem) > 0) {
+        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE.get(), heldItem) > 0) {
             playerIn.startUsingItem(hand);
             return InteractionResultHolder.success(heldItem);
         }
@@ -317,7 +319,7 @@ public class ItemScythe extends DiggerItem {
     @Nonnull
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE, stack) > 0){
+        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE.get(), stack) > 0){
             return UseAnim.BOW;
         }
         return UseAnim.NONE;
@@ -325,7 +327,7 @@ public class ItemScythe extends DiggerItem {
 
     @Override
     public int getUseDuration(ItemStack stack) {
-        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE, stack) > 0) {
+        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE.get(), stack) > 0) {
             return 72000;
         }
         return 0;
@@ -333,10 +335,8 @@ public class ItemScythe extends DiggerItem {
 
     @Override
     public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
-        if (!(entityLiving instanceof Player)) return;
-        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE, stack) <= 0) return;
-
-        Player player = (Player) entityLiving;
+        if (!(entityLiving instanceof Player player)) return;
+        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE.get(), stack) <= 0) return;
 
         // Number of seconds that the item has been used for
         float f = (this.getUseDuration(stack) - timeLeft) / 20.0f;
@@ -360,10 +360,10 @@ public class ItemScythe extends DiggerItem {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        TranslatableComponent text = new TranslatableComponent("xercamod.scythe_tooltip");
+        MutableComponent text = Component.translatable("xercamod.scythe_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
-        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE, stack) > 0){
-            TranslatableComponent textGuillotine = new TranslatableComponent("xercamod.guillotine_tooltip");
+        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GUILLOTINE.get(), stack) > 0){
+            MutableComponent textGuillotine = Component.translatable("xercamod.guillotine_tooltip");
             tooltip.add(textGuillotine.withStyle(ChatFormatting.YELLOW));
         }
     }

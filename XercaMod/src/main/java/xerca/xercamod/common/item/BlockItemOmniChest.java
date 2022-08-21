@@ -3,7 +3,8 @@ package xerca.xercamod.common.item;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.client.OmniChestItemRenderer;
 import xerca.xercamod.common.Config;
 
@@ -16,17 +17,17 @@ public class BlockItemOmniChest extends BlockConditionedItem {
     }
 
     @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer)
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer)
     {
         super.initializeClient(consumer);
         consumer.accept(RenderProp.INSTANCE);
     }
 
-    public static class RenderProp implements IItemRenderProperties {
-        public static RenderProp INSTANCE = new RenderProp();
+    public static class RenderProp implements IClientItemExtensions {
+        public static final RenderProp INSTANCE = new RenderProp();
 
         @Override
-        public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
             return new OmniChestItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
         }
     }

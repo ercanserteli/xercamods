@@ -17,8 +17,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.block.BlockCushion;
 import xerca.xercamod.common.item.ItemCushion;
 
@@ -38,7 +39,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public EntityCushion(Level worldIn) {
-        super(Entities.CUSHION, worldIn);
+        super(Entities.CUSHION.get(), worldIn);
         this.setNoGravity(false);
     }
     public EntityCushion(Level worldIn, double x, double y, double z, ItemCushion item) {
@@ -49,7 +50,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
         this.cushionIndex = block.cushionIndex;
     }
 
-    public EntityCushion(PlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityCushion(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
         this(world);
     }
 
@@ -67,12 +68,12 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
 
 
     @Override
-    public boolean skipAttackInteraction(Entity entityIn) {
+    public boolean skipAttackInteraction(@NotNull Entity entityIn) {
         return entityIn instanceof Player && this.hurt(DamageSource.playerAttack((Player) entityIn), 0.0F);
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurt(@NotNull DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
@@ -89,8 +90,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     public void onBroken(@Nullable Entity brokenEntity) {
         if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(SoundEvents.WOOL_BREAK, 1.0F, 1.0F);
-            if (brokenEntity instanceof Player) {
-                Player entityplayer = (Player)brokenEntity;
+            if (brokenEntity instanceof Player entityplayer) {
                 if (entityplayer.getAbilities().instabuild) {
                     return;
                 }
@@ -144,7 +144,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
      * Applies the given player interaction to this Entity.
      */
     @Override
-    public InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
+    public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
         if (!this.level.isClientSide) {
             player.startRiding(this);
         }
@@ -152,12 +152,12 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
         if (player.isSteppingCarefully()) {
             return InteractionResult.PASS;
         } else {

@@ -17,10 +17,12 @@ Food:
     - Ultimate burger is very big
     - Apple pie and sweet berry pie can be placed on the ground and be eaten in 6 slices
     - Cheese wheel and pizza can be placed on the ground and eaten in 4 quarters
+    - Cheese wheel can be sliced by using knife on the block
     - There are 45(?) different pizza ingredient combinations, and the placed cooked pizza displays its ingredients
     - Milk can be placed in copper vat to make cheese (takes a random time around 1 minute)
     - Döner can be made using iron bar, fire or campfire, raw mutton, and a redstone signal, then sliced with a knife
-    - Can fill bottles with sparkling water from bubble columns, which can be used to make soda or cola
+    - Eating chorus cupcakes teleports player somewhere nearby
+    - Can fill glasses with sparkling water from bubble columns, which can be used to make soda or cola
 
 Tea:
     - Tea seeds drop from grass.
@@ -100,7 +102,7 @@ Golden cupcake:
         * Random effect
 
 Cushion:
-    - There is a cushion for all 16 colors in the decorative blocks creative tab, and they can be crafted
+    - There is a cushion for all 16 colors in the decorative blocks creative tab
     - Players can sit on the cushion
     - Cushion falls slowly if nothing is under it
 
@@ -137,3 +139,9 @@ Decoration:
     - Leather block
     - Straw block
     - Terracotta tiles, stairs and slabs of all colors
+
+Scythe:
+    - Scythe harvests fully grown crops but doesn't harm growing ones
+    - Scythe with sweeping edge can harvests multiple blocks at once (more with level 2)
+    - Guillotine enchantment gives scythe a special right-click charged attack, if it kills, drops head of target
+    - Devour enchantment drops hearts on hit, hearts heal the scythe user

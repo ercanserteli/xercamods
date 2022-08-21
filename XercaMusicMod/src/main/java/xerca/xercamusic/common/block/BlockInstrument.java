@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -29,7 +29,7 @@ public abstract class BlockInstrument extends Block {
         super(properties);
     }
 
-    public abstract ItemInstrument getItemInstrument();
+    public abstract IItemInstrument getItemInstrument();
 
     @Override
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {

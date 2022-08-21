@@ -11,6 +11,8 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xerca.xercapaint.common.entity.Entities;
+import xerca.xercapaint.common.item.Items;
 import xerca.xercapaint.common.packets.*;
 
 @Mod(XercaPaint.MODID)
@@ -33,6 +35,10 @@ public class XercaPaint {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 
         MinecraftForge.EVENT_BUS.register(this);
+        Items.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Items.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Entities.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        SoundEvents.SOUND_EVENTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     @SuppressWarnings({"UnusedAssignment"})
@@ -63,11 +69,5 @@ public class XercaPaint {
 
     private void processIMC(final InterModProcessEvent event)
     {
-    }
-
-    // This is for conveniently initializing object holders without annoying the IDE
-    @SuppressWarnings({"SameReturnValue"})
-    public static <T> T Null() {
-        return null;
     }
 }

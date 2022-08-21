@@ -26,14 +26,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
 
 public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
-    private static final EntityDataAccessor<Integer> cau_ent = SynchedEntityData.<Integer>defineId(EntityHook.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> cau_ent = SynchedEntityData.defineId(EntityHook.class, EntityDataSerializers.INT);
     private static final double DEFAULT_SPEED = 1.5D;
     private int xTile;
     private int yTile;
@@ -56,7 +57,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public EntityHook(Level worldIn) {
-        super(Entities.HOOK, worldIn);
+        super(Entities.HOOK.get(), worldIn);
         this.xTile = -1;
         this.yTile = -1;
         this.zTile = -1;
@@ -69,12 +70,12 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
 
         this.isReturning = false;
         this.angler = hooker;
-        if(rod.getItem() == Items.ITEM_GRAB_HOOK){
+        if(rod.getItem() == Items.ITEM_GRAB_HOOK.get()){
             this.rod = rod;
             this.rod.getOrCreateTag().putBoolean("cast", true);
-            hasGrappling = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_GRAPPLING, this.rod) > 0;
-            hasGentle = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_GENTLE_GRAB, this.rod) > 0;
-            turboLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_TURBO_GRAB, this.rod);
+            hasGrappling = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_GRAPPLING.get(), this.rod) > 0;
+            hasGentle = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_GENTLE_GRAB.get(), this.rod) > 0;
+            turboLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_TURBO_GRAB.get(), this.rod);
         }
 
         double speedMultiplier = (turboLevel * 0.25 + 1);
@@ -89,7 +90,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         double y = this.angler.getY() + (double)this.angler.getEyeHeight();
         double z = this.angler.getZ();// - (double)f2 * 0.3D;
         this.moveTo(x, y, z, yaw, pitch);
-        Vec3 vec3d = new Vec3((double)(-f3), -(f5 / f4), (double)(-f2));
+        Vec3 vec3d = new Vec3(-f3, -(f5 / f4), -f2);
         double length = vec3d.length();
         vec3d = vec3d.scale(speed/length);
         this.setDeltaMovement(vec3d);
@@ -99,7 +100,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         this.xRotO = this.getXRot();
     }
 
-    public EntityHook(PlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityHook(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
         this(world);
     }
 
@@ -107,7 +108,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         return angler;
     }
 
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
         if (cau_ent.equals(key)) {
             int i = this.getEntityData().get(cau_ent);
 
@@ -120,7 +121,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -154,7 +155,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
                 this.caughtEntity = caught;
 
                 if(!hasGentle){
-                    level.playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 1.0f, level.random.nextFloat() * 0.2F + 0.9F);
+                    level.playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT.get(), SoundSource.PLAYERS, 1.0f, level.random.nextFloat() * 0.2F + 0.9F);
 
                     caughtEntity.hurt(DamageSource.thrown(this, this.angler), 3);
                     if(!this.caughtEntity.isAlive()){
@@ -162,7 +163,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
                         return true;
                     }
                 }else{
-                    level.playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 0.6f, level.random.nextFloat() * 0.2F + 1.5f);
+                    level.playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT.get(), SoundSource.PLAYERS, 0.6f, level.random.nextFloat() * 0.2F + 1.5f);
                 }
 
                 this.caughtEntity.noPhysics = true;
@@ -250,7 +251,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         } else {
             ItemStack itemstack = this.angler.getMainHandItem();
 
-            if (age > 80 || !this.angler.isAlive() || itemstack.getItem() != Items.ITEM_GRAB_HOOK || this.distanceToSqr(this.angler) > 4096.0D) {
+            if (age > 80 || !this.angler.isAlive() || itemstack.getItem() != Items.ITEM_GRAB_HOOK.get() || this.distanceToSqr(this.angler) > 4096.0D) {
                 this.remove();
                 this.angler.fishing = null;
                 return;
@@ -330,7 +331,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
             this.angler.fishing = null;
             this.angler.noPhysics = false;
         }
-        if(this.rod.getItem() == Items.ITEM_GRAB_HOOK){
+        if(this.rod.getItem() == Items.ITEM_GRAB_HOOK.get()){
             this.rod.getOrCreateTag().putBoolean("cast", false);
         }
     }

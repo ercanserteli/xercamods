@@ -9,15 +9,15 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
-import xerca.xercamusic.common.item.ItemInstrument.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class SingleNoteClientPacketHandler {
-    static Map<Pair<Player, Integer>, NoteSoundEntry> noteSounds = new HashMap<>();
+    static Map<IItemInstrument.Pair<Player, Integer>, NoteSoundEntry> noteSounds = new HashMap<>();
 
     public static void handle(final SingleNoteClientPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
@@ -32,7 +32,7 @@ public class SingleNoteClientPacketHandler {
     private static void processMessage(SingleNoteClientPacket msg) {
         Player playerEntity = msg.getPlayerEntity();
         if(!playerEntity.equals(Minecraft.getInstance().player)){
-            ItemInstrument.InsSound sound = msg.getInstrumentItem().getSound(msg.getNote());
+            IItemInstrument.InsSound sound = msg.getInstrumentItem().getSound(msg.getNote());
             if(sound == null){
                 return;
             }
@@ -43,11 +43,11 @@ public class SingleNoteClientPacketHandler {
 
                 NoteSound noteSound = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
                         ClientStuff.playNote(sound.sound, x, y, z, SoundSource.PLAYERS, msg.getVolume()*1.5f, sound.pitch, (byte) -1));
-                noteSounds.put(Pair.of(playerEntity, msg.getNote()), new NoteSoundEntry(noteSound, playerEntity));
+                noteSounds.put(IItemInstrument.Pair.of(playerEntity, msg.getNote()), new NoteSoundEntry(noteSound, playerEntity));
                 playerEntity.level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (msg.getNote()) / 24.0D, 0.0D, 0.0D);
             }
             else{
-                NoteSoundEntry oldNoteSoundEntry = noteSounds.get(Pair.of(playerEntity, msg.getNote()));
+                NoteSoundEntry oldNoteSoundEntry = noteSounds.get(IItemInstrument.Pair.of(playerEntity, msg.getNote()));
                 if(oldNoteSoundEntry != null && !oldNoteSoundEntry.noteSound.isStopped()){
                     oldNoteSoundEntry.noteSound.stopSound();
                 }

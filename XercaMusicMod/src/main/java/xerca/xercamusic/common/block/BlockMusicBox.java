@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
@@ -46,7 +46,6 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
         super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD));
         this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).
                 setValue(HAS_MUSIC, false).setValue(HAS_INSTRUMENT, false).setValue(FACING, Direction.NORTH).setValue(POWERING, false));
-        this.setRegistryName("music_box");
     }
 
     @Override
@@ -72,7 +71,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
         if (!world.isClientSide) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof TileEntityMusicBox te) {
-                ItemStack itemstack = isMusic ? te.getNoteStack().copy() : new ItemStack(te.getInstrument());
+                ItemStack itemstack = isMusic ? te.getNoteStack().copy() : new ItemStack((Item)te.getInstrument());
                 if (!itemstack.isEmpty()) {
                     if (!isBreaking) {
                         if (isMusic) {
@@ -129,13 +128,13 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(hand);
         if (hit.getDirection() == Direction.UP && state.getValue(HAS_MUSIC)) {
-            if(heldItem.getItem() instanceof ItemInstrument && !state.getValue(HAS_INSTRUMENT)){
+            if(heldItem.getItem() instanceof IItemInstrument && !state.getValue(HAS_INSTRUMENT)){
                 return InteractionResult.PASS;
             }
             ejectItem(worldIn, pos, state, true, false);
             return InteractionResult.SUCCESS;
         } else if (hit.getDirection() == state.getValue(FACING).getOpposite() && state.getValue(HAS_INSTRUMENT)) {
-            if(heldItem.getItem() == Items.MUSIC_SHEET && !state.getValue(HAS_MUSIC)){
+            if(heldItem.getItem() == Items.MUSIC_SHEET.get() && !state.getValue(HAS_MUSIC)){
                 return InteractionResult.PASS;
             }
             worldIn.levelEvent(null, 1006, pos, 0); //play door open sound
@@ -147,7 +146,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != Blocks.MUSIC_BOX || newState.getBlock() != Blocks.MUSIC_BOX) {
+        if (state.getBlock() != Blocks.MUSIC_BOX.get() || newState.getBlock() != Blocks.MUSIC_BOX.get()) {
             ejectItem(worldIn, pos, state, true, true);
             ejectItem(worldIn, pos, state, false, true);
 

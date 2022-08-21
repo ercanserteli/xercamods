@@ -2,6 +2,7 @@ package xerca.xercamod.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -16,10 +17,10 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
@@ -29,16 +30,15 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
 
     BlockTeaPlant() {
         super(Block.Properties.of(Material.PLANT).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
-        this.setRegistryName("block_tea_plant");
     }
 
     @Override
-    protected ItemLike getBaseSeedId() {
-        return Items.ITEM_TEA_SEEDS;
+    protected @NotNull ItemLike getBaseSeedId() {
+        return Items.ITEM_TEA_SEEDS.get();
     }
 
     @Override
-    public IntegerProperty getAgeProperty() {
+    public @NotNull IntegerProperty getAgeProperty() {
         return TEA_AGE;
     }
 
@@ -48,7 +48,7 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
         if (rand.nextInt(3) != 0) {
             super.tick(state, worldIn, pos, rand);
         }
@@ -65,7 +65,7 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE[state.getValue(this.getAgeProperty())];
     }
 }

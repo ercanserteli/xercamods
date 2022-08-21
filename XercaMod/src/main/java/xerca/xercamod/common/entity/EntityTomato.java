@@ -15,8 +15,9 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
 
@@ -27,18 +28,18 @@ public class EntityTomato extends ThrowableItemProjectile {
     }
 
     public EntityTomato(Level worldIn, LivingEntity throwerIn) {
-        super(Entities.TOMATO, throwerIn, worldIn);
+        super(Entities.TOMATO.get(), throwerIn, worldIn);
     }
 
     public EntityTomato(Level worldIn, double x, double y, double z) {
-        super(Entities.TOMATO, x, y, z, worldIn);
+        super(Entities.TOMATO.get(), x, y, z, worldIn);
     }
 
     public EntityTomato(Level worldIn) {
-        super(Entities.TOMATO, worldIn);
+        super(Entities.TOMATO.get(), worldIn);
     }
 
-    public EntityTomato(PlayMessages.SpawnEntity spawnEntity, Level world) {
+    public EntityTomato(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
         this(world);
     }
 
@@ -51,7 +52,7 @@ public class EntityTomato extends ThrowableItemProjectile {
 
         if (!this.level.isClientSide) {
             this.level.broadcastEntityEvent(this, (byte)3);
-            level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, SoundEvents.TOMATO_SPLASH, SoundSource.PLAYERS, 1.0f, this.random.nextFloat() * 0.2F + 0.9F);
+            level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, SoundEvents.TOMATO_SPLASH.get(), SoundSource.PLAYERS, 1.0f, this.random.nextFloat() * 0.2F + 0.9F);
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -67,24 +68,24 @@ public class EntityTomato extends ThrowableItemProjectile {
         if (id == 3)
         {
             for (int j = 0; j < 8; ++j) {
-                this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO)), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.28D, ((double) this.random.nextFloat() - 0.3D) * 0.28D, ((double) this.random.nextFloat() - 0.5D) * 0.28D);
+                this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO.get())), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.28D, ((double) this.random.nextFloat() - 0.3D) * 0.28D, ((double) this.random.nextFloat() - 0.5D) * 0.28D);
             }
         }
     }
 
     @Override
-    protected Item getDefaultItem() {
-        return Items.ITEM_TOMATO;
+    protected @NotNull Item getDefaultItem() {
+        return Items.ITEM_TOMATO.get();
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ItemStack getItem() {
-        return new ItemStack(Items.ITEM_TOMATO);
+    public @NotNull ItemStack getItem() {
+        return new ItemStack(Items.ITEM_TOMATO.get());
     }
 
     @Override
-    public Packet<?> getAddEntityPacket()
+    public @NotNull Packet<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

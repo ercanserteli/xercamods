@@ -37,9 +37,7 @@ import xerca.xercapaint.common.packets.PictureRequestPacket;
 
 import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-
 
 public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpawnData {
     private String canvasName;
@@ -55,7 +53,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     public static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
 
     public EntityCanvas(Level world, CompoundTag canvasNBT, BlockPos pos, Direction facing, CanvasType canvasType, int rotation) {
-        super(Objects.requireNonNull(Entities.CANVAS), world, pos);
+        super(Entities.CANVAS.get(), world, pos);
         this.canvasName = canvasNBT.getString("name");
         this.canvasVersion = canvasNBT.getInt("v");
         if(canvasNBT.contains("title") && canvasNBT.contains("author")){
@@ -82,7 +80,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
     }
 
     public EntityCanvas(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
-        super(Objects.requireNonNull(Entities.CANVAS), world);
+        super(Entities.CANVAS.get(), world);
     }
 
     protected void defineSynchedData() {
@@ -123,16 +121,16 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
             }
             ItemStack canvasItem;
             if(canvasType == CanvasType.SMALL){
-                canvasItem = new ItemStack(Items.ITEM_CANVAS);
+                canvasItem = new ItemStack(Items.ITEM_CANVAS.get());
             }
             else if(canvasType == CanvasType.LARGE){
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_LARGE);
+                canvasItem = new ItemStack(Items.ITEM_CANVAS_LARGE.get());
             }
             else if(canvasType == CanvasType.LONG){
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_LONG);
+                canvasItem = new ItemStack(Items.ITEM_CANVAS_LONG.get());
             }
             else if(canvasType == CanvasType.TALL){
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_TALL);
+                canvasItem = new ItemStack(Items.ITEM_CANVAS_TALL.get());
             }else{
                 XercaPaint.LOGGER.error("Invalid canvas type");
                 return;

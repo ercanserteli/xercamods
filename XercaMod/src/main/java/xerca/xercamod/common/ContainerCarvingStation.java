@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.crafting.RecipeCarvingStation;
 import xerca.xercamod.common.item.Items;
@@ -32,7 +33,7 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
     /** The ItemStack set in the input slot by the player. */
     private ItemStack itemStackInput = ItemStack.EMPTY;
     /**
-     * Stores the game time of the last time the player took items from the the crafting result slot. This is used to
+     * Stores the game time of the last time the player took items from the crafting result slot. This is used to
      * prevent the sound from being played multiple times on the same tick.
      */
     private long lastOnTake;
@@ -55,12 +56,12 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
     /** The inventory that stores the output of the crafting recipe. */
     private final ResultContainer inventory = new ResultContainer();
 
-    public ContainerCarvingStation(int windowIdIn, Inventory playerInventoryIn, FriendlyByteBuf extraData) {
+    public ContainerCarvingStation(int windowIdIn, Inventory playerInventoryIn, FriendlyByteBuf ignoredExtraData) {
         this(windowIdIn, playerInventoryIn, ContainerLevelAccess.NULL);
     }
 
     public ContainerCarvingStation(int windowIdIn, Inventory playerInventoryIn, final ContainerLevelAccess worldPosCallableIn) {
-        super(TileEntities.CONTAINER_CARVING_STATION, windowIdIn);
+        super(TileEntities.CONTAINER_CARVING_STATION.get(), windowIdIn);
         this.worldPosCallable = worldPosCallableIn;
         this.world = playerInventoryIn.player.level;
         this.inputInventorySlot = this.addSlot(new Slot(this.inputInventory, 0, 20, 33));
@@ -131,7 +132,7 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
      * Determines whether supplied player can use this container
      */
     public boolean stillValid(Player playerIn) {
-        return stillValid(this.worldPosCallable, playerIn, Blocks.CARVING_STATION);
+        return stillValid(this.worldPosCallable, playerIn, Blocks.CARVING_STATION.get());
     }
 
     /**
@@ -163,7 +164,7 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
         this.selectedRecipe.set(-1);
         this.outputInventorySlot.set(ItemStack.EMPTY);
         if (!stack.isEmpty()) {
-            this.recipes = this.world.getRecipeManager().getRecipesFor(Items.CARVING_STATION_TYPE, inventoryIn, this.world);
+            this.recipes = this.world.getRecipeManager().getRecipesFor(Items.CARVING_STATION_TYPE.get(), inventoryIn, this.world);
         }
     }
 
@@ -178,8 +179,8 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
         this.broadcastChanges();
     }
 
-    public MenuType<?> getType() {
-        return TileEntities.CONTAINER_CARVING_STATION;
+    public @NotNull MenuType<?> getType() {
+        return TileEntities.CONTAINER_CARVING_STATION.get();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -199,10 +200,10 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      */
-    public ItemStack quickMoveStack(Player playerIn, int index) {
+    public @NotNull ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             Item item = itemstack1.getItem();
             itemstack = itemstack1.copy();
@@ -217,7 +218,7 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(itemstack1, 2, 38, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (this.world.getRecipeManager().getRecipeFor(Items.CARVING_STATION_TYPE, new SimpleContainer(itemstack1), this.world).isPresent()) {
+            } else if (this.world.getRecipeManager().getRecipeFor(Items.CARVING_STATION_TYPE.get(), new SimpleContainer(itemstack1), this.world).isPresent()) {
                 if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -251,8 +252,6 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
     public void removed(Player playerIn) {
         super.removed(playerIn);
         this.inventory.removeItemNoUpdate(1);
-        this.worldPosCallable.execute((p_217079_2_, p_217079_3_) -> {
-            this.clearContainer(playerIn, this.inputInventory);
-        });
+        this.worldPosCallable.execute((p_217079_2_, p_217079_3_) -> this.clearContainer(playerIn, this.inputInventory));
     }
 }

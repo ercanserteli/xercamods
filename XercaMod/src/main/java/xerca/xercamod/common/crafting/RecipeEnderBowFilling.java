@@ -10,6 +10,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemFlask;
 import xerca.xercamod.common.item.Items;
@@ -22,7 +23,7 @@ public class RecipeEnderBowFilling extends CustomRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(!Config.isEnderFlaskEnabled()){
             return false;
         }
@@ -35,7 +36,7 @@ public class RecipeEnderBowFilling extends CustomRecipe {
         for(int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ENDER_BOW) {
+                if (itemstack.getItem() == Items.ENDER_BOW.get()) {
                     if (!bowStack.isEmpty()) {
                         return false;
                     }
@@ -69,7 +70,7 @@ public class RecipeEnderBowFilling extends CustomRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
         if(!Config.isEnderFlaskEnabled()){
             return ItemStack.EMPTY;
         }
@@ -83,7 +84,7 @@ public class RecipeEnderBowFilling extends CustomRecipe {
         for(int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ENDER_BOW) {
+                if (itemstack.getItem() == Items.ENDER_BOW.get()) {
                     if (!bowStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
@@ -114,7 +115,7 @@ public class RecipeEnderBowFilling extends CustomRecipe {
 
         int oldCharges = ItemFlask.getCharges(bowStack);
         if (!bowStack.isEmpty() && i > 0 && !potionType.equals(Potions.EMPTY) && (oldCharges + i) <= ItemFlask.getMaxCharges(bowStack)) {
-            ItemStack resultStack = new ItemStack(Items.ENDER_BOW);
+            ItemStack resultStack = new ItemStack(Items.ENDER_BOW.get());
             resultStack.setTag(bowStack.getOrCreateTag().copy());
             PotionUtils.setPotion(resultStack, potionType);
             ItemFlask.setCharges(resultStack, oldCharges + i);
@@ -125,8 +126,8 @@ public class RecipeEnderBowFilling extends CustomRecipe {
         }
     }
 
-    public RecipeSerializer<?> getSerializer() {
-        return Items.CRAFTING_SPECIAL_ENDER_BOW_FILLING;
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return Items.CRAFTING_SPECIAL_ENDER_BOW_FILLING.get();
     }
 
     /**

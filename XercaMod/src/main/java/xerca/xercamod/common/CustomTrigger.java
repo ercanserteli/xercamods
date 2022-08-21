@@ -11,6 +11,7 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -27,25 +28,18 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
         this.resourceLocation = new ResourceLocation(registryName);
     }
 
-    public CustomTrigger(ResourceLocation resourceLocation)
-    {
-        super();
-        this.resourceLocation = resourceLocation;
-    }
-
     @Override
-    public ResourceLocation getId()
+    public @NotNull ResourceLocation getId()
     {
         return resourceLocation;
     }
 
     @Override
-    public void addPlayerListener(PlayerAdvancements playerAdvancementsIn, CriterionTrigger.Listener<CustomTrigger.Instance> listener)
+    public void addPlayerListener(@NotNull PlayerAdvancements playerAdvancementsIn, CriterionTrigger.@NotNull Listener<CustomTrigger.Instance> listener)
     {
         CustomTrigger.Listeners myCustomTrigger$listeners = listeners.get(playerAdvancementsIn);
 
-        if (myCustomTrigger$listeners == null)
-        {
+        if (myCustomTrigger$listeners == null) {
             myCustomTrigger$listeners = new CustomTrigger.Listeners(playerAdvancementsIn);
             listeners.put(playerAdvancementsIn, myCustomTrigger$listeners);
         }
@@ -54,29 +48,26 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     }
 
     @Override
-    public void removePlayerListener(PlayerAdvancements playerAdvancementsIn, CriterionTrigger.Listener<CustomTrigger.Instance> listener)
+    public void removePlayerListener(@NotNull PlayerAdvancements playerAdvancementsIn, CriterionTrigger.@NotNull Listener<CustomTrigger.Instance> listener)
     {
         CustomTrigger.Listeners xercamodtrigger$listeners = listeners.get(playerAdvancementsIn);
 
-        if (xercamodtrigger$listeners != null)
-        {
+        if (xercamodtrigger$listeners != null) {
             xercamodtrigger$listeners.remove(listener);
-
-            if (xercamodtrigger$listeners.isEmpty())
-            {
+            if (xercamodtrigger$listeners.isEmpty()) {
                 listeners.remove(playerAdvancementsIn);
             }
         }
     }
 
     @Override
-    public void removePlayerListeners(PlayerAdvancements playerAdvancementsIn)
+    public void removePlayerListeners(@NotNull PlayerAdvancements playerAdvancementsIn)
     {
         listeners.remove(playerAdvancementsIn);
     }
 
     @Override
-    public Instance createInstance(JsonObject json, DeserializationContext conditions) {
+    public @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull DeserializationContext conditions) {
         return new CustomTrigger.Instance(getId());
     }
 
@@ -89,8 +80,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     {
         CustomTrigger.Listeners xercamodtrigger$listeners = listeners.get(parPlayer.getAdvancements());
 
-        if (xercamodtrigger$listeners != null)
-        {
+        if (xercamodtrigger$listeners != null) {
             xercamodtrigger$listeners.trigger(parPlayer);
         }
     }
@@ -103,16 +93,6 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
         public Instance(ResourceLocation resourceLocation)
         {
             super(resourceLocation, EntityPredicate.Composite.ANY);
-        }
-
-        /**
-         * Test.
-         *
-         * @return true, if successful
-         */
-        public boolean test()
-        {
-            return true;
         }
     }
 
@@ -164,29 +144,22 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
         /**
          * Trigger.
          *
-         * @param player the player
+         * @param ignoredPlayer the player
          */
-        public void trigger(ServerPlayer player)
+        public void trigger(ServerPlayer ignoredPlayer)
         {
             ArrayList<CriterionTrigger.Listener<CustomTrigger.Instance>> list = null;
 
-            for (CriterionTrigger.Listener<CustomTrigger.Instance> listener : listeners)
-            {
-                if (listener.getTriggerInstance().test())
-                {
-                    if (list == null)
-                    {
-                        list = Lists.newArrayList();
-                    }
-
-                    list.add(listener);
+            for (CriterionTrigger.Listener<CustomTrigger.Instance> listener : listeners) {
+                if (list == null) {
+                    list = Lists.newArrayList();
                 }
+
+                list.add(listener);
             }
 
-            if (list != null)
-            {
-                for (CriterionTrigger.Listener<CustomTrigger.Instance> listener1 : list)
-                {
+            if (list != null) {
+                for (CriterionTrigger.Listener<CustomTrigger.Instance> listener1 : list) {
                     listener1.run(playerAdvancements);
                 }
             }

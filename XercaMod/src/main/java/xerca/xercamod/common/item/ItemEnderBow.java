@@ -4,8 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 
 import javax.annotation.Nonnull;
@@ -35,10 +35,10 @@ public class ItemEnderBow extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @Nonnull InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
         if (getCharges(stack) > 0) {
-            float range = EnchantmentHelper.getItemEnchantmentLevel(xerca.xercamod.common.item.Items.ENCHANTMENT_RANGE, stack) + 1;
+            float range = EnchantmentHelper.getItemEnchantmentLevel(xerca.xercamod.common.item.Items.ENCHANTMENT_RANGE.get(), stack) + 1;
             if(range > 1){
                 range *= 0.8f;
             }
@@ -52,9 +52,7 @@ public class ItemEnderBow extends Item {
                 worldIn.addFreshEntity(potionentity);
 
                 decrementCharges(stack);
-                stack.hurtAndBreak(1, playerIn, (playerEntity) -> {
-                    playerEntity.broadcastBreakEvent(handIn);
-                });
+                stack.hurtAndBreak(1, playerIn, (playerEntity) -> playerEntity.broadcastBreakEvent(handIn));
             }
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         } else {
@@ -65,7 +63,7 @@ public class ItemEnderBow extends Item {
     public static boolean isLingering(ItemStack itemstack){
         if(itemstack.hasTag()){
             CompoundTag tag = itemstack.getTag();
-            if(tag.contains("isLinger")){
+            if(tag != null && tag.contains("isLinger")){
                 return tag.getBoolean("isLinger");
             }
         }
@@ -75,14 +73,14 @@ public class ItemEnderBow extends Item {
     public static int getCharges(ItemStack itemstack){
         if(itemstack.hasTag()){
             CompoundTag tag = itemstack.getTag();
-            if(tag.contains("charges")){
+            if(tag != null && tag.contains("charges")){
                 return tag.getInt("charges");
             }
         }
         return 0;
     }
 
-    private boolean decrementCharges(ItemStack itemstack){
+    private void decrementCharges(ItemStack itemstack){
         CompoundTag tag = itemstack.getOrCreateTag();
         if(tag.contains("charges")){
             int oldCharges = tag.getInt("charges");
@@ -91,31 +89,29 @@ public class ItemEnderBow extends Item {
                     tag.remove("Potion");
                 }
                 tag.putInt("charges", oldCharges - 1);
-                return true;
             }
         }
-        return false;
     }
 
     @Override
-    public String getDescriptionId(ItemStack stack) {
+    public @NotNull String getDescriptionId(@NotNull ItemStack stack) {
         return PotionUtils.getPotion(stack).getName(this.getDescriptionId() + ".effect.");
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        TranslatableComponent text = new TranslatableComponent("xercamod.ender_bow_tooltip");
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        MutableComponent text = Component.translatable("xercamod.ender_bow_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
 
         PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
-        tooltip.add(new TextComponent(getCharges(stack) + " charges").withStyle(ChatFormatting.YELLOW));
+        tooltip.add(Component.literal(getCharges(stack) + " charges").withStyle(ChatFormatting.YELLOW));
     }
 
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean isFoil(ItemStack stack) {
+    public boolean isFoil(@NotNull ItemStack stack) {
         return super.isFoil(stack);
     }
 
@@ -136,7 +132,7 @@ public class ItemEnderBow extends Item {
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment ench)
     {
-        return ench.category == EnchantmentCategory.BREAKABLE || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_RANGE
-                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY;
+        return ench.category == EnchantmentCategory.BREAKABLE || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_RANGE.get()
+                || ench == xerca.xercamod.common.item.Items.ENCHANTMENT_CAPACITY.get();
     }
 }

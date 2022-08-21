@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.NotNull;
 
 public class SavedDataOmniChest extends SavedData {
     private final ContainerOmniChest omniChestInventory;
@@ -18,12 +19,10 @@ public class SavedDataOmniChest extends SavedData {
 
     public static SavedDataOmniChest load(CompoundTag tag) {
         Tag chestTag = tag.get("OmniChest");
-        if(chestTag instanceof ListTag){
-            ListTag invData = (ListTag) chestTag;
+        if(chestTag instanceof ListTag invData){
             ContainerOmniChest chest = new ContainerOmniChest();
             chest.fromTag(invData);
-            SavedDataOmniChest chestData = new SavedDataOmniChest(chest);
-            return chestData;
+            return new SavedDataOmniChest(chest);
         }
         else{
             return new SavedDataOmniChest();
@@ -31,7 +30,7 @@ public class SavedDataOmniChest extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public @NotNull CompoundTag save(CompoundTag tag) {
         tag.put("OmniChest", omniChestInventory.createTag());
         return tag;
     }

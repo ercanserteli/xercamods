@@ -12,20 +12,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
@@ -33,7 +33,7 @@ import java.util.UUID;
 public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnData {
     private Player body;
     private ItemStack note;
-    private ItemInstrument instrument;
+    private IItemInstrument instrument;
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
     private int mLengthBeats;
     private float mVolume;
@@ -44,18 +44,18 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     private SoundController soundController = null;
 
     public EntityMusicSpirit(Level worldIn) {
-        super(Objects.requireNonNull(Entities.MUSIC_SPIRIT), worldIn);
+        super(Entities.MUSIC_SPIRIT.get(), worldIn);
     }
 
-    public EntityMusicSpirit(Level worldIn, Player body, ItemInstrument instrument) {
-        super(Objects.requireNonNull(Entities.MUSIC_SPIRIT), worldIn);
+    public EntityMusicSpirit(Level worldIn, Player body, IItemInstrument instrument) {
+        super(Entities.MUSIC_SPIRIT.get(), worldIn);
         this.body = body;
         this.instrument = instrument;
         setNoteFromBody();
         this.setPos(body.getX(), body.getY(), body.getZ());
     }
 
-    public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, ItemInstrument instrument) {
+    public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, IItemInstrument instrument) {
         this(worldIn, body, instrument);
         setBlockPosAndInstrument(blockInsPos);
     }
@@ -87,20 +87,20 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         ItemStack mainStack = body.getMainHandItem();
         ItemStack offStack = body.getOffhandItem();
         if(blockInstrument != null && blockInsPos != null){
-            return mainStack.getItem() == Items.MUSIC_SHEET || offStack.getItem() == Items.MUSIC_SHEET;
+            return mainStack.getItem() == Items.MUSIC_SHEET.get() || offStack.getItem() == Items.MUSIC_SHEET.get();
         }
         else{
-            return offStack.getItem() == Items.MUSIC_SHEET && mainStack.getItem() == instrument;
+            return offStack.getItem() == Items.MUSIC_SHEET.get() && mainStack.getItem() == instrument;
         }
     }
 
     private void setNoteFromBody(){
         ItemStack mainStack = body.getMainHandItem();
         ItemStack offStack = body.getOffhandItem();
-        if(mainStack.getItem() == Items.MUSIC_SHEET){
+        if(mainStack.getItem() == Items.MUSIC_SHEET.get()){
             this.note = mainStack;
         }
-        else if(offStack.getItem() == Items.MUSIC_SHEET){
+        else if(offStack.getItem() == Items.MUSIC_SHEET.get()){
             this.note = offStack;
         }
         else{
@@ -174,7 +174,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             this.setNoteFromBody();
         }
         else{
-            this.instrument = (ItemInstrument) body.getMainHandItem().getItem();
+            this.instrument = (IItemInstrument) body.getMainHandItem().getItem();
             this.note = body.getOffhandItem();
             this.setPos(body.getX(), body.getY(), body.getZ());
         }

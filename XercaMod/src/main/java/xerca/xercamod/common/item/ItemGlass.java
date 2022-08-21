@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.SoundEvents;
 
@@ -19,7 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemGlass extends Item {
     public ItemGlass() {
         super((new Item.Properties()).tab(CreativeModeTab.TAB_MISC));
-        this.setRegistryName("item_glass");
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ItemGlass extends Item {
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext ctx) {
+    public @NotNull InteractionResult useOn(@NotNull UseOnContext ctx) {
         return getCarbonatedWater(ctx) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
@@ -44,8 +44,8 @@ public class ItemGlass extends Item {
                 ctx.getLevel().getBlockState(pos.above()).getBlock() == Blocks.BUBBLE_COLUMN
         ) {
             ctx.getItemInHand().shrink(1);
-            ctx.getPlayer().addItem(new ItemStack(Items.CARBONATED_WATER));
-            ctx.getLevel().playSound(ctx.getPlayer(), ctx.getClickedPos(), SoundEvents.FIZZY, SoundSource.PLAYERS,
+            ctx.getPlayer().addItem(new ItemStack(Items.CARBONATED_WATER.get()));
+            ctx.getLevel().playSound(ctx.getPlayer(), ctx.getClickedPos(), SoundEvents.FIZZY.get(), SoundSource.PLAYERS,
                     1.0f, 0.9f + ctx.getLevel().random.nextFloat()*0.2f);
             return true;
         }

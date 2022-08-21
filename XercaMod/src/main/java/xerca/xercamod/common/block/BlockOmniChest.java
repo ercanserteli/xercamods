@@ -4,9 +4,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
@@ -34,37 +34,37 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.ContainerOmniChest;
 import xerca.xercamod.common.SavedDataOmniChest;
 import xerca.xercamod.common.tile_entity.TileEntities;
 import xerca.xercamod.common.tile_entity.TileEntityOmniChest;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> implements SimpleWaterloggedBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-    private static final Component CONTAINER_TITLE = new TranslatableComponent("container.xercamod.omni_chest");
+    private static final Component CONTAINER_TITLE = Component.translatable("container.xercamod.omni_chest");
 
     public BlockOmniChest(BlockBehaviour.Properties p_53121_) {
-        super(p_53121_, () -> TileEntities.OMNI_CHEST);
+        super(p_53121_, TileEntities.OMNI_CHEST::get);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
     }
 
     @Override
-    public DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState blockState, Level level, BlockPos blockPos, boolean b) {
+    public DoubleBlockCombiner.@NotNull NeighborCombineResult<? extends ChestBlockEntity> combine(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, boolean b) {
         return DoubleBlockCombiner.Combiner::acceptNone;
     }
 
     @Override
-    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
         return SHAPE;
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState blockState) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
@@ -81,8 +81,8 @@ public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> impl
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (level.isClientSide) {
+    public @NotNull InteractionResult use(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
+        if (level.isClientSide || level.getServer() == null) {
             return InteractionResult.SUCCESS;
         }
         ContainerOmniChest chestInventory = getContainer(level.getServer());
@@ -90,7 +90,7 @@ public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> impl
         if (chestInventory != null && blockentity instanceof TileEntityOmniChest) {
             BlockPos blockpos = blockPos.above();
             if (level.getBlockState(blockpos).isRedstoneConductor(level, blockpos)) {
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(false);
             } else {
                 TileEntityOmniChest omniChest = (TileEntityOmniChest)blockentity;
                 chestInventory.setActiveChest(omniChest, player);
@@ -99,23 +99,23 @@ public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> impl
                 return InteractionResult.CONSUME;
             }
         } else {
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(false);
         }
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new TileEntityOmniChest(blockPos, blockState);
     }
 
     @Override
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return level.isClientSide ? createTickerHelper(blockEntityType, TileEntities.OMNI_CHEST, TileEntityOmniChest::lidAnimateTick) : null;
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? createTickerHelper(blockEntityType, TileEntities.OMNI_CHEST.get(), TileEntityOmniChest::lidAnimateTick) : null;
     }
 
     @Override
-    public void animateTick(BlockState blockState, Level level, BlockPos blockPos, Random random) {
+    public void animateTick(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull RandomSource random) {
         for(int i = 0; i < 3; ++i) {
             int j = random.nextInt(2) * 2 - 1;
             int k = random.nextInt(2) * 2 - 1;
@@ -131,12 +131,12 @@ public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> impl
     }
 
     @Override
-    public BlockState rotate(BlockState p_53157_, Rotation p_53158_) {
+    public @NotNull BlockState rotate(BlockState p_53157_, Rotation p_53158_) {
         return p_53157_.setValue(FACING, p_53158_.rotate(p_53157_.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState p_53154_, Mirror p_53155_) {
+    public @NotNull BlockState mirror(BlockState p_53154_, Mirror p_53155_) {
         return p_53154_.rotate(p_53155_.getRotation(p_53154_.getValue(FACING)));
     }
 
@@ -146,12 +146,12 @@ public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> impl
     }
 
     @Override
-    public FluidState getFluidState(BlockState p_53177_) {
+    public @NotNull FluidState getFluidState(BlockState p_53177_) {
         return p_53177_.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(p_53177_);
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos1) {
+    public @NotNull BlockState updateShape(BlockState blockState, @NotNull Direction direction, @NotNull BlockState blockState1, @NotNull LevelAccessor levelAccessor, @NotNull BlockPos blockPos, @NotNull BlockPos blockPos1) {
         if (blockState.getValue(WATERLOGGED)) {
             levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
         }
@@ -160,12 +160,12 @@ public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> impl
     }
 
     @Override
-    public boolean isPathfindable(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, PathComputationType pathComputationType) {
+    public boolean isPathfindable(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull PathComputationType pathComputationType) {
         return false;
     }
 
     @Override
-    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, Random random) {
+    public void tick(@NotNull BlockState blockState, ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull RandomSource random) {
         BlockEntity blockentity = serverLevel.getBlockEntity(blockPos);
         if (blockentity instanceof TileEntityOmniChest) {
             ((TileEntityOmniChest)blockentity).recheckOpen();

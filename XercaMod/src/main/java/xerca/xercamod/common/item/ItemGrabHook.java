@@ -3,7 +3,7 @@ package xerca.xercamod.common.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -17,6 +17,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.entity.EntityHook;
 
@@ -31,24 +32,22 @@ public class ItemGrabHook extends FishingRodItem {
 
     public ItemGrabHook() {
         super((new Item.Properties()).tab(CreativeModeTab.TAB_COMBAT).defaultDurability(210));
-        this.setRegistryName("item_grab_hook");
     }
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         playerIn.startUsingItem(hand);
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving, int timeLeft) {
         float useSeconds = (this.getUseDuration(stack) - timeLeft) / 20.0f;
         if(useSeconds > 1.f) useSeconds = 1.f;
 
-        if(useSeconds > 0.1f && entityLiving instanceof Player){
-            Player playerIn = (Player) entityLiving;
+        if(useSeconds > 0.1f && entityLiving instanceof Player playerIn){
             InteractionHand hand;
             if(playerIn.getMainHandItem().getItem() instanceof ItemGrabHook){
                 hand = InteractionHand.MAIN_HAND;
@@ -73,19 +72,19 @@ public class ItemGrabHook extends FishingRodItem {
 
     @Nonnull
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public UseAnim getUseAnimation(@NotNull ItemStack stack) {
         return UseAnim.BOW;
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(@NotNull ItemStack stack) {
         return 72000;
     }
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
-        return enchantment.category == EnchantmentCategory.BREAKABLE || enchantment == Items.ENCHANTMENT_GRAPPLING;
+        return enchantment.category == EnchantmentCategory.BREAKABLE || enchantment == Items.ENCHANTMENT_GRAPPLING.get();
     }
 
     @Override
@@ -99,11 +98,11 @@ public class ItemGrabHook extends FishingRodItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        TranslatableComponent text = new TranslatableComponent("xercamod.grap_hook_tooltip");
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        MutableComponent text = Component.translatable("xercamod.grap_hook_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
-        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GRAPPLING, stack) > 0){
-            TranslatableComponent textGrappling = new TranslatableComponent("xercamod.grappling_tooltip");
+        if(EnchantmentHelper.getItemEnchantmentLevel(ENCHANTMENT_GRAPPLING.get(), stack) > 0){
+            MutableComponent textGrappling = Component.translatable("xercamod.grappling_tooltip");
             tooltip.add(textGrappling.withStyle(ChatFormatting.YELLOW));
         }
     }

@@ -1,6 +1,7 @@
 {
-    "parent": "block/crop",
-    "textures": {
-        "crop": "xercamod:block/tea_stage2"
-    }
+  "parent": "block/crop",
+  "render_type": "cutout",
+  "textures": {
+    "crop": "xercamod:block/tea_stage2"
+  }
 }

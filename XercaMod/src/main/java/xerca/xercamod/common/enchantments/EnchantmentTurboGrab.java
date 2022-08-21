@@ -6,10 +6,11 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.item.ItemGrabHook;
 
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+
 public class EnchantmentTurboGrab extends EnchantmentWithConfig {
     public EnchantmentTurboGrab(Rarity rarityIn, EquipmentSlot... slots) {
         super(rarityIn, EnchantmentCategory.WEAPON, slots);
-        this.setRegistryName("enchantment_turbo_grab");
     }
 
     /**

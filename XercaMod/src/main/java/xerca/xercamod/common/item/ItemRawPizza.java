@@ -1,7 +1,6 @@
 package xerca.xercamod.common.item;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -9,6 +8,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.BlockPizza;
@@ -30,21 +30,24 @@ public class ItemRawPizza extends ItemConditioned {
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
-        this.setRegistryName("raw_pizza" + postfix(slot1, slot2, slot3));
+    }
+
+    public static String genName(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
+        return "raw_pizza" + postfix(slot1, slot2, slot3);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         addPizzaIngredientToTooltip(tooltip, slot1);
         addPizzaIngredientToTooltip(tooltip, slot2);
         addPizzaIngredientToTooltip(tooltip, slot3);
     }
 
     @Override
-    public Component getName(ItemStack stack) {
+    public @NotNull Component getName(@NotNull ItemStack stack) {
         if(isAllEmpty(slot1, slot2, slot3))
-            return new TranslatableComponent(XercaMod.MODID + ".pizza_raw_plain");
-        return new TranslatableComponent(XercaMod.MODID + ".pizza_raw");
+            return Component.translatable(XercaMod.MODID + ".pizza_raw_plain");
+        return Component.translatable(XercaMod.MODID + ".pizza_raw");
     }
 }

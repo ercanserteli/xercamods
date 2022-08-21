@@ -1,5 +1,6 @@
 package xerca.xercamod.common.packets;
 
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,24 +53,27 @@ public class HammerAttackPacketHandler {
 
     private static void processMessage(HammerAttackPacket msg, ServerPlayer pl) {
         Entity target = pl.level.getEntity(msg.getTargetId());
+        if(target == null){
+            return;
+        }
 
         ItemStack st = pl.getMainHandItem();
         Item item = st.getItem();
         if (item instanceof ItemWarhammer){
             float pull = msg.getPullDuration();
             float mult = damageBonusMult(pull);
-            int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_HEAVY, st);
-            float damage = ((float) pl.getAttribute(Attributes.ATTACK_DAMAGE).getValue() + heavyLevel * 0.5f) * mult;
+            int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_HEAVY.get(), st);
+            AttributeInstance attackDamage = pl.getAttribute(Attributes.ATTACK_DAMAGE);
+            float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + heavyLevel * 0.5f) * mult;
             float push = (((ItemWarhammer) item).getPushAmount() + heavyLevel * 0.15f) * 2 * mult;
 
-            int uppercutLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_UPPERCUT, st);
+            int uppercutLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_UPPERCUT.get(), st);
             double bonusVelY = (uppercutLevel * 0.25) * pull;
 
             float pitch = (2.0f / (damage + heavyLevel));
-            pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.HAMMER, SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);
+            pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.HAMMER.get(), SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);
             st.hurtAndBreak(1, pl, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-            if(target instanceof LivingEntity){
-                LivingEntity targetLiving = (LivingEntity) target;
+            if(target instanceof LivingEntity targetLiving){
                 float enchantBonus = EnchantmentHelper.getDamageBonus(st, targetLiving.getMobType());
 //              XercaMod.LOGGER.warn("Enchantment bonus damage: " + enchantBonus);
 
@@ -88,7 +92,7 @@ public class HammerAttackPacketHandler {
                 damage += enchantBonus;
                 targetLiving.hurt(DamageSource.playerAttack(pl), damage);
 
-                int maimLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_MAIM, st);
+                int maimLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_MAIM.get(), st);
                 if(maimLevel > 0){
                     targetLiving.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100 + 40 * maimLevel, maimLevel - 1));
                 }

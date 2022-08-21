@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
 import java.util.ArrayList;
@@ -15,13 +15,13 @@ public class SoundController extends Thread {
     private volatile double x;
     private volatile double y;
     private volatile double z;
-    private final ItemInstrument instrument;
+    private final IItemInstrument instrument;
     private final byte bps;
     private final int spiritID;
     private final float volume;
     private TileEntityMusicBox musicBox = null;
 
-    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, ItemInstrument instrument, byte bps, float volume, int spiritID){
+    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID){
         this.notes = notes;
         this.x = x;
         this.y = y;
@@ -31,7 +31,7 @@ public class SoundController extends Thread {
         this.volume = volume;
         this.spiritID = spiritID;
     }
-    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, ItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox){
+    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox){
         this(notes, x, y, z, instrument, bps, volume, -1);
         this.musicBox = musicBox;
     }
@@ -80,10 +80,10 @@ public class SoundController extends Thread {
     }
 
     private void playNote(NoteEvent event){
-        if (event.note >= ItemInstrument.minNote && event.note <= ItemInstrument.maxNote) {
+        if (event.note >= IItemInstrument.minNote && event.note <= IItemInstrument.maxNote) {
             final byte note = event.note;
             Minecraft.getInstance().submitAsync(() -> {
-                ItemInstrument.InsSound insSound = instrument.getSound(note);
+                IItemInstrument.InsSound insSound = instrument.getSound(note);
                 if(insSound == null){
                     return;
                 }

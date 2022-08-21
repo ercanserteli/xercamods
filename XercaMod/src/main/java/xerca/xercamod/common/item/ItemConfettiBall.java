@@ -11,6 +11,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.entity.EntityConfettiBall;
 
@@ -20,14 +21,13 @@ public class ItemConfettiBall extends Item {
 
     ItemConfettiBall() {
         super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-        this.setRegistryName("item_confetti_ball");
     }
 
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if (!playerIn.isCreative()) {
             heldItem.shrink(1);

@@ -25,6 +25,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.tile_entity.TileEntityDoner;
 
 import javax.annotation.Nullable;
@@ -41,12 +42,11 @@ public class BlockDoner extends Block implements EntityBlock {
 
     public BlockDoner() {
         super(Block.Properties.of(Material.CAKE).sound(SoundType.METAL).strength(1).noOcclusion());
-        setRegistryName("block_doner");
         registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(IS_RAW, true));
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
     }
 
@@ -56,7 +56,7 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(hand);
         if (heldItem.getItem() == Items.MUTTON) {
             if(state.getValue(IS_RAW) && state.getValue(MEAT_AMOUNT) < 4){
@@ -68,7 +68,7 @@ public class BlockDoner extends Block implements EntityBlock {
                 return InteractionResult.SUCCESS;
             }
         }
-        else if(heldItem.getItem() == xerca.xercamod.common.item.Items.ITEM_KNIFE){
+        else if(heldItem.getItem() == xerca.xercamod.common.item.Items.ITEM_KNIFE.get()){
             if(!state.getValue(IS_RAW)){
                 if(!worldIn.isClientSide){
                     if(state.getValue(MEAT_AMOUNT) > 1){
@@ -81,17 +81,15 @@ public class BlockDoner extends Block implements EntityBlock {
                     Vec3 boost = playerPos.subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
                     boost = boost.normalize().scale(0.15d);
 
-                    ItemEntity donerEntity = new ItemEntity(worldIn, pos.getX() + 0.5f + boost.x*6, pos.getY() + 0.5f, pos.getZ() + 0.5f + boost.x*6, new ItemStack(xerca.xercamod.common.item.Items.DONER_SLICE));
+                    ItemEntity donerEntity = new ItemEntity(worldIn, pos.getX() + 0.5f + boost.x*6, pos.getY() + 0.5f, pos.getZ() + 0.5f + boost.x*6, new ItemStack(xerca.xercamod.common.item.Items.DONER_SLICE.get()));
                     donerEntity.setDefaultPickUpDelay();
                     donerEntity.push(boost.x, 0, boost.z);
                     donerEntity.hurtMarked = true;
                     worldIn.addFreshEntity(donerEntity);
 
-                    heldItem.hurtAndBreak(1, player, (playerEntity) -> {
-                        playerEntity.broadcastBreakEvent(hand);
-                    });
+                    heldItem.hurtAndBreak(1, player, (playerEntity) -> playerEntity.broadcastBreakEvent(hand));
                 }
-                worldIn.playSound(player, pos, xerca.xercamod.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat()*0.1f);
+                worldIn.playSound(player, pos, xerca.xercamod.common.SoundEvents.SNEAK_HIT.get(), SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat()*0.1f);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -99,36 +97,30 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock() && newState.getBlock() != Blocks.IRON_BARS) {
             if(!worldIn.isClientSide) {
                 ItemEntity barsEntity = new ItemEntity(worldIn, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.IRON_BARS));
                 barsEntity.setDefaultPickUpDelay();
                 worldIn.addFreshEntity(barsEntity);
-
-//                ItemStack meatStack = state.get(IS_RAW) ? new ItemStack(Items.MUTTON, state.get(MEAT_AMOUNT)) :
-//                        new ItemStack(xerca.xercamod.common.item.Items.DONER_SLICE, state.get(MEAT_AMOUNT));
-//                ItemEntity meatEntity = new ItemEntity(worldIn, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, meatStack);
-//                meatEntity.setDefaultPickupDelay();
-//                worldIn.addEntity(meatEntity);
             }
         }
         super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return renderType;
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new TileEntityDoner(blockPos, blockState);
     }
 
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
             if (t instanceof TileEntityDoner) {
                 TileEntityDoner.tick(level1, blockPos, blockState1, (TileEntityDoner) t);

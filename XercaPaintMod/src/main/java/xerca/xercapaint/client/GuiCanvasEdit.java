@@ -9,8 +9,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
@@ -148,7 +146,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         int x = getMinecraft().getWindow().getGuiScaledWidth() - 120;
         int y = getMinecraft().getWindow().getGuiScaledHeight() - 30;
-        this.buttonSign = this.addRenderableWidget(new Button(x, y, 98, 20, new TranslatableComponent("canvas.signButton"), button -> {
+        this.buttonSign = this.addRenderableWidget(new Button(x, y, 98, 20, Component.translatable("canvas.signButton"), button -> {
             if (!isSigned) {
                 gettingSigned = true;
                 resetPositions();
@@ -157,7 +155,7 @@ public class GuiCanvasEdit extends BasePalette {
                 GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }));
-        this.buttonFinalize = this.addRenderableWidget(new Button( (int)canvasX - 100, 100, 98, 20, new TranslatableComponent("canvas.finalizeButton"), button -> {
+        this.buttonFinalize = this.addRenderableWidget(new Button( (int)canvasX - 100, 100, 98, 20, Component.translatable("canvas.finalizeButton"), button -> {
             if (!isSigned) {
                 canvasDirty = true;
                 isSigned = true;
@@ -167,7 +165,7 @@ public class GuiCanvasEdit extends BasePalette {
             }
 
         }));
-        this.buttonCancel = this.addRenderableWidget(new Button( (int)canvasX - 100, 130, 98, 20, new TranslatableComponent("gui.cancel"), button -> {
+        this.buttonCancel = this.addRenderableWidget(new Button( (int)canvasX - 100, 130, 98, 20, Component.translatable("gui.cancel"), button -> {
             if (!isSigned) {
                 gettingSigned = false;
                 updateButtons();
@@ -180,7 +178,7 @@ public class GuiCanvasEdit extends BasePalette {
         y = (int)(getMinecraft().getWindow().getGuiScaledHeight()*0.05);
         this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
                 paletteTextures, 256, 256, button -> showHelp = !showHelp,
-                (button, poseStack, i, j) -> renderTooltip(poseStack, new TextComponent("Toggle help tooltips"), i, j)));
+                (button, poseStack, i, j) -> renderTooltip(poseStack, Component.literal("Toggle help tooltips"), i, j)));
 
         updateButtons();
     }
@@ -347,7 +345,7 @@ public class GuiCanvasEdit extends BasePalette {
                 if(inBrushMeter(mouseX, mouseY)){
                     int selectedSize = 3 - (mouseY - brushMeterY)/brushSpriteSize;
                     if(selectedSize <= 3 && selectedSize >= 0){
-                        this.renderTooltip(matrixStack, new TextComponent("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, Component.literal("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
                     }
                 }
                 else if(inBrushOpacityMeter(mouseX, mouseY)){
@@ -355,19 +353,19 @@ public class GuiCanvasEdit extends BasePalette {
                     int selectedOpacity = relativeY/(brushOpacitySpriteSize+1);
                     if(selectedOpacity >= 0 && selectedOpacity <= 3){
                         int percentage = 100 - 25*selectedOpacity;
-                        this.renderTooltip(matrixStack, new TextComponent("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, Component.literal("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
                     }
                 }
                 else if(inColorPicker(mouseX-(int)paletteX, mouseY-(int)paletteY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Color picker"),
-                            new TextComponent("Select the tool, then pick up a color from the canvas and drag-and-drop it to a custom color slot.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Color picker"),
+                            Component.literal("Select the tool, then pick up a color from the canvas and drag-and-drop it to a custom color slot.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }
                 else if(inWater(mouseX-(int)paletteX, mouseY-(int)paletteY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Color remover"),
-                            new TextComponent("Pick up some water and drag-and-drop it to a custom color slot to clear it.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Color remover"),
+                            Component.literal("Pick up some water and drag-and-drop it to a custom color slot to clear it.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }else if(inCanvasHolder(mouseX, mouseY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Canvas holder"),
-                            new TextComponent("Pick up the canvas and move it wherever you want. You can move the palette in the same way.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Canvas holder"),
+                            Component.literal("Pick up the canvas and move it wherever you want. You can move the palette in the same way.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }
             }
         }
@@ -464,7 +462,7 @@ public class GuiCanvasEdit extends BasePalette {
         String s2 = I18n.get("canvas.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(s2);
         this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2.0f, j + 48 + 10, 0);
-        this.font.drawWordWrap(new TranslatableComponent("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
+        this.font.drawWordWrap(Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
     }
 
     private void playBrushSound(){
@@ -582,7 +580,7 @@ public class GuiCanvasEdit extends BasePalette {
                     int color = getPixelAt(x, y);
                     carriedColor = new PaletteUtil.Color(color);
                     setCarryingColor();
-                    playSound(SoundEvents.COLOR_PICKER_SUCK);
+                    playSound(SoundEvents.COLOR_PICKER_SUCK.get());
                 }
             }
             else{
@@ -762,7 +760,7 @@ public class GuiCanvasEdit extends BasePalette {
         protected final int texHeight;
 
         public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, OnTooltip onTooltip) {
-            super(x, y, width, height, TextComponent.EMPTY, onClick, onTooltip);
+            super(x, y, width, height, Component.empty(), onClick, onTooltip);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
             this.xTexStart = xTexStart;

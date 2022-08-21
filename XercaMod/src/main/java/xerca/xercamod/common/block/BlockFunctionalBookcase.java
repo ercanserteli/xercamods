@@ -21,6 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.tile_entity.TileEntityFunctionalBookcase;
 
 import javax.annotation.Nullable;
@@ -33,40 +34,41 @@ public class BlockFunctionalBookcase extends Block implements EntityBlock {
     public BlockFunctionalBookcase() {
         super(Block.Properties.of(Material.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD));
         this.registerDefaultState(this.stateDefinition.any().setValue(BOOK_AMOUNT, 0));
-        this.setRegistryName("block_bookcase");
     }
 
-    // Called when the block is right clicked
+    // Called when the block is right-clicked
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult rayTraceResult) {
         if (worldIn.isClientSide) return InteractionResult.SUCCESS;
 
         if (player instanceof ServerPlayer)
         {
             final TileEntityFunctionalBookcase tileEntity = (TileEntityFunctionalBookcase)worldIn.getBlockEntity(pos);
-            NetworkHooks.openGui((ServerPlayer) player, tileEntity, pos);
+            NetworkHooks.openScreen((ServerPlayer) player, tileEntity, pos);
         }
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity tent = worldIn.getBlockEntity(pos);
-            IItemHandler inventory = tent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(NullPointerException::new);
+            if(tent != null) {
+                IItemHandler inventory = tent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                if (!inventory.getStackInSlot(i).isEmpty()) {
-                    ItemEntity item = new ItemEntity(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, inventory.getStackInSlot(i));
+                for (int i = 0; i < inventory.getSlots(); i++) {
+                    if (!inventory.getStackInSlot(i).isEmpty()) {
+                        ItemEntity item = new ItemEntity(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, inventory.getStackInSlot(i));
 
-                    float multiplier = 0.1f;
-                    float motionX = worldIn.random.nextFloat() - 0.5f;
-                    float motionY = worldIn.random.nextFloat() - 0.5f;
-                    float motionZ = worldIn.random.nextFloat() - 0.5f;
+                        float multiplier = 0.1f;
+                        float motionX = worldIn.random.nextFloat() - 0.5f;
+                        float motionY = worldIn.random.nextFloat() - 0.5f;
+                        float motionZ = worldIn.random.nextFloat() - 0.5f;
 
-                    item.setDeltaMovement(motionX * multiplier, motionY * multiplier, motionZ * multiplier);
+                        item.setDeltaMovement(motionX * multiplier, motionY * multiplier, motionZ * multiplier);
 
-                    worldIn.addFreshEntity(item);
+                        worldIn.addFreshEntity(item);
+                    }
                 }
             }
 
@@ -81,17 +83,17 @@ public class BlockFunctionalBookcase extends Block implements EntityBlock {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Override
-    public boolean hasAnalogOutputSignal(BlockState state) {
+    public boolean hasAnalogOutputSignal(@NotNull BlockState state) {
         return true;
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos) {
+    public int getAnalogOutputSignal(@NotNull BlockState blockState, Level worldIn, @NotNull BlockPos pos) {
         return calcRedstoneFromTE(worldIn.getBlockEntity(pos));
     }
 
@@ -100,7 +102,7 @@ public class BlockFunctionalBookcase extends Block implements EntityBlock {
             return 0;
         }
         Optional<IItemHandler> optInv = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
-        if (!optInv.isPresent()) {
+        if (optInv.isEmpty()) {
             return 0;
         } else {
             IItemHandler inv = optInv.get();
@@ -118,7 +120,7 @@ public class BlockFunctionalBookcase extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new TileEntityFunctionalBookcase(blockPos, blockState);
     }
 }

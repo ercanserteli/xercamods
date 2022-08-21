@@ -2,23 +2,23 @@ package xerca.xercamusic.common.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 public class SingleNotePacket {
     private int note;
-    private ItemInstrument instrumentItem;
+    private IItemInstrument instrumentItem;
     private boolean isStop;
     private float volume;
     private boolean messageIsValid;
 
-    public SingleNotePacket(int note, ItemInstrument itemInstrument, boolean isStop, float volume) {
+    public SingleNotePacket(int note, IItemInstrument itemInstrument, boolean isStop, float volume) {
         this.note = note;
         this.instrumentItem = itemInstrument;
         this.isStop = isStop;
         this.volume = volume;
     }
-    public SingleNotePacket(int note, ItemInstrument itemInstrument, boolean isStop) {
+    public SingleNotePacket(int note, IItemInstrument itemInstrument, boolean isStop) {
         this(note, itemInstrument, isStop, 1f);
     }
 
@@ -64,7 +64,7 @@ public class SingleNotePacket {
         this.note = note;
     }
 
-    public ItemInstrument getInstrumentItem() {
+    public IItemInstrument getInstrumentItem() {
         return instrumentItem;
     }
 

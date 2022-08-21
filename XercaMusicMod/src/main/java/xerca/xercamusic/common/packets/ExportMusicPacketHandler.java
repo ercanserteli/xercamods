@@ -1,9 +1,8 @@
 package xerca.xercamusic.common.packets;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
@@ -26,11 +25,11 @@ public class ExportMusicPacketHandler {
     private static void processMessage(ExportMusicPacket msg) {
         if(CommandExport.doExport(Minecraft.getInstance().player, msg.getName())){
             if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("export.success", msg.getName()).withStyle(ChatFormatting.GREEN));
             }
         }else{
             if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("export.fail").withStyle(ChatFormatting.RED));
             }
         }
     }

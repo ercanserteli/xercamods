@@ -33,9 +33,9 @@ public class BlockTerracottaTileSlab extends SlabBlock {
             return blockstate.setValue(TYPE, SlabType.DOUBLE).setValue(WATERLOGGED, false).setValue(FACING, dir);
         } else {
             FluidState fluidstate = context.getLevel().getFluidState(blockpos);
-            BlockState blockstate1 = this.defaultBlockState().setValue(TYPE, SlabType.BOTTOM).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER).setValue(FACING, dir);
+            BlockState blockState = this.defaultBlockState().setValue(TYPE, SlabType.BOTTOM).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER).setValue(FACING, dir);
             Direction direction = context.getClickedFace();
-            return direction != Direction.DOWN && (direction == Direction.UP || !(context.getClickLocation().y - (double)blockpos.getY() > 0.5D)) ? blockstate1 : blockstate1.setValue(TYPE, SlabType.TOP);
+            return direction != Direction.DOWN && (direction == Direction.UP || !(context.getClickLocation().y - (double)blockpos.getY() > 0.5D)) ? blockState : blockState.setValue(TYPE, SlabType.TOP);
         }
     }
 

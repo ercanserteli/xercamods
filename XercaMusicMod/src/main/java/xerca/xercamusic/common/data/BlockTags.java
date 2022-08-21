@@ -18,10 +18,10 @@ public class BlockTags extends BlockTagsProvider implements DataProvider
     protected void addTags()
     {
         this.tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_AXE).add(
-                Blocks.BLOCK_METRONOME,
-                Blocks.MUSIC_BOX,
-                Blocks.DRUM_KIT,
-                Blocks.PIANO
+                Blocks.BLOCK_METRONOME.get(),
+                Blocks.MUSIC_BOX.get(),
+                Blocks.DRUM_KIT.get(),
+                Blocks.PIANO.get()
         );
     }
 }

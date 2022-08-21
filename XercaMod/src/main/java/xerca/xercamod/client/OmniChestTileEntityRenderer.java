@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.XercaMod;
 
 @OnlyIn(Dist.CLIENT)
@@ -22,7 +23,7 @@ public class OmniChestTileEntityRenderer<T extends BlockEntity & LidBlockEntity>
     }
 
     @Override
-    protected Material getMaterial(T blockEntity, ChestType chestType) {
+    protected @NotNull Material getMaterial(@NotNull T blockEntity, @NotNull ChestType chestType) {
         return material;
     }
 }

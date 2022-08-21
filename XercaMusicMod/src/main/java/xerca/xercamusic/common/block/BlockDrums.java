@@ -12,11 +12,10 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -32,7 +31,6 @@ public class BlockDrums extends BlockInstrument {
     public BlockDrums() {
         super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
-        this.setRegistryName("drum_kit");
     }
 
     @Override
@@ -61,7 +59,7 @@ public class BlockDrums extends BlockInstrument {
     }
 
     @Override
-    public ItemInstrument getItemInstrument() {
-        return Objects.requireNonNull(Items.DRUM_KIT);
+    public IItemInstrument getItemInstrument() {
+        return (IItemInstrument)Items.DRUM_KIT.get();
     }
 }

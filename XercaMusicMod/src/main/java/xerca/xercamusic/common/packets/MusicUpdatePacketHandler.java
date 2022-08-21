@@ -28,7 +28,7 @@ public class MusicUpdatePacketHandler {
 
     private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {
         ItemStack note = pl.getMainHandItem();
-        if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
+        if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET.get()) {
             CompoundTag comp = note.getOrCreateTag();
 
             MusicUpdatePacket.FieldFlag flag = msg.getAvailability();

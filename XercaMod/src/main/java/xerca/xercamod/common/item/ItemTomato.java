@@ -11,6 +11,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
 import xerca.xercamod.common.entity.EntityTomato;
 
@@ -20,7 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemTomato extends Item {
     public ItemTomato() {
         super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-        this.setRegistryName("item_tomato");
     }
 
     /**
@@ -28,7 +28,7 @@ public class ItemTomato extends Item {
      */
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if (!playerIn.isCreative()) {
             heldItem.shrink(1);

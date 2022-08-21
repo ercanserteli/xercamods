@@ -1,18 +1,18 @@
 package xerca.xercamod.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.block.Blocks;
 import xerca.xercamod.common.tile_entity.TileEntityDoner;
 
@@ -20,12 +20,11 @@ import xerca.xercamod.common.tile_entity.TileEntityDoner;
 public class DonerTileEntityRenderer implements BlockEntityRenderer<TileEntityDoner> {
     protected static BlockRenderDispatcher blockRenderer;
 
-    public DonerTileEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-//        ctx.bakeLayer()
+    public DonerTileEntityRenderer(BlockEntityRendererProvider.Context ignoredCtx) {
     }
 
     @Override
-    public void render(TileEntityDoner tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(@NotNull TileEntityDoner tileEntityIn, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if(blockRenderer == null) blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
         float f = tileEntityIn.getAnimationProgress(partialTicks);
@@ -37,13 +36,9 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<TileEntityDo
 
         BlockState bs = tileEntityIn.getBlockState();
 
-//        IBakedModel ibakedmodel = blockRenderer.getModelForState(bs);
-        Blocks.BLOCK_DONER.setRenderType(RenderShape.MODEL);
+        Blocks.BLOCK_DONER.get().setRenderType(RenderShape.MODEL);
         blockRenderer.renderSingleBlock(bs, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY);
-        Blocks.BLOCK_DONER.setRenderType(RenderShape.ENTITYBLOCK_ANIMATED);
-
-//        blockRenderer.renderModel(bs, tileEntityIn.getPos(), );
-
+        Blocks.BLOCK_DONER.get().setRenderType(RenderShape.ENTITYBLOCK_ANIMATED);
 
         matrixStackIn.popPose();
     }

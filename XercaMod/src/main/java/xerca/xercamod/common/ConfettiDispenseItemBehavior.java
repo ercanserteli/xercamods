@@ -5,12 +5,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.item.ItemConfetti;
 import xerca.xercamod.common.packets.ConfettiParticlePacket;
 
 public class ConfettiDispenseItemBehavior extends DefaultDispenseItemBehavior {
     @Override
-    protected ItemStack execute(BlockSource source, ItemStack stack) {
+    protected @NotNull ItemStack execute(@NotNull BlockSource source, ItemStack stack) {
         stack.shrink(1);
         return stack;
     }
