@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemMusicSheet extends Item {
     static final private HashMap<IItemInstrument.Pair<String, String>, UUID> convertMap = new HashMap<>();
     static final private int addToOldEnd = 8;

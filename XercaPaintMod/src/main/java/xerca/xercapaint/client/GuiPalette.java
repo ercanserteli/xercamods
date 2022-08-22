@@ -28,11 +28,6 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
     public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
         super.render(matrixStack, mouseX, mouseY, f);
 

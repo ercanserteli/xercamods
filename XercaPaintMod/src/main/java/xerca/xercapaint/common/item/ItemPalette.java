@@ -24,6 +24,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemPalette extends Item {
     ItemPalette() {
         super(new Properties().tab(Items.paintTab).stacksTo(1));

@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EntityConfettiBall extends ThrowableItemProjectile {
     public EntityConfettiBall(EntityType<? extends EntityConfettiBall> type, Level world) {
         super(type, world);

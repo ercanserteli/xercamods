@@ -16,6 +16,8 @@ import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.item.Items;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     BlockRicePlant() {

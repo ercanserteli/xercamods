@@ -16,8 +16,8 @@ import java.util.UUID;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class MusicManagerClient {
-    static Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
-    static Map<UUID, Runnable> taskMap = new HashMap<>();
+    static final Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
+    static final Map<UUID, Runnable> taskMap = new HashMap<>();
     static final String cacheDir = "music_sheets/.cache/";
 
     public static void load() {

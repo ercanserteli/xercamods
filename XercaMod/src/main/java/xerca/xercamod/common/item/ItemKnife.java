@@ -5,13 +5,11 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -34,7 +32,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
-import xerca.xercamod.common.Triggers;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.packets.KnifeAttackPacket;
 
@@ -73,38 +70,14 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, LivingEntity attacker) {
-//        float damage = 0.0F;
-//        float angleDiff = Mth.abs(Mth.wrapDegrees(target.getYRot()) - Mth.wrapDegrees(attacker.getYRot()));
-//        if (attacker.isSteppingCarefully() && (angleDiff < 65.0F || angleDiff > 295.0f)) {
-//            if(!target.level.isClientSide){
-//                ClientboundAnimatePacket packetOut = new ClientboundAnimatePacket(target, 4);
-//                ((ServerLevel)target.level).getChunkSource().broadcastAndSend(attacker, packetOut);
-//            }
-//            attacker.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.SNEAK_HIT.get(), SoundSource.PLAYERS, 1.0f, attacker.level.random.nextFloat() * 0.2F + 0.8F);
-//
-//            float bonus = defaultBonus;
-//            if(stack.isEnchanted()){
-//                bonus += EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_STEALTH.get(), stack)*2;
-//            }
-//
-//            damage += bonus;
-//            Player player = (Player) attacker;
-//            DamageSource damagesource = DamageSource.playerAttack(player);
-//            target.hurt(damagesource, damage);
-//            if(target.getHealth() <= 0f) {
-//                Triggers.ASSASSINATE.trigger((ServerPlayer) player);
-//            }
-//        }
+    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-
         if(stack.isEnchanted()){
             int poison = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_POISON.get(), stack);
             if(poison > 0){
                 target.addEffect(new MobEffectInstance(MobEffects.POISON, 30 + 30 * poison, poison - 1));
             }
         }
-
         return true;
     }
 

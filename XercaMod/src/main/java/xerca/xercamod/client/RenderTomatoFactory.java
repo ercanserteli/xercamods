@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.entity.EntityTomato;
 
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+
 class RenderTomatoFactory implements EntityRendererProvider<EntityTomato> {
 
     @Override

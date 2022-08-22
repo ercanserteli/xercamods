@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityEasel;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemEasel extends Item {
 
     public ItemEasel(Properties properties) {

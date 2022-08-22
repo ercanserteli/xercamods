@@ -37,8 +37,8 @@ public interface IItemInstrument {
     }
 
     class InsSound {
-        public SoundEvent sound;
-        public float pitch;
+        public final SoundEvent sound;
+        public final float pitch;
 
         public InsSound(SoundEvent sound, float pitch){
             this.sound = sound;

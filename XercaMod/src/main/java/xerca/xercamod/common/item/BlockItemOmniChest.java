@@ -10,6 +10,8 @@ import xerca.xercamod.common.Config;
 
 import java.util.function.Consumer;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class BlockItemOmniChest extends BlockConditionedItem {
     public BlockItemOmniChest(Block block, Properties properties)
     {

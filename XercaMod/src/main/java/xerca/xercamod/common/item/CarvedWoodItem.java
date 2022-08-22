@@ -16,6 +16,8 @@ import xerca.xercamod.common.Config;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class CarvedWoodItem extends BlockConditionedItem {
     private final int variation;
     public CarvedWoodItem(Block blockIn, Properties properties, int variation) {

@@ -10,10 +10,10 @@ import java.util.function.Consumer;
 
 public class MidiHandler
 {
-    ArrayList<MidiDevice> devices = new ArrayList<>();
-    Consumer<MidiData> noteOnHandler;
-    Consumer<Integer> noteOffHandler;
-    Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
+    final ArrayList<MidiDevice> devices = new ArrayList<>();
+    final Consumer<MidiData> noteOnHandler;
+    final Consumer<Integer> noteOffHandler;
+    final Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
     public volatile int currentOctave;
 
     public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler, Consumer<GuiMusicSheet.MidiControl> midiControlHandler)
@@ -63,7 +63,7 @@ public class MidiHandler
     }
 
     public class MidiInputReceiver implements Receiver {
-        public String name;
+        public final String name;
         public static final int NOTE_ON = 0x90;
         public static final int NOTE_OFF = 0x80;
         public static final int CONTROL = 176;

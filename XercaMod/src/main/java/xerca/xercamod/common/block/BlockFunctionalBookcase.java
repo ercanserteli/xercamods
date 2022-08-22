@@ -18,9 +18,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.tile_entity.TileEntityFunctionalBookcase;
 
@@ -54,7 +54,7 @@ public class BlockFunctionalBookcase extends Block implements EntityBlock {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity tent = worldIn.getBlockEntity(pos);
             if(tent != null) {
-                IItemHandler inventory = tent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(NullPointerException::new);
+                IItemHandler inventory = tent.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElseThrow(NullPointerException::new);
 
                 for (int i = 0; i < inventory.getSlots(); i++) {
                     if (!inventory.getStackInSlot(i).isEmpty()) {
@@ -101,7 +101,7 @@ public class BlockFunctionalBookcase extends Block implements EntityBlock {
         if(!(te instanceof TileEntityFunctionalBookcase)){
             return 0;
         }
-        Optional<IItemHandler> optInv = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
+        Optional<IItemHandler> optInv = te.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
         if (optInv.isEmpty()) {
             return 0;
         } else {

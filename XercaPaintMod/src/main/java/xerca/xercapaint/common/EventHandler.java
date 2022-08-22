@@ -19,8 +19,5 @@ class EventHandler {
 
 @Mod.EventBusSubscriber(modid = XercaPaint.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 class EventHandlerMod {
-    @SubscribeEvent
-    public static void onAttributeCreationEvent(EntityAttributeCreationEvent event) {
-//        event.put(Entities.EASEL, EntityEasel.createLivingAttributes().build());
-    }
+
 }

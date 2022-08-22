@@ -16,7 +16,6 @@ import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
-import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.packets.SingleNotePacket;
 
 import javax.annotation.Nullable;

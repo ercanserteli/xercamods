@@ -33,6 +33,8 @@ import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     private static final EntityDataAccessor<Integer> cau_ent = SynchedEntityData.defineId(EntityHook.class, EntityDataSerializers.INT);
     private static final double DEFAULT_SPEED = 1.5D;
@@ -94,6 +96,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         double length = vec3d.length();
         vec3d = vec3d.scale(speed/length);
         this.setDeltaMovement(vec3d);
+        //noinspection SuspiciousNameCombination
         this.setYRot((float)(Mth.atan2(vec3d.x, vec3d.z) * (double)(180F / (float)Math.PI)));
         this.setXRot((float)(Mth.atan2(vec3d.y, Mth.sqrt((float)this.distanceToSqr(vec3d))) * (double)(180F / (float)Math.PI)));
         this.yRotO = this.getYRot();

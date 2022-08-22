@@ -31,12 +31,13 @@ import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.IItemInstrument;
-import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.MusicUpdatePacket;
 
 import java.util.*;
+
+import net.minecraft.client.gui.components.Button.OnPress;
 
 public class GuiMusicSheet extends Screen {
     public enum MidiControl {
@@ -1910,13 +1911,13 @@ public class GuiMusicSheet extends Screen {
     }
 
     public class NoteEditBox extends AbstractWidget {
-        public Button buttonNoteDown;
-        public Button buttonNoteUp;
-        public Button buttonLengthDown;
-        public Button buttonLengthUp;
-        public Button buttonExit;
-        public Button buttonPrev;
-        public BetterSlider sliderVelocity;
+        public final Button buttonNoteDown;
+        public final Button buttonNoteUp;
+        public final Button buttonLengthDown;
+        public final Button buttonLengthUp;
+        public final Button buttonExit;
+        public final Button buttonPrev;
+        public final BetterSlider sliderVelocity;
         private NoteEvent event;
         private final int noteY = 18;
         private final int lengthY = 29;

@@ -7,6 +7,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercapaint.common.SoundEvents;
 
+import net.minecraft.client.resources.sounds.SoundInstance.Attenuation;
+
 @OnlyIn(Dist.CLIENT)
 public class BrushSound extends AbstractTickableSoundInstance {
     private int age = 0;

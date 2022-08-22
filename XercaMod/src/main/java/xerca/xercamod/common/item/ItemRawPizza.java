@@ -20,6 +20,8 @@ import static xerca.xercamod.common.block.BlockPizza.isAllEmpty;
 import static xerca.xercamod.common.block.BlockPizza.postfix;
 import static xerca.xercamod.common.item.ItemPizza.addPizzaIngredientToTooltip;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemRawPizza extends ItemConditioned {
     private final BlockPizza.Ingredient slot1;
     private final BlockPizza.Ingredient slot2;

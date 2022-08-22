@@ -7,7 +7,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.item.IItemInstrument;
-import xerca.xercamusic.common.item.ItemInstrument;
 
 import java.util.function.Supplier;
 

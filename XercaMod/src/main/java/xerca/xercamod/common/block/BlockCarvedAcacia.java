@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class BlockCarvedAcacia extends BlockCarvedLog {
     public BlockCarvedAcacia() {
         super(Properties.of(Material.WOOD, MaterialColor.WOOD).noOcclusion());

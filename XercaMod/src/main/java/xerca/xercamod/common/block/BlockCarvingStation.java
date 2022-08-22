@@ -23,6 +23,8 @@ import xerca.xercamod.common.ContainerCarvingStation;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 @ParametersAreNonnullByDefault
 public class BlockCarvingStation extends Block {
     private static final Component CONTAINER_NAME = Component.translatable("container.xercamod.carving_station");

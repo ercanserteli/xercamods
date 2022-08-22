@@ -17,6 +17,8 @@ import xerca.xercamusic.common.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class BlockDrums extends BlockInstrument {

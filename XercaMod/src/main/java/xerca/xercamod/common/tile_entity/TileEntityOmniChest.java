@@ -91,7 +91,7 @@ public class TileEntityOmniChest extends BlockEntity implements LidBlockEntity {
 
     }
 
-    public float getOpenNess(float p_59281_) {
-        return this.chestLidController.getOpenness(p_59281_);
+    public float getOpenNess(float pPartialTicks) {
+        return this.chestLidController.getOpenness(pPartialTicks);
     }
 }

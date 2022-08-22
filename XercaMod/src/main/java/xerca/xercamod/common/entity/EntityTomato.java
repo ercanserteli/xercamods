@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EntityTomato extends ThrowableItemProjectile {
 
     public EntityTomato(EntityType<? extends EntityTomato> type, Level world) {

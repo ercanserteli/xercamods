@@ -64,7 +64,7 @@ public class EntityEasel extends Entity {
     return false;
 }
 
-    public boolean hurt(@NotNull DamageSource damageSource, float p_31580_) {
+    public boolean hurt(@NotNull DamageSource damageSource, float pAmount) {
         if (!this.level.isClientSide && !this.isRemoved()) {
             if(!getItem().isEmpty() && !damageSource.isExplosion()){
                 this.dropItem(damageSource.getEntity(), false);

@@ -6,6 +6,8 @@ import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
+import net.minecraft.client.resources.sounds.SoundInstance.Attenuation;
+
 public class NoteSound extends AbstractSoundInstance implements TickableSoundInstance {
     private boolean donePlaying = false;
     private int remainingTicks = -1;

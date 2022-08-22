@@ -6,6 +6,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+
 public abstract class EnchantmentWithConfig extends Enchantment {
     protected EnchantmentWithConfig(Rarity rarityIn, EnchantmentCategory typeIn, EquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);

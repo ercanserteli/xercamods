@@ -30,6 +30,9 @@ import java.util.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.client.gui.components.Button.OnTooltip;
+
 @OnlyIn(Dist.CLIENT)
 public class GuiCanvasEdit extends BasePalette {
     private double canvasX;
