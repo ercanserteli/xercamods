@@ -22,6 +22,8 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class BlockInstrument extends Block {

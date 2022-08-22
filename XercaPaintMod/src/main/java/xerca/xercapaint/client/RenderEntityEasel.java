@@ -27,6 +27,8 @@ import xerca.xercapaint.common.item.ItemCanvas;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
@@ -88,10 +90,10 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     }
 
     @Override
-    protected void renderNameTag(EntityEasel easel, Component component, PoseStack poseStack, MultiBufferSource bufferSource, int p_115087_) {
+    protected void renderNameTag(EntityEasel easel, Component component, PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight) {
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, p_115087_);
+        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, pPackedLight);
         poseStack.popPose();
     }
 

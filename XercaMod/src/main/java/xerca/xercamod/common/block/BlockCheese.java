@@ -31,6 +31,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.item.Items;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 class BlockCheese extends Block {
     public static final int MAX_BITES = 3;
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, MAX_BITES);
@@ -139,7 +141,7 @@ class BlockCheese extends Block {
     }
 
     @Override
-    public boolean isPathfindable(@NotNull BlockState p_51193_, @NotNull BlockGetter p_51194_, @NotNull BlockPos p_51195_, @NotNull PathComputationType p_51196_) {
+    public boolean isPathfindable(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull PathComputationType pType) {
         return false;
     }
 }

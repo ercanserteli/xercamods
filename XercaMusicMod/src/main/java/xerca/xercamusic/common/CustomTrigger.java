@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.advancements.CriterionTrigger.Listener;
+
 public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
 {
     private final ResourceLocation RL;
@@ -39,8 +41,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     {
         CustomTrigger.Listeners myCustomTrigger$listeners = listeners.get(playerAdvancementsIn);
 
-        if (myCustomTrigger$listeners == null)
-        {
+        if (myCustomTrigger$listeners == null) {
             myCustomTrigger$listeners = new CustomTrigger.Listeners(playerAdvancementsIn);
             listeners.put(playerAdvancementsIn, myCustomTrigger$listeners);
         }
@@ -53,12 +54,10 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     {
         CustomTrigger.Listeners xercamusicTrigger$listeners = listeners.get(playerAdvancementsIn);
 
-        if (xercamusicTrigger$listeners != null)
-        {
+        if (xercamusicTrigger$listeners != null) {
             xercamusicTrigger$listeners.remove(listener);
 
-            if (xercamusicTrigger$listeners.isEmpty())
-            {
+            if (xercamusicTrigger$listeners.isEmpty()) {
                 listeners.remove(playerAdvancementsIn);
             }
         }
@@ -92,8 +91,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     {
         CustomTrigger.Listeners xercamusicTrigger$listeners = listeners.get(parPlayer.getAdvancements());
 
-        if (xercamusicTrigger$listeners != null)
-        {
+        if (xercamusicTrigger$listeners != null) {
             xercamusicTrigger$listeners.trigger(parPlayer);
         }
     }
@@ -107,16 +105,6 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
         public Instance(ResourceLocation parRL)
         {
             super(parRL,  EntityPredicate.Composite.ANY);
-        }
-
-        /**
-         * Test.
-         *
-         * @return true, if successful
-         */
-        public boolean test()
-        {
-            return true;
         }
     }
 
@@ -174,23 +162,16 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
         {
             ArrayList<Listener<Instance>> list = null;
 
-            for (Listener<Instance> listener : listeners)
-            {
-                if (listener.getTriggerInstance().test())
-                {
-                    if (list == null)
-                    {
-                        list = Lists.newArrayList();
-                    }
-
-                    list.add(listener);
+            for (Listener<Instance> listener : listeners) {
+                if (list == null) {
+                    list = Lists.newArrayList();
                 }
+
+                list.add(listener);
             }
 
-            if (list != null)
-            {
-                for (Listener<Instance> listener1 : list)
-                {
+            if (list != null) {
+                for (Listener<Instance> listener1 : list) {
                     listener1.run(playerAdvancements);
                 }
             }

@@ -18,6 +18,8 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class BlockRope extends PipeBlock {
     protected BlockRope() {
         super(0.125F, Properties.of(Material.WOOL).noOcclusion().sound(SoundType.WOOL));

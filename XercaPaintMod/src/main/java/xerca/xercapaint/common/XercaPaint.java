@@ -63,11 +63,11 @@ public class XercaPaint {
     }
 
 
-    private void enqueueIMC(final InterModEnqueueEvent event)
+    private void enqueueIMC(final InterModEnqueueEvent ignoredEvent)
     {
     }
 
-    private void processIMC(final InterModProcessEvent event)
+    private void processIMC(final InterModProcessEvent ignoredEvent)
     {
     }
 }

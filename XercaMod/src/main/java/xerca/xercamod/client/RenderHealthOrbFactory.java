@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.entity.EntityHealthOrb;
 
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+
 class RenderHealthOrbFactory implements EntityRendererProvider<EntityHealthOrb> {
 
     @Override

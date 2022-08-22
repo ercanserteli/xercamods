@@ -30,19 +30,19 @@ public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb> {
     private static final ResourceLocation EXPERIENCE_ORB_LOCATION = new ResourceLocation(XercaMod.MODID, "textures/misc/health_orb.png");
     private static final RenderType RENDER_TYPE;
 
-    public RenderHealthOrb(Context p_174110_) {
-        super(p_174110_);
+    public RenderHealthOrb(Context pContext) {
+        super(pContext);
         this.shadowRadius = 0.15F;
         this.shadowStrength = 0.75F;
     }
 
-    protected int getBlockLightLevel(@NotNull EntityHealthOrb p_114606_, @NotNull BlockPos p_114607_) {
-        return Mth.clamp(super.getBlockLightLevel(p_114606_, p_114607_) + 7, 0, 15);
+    protected int getBlockLightLevel(@NotNull EntityHealthOrb pEntity, @NotNull BlockPos pPos) {
+        return Mth.clamp(super.getBlockLightLevel(pEntity, pPos) + 7, 0, 15);
     }
 
-    public void render(EntityHealthOrb healthOrb, float p_114600_, float p_114601_, PoseStack stack, MultiBufferSource bufferSource, int p_114604_) {
+    public void render(EntityHealthOrb healthOrb, float pEntityYaw, float pPartialTicks, PoseStack stack, MultiBufferSource bufferSource, int pPackedLight) {
         stack.pushPose();
-        float f8 = ((float)healthOrb.tickCount + p_114601_) / 2.0F;
+        float f8 = ((float)healthOrb.tickCount + pPartialTicks) / 2.0F;
         int red = (int)((Mth.sin(f8) + 1.0F) * 32.0F) + 192;
         int blue = (int)((Mth.sin(f8 + 4.1887903F) + 1.0F) * 0.1F * 64.0F) ;
         stack.translate(0.0D, 0.10000000149011612D, 0.0D);
@@ -53,19 +53,19 @@ public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb> {
         Pose pose = stack.last();
         Matrix4f matrix4f = pose.pose();
         Matrix3f matrix3f = pose.normal();
-        vertex(vertexconsumer, matrix4f, matrix3f, -0.5F, -0.25F, red, 0, blue, 0, 1, p_114604_);
-        vertex(vertexconsumer, matrix4f, matrix3f, 0.5F, -0.25F, red, 0, blue, 1, 1, p_114604_);
-        vertex(vertexconsumer, matrix4f, matrix3f, 0.5F, 0.75F, red, 0, blue, 1, 0, p_114604_);
-        vertex(vertexconsumer, matrix4f, matrix3f, -0.5F, 0.75F, red, 0, blue, 0, 0, p_114604_);
+        vertex(vertexconsumer, matrix4f, matrix3f, -0.5F, -0.25F, red, 0, blue, 0, 1, pPackedLight);
+        vertex(vertexconsumer, matrix4f, matrix3f, 0.5F, -0.25F, red, 0, blue, 1, 1, pPackedLight);
+        vertex(vertexconsumer, matrix4f, matrix3f, 0.5F, 0.75F, red, 0, blue, 1, 0, pPackedLight);
+        vertex(vertexconsumer, matrix4f, matrix3f, -0.5F, 0.75F, red, 0, blue, 0, 0, pPackedLight);
         stack.popPose();
-        super.render(healthOrb, p_114600_, p_114601_, stack, bufferSource, p_114604_);
+        super.render(healthOrb, pEntityYaw, pPartialTicks, stack, bufferSource, pPackedLight);
     }
 
-    private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, Matrix3f matrix3f, float p_114612_, float p_114613_, int red, int green, int blue, float p_114617_, float p_114618_, int p_114619_) {
-        vertexConsumer.vertex(matrix4f, p_114612_, p_114613_, 0.0F).color(red, green, blue, 220).uv(p_114617_, p_114618_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_114619_).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
+    private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, Matrix3f matrix3f, float pX, float pY, int red, int green, int blue, float pTexU, float pTexV, int pPackedLight) {
+        vertexConsumer.vertex(matrix4f, pX, pY, 0.0F).color(red, green, blue, 220).uv(pTexU, pTexV).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(pPackedLight).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
-    public @NotNull ResourceLocation getTextureLocation(@NotNull EntityHealthOrb p_114597_) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull EntityHealthOrb pEntity) {
         return EXPERIENCE_ORB_LOCATION;
     }
 

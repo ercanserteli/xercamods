@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemFlask extends Item {
     private static final int baseMaxCharges = 16;
     private final boolean hasMilk;

@@ -25,6 +25,8 @@ import xerca.xercamod.common.item.ItemCushion;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EntityCushion extends Entity implements IEntityAdditionalSpawnData {
     private ItemCushion item;
     public BlockCushion block;

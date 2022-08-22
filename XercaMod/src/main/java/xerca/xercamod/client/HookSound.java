@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.entity.EntityHook;
 
+import net.minecraft.client.resources.sounds.SoundInstance.Attenuation;
+
 @OnlyIn(Dist.CLIENT)
 class HookSound extends AbstractTickableSoundInstance {
     private final EntityHook theHook;

@@ -10,14 +10,13 @@ import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.common.item.IItemInstrument;
-import xerca.xercamusic.common.item.ItemInstrument;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class SingleNoteClientPacketHandler {
-    static Map<IItemInstrument.Pair<Player, Integer>, NoteSoundEntry> noteSounds = new HashMap<>();
+    static final Map<IItemInstrument.Pair<Player, Integer>, NoteSoundEntry> noteSounds = new HashMap<>();
 
     public static void handle(final SingleNoteClientPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
@@ -56,8 +55,8 @@ public class SingleNoteClientPacketHandler {
     }
 
     private static class NoteSoundEntry{
-        public NoteSound noteSound;
-        public Player playerEntity;
+        public final NoteSound noteSound;
+        public final Player playerEntity;
 
         public NoteSoundEntry(NoteSound noteSound, Player playerEntity) {
             this.noteSound = noteSound;

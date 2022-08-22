@@ -153,10 +153,10 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
         }
     }
 
-    private static boolean tryMergeToExisting(ServerLevel p_147097_, Vec3 p_147098_) {
-        AABB aabb = AABB.ofSize(p_147098_, 1.0D, 1.0D, 1.0D);
-        int i = p_147097_.getRandom().nextInt(ORB_GROUPS_PER_AREA);
-        List<EntityHealthOrb> list = p_147097_.getEntities(EntityTypeTest.forClass(EntityHealthOrb.class), aabb,
+    private static boolean tryMergeToExisting(ServerLevel pLevel, Vec3 pPos) {
+        AABB aabb = AABB.ofSize(pPos, 1.0D, 1.0D, 1.0D);
+        int i = pLevel.getRandom().nextInt(ORB_GROUPS_PER_AREA);
+        List<EntityHealthOrb> list = pLevel.getEntities(EntityTypeTest.forClass(EntityHealthOrb.class), aabb,
                 (p_147081_) -> canMerge(p_147081_, i));
         if (!list.isEmpty()) {
             EntityHealthOrb healthOrb = list.get(0);

@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.IItemInstrument;
-import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicEndedPacket;
 

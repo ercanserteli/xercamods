@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -38,7 +38,7 @@ public class ContainerFunctionalBookcase extends AbstractContainerMenu {
         }
 
         this.tileEntity = (TileEntityFunctionalBookcase)tileEntityInventoryBookcase;
-        IItemHandler bookcaseInventory = tileEntityInventoryBookcase.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(NullPointerException::new);
+        IItemHandler bookcaseInventory = tileEntityInventoryBookcase.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElseThrow(NullPointerException::new);
 
         final int SLOT_X_SPACING = 18;
         final int SLOT_Y_SPACING = 18;

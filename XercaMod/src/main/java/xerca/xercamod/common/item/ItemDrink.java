@@ -10,6 +10,8 @@ import xerca.xercamod.common.Config;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemDrink extends ItemStackableContainedFood {
 
     public ItemDrink(Properties properties, Item container) {

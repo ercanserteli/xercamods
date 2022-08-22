@@ -16,6 +16,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class BlockTerracottaTileSlab extends SlabBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 

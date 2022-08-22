@@ -131,23 +131,23 @@ public class BlockOmniChest extends AbstractChestBlock<TileEntityOmniChest> impl
     }
 
     @Override
-    public @NotNull BlockState rotate(BlockState p_53157_, Rotation p_53158_) {
-        return p_53157_.setValue(FACING, p_53158_.rotate(p_53157_.getValue(FACING)));
+    public @NotNull BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(FACING, pRot.rotate(pState.getValue(FACING)));
     }
 
     @Override
-    public @NotNull BlockState mirror(BlockState p_53154_, Mirror p_53155_) {
-        return p_53154_.rotate(p_53155_.getRotation(p_53154_.getValue(FACING)));
+    public @NotNull BlockState mirror(BlockState pState, Mirror pMirror) {
+        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_53167_) {
-        p_53167_.add(FACING, WATERLOGGED);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(FACING, WATERLOGGED);
     }
 
     @Override
-    public @NotNull FluidState getFluidState(BlockState p_53177_) {
-        return p_53177_.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(p_53177_);
+    public @NotNull FluidState getFluidState(BlockState pState) {
+        return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 
     @Override

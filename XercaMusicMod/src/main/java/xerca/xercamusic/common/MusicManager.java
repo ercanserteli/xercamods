@@ -39,7 +39,7 @@ public class MusicManager {
             this.notes = notes;
         }
 
-        public int version;
+        public final int version;
         public final ArrayList<NoteEvent> notes;
     }
 

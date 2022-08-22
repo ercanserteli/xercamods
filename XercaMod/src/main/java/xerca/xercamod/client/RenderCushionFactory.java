@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.entity.EntityCushion;
 
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+
 public class RenderCushionFactory implements EntityRendererProvider<EntityCushion> {
 
     @Override

@@ -12,7 +12,6 @@ import net.minecraftforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.item.Items;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class TempleLootModifier extends LootModifier {

@@ -34,6 +34,8 @@ import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityBlock {

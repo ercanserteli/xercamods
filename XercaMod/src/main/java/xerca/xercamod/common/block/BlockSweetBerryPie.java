@@ -14,6 +14,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 class BlockSweetBerryPie extends CakeBlock {
     public BlockSweetBerryPie() {
         super(Properties.of(Material.CAKE, DyeColor.ORANGE));

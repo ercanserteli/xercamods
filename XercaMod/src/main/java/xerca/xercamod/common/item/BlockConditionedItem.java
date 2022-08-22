@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.Block;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class BlockConditionedItem extends BlockItem {
     private final Supplier<Boolean> condition;
     public BlockConditionedItem(Block blockIn, Properties properties, Supplier<Boolean> condition) {

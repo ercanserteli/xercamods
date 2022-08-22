@@ -39,6 +39,8 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.world.entity.Entity.RemovalReason;
+
 public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpawnData {
     private String canvasName;
     private String canvasTitle;

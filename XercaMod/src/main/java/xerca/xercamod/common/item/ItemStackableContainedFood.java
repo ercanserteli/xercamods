@@ -11,6 +11,8 @@ import org.lwjgl.system.NonnullDefault;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemStackableContainedFood extends Item {
     private final Item container;
 

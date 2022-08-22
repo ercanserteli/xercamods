@@ -29,6 +29,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
+import net.minecraft.world.item.Item.Properties;
+
 @NonnullDefault
 public class ItemCanvas extends Item {
     private final CanvasType canvasType;

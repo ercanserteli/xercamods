@@ -30,6 +30,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class ItemCushion extends Item {
     private final BlockCushion block;
 
