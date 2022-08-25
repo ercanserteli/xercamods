@@ -1,7 +1,6 @@
 package xerca.xercapaint.client;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -19,18 +18,15 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
-import xerca.xercapaint.common.PaletteUtil;
-import xerca.xercapaint.common.XercaPaint;
-import xerca.xercapaint.common.entity.EntityCanvas;
+import xerca.xercapaint.Mod;
+import xerca.xercapaint.PaletteUtil;
+import xerca.xercapaint.entity.EntityCanvas;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 
-@OnlyIn(Dist.CLIENT)
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     static public RenderEntityCanvas theInstance;
@@ -45,15 +41,16 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     }
 
     private final TextureManager textureManager;
-    private final Map<String, RenderEntityCanvas.Instance> loadedCanvases = Maps.newHashMap();
+    private final Map<String, Instance> loadedCanvases = Maps.newHashMap();
 
     RenderEntityCanvas(EntityRendererProvider.Context ctx) {
         super(ctx);
-        this.textureManager = Minecraft.getInstance().textureManager;
+        this.textureManager = Minecraft.getInstance().getTextureManager();
     }
 
+    @Nullable
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityCanvas entity) {
+    public ResourceLocation getTextureLocation(EntityCanvas entity) {
         return getCanvasRendererInstance(entity).location;
     }
 
@@ -66,17 +63,24 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
         @Override
-        public @NotNull EntityRenderer<EntityCanvas> create(Context ctx) {
+        public EntityRenderer<EntityCanvas> create(Context ctx) {
             theInstance = new RenderEntityCanvas(ctx);
             return theInstance;
         }
     }
 
-    private RenderEntityCanvas.Instance getCanvasRendererInstance(EntityCanvas canvas) {
+    public void updateTexture(String name, int version) {
+        Instance instance = this.getMapInstanceIfExists(name);
+        if(instance != null){
+            instance.updateCanvasTexture(name, version);
+        }
+    }
+
+    private Instance getCanvasRendererInstance(EntityCanvas canvas) {
         return getCanvasRendererInstance(canvas.getCanvasName(), canvas.getCanvasVersion(), canvas.getWidth(), canvas.getHeight());
     }
 
-    RenderEntityCanvas.Instance getCanvasRendererInstance(CompoundTag tag, int width, int height) {
+    Instance getCanvasRendererInstance(CompoundTag tag, int width, int height) {
         String name = tag.getString("name");
         int version = tag.getInt("v");
         if(!EntityCanvas.PICTURES.containsKey(name) || EntityCanvas.PICTURES.get(name).version < version){
@@ -85,8 +89,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         return getCanvasRendererInstance(name, version, width, height);
     }
 
-    RenderEntityCanvas.Instance getCanvasRendererInstance(String name, int version, int width, int height) {
-        RenderEntityCanvas.Instance instance = this.loadedCanvases.get(name);
+    Instance getCanvasRendererInstance(String name, int version, int width, int height) {
+        Instance instance = this.loadedCanvases.get(name);
         if (instance == null) {
             instance = new Instance(name, version, width, height);
             this.loadedCanvases.put(name, instance);
@@ -99,11 +103,31 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         return instance;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    public Instance getMapInstanceIfExists(String name) {
+        return this.loadedCanvases.get(name);
+    }
+
+    /**
+     * Clears the currently loaded maps and removes their corresponding textures
+     */
+    public void clearLoadedCanvases() {
+        for(Instance instance : this.loadedCanvases.values()) {
+            instance.close();
+        }
+
+        this.loadedCanvases.clear();
+    }
+
+    public void close() {
+        this.clearLoadedCanvases();
+    }
+
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public class Instance implements AutoCloseable {
         int version = 0;
-        final int width;
-        final int height;
+        int width;
+        int height;
         boolean loaded;
         boolean started;
         public final DynamicTexture canvasTexture;
@@ -136,17 +160,14 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             }
             if(loaded || !started){
                 if(pixels.length < height*width){
-                    XercaPaint.LOGGER.warn("Pixels array length (" + pixels.length + ") is smaller than canvas area (" + height*width + ")");
+                    Mod.LOGGER.warn("Pixels array length (" + pixels.length + ") is smaller than canvas area (" + height*width + ")");
                     return;
                 }
 
-                NativeImage image = canvasTexture.getPixels();
-                if(image != null) {
-                    for (int i = 0; i < height; ++i) {
-                        for (int j = 0; j < width; ++j) {
-                            int k = j + i * width;
-                            image.setPixelRGBA(j, i, swapColor(pixels[k]));
-                        }
+                for (int i = 0; i < height; ++i) {
+                    for (int j = 0; j < width; ++j) {
+                        int k = j + i * width;
+                        canvasTexture.getPixels().setPixelRGBA(j, i, swapColor(pixels[k]));
                     }
                 }
 
@@ -196,6 +217,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
             ms.scale(f, f, f);
 
+//            textureManager.bind(location);
             RenderSystem.setShaderTexture(0, location);
 
             Matrix4f m = ms.last().pose();
@@ -245,6 +267,11 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         private void addVertex(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
         {
             vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(mn, xOff, yOff, zOff).endVertex();
+        }
+
+        private void addVertexFront(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
+        {
+            vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).uv2(lightmap).endVertex();
         }
 
         public void close() {

@@ -12,16 +12,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.NotNull;
-import xerca.xercapaint.common.PaletteUtil;
-import xerca.xercapaint.common.SoundEvents;
-import xerca.xercapaint.common.XercaPaint;
+import xerca.xercapaint.Mod;
+import xerca.xercapaint.PaletteUtil;
+import xerca.xercapaint.SoundEvents;
 
-import static xerca.xercapaint.common.PaletteUtil.emptinessColor;
-import static xerca.xercapaint.common.PaletteUtil.readCustomColorArrayFromNBT;
+import static xerca.xercapaint.PaletteUtil.emptinessColor;
+import static xerca.xercapaint.PaletteUtil.readCustomColorArrayFromNBT;
 
 public abstract class BasePalette extends Screen {
-    protected static final ResourceLocation paletteTextures = new ResourceLocation(XercaPaint.MODID, "textures/gui/palette.png");
+    protected static final ResourceLocation paletteTextures = new ResourceLocation(Mod.modId, "textures/gui/palette.png");
     final static int dyeSpriteX = 240;
     final static int dyeSpriteSize = 16;
     final static int brushSpriteX = 0;
@@ -102,13 +101,12 @@ public abstract class BasePalette extends Screen {
     boolean isPickingColor = false;
     boolean isCarryingColor = false;
     boolean isCarryingWater = false;
-    boolean canvasDirty = false;
-    boolean paletteDirty = false;
+    boolean dirty = false;
     PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
     static PaletteUtil.Color currentColor = basicColors[0];
-    final PaletteUtil.CustomColor[] customColors;
-    final boolean[] basicColorFlags;
+    PaletteUtil.CustomColor[] customColors;
+    boolean[] basicColorFlags;
     boolean paletteComplete = false;
     boolean isCarryingPalette = false;
 
@@ -148,7 +146,7 @@ public abstract class BasePalette extends Screen {
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
 //        Minecraft.getInstance().getTextureManager().bind(paletteTextures);
@@ -324,7 +322,7 @@ public abstract class BasePalette extends Screen {
                                 playSound(SoundEvents.MIX);
                             }
                         }
-                        paletteDirty = true;
+                        dirty = true;
                         break;
                     }
                 }
@@ -347,9 +345,9 @@ public abstract class BasePalette extends Screen {
 
     protected void playSound(SoundEvent soundEvent, float volume){
         Minecraft m = Minecraft.getInstance();
-        if(m.level != null && m.player != null){
-                m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
-                        0.8f + m.level.random.nextFloat()*0.4f, m.player.blockPosition()));
+        if(m.level != null){
+            m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
+                    0.8f + m.level.random.nextFloat()*0.4f, Minecraft.getInstance().player.blockPosition()));
         }
     }
 

@@ -1,126 +1,106 @@
 package xerca.xercamusic.common;
 
-import com.mojang.brigadier.CommandDispatcher;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xerca.xercamusic.common.data.BlockTags;
-import xerca.xercamusic.common.packets.*;
+import xerca.xercamusic.common.block.Blocks;
+import xerca.xercamusic.common.entity.Entities;
+import xerca.xercamusic.common.item.Items;
+import xerca.xercamusic.common.packets.IPacket;
+import xerca.xercamusic.common.packets.serverbound.*;
+import xerca.xercamusic.common.tile_entity.BlockEntities;
 
-import java.util.stream.Collectors;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 
-@Mod(XercaMusic.MODID)
-public class XercaMusic
+public class XercaMusic implements ModInitializer
 {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
 
-    private static final String PROTOCOL_VERSION = Integer.toString(1);
-    public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(MODID, "main_channel"))
-            .clientAcceptedVersions(PROTOCOL_VERSION::equals)
-            .serverAcceptedVersions(PROTOCOL_VERSION::equals)
-            .networkProtocolVersion(() -> PROTOCOL_VERSION)
-            .simpleChannel();
 
-
-    @SuppressWarnings("UnusedAssignment")
-    private void networkRegistry(){
-        int msg_id = 0;
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicUpdatePacket.class, MusicUpdatePacket::encode, MusicUpdatePacket::decode, MusicUpdatePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicEndedPacket.class, MusicEndedPacket::encode, MusicEndedPacket::decode, MusicEndedPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicBoxUpdatePacket.class, MusicBoxUpdatePacket::encode, MusicBoxUpdatePacket::decode, MusicBoxUpdatePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, SingleNotePacket.class, SingleNotePacket::encode, SingleNotePacket::decode, SingleNotePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, SingleNoteClientPacket.class, SingleNoteClientPacket::encode, SingleNoteClientPacket::decode, SingleNoteClientPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, ExportMusicPacket.class, ExportMusicPacket::encode, ExportMusicPacket::decode, ExportMusicPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, ImportMusicPacket.class, ImportMusicPacket::encode, ImportMusicPacket::decode, ImportMusicPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, ImportMusicSendPacket.class, ImportMusicSendPacket::encode, ImportMusicSendPacket::decode, ImportMusicSendPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicDataRequestPacket.class, MusicDataRequestPacket::encode, MusicDataRequestPacket::decode, MusicDataRequestPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicDataResponsePacket.class, MusicDataResponsePacket::encode, MusicDataResponsePacket::decode, MusicDataResponsePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, TripleNoteClientPacket.class, TripleNoteClientPacket::encode, TripleNoteClientPacket::decode, TripleNoteClientPacketHandler::handle);
+    private void networkRegistry() {
+        ServerPlayNetworking.registerGlobalReceiver(MusicUpdatePacket.ID, new MusicUpdatePacketHandler());
+        ServerPlayNetworking.registerGlobalReceiver(MusicEndedPacket.ID, new MusicEndedPacketHandler());
+        ServerPlayNetworking.registerGlobalReceiver(ImportMusicSendPacket.ID, new ImportMusicSendPacketHandler());
+        ServerPlayNetworking.registerGlobalReceiver(MusicDataRequestPacket.ID, new MusicDataRequestPacketHandler());
+        ServerPlayNetworking.registerGlobalReceiver(SingleNotePacket.ID, new SingleNotePacketHandler());
     }
 
-    public XercaMusic() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        event.enqueueWork(()->{
-            networkRegistry();
-            registerTriggers();
-        });
-    }
-
-    private void enqueueIMC(final InterModEnqueueEvent event)
-    {
-        // Send music sheet's resource location to xercamod for the bookcase interaction
-        InterModComms.sendTo("xercamod", "send_note", () ->  new ResourceLocation(MODID, "music_sheet"));
-    }
-
-    private void processIMC(final InterModProcessEvent event)
-    {
-        LOGGER.debug("Got IMC {}", event.getIMCStream().
-                map(m->m.getMessageSupplier().get()).
-                collect(Collectors.toList()));
-    }
+//    private void enqueueIMC(final InterModEnqueueEvent event) todo this later
+//    {
+//        // Send music sheet's resource location to xercamod for the bookcase interaction
+//        InterModComms.sendTo("xercamod", "send_note", () ->  new ResourceLocation(MODID, "music_sheet"));
+//    }
 
     private void registerTriggers() {
-        for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++)
-        {
+        for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++) {
             CriteriaTriggers.register(Triggers.TRIGGER_ARRAY[i]);
         }
     }
 
-    // Registration for loot modifier (used for Voice of God in desert temples)
-    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandler {
-        @SubscribeEvent
-        public static void registerLootModifiers(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
-            event.getRegistry().register(new TempleLootModifier.Serializer().setRegistryName(new ResourceLocation(MODID,"temple_vog")));
-        }
+    @Override
+    public void onInitialize() {
+        networkRegistry();
+        registerTriggers();
+        Blocks.registerBlocks();
+        BlockEntities.registerBlockEntities();
+        Items.registerItems();
+        Items.registerRecipes();
+        Entities.registerEntities();
+        SoundEvents.registerSoundEvents();
 
-        @SubscribeEvent
-        public static void registerDataEvent(final GatherDataEvent event) {
-            event.getGenerator().addProvider(new BlockTags(event.getGenerator(), event.getExistingFileHelper()));
-        }
+        // Registration for loot modifier (used for Voice of God in desert temples)
+        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+            if (source.isBuiltin() && BuiltInLootTables.DESERT_PYRAMID.equals(id)) {
+                LootPool.Builder poolBuilder = LootPool.lootPool().when(LootItemRandomChanceCondition.randomChance(0.1f))
+                        .with(LootItem.lootTableItem(Items.GOD).build());
+                tableBuilder.withPool(poolBuilder);
+            }
+        });
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            CommandImport.register(dispatcher);
+            CommandExport.register(dispatcher);
+        });
     }
 
-    @Mod.EventBusSubscriber(modid = XercaMusic.MODID)
-    public static class ForgeEventHandler {
-        @SubscribeEvent
-        public static void onRegisterCommandEvent(RegisterCommandsEvent event) {
-            CommandDispatcher<CommandSourceStack> commandDispatcher = event.getDispatcher();
-            CommandImport.register(commandDispatcher);
-            CommandExport.register(commandDispatcher);
-        }
+    public static void sendToClient(ServerPlayer player, IPacket packet) {
+        ServerPlayNetworking.send(player, packet.getID(), packet.encode());
     }
 
-    // This is for conveniently initializing object holders without annoying the IDE
-    @SuppressWarnings({"SameReturnValue"})
-    public static <T> T Null() {
+    public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) {
+        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+            try {
+                return toRun.get().call();
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
         return null;
+    }
+
+    public static void onlyRunOnClient(Supplier<Runnable> toRun) {
+        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+            try {
+                toRun.get().run();
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

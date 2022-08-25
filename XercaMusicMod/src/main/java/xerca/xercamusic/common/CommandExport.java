@@ -10,16 +10,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.common.item.ItemMusicSheet;
-import xerca.xercamusic.common.packets.ExportMusicPacket;
+import xerca.xercamusic.common.packets.clientbound.ExportMusicPacket;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
+import static xerca.xercamusic.common.XercaMusic.sendToClient;
+
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
@@ -43,7 +43,7 @@ public class CommandExport {
         }
 
         ExportMusicPacket pack = new ExportMusicPacket(name);
-        XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), pack);
+        sendToClient(player, pack);
         return 1;
     }
 
@@ -58,8 +58,8 @@ public class CommandExport {
 
         for(ItemStack s : player.getHandSlots()){
             if(s.getItem() instanceof ItemMusicSheet){
-                if(s.hasTag() && s.getTag() != null) {
-                    CompoundTag tag = s.getTag().copy();
+                if(s.hasTag()){
+                    @SuppressWarnings("ConstantConditions") CompoundTag tag = s.getTag().copy();
                     if(tag.contains("id") && tag.contains("ver")){
                         UUID id = tag.getUUID("id");
                         int ver = tag.getInt("ver");

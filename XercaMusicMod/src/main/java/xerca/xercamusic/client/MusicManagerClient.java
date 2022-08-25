@@ -5,7 +5,7 @@ import net.minecraft.nbt.NbtIo;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.MusicDataRequestPacket;
+import xerca.xercamusic.common.packets.serverbound.MusicDataRequestPacket;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
+import static xerca.xercamusic.client.ClientStuff.sendToServer;
+
 public class MusicManagerClient {
-    static Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
-    static Map<UUID, Runnable> taskMap = new HashMap<>();
+    static final Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
+    static final Map<UUID, Runnable> taskMap = new HashMap<>();
     static final String cacheDir = "music_sheets/.cache/";
 
     public static void load() {
@@ -61,7 +62,20 @@ public class MusicManagerClient {
         taskMap.put(id, task);
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
-        XercaMusic.NETWORK_HANDLER.sendToServer(packet);
+        sendToServer(packet);
+    }
+
+    @SuppressWarnings("unused")
+    public static void checkMusicData(UUID id, int ver) {
+        if(musicMap.containsKey(id)){
+            MusicManager.MusicData data = musicMap.get(id);
+            if(data.version >= ver){
+                return;
+            }
+        }
+        // Request music data from server
+        MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
+        sendToServer(packet);
     }
 
     public static MusicManager.MusicData getMusicData(UUID id, int ver) {
@@ -73,7 +87,7 @@ public class MusicManagerClient {
         }
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
-        XercaMusic.NETWORK_HANDLER.sendToServer(packet);
+        sendToServer(packet);
         return null;
     }
 

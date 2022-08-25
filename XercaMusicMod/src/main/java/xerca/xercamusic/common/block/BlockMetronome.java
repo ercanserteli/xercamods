@@ -1,6 +1,5 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -22,15 +21,13 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class BlockMetronome extends BaseEntityBlock {
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -39,7 +36,6 @@ public class BlockMetronome extends BaseEntityBlock {
     public BlockMetronome() {
         super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD));
         this.registerDefaultState(this.stateDefinition.any().setValue(BPS, 6).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
-        this.setRegistryName("block_metronome");
     }
 
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -47,11 +43,12 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
         boolean flag = worldIn.hasNeighborSignal(pos);
         if (flag != state.getValue(POWERED)) {
             worldIn.setBlock(pos, state.setValue(POWERED, flag), 3);
         }
+
     }
 
 
@@ -65,11 +62,9 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (!worldIn.isClientSide) {
-            if (SoundEvents.METRONOME_SET != null) {
-                worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
-            }
+            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
             if (player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET) {
                 note = player.getItemInHand(hand);
@@ -95,12 +90,12 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new TileEntityMetronome(pos, state);
     }
 
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
             if (t instanceof TileEntityMetronome) {
                 TileEntityMetronome.tick(level1, blockPos, blockState1, (TileEntityMetronome) t);
@@ -109,7 +104,7 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 

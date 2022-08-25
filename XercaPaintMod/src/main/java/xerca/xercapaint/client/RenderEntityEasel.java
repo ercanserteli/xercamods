@@ -17,37 +17,36 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
-import xerca.xercapaint.common.XercaPaint;
-import xerca.xercapaint.common.entity.EntityEasel;
-import xerca.xercapaint.common.item.ItemCanvas;
+import xerca.xercapaint.Mod;
+import xerca.xercapaint.entity.EntityEasel;
+import xerca.xercapaint.item.ItemCanvas;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
-    protected final EaselModel model;
+    protected EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
     static public RenderEntityEasel theInstance;
-    static private final ResourceLocation woodTexture = new ResourceLocation(XercaPaint.MODID, "textures/block/birch_long.png");
+    static private final ResourceLocation woodTexture = new ResourceLocation(Mod.modId, "textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);
-        this.model = new EaselModel(ctx.bakeLayer(ClientStuff.EASEL_MAIN_LAYER));
+        this.model = new EaselModel(ctx.bakeLayer(ModClient.EASEL_MAIN_LAYER));
         this.layers.add(new EaselCanvasLayer(this));
     }
 
     @Override
-    public @NotNull EaselModel getModel() {
+    public EaselModel getModel() {
         return this.model;
     }
 
+    @Nullable
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityEasel entity) {
+    public ResourceLocation getTextureLocation(EntityEasel entity) {
         return woodTexture;
     }
 
@@ -68,7 +67,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
         int i = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
         this.model.renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, i, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.layers.forEach(renderLayer -> renderLayer.render(matrixStackIn, bufferIn, packedLightIn, entity, 0, 0, 0, 0, 0, 0));
+        this.layers.forEach(renderlayer -> renderlayer.render(matrixStackIn, bufferIn, packedLightIn, entity, 0, 0, 0, 0, 0, 0));
 
         matrixStackIn.popPose();
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
@@ -97,7 +96,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
     public static class RenderEntityEaselFactory implements EntityRendererProvider<EntityEasel> {
         @Override
-        public @NotNull EntityRenderer<EntityEasel> create(Context ctx) {
+        public EntityRenderer<EntityEasel> create(Context ctx) {
             theInstance = new RenderEntityEasel(ctx);
             return theInstance;
         }

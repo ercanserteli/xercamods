@@ -11,15 +11,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
-import xerca.xercamusic.common.packets.ImportMusicPacket;
-import xerca.xercamusic.common.packets.MusicDataResponsePacket;
+import xerca.xercamusic.common.packets.clientbound.ImportMusicPacket;
+import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static xerca.xercamusic.common.XercaMusic.sendToClient;
 import static xerca.xercamusic.common.item.ItemMusicSheet.convertFromOld;
 
 public class CommandImport {
@@ -38,7 +38,7 @@ public class CommandImport {
         ImportMusicPacket pack = new ImportMusicPacket(name);
         try {
             ServerPlayer player = stack.getPlayerOrException();
-            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), pack);
+            sendToClient(player, pack);
         } catch (CommandSyntaxException e) {
             XercaMusic.LOGGER.debug("Command executor is not a player");
             e.printStackTrace();
@@ -60,7 +60,7 @@ public class CommandImport {
             MusicManager.setMusicData(id, ver, notes, player.server);
 
             MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
-            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(()->player), packet);
+            sendToClient(player, packet);
             tag.remove("notes");
         }
         else if(tag.contains("music")){
@@ -71,7 +71,7 @@ public class CommandImport {
             int ver = tag.getInt("ver");
 
             MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
-            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(()->player), packet);
+            sendToClient(player, packet);
             tag.remove("notes"); // Just in case
         }
         else {
@@ -85,13 +85,14 @@ public class CommandImport {
             player.addItem(itemStack);
         }
         else{
-            ItemStack mainHandStack = player.getMainHandItem();
+            ItemStack mainHandItem = player.getMainHandItem();
 
-            if(!(mainHandStack.getItem() instanceof ItemMusicSheet) || (mainHandStack.hasTag() && mainHandStack.getTag() != null && !mainHandStack.getTag().isEmpty())){
+            //noinspection ConstantConditions
+            if(!(mainHandItem.getItem() instanceof ItemMusicSheet) || (mainHandItem.hasTag() && !mainHandItem.getTag().isEmpty())){
                 player.sendMessage(new TranslatableComponent("import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
-            mainHandStack.setTag(tag);
+            mainHandItem.setTag(tag);
         }
         player.sendMessage(new TranslatableComponent("import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
     }

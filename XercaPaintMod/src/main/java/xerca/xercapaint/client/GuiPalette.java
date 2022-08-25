@@ -1,15 +1,13 @@
 package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
-import xerca.xercapaint.common.XercaPaint;
-import xerca.xercapaint.common.packets.PaletteUpdatePacket;
+import xerca.xercapaint.Mod;
+import xerca.xercapaint.packets.PaletteUpdatePacket;
 
-@OnlyIn(Dist.CLIENT)
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiPalette extends BasePalette {
 
     protected GuiPalette(CompoundTag paletteTag, Component title) {
@@ -33,7 +31,7 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float f) {
         super.render(matrixStack, mouseX, mouseY, f);
 
         renderCursor(matrixStack, mouseX, mouseY);
@@ -70,9 +68,9 @@ public class GuiPalette extends BasePalette {
 
     @Override
     public void removed() {
-        if (paletteDirty) {
+        if (dirty) {
             PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
-            XercaPaint.NETWORK_HANDLER.sendToServer(pack);
+            ClientPlayNetworking.send(Mod.PALETTE_UPDATE_PACKET_ID, pack.encode());
         }
     }
 }

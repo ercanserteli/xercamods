@@ -1,46 +1,18 @@
 package xerca.xercamusic.common.entity;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.EntityType;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import xerca.xercamusic.common.XercaMusic;
 
-import static xerca.xercamusic.common.XercaMusic.Null;
-
-@ObjectHolder(XercaMusic.MODID)
 public class Entities {
-    public static final EntityType<EntityMusicSpirit> MUSIC_SPIRIT = Null();
+    public static final EntityType<EntityMusicSpirit> MUSIC_SPIRIT = FabricEntityTypeBuilder.<EntityMusicSpirit>create(MobCategory.MISC, EntityMusicSpirit::new)
+            .dimensions(new EntityDimensions(0.25f, 0.25f, true)).trackedUpdateRate(10).build();
 
-    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandler {
-        @SubscribeEvent
-        public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
-            event.getRegistry().register(build("music_spirit",
-                    EntityType.Builder.<EntityMusicSpirit>of((EntityMusicSpirit::new), MobCategory.MISC).setCustomClientFactory(EntityMusicSpirit::new).sized(0.25f, 0.25f).setUpdateInterval(10)
-            ));
-        }
-    }
-
-
-    /**
-     * Build an {@link EntityType} from a {@link EntityType.Builder} using the specified name.
-     *
-     * @param name    The entity type name
-     * @param builder The entity type builder to build
-     * @return The built entity type
-     */
-    @SuppressWarnings("SameParameterValue")
-    private static <T extends Entity> EntityType<T> build(final String name, final EntityType.Builder<T> builder) {
-        final ResourceLocation registryName = new ResourceLocation(XercaMusic.MODID, name);
-
-        final EntityType<T> entityType = builder.build(registryName.toString());
-
-        entityType.setRegistryName(registryName);
-        return entityType;
+    public static void registerEntities() {
+        Registry.register(Registry.ENTITY_TYPE, new ResourceLocation(XercaMusic.MODID, "music_spirit"), MUSIC_SPIRIT);
     }
 }

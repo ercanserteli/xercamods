@@ -1,6 +1,5 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -12,14 +11,10 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import xerca.xercamusic.common.item.ItemInstrument;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
-
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class BlockDrums extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape[] shapes = {
@@ -32,11 +27,10 @@ public class BlockDrums extends BlockInstrument {
     public BlockDrums() {
         super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
-        this.setRegistryName("drum_kit");
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return shapes[Math.max(0, state.getValue(FACING).get3DDataValue() - 2)];
     }
 
@@ -61,7 +55,7 @@ public class BlockDrums extends BlockInstrument {
     }
 
     @Override
-    public ItemInstrument getItemInstrument() {
-        return Objects.requireNonNull(Items.DRUM_KIT);
+    public IItemInstrument getItemInstrument() {
+        return (IItemInstrument) Items.DRUM_KIT;
     }
 }
