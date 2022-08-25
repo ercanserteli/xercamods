@@ -4,6 +4,7 @@
     - Mouse, keyboard or MIDI instrument can be used to play
     - Multiple keys can be pressed at once, can be released at different times
     - Can adjust octave for keyboard/MIDI instrument
+    - When playing with a MIDI instrument, play volume is based on press velocity
     - Music particle is emitted at player's head when hitting a note
 
 - Music GUI
@@ -34,13 +35,14 @@
 - Signing sheets
     - On the music GUI, when sign button is pressed, user can enter a title to sign it
     - When a sheet is signed, it becomes glowing, its name changes to the title, its author and originality is shown below its name
-    - When a sheet is signed, it cannot be modified
-    - A signed sheet and an empty sheet can be used to produce a copy unless it is pirated. Original sheet remains after copying.
+    - When a sheet is signed, it cannot be modified (tempo, sheet volume, etc. can be changed by original author, or by anyone if it is a copy)
+    - A signed sheet and an empty sheet can be used to produce a copy unless it is a copy of copy. Original sheet remains after copying.
 
 - Playing sheets
     - When an instrument in the main hand is used with a note in the other hand, the music is played to all nearby players with that instrument's sound
     - When holding a sheet, right-clicking an instrument block makes the player play it, going too far away stops the music
     - Music particles are emitted from the player's head (or the instrument block) whenever a note is struck
+    - Changing items while playing stops the music
 
 - Music box
     - Can put instrument and sheet inside, visuals change accordingly
@@ -54,3 +56,6 @@
     - Can be adjusted manually by right-clicking with empty hand, or automatically by right-clicking with a sheet
     - Plays ticks on its set interval when powered by redstone
     - After a few ticks, makes nearby players play music if they have an instrument and note with the same tempo
+
+- Loot
+    - Voice of god can be found in desert temple loot with a 1 in 10 chance
