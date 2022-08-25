@@ -1,39 +1,38 @@
 package xerca.xercamusic.common.entity;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnData {
+public class EntityMusicSpirit extends Entity {
+    public static final ResourceLocation spawnPacketId = new ResourceLocation(XercaMusic.MODID, "spawn_music_spirit");
     private Player body;
     private ItemStack note;
-    private ItemInstrument instrument;
+    private IItemInstrument instrument;
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
     private int mLengthBeats;
     private float mVolume;
@@ -44,28 +43,24 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     private SoundController soundController = null;
 
     public EntityMusicSpirit(Level worldIn) {
-        super(Objects.requireNonNull(Entities.MUSIC_SPIRIT), worldIn);
+        super(Entities.MUSIC_SPIRIT, worldIn);
     }
 
-    public EntityMusicSpirit(Level worldIn, Player body, ItemInstrument instrument) {
-        super(Objects.requireNonNull(Entities.MUSIC_SPIRIT), worldIn);
+    public EntityMusicSpirit(Level worldIn, Player body, IItemInstrument instrument) {
+        this(worldIn);
         this.body = body;
         this.instrument = instrument;
         setNoteFromBody();
         this.setPos(body.getX(), body.getY(), body.getZ());
     }
 
-    public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, ItemInstrument instrument) {
+    public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, IItemInstrument instrument) {
         this(worldIn, body, instrument);
         setBlockPosAndInstrument(blockInsPos);
     }
 
     public EntityMusicSpirit(EntityType<EntityMusicSpirit> type, Level world) {
         super(type, world);
-    }
-
-    public EntityMusicSpirit(PlayMessages.SpawnEntity ignoredSpawnEntity, Level world) {
-        this(world);
     }
 
     private void setBlockPosAndInstrument(BlockPos pos){
@@ -95,6 +90,10 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     private void setNoteFromBody(){
+        if(body == null) {
+            XercaMusic.LOGGER.warn("Body is null in MusicSpirit setNoteFromBody");
+            return;
+        }
         ItemStack mainStack = body.getMainHandItem();
         ItemStack offStack = body.getOffhandItem();
         if(mainStack.getItem() == Items.MUSIC_SHEET){
@@ -109,7 +108,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
         NoteEvent.fillArrayFromNBT(notes, tag);
         this.mLengthBeats = tag.getInt("l");
         this.mBPS = tag.getByte("bps");
@@ -121,7 +120,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
         NoteEvent.fillNBTFromArray(notes, tag);
         tag.putInt("l", mLengthBeats);
         tag.putByte("bps", mBPS);
@@ -136,11 +135,17 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
 
     @Override
     public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        FriendlyByteBuf buffer = PacketByteBufs.create();
+        ClientboundAddEntityPacket pack = new ClientboundAddEntityPacket(this);
+        pack.write(buffer);
+        writeSpawnData(buffer);
+        return ServerPlayNetworking.createS2CPacket(spawnPacketId, buffer);
     }
 
-    @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
+//        buffer.writeInt(getId());
+//        buffer.writeUUID(getUUID());
+
         buffer.writeInt(body != null ? body.getId() : -1);
         if(blockInstrument != null && blockInsPos != null){
             buffer.writeInt(blockInsPos.getX());
@@ -154,8 +159,10 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         }
     }
 
-    @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
+//        setId(buffer.readInt());
+//        setUUID(buffer.readUUID());
+
         int entityId = buffer.readInt();
         Entity ent = level.getEntity(entityId);
         if (ent instanceof Player) {
@@ -169,17 +176,24 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             setBlockPosAndInstrument(new BlockPos(bx, by ,bz));
         }
 
-        if(blockInsPos != null){
+        if(blockInsPos != null) {
             this.instrument = blockInstrument.getItemInstrument();
             this.setNoteFromBody();
         }
-        else{
-            this.instrument = (ItemInstrument) body.getMainHandItem().getItem();
-            this.note = body.getOffhandItem();
-            this.setPos(body.getX(), body.getY(), body.getZ());
+        else if(body != null) {
+            Item item = body.getMainHandItem().getItem();
+            if(item instanceof IItemInstrument ins) {
+                this.instrument = ins;
+                this.note = body.getOffhandItem();
+                this.setPos(body.getX(), body.getY(), body.getZ());
+            }
+            else {
+                XercaMusic.LOGGER.warn("Could not find instrument when spawning music spirit!");
+                return;
+            }
         }
 
-        if (note.hasTag() && note.getTag() != null && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
+        if (note != null && note.hasTag() && note.getTag() != null && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
             CompoundTag comp = note.getTag();
             mLengthBeats = comp.getInt("l");
             mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
@@ -207,14 +221,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public void remove(Entity.RemovalReason reason) {
-        super.remove(reason);
-    }
-
-    @Override
-    public void onRemovedFromWorld() {
-        super.onRemovedFromWorld();
-
+    public void onClientRemoval() {
         if(soundController != null){
             soundController.setStop();
         }
@@ -250,6 +257,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
                 this.setPos(body.getX(), body.getY(), body.getZ());
                 if(soundController != null) {
                     soundController.setPos(getX(), getY(), getZ());
+                    XercaMusic.LOGGER.warn("HEDE");
                 }
             }
         }

@@ -9,20 +9,27 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import org.jetbrains.annotations.NotNull;
-import xerca.xercapaint.common.CanvasType;
-import xerca.xercapaint.common.entity.EntityEasel;
-import xerca.xercapaint.common.item.ItemCanvas;
+import xerca.xercapaint.CanvasType;
+import xerca.xercapaint.entity.EntityEasel;
+import xerca.xercapaint.item.ItemCanvas;
 
 public class EaselModel extends EntityModel<EntityEasel> {
     private final ModelPart bb_main;
+    private final ModelPart cube_r1;
     private final ModelPart bottomBar;
     private final ModelPart topBar;
+    private final ModelPart cube_r3;
+    private final ModelPart cube_r4;
+    private final ModelPart cube_r5;
 
     public EaselModel(ModelPart model) {
         this.bb_main = model;
+        this.cube_r1 = model.getChild("cube_r1");
         this.bottomBar = model.getChild("bottomBar");
         this.topBar = model.getChild("topBar");
+        this.cube_r3 = model.getChild("cube_r3");
+        this.cube_r4 = model.getChild("cube_r4");
+        this.cube_r5 = model.getChild("cube_r5");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -86,7 +93,7 @@ public class EaselModel extends EntityModel<EntityEasel> {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         bb_main.render(poseStack, buffer, packedLight, packedOverlay);
     }
 }

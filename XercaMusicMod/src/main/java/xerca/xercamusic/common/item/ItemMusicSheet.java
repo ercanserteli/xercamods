@@ -18,11 +18,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.util.LogicalSidedProvider;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.MusicManager;
@@ -38,13 +33,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
+
 public class ItemMusicSheet extends Item {
-    static final private HashMap<ItemInstrument.Pair<String, String>, UUID> convertMap = new HashMap<>();
+    static final private HashMap<IItemInstrument.Pair<String, String>, UUID> convertMap = new HashMap<>();
     static final private int addToOldEnd = 8;
 
     ItemMusicSheet() {
         super(new Properties().tab(Items.musicTab).stacksTo(1));
-        this.setRegistryName("music_sheet");
     }
 
     public static ArrayList<NoteEvent> oldMusicToNotes(byte[] music){
@@ -87,7 +83,7 @@ public class ItemMusicSheet extends Item {
         if(nbt.contains("author") && nbt.contains("title")){
             String author = nbt.getString("author");
             String title = nbt.getString("title");
-            ItemInstrument.Pair<String, String> key = new ItemInstrument.Pair<>(author, title);
+            IItemInstrument.Pair<String, String> key = new IItemInstrument.Pair<>(author, title);
             if(convertMap.containsKey(key)){
                 id = convertMap.get(key);
             }
@@ -111,26 +107,13 @@ public class ItemMusicSheet extends Item {
         return notes;
     }
 
-    public void verifyTagAfterLoad(@NotNull CompoundTag nbt) {
-//        XercaMusic.LOGGER.info("verifyTagAfterLoad " + nbt);
-        if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER){
-            if(nbt.contains("music")){
-                // Old version
-                MinecraftServer server = LogicalSidedProvider.CLIENTWORLD.get(LogicalSide.SERVER).orElseThrow().getServer();
-                convertFromOld(nbt, server);
-            }
-        }
-    }
-
     @Nonnull
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if(worldIn.isClientSide){
-            if (SoundEvents.OPEN_SCROLL != null) {
-                playerIn.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + worldIn.random.nextFloat()*0.4f);
-            }
-            DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientStuff::showMusicGui);
+            playerIn.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + worldIn.random.nextFloat()*0.4f);
+            onlyRunOnClient(() -> ClientStuff::showMusicGui);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
@@ -211,7 +194,7 @@ public class ItemMusicSheet extends Item {
             if(tag.contains("prevIns")){
                 byte ins = tag.getByte("prevIns");
                 if(ins >= 0 && ins < Items.instruments.length){
-                    Component name = Items.instruments[ins].getName(new ItemStack(Items.instruments[ins]));
+                    Component name = ((Item)Items.instruments[ins]).getName(new ItemStack((Item)Items.instruments[ins]));
                     tooltip.add((new TranslatableComponent("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
                 }
             }
@@ -246,7 +229,8 @@ public class ItemMusicSheet extends Item {
     public boolean isFoil(ItemStack stack) {
         if(stack.hasTag()){
             CompoundTag ntc = stack.getTag();
-            if (ntc != null && ntc.contains("generation")) {
+            //noinspection ConstantConditions
+            if(ntc.contains("generation")){
                 int generation = ntc.getInt("generation");
                 return generation > 0;
             }

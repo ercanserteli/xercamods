@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,16 +18,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import xerca.xercapaint.common.XercaPaint;
-import xerca.xercapaint.common.item.ItemCanvas;
+import xerca.xercapaint.Mod;
+import xerca.xercapaint.item.ItemCanvas;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer
+public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer
 {
     private static final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
-    private static final ResourceLocation emptyCanvasLocation = new ResourceLocation(XercaPaint.MODID, "textures/block/empty.png");
+    private static final ResourceLocation emptyCanvasLocation = new ResourceLocation(Mod.modId, "textures/block/empty.png");
 
     public CanvasItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet entityModelSet) {
         super(dispatcher, entityModelSet);
@@ -123,5 +124,10 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer
         addVertex(vb, m, mn, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F-sideWidth, packedLight, xOffset, yOffset, zOffset);
 
         ms.popPose();
+    }
+
+    @Override
+    public void render(ItemStack stack, ItemTransforms.TransformType mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
+        renderByItem(stack, mode, matrices, vertexConsumers, light, overlay);
     }
 }

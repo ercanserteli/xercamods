@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "xercamusic:block_metronome",
+    "xercamusic:music_box",
+    "xercamusic:drum_kit",
+    "xercamusic:piano"
+  ]
+}

@@ -1,6 +1,9 @@
 package xerca.xercamusic.common.item;
 
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,40 +15,34 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
-import xerca.xercamusic.common.entity.EntityMusicSpirit;
-import xerca.xercamusic.common.packets.TripleNoteClientPacket;
+import xerca.xercamusic.common.packets.clientbound.TripleNoteClientPacket;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.List;
-public class ItemInstrument extends Item {
+import java.util.Collection;
+
+import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
+import static xerca.xercamusic.common.XercaMusic.sendToClient;
+
+public class ItemInstrument extends Item implements IItemInstrument{
     private ArrayList<Pair<Integer, SoundEvent>> sounds;
     private InsSound[] insSounds;
-    public static final int totalNotes = 96;
-    public static final int minNote = 21;
-    public static final int maxNote = 117;
-    public boolean isLong;
-    public int minOctave;
-    public int maxOctave;
+    public final int minOctave;
+    public final int maxOctave;
 
     private final int instrumentId;
 
-    public ItemInstrument(String name, boolean isLong, int instrumentId, int minOctave, int maxOctave) {
-        this(name, isLong, instrumentId, minOctave, maxOctave, new Properties().tab(Items.musicTab));
+    public ItemInstrument(int instrumentId, int minOctave, int maxOctave) {
+        this(instrumentId, minOctave, maxOctave, new Properties().tab(Items.musicTab));
     }
 
-    public ItemInstrument(String name, boolean isLong, int instrumentId, int minOctave, int maxOctave, Properties properties) {
+    public ItemInstrument( int instrumentId, int minOctave, int maxOctave, Properties properties) {
         super(properties);
-        this.setRegistryName(name);
-        this.isLong = isLong;
         this.instrumentId = instrumentId;
         this.minOctave = minOctave;
         this.maxOctave = maxOctave;
@@ -55,17 +52,6 @@ public class ItemInstrument extends Item {
         return instrumentId;
     }
 
-    // Should be called from the server side
-    static public void playMusic(Level worldIn, Player playerIn, boolean canStop){
-        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
-        if(musicSpirits.size() == 0){
-            worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, (ItemInstrument) playerIn.getMainHandItem().getItem()));
-        }
-        else if(canStop){
-            musicSpirits.forEach(spirit -> spirit.setPlaying(false));
-        }
-    }
-
     @Override
     @Nonnull
     public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
@@ -73,11 +59,11 @@ public class ItemInstrument extends Item {
         ItemStack off = playerIn.getOffhandItem();
         if (handIn == InteractionHand.MAIN_HAND && off.getItem() == Items.MUSIC_SHEET) {
             if (!worldIn.isClientSide) {
-                playMusic(worldIn, playerIn, true);
+                IItemInstrument.playMusic(worldIn, playerIn, true);
             }
         } else {
             if (worldIn.isClientSide) {
-                DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientStuff::showInstrumentGui);
+                onlyRunOnClient(() -> ClientStuff::showInstrumentGui);
             }
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
@@ -113,34 +99,29 @@ public class ItemInstrument extends Item {
             int note2 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
             int note3 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
 
-            PacketDistributor.PacketTarget networkTarget = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(target.getX(), target.getY(), target.getZ(), 24.0D, target.level.dimension()));
+            Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level, target.position(), 24.D);
             TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, this, target);
-            XercaMusic.NETWORK_HANDLER.send(networkTarget, packet);
+            for (ServerPlayer player : players) {
+                sendToClient(player, packet);
+            }
         }
         return true;
     }
 
-    public static int idToNote(int id){
-        return id + minNote;
-    }
-
-    public static int noteToId(int note){
-        return note - minNote;
-    }
-
+    @Override
     public void setSounds(ArrayList<Pair<Integer, SoundEvent>> sounds){
         this.sounds = sounds;
         insSounds = new InsSound[totalNotes];
         for(int i=0; i<totalNotes; i++){
-            int note = idToNote(i);
+            int note = IItemInstrument.idToNote(i);
             int index = getClosest(note);
             if(index < 0 || index >= sounds.size()){
                 XercaMusic.LOGGER.error("Invalid sound index in Instrument construction");
             }
             int octave = i/12;
             if(octave >= minOctave && octave <= maxOctave){
-                float pitch = (float)Math.pow(1.05946314465679, note - sounds.get(index).first);
-                insSounds[i] = new InsSound(sounds.get(index).second, pitch);
+                float pitch = (float)Math.pow(1.05946314465679, note - sounds.get(index).first());
+                insSounds[i] = new InsSound(sounds.get(index).second(), pitch);
             }
         }
     }
@@ -149,7 +130,7 @@ public class ItemInstrument extends Item {
         int minDiff = 100;
         int bestIndex = -1;
         for(int i=0; i<sounds.size(); i++){
-            int diff = Math.abs(sounds.get(i).first - note);
+            int diff = Math.abs(sounds.get(i).first() - note);
             if(diff < minDiff){
                 minDiff = diff;
                 bestIndex = i;
@@ -158,8 +139,9 @@ public class ItemInstrument extends Item {
         return bestIndex;
     }
 
+    @Override
     public InsSound getSound(int note) {
-        int id = noteToId(note);
+        int id = IItemInstrument.noteToId(note);
         if(id >= 0 && id < totalNotes) {
             return insSounds[id];
         }
@@ -167,28 +149,13 @@ public class ItemInstrument extends Item {
         return null;
     }
 
-    static public class InsSound {
-        public SoundEvent sound;
-        public float pitch;
-
-        public InsSound(SoundEvent sound, float pitch){
-            this.sound = sound;
-            this.pitch = pitch;
-        }
+    @Override
+    public int getMinOctave() {
+        return minOctave;
     }
 
-    public record Pair<F, S>(F first, S second) {
-        public static <F, S> Pair<F, S> of(F first, S second) {
-            if (first == null || second == null) {
-                throw new IllegalArgumentException("Pair.of requires non null values.");
-            }
-            return new Pair<>(first, second);
-        }
-
-        @Override
-        public int hashCode() {
-            return first.hashCode() * 37 + second.hashCode();
-        }
+    @Override
+    public int getMaxOctave() {
+        return maxOctave;
     }
-
 }

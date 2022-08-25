@@ -10,18 +10,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMetronome;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 
 import java.util.List;
-import java.util.Objects;
+
+import static xerca.xercamusic.common.XercaMusic.onlyCallOnClient;
 
 public class TileEntityMetronome extends BlockEntity {
     private final static Vec3i halfRange = new Vec3i(8, 2, 8);
@@ -31,7 +30,7 @@ public class TileEntityMetronome extends BlockEntity {
     private int countDown = 0;
 
     public TileEntityMetronome(BlockPos blockPos, BlockState blockState){
-        super(Objects.requireNonNull(TileEntities.METRONOME), blockPos, blockState);
+        super(BlockEntities.METRONOME, blockPos, blockState);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class TileEntityMetronome extends BlockEntity {
                 if (metronome.age % pause == 0) {
                     if(metronome.level.isClientSide){// note: doesn't work if this function is only called in server
                         // Client side
-                        DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
+                        onlyCallOnClient(() -> () ->
                                 ClientStuff.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat()*0.1f, (byte)-1));
 
                         level.addParticle(ParticleTypes.NOTE, (double) metronome.worldPosition.getX() + 0.5D, (double) metronome.worldPosition.getY() + 1.2D, (double) metronome.worldPosition.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
@@ -61,12 +60,12 @@ public class TileEntityMetronome extends BlockEntity {
                     else{
                         // Server side
                         if(metronome.countDown == 3){
-                            List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
-                                    player -> player.getMainHandItem().getItem() instanceof ItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
-                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag() != null && player.getOffhandItem().getTag().getInt("bps") == bps);
+                            @SuppressWarnings("ConstantConditions") List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
+                                    player -> player.getMainHandItem().getItem() instanceof IItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
+                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag().getInt("bps") == bps);
                             XercaMusic.LOGGER.info("Metronome found " + players.size() + " players");
                             for(Player player : players){
-                                ItemInstrument.playMusic(level, player, false);
+                                IItemInstrument.playMusic(level, player, false);
                             }
                         }
                     }

@@ -10,16 +10,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
-import xerca.xercamusic.common.item.ItemInstrument;
-import xerca.xercamusic.common.packets.SingleNotePacket;
+import xerca.xercamusic.common.item.IItemInstrument;
+import xerca.xercamusic.common.packets.serverbound.SingleNotePacket;
 
 import javax.annotation.Nullable;
+
+import static xerca.xercamusic.client.ClientStuff.sendToServer;
 
 public class GuiInstrument extends Screen {
     private static final ResourceLocation insGuiTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/instrument_gui.png");
@@ -48,23 +48,23 @@ public class GuiInstrument extends Screen {
     private final int octaveButtonY = 30;
 
     private final Player player;
-    private final ItemInstrument instrument;
+    private final IItemInstrument instrument;
     private final BlockPos blockInsPos;
     private final MidiHandler midiHandler;
 
-    GuiInstrument(Player player, ItemInstrument instrument, Component title, @Nullable BlockPos blockInsPos) {
+    GuiInstrument(Player player, IItemInstrument instrument, Component title, @Nullable BlockPos blockInsPos) {
         super(title);
         this.player = player;
         this.instrument = instrument;
-        this.buttonPushStates = new boolean[ItemInstrument.totalNotes];
-        this.noteSounds = new NoteSound[ItemInstrument.totalNotes];
+        this.buttonPushStates = new boolean[IItemInstrument.totalNotes];
+        this.noteSounds = new NoteSound[IItemInstrument.totalNotes];
         this.midiHandler = new MidiHandler(this::playSound, this::stopSound);
         this.blockInsPos = blockInsPos;
-        if(currentKeyboardOctave < instrument.minOctave) {
-            currentKeyboardOctave = instrument.minOctave;
+        if(currentKeyboardOctave < instrument.getMinOctave()) {
+            currentKeyboardOctave = instrument.getMinOctave();
         }
-        else if(currentKeyboardOctave > instrument.maxOctave) {
-            currentKeyboardOctave = instrument.maxOctave;
+        else if(currentKeyboardOctave > instrument.getMaxOctave()) {
+            currentKeyboardOctave = instrument.getMaxOctave();
         }
         midiHandler.currentOctave = currentKeyboardOctave;
     }
@@ -134,7 +134,7 @@ public class GuiInstrument extends Screen {
         blit(matrixStack, octaveHighlightX, octaveHighlightY, this.getBlitOffset(), 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
 
         for(int i=0; i<8; i++){
-            if(i < instrument.minOctave || i > instrument.maxOctave){
+            if(i < instrument.getMinOctave() || i > instrument.getMaxOctave()){
                 int x = guiBaseX + guiMarginWidth + i*guiOctaveWidth;
                 int y = guiBaseY + 11;
                 if(i > 3){
@@ -172,18 +172,19 @@ public class GuiInstrument extends Screen {
         int noteId = data.noteId();
 
         if(noteId >= 0 && noteId < buttonPushStates.length && !buttonPushStates[noteId]) {
-            int note = ItemInstrument.idToNote(noteId);
+            int note = IItemInstrument.idToNote(noteId);
 
-            ItemInstrument.InsSound noteSound = instrument.getSound(note);
+            IItemInstrument.InsSound noteSound = instrument.getSound(note);
             if (noteSound == null) {
                 return;
             }
-            noteSounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch));
+//            FabricLoader.getInstance().getEnvironmentType()
+            noteSounds[noteId] = ClientStuff.playNote(noteSound.sound, player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch);
             player.level.addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
             buttonPushStates[noteId] = true;
 
             SingleNotePacket pack = new SingleNotePacket(note, instrument, false, data.volume());
-            XercaMusic.NETWORK_HANDLER.sendToServer(pack);
+            sendToServer(pack);
         }
     }
 
@@ -194,9 +195,9 @@ public class GuiInstrument extends Screen {
                 noteSounds[noteId] = null;
                 buttonPushStates[noteId] = false;
 
-                int note = ItemInstrument.idToNote(noteId);
-                SingleNotePacket pack = new SingleNotePacket(note, instrument, true);
-                XercaMusic.NETWORK_HANDLER.sendToServer(pack);
+                int note = IItemInstrument.idToNote(noteId);
+                SingleNotePacket pack = new SingleNotePacket(note, instrument, true, 1f);
+                sendToServer(pack);
             }
         }
     }
@@ -267,7 +268,7 @@ public class GuiInstrument extends Screen {
     }
 
     private void decreaseOctave() {
-        if(currentKeyboardOctave > -3) { // instrument.minOctave){
+        if(currentKeyboardOctave > -3) { // instrument.getMinOctave()){
             currentKeyboardOctave --;
             midiHandler.currentOctave = currentKeyboardOctave;
             stopAllSounds();
@@ -275,7 +276,7 @@ public class GuiInstrument extends Screen {
     }
 
     private void increaseOctave() {
-        if(currentKeyboardOctave < instrument.maxOctave){
+        if(currentKeyboardOctave < instrument.getMaxOctave()){
             currentKeyboardOctave ++;
             midiHandler.currentOctave = currentKeyboardOctave;
             stopAllSounds();

@@ -10,10 +10,10 @@ import java.util.function.Consumer;
 
 public class MidiHandler
 {
-    ArrayList<MidiDevice> devices = new ArrayList<>();
-    Consumer<MidiData> noteOnHandler;
-    Consumer<Integer> noteOffHandler;
-    Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
+    final ArrayList<MidiDevice> devices = new ArrayList<>();
+    final Consumer<MidiData> noteOnHandler;
+    final Consumer<Integer> noteOffHandler;
+    final Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
     public volatile int currentOctave;
 
     public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler, Consumer<GuiMusicSheet.MidiControl> midiControlHandler)
@@ -63,6 +63,7 @@ public class MidiHandler
     }
 
     public class MidiInputReceiver implements Receiver {
+        @SuppressWarnings("unused")
         public String name;
         public static final int NOTE_ON = 0x90;
         public static final int NOTE_OFF = 0x80;
@@ -89,11 +90,11 @@ public class MidiHandler
                 if(((ShortMessage) msg).getCommand() == CONTROL && midiControlHandler != null){
                     int data = sm.getData1();
                     switch (data){
-                        case DATA_BEGINNING -> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.BEGINNING));
-                        case DATA_END-> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.END));
-                        case DATA_STOP -> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.STOP));
-                        case DATA_PREVIEW -> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.PREVIEW));
-                        case DATA_RECORD -> Minecraft.getInstance().submitAsync(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.RECORD));
+                        case DATA_BEGINNING -> Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.BEGINNING));
+                        case DATA_END-> Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.END));
+                        case DATA_STOP -> Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.STOP));
+                        case DATA_PREVIEW -> Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.PREVIEW));
+                        case DATA_RECORD -> Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.RECORD));
                     }
                     return;
                 }
@@ -108,9 +109,9 @@ public class MidiHandler
                 if (sm.getCommand() == NOTE_ON && velocity > 0) {
                     float vel = ((float)velocity)/128.0f;
                     float vol = volumeCurve(vel);
-                    Minecraft.getInstance().submitAsync(() -> noteOnHandler.accept(new MidiData(key, vol)));
+                    Minecraft.getInstance().submit(() -> noteOnHandler.accept(new MidiData(key, vol)));
                 } else if (sm.getCommand() == NOTE_OFF || (sm.getCommand() == NOTE_ON && velocity == 0)) {
-                    Minecraft.getInstance().submitAsync(() -> noteOffHandler.accept(key));
+                    Minecraft.getInstance().submit(() -> noteOffHandler.accept(key));
                 }
             }
         }

@@ -28,7 +28,7 @@ public class MusicManager {
     public static void setMusicData(UUID id, int ver, ArrayList<NoteEvent> notes, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic::load, SavedDataMusic::new, "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
-        musicMap.put(id, new MusicManager.MusicData(ver, notes));
+        musicMap.put(id, new MusicData(ver, notes));
         savedDataMusic.setDirty();
     }
 
@@ -39,7 +39,7 @@ public class MusicManager {
             this.notes = notes;
         }
 
-        public int version;
+        public final int version;
         public final ArrayList<NoteEvent> notes;
     }
 
@@ -74,7 +74,7 @@ public class MusicManager {
         }
 
         @Override
-        public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
+        public CompoundTag save(@NotNull CompoundTag tag) {
             ListTag musicDataList = new ListTag();
             for(Map.Entry<UUID, MusicData> entry : musicMap.entrySet()){
                 CompoundTag nbt = new CompoundTag();

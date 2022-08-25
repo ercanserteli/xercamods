@@ -4,11 +4,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.ArrayList;
 
-public class NoteEvent implements INBTSerializable<CompoundTag> {
+public class NoteEvent {
     public byte note;
     public short time;
     public byte volume;
@@ -32,7 +31,6 @@ public class NoteEvent implements INBTSerializable<CompoundTag> {
         return time;
     }
 
-    @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putByte("n", note);
@@ -42,7 +40,6 @@ public class NoteEvent implements INBTSerializable<CompoundTag> {
         return tag;
     }
 
-    @Override
     public void deserializeNBT(CompoundTag tag) {
         this.note = tag.getByte("n");
         this.time = tag.getShort("d");
@@ -95,6 +92,7 @@ public class NoteEvent implements INBTSerializable<CompoundTag> {
         return ((float)volume)/127.0f;
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public NoteEvent clone() {
         return new NoteEvent(note, time, volume, length);

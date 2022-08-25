@@ -1,7 +1,6 @@
 package xerca.xercamusic.common.block;
 
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,27 +11,25 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
-import xerca.xercamusic.common.item.ItemInstrument;
+import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
+import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
+
 public abstract class BlockInstrument extends Block {
     public BlockInstrument(Properties properties) {
         super(properties);
     }
 
-    public abstract ItemInstrument getItemInstrument();
+    public abstract IItemInstrument getItemInstrument();
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if(new Vec3(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.position()) > 4){
             return InteractionResult.PASS;
         }
@@ -45,7 +42,7 @@ public abstract class BlockInstrument extends Block {
             ItemStack offhandStack = player.getItemInHand(InteractionHand.values()[(hand.ordinal() + 1)%2]);
             if(!(offhandStack.getItem() instanceof ItemMusicSheet)){
                 if (worldIn.isClientSide) {
-                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
+                    onlyRunOnClient(() -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
                 }
                 return InteractionResult.SUCCESS;
             }
