@@ -122,18 +122,6 @@ public class ItemMusicSheet extends Item {
         }
     }
 
-    public CompoundTag getShareTag(ItemStack stack)
-    {
-//        XercaMusic.LOGGER.info("getShareTag " + stack.getTag());
-        return stack.getTag();
-    }
-
-    public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
-    {
-//        XercaMusic.LOGGER.info("readShareTag " + nbt);
-        stack.setTag(nbt);
-    }
-
     @Nonnull
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {

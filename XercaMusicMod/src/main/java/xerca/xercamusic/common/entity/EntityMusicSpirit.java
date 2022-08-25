@@ -149,7 +149,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         }
         else{
             buffer.writeInt(-1);
-            buffer.writeInt(-1);
+            buffer.writeInt(-1000);
             buffer.writeInt(-1);
         }
     }
@@ -165,7 +165,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         int bx = buffer.readInt();
         int by = buffer.readInt();
         int bz = buffer.readInt();
-        if(by >= 0){
+        if(by > -1000){
             setBlockPosAndInstrument(new BlockPos(bx, by ,bz));
         }
 
