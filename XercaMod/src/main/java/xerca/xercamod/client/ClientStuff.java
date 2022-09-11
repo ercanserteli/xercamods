@@ -46,7 +46,6 @@ public class ClientStuff {
         return layerToCheck == RenderType.cutout() || layerToCheck == RenderType.translucent();
     }
 
-    @Mod.EventBusSubscriber(modid = XercaMod.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
     static class ModBusSubscriber{
         private static void pizzaRenderLayers(){
             ItemBlockRenderTypes.setRenderLayer(Blocks.PIZZA_PEPPERONI_PEPPERONI_PEPPERONI, RenderType.cutoutMipped());

@@ -11,14 +11,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercamod.common.ContainerCarvingStation;
 import xerca.xercamod.common.crafting.RecipeCarvingStation;
 
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvingStation> {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/container/stonecutter.png");
     private float sliderProgress;
