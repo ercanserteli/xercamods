@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "xercamod",
+  "version": "${version}",
+  "name": "XercaMod",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "GPL-3.0",
+  "icon": "assets/xercamod/textures/item/cupcakes/cupcake_golden.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "xerca.xercamod.client.ClientStuff"
+    ],
+    "main": [
+      "xerca.xercamod.common.XercaMod"
+    ],
+    "fabric-datagen": [
+      "xerca.xercamod.common.data.BlockTags"
+    ]
+  },
+  "mixins": [
+    "xercamod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "minecraft": "1.18.2"
+  }
+}
