@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -81,12 +80,12 @@ public class GuiInstrument extends Screen {
         octaveButtonX = guiBaseX - 10;
 
         this.addRenderableWidget(new Button(octaveButtonX, octaveButtonY, 10, 10,
-                new TranslatableComponent("note.upButton"), button -> increaseOctave(),
-                (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("ins.octaveTooltip"), x, y)));
+                Component.translatable("note.upButton"), button -> increaseOctave(),
+                (button, poseStack, x, y) -> renderTooltip(poseStack, Component.translatable("ins.octaveTooltip"), x, y)));
 
         this.addRenderableWidget(new Button(octaveButtonX, octaveButtonY + 25, 10, 10,
-                new TranslatableComponent("note.downButton"), button -> decreaseOctave(),
-                (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslatableComponent("ins.octaveTooltip"), x, y)));
+                Component.translatable("note.downButton"), button -> decreaseOctave(),
+                (button, poseStack, x, y) -> renderTooltip(poseStack, Component.translatable("ins.octaveTooltip"), x, y)));
     }
 
     @Override

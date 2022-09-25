@@ -11,8 +11,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
@@ -36,15 +34,15 @@ public class GuiCanvasEdit extends BasePalette {
     private double canvasY;
     private static final double[] canvasXs = {-1000, -1000, -1000, -1000};
     private static final double[] canvasYs = {-1000, -1000, -1000, -1000};
-    private int canvasWidth;
-    private int canvasHeight;
+    private final int canvasWidth;
+    private final int canvasHeight;
     private int brushMeterX;
     private int brushMeterY;
     private int brushOpacityMeterX;
     private int brushOpacityMeterY;
-    private int canvasPixelScale;
-    private int canvasPixelWidth;
-    private int canvasPixelHeight;
+    private final int canvasPixelScale;
+    private final int canvasPixelWidth;
+    private final int canvasPixelHeight;
     private int brushSize = 0;
     private boolean touchedCanvas = false;
     private boolean undoStarted = false;
@@ -58,20 +56,20 @@ public class GuiCanvasEdit extends BasePalette {
     private BrushSound brushSound = null;
     private final int canvasHolderHeight = 10;
     private static int brushOpacitySetting = 0;
-    private static float[] brushOpacities = {1.f, 0.75f, 0.5f, 0.25f};
+    private static final float[] brushOpacities = {1.f, 0.75f, 0.5f, 0.25f};
     private static boolean showHelp = false;
-    private Set<Integer> draggedPoints = new HashSet<>();
+    private final Set<Integer> draggedPoints = new HashSet<>();
 
     private final Player editingPlayer;
 
-    private CanvasType canvasType;
+    private final CanvasType canvasType;
     private boolean isSigned = false;
     private int[] pixels;
     private String authorName = "";
     private String canvasTitle = "";
     private String name = "";
     private int version = 0;
-    private EntityEasel easel;
+    private final EntityEasel easel;
     private int timeSinceLastUpdate = 0;
     private boolean skippedUpdate = false;
 
@@ -90,7 +88,7 @@ public class GuiCanvasEdit extends BasePalette {
     };
 
     private static final int maxUndoLength = 16;
-    private Deque<int[]> undoStack = new ArrayDeque<>(maxUndoLength);
+    private final Deque<int[]> undoStack = new ArrayDeque<>(maxUndoLength);
 
     protected GuiCanvasEdit(Player player, CompoundTag canvasTag, CompoundTag paletteTag, Component title, CanvasType canvasType, EntityEasel easel) {
         super(title, paletteTag);
@@ -151,7 +149,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         int x = window.getGuiScaledWidth() - 120;
         int y = window.getGuiScaledHeight() - 30;
-        this.buttonSign = this.addRenderableWidget(new Button(x, y, 98, 20, new TranslatableComponent("canvas.signButton"), button -> {
+        this.buttonSign = this.addRenderableWidget(new Button(x, y, 98, 20, Component.translatable("canvas.signButton"), button -> {
             if (!isSigned) {
                 gettingSigned = true;
                 resetPositions();
@@ -160,7 +158,7 @@ public class GuiCanvasEdit extends BasePalette {
                 GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }));
-        this.buttonFinalize = this.addRenderableWidget(new Button( (int)canvasX - 100, 100, 98, 20, new TranslatableComponent("canvas.finalizeButton"), button -> {
+        this.buttonFinalize = this.addRenderableWidget(new Button( (int)canvasX - 100, 100, 98, 20, Component.translatable("canvas.finalizeButton"), button -> {
             if (!isSigned) {
                 dirty = true;
                 isSigned = true;
@@ -170,7 +168,7 @@ public class GuiCanvasEdit extends BasePalette {
             }
 
         }));
-        this.buttonCancel = this.addRenderableWidget(new Button( (int)canvasX - 100, 130, 98, 20, new TranslatableComponent("gui.cancel"), button -> {
+        this.buttonCancel = this.addRenderableWidget(new Button( (int)canvasX - 100, 130, 98, 20, Component.translatable("gui.cancel"), button -> {
             if (!isSigned) {
                 gettingSigned = false;
                 updateButtons();
@@ -182,9 +180,7 @@ public class GuiCanvasEdit extends BasePalette {
         x = (int)(window.getGuiScaledWidth()*0.95) - 21;
         y = (int)(window.getGuiScaledHeight()*0.05);
         this.buttonHelpToggle = this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
-                paletteTextures, 256, 256, button -> {
-            showHelp = !showHelp;
-        }, (button, poseStack, i, j) -> renderTooltip(poseStack, new TextComponent("Toggle help tooltips"), i, j)));
+                paletteTextures, 256, 256, button -> showHelp = !showHelp, (button, poseStack, i, j) -> renderTooltip(poseStack, Component.literal("Toggle help tooltips"), i, j)));
 
         updateButtons();
     }
@@ -350,7 +346,7 @@ public class GuiCanvasEdit extends BasePalette {
                 if(inBrushMeter(mouseX, mouseY)){
                     int selectedSize = 3 - (mouseY - brushMeterY)/brushSpriteSize;
                     if(selectedSize <= 3 && selectedSize >= 0){
-                        this.renderTooltip(matrixStack, new TextComponent("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, Component.literal("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
                     }
                 }
                 else if(inBrushOpacityMeter(mouseX, mouseY)){
@@ -358,19 +354,19 @@ public class GuiCanvasEdit extends BasePalette {
                     int selectedOpacity = relativeY/(brushOpacitySpriteSize+1);
                     if(selectedOpacity >= 0 && selectedOpacity <= 3){
                         int percentage = 100 - 25*selectedOpacity;
-                        this.renderTooltip(matrixStack, new TextComponent("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, Component.literal("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
                     }
                 }
                 else if(inColorPicker(mouseX-(int)paletteX, mouseY-(int)paletteY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Color picker"),
-                            new TextComponent("Select the tool, then pick up a color from the canvas and drag-and-drop it to a custom color slot.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Color picker"),
+                            Component.literal("Select the tool, then pick up a color from the canvas and drag-and-drop it to a custom color slot.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }
                 else if(inWater(mouseX-(int)paletteX, mouseY-(int)paletteY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Color remover"),
-                            new TextComponent("Pick up some water and drag-and-drop it to a custom color slot to clear it.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Color remover"),
+                            Component.literal("Pick up some water and drag-and-drop it to a custom color slot to clear it.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }else if(inCanvasHolder(mouseX, mouseY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(new TextComponent("Canvas holder"),
-                            new TextComponent("Pick up the canvas and move it wherever you want. You can move the palette in the same way.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Canvas holder"),
+                            Component.literal("Pick up the canvas and move it wherever you want. You can move the palette in the same way.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }
             }
         }
@@ -471,7 +467,7 @@ public class GuiCanvasEdit extends BasePalette {
         String s2 = I18n.get("canvas.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(s2);
         this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2, j + 48 + 10, 0);
-        this.font.drawWordWrap(new TranslatableComponent("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
+        this.font.drawWordWrap(Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
     }
 
     private void playBrushSound(){
@@ -761,7 +757,7 @@ public class GuiCanvasEdit extends BasePalette {
         protected final int texHeight;
 
         public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, OnTooltip onTooltip) {
-            super(x, y, width, height, TextComponent.EMPTY, onClick, onTooltip);
+            super(x, y, width, height, Component.empty(), onClick, onTooltip);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
             this.xTexStart = xTexStart;

@@ -5,12 +5,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.item.ItemCanvas;
@@ -71,7 +69,7 @@ public class CommandImport {
             ItemStack offhand = player.getOffhandItem();
 
             if(!(mainhand.getItem() instanceof ItemCanvas) || (mainhand.hasTag() && !mainhand.getTag().isEmpty())){
-                player.sendMessage(new TranslatableComponent("import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
             if(((ItemCanvas)mainhand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
@@ -81,15 +79,15 @@ public class CommandImport {
                     case TALL -> type = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
                     case LARGE -> type = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
                 }
-                player.sendMessage(new TranslatableComponent("import.fail.2", type).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("import.fail.2", type).withStyle(ChatFormatting.RED));
                 return;
             }
             if(!ItemPalette.isFull(offhand)){
-                player.sendMessage(new TranslatableComponent("import.fail.3").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("import.fail.3").withStyle(ChatFormatting.RED));
                 return;
             }
             mainhand.setTag(tag);
         }
-        player.sendMessage(new TranslatableComponent("import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+        player.sendSystemMessage(Component.translatable("import.success").withStyle(ChatFormatting.GREEN));
     }
 }

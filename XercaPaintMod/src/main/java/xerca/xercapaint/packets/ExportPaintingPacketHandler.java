@@ -3,19 +3,18 @@ package xerca.xercapaint.packets;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import xerca.xercapaint.CommandExport;
 
 public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
         private static void processMessage(ExportPaintingPacket msg) {
         if(CommandExport.doExport(Minecraft.getInstance().player, msg.getName())){
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+            Minecraft.getInstance().player.sendSystemMessage(Component.translatable("export.success", msg.getName()).withStyle(ChatFormatting.GREEN));
         }else{
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.fail", msg.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            Minecraft.getInstance().player.sendSystemMessage(Component.translatable("export.fail", msg.getName()).withStyle(ChatFormatting.RED));
         }
     }
 

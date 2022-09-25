@@ -23,7 +23,7 @@ import xerca.xercapaint.entity.EntityEasel;
 
 public class ItemEasel extends Item {
 
-    public ItemEasel(Item.Properties properties) {
+    public ItemEasel(Properties properties) {
         super(properties);
     }
 
@@ -50,7 +50,7 @@ public class ItemEasel extends Item {
                     easel.moveTo(easel.getX(), easel.getY(), easel.getZ(), f, 0.0F);
                     serverlevel.addFreshEntityWithPassengers(easel);
                     level.playSound(null, easel.getX(), easel.getY(), easel.getZ(), SoundEvents.ARMOR_STAND_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
-                    level.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, easel);
+                    level.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, easel.getPosition(0));
                 }
 
                 itemstack.shrink(1);

@@ -5,14 +5,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.PacketUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -40,10 +38,10 @@ public class ClientStuff implements ClientModInitializer {
                 if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
                     UUID id = noteTag.getUUID("id");
                     int version = noteTag.getInt("ver");
-                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet"))));
+                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet"))));
                 }
                 else{
-                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, new TranslatableComponent("item.xercamusic.music_sheet")));
+                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet")));
                 }
             }
         }
@@ -54,15 +52,14 @@ public class ClientStuff implements ClientModInitializer {
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof IItemInstrument){
-                Minecraft.getInstance().setScreen(new GuiInstrument(player, (IItemInstrument) heldItem.getItem(), new TranslatableComponent("item.xercamusic.instrument_gui"), null));
+                Minecraft.getInstance().setScreen(new GuiInstrument(player, (IItemInstrument) heldItem.getItem(), Component.translatable("item.xercamusic.instrument_gui"), null));
             }
         }
     }
 
     static public void showInstrumentGui(IItemInstrument instrument, BlockPos blockInsPos){
         LocalPlayer player = Minecraft.getInstance().player;
-        Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, new TranslatableComponent("item.xercamusic.instrument_gui") {
-        }, blockInsPos));
+        Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), blockInsPos));
     }
 
     static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {

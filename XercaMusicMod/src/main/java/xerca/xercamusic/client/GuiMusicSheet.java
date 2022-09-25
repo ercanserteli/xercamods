@@ -16,8 +16,6 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -339,13 +337,13 @@ public class GuiMusicSheet extends Screen {
         noteImageLeftX = noteImageX - noteImageLeftWidth;
         noteImageY = 2;
         if (!this.isSigned) {
-            this.buttonSign = this.addRenderableWidget(new Button( noteImageLeftX + 112, noteImageY + noteImageHeight, 98, 20, new TranslatableComponent("note.signButton"), button -> {
+            this.buttonSign = this.addRenderableWidget(new Button( noteImageLeftX + 112, noteImageY + noteImageHeight, 98, 20, Component.translatable("note.signButton"), button -> {
                 if (!isSigned) {
                     gettingSigned = true;
                     updateButtons();
                 }
             }));
-            this.buttonFinalize = this.addRenderableWidget(new Button( noteImageLeftX + 112, 145, 98, 20, new TranslatableComponent("note.finalizeButton"), button -> {
+            this.buttonFinalize = this.addRenderableWidget(new Button( noteImageLeftX + 112, 145, 98, 20, Component.translatable("note.finalizeButton"), button -> {
                 if (!isSigned) {
                     dirtyFlag.hasSigned = true;
                     dirtyFlag.hasTitle = true;
@@ -355,7 +353,7 @@ public class GuiMusicSheet extends Screen {
                     }
                 }
             }));
-            this.buttonCancel = this.addRenderableWidget(new Button( noteImageLeftX + 112, 170, 98, 20, new TranslatableComponent("gui.cancel"), button -> {
+            this.buttonCancel = this.addRenderableWidget(new Button( noteImageLeftX + 112, 170, 98, 20, Component.translatable("gui.cancel"), button -> {
                 if (!isSigned) {
                     gettingSigned = false;
                     updateButtons();
@@ -390,7 +388,7 @@ public class GuiMusicSheet extends Screen {
             }
         }));
 
-        this.bpmUp = this.addRenderableWidget(new Button(noteImageLeftX + bpmButX, noteImageY + bpmButY, bpmButW, bpmButH, new TranslatableComponent("note.upButton"), button -> {
+        this.bpmUp = this.addRenderableWidget(new Button(noteImageLeftX + bpmButX, noteImageY + bpmButY, bpmButW, bpmButH, Component.translatable("note.upButton"), button -> {
             if (!isSigned || selfSigned || generation > 1) {
                 if(hasShiftDown()){
                     int mult = hasControlDown() ? 3 : 2;
@@ -418,7 +416,7 @@ public class GuiMusicSheet extends Screen {
                 bpm = 60*bps;
             }
         }));
-        this.bpmDown = this.addRenderableWidget(new Button(noteImageLeftX + bpmButX, noteImageY + bpmButY + 1 + bpmButH, bpmButW, bpmButH, new TranslatableComponent("note.downButton"), button -> {
+        this.bpmDown = this.addRenderableWidget(new Button(noteImageLeftX + bpmButX, noteImageY + bpmButY + 1 + bpmButH, bpmButW, bpmButH, Component.translatable("note.downButton"), button -> {
             if (!isSigned || selfSigned || generation > 1) {
                 if(hasShiftDown()){
                     float mult = hasControlDown() ? 0.33f : 0.5f;
@@ -448,20 +446,20 @@ public class GuiMusicSheet extends Screen {
             }
         }));
 
-        this.octaveUp = this.addRenderableWidget(new Button(noteImageLeftX + 15, noteImageY + 30, bpmButW, bpmButH, new TranslatableComponent("note.upButton"), button -> {
+        this.octaveUp = this.addRenderableWidget(new Button(noteImageLeftX + 15, noteImageY + 30, bpmButW, bpmButH, Component.translatable("note.upButton"), button -> {
             if(currentOctavePos < 4){
                 currentOctavePos ++;
             }
         }));
 
-        this.octaveDown = this.addRenderableWidget(new Button(noteImageLeftX + 15, noteImageY + noteRegionBottom, bpmButW, bpmButH, new TranslatableComponent("note.downButton"), button -> {
+        this.octaveDown = this.addRenderableWidget(new Button(noteImageLeftX + 15, noteImageY + noteRegionBottom, bpmButW, bpmButH, Component.translatable("note.downButton"), button -> {
             if(currentOctavePos > 0){
                 currentOctavePos --;
             }
         }));
 
         this.sliderTime = this.addRenderableWidget(new BetterSlider(noteImageLeftX + noteRegionLeft, noteImageY + noteRegionBottom + 4, noteRegionRight-noteRegionLeft, 10,
-                TextComponent.EMPTY, TextComponent.EMPTY, 0, 1, 0, 0.001, false) {
+                Component.empty(), Component.empty(), 0, 1, 0, 0.001, false) {
             @Override
             public void applyValue() {
                 sliderPosition = (int)(value * (double)maxSliderPosition);
@@ -469,7 +467,7 @@ public class GuiMusicSheet extends Screen {
         });
 
         this.sliderSheetVolume = this.addRenderableWidget(new BetterSlider(noteImageLeftX + noteRegionRight - 55, noteImageY + 12, 54, 10,
-                new TextComponent("S Vol "), TextComponent.EMPTY, 0, 100, volume*100.f, true) {
+                Component.literal("S Vol "), Component.empty(), 0, 100, volume*100.f, true) {
             @Override
             public void applyValue() {
                 if (!isSigned || selfSigned || generation > 1) {
@@ -480,7 +478,7 @@ public class GuiMusicSheet extends Screen {
         });
 
         this.sliderNoteVolume = this.addRenderableWidget(new BetterSlider(noteImageLeftX + 130, noteImageY + 12, 54, 10,
-                new TextComponent("N Vol "), TextComponent.EMPTY, 0, 100, brushVolume*100.f, true) {
+                Component.literal("N Vol "), Component.empty(), 0, 100, brushVolume*100.f, true) {
             @Override
             public void applyValue() {
                 if (!isSigned) {
@@ -489,22 +487,22 @@ public class GuiMusicSheet extends Screen {
             }
         });
 
-        this.hlDown = this.addRenderableWidget(new Button(noteImageLeftX + hlButX, noteImageY + hlButY, bpmButW, bpmButH, new TranslatableComponent("note.leftButton"), button -> {
+        this.hlDown = this.addRenderableWidget(new Button(noteImageLeftX + hlButX, noteImageY + hlButY, bpmButW, bpmButH, Component.translatable("note.leftButton"), button -> {
             if((!isSigned || selfSigned || generation > 1) && highlightInterval > 1){
                 highlightInterval --;
                 dirtyFlag.hasHlInterval = true;
             }
         }));
-        this.hlUp = this.addRenderableWidget(new Button(noteImageLeftX + hlButX + 44, noteImageY + hlButY, bpmButW, bpmButH, new TranslatableComponent("note.rightButton"), button -> {
+        this.hlUp = this.addRenderableWidget(new Button(noteImageLeftX + hlButX + 44, noteImageY + hlButY, bpmButW, bpmButH, Component.translatable("note.rightButton"), button -> {
             if((!isSigned || selfSigned || generation > 1) && highlightInterval < 24){
                 highlightInterval ++;
                 dirtyFlag.hasHlInterval = true;
             }
         }));
 
-        this.noteEditBox = this.addRenderableWidget(new NoteEditBox(0, 0, 70, 55, TextComponent.EMPTY));
+        this.noteEditBox = this.addRenderableWidget(new NoteEditBox(0, 0, 70, 55, Component.empty()));
 
-        this.buttonHelp = this.addRenderableWidget(new Button(noteImageLeftX + noteRegionRight + 30, noteImageY + bpmButY, 20, 20, new TextComponent("?"), button -> toggleHelp()));
+        this.buttonHelp = this.addRenderableWidget(new Button(noteImageLeftX + noteRegionRight + 30, noteImageY + bpmButY, 20, 20, Component.literal("?"), button -> toggleHelp()));
 
         updateButtons();
 
@@ -675,7 +673,7 @@ public class GuiMusicSheet extends Screen {
         String authorStr = I18n.get("note.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(authorStr);
         this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + authorStr, left + (116 - i1) / 2.f, top + 42, 0);
-        this.font.drawWordWrap(new TranslatableComponent("note.finalizeWarning"), left + 10, top + 60, 116, 0);
+        this.font.drawWordWrap(Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0);
     }
 
     private int noteToPixelX(int noteX) {
@@ -898,31 +896,31 @@ public class GuiMusicSheet extends Screen {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         if(buttonHideNeighbors.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.toggleTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.toggleTooltip"), mouseX, mouseY);
         }
         else if(buttonLockPrevIns.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.lockTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.lockTooltip"), mouseX, mouseY);
         }
         else if(buttonPreview.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.previewTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.previewTooltip"), mouseX, mouseY);
         }
         else if(buttonRecord.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.recordTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.recordTooltip"), mouseX, mouseY);
         }
         else if(bpmDown.isHoveredOrFocused() || bpmUp.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.tempoTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.tempoTooltip"), mouseX, mouseY);
         }
         else if(hlDown.isHoveredOrFocused() || hlUp.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.measureTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.measureTooltip"), mouseX, mouseY);
         }
         else if(sliderSheetVolume.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.sheetVolumeTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.sheetVolumeTooltip"), mouseX, mouseY);
         }
         else if(sliderNoteVolume.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.noteVolumeTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.noteVolumeTooltip"), mouseX, mouseY);
         }
         else if(buttonHelp.isHoveredOrFocused()){
-            renderTooltip(matrixStack, new TranslatableComponent("note.helpTooltip"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.translatable("note.helpTooltip"), mouseX, mouseY);
         }
 
         if(helpOn) {
@@ -931,11 +929,11 @@ public class GuiMusicSheet extends Screen {
             fill(matrixStack, x, y, x + 315, y + 220, 0xEE333333);
             matrixStack.pushPose();
             matrixStack.scale(1.2f, 1.2f, 1.2f);
-            drawString(matrixStack, font, new TranslatableComponent("note.helpText0"), (int)((x + 10)/1.2f), (int)((y + 5)/1.2f), 0xFFEEEE11);
+            drawString(matrixStack, font, Component.translatable("note.helpText0"), (int)((x + 10)/1.2f), (int)((y + 5)/1.2f), 0xFFEEEE11);
             matrixStack.popPose();
             for(int i=1; i<=19; i++){
-                TranslatableComponent leftSide = new TranslatableComponent("note.helpText" + i + "a");
-                TranslatableComponent rightSide = new TranslatableComponent("note.helpText" + i + "b");
+                Component leftSide = Component.translatable("note.helpText" + i + "a");
+                Component rightSide = Component.translatable("note.helpText" + i + "b");
                 drawString(matrixStack, font, leftSide, x + 10, y + 10 + 10*i, 0xFFEEEE11);
                 drawString(matrixStack, font, rightSide, x + 10 + font.width(leftSide), y + 10 + 10*i, 0xFFEEEEEE);
             }
@@ -1847,7 +1845,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
-            this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, TextComponent.EMPTY);
+            this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, Component.empty());
         }
 
         public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Component message) {
@@ -1894,7 +1892,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
-            this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, TextComponent.EMPTY);
+            this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, Component.empty());
         }
 
         public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Component message) {
@@ -1931,48 +1929,48 @@ public class GuiMusicSheet extends Screen {
 
         public NoteEditBox(int x, int y, int w, int h, Component msg) {
             super(x, y, w, h, msg);
-            sliderVelocity = new BetterSlider(10, 0, 50, 10, new TextComponent("Vol "), TextComponent.EMPTY, 0, 100, 50, true) {
+            sliderVelocity = new BetterSlider(10, 0, 50, 10, Component.literal("Vol "), Component.empty(), 0, 100, 50, true) {
                 @Override public void applyValue() {
                     setChanged();
                     event.volume = (byte)Math.round(value * 127.0f);
                 }
             };
-            buttonNoteDown = new Button(0, 0, 10, 8, new TranslatableComponent("note.leftButton"), (button) -> {
+            buttonNoteDown = new Button(0, 0, 10, 8, Component.translatable("note.leftButton"), (button) -> {
                 if(event.note > 0) {
                     setChanged();
                     event.note--;
                     playPrev();
                 }
             });
-            buttonNoteUp = new Button(0, 0, 10, 8, new TranslatableComponent("note.rightButton"), (button) -> {
+            buttonNoteUp = new Button(0, 0, 10, 8, Component.translatable("note.rightButton"), (button) -> {
                 if(event.note < 95) {
                     setChanged();
                     event.note++;
                     playPrev();
                 }
             });
-            buttonLengthDown = new Button(0, 0, 10, 8, new TranslatableComponent("note.leftButton"), (button) -> {
+            buttonLengthDown = new Button(0, 0, 10, 8, Component.translatable("note.leftButton"), (button) -> {
                 if(event.length > 1) {
                     setChanged();
                     event.length--;
                     playPrev();
                 }
             });
-            buttonLengthUp = new Button(0, 0, 10, 8, new TranslatableComponent("note.rightButton"), (button) -> {
+            buttonLengthUp = new Button(0, 0, 10, 8, Component.translatable("note.rightButton"), (button) -> {
                 if(event.length < maxNoteLength) {
                     setChanged();
                     event.length++;
                     playPrev();
                 }
             });
-            buttonExit = new Button(0, 0, 10, 10, new TranslatableComponent("note.exitButton"), (button) -> {
+            buttonExit = new Button(0, 0, 10, 10, Component.translatable("note.exitButton"), (button) -> {
                 this.visible = false;
                 this.active = false;
                 if(previewSound != null && !previewSound.isStopped()) {
                     previewSound.stopSound();
                 }
             });
-            buttonPrev = new Button(0, 0, 10, 10, new TranslatableComponent("note.startPreviewButton"), (button) -> playPrev());
+            buttonPrev = new Button(0, 0, 10, 10, Component.translatable("note.startPreviewButton"), (button) -> playPrev());
 
             children[0] = sliderVelocity;
             children[1] = buttonNoteDown;
@@ -2016,10 +2014,10 @@ public class GuiMusicSheet extends Screen {
                 }
 
                 if(buttonPrev.isHoveredOrFocused()) {
-                    renderTooltip(poseStack, new TranslatableComponent("note.previewNoteTooltip"), mouseX, mouseY);
+                    renderTooltip(poseStack, Component.translatable("note.previewNoteTooltip"), mouseX, mouseY);
                 }
                 else if(buttonExit.isHoveredOrFocused()) {
-                    renderTooltip(poseStack, new TranslatableComponent("note.closeNoteTooltip"), mouseX, mouseY);
+                    renderTooltip(poseStack, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
                 }
             }
         }

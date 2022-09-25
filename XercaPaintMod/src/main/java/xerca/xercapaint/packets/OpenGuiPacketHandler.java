@@ -7,7 +7,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +38,7 @@ public class OpenGuiPacketHandler implements ClientPlayNetworking.PlayChannelHan
                     Mod.LOGGER.error("Could not find easel");
                 }
             } else {
-                player.sendMessage(new TranslatableComponent("easel.deny").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("easel.deny").withStyle(ChatFormatting.RED));
             }
         }
     }

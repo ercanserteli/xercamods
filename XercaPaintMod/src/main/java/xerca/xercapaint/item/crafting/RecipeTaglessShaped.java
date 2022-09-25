@@ -65,7 +65,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
-        private static final ShapedRecipe.Serializer shapedSerializer = new ShapedRecipe.Serializer();
+        private static final Serializer shapedSerializer = new Serializer();
 
         public TaglessSerializer(){}
 

@@ -4,6 +4,7 @@ import net.minecraft.client.resources.sounds.AbstractSoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 
 public class NoteSound extends AbstractSoundInstance implements TickableSoundInstance {
     private boolean donePlaying = false;
@@ -12,7 +13,7 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
     private final float originalVolume;
 
     NoteSound(SoundEvent soundEvent, SoundSource category, float x, float y, float z, float volume, float pitch, int lengthTicks) {
-        super(soundEvent, category);
+        super(soundEvent, category, RandomSource.create());
         this.volume = this.originalVolume = volume;
         this.pitch = pitch;
         this.x = x;

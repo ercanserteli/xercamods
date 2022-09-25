@@ -3,12 +3,11 @@ package xerca.xercamusic.common.packets.clientbound;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import xerca.xercamusic.common.CommandExport;
 
 public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
@@ -17,9 +16,9 @@ public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayChanne
         LocalPlayer player = Minecraft.getInstance().player;
         if(player != null) {
             if (CommandExport.doExport(player, msg.getName())) {
-                player.sendMessage(new TranslatableComponent("export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("export.success", msg.getName()).withStyle(ChatFormatting.GREEN));
             } else {
-                player.sendMessage(new TranslatableComponent("export.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("export.fail").withStyle(ChatFormatting.RED));
             }
         }
     }
