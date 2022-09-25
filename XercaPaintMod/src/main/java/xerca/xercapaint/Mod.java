@@ -1,7 +1,7 @@
 package xerca.xercapaint;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +41,7 @@ public class Mod implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(PALETTE_UPDATE_PACKET_ID, new PaletteUpdatePacketHandler());
         ServerPlayNetworking.registerGlobalReceiver(PICTURE_REQUEST_PACKET_ID, new PictureRequestPacketHandler());
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, env) -> {
             CommandImport.register(dispatcher);
             CommandExport.register(dispatcher);
         });

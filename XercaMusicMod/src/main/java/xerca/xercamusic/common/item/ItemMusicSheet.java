@@ -4,8 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
@@ -126,7 +124,7 @@ public class ItemMusicSheet extends Item {
             if(tag != null){
                 String s = tag.getString("title");
                 if (!StringUtil.isNullOrEmpty(s)) {
-                    return new TextComponent(s);
+                    return Component.literal(s);
                 }
             }
         }
@@ -173,29 +171,29 @@ public class ItemMusicSheet extends Item {
             String s = tag.getString("author");
 
             if (!StringUtil.isNullOrEmpty(s)) {
-                tooltip.add(new TranslatableComponent("note.byAuthor", s));
+                tooltip.add(Component.translatable("note.byAuthor", s));
             }
 
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltip.add((new TranslatableComponent("note.generation." + (generation - 1)))
+                tooltip.add((Component.translatable("note.generation." + (generation - 1)))
                         .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
             }
 
             if(tag.contains("l")) {
                 int lengthBeats = tag.getInt("l");
-                tooltip.add((new TranslatableComponent("note.length", lengthBeats)).withStyle(ChatFormatting.GRAY));
+                tooltip.add((Component.translatable("note.length", lengthBeats)).withStyle(ChatFormatting.GRAY));
             }
             if(tag.contains("bps")) {
                 int bps = tag.getInt("bps");
-                tooltip.add((new TranslatableComponent("note.tempo", bps*60)).withStyle(ChatFormatting.GRAY));
+                tooltip.add((Component.translatable("note.tempo", bps*60)).withStyle(ChatFormatting.GRAY));
             }
             if(tag.contains("prevIns")){
                 byte ins = tag.getByte("prevIns");
                 if(ins >= 0 && ins < Items.instruments.length){
                     Component name = ((Item)Items.instruments[ins]).getName(new ItemStack((Item)Items.instruments[ins]));
-                    tooltip.add((new TranslatableComponent("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
+                    tooltip.add((Component.translatable("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
                 }
             }
         }

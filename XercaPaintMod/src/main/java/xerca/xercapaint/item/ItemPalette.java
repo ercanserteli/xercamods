@@ -4,7 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -42,7 +41,7 @@ public class ItemPalette extends Item {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowdedIn(group)) {
+        if (this.allowedIn(group)) {
             // Empty palette
             items.add(new ItemStack(this));
 
@@ -89,7 +88,7 @@ public class ItemPalette extends Item {
                     for(byte basicColor : basicColors){
                         basicCount += basicColor;
                     }
-                    tooltip.add(new TranslatableComponent("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
+                    tooltip.add(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
                 }
 
                 int[] ns = tag.getIntArray("n");
@@ -101,12 +100,12 @@ public class ItemPalette extends Item {
                             fullCount++;
                         }
                     }
-                    tooltip.add(new TranslatableComponent("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
+                    tooltip.add(Component.translatable("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
                 }
             }
         }
         else{
-            tooltip.add(new TranslatableComponent("palette.empty").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
         }
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket;
 
 import java.io.File;
@@ -31,7 +31,7 @@ public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayChanne
             e.printStackTrace();
             LocalPlayer player = Minecraft.getInstance().player;
             if(player != null) {
-                player.sendMessage(new TranslatableComponent("import.fail.4", filepath).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("import.fail.4", filepath).withStyle(ChatFormatting.RED));
             }
         }
     }

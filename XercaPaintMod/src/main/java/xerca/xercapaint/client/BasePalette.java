@@ -347,7 +347,7 @@ public abstract class BasePalette extends Screen {
         Minecraft m = Minecraft.getInstance();
         if(m.level != null){
             m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
-                    0.8f + m.level.random.nextFloat()*0.4f, Minecraft.getInstance().player.blockPosition()));
+                    0.8f + m.level.random.nextFloat()*0.4f, m.level.random, Minecraft.getInstance().player.blockPosition()));
         }
     }
 

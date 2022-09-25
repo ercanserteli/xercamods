@@ -1,7 +1,5 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -9,12 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.entity.EntityCanvas;
 
 public class ClientboundAddCanvasPacket extends ClientboundAddEntityPacket {
-    private String canvasName;
-    private int canvasVersion;
-    private int directionVal;
-    private byte canvasTypeVal;
-    private BlockPos pos;
-    private byte rotation;
+    private final String canvasName;
+    private final int canvasVersion;
+    private final int directionVal;
+    private final byte canvasTypeVal;
+    private final BlockPos pos;
+    private final byte rotation;
 
     public ClientboundAddCanvasPacket(EntityCanvas canvas) {
         super(canvas);

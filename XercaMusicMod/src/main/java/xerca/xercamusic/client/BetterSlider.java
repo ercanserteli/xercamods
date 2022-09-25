@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +23,7 @@ public class BetterSlider extends AbstractSliderButton {
     private final DecimalFormat format;
 
     public BetterSlider(int x, int y, int width, int height, Component prefix, Component suffix, double minValue, double maxValue, double currentValue, double stepSize, boolean drawString) {
-        super(x, y, width, height, TextComponent.EMPTY, 0D);
+        super(x, y, width, height, Component.empty(), 0D);
         this.prefix = prefix;
         this.suffix = suffix;
         this.minValue = minValue;
@@ -188,10 +187,10 @@ public class BetterSlider extends AbstractSliderButton {
     protected void updateMessage()
     {
         if (this.drawString) {
-            this.setMessage(new TextComponent("").append(prefix).append(this.getValueString()).append(suffix));
+            this.setMessage(Component.empty().append(prefix).append(this.getValueString()).append(suffix));
         }
         else {
-            this.setMessage(TextComponent.EMPTY);
+            this.setMessage(Component.empty());
         }
     }
 
