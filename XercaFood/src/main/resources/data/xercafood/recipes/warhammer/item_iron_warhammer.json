@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_warhammer",
+    
+    "pattern": [
+        "tst",
+        " s ",
+        " s "
+    ],
+    "key": {"s": {"item": "minecraft:stick"}, "t": {"item": "minecraft:iron_ingot"}},
+    "result": {"item": "xercamod:item_iron_warhammer"}
+}
+        

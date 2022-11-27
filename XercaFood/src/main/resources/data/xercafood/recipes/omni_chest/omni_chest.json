@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_omni_chest",
+    
+    "pattern": [
+        "aea",
+        "ece",
+        "aea"
+    ],
+    "key": {"e": {"item": "minecraft:ender_eye"}, "c": {"item": "minecraft:ender_chest"}, "a": {"item": "minecraft:amethyst_block"}},
+    "result": {"item": "xercamod:omni_chest"}
+}
+        

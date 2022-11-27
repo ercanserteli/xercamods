@@ -1,0 +1,154 @@
+package xerca.xercafood.common.block;
+
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import xerca.xercafood.common.XercaFood;
+
+public class Blocks {
+    public static final BlockDoner BLOCK_DONER = new BlockDoner();
+    public static final BlockTeapot BLOCK_TEAPOT = new BlockTeapot();
+    public static final BlockTeaPlant BLOCK_TEA_PLANT = new BlockTeaPlant();
+    public static final BlockTomatoPlant BLOCK_TOMATO_PLANT = new BlockTomatoPlant();
+    public static final BlockRicePlant BLOCK_RICE_PLANT = new BlockRicePlant();
+    public static final BlockApplePie BLOCK_APPLE_PIE = new BlockApplePie();
+    public static final BlockSweetBerryPie BLOCK_SWEET_BERRY_PIE = new BlockSweetBerryPie();
+
+    public static final BlockVat VAT = new BlockVat(BlockVat.VatContent.EMPTY);
+    public static final BlockVat VAT_MILK = new BlockVat(BlockVat.VatContent.MILK);
+    public static final BlockVat VAT_CHEESE = new BlockVat(BlockVat.VatContent.CHEESE);
+    public static final BlockCheese CHEESE_WHEEL = new BlockCheese();
+
+    // PIZZA BEGIN
+    public static final BlockPizza PIZZA_PEPPERONI_PEPPERONI_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_MUSHROOM_PEPPERONI_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_MUSHROOM_MUSHROOM_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_MUSHROOM_MUSHROOM_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_MEAT_PEPPERONI_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_MEAT_MUSHROOM_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_MEAT_MUSHROOM_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_MEAT_MEAT_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_MEAT_MEAT_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_MEAT_MEAT_MEAT = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT);
+    public static final BlockPizza PIZZA_FISH_PEPPERONI_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_FISH_MUSHROOM_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_FISH_MUSHROOM_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_FISH_MEAT_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_FISH_MEAT_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_FISH_MEAT_MEAT = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT);
+    public static final BlockPizza PIZZA_FISH_FISH_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_FISH_FISH_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_FISH_FISH_MEAT = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT);
+    public static final BlockPizza PIZZA_FISH_FISH_FISH = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH);
+    public static final BlockPizza PIZZA_CHICKEN_PEPPERONI_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_CHICKEN_MUSHROOM_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_CHICKEN_MUSHROOM_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_CHICKEN_MEAT_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_CHICKEN_MEAT_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_CHICKEN_MEAT_MEAT = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT);
+    public static final BlockPizza PIZZA_CHICKEN_FISH_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_CHICKEN_FISH_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_CHICKEN_FISH_MEAT = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT);
+    public static final BlockPizza PIZZA_CHICKEN_FISH_FISH = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH);
+    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI);
+    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM);
+    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_MEAT = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT);
+    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_FISH = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH);
+    public static final BlockPizza PIZZA_CHICKEN_CHICKEN_CHICKEN = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN);
+    public static final BlockPizza PIZZA_PEPPERONI_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_MUSHROOM_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_MUSHROOM_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_MEAT_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_MEAT_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_MEAT_MEAT = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_FISH_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_FISH_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_FISH_MEAT = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_FISH_FISH = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_CHICKEN_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_CHICKEN_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_CHICKEN_MEAT = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_CHICKEN_FISH = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_CHICKEN_CHICKEN = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_PEPPERONI = new BlockPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_MUSHROOM = new BlockPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_MEAT = new BlockPizza(BlockPizza.Ingredient.MEAT, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_FISH = new BlockPizza(BlockPizza.Ingredient.FISH, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA_CHICKEN = new BlockPizza(BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
+    public static final BlockPizza PIZZA = new BlockPizza(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
+    // PIZZA END
+
+    private static void registerBlock(String name, Block block) {
+        Registry.register(Registry.BLOCK, new ResourceLocation(XercaFood.MODID, name), block);
+    }
+
+    public static void registerBlocks() {
+        registerBlock("block_doner", BLOCK_DONER);
+        registerBlock("block_teapot", BLOCK_TEAPOT);
+        registerBlock("block_tea_plant", BLOCK_TEA_PLANT);
+        registerBlock("block_tomato_plant", BLOCK_TOMATO_PLANT);
+        registerBlock("block_rice_plant", BLOCK_RICE_PLANT);
+        registerBlock("block_apple_pie", BLOCK_APPLE_PIE);
+        registerBlock("block_sweet_berry_pie", BLOCK_SWEET_BERRY_PIE);
+        registerBlock("vat", VAT);
+        registerBlock("vat_milk", VAT_MILK);
+        registerBlock("vat_cheese", VAT_CHEESE);
+        registerBlock("cheese_wheel", CHEESE_WHEEL);
+        registerBlock("pizza_pepperoni_pepperoni_pepperoni", PIZZA_PEPPERONI_PEPPERONI_PEPPERONI);
+        registerBlock("pizza_mushroom_pepperoni_pepperoni", PIZZA_MUSHROOM_PEPPERONI_PEPPERONI);
+        registerBlock("pizza_mushroom_mushroom_pepperoni", PIZZA_MUSHROOM_MUSHROOM_PEPPERONI);
+        registerBlock("pizza_mushroom_mushroom_mushroom", PIZZA_MUSHROOM_MUSHROOM_MUSHROOM);
+        registerBlock("pizza_meat_pepperoni_pepperoni", PIZZA_MEAT_PEPPERONI_PEPPERONI);
+        registerBlock("pizza_meat_mushroom_pepperoni", PIZZA_MEAT_MUSHROOM_PEPPERONI);
+        registerBlock("pizza_meat_mushroom_mushroom", PIZZA_MEAT_MUSHROOM_MUSHROOM);
+        registerBlock("pizza_meat_meat_pepperoni", PIZZA_MEAT_MEAT_PEPPERONI);
+        registerBlock("pizza_meat_meat_mushroom", PIZZA_MEAT_MEAT_MUSHROOM);
+        registerBlock("pizza_meat_meat_meat", PIZZA_MEAT_MEAT_MEAT);
+        registerBlock("pizza_fish_pepperoni_pepperoni", PIZZA_FISH_PEPPERONI_PEPPERONI);
+        registerBlock("pizza_fish_mushroom_pepperoni", PIZZA_FISH_MUSHROOM_PEPPERONI);
+        registerBlock("pizza_fish_mushroom_mushroom", PIZZA_FISH_MUSHROOM_MUSHROOM);
+        registerBlock("pizza_fish_meat_pepperoni", PIZZA_FISH_MEAT_PEPPERONI);
+        registerBlock("pizza_fish_meat_mushroom", PIZZA_FISH_MEAT_MUSHROOM);
+        registerBlock("pizza_fish_meat_meat", PIZZA_FISH_MEAT_MEAT);
+        registerBlock("pizza_fish_fish_pepperoni", PIZZA_FISH_FISH_PEPPERONI);
+        registerBlock("pizza_fish_fish_mushroom", PIZZA_FISH_FISH_MUSHROOM);
+        registerBlock("pizza_fish_fish_meat", PIZZA_FISH_FISH_MEAT);
+        registerBlock("pizza_fish_fish_fish", PIZZA_FISH_FISH_FISH);
+        registerBlock("pizza_chicken_pepperoni_pepperoni", PIZZA_CHICKEN_PEPPERONI_PEPPERONI);
+        registerBlock("pizza_chicken_mushroom_pepperoni", PIZZA_CHICKEN_MUSHROOM_PEPPERONI);
+        registerBlock("pizza_chicken_mushroom_mushroom", PIZZA_CHICKEN_MUSHROOM_MUSHROOM);
+        registerBlock("pizza_chicken_meat_pepperoni", PIZZA_CHICKEN_MEAT_PEPPERONI);
+        registerBlock("pizza_chicken_meat_mushroom", PIZZA_CHICKEN_MEAT_MUSHROOM);
+        registerBlock("pizza_chicken_meat_meat", PIZZA_CHICKEN_MEAT_MEAT);
+        registerBlock("pizza_chicken_fish_pepperoni", PIZZA_CHICKEN_FISH_PEPPERONI);
+        registerBlock("pizza_chicken_fish_mushroom", PIZZA_CHICKEN_FISH_MUSHROOM);
+        registerBlock("pizza_chicken_fish_meat", PIZZA_CHICKEN_FISH_MEAT);
+        registerBlock("pizza_chicken_fish_fish", PIZZA_CHICKEN_FISH_FISH);
+        registerBlock("pizza_chicken_chicken_pepperoni", PIZZA_CHICKEN_CHICKEN_PEPPERONI);
+        registerBlock("pizza_chicken_chicken_mushroom", PIZZA_CHICKEN_CHICKEN_MUSHROOM);
+        registerBlock("pizza_chicken_chicken_meat", PIZZA_CHICKEN_CHICKEN_MEAT);
+        registerBlock("pizza_chicken_chicken_fish", PIZZA_CHICKEN_CHICKEN_FISH);
+        registerBlock("pizza_chicken_chicken_chicken", PIZZA_CHICKEN_CHICKEN_CHICKEN);
+        registerBlock("pizza_pepperoni_pepperoni", PIZZA_PEPPERONI_PEPPERONI);
+        registerBlock("pizza_mushroom_pepperoni", PIZZA_MUSHROOM_PEPPERONI);
+        registerBlock("pizza_mushroom_mushroom", PIZZA_MUSHROOM_MUSHROOM);
+        registerBlock("pizza_meat_pepperoni", PIZZA_MEAT_PEPPERONI);
+        registerBlock("pizza_meat_mushroom", PIZZA_MEAT_MUSHROOM);
+        registerBlock("pizza_meat_meat", PIZZA_MEAT_MEAT);
+        registerBlock("pizza_fish_pepperoni", PIZZA_FISH_PEPPERONI);
+        registerBlock("pizza_fish_mushroom", PIZZA_FISH_MUSHROOM);
+        registerBlock("pizza_fish_meat", PIZZA_FISH_MEAT);
+        registerBlock("pizza_fish_fish", PIZZA_FISH_FISH);
+        registerBlock("pizza_chicken_pepperoni", PIZZA_CHICKEN_PEPPERONI);
+        registerBlock("pizza_chicken_mushroom", PIZZA_CHICKEN_MUSHROOM);
+        registerBlock("pizza_chicken_meat", PIZZA_CHICKEN_MEAT);
+        registerBlock("pizza_chicken_fish", PIZZA_CHICKEN_FISH);
+        registerBlock("pizza_chicken_chicken", PIZZA_CHICKEN_CHICKEN);
+        registerBlock("pizza_pepperoni", PIZZA_PEPPERONI);
+        registerBlock("pizza_mushroom", PIZZA_MUSHROOM);
+        registerBlock("pizza_meat", PIZZA_MEAT);
+        registerBlock("pizza_fish", PIZZA_FISH);
+        registerBlock("pizza_chicken", PIZZA_CHICKEN);
+        registerBlock("pizza", PIZZA);
+    }
+}

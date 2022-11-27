@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        " w ",
+        "wcw",
+        " w "
+    ],
+    "key": {"c": {"item": "minecraft:chicken"}, "w": {"item": "minecraft:wheat"}},
+    "result": {"item": "xercamod:item_raw_schnitzel", "count": 2}
+}
+        

@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_leather_straw",
+    
+    "pattern": [
+        "lll",
+        "lll",
+        "lll"
+    ],
+    "key": {"l": {"item": "minecraft:leather"}},
+    "result": {"item": "xercamod:item_block_leather"}
+}
+        

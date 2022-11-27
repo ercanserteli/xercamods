@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    "group": "cupcake",
+    "pattern": [
+        "sps",
+        "mem",
+        "www"
+    ],
+    "key": {"p": {"item": "minecraft:cocoa_beans"}, "s": {"item": "minecraft:sugar"}, "e": {"item": "minecraft:egg"}, "w": {"item": "minecraft:wheat"}, "m": {"item": "minecraft:milk_bucket"}},
+    "result": {"item": "xercamod:item_cocoa_cupcake", "count": 6}
+}
+        

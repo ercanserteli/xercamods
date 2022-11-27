@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_ender_flask",
+    
+    "pattern": [
+        "f",
+        "c"
+    ],
+    "key": {"c": {"item": "minecraft:crossbow"}, "f": {"item": "xercamod:flask"}},
+    "result": {"item": "xercamod:ender_bow"}
+}
+        

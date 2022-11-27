@@ -1,0 +1,39 @@
+
+{
+  "parent": "xercamod:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercamod:food/campfire_cooking_pizza_chicken_chicken_fish"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": ["xercamod:raw_pizza_chicken_chicken_fish"]}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercamod:food/campfire_cooking_pizza_chicken_chicken_fish"
+      }
+    },
+    "config": {
+      "trigger": "xercamod:config_check",
+      "conditions":{
+        "config": "food"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ],
+    ["config"]
+  ]
+}
+            

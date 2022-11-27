@@ -2,7 +2,7 @@ from sys import argv
 
 mod_id = ""
 mod_id_to_folder = {
-    "xercamod": "XercaMod",
+    "xercafood": "XercaMod",
     "xercamusic": "XercaMusicMod",
     "xercapaint": "XercaPaintMod"
 }

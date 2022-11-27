@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_food",
+    
+    "ingredients": [{"item": "xercamod:item_glass"}, {"item": "minecraft:sweet_berries"}],
+    "result": {"item": "xercamod:sweet_berry_juice"}
+}
+        

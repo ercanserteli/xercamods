@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_food",
+    
+    "ingredients": [{"item": "xercamod:item_glass"}, {"item": "xercamod:item_rice_seeds"}, {"item": "xercamod:item_rice_seeds"}],
+    "result": {"item": "xercamod:sake"}
+}
+        

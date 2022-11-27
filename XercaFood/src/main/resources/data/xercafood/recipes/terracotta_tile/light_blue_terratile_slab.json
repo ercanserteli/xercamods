@@ -1,0 +1,11 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_terracotta_tile",
+    
+    "pattern": [
+        "ttt"
+    ],
+    "key": {"t": {"item": "xercamod:light_blue_terratile"}},
+    "result": {"item": "xercamod:light_blue_terratile_slab", "count": 6}
+}
+        

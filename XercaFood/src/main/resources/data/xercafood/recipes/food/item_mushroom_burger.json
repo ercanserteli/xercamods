@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        " b ",
+        "dmn",
+        " b "
+    ],
+    "key": {"b": {"item": "xercamod:item_bun"}, "d": {"item": "xercamod:item_tomato_slices"}, "m": {"item": "minecraft:brown_mushroom"}, "n": {"item": "minecraft:red_mushroom"}},
+    "result": {"item": "xercamod:item_mushroom_burger"}
+}
+        

@@ -1,0 +1,10 @@
+
+{
+    "type": "xercamod:carving",
+    "ingredient": {
+        "item": "minecraft:dark_oak_log"
+    },
+    "result": "minecraft:stripped_dark_oak_log",
+    "count": 1
+}
+        

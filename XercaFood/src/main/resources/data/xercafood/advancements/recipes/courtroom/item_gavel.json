@@ -1,0 +1,39 @@
+
+{
+  "parent": "xercamod:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercamod:courtroom/item_gavel"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"tag": "minecraft:planks"}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercamod:courtroom/item_gavel"
+      }
+    },
+    "config": {
+      "trigger": "xercamod:config_check",
+      "conditions":{
+        "config": "courtroom"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ],
+    ["config"]
+  ]
+}
+            

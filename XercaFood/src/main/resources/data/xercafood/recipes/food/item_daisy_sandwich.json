@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        " b ",
+        "yyy",
+        " b "
+    ],
+    "key": {"b": {"item": "minecraft:bread"}, "y": {"item": "minecraft:oxeye_daisy"}},
+    "result": {"item": "xercamod:item_daisy_sandwich", "count": 3}
+}
+        

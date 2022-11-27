@@ -1,0 +1,39 @@
+
+{
+  "parent": "xercamod:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercamod:food/cheese_toast"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": ["xercamod:cheese_slice"]}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercamod:food/cheese_toast"
+      }
+    },
+    "config": {
+      "trigger": "xercamod:config_check",
+      "conditions":{
+        "config": "food"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ],
+    ["config"]
+  ]
+}
+            

@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_tea",
+    
+    "pattern": [
+        " c ",
+        "c c",
+        "ccc"
+    ],
+    "key": {"c": {"item": "minecraft:clay_ball"}},
+    "result": {"item": "xercamod:item_teapot"}
+}
+        

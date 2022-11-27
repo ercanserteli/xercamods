@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_carved_wood",
+    
+    "pattern": [
+        "kk",
+        "pp",
+        "pp"
+    ],
+    "key": {"p": {"tag": "minecraft:planks"}, "k": {"item": "xercamod:item_knife"}},
+    "result": {"item": "xercamod:carving_station"}
+}
+        

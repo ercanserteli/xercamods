@@ -1,0 +1,35 @@
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml" #mandatory
+
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+loaderVersion="[25,)" #mandatory (24 is current forge version)
+
+license="Don't steal"
+
+# A file name (in the root of the mod JAR) containing a logo for display
+logoFile="logo.png" #optional
+
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]] #mandatory
+
+# The modid of the mod
+modId="xercamod" #mandatory
+
+# The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
+version="${file.jarVersion}" #mandatory
+
+displayURL="https://ercanserteli.com/xercamod/" #optional
+
+ # A display name for the mod
+displayName="Xerca Mod" #mandatory
+
+# A text field displayed in the mod UI
+credits="Credits to LuchadorMickey for some of the textures" #optional
+
+# A text field displayed in the mod UI
+authors="xerca" #optional
+
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Special mod with lots of stuff. Edit the config file to enable/disable features.
+'''

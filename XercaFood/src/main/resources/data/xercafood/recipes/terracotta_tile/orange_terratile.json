@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_terracotta_tile",
+    "group": "terratile",
+    "pattern": [
+        "tt",
+        "tt"
+    ],
+    "key": {"t": {"item": "minecraft:orange_terracotta"}},
+    "result": {"item": "xercamod:orange_terratile", "count": 4}
+}
+        

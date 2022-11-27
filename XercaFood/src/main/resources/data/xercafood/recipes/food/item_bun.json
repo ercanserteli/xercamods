@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_food",
+    
+    "ingredients": [{"item": "minecraft:bread"}, {"item": "xercamod:item_knife", "data": 32767}],
+    "result": {"item": "xercamod:item_bun", "count": 2}
+}
+        

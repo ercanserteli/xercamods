@@ -5,7 +5,7 @@ from enum import Enum
 
 mod_id = ""
 mod_id_to_folder = {
-    "xercamod": "XercaMod",
+    "xercafood": "XercaMod",
     "xercamusic": "XercaMusicMod",
     "xercapaint": "XercaPaintMod"
 }
@@ -101,7 +101,7 @@ class Recipe:
       }}
     }},
     "config": {{
-      "trigger": "xercamod:config_check",
+      "trigger": "xercafood:config_check",
       "conditions":{{
         "config": "{cond}"
       }}
@@ -246,7 +246,7 @@ class StonecuttingRecipe(Recipe):
 
 
 class CarvingRecipe(Recipe):
-    def __init__(self, ingredient, result, count, group="", folder="", type="xercamod:carving"):
+    def __init__(self, ingredient, result, count, group="", folder="", type="xercafood:carving"):
         super().__init__(type, group, None, folder)
         self.ingredient = ingredient
         self.count = count

@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 
 @Mod(XercaMod.MODID)
 public class XercaMod {
-    public static final String MODID = "xercamod";
+    public static final String MODID = "xercafood";
     public static final String NAME = "Xerca Mod";
 
     private static final String PROTOCOL_VERSION = Integer.toString(1);
@@ -64,7 +64,7 @@ public class XercaMod {
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
-        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("xercamod-common.toml"));
+        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("xercafood-common.toml"));
     }
 
     private void networkRegistry(){

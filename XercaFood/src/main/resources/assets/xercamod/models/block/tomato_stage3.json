@@ -1,0 +1,6 @@
+{
+    "parent": "block/crop",
+    "textures": {
+        "crop": "xercamod:block/tomato_stage3"
+    }
+}

@@ -1,0 +1,10 @@
+
+{
+    "type": "xercamod:carving",
+    "ingredient": {
+        "item": "minecraft:acacia_log"
+    },
+    "result": "xercamod:carved_acacia_1",
+    "count": 1
+}
+        

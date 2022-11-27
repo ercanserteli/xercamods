@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_food",
+    
+    "ingredients": [{"item": "xercamod:cooked_rice"}, {"item": "minecraft:cooked_chicken"}, {"item": "minecraft:bowl"}, {"item": "xercamod:item_fried_egg"}],
+    "result": {"item": "xercamod:oyakodon"}
+}
+        

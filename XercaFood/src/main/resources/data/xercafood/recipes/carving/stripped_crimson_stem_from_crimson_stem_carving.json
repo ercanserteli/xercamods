@@ -1,0 +1,10 @@
+
+{
+    "type": "xercamod:carving",
+    "ingredient": {
+        "item": "minecraft:crimson_stem"
+    },
+    "result": "minecraft:stripped_crimson_stem",
+    "count": 1
+}
+        
