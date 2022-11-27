@@ -148,7 +148,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             int i = (color & 16711680) >> 16;
             int j = (color & '\uff00') >> 8;
             int k = (color & 255);
-            return k << 16 | j << 8 | i;
+            return k << 16 | j << 8 | i | 0xff000000;
         }
 
         private void updateCanvasTexture(String name, int version) {
