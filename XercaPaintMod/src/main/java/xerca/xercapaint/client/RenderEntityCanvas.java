@@ -30,8 +30,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 
-import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
-
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
