@@ -1,0 +1,10 @@
+
+{
+    "type": "minecraft:stonecutting",
+    "ingredient": {
+        "item": "minecraft:green_terracotta"
+    },
+    "result": "xercamod:green_terratile",
+    "count": 1
+}
+        

@@ -22,7 +22,7 @@ import xerca.xercamod.common.entity.EntityHook;
 import javax.annotation.Nonnull;
 
 class RenderHook extends EntityRenderer<EntityHook> {
-    private static final ResourceLocation resourceLocation = new ResourceLocation("xercamod:textures/particle/hook.png");
+    private static final ResourceLocation resourceLocation = new ResourceLocation("xercafood:textures/particle/hook.png");
     private static final RenderType renderType = RenderType.entityCutout(resourceLocation);
 
     public RenderHook(EntityRendererProvider.Context ctx) {

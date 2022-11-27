@@ -1,0 +1,8 @@
+
+{
+    "type": "xercamod:crafting_condition_shapeless_courtroom",
+    
+    "ingredients": [{"item": "minecraft:gold_nugget"}, {"item": "minecraft:cookie"}],
+    "result": {"item": "xercamod:item_attorney_badge"}
+}
+        

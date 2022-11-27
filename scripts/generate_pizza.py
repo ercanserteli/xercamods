@@ -3,9 +3,9 @@ ingredients = ["chicken", "fish", "meat", "mushroom", "pepperoni"]
 item_ids = {
     "chicken": "minecraft:chicken",
     "fish": "minecraft:cod",
-    "meat": "xercamod:doner_slice",
+    "meat": "xercafood:doner_slice",
     "mushroom": "minecraft:brown_mushroom",
-    "pepperoni": "xercamod:item_raw_sausage",
+    "pepperoni": "xercafood:item_raw_sausage",
 }
 
 
@@ -24,7 +24,7 @@ class Pizza:
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "xercamod:item/pizza/pizza_generic"
+        "layer0": "xercafood:item/pizza/pizza_generic"
     }
 }
 """
@@ -34,7 +34,7 @@ class Pizza:
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "xercamod:item/pizza/pizza_raw"
+        "layer0": "xercafood:item/pizza/pizza_raw"
     }
 }
 """
@@ -44,13 +44,13 @@ class Pizza:
             return """
 {{
     "textures": {{
-        "bottom": "xercamod:block/pizza/pizza_base_bottom",
-        "top": "xercamod:block/pizza/pizza_base_top",
-        "side": "xercamod:block/pizza/pizza_outside_inside",
-		"particle": "xercamod:block/pizza/pizza_base_top",
-        "slot1": "xercamod:block/pizza/pizza_slot1_{}",
-        "slot2": "xercamod:block/pizza/pizza_slot2_{}",
-        "slot3": "xercamod:block/pizza/pizza_slot3_{}"
+        "bottom": "xercafood:block/pizza/pizza_base_bottom",
+        "top": "xercafood:block/pizza/pizza_base_top",
+        "side": "xercafood:block/pizza/pizza_outside_inside",
+		"particle": "xercafood:block/pizza/pizza_base_top",
+        "slot1": "xercafood:block/pizza/pizza_slot1_{}",
+        "slot2": "xercafood:block/pizza/pizza_slot2_{}",
+        "slot3": "xercafood:block/pizza/pizza_slot3_{}"
     }},
     "elements": [
         {{
@@ -98,13 +98,13 @@ class Pizza:
             return """
 {{
 	"textures": {{
-		"bottom": "xercamod:block/pizza/pizza_base_bottom",
-		"top": "xercamod:block/pizza/pizza_base_top",
-		"side": "xercamod:block/pizza/pizza_outside_inside",
-		"particle": "xercamod:block/pizza/pizza_base_top",
-		"slot1": "xercamod:block/pizza/pizza_slot1_{}",
-		"slot2": "xercamod:block/pizza/pizza_slot2_{}",
-		"slot3": "xercamod:block/pizza/pizza_slot3_{}"
+		"bottom": "xercafood:block/pizza/pizza_base_bottom",
+		"top": "xercafood:block/pizza/pizza_base_top",
+		"side": "xercafood:block/pizza/pizza_outside_inside",
+		"particle": "xercafood:block/pizza/pizza_base_top",
+		"slot1": "xercafood:block/pizza/pizza_slot1_{}",
+		"slot2": "xercafood:block/pizza/pizza_slot2_{}",
+		"slot3": "xercafood:block/pizza/pizza_slot3_{}"
 	}},
 	"elements": [
 		{{
@@ -189,13 +189,13 @@ class Pizza:
             return """
 {{
 	"textures": {{
-		"bottom": "xercamod:block/pizza/pizza_base_bottom",
-		"top": "xercamod:block/pizza/pizza_base_top",
-		"side": "xercamod:block/pizza/pizza_outside_inside",
-		"particle": "xercamod:block/pizza/pizza_base_top",
-		"slot1": "xercamod:block/pizza/pizza_slot1_{}",
-		"slot2": "xercamod:block/pizza/pizza_slot2_{}",
-		"slot3": "xercamod:block/pizza/pizza_slot3_{}"
+		"bottom": "xercafood:block/pizza/pizza_base_bottom",
+		"top": "xercafood:block/pizza/pizza_base_top",
+		"side": "xercafood:block/pizza/pizza_outside_inside",
+		"particle": "xercafood:block/pizza/pizza_base_top",
+		"slot1": "xercafood:block/pizza/pizza_slot1_{}",
+		"slot2": "xercafood:block/pizza/pizza_slot2_{}",
+		"slot3": "xercafood:block/pizza/pizza_slot3_{}"
 	}},
 	"elements": [
 		{{
@@ -241,13 +241,13 @@ class Pizza:
             return """
 {{
 	"textures": {{
-		"bottom": "xercamod:block/pizza/pizza_base_bottom",
-		"top": "xercamod:block/pizza/pizza_base_top",
-		"side": "xercamod:block/pizza/pizza_outside_inside",
-		"particle": "xercamod:block/pizza/pizza_base_top",
-		"slot1": "xercamod:block/pizza/pizza_slot1_{}",
-		"slot2": "xercamod:block/pizza/pizza_slot2_{}",
-		"slot3": "xercamod:block/pizza/pizza_slot3_{}"
+		"bottom": "xercafood:block/pizza/pizza_base_bottom",
+		"top": "xercafood:block/pizza/pizza_base_top",
+		"side": "xercafood:block/pizza/pizza_outside_inside",
+		"particle": "xercafood:block/pizza/pizza_base_top",
+		"slot1": "xercafood:block/pizza/pizza_slot1_{}",
+		"slot2": "xercafood:block/pizza/pizza_slot2_{}",
+		"slot3": "xercafood:block/pizza/pizza_slot3_{}"
 	}},
 	"elements": [
 		{{
@@ -294,10 +294,10 @@ class Pizza:
         return """
 {{
     "variants": {{
-        "bites=0": {{ "model": "xercamod:block/pizza/{}" }},
-        "bites=1": {{ "model": "xercamod:block/pizza/{}" }},
-        "bites=2": {{ "model": "xercamod:block/pizza/{}" }},
-        "bites=3": {{ "model": "xercamod:block/pizza/{}" }}
+        "bites=0": {{ "model": "xercafood:block/pizza/{}" }},
+        "bites=1": {{ "model": "xercafood:block/pizza/{}" }},
+        "bites=2": {{ "model": "xercafood:block/pizza/{}" }},
+        "bites=3": {{ "model": "xercafood:block/pizza/{}" }}
     }}
 }}
 """.format(self.model_fn(0), self.model_fn(1), self.model_fn(2), self.model_fn(3))
@@ -333,10 +333,10 @@ class Pizza:
         if not ingrs:
             return ""
 
-        return 'ShapelessRecipe([{{"item": "xercamod:raw_pizza"}}{}], {{"item": "xercamod:raw_{}"}}, {{"item": "xercamod:raw_pizza"}}, "pizza", type="xercamod:crafting_condition_shapeless_food"),'.format(ingrs, self.base_name())
+        return 'ShapelessRecipe([{{"item": "xercafood:raw_pizza"}}{}], {{"item": "xercafood:raw_{}"}}, {{"item": "xercafood:raw_pizza"}}, "pizza", type="xercafood:crafting_condition_shapeless_food"),'.format(ingrs, self.base_name())
 
     def recipe_cooking_gen(self):
-        return 'CookingRecipe("xercamod:crafting_condition_smelting_food", {{"item": "xercamod:raw_{name}"}}, "xercamod:{name}", 0.2, 300, {{"item": "xercamod:raw_{name}"}}, ""),'.format(name=self.base_name())
+        return 'CookingRecipe("xercafood:crafting_condition_smelting_food", {{"item": "xercafood:raw_{name}"}}, "xercafood:{name}", 0.2, 300, {{"item": "xercafood:raw_{name}"}}, ""),'.format(name=self.base_name())
 
     def base_name(self):
         return "pizza{}".format(self.postfix())

@@ -79,11 +79,11 @@ for i, j in enumerate(full_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile",
+  "parent": "xercafood:block/terracotta_tiles/terratile",
   "textures": {{
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side"
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side"
   }}
 }}""".format(color=colors[i]))
 
@@ -91,11 +91,11 @@ for i, j in enumerate(slab_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile_slab",
+  "parent": "xercafood:block/terracotta_tiles/terratile_slab",
   "textures": {{
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side"
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side"
   }}
 }}""".format(color=colors[i]))
 
@@ -103,11 +103,11 @@ for i, j in enumerate(slab_top_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile_slab_top",
+  "parent": "xercafood:block/terracotta_tiles/terratile_slab_top",
   "textures": {{
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side"
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side"
   }}
 }}""".format(color=colors[i]))
 
@@ -115,12 +115,12 @@ for i, j in enumerate(stairs_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile_stairs",
+  "parent": "xercafood:block/terracotta_tiles/terratile_stairs",
   "textures": {{
-    "bottom": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
+    "bottom": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
   }}
 }}""".format(color=colors[i]))
 
@@ -128,12 +128,12 @@ for i, j in enumerate(stairs_inner_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile_inner_stairs",
+  "parent": "xercafood:block/terracotta_tiles/terratile_inner_stairs",
   "textures": {{
-    "bottom": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top_inner",
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top_inner",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
+    "bottom": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top_inner",
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top_inner",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
   }}
 }}""".format(color=colors[i]))
 
@@ -141,12 +141,12 @@ for i, j in enumerate(stairs_outer_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile_outer_stairs",
+  "parent": "xercafood:block/terracotta_tiles/terratile_outer_stairs",
   "textures": {{
-    "bottom": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top_outer",
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top_outer",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
+    "bottom": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top_outer",
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top_outer",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
   }}
 }}""".format(color=colors[i]))
 
@@ -154,12 +154,12 @@ for i, j in enumerate(stairs_inverted_inner_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile_inverted_inner_stairs",
+  "parent": "xercafood:block/terracotta_tiles/terratile_inverted_inner_stairs",
   "textures": {{
-    "bottom": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top_inner",
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top_inner",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
+    "bottom": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top_inner",
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top_inner",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
   }}
 }}""".format(color=colors[i]))
 
@@ -167,12 +167,12 @@ for i, j in enumerate(stairs_inverted_outer_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile_inverted_outer_stairs",
+  "parent": "xercafood:block/terracotta_tiles/terratile_inverted_outer_stairs",
   "textures": {{
-    "bottom": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top_outer",
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top_outer",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
+    "bottom": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top_outer",
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top_outer",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
   }}
 }}""".format(color=colors[i]))
 
@@ -180,12 +180,12 @@ for i, j in enumerate(stairs_inverted_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/terratile_inverted_stairs",
+  "parent": "xercafood:block/terracotta_tiles/terratile_inverted_stairs",
   "textures": {{
-    "bottom": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
-    "top": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
-    "side": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
-    "front": "xercamod:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
+    "bottom": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
+    "top": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_top",
+    "side": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_side",
+    "front": "xercafood:block/terracotta_tiles/{color}_terra_cotta_tiles_front"
   }}
 }}""".format(color=colors[i]))
 
@@ -201,32 +201,32 @@ for i, j in enumerate(full_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/{color}_terratile"
+  "parent": "xercafood:block/terracotta_tiles/{color}_terratile"
 }}""".format(color=colors[i]))
 
 for i, j in enumerate(slab_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/{color}_terratile_slab"
+  "parent": "xercafood:block/terracotta_tiles/{color}_terratile_slab"
 }}""".format(color=colors[i]))
 
 for i, j in enumerate(stairs_json_paths):
     with open(j, "w") as f:
         f.write("""
 {{
-  "parent": "xercamod:block/terracotta_tiles/{color}_terratile_stairs"
+  "parent": "xercafood:block/terracotta_tiles/{color}_terratile_stairs"
 }}""".format(color=colors[i]))
 
 # Lang
 #
 # for c in colors:
-#     add_lang_entry("xercamod", c + "_terratile", "en_us", color_names_en[c] + " Terracotta Tile", prefix="block")
-#     add_lang_entry("xercamod", c + "_terratile_slab", "en_us", color_names_en[c] + " Terracotta Tile Slab", prefix="block")
-#     add_lang_entry("xercamod", c + "_terratile_stairs", "en_us", color_names_en[c] + " Terracotta Tile Stairs", prefix="block")
-#     add_lang_entry("xercamod", c + "_terratile", "tr_tr", color_names_tr[c] + " Terakota Kiremit", prefix="block")
-#     add_lang_entry("xercamod", c + "_terratile_slab", "tr_tr", color_names_tr[c] + " Terakota Kiremit Basamak", prefix="block")
-#     add_lang_entry("xercamod", c + "_terratile_stairs", "tr_tr", color_names_tr[c] + " Terakota Kiremit Merdiven", prefix="block")
+#     add_lang_entry("xercafood", c + "_terratile", "en_us", color_names_en[c] + " Terracotta Tile", prefix="block")
+#     add_lang_entry("xercafood", c + "_terratile_slab", "en_us", color_names_en[c] + " Terracotta Tile Slab", prefix="block")
+#     add_lang_entry("xercafood", c + "_terratile_stairs", "en_us", color_names_en[c] + " Terracotta Tile Stairs", prefix="block")
+#     add_lang_entry("xercafood", c + "_terratile", "tr_tr", color_names_tr[c] + " Terakota Kiremit", prefix="block")
+#     add_lang_entry("xercafood", c + "_terratile_slab", "tr_tr", color_names_tr[c] + " Terakota Kiremit Basamak", prefix="block")
+#     add_lang_entry("xercafood", c + "_terratile_stairs", "tr_tr", color_names_tr[c] + " Terakota Kiremit Merdiven", prefix="block")
 
 # Blockstates
 
@@ -242,18 +242,18 @@ for i, j in enumerate(full_json_paths):
 {{
   "variants": {{
     "facing=north": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile"
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile"
     }},
     "facing=south": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile",
       "y": 180
     }},
     "facing=west": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile",
       "y": 270
     }},
     "facing=east": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile",
       "y": 90
     }}
   }}
@@ -265,50 +265,50 @@ for i, j in enumerate(slab_json_paths):
 {{
   "variants": {{
     "type=bottom,facing=north": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile_slab"
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile_slab"
     }},
     "type=bottom,facing=south": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile_slab",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile_slab",
       "y": 180
     }},
     "type=bottom,facing=west": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile_slab",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile_slab",
       "y": 270
     }},
     "type=bottom,facing=east": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile_slab",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile_slab",
       "y": 90
     }}
     ,
     "type=top,facing=north": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile_slab_top"
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile_slab_top"
     }},
     "type=top,facing=south": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile_slab_top",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile_slab_top",
       "y": 180
     }},
     "type=top,facing=west": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile_slab_top",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile_slab_top",
       "y": 270
     }},
     "type=top,facing=east": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile_slab_top",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile_slab_top",
       "y": 90
     }}
     ,
     "type=double,facing=north": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile"
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile"
     }},
     "type=double,facing=south": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile",
       "y": 180
     }},
     "type=double,facing=west": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile",
       "y": 270
     }},
     "type=double,facing=east": {{
-      "model": "xercamod:block/terracotta_tiles/{color}_terratile",
+      "model": "xercafood:block/terracotta_tiles/{color}_terratile",
       "y": 90
     }}
   }}
@@ -319,46 +319,46 @@ for i, j in enumerate(stairs_json_paths):
         f.write("""
 {{
     "variants": {{
-        "facing=east,half=bottom,shape=straight":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs" }},
-        "facing=west,half=bottom,shape=straight":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs", "y": 180 }},
-        "facing=south,half=bottom,shape=straight": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs", "y": 90 }},
-        "facing=north,half=bottom,shape=straight": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs", "y": 270 }},
-        "facing=east,half=bottom,shape=outer_right":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_outer" }},
-        "facing=west,half=bottom,shape=outer_right":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 180 }},
-        "facing=south,half=bottom,shape=outer_right": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 90 }},
-        "facing=north,half=bottom,shape=outer_right": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 270 }},
-        "facing=east,half=bottom,shape=outer_left":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 270 }},
-        "facing=west,half=bottom,shape=outer_left":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 90 }},
-        "facing=south,half=bottom,shape=outer_left": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_outer" }},
-        "facing=north,half=bottom,shape=outer_left": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 180 }},
-        "facing=east,half=bottom,shape=inner_right":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inner" }},
-        "facing=west,half=bottom,shape=inner_right":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 180 }},
-        "facing=south,half=bottom,shape=inner_right": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 90 }},
-        "facing=north,half=bottom,shape=inner_right": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 270 }},
-        "facing=east,half=bottom,shape=inner_left":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 270 }},
-        "facing=west,half=bottom,shape=inner_left":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 90 }},
-        "facing=south,half=bottom,shape=inner_left": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inner" }},
-        "facing=north,half=bottom,shape=inner_left": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 180 }},
-        "facing=east,half=top,shape=straight":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted"}},
-        "facing=west,half=top,shape=straight":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted", "y": 180 }},
-        "facing=south,half=top,shape=straight": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted", "y": 90 }},
-        "facing=north,half=top,shape=straight": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted", "y": 270 }},
-        "facing=east,half=top,shape=outer_right":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer", "y": 90 }},
-        "facing=west,half=top,shape=outer_right":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer", "y": 270 }},
-        "facing=south,half=top,shape=outer_right": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer", "y": 180 }},
-        "facing=north,half=top,shape=outer_right": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer" }},
-        "facing=east,half=top,shape=outer_left":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer" }},
-        "facing=west,half=top,shape=outer_left":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer",  "y": 180 }},
-        "facing=south,half=top,shape=outer_left": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer",  "y": 90 }},
-        "facing=north,half=top,shape=outer_left": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer",  "y": 270 }},
-        "facing=east,half=top,shape=inner_right":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner", "y": 90 }},
-        "facing=west,half=top,shape=inner_right":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner", "y": 270 }},
-        "facing=south,half=top,shape=inner_right": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner", "y": 180 }},
-        "facing=north,half=top,shape=inner_right": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner" }},
-        "facing=east,half=top,shape=inner_left":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner" }},
-        "facing=west,half=top,shape=inner_left":  {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner",  "y": 180 }},
-        "facing=south,half=top,shape=inner_left": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner",  "y": 90 }},
-        "facing=north,half=top,shape=inner_left": {{ "model": "xercamod:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner",  "y": 270 }}
+        "facing=east,half=bottom,shape=straight":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs" }},
+        "facing=west,half=bottom,shape=straight":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs", "y": 180 }},
+        "facing=south,half=bottom,shape=straight": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs", "y": 90 }},
+        "facing=north,half=bottom,shape=straight": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs", "y": 270 }},
+        "facing=east,half=bottom,shape=outer_right":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_outer" }},
+        "facing=west,half=bottom,shape=outer_right":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 180 }},
+        "facing=south,half=bottom,shape=outer_right": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 90 }},
+        "facing=north,half=bottom,shape=outer_right": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 270 }},
+        "facing=east,half=bottom,shape=outer_left":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 270 }},
+        "facing=west,half=bottom,shape=outer_left":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 90 }},
+        "facing=south,half=bottom,shape=outer_left": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_outer" }},
+        "facing=north,half=bottom,shape=outer_left": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_outer", "y": 180 }},
+        "facing=east,half=bottom,shape=inner_right":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inner" }},
+        "facing=west,half=bottom,shape=inner_right":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 180 }},
+        "facing=south,half=bottom,shape=inner_right": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 90 }},
+        "facing=north,half=bottom,shape=inner_right": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 270 }},
+        "facing=east,half=bottom,shape=inner_left":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 270 }},
+        "facing=west,half=bottom,shape=inner_left":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 90 }},
+        "facing=south,half=bottom,shape=inner_left": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inner" }},
+        "facing=north,half=bottom,shape=inner_left": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inner", "y": 180 }},
+        "facing=east,half=top,shape=straight":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted"}},
+        "facing=west,half=top,shape=straight":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted", "y": 180 }},
+        "facing=south,half=top,shape=straight": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted", "y": 90 }},
+        "facing=north,half=top,shape=straight": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted", "y": 270 }},
+        "facing=east,half=top,shape=outer_right":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer", "y": 90 }},
+        "facing=west,half=top,shape=outer_right":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer", "y": 270 }},
+        "facing=south,half=top,shape=outer_right": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer", "y": 180 }},
+        "facing=north,half=top,shape=outer_right": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer" }},
+        "facing=east,half=top,shape=outer_left":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer" }},
+        "facing=west,half=top,shape=outer_left":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer",  "y": 180 }},
+        "facing=south,half=top,shape=outer_left": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer",  "y": 90 }},
+        "facing=north,half=top,shape=outer_left": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_outer",  "y": 270 }},
+        "facing=east,half=top,shape=inner_right":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner", "y": 90 }},
+        "facing=west,half=top,shape=inner_right":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner", "y": 270 }},
+        "facing=south,half=top,shape=inner_right": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner", "y": 180 }},
+        "facing=north,half=top,shape=inner_right": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner" }},
+        "facing=east,half=top,shape=inner_left":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner" }},
+        "facing=west,half=top,shape=inner_left":  {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner",  "y": 180 }},
+        "facing=south,half=top,shape=inner_left": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner",  "y": 90 }},
+        "facing=north,half=top,shape=inner_left": {{ "model": "xercafood:block/terracotta_tiles/{color}_terratile_stairs_inverted_inner",  "y": 270 }}
     }}
 }}
 """.format(color=colors[i]))
@@ -380,7 +380,7 @@ for i, j in enumerate(json_paths):
       "entries": [
         {{
           "type": "minecraft:item",
-          "name": "xercamod:{}"
+          "name": "xercafood:{}"
         }}
       ],
       "conditions": [
@@ -411,7 +411,7 @@ for i, j in enumerate(json_paths):
               "conditions": [
                 {{
                   "condition": "minecraft:block_state_property",
-                  "block": "xercamod:{}",
+                  "block": "xercafood:{}",
                   "properties": {{
                     "type": "double"
                   }}
@@ -423,7 +423,7 @@ for i, j in enumerate(json_paths):
               "function": "minecraft:explosion_decay"
             }}
           ],
-          "name": "xercamod:{}"
+          "name": "xercafood:{}"
         }}
       ]
     }}

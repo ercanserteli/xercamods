@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_bookcase",
+    
+    "pattern": [
+        "www",
+        "   ",
+        "www"
+    ],
+    "key": {"w": {"tag": "minecraft:planks"}},
+    "result": {"item": "xercamod:item_bookcase"}
+}
+        

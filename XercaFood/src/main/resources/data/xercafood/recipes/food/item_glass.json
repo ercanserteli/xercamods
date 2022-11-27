@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        "c c",
+        " c "
+    ],
+    "key": {"c": {"item": "minecraft:glass_pane"}},
+    "result": {"item": "xercamod:item_glass", "count": 3}
+}
+        

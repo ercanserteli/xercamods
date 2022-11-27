@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_food",
+    
+    "pattern": [
+        "b",
+        "p",
+        "b"
+    ],
+    "key": {"p": {"item": "xercamod:item_cooked_sausage"}, "b": {"item": "xercamod:item_bun"}},
+    "result": {"item": "xercamod:item_hotdog"}
+}
+        

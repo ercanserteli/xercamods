@@ -107,7 +107,7 @@ public class BlockDoner extends Block implements EntityBlock {
                 worldIn.addFreshEntity(barsEntity);
 
 //                ItemStack meatStack = state.get(IS_RAW) ? new ItemStack(Items.MUTTON, state.get(MEAT_AMOUNT)) :
-//                        new ItemStack(xerca.xercamod.common.item.Items.DONER_SLICE, state.get(MEAT_AMOUNT));
+//                        new ItemStack(xerca.xercafood.common.item.Items.DONER_SLICE, state.get(MEAT_AMOUNT));
 //                ItemEntity meatEntity = new ItemEntity(worldIn, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, meatStack);
 //                meatEntity.setDefaultPickupDelay();
 //                worldIn.addEntity(meatEntity);

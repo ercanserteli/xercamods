@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_cushion",
+    "group": "cushion",
+    "pattern": [
+        "#",
+        "f",
+        "#"
+    ],
+    "key": {"f": {"item": "minecraft:feather"}, "#": {"item": "minecraft:light_gray_wool"}},
+    "result": {"item": "xercamod:light_gray_cushion", "count": 1}
+}
+        

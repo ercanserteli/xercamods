@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_campfire_food",
+    
+    "ingredient": [
+        {"item": "xercamod:raw_pizza_fish_fish"}
+    ],
+    "result": "xercamod:pizza_fish_fish",
+    "experience": 0.2,
+    "cookingtime": 900
+}
+        

@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "is_raw=true,meat=1": { "model": "xercamod:block/doner/doner_1" },
+        "is_raw=true,meat=2": { "model": "xercamod:block/doner/doner_2" },
+        "is_raw=true,meat=3": { "model": "xercamod:block/doner/doner_3" },
+        "is_raw=true,meat=4": { "model": "xercamod:block/doner/doner_4" },
+        "is_raw=false,meat=1": { "model": "xercamod:block/doner/doner_cooked_1" },
+        "is_raw=false,meat=2": { "model": "xercamod:block/doner/doner_cooked_2" },
+        "is_raw=false,meat=3": { "model": "xercamod:block/doner/doner_cooked_3" },
+        "is_raw=false,meat=4": { "model": "xercamod:block/doner/doner_cooked_4" }
+    }
+}

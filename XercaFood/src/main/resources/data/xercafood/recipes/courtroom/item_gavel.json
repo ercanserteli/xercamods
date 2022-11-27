@@ -1,0 +1,13 @@
+
+{
+    "type": "xercamod:crafting_condition_shaped_courtroom",
+    
+    "pattern": [
+        "#s#",
+        " s ",
+        " s "
+    ],
+    "key": {"#": {"tag": "minecraft:planks"}, "s": {"item": "minecraft:stick"}},
+    "result": {"item": "xercamod:item_gavel"}
+}
+        

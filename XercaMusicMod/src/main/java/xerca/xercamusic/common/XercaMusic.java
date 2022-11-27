@@ -41,8 +41,8 @@ public class XercaMusic implements ModInitializer
 
 //    private void enqueueIMC(final InterModEnqueueEvent event) todo this later
 //    {
-//        // Send music sheet's resource location to xercamod for the bookcase interaction
-//        InterModComms.sendTo("xercamod", "send_note", () ->  new ResourceLocation(MODID, "music_sheet"));
+//        // Send music sheet's resource location to xercafood for the bookcase interaction
+//        InterModComms.sendTo("xercafood", "send_note", () ->  new ResourceLocation(MODID, "music_sheet"));
 //    }
 
     private void registerTriggers() {

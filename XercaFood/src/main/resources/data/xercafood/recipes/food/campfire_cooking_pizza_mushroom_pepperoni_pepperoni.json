@@ -1,0 +1,12 @@
+
+{
+    "type": "xercamod:crafting_condition_campfire_food",
+    
+    "ingredient": [
+        {"item": "xercamod:raw_pizza_mushroom_pepperoni_pepperoni"}
+    ],
+    "result": "xercamod:pizza_mushroom_pepperoni_pepperoni",
+    "experience": 0.2,
+    "cookingtime": 900
+}
+        
