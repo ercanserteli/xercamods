@@ -19,8 +19,15 @@ public class MusicManager {
         if(musicMap.containsKey(id)){
             MusicData data = musicMap.get(id);
             if(data.version >= ver){
-                return musicMap.get(id);
+                XercaMusic.LOGGER.debug("Music data found in server (id: {}, ver: {}) (getMusicData)", id, ver);
+                return data;
             }
+            else{
+                XercaMusic.LOGGER.debug("Music data in server is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)", id, data.version, ver);
+            }
+        }
+        else{
+            XercaMusic.LOGGER.debug("Music data not found in server (id: {}, requested ver: {}) (getMusicData)", id, ver);
         }
         return null;
     }
