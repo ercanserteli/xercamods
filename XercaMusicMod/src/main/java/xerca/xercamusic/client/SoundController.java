@@ -37,7 +37,7 @@ public class SoundController extends Thread {
     }
 
     private int beatsToTicks(int beats){
-        return Math.round(((float)beats) * 20.0f / ((float)bps));
+        return Math.max(1, Math.round(((float)beats) * 20.0f / ((float)bps)));
     }
 
     @Override
