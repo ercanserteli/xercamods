@@ -257,7 +257,6 @@ public class EntityMusicSpirit extends Entity {
                 this.setPos(body.getX(), body.getY(), body.getZ());
                 if(soundController != null) {
                     soundController.setPos(getX(), getY(), getZ());
-                    XercaMusic.LOGGER.warn("HEDE");
                 }
             }
         }
