@@ -55,10 +55,16 @@ public class MusicManagerClient {
         if(musicMap.containsKey(id)){
             MusicManager.MusicData data = musicMap.get(id);
             if(data.version >= ver){
+                XercaMusic.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
                 task.run();
                 return;
             }
+            else{
+                XercaMusic.LOGGER.debug("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (checkMusicDataAndRun)",
+                        id, data.version, ver);
+            }
         }
+        XercaMusic.LOGGER.debug("Requesting music data from server (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
         taskMap.put(id, task);
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
@@ -82,9 +88,15 @@ public class MusicManagerClient {
         if(musicMap.containsKey(id)){
             MusicManager.MusicData data = musicMap.get(id);
             if(data.version >= ver){
-                return musicMap.get(id);
+                XercaMusic.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (getMusicData)", id, ver);
+                return data;
+            }
+            else{
+                XercaMusic.LOGGER.debug("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)",
+                        id, data.version, ver);
             }
         }
+        XercaMusic.LOGGER.debug("Requesting music data from server (id: {}, requested ver: {}) (getMusicData)", id, ver);
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
         sendToServer(packet);
