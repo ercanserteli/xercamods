@@ -1498,7 +1498,7 @@ public class GuiMusicSheet extends Screen {
         if (scanCode >= 16 && scanCode <= 27) {
             if(currentOctave >= 0){
                 if(recording){
-                    endSound(IItemInstrument.noteToId((byte) ((scanCode - 15 + IItemInstrument.minNote) + 12 * currentOctave)));
+                    endSound(IItemInstrument.noteToId((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave)));
                 }
             }
         }
@@ -1706,11 +1706,11 @@ public class GuiMusicSheet extends Screen {
                         if (scanCode >= 16 && scanCode <= 27) {
                             if(currentOctave >= 0){
                                 if(recording){
-                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - 15 + IItemInstrument.minNote) + 12 * currentOctave)), (byte)100);
+                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave)), (byte)100);
                                 }
                                 else{
                                     putSpace(x-1);
-                                    addNote((byte) ((scanCode - 15 + IItemInstrument.minNote) + 12 * currentOctave), (short)(x), false);
+                                    addNote((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave), (short)(x), false);
                                     finishAddingNote();
                                 }
                             }
