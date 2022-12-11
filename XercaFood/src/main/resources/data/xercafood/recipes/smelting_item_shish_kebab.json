@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smelting",
+    
+    "ingredient": [
+        {"item": "xercafood:raw_shish_kebab"}
+    ],
+    "result": "xercafood:item_shish_kebab",
+    "experience": 0.2,
+    "cookingtime": 200
+}
+        

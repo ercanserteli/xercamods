@@ -2,15 +2,29 @@ package xerca.xercafood.common.crafting;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
-import xerca.xercamod.common.Config;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaFilling extends CustomRecipe {
+
+    public static Item getFullTeapot(int teaAmount) {
+        Item res = net.minecraft.world.item.Items.AIR;
+        switch (teaAmount) {
+            case 1 -> res = Items.ITEM_FULL_TEAPOT_1;
+            case 2 -> res = Items.ITEM_FULL_TEAPOT_2;
+            case 3 -> res = Items.ITEM_FULL_TEAPOT_3;
+            case 4 -> res = Items.ITEM_FULL_TEAPOT_4;
+            case 5 -> res = Items.ITEM_FULL_TEAPOT_5;
+            case 6 -> res = Items.ITEM_FULL_TEAPOT_6;
+            case 7 -> res = Items.ITEM_FULL_TEAPOT_7;
+        }
+        return res;
+    }
+
     public RecipeTeaFilling(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
@@ -80,10 +94,8 @@ public class RecipeTeaFilling extends CustomRecipe {
             }
         }
 
-        if (!teapotStack.isEmpty() && !bucketStack.isEmpty() && i > 0) {
-            String str = Items.ITEM_FULL_TEAPOT_1.getRegistryName().toString();
-            str = str.substring(0, str.length() - 1) + i;
-            return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str)));
+        if (!teapotStack.isEmpty() && !bucketStack.isEmpty() && i >= 1 && i <= 7) {
+            return new ItemStack(getFullTeapot(i));
         } else {
             return ItemStack.EMPTY;
         }

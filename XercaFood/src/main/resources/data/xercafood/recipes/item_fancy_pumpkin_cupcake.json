@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "fancy_cupcake",
+    "pattern": [
+        "s",
+        "c"
+    ],
+    "key": {"s": {"item": "xercafood:item_sprinkles"}, "c": {"item": "xercafood:item_pumpkin_cupcake"}},
+    "result": {"item": "xercafood:item_fancy_pumpkin_cupcake"}
+}
+        

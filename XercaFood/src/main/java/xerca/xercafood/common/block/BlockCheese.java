@@ -43,7 +43,6 @@ class BlockCheese extends Block {
 
     public BlockCheese() {
         super(Properties.of(Material.CAKE, DyeColor.YELLOW).sound(SoundType.SLIME_BLOCK).strength(0.5F));
-        this.setRegistryName("cheese_wheel");
     }
 
     @Override

@@ -12,17 +12,17 @@
               "conditions": [
                 {
                   "condition": "minecraft:block_state_property",
-                  "block": "xercamod:block_tomato_plant",
+                  "block": "xercafood:block_tomato_plant",
                   "properties": {
                     "age": "3"
                   }
                 }
               ],
-              "name": "xercamod:item_tomato"
+              "name": "xercafood:item_tomato"
             },
             {
               "type": "minecraft:item",
-              "name": "xercamod:item_tomato_seeds"
+              "name": "xercafood:item_tomato_seeds"
             }
           ]
         }
@@ -44,13 +44,13 @@
               }
             }
           ],
-          "name": "xercamod:item_tomato_seeds"
+          "name": "xercafood:item_tomato_seeds"
         }
       ],
       "conditions": [
         {
           "condition": "minecraft:block_state_property",
-          "block": "xercamod:block_tomato_plant",
+          "block": "xercafood:block_tomato_plant",
           "properties": {
             "age": "3"
           }

@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "xercamod:item_rice_seeds"
+          "name": "xercafood:item_rice_seeds"
         }
       ]
     },
@@ -26,13 +26,13 @@
               }
             }
           ],
-          "name": "xercamod:item_rice_seeds"
+          "name": "xercafood:item_rice_seeds"
         }
       ],
       "conditions": [
         {
           "condition": "minecraft:block_state_property",
-          "block": "xercamod:block_rice_plant",
+          "block": "xercafood:block_rice_plant",
           "properties": {
             "age": "7"
           }

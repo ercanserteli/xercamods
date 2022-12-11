@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "minecraft:glass_bottle"}, {"item": "xercafood:cola_powder"}],
+    "result": {"item": "xercafood:cola_extract"}
+}
+        

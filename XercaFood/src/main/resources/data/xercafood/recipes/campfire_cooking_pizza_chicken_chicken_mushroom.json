@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:campfire_cooking",
+    
+    "ingredient": [
+        {"item": "xercafood:raw_pizza_chicken_chicken_mushroom"}
+    ],
+    "result": "xercafood:pizza_chicken_chicken_mushroom",
+    "experience": 0.2,
+    "cookingtime": 900
+}
+        

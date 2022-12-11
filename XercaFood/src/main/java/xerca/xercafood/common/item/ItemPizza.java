@@ -2,7 +2,6 @@ package xerca.xercafood.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -33,14 +32,14 @@ public class ItemPizza extends BlockItem {
 
     static void addPizzaIngredientToTooltip(List<Component> tooltip, BlockPizza.Ingredient ingredient){
         if(!ingredient.equals(BlockPizza.Ingredient.EMPTY)) {
-            tooltip.add(new TranslatableComponent(XercaFood.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable(XercaFood.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
         }
     }
 
     @Override
     public Component getName(ItemStack stack) {
         if(slot1.equals(BlockPizza.Ingredient.EMPTY) && slot2.equals(BlockPizza.Ingredient.EMPTY) && slot3.equals(BlockPizza.Ingredient.EMPTY))
-            return new TranslatableComponent(XercaFood.MODID + ".pizza_plain");
-        return new TranslatableComponent(XercaFood.MODID + ".pizza");
+            return Component.translatable(XercaFood.MODID + ".pizza_plain");
+        return Component.translatable(XercaFood.MODID + ".pizza");
     }
 }

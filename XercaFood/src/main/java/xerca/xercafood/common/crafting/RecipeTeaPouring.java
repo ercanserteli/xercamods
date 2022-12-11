@@ -3,16 +3,29 @@ package xerca.xercafood.common.crafting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercafood.common.item.ItemTeapot;
-import xerca.xercamod.common.Config;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaPouring extends CustomRecipe {
+    public static Item getHotTeapot(int teaAmount) {
+        Item res = net.minecraft.world.item.Items.AIR;
+        switch (teaAmount) {
+            case 1 -> res = Items.ITEM_HOT_TEAPOT_1;
+            case 2 -> res = Items.ITEM_HOT_TEAPOT_2;
+            case 3 -> res = Items.ITEM_HOT_TEAPOT_3;
+            case 4 -> res = Items.ITEM_HOT_TEAPOT_4;
+            case 5 -> res = Items.ITEM_HOT_TEAPOT_5;
+            case 6 -> res = Items.ITEM_HOT_TEAPOT_6;
+            case 7 -> res = Items.ITEM_HOT_TEAPOT_7;
+        }
+        return res;
+    }
+
     public RecipeTeaPouring(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
@@ -104,14 +117,12 @@ public class RecipeTeaPouring extends CustomRecipe {
 
         for(int i = 0; i < nonnulllist.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
-            if (itemstack.hasContainerItem()) {
-                nonnulllist.set(i, itemstack.getContainerItem());
-            } else if (itemstack.getItem() instanceof ItemTeapot) {
-                ItemTeapot oldTeapot = (ItemTeapot) itemstack.getItem();
+            Item item = itemstack.getItem();
+            if (item.hasCraftingRemainingItem()) {
+                nonnulllist.set(i, item.getCraftingRemainingItem().getDefaultInstance());
+            } else if (itemstack.getItem() instanceof ItemTeapot oldTeapot) {
                 if(oldTeapot.getTeaAmount() > teacupCount){
-                    String str = oldTeapot.getRegistryName().toString();
-                    str = str.substring(0, str.length() - 1) + (oldTeapot.getTeaAmount() - teacupCount);
-                    ItemStack remainingStack = new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str)));
+                    ItemStack remainingStack = new ItemStack(getHotTeapot(oldTeapot.getTeaAmount() - teacupCount));
                     if(!remainingStack.isEmpty()){
                         nonnulllist.set(i, remainingStack);
                     }

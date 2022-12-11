@@ -1,0 +1,9 @@
+
+{
+    "variants": {
+        "bites=0": { "model": "xercafood:block/pizza/pizza_chicken_meat_meat_uneaten" },
+        "bites=1": { "model": "xercafood:block/pizza/pizza_chicken_meat_meat_slice1" },
+        "bites=2": { "model": "xercafood:block/pizza/pizza_chicken_meat_meat_slice2" },
+        "bites=3": { "model": "xercafood:block/pizza/pizza_chicken_meat_meat_slice3" }
+    }
+}

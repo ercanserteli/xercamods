@@ -1,8 +1,0 @@
-{
-    "variants": {
-        "bites=0": { "model": "xercamod:block/cheese_uneaten" },
-        "bites=1": { "model": "xercamod:block/cheese_slice1" },
-        "bites=2": { "model": "xercamod:block/cheese_slice2" },
-        "bites=3": { "model": "xercamod:block/cheese_slice3" }
-    }
-}

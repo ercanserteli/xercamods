@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_grab_hook",
-    
-    "ingredients": [{"item": "xercamod:item_knife"}, {"item": "minecraft:fishing_rod"}],
-    "result": {"item": "xercamod:item_grab_hook"}
-}
-        

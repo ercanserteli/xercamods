@@ -1,9 +1,9 @@
 
 {
-  "parent": "xercamod:recipes/root",
+  "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercamod:stripped_birch_log"
+      "xercafood:stripped_birch_log"
     ]
   },
   "criteria": {
@@ -11,14 +11,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["xercamod:item_knife"]}
+          {"items": ["xercafood:item_knife"]}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercamod:stripped_birch_log"
+        "recipe": "xercafood:stripped_birch_log"
       }
     }
   },

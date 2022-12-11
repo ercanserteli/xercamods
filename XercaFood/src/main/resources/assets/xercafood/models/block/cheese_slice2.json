@@ -1,0 +1,22 @@
+{
+	"textures": {
+		"bottom": "xercafood:block/cheese_wheel_top",
+		"side": "xercafood:block/cheese_wheel_side",
+		"particle": "xercafood:block/cheese_wheel_inside",
+		"inside": "xercafood:block/cheese_wheel_inside"
+	},
+	"elements": [
+		{
+			"from": [1, 0, 8],
+			"to": [15, 8, 15],
+			"faces": {
+				"north": {"uv": [1, 4, 15, 12], "texture": "#inside"},
+				"east": {"uv": [1, 4, 8, 12], "texture": "#side"},
+				"south": {"uv": [1, 4, 15, 12], "texture": "#side"},
+				"west": {"uv": [8, 4, 15, 12], "texture": "#side"},
+				"up": {"uv": [1, 8, 15, 15], "texture": "#bottom"},
+				"down": {"uv": [1, 1, 15, 8], "texture": "#bottom", "cullface": "down"}
+			}
+		}
+	]
+}

@@ -7,6 +7,6 @@
         "s"
     ],
     "key": {"s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:iron_ingot"}},
-    "result": {"item": "xercamod:item_knife"}
+    "result": {"item": "xercafood:item_knife"}
 }
         

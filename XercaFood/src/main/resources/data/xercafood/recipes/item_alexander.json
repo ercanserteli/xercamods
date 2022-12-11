@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercafood:doner_slice"}, {"item": "xercafood:item_yoghurt"}, {"item": "xercafood:item_tomato_slices"}, {"item": "minecraft:bread"}, {"item": "minecraft:bowl"}],
+    "result": {"item": "xercafood:item_alexander"}
+}
+        

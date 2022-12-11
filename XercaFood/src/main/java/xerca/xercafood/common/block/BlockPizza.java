@@ -53,7 +53,6 @@ public class BlockPizza extends Block {
         this.slot2 = slot2;
         this.slot3 = slot3;
         this.hungerPerBite = 1 + (slot1.equals(Ingredient.EMPTY) ? 0 : 1) +  (slot2.equals(Ingredient.EMPTY) ? 0 : 1) + (slot3.equals(Ingredient.EMPTY) ? 0 : 1);
-        this.setRegistryName("pizza" + postfix(slot1, slot2, slot3));
     }
 
     @Override

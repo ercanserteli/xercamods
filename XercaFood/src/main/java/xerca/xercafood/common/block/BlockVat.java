@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -26,7 +27,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Map;
-import java.util.Random;
 
 public class BlockVat extends AbstractCauldronBlock {
     public enum VatContent {EMPTY, MILK, CHEESE}
@@ -115,9 +115,9 @@ public class BlockVat extends AbstractCauldronBlock {
     }
 
     @Override
-    public void randomTick(BlockState blockState, ServerLevel level, BlockPos blockPos, Random random) {
+    public void randomTick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource random) {
         if(content == VatContent.MILK){
-//            XercaMod.LOGGER.info("MILKY TICK");
+//            xercafood.LOGGER.info("MILKY TICK");
             level.setBlockAndUpdate(blockPos, Blocks.VAT_CHEESE.defaultBlockState());
             level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_STEP, SoundSource.BLOCKS, 0.7F, 0.9F +level.random.nextFloat()*0.2f);
         }

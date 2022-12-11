@@ -1,0 +1,97 @@
+{
+  "tomato_splash": {
+    "sounds": [
+      {
+        "name": "xercafood:tomato_splash"
+      }
+    ]
+  },
+  "sneak_hit": {
+    "sounds": [
+      {
+        "name": "xercafood:sneak_hit1"
+      },
+      {
+        "name": "xercafood:sneak_hit2"
+      },
+      {
+        "name": "xercafood:sneak_hit3"
+      },
+      {
+        "name": "xercafood:sneak_hit4"
+      }
+    ]
+  },
+  "big_burp": {
+    "sounds": [
+      {
+        "name": "xercafood:big_burp"
+      }
+    ]
+  },
+  "yahoo": {
+    "sounds": [
+      {
+        "name": "xercafood:yahoo"
+      }
+    ]
+  },
+  "scary": {
+    "sounds": [
+      {
+        "name": "xercafood:scary"
+      }
+    ]
+  },
+  "tea_pour": {
+    "sounds": [
+      {
+        "name": "xercafood:tea_pour"
+      }
+    ]
+  },
+  "sizzle": {
+    "sounds": [
+      {
+        "name": "xercafood:sizzle1"
+      },
+      {
+        "name": "xercafood:sizzle2"
+      },
+      {
+        "name": "xercafood:sizzle3"
+      },
+      {
+        "name": "xercafood:sizzle4"
+      }
+    ]
+  },
+  "big_sizzle": {
+    "sounds": [
+      {
+        "name": "xercafood:big_sizzle"
+      }
+    ]
+  },
+  "holy": {
+    "sounds": [
+      {
+        "name": "xercafood:holy"
+      }
+    ]
+  },
+  "sparkles": {
+    "sounds": [
+      {
+        "name": "xercafood:sparkles"
+      }
+    ]
+  },
+  "fizzy": {
+    "sounds": [
+      {
+        "name": "xercafood:fizzy"
+      }
+    ]
+  }
+}

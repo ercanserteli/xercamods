@@ -1,11 +1,13 @@
 package xerca.xercafood.common.item;
 
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
@@ -16,11 +18,11 @@ import xerca.xercafood.common.block.Blocks;
 import xerca.xercafood.common.crafting.RecipeTeaFilling;
 import xerca.xercafood.common.crafting.RecipeTeaPouring;
 import xerca.xercafood.common.crafting.RecipeTeaRefilling;
-import xerca.xercafood.common.TeaCreativeTab;
 import xerca.xercafood.common.crafting.RecipeTeaSugaring;
 
 public final class Items {
-    public static TeaCreativeTab teaTab = new TeaCreativeTab();
+    public static final CreativeModeTab teaTab = FabricItemGroupBuilder.build(new ResourceLocation(XercaFood.MODID, "tea_tab"),
+            () -> new ItemStack(Items.ITEM_FULL_TEAPOT_1));
 
     public static final Item ITEM_KNIFE = new ItemKnife();
     public static final Item ITEM_GLASS = new ItemGlass();
@@ -256,10 +258,10 @@ public final class Items {
     public static final Item PIZZA_CHICKEN = new ItemPizza(Blocks.PIZZA_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
     public static final Item PIZZA = new ItemPizza(Blocks.PIZZA, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
 
-    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING =            null;
-    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING =              null;
-    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING =              null;
-    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING =          null;
+    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING = new SimpleRecipeSerializer<>(RecipeTeaSugaring::new);
+    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING = new SimpleRecipeSerializer<>(RecipeTeaPouring::new);
+    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new SimpleRecipeSerializer<>(RecipeTeaFilling::new);
+    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING = new SimpleRecipeSerializer<>(RecipeTeaRefilling::new);
 
     static Item makeFoodItem(FoodProperties food){
         return new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food));
@@ -292,10 +294,10 @@ public final class Items {
     }
 
     public static void registerRecipes() {
-        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_sugaring"), new SimpleRecipeSerializer<>(RecipeTeaSugaring::new));
-        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_pouring"), new SimpleRecipeSerializer<>(RecipeTeaPouring::new));
-        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_filling"), new SimpleRecipeSerializer<>(RecipeTeaFilling::new));
-        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_refilling"), new SimpleRecipeSerializer<>(RecipeTeaRefilling::new));
+        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
+        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
+        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
+        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
     }
 
     public static void registerItems() {

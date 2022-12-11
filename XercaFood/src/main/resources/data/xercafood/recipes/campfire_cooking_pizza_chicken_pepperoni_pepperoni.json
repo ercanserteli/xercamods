@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:campfire_cooking",
+    
+    "ingredient": [
+        {"item": "xercafood:raw_pizza_chicken_pepperoni_pepperoni"}
+    ],
+    "result": "xercafood:pizza_chicken_pepperoni_pepperoni",
+    "experience": 0.2,
+    "cookingtime": 900
+}
+        

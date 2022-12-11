@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:campfire_cooking",
+    
+    "ingredient": [
+        {"item": "xercafood:raw_pizza_fish"}
+    ],
+    "result": "xercafood:pizza_fish",
+    "experience": 0.2,
+    "cookingtime": 900
+}
+        

@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smelting",
+    
+    "ingredient": [
+        {"item": "xercafood:raw_pizza_fish_mushroom_pepperoni"}
+    ],
+    "result": "xercafood:pizza_fish_mushroom_pepperoni",
+    "experience": 0.2,
+    "cookingtime": 300
+}
+        

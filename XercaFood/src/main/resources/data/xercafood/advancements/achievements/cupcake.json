@@ -1,25 +1,25 @@
 {
   "display": {
     "icon": {
-      "item": "xercamod:item_golden_cupcake"
+      "item": "xercafood:item_golden_cupcake"
     },
     "title": {
-      "translate": "advancements.xercamod.achievements.cupcake.title",
+      "translate": "advancements.xercafood.achievements.cupcake.title",
       "obfuscated": true
     },
     "description": {
-      "translate": "advancements.xercamod.achievements.cupcake.description"
+      "translate": "advancements.xercafood.achievements.cupcake.description"
     },
     "frame": "challenge"
   },
-  "parent": "xercamod:achievements/root",
+  "parent": "xercafood:achievements/root",
   "criteria": {
     "cupcake": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": ["xercamod:item_golden_cupcake"]
+            "items": ["xercafood:item_golden_cupcake"]
           }
         ]
       }

@@ -1,15 +1,15 @@
 {
   "display": {
     "icon": {
-      "item": "xercamod:item_apple_cupcake"
+      "item": "xercafood:item_apple_cupcake"
     },
     "title": {
-      "translate": "advancements.xercamod.achievements.root.title"
+      "translate": "advancements.xercafood.achievements.root.title"
     },
     "description": {
-      "translate": "advancements.xercamod.achievements.root.description"
+      "translate": "advancements.xercafood.achievements.root.description"
     },
-    "background": "xercamod:textures/block/apple_pie_top.png",
+    "background": "xercafood:textures/block/apple_pie_top.png",
     "show_toast": false,
     "announce_to_chat": false
   },

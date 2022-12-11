@@ -1,0 +1,50 @@
+
+{
+	"textures": {
+		"bottom": "xercafood:block/pizza/pizza_base_bottom",
+		"top": "xercafood:block/pizza/pizza_base_top",
+		"side": "xercafood:block/pizza/pizza_outside_inside",
+		"particle": "xercafood:block/pizza/pizza_base_top",
+		"slot1": "xercafood:block/pizza/pizza_slot1_chicken",
+		"slot2": "xercafood:block/pizza/pizza_slot2_meat",
+		"slot3": "xercafood:block/pizza/pizza_slot3_mushroom"
+	},
+	"elements": [
+		{
+			"from": [8, 0, 8],
+			"to": [15, 2, 15],
+			"faces": {
+				"north": {"uv": [1, 4, 8, 6], "texture": "#side"},
+				"east": {"uv": [1, 9, 8, 11], "texture": "#side"},
+				"south": {"uv": [8, 9, 15, 11], "texture": "#side"},
+				"west": {"uv": [8, 4, 15, 6], "texture": "#side"},
+				"up": {"uv": [8, 8, 15, 15], "texture": "#top"},
+				"down": {"uv": [7, 1, 15, 8], "texture": "#bottom"}
+			}
+		},
+		{
+			"name": "slot1",
+			"from": [8, 2.01, 8],
+			"to": [14, 2.01, 14],
+			"faces": {
+				"up": {"uv": [8, 8, 14, 14], "texture": "#slot1"}
+			}
+		},
+		{
+			"name": "slot2",
+			"from": [8, 2.02, 8],
+			"to": [14, 2.02, 14],
+			"faces": {
+				"up": {"uv": [8, 8, 14, 14], "texture": "#slot2"}
+			}
+		},
+		{
+			"name": "slot3",
+			"from": [8, 2.03, 8],
+			"to": [14, 2.03, 14],
+			"faces": {
+				"up": {"uv": [8, 8, 14, 14], "texture": "#slot3"}
+			}
+		}
+	]
+}

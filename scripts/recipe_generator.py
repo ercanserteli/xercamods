@@ -5,7 +5,7 @@ from enum import Enum
 
 mod_id = ""
 mod_id_to_folder = {
-    "xercafood": "XercaMod",
+    "xercafood": "XercaFood",
     "xercamusic": "XercaMusicMod",
     "xercapaint": "XercaPaintMod"
 }

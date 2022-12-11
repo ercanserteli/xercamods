@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    "group": "pizza",
+    "ingredients": [{"item": "xercafood:raw_pizza"}, {"item": "minecraft:cod"}, {"item": "minecraft:cod"}, {"item": "minecraft:brown_mushroom"}],
+    "result": {"item": "xercafood:raw_pizza_fish_fish_mushroom"}
+}
+        

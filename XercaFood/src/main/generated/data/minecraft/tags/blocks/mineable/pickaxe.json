@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "xercafood:vat",
+    "xercafood:vat_milk",
+    "xercafood:vat_cheese"
+  ]
+}

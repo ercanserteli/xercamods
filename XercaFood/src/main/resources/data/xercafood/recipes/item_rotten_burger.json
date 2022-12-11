@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "b",
+        "r",
+        "b"
+    ],
+    "key": {"b": {"item": "xercafood:item_bun"}, "r": {"item": "minecraft:rotten_flesh"}},
+    "result": {"item": "xercafood:item_rotten_burger"}
+}
+        

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "xerca.xercafood.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "MixinResultSlot"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

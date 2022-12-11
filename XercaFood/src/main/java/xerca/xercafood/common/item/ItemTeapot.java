@@ -2,15 +2,11 @@ package xerca.xercafood.common.item;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercafood.common.block.BlockTeapot;
-import xerca.xercamod.common.Config;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -25,8 +21,6 @@ public class ItemTeapot extends BlockItem {
         super(blockTeapot, (teaAmount == 7 ? new Item.Properties().tab(Items.teaTab) : new Item.Properties()).defaultDurability(maxTea));
         this.teaAmount = teaAmount;
         this.isHot = isHot;
-        String baseName = isHot ? "item_hot_teapot_" : "item_full_teapot_";
-        this.setRegistryName(baseName + teaAmount);
     }
 
     public int getTeaAmount() {
@@ -38,10 +32,9 @@ public class ItemTeapot extends BlockItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(new TextComponent(isHot ? "Hot" : "Cold"));
-        tooltip.add(new TextComponent("Tea amount: " + teaAmount));
+        tooltip.add(Component.literal(isHot ? "Hot" : "Cold"));
+        tooltip.add(Component.literal("Tea amount: " + teaAmount));
     }
 
     @Override
@@ -52,11 +45,7 @@ public class ItemTeapot extends BlockItem {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isTeaEnabled()){
-            return;
-        }
-//        super.fillItemGroup(group, items);
-        if (this.allowdedIn(group)) {
+        if (this.allowedIn(group)) {
             items.add(new ItemStack(this));
         }
     }
