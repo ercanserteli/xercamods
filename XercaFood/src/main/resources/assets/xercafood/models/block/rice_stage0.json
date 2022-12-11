@@ -1,0 +1,6 @@
+{
+    "parent": "block/crop",
+    "textures": {
+        "crop": "xercafood:block/rice_stage0"
+    }
+}

@@ -1,24 +1,24 @@
 {
     "display": {
         "icon": {
-            "item": "xercamod:item_hot_teapot_0"
+            "item": "xercafood:item_hot_teapot_0"
         },
         "title": {
-            "translate": "advancements.xercamod.achievements.teatime.title"
+            "translate": "advancements.xercafood.achievements.teatime.title"
         },
         "description": {
-            "translate": "advancements.xercamod.achievements.teatime.description",
+            "translate": "advancements.xercafood.achievements.teatime.description",
             "italic": true
         }
     },
-    "parent": "xercamod:achievements/root",
+    "parent": "xercafood:achievements/root",
     "criteria": {
         "iron": {
             "trigger": "minecraft:inventory_changed",
             "conditions": {
                 "items": [
                     {
-                        "tag": "xercamod:hot_teapot"
+                        "tag": "xercafood:hot_teapot"
                     }
                 ]
             }

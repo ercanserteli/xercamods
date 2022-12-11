@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smoking",
+    
+    "ingredient": [
+        {"item": "minecraft:milk_bucket"}
+    ],
+    "result": "xercafood:item_yoghurt",
+    "experience": 0.2,
+    "cookingtime": 100
+}
+        

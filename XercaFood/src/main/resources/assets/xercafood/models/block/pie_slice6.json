@@ -1,0 +1,22 @@
+{
+    "textures": {
+        "particle": "xercafood:block/apple_pie_side",
+        "bottom": "xercafood:block/apple_pie_bottom",
+        "top": "xercafood:block/apple_pie_top",
+        "side": "xercafood:block/apple_pie_side",
+        "inside": "xercafood:block/apple_pie_inner"
+    },
+    "elements": [
+        {   "from": [ 13, 0, 1 ],
+            "to": [ 15, 8, 15 ],
+            "faces": {
+                "down":  { "texture": "#bottom", "cullface": "down" },
+                "up":    { "texture": "#top" },
+                "north": { "texture": "#side" },
+                "south": { "texture": "#side" },
+                "west":  { "texture": "#inside" },
+                "east":  { "texture": "#side" }
+            }
+        }
+    ]
+}

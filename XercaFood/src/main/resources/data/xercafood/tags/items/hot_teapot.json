@@ -1,13 +1,13 @@
 {
   "replace": false,
   "values": [
-    "xercamod:item_hot_teapot_0",
-    "xercamod:item_hot_teapot_1",
-    "xercamod:item_hot_teapot_2",
-    "xercamod:item_hot_teapot_3",
-    "xercamod:item_hot_teapot_4",
-    "xercamod:item_hot_teapot_5",
-    "xercamod:item_hot_teapot_6",
-    "xercamod:item_hot_teapot_7"
+    "xercafood:item_hot_teapot_0",
+    "xercafood:item_hot_teapot_1",
+    "xercafood:item_hot_teapot_2",
+    "xercafood:item_hot_teapot_3",
+    "xercafood:item_hot_teapot_4",
+    "xercafood:item_hot_teapot_5",
+    "xercafood:item_hot_teapot_6",
+    "xercafood:item_hot_teapot_7"
   ]
 }

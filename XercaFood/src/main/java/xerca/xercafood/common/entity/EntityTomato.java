@@ -2,7 +2,6 @@ package xerca.xercafood.common.entity;
 
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -13,10 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.network.NetworkHooks;
 import xerca.xercafood.common.SoundEvents;
 import xerca.xercafood.common.item.Items;
 
@@ -36,10 +31,6 @@ public class EntityTomato extends ThrowableItemProjectile {
 
     public EntityTomato(Level worldIn) {
         super(Entities.TOMATO, worldIn);
-    }
-
-    public EntityTomato(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(world);
     }
 
     @Override
@@ -79,11 +70,5 @@ public class EntityTomato extends ThrowableItemProjectile {
     @Override
     public ItemStack getItem() {
         return new ItemStack(Items.ITEM_TOMATO);
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket()
-    {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

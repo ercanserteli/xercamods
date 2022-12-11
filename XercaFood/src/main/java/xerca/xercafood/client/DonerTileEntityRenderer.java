@@ -11,26 +11,26 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import xerca.xercafood.common.block.Blocks;
-import xerca.xercafood.common.tile_entity.TileEntityDoner;
+import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
-public class DonerTileEntityRenderer implements BlockEntityRenderer<TileEntityDoner> {
+public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityDoner> {
     protected static BlockRenderDispatcher blockRenderer;
 
     public DonerTileEntityRenderer(BlockEntityRendererProvider.Context ctx) {
     }
 
     @Override
-    public void render(TileEntityDoner tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(BlockEntityDoner blockEntity, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if(blockRenderer == null) blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
-        float f = tileEntityIn.getAnimationProgress(partialTicks);
+        float f = blockEntity.getAnimationProgress(partialTicks);
         matrixStackIn.pushPose();
 
         matrixStackIn.translate(0.5f, 0.f, 0.5f);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(2*f));
         matrixStackIn.translate(-0.5f, 0.f, -0.5f);
 
-        BlockState bs = tileEntityIn.getBlockState();
+        BlockState bs = blockEntity.getBlockState();
 
         Blocks.BLOCK_DONER.setRenderType(RenderShape.MODEL);
         blockRenderer.renderSingleBlock(bs, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY);

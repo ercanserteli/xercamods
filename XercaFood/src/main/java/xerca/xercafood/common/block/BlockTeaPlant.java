@@ -2,6 +2,7 @@ package xerca.xercafood.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -19,7 +20,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import xerca.xercafood.common.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
@@ -29,7 +29,6 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
 
     BlockTeaPlant() {
         super(Block.Properties.of(Material.PLANT).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
-        this.setRegistryName("block_tea_plant");
     }
 
     @Override
@@ -48,7 +47,7 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
         if (rand.nextInt(3) != 0) {
             super.tick(state, worldIn, pos, rand);
         }

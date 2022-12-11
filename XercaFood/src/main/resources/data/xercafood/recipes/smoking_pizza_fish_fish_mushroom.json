@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smoking",
+    
+    "ingredient": [
+        {"item": "xercafood:raw_pizza_fish_fish_mushroom"}
+    ],
+    "result": "xercafood:pizza_fish_fish_mushroom",
+    "experience": 0.2,
+    "cookingtime": 150
+}
+        

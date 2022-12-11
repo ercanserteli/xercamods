@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "c c",
+        "ccc",
+        "i i"
+    ],
+    "key": {"c": {"item": "minecraft:copper_ingot"}, "i": {"item": "minecraft:iron_ingot"}},
+    "result": {"item": "xercafood:vat"}
+}
+        

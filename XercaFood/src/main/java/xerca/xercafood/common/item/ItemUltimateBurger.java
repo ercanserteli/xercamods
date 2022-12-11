@@ -10,7 +10,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import xerca.xercamod.common.Config;
 import xerca.xercafood.common.SoundEvents;
 
 import javax.annotation.Nonnull;
@@ -20,7 +19,6 @@ class ItemUltimateBurger extends Item {
 
     public ItemUltimateBurger() {
         super(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ULTIMATE_BURGER));
-        this.setRegistryName("item_ultimate_burger");
     }
 
     @Nonnull

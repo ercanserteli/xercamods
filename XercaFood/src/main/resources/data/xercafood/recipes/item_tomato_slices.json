@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercafood:item_tomato"}, {"item": "xercafood:item_knife", "data": 32767}],
+    "result": {"item": "xercafood:item_tomato_slices", "count": 3}
+}
+        

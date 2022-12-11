@@ -12,17 +12,17 @@
               "conditions": [
                 {
                   "condition": "minecraft:block_state_property",
-                  "block": "xercamod:block_tea_plant",
+                  "block": "xercafood:block_tea_plant",
                   "properties": {
                     "age": "3"
                   }
                 }
               ],
-              "name": "xercamod:item_tea_leaf"
+              "name": "xercafood:item_tea_leaf"
             },
             {
               "type": "minecraft:item",
-              "name": "xercamod:item_tea_seeds"
+              "name": "xercafood:item_tea_seeds"
             }
           ]
         }
@@ -44,13 +44,13 @@
               }
             }
           ],
-          "name": "xercamod:item_tea_seeds"
+          "name": "xercafood:item_tea_seeds"
         }
       ],
       "conditions": [
         {
           "condition": "minecraft:block_state_property",
-          "block": "xercamod:block_tea_plant",
+          "block": "xercafood:block_tea_plant",
           "properties": {
             "age": "3"
           }

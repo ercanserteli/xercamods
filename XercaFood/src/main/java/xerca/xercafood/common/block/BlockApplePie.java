@@ -17,7 +17,6 @@ import net.minecraft.world.phys.BlockHitResult;
 class BlockApplePie extends CakeBlock {
     public BlockApplePie() {
         super(Block.Properties.of(Material.CAKE, DyeColor.ORANGE));
-        this.setRegistryName("block_apple_pie");
     }
 
     @Override

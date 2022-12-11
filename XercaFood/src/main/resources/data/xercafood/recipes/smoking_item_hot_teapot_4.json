@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smoking",
+    "group": "hot_teapot",
+    "ingredient": [
+        {"item": "xercafood:item_full_teapot_4"}
+    ],
+    "result": "xercafood:item_hot_teapot_4",
+    "experience": 0.25,
+    "cookingtime": 125
+}
+        

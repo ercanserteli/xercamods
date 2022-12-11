@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "minecraft:chicken"}, {"item": "xercafood:item_knife", "data": 32767}],
+    "result": {"item": "xercafood:item_raw_chicken_patty", "count": 2}
+}
+        

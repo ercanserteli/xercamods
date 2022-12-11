@@ -1,16 +1,16 @@
 {
   "display": {
     "icon": {
-      "item": "xercamod:item_tomato"
+      "item": "xercafood:item_tomato"
     },
     "title": {
-      "translate": "advancements.xercamod.achievements.hooligan.title"
+      "translate": "advancements.xercafood.achievements.hooligan.title"
     },
     "description": {
-      "translate": "advancements.xercamod.achievements.hooligan.description"
+      "translate": "advancements.xercafood.achievements.hooligan.description"
     }
   },
-  "parent": "xercamod:achievements/root",
+  "parent": "xercafood:achievements/root",
   "criteria": {
     "shot_tomato": {
       "trigger": "minecraft:player_hurt_entity",
@@ -19,7 +19,7 @@
           "type": {
             "is_projectile": true,
             "direct_entity": {
-              "type": "xercamod:tomato"
+              "type": "xercafood:tomato"
             }
           }
         }

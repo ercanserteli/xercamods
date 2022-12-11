@@ -11,7 +11,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import xerca.xercamod.common.Config;
 import xerca.xercafood.common.entity.EntityTomato;
 
 import javax.annotation.Nonnull;
@@ -20,7 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemTomato extends Item {
     public ItemTomato() {
         super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-        this.setRegistryName("item_tomato");
     }
 
     /**

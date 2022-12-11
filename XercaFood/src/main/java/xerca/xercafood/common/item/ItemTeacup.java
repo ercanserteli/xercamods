@@ -2,13 +2,9 @@ package xerca.xercafood.common.item;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.system.NonnullDefault;
-import xerca.xercamod.common.Config;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,7 +23,6 @@ public class ItemTeacup extends ItemStackableContainedFood {
               sugarAmount == 5 ? (new Item.Properties()).food(Foods.TEACUP5) :
                                  (new Item.Properties()).food(Foods.TEACUP6), teaCup, 64);
         this.sugarAmount = sugarAmount;
-        this.setRegistryName("item_full_teacup_" + sugarAmount);
     }
 
     @Override
@@ -40,14 +35,13 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.sugarAmount == 0) {
-            tooltip.add(new TextComponent("No sugar"));
+            tooltip.add(Component.literal("No sugar"));
         } else if(this.sugarAmount == 1) {
-            tooltip.add(new TextComponent(this.sugarAmount + " sugar"));
+            tooltip.add(Component.literal(this.sugarAmount + " sugar"));
         } else {
-            tooltip.add(new TextComponent(this.sugarAmount + " sugars"));
+            tooltip.add(Component.literal(this.sugarAmount + " sugars"));
         }
     }
 
@@ -64,9 +58,6 @@ public class ItemTeacup extends ItemStackableContainedFood {
     @Override
     @ParametersAreNonnullByDefault
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isTeaEnabled()){
-            return;
-        }
         super.fillItemCategory(group, items);
     }
 }

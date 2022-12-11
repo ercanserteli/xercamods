@@ -6,9 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercafood.common.item.ItemTeapot;
-import xerca.xercamod.common.Config;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaRefilling extends CustomRecipe {
@@ -82,9 +80,7 @@ public class RecipeTeaRefilling extends CustomRecipe {
         }
 
         if (!teapotStack.isEmpty() && teapot != null && !teapot.isHot() && teapot.getTeaAmount() + i <= 7 && i > 0) {
-            String str = teapot.getRegistryName().toString();
-            str = str.substring(0, str.length() - 1) + (teapot.getTeaAmount() + i);
-            return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str)));
+            return new ItemStack(RecipeTeaFilling.getFullTeapot(teapot.getTeaAmount() + i));
         } else {
             return ItemStack.EMPTY;
         }

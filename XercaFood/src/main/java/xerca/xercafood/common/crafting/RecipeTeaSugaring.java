@@ -2,16 +2,29 @@ package xerca.xercafood.common.crafting;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import xerca.xercafood.common.item.ItemTeacup;
 import xerca.xercafood.common.item.Items;
-import xerca.xercamod.common.Config;
 
 public class RecipeTeaSugaring extends CustomRecipe {
+    public static Item getTeacup(int sugarAmount) {
+        Item res = net.minecraft.world.item.Items.AIR;
+        switch (sugarAmount) {
+            case 0 -> res = Items.ITEM_FULL_TEACUP_0;
+            case 1 -> res = Items.ITEM_FULL_TEACUP_1;
+            case 2 -> res = Items.ITEM_FULL_TEACUP_2;
+            case 3 -> res = Items.ITEM_FULL_TEACUP_3;
+            case 4 -> res = Items.ITEM_FULL_TEACUP_4;
+            case 5 -> res = Items.ITEM_FULL_TEACUP_5;
+            case 6 -> res = Items.ITEM_FULL_TEACUP_6;
+        }
+        return res;
+    }
+
     public RecipeTeaSugaring(ResourceLocation p_i48170_1_) {
         super(p_i48170_1_);
     }
@@ -62,23 +75,19 @@ public class RecipeTeaSugaring extends CustomRecipe {
                     if (!teacupStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-
                     teacupStack = itemstack;
                     teacup = (ItemTeacup) itemstack.getItem();
                 } else {
                     if (itemstack.getItem() != net.minecraft.world.item.Items.SUGAR || i >= 6) {
                         return ItemStack.EMPTY;
                     }
-
                     ++i;
                 }
             }
         }
 
         if (!teacupStack.isEmpty() && teacup != null && i >= 1 && (teacup.getSugarAmount() + i) <= 6) {
-            String str = teacup.getRegistryName().toString();
-            str = str.substring(0, str.length() - 1) + (teacup.getSugarAmount() + i);
-            return new ItemStack(ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(str)));
+            return new ItemStack(getTeacup(teacup.getSugarAmount() + i));
         } else {
             return ItemStack.EMPTY;
         }

@@ -1,0 +1,32 @@
+
+{
+  "parent": "xercafood:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercafood:campfire_cooking_pizza_chicken_mushroom"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": ["xercafood:raw_pizza_chicken_mushroom"]}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercafood:campfire_cooking_pizza_chicken_mushroom"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}
+        

@@ -76,7 +76,7 @@ Grab hook:
 
 Creative tabs:
     - Tea tab includes tea plant related items and teapot/teacups
-    - XercaMod Blocks tab includes all XercaMod blocks
+    - xercafood Blocks tab includes all xercafood blocks
 
 Achievements:
     - Eating ultimate burger

@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "age=0": { "model": "xercafood:block/tea_stage0" },
+        "age=1": { "model": "xercafood:block/tea_stage1" },
+        "age=2": { "model": "xercafood:block/tea_stage2" },
+        "age=3": { "model": "xercafood:block/tea_stage3" }
+    }
+}

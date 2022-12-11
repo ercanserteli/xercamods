@@ -1,0 +1,8 @@
+
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercafood:item_tea_dried"}, {"item": "xercafood:item_glass_of_water"}, {"item": "minecraft:snowball"}, {"item": "minecraft:sugar"}],
+    "result": {"item": "xercafood:item_ice_tea"}
+}
+        

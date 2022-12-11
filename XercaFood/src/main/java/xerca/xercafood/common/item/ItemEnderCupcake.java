@@ -10,7 +10,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import xerca.xercamod.common.Config;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,7 +18,6 @@ class ItemEnderCupcake extends Item {
 
     public ItemEnderCupcake() {
         super(new Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ENDER_CUPCAKE));
-        this.setRegistryName("ender_cupcake");
     }
 
     @Nonnull

@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "ses",
+        "www",
+        "www"
+    ],
+    "key": {"w": {"item": "xercafood:carbonated_water"}, "e": {"item": "xercafood:cola_extract"}, "s": {"item": "minecraft:snowball"}},
+    "result": {"item": "xercafood:cola", "count": 6}
+}
+        

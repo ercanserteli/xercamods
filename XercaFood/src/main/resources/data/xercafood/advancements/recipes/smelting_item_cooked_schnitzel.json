@@ -1,0 +1,32 @@
+
+{
+  "parent": "xercafood:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercafood:smelting_item_cooked_schnitzel"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": ["xercafood:item_raw_schnitzel"]}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercafood:smelting_item_cooked_schnitzel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}
+        

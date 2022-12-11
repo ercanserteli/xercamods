@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_food",
-    "group": "pizza",
-    "ingredients": [{"item": "xercamod:raw_pizza"}, {"item": "xercamod:item_raw_sausage"}, {"item": "xercamod:item_raw_sausage"}],
-    "result": {"item": "xercamod:raw_pizza_pepperoni_pepperoni"}
-}
-        

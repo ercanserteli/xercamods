@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelReader;
@@ -14,13 +15,10 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
 import xerca.xercafood.common.item.Items;
 
-import java.util.Random;
-
 class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     BlockRicePlant() {
         super(Properties.of(Material.PLANT).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
-        this.setRegistryName("block_rice_plant");
     }
 
     @Override
@@ -57,7 +55,7 @@ class BlockRicePlant extends CropBlock implements BonemealableBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
         if(!mayPlaceOn(worldIn.getBlockState(pos.below()), worldIn, pos.below())){
             worldIn.destroyBlock(pos, true);
         }

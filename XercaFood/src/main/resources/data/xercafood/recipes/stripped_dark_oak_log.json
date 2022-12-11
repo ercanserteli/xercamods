@@ -2,7 +2,7 @@
 {
     "type": "minecraft:crafting_shapeless",
     
-    "ingredients": [{"item": "xercamod:item_knife", "data": 32767}, {"item": "minecraft:dark_oak_log"}],
+    "ingredients": [{"item": "xercafood:item_knife", "data": 32767}, {"item": "minecraft:dark_oak_log"}],
     "result": {"item": "minecraft:stripped_dark_oak_log"}
 }
         

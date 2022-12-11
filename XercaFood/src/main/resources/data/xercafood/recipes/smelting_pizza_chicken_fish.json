@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:smelting",
+    
+    "ingredient": [
+        {"item": "xercafood:raw_pizza_chicken_fish"}
+    ],
+    "result": "xercafood:pizza_chicken_fish",
+    "experience": 0.2,
+    "cookingtime": 300
+}
+        

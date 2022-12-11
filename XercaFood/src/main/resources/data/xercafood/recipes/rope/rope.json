@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_rope",
-    
-    "ingredients": [{"item": "minecraft:string"}, {"item": "minecraft:string"}, {"item": "minecraft:string"}],
-    "result": {"item": "xercamod:rope"}
-}
-        

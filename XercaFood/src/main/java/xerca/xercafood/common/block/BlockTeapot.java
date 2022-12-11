@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -45,25 +46,23 @@ public class BlockTeapot extends Block {
     public BlockTeapot() {
         super(Properties.of(Material.CLAY).strength(0.0F, 1.0F).sound(SoundType.STONE));
         this.registerDefaultState(this.stateDefinition.any().setValue(TEA_AMOUNT, 0));
-        this.setRegistryName("block_teapot");
     }
 
-    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random r) {
+    @Override
+    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource r) {
         int teaAmount = stateIn.getValue(TEA_AMOUNT);
         if (teaAmount > 0) {
-//            if(worldIn.getGameTime() % (9 - teaAmount) == 0){
             if (r.nextDouble()*5 < ((double)teaAmount)*0.5) {
                 for(int i = 0; i < r.nextInt(1) + 1; ++i) {
                     worldIn.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
                             pos.getX() + 0.5D, pos.getY() + 0.6D + r.nextDouble()*0.5D, pos.getZ() + 0.25D,
                             0.0D, 0.025D, 0.0D);
-
                 }
             }
         }
     }
 
-    // Called when the block is right clicked
+    // Called when the block is right-clicked
     @Override
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         if (worldIn.isClientSide) return InteractionResult.SUCCESS;
@@ -120,24 +119,16 @@ public class BlockTeapot extends Block {
     }
 
     public ItemTeapot getItemHotTeapot(int teaAmount){
-        switch (teaAmount){
-            case 1:
-                return Items.ITEM_HOT_TEAPOT_1;
-            case 2:
-                return Items.ITEM_HOT_TEAPOT_2;
-            case 3:
-                return Items.ITEM_HOT_TEAPOT_3;
-            case 4:
-                return Items.ITEM_HOT_TEAPOT_4;
-            case 5:
-                return Items.ITEM_HOT_TEAPOT_5;
-            case 6:
-                return Items.ITEM_HOT_TEAPOT_6;
-            case 7:
-                return Items.ITEM_HOT_TEAPOT_7;
-            default:
-                return Items.ITEM_HOT_TEAPOT_1;
-        }
+        return switch (teaAmount) {
+            case 1 -> Items.ITEM_HOT_TEAPOT_1;
+            case 2 -> Items.ITEM_HOT_TEAPOT_2;
+            case 3 -> Items.ITEM_HOT_TEAPOT_3;
+            case 4 -> Items.ITEM_HOT_TEAPOT_4;
+            case 5 -> Items.ITEM_HOT_TEAPOT_5;
+            case 6 -> Items.ITEM_HOT_TEAPOT_6;
+            case 7 -> Items.ITEM_HOT_TEAPOT_7;
+            default -> Items.ITEM_HOT_TEAPOT_1;
+        };
     }
 }
 

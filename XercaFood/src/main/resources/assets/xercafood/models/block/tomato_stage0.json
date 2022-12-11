@@ -1,0 +1,6 @@
+{
+    "parent": "block/crop",
+    "textures": {
+        "crop": "xercafood:block/tomato_stage0"
+    }
+}

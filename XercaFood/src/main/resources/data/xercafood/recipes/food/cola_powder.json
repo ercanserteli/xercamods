@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_food",
-    
-    "ingredients": [{"item": "minecraft:warped_roots"}, {"item": "minecraft:rotten_flesh"}, {"item": "minecraft:spider_eye"}, {"item": "minecraft:sugar"}, {"item": "minecraft:sugar"}, {"item": "minecraft:sugar"}],
-    "result": {"item": "xercamod:cola_powder"}
-}
-        

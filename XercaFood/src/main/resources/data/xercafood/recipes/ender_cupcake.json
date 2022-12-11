@@ -1,0 +1,13 @@
+
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "www",
+        "mem",
+        "sas"
+    ],
+    "key": {"a": {"item": "minecraft:chorus_fruit"}, "s": {"item": "minecraft:sugar"}, "e": {"item": "minecraft:egg"}, "w": {"item": "minecraft:wheat"}, "m": {"item": "minecraft:milk_bucket"}},
+    "result": {"item": "xercafood:ender_cupcake", "count": 6}
+}
+        

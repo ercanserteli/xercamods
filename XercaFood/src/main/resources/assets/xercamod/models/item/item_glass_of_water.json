@@ -1,6 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "xercamod:item/beverages/glass_of_water"
-    }
-}

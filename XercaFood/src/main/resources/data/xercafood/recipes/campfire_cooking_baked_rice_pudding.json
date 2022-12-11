@@ -1,0 +1,12 @@
+
+{
+    "type": "minecraft:campfire_cooking",
+    
+    "ingredient": [
+        {"item": "xercafood:rice_pudding"}
+    ],
+    "result": "xercafood:baked_rice_pudding",
+    "experience": 0.2,
+    "cookingtime": 750
+}
+        

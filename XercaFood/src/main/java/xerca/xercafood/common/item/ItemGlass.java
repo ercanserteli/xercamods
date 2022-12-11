@@ -18,7 +18,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemGlass extends Item {
     public ItemGlass() {
         super((new Item.Properties()).tab(CreativeModeTab.TAB_MISC));
-        this.setRegistryName("item_glass");
     }
 
     @Override

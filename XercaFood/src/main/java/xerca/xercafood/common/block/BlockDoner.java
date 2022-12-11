@@ -25,7 +25,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import xerca.xercafood.common.tile_entity.TileEntityDoner;
+import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
 import javax.annotation.Nullable;
 
@@ -41,7 +41,6 @@ public class BlockDoner extends Block implements EntityBlock {
 
     public BlockDoner() {
         super(Block.Properties.of(Material.CAKE).sound(SoundType.METAL).strength(1).noOcclusion());
-        setRegistryName("block_doner");
         registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(IS_RAW, true));
     }
 
@@ -124,14 +123,14 @@ public class BlockDoner extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new TileEntityDoner(blockPos, blockState);
+        return new BlockEntityDoner(blockPos, blockState);
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
-            if (t instanceof TileEntityDoner) {
-                TileEntityDoner.tick(level1, blockPos, blockState1, (TileEntityDoner) t);
+            if (t instanceof BlockEntityDoner) {
+                BlockEntityDoner.tick(level1, blockPos, blockState1, (BlockEntityDoner) t);
             }
         };
     }

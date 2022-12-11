@@ -1,6 +1,7 @@
 package xerca.xercafood.common.item;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -16,10 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import xerca.xercafood.common.SoundEvents;
-import xerca.xercamod.common.entity.EntityConfettiBall;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,16 +26,27 @@ import java.util.List;
 import static xerca.xercafood.common.item.Foods.GOLDEN_CUPCAKE;
 
 public class ItemGoldenCupcake extends Item {
-    private TargetingConditions yahooPredicate = TargetingConditions.forNonCombat().range(16.0D);
+    private final TargetingConditions yahooPredicate = TargetingConditions.forNonCombat().range(16.0D);
     public ItemGoldenCupcake() {
         super(new Item.Properties().food(GOLDEN_CUPCAKE));
-        setRegistryName("item_golden_cupcake");
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public boolean isFoil(ItemStack stack) {
         return true;
+    }
+
+    public static CompoundTag getSkullNBT(List<Integer> id, String texture) {
+        CompoundTag skullNBT = new CompoundTag();
+        CompoundTag propertiesNBT = new CompoundTag();
+        ListTag texturesNBT = new ListTag();
+        CompoundTag tNBT = new CompoundTag();
+        tNBT.putString("Value", texture);
+        texturesNBT.add(tNBT);
+        propertiesNBT.put("textures", texturesNBT);
+        skullNBT.put("Properties", propertiesNBT);
+        skullNBT.putIntArray("Id", id);
+        return skullNBT;
     }
 
     @Override
@@ -60,14 +69,6 @@ public class ItemGoldenCupcake extends Item {
                     worldIn.addFreshEntity(lightningBoltEntity);
 
                     worldIn.explode(null, player.getX(), player.getY(), player.getZ(), 1.1F, false, Explosion.BlockInteraction.BREAK);
-                    EntityConfettiBall entityBall = new EntityConfettiBall(worldIn, player);
-                    entityBall.shootFromRotation(player, 270, player.getYRot() + 90, 0.0F, 1.0F, 1.0F);
-                    worldIn.addFreshEntity(entityBall);
-                    for(int i=0; i<8; i++){
-                        entityBall = new EntityConfettiBall(worldIn, player);
-                        entityBall.shootFromRotation(player, 300, 45*i, 0.0F, 1.0F, 1.0F);
-                        worldIn.addFreshEntity(entityBall);
-                    }
 
                     float multiplier = 0.5f;
                     float motionX = worldIn.random.nextFloat() - 0.5f;
@@ -126,13 +127,14 @@ public class ItemGoldenCupcake extends Item {
                     player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 1));
 
                     ItemStack herobrineHead = new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD, 1);
-                    herobrineHead.getOrCreateTag().put("SkullOwner", ItemScythe.getSkullNBT(Arrays.asList(1002043797,-372031054,-1422417350,-1998966556), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmM2NWVkMjgyOWM4M2UxMTlhODBkZmIyMjIxNjQ0M2U4NzhlZjEwNjQ5YzRhMzU0Zjc0YmY0NWFkMDZiYzFhNyJ9fX0="));
+                    herobrineHead.getOrCreateTag().put("SkullOwner", getSkullNBT(Arrays.asList(1002043797,-372031054,-1422417350,-1998966556), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmM2NWVkMjgyOWM4M2UxMTlhODBkZmIyMjIxNjQ0M2U4NzhlZjEwNjQ5YzRhMzU0Zjc0YmY0NWFkMDZiYzFhNyJ9fX0="));
 
-                    Item[] weapons = {Items.ITEM_GAVEL, Items.ITEM_RAW_SAUSAGE, Items.ITEM_STONE_WARHAMMER, Items.STONE_SCYTHE, Items.ITEM_PROSECUTOR_BADGE};
+                    Item[] weapons = {Items.ITEM_RAW_SAUSAGE, Items.ITEM_KNIFE, Items.ITEM_HOT_TEAPOT_1, Items.ITEM_ROTTEN_BURGER};
 
                     Entity e1 = new Skeleton(EntityType.SKELETON, worldIn);
                     e1.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
                     e1.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
+
                     e1.setItemSlot(EquipmentSlot.HEAD, herobrineHead);
                     e1.moveTo(player.getX() + (double) worldIn.random.nextInt(3), player.getY() + (double) worldIn.random.nextInt(5), player.getZ() + (double) worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
 

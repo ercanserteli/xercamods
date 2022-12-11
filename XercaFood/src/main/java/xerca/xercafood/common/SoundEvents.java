@@ -1,68 +1,33 @@
 package xerca.xercafood.common;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
 
-@ObjectHolder(XercaFood.MODID)
 public class SoundEvents {
-    public final static SoundEvent TOMATO_SPLASH = null;
-    public final static SoundEvent SNEAK_HIT = null;
-    public final static SoundEvent GAVEL = null;
-    public final static SoundEvent OBJECTION = null;
-    public final static SoundEvent HAMMER = null;
-    public final static SoundEvent HOOK_CHAIN = null;
-    public final static SoundEvent HOOK_IMPACT = null;
-    public final static SoundEvent BIG_BURP = null;
-    public final static SoundEvent YAHOO = null;
-    public final static SoundEvent SCARY = null;
-    public final static SoundEvent CRACK = null;
-    public final static SoundEvent CONFETTI = null;
-    public final static SoundEvent STOMP = null;
-    public final static SoundEvent TEA_POUR = null;
-    public final static SoundEvent SIZZLE = null;
-    public final static SoundEvent BIG_SIZZLE = null;
-    public final static SoundEvent BEHEAD = null;
-    public final static SoundEvent HOLY = null;
-    public final static SoundEvent SPARKLES = null;
-    public final static SoundEvent ABSORB = null;
-    public final static SoundEvent FIZZY = null;
+    public final static SoundEvent TOMATO_SPLASH = new SoundEvent(new ResourceLocation(XercaFood.MODID, "tomato_splash"));
+    public final static SoundEvent BIG_BURP = new SoundEvent(new ResourceLocation(XercaFood.MODID, "big_burp"));
+    public final static SoundEvent YAHOO = new SoundEvent(new ResourceLocation(XercaFood.MODID, "yahoo"));
+    public final static SoundEvent SCARY = new SoundEvent(new ResourceLocation(XercaFood.MODID, "scary"));
+    public final static SoundEvent TEA_POUR = new SoundEvent(new ResourceLocation(XercaFood.MODID, "tea_pour"));
+    public final static SoundEvent SIZZLE = new SoundEvent(new ResourceLocation(XercaFood.MODID, "sizzle"));
+    public final static SoundEvent BIG_SIZZLE = new SoundEvent(new ResourceLocation(XercaFood.MODID, "big_sizzle"));
+    public final static SoundEvent HOLY = new SoundEvent(new ResourceLocation(XercaFood.MODID, "holy"));
+    public final static SoundEvent SPARKLES = new SoundEvent(new ResourceLocation(XercaFood.MODID, "sparkles"));
+    public final static SoundEvent FIZZY = new SoundEvent(new ResourceLocation(XercaFood.MODID, "fizzy"));
+    public final static SoundEvent SNEAK_HIT = new SoundEvent(new ResourceLocation(XercaFood.MODID, "sneak_hit"));
 
-    private static SoundEvent createSoundEvent(String soundName) {
-        final ResourceLocation soundID = new ResourceLocation(XercaFood.MODID, soundName);
-        return new SoundEvent(soundID).setRegistryName(soundID);
-    }
-
-    @Mod.EventBusSubscriber(modid = XercaFood.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistrationHandler {
-        @SubscribeEvent
-        public static void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
-            event.getRegistry().registerAll(
-                    createSoundEvent("tomato_splash"),
-                    createSoundEvent("sneak_hit"),
-                    createSoundEvent("gavel"),
-                    createSoundEvent("objection"),
-                    createSoundEvent("hammer"),
-                    createSoundEvent("hook_chain"),
-                    createSoundEvent("hook_impact"),
-                    createSoundEvent("big_burp"),
-                    createSoundEvent("yahoo"),
-                    createSoundEvent("scary"),
-                    createSoundEvent("crack"),
-                    createSoundEvent("confetti"),
-                    createSoundEvent("stomp"),
-                    createSoundEvent("tea_pour"),
-                    createSoundEvent("sizzle"),
-                    createSoundEvent("big_sizzle"),
-                    createSoundEvent("behead"),
-                    createSoundEvent("holy"),
-                    createSoundEvent("sparkles"),
-                    createSoundEvent("absorb"),
-                    createSoundEvent("fizzy")
-            );
-        }
+    public static void registerSoundEvents() {
+        Registry.register(Registry.SOUND_EVENT, TOMATO_SPLASH.getLocation(), TOMATO_SPLASH);
+        Registry.register(Registry.SOUND_EVENT, BIG_BURP.getLocation(), BIG_BURP);
+        Registry.register(Registry.SOUND_EVENT, YAHOO.getLocation(), YAHOO);
+        Registry.register(Registry.SOUND_EVENT, SCARY.getLocation(), SCARY);
+        Registry.register(Registry.SOUND_EVENT, TEA_POUR.getLocation(), TEA_POUR);
+        Registry.register(Registry.SOUND_EVENT, SIZZLE.getLocation(), SIZZLE);
+        Registry.register(Registry.SOUND_EVENT, BIG_SIZZLE.getLocation(), BIG_SIZZLE);
+        Registry.register(Registry.SOUND_EVENT, HOLY.getLocation(), HOLY);
+        Registry.register(Registry.SOUND_EVENT, SPARKLES.getLocation(), SPARKLES);
+        Registry.register(Registry.SOUND_EVENT, FIZZY.getLocation(), FIZZY);
+        Registry.register(Registry.SOUND_EVENT, SNEAK_HIT.getLocation(), SNEAK_HIT);
     }
 }
