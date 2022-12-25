@@ -1,0 +1,25 @@
+{
+  "crack": {
+    "sounds": [
+      {
+        "name": "xercaconfetti:crack1"
+      },
+      {
+        "name": "xercaconfetti:crack2"
+      },
+      {
+        "name": "xercaconfetti:crack3"
+      },
+      {
+        "name": "xercaconfetti:crack4"
+      }
+    ]
+  },
+  "confetti": {
+    "sounds": [
+      {
+        "name": "xercaconfetti:confetti"
+      }
+    ]
+  }
+}

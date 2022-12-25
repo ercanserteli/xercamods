@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_food",
-    
-    "ingredients": [{"item": "xercamod:cheese_wheel"}, {"item": "xercamod:item_knife", "data": 32767}],
-    "result": {"item": "xercamod:cheese_slice", "count": 4}
-}
-        

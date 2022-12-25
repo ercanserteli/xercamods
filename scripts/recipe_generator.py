@@ -6,6 +6,7 @@ from enum import Enum
 mod_id = ""
 mod_id_to_folder = {
     "xercafood": "XercaFood",
+    "xercaconfetti": "XercaConfetti",
     "xercamusic": "XercaMusicMod",
     "xercapaint": "XercaPaintMod"
 }
@@ -342,9 +343,16 @@ def clean_recipe_jsons(mod_id_input):
     recipe_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipes"
     adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancements/recipes"
 
-    shutil.rmtree(recipe_main_dir)
+    try:
+        shutil.rmtree(recipe_main_dir)
+    except FileNotFoundError:
+        pass
     os.makedirs(recipe_main_dir)
-    shutil.rmtree(adv_main_dir)
+
+    try:
+        shutil.rmtree(adv_main_dir)
+    except FileNotFoundError:
+        pass
     os.makedirs(adv_main_dir)
 
 

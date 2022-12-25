@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_food",
-    
-    "ingredients": [{"item": "minecraft:sugar"}, {"item": "minecraft:sugar"}, {"item": "minecraft:sugar"}, {"item": "minecraft:cyan_dye"}, {"item": "minecraft:magenta_dye"}, {"item": "minecraft:yellow_dye"}],
-    "result": {"item": "xercamod:item_sprinkles", "count": 12}
-}
-        

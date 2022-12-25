@@ -1,8 +1,0 @@
-{
-    "parent": "xercamod:block/cushion",
-    "textures": {
-      "0": "xercamod:block/cushion_light_gray",
-      "particle": "xercamod:block/cushion_light_gray",
-        "wool": "block/light_gray_wool"
-    }
-}

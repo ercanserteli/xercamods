@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_food",
-    "group": "pizza",
-    "ingredients": [{"item": "xercamod:raw_pizza"}, {"item": "minecraft:cod"}],
-    "result": {"item": "xercamod:raw_pizza_fish"}
-}
-        

@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_food",
-    
-    "ingredients": [{"item": "xercamod:cooked_rice"}, {"item": "xercamod:sashimi"}],
-    "result": {"item": "xercamod:nigiri_sushi"}
-}
-        

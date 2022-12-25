@@ -1,8 +1,0 @@
-
-{
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "xercamod:item_knife", "data": 32767}, {"item": "minecraft:spruce_log"}],
-    "result": {"item": "minecraft:stripped_spruce_log"}
-}
-        

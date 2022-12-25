@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_coins",
-    
-    "ingredients": [{"item": "minecraft:gold_nugget"}],
-    "result": {"item": "xercamod:item_golden_coin_5", "count": 2}
-}
-        
