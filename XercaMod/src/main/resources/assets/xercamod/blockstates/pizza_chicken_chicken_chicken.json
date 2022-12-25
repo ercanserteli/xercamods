@@ -1,9 +1,0 @@
-
-{
-    "variants": {
-        "bites=0": { "model": "xercamod:block/pizza/pizza_chicken_chicken_chicken_uneaten" },
-        "bites=1": { "model": "xercamod:block/pizza/pizza_chicken_chicken_chicken_slice1" },
-        "bites=2": { "model": "xercamod:block/pizza/pizza_chicken_chicken_chicken_slice2" },
-        "bites=3": { "model": "xercamod:block/pizza/pizza_chicken_chicken_chicken_slice3" }
-    }
-}

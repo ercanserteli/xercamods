@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_food",
-    
-    "ingredients": [{"item": "xercamod:cooked_rice"}, {"item": "xercamod:item_fried_egg"}, {"item": "minecraft:dried_kelp"}],
-    "result": {"item": "xercamod:egg_sushi", "count": 2}
-}
-        

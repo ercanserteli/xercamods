@@ -1,8 +1,0 @@
-
-{
-    "type": "xercamod:crafting_condition_shapeless_courtroom",
-    "group": "pro_badge",
-    "ingredients": [{"item": "minecraft:gold_nugget"}, {"item": "minecraft:dandelion", "data": 0}],
-    "result": {"item": "xercamod:item_prosecutor_badge"}
-}
-        

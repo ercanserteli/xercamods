@@ -1,6 +1,0 @@
-{
-    "parent": "xercamod:item/item_grab_hook",
-    "textures": {
-        "layer0": "xercamod:item/grab_hook_empty"
-    }
-}

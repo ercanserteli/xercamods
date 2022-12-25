@@ -1,0 +1,6 @@
+- Create a new folder
+- Through IntelliJ minecraft plugin, create a new fabric project
+- Project name should be only lowercase letters, no special chars
+- Rename "[modid]" and "[modid]Client" java files to "Mod" and "ModClient" during creation
+- Copy all scripts to the project folder
+- Run setup_mod.py

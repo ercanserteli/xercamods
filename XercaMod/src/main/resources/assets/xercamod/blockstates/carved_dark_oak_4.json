@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=south": { "model": "xercamod:block/carved_wood/carved_dark_oak_4" },
-    "facing=west": { "model":  "xercamod:block/carved_wood/carved_dark_oak_4", "y": 90 },
-    "facing=north": { "model": "xercamod:block/carved_wood/carved_dark_oak_4", "y": 180 },
-    "facing=east": { "model":  "xercamod:block/carved_wood/carved_dark_oak_4", "y": 270 }
-  }
-}
