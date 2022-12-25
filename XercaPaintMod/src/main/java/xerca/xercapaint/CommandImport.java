@@ -69,7 +69,7 @@ public class CommandImport {
             ItemStack offhand = player.getOffhandItem();
 
             if(!(mainhand.getItem() instanceof ItemCanvas) || (mainhand.hasTag() && !mainhand.getTag().isEmpty())){
-                player.sendSystemMessage(Component.translatable("import.fail.1").withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
             if(((ItemCanvas)mainhand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
@@ -79,15 +79,15 @@ public class CommandImport {
                     case TALL -> type = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
                     case LARGE -> type = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
                 }
-                player.sendSystemMessage(Component.translatable("import.fail.2", type).withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", type).withStyle(ChatFormatting.RED));
                 return;
             }
             if(!ItemPalette.isFull(offhand)){
-                player.sendSystemMessage(Component.translatable("import.fail.3").withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.3").withStyle(ChatFormatting.RED));
                 return;
             }
             mainhand.setTag(tag);
         }
-        player.sendSystemMessage(Component.translatable("import.success").withStyle(ChatFormatting.GREEN));
+        player.sendSystemMessage(Component.translatable("xercapaint.import.success").withStyle(ChatFormatting.GREEN));
     }
 }
