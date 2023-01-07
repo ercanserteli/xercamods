@@ -49,8 +49,8 @@ public class ItemWarhammer extends Item {
 
     public ItemWarhammer(Tier mat) {
         super(mat.equals(Tiers.NETHERITE)
-                ? new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).defaultDurability(mat.getUses()).fireResistant()
-                : new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).stacksTo(1).defaultDurability(mat.getUses()));
+                ? new Item.Properties().stacksTo(1).defaultDurability(mat.getUses()).fireResistant()
+                : new Item.Properties().stacksTo(1).defaultDurability(mat.getUses()));
 
         this.material = mat;
         float weaponDamage = 1.0F + mat.getAttackDamageBonus();
@@ -193,15 +193,6 @@ public class ItemWarhammer extends Item {
 
     public float getPushAmount() {
         return pushAmount;
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isWarhammerEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -5,9 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCookingSerializer;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +17,7 @@ public class RecipeConditionSmelting extends SmeltingRecipe {
     private final RecipeSerializer<?> serializer;
 
     public RecipeConditionSmelting(SmeltingRecipe furnaceRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
-        super(furnaceRecipe.getId(), furnaceRecipe.getGroup(), furnaceRecipe.getIngredients().get(0), furnaceRecipe.getResultItem(), furnaceRecipe.getExperience(), furnaceRecipe.getCookingTime());
+        super(furnaceRecipe.getId(), furnaceRecipe.getGroup(), CookingBookCategory.FOOD, furnaceRecipe.getIngredients().get(0), furnaceRecipe.getResultItem(), furnaceRecipe.getExperience(), furnaceRecipe.getCookingTime());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -52,7 +50,7 @@ public class RecipeConditionSmelting extends SmeltingRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<RecipeConditionSmelting> {
-        private static final SimpleCookingSerializer<SmeltingRecipe> furnaceSerializer = RecipeSerializer.SMELTING_RECIPE;
+        private static final RecipeSerializer<SmeltingRecipe> furnaceSerializer = RecipeSerializer.SMELTING_RECIPE;
         private final Supplier<Boolean> condition;
 
         public Serializer(Supplier<Boolean> condition){

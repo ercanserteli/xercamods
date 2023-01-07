@@ -14,14 +14,14 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 
-version = "1.19.2-1.0.0"
+version = "1.19.3-1.0.0"
 group= "xerca.xercamod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "xercamod"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'parchment', version: '2022.08.21-1.19.2'
+    mappings channel: 'parchment', version: '2022.12.18-1.19.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
@@ -95,7 +95,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.1'
+    minecraft 'net.minecraftforge:forge:1.19.3-44.0.37'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

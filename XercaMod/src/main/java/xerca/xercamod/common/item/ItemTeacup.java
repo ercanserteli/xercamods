@@ -18,7 +18,7 @@ public class ItemTeacup extends ItemStackableContainedFood {
     private final int sugarAmount;
 
     public ItemTeacup(int sugarAmount, Item teaCup) {
-        super(sugarAmount == 0 ? (new Item.Properties().tab(Items.teaTab)).food(Foods.TEACUP0) :
+        super(sugarAmount == 0 ? (new Item.Properties()).food(Foods.TEACUP0) :
               sugarAmount == 1 ? (new Item.Properties()).food(Foods.TEACUP1) :
               sugarAmount == 2 ? (new Item.Properties()).food(Foods.TEACUP2) :
               sugarAmount == 3 ? (new Item.Properties()).food(Foods.TEACUP3) :
@@ -57,14 +57,5 @@ public class ItemTeacup extends ItemStackableContainedFood {
     @Override
     public int getUseDuration(ItemStack stack) {
         return 64;
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isTeaEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 }

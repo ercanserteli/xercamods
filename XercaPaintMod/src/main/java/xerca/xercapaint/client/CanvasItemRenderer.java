@@ -3,9 +3,7 @@ package xerca.xercapaint.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,6 +15,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.ItemCanvas;
 
@@ -58,13 +58,13 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer
         final float hScale = height/16.0f;
 
         ms.pushPose();
-        Matrix3f mn = ms.last().normal().copy();
+        Matrix3f mn = ms.last().normal();
 
         float xOffset = Direction.UP.getStepX();
         float yOffset = Direction.UP.getStepY();
         float zOffset = Direction.UP.getStepZ();
 
-        ms.last().normal().load(mn);
+        ms.last().normal().set(mn);
 
         float f = 1.0f/32.0f;
         ms.translate(0.75, 0.5, 0.5);
@@ -74,12 +74,11 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer
             f /= 2.0f;
         }
 
-        ms.mulPose(Vector3f.YP.rotationDegrees( 180));
+        ms.mulPose(Axis.YP.rotationDegrees(180));
 
         ms.scale(f, f, f);
 
         RenderSystem.setShaderTexture(0, emptyCanvasLocation);
-//        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         Matrix4f m = ms.last().pose();
         mn = ms.last().normal();

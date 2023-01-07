@@ -21,7 +21,7 @@ import net.minecraft.world.item.Item.Properties;
 class ItemEnderCupcake extends Item {
 
     public ItemEnderCupcake() {
-        super(new Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ENDER_CUPCAKE));
+        super(new Properties().food(Foods.ENDER_CUPCAKE));
     }
 
     @Nonnull
@@ -54,14 +54,5 @@ class ItemEnderCupcake extends Item {
         }
 
         return lvt_4_1_;
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isFoodEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 }

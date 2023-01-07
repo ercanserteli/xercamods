@@ -20,7 +20,7 @@ public class BetterSlider extends ForgeSlider {
     protected void renderBg(@NotNull PoseStack stack, @NotNull Minecraft minecraft, int _1, int _2) {
         if (this.visible)
         {
-            ScreenUtils.blitWithBorder(stack, WIDGETS_LOCATION, this.x + (int)(this.value * (float)(this.width - 8)), this.y, 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
+            ScreenUtils.blitWithBorder(stack, WIDGETS_LOCATION, this.getX() + (int)(this.value * (float)(this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
         }
     }
 

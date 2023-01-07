@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -22,8 +23,8 @@ import java.util.ArrayList;
 public class RecipeCraftPalette extends CustomRecipe {
     private static final ResourceLocation plank = new ResourceLocation("minecraft:planks");
 
-    public RecipeCraftPalette(ResourceLocation p_i48170_1_) {
-        super(p_i48170_1_);
+    public RecipeCraftPalette(ResourceLocation pId, CraftingBookCategory pCategory) {
+        super(pId, pCategory);
     }
 
     private boolean isPlank(ItemStack stack){

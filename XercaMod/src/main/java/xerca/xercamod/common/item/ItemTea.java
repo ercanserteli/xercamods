@@ -15,13 +15,4 @@ public class ItemTea extends Item
     public ItemTea(Properties properties) {
         super(properties);
     }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isTeaEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
-    }
 }

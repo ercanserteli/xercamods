@@ -3,6 +3,7 @@ package xerca.xercamod.common.entity;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -20,8 +21,6 @@ import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EntityTomato extends ThrowableItemProjectile {
 
@@ -87,7 +86,7 @@ public class EntityTomato extends ThrowableItemProjectile {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket()
+    public Packet<ClientGamePacketListener> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

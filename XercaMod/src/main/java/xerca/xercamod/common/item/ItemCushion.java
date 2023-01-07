@@ -81,16 +81,6 @@ public class ItemCushion extends Item {
             }
         }
     }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isCushionEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {

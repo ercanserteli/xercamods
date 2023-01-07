@@ -1,14 +1,12 @@
 package xerca.xercapaint.common.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -20,15 +18,11 @@ import xerca.xercapaint.client.ClientStuff;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
 import java.util.List;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemPalette extends Item {
     ItemPalette() {
-        super(new Properties().tab(Items.paintTab).stacksTo(1));
+        super(new Properties().stacksTo(1));
     }
 
     @Nonnull
@@ -38,25 +32,6 @@ public class ItemPalette extends Item {
             ClientStuff.showCanvasGui(playerIn);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
-    }
-
-    /**
-     * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
-     */
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            // Empty palette
-            items.add(new ItemStack(this));
-
-            // Full palette
-            ItemStack fullPalette = new ItemStack(this);
-            byte[] basicColors = new byte[16];
-            Arrays.fill(basicColors, (byte)1);
-            fullPalette.getOrCreateTag().putByteArray("basic", basicColors);
-            items.add(fullPalette);
-        }
     }
 
     public static boolean isFull(ItemStack stack){

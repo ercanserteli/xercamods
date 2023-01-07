@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
@@ -16,8 +17,8 @@ import static xerca.xercapaint.common.item.Items.CRAFTING_TAGLESS_SHAPED;
 
 public class RecipeTaglessShaped extends ShapedRecipe {
 
-    public RecipeTaglessShaped(ShapedRecipe shapedRecipe){
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem());
+    public RecipeTaglessShaped(ShapedRecipe shapedRecipe, CraftingBookCategory category){
+        super(shapedRecipe.getId(), shapedRecipe.getGroup(), category, shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem());
     }
 
     /**
@@ -70,13 +71,13 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         @Override
         public @NotNull RecipeTaglessShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);
-            return new RecipeTaglessShaped(shapedRecipe);
+            return new RecipeTaglessShaped(shapedRecipe, CraftingBookCategory.MISC);
         }
 
         @Override
         public RecipeTaglessShaped fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(recipeId, buffer);
-            return new RecipeTaglessShaped(Objects.requireNonNull(shapedRecipe));
+            return new RecipeTaglessShaped(Objects.requireNonNull(shapedRecipe), CraftingBookCategory.MISC);
         }
 
         @Override

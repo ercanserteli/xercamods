@@ -3,6 +3,7 @@ package xerca.xercamod.common.entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,8 +25,6 @@ import xerca.xercamod.common.block.BlockCushion;
 import xerca.xercamod.common.item.ItemCushion;
 
 import javax.annotation.Nullable;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EntityCushion extends Entity implements IEntityAdditionalSpawnData {
     private ItemCushion item;
@@ -154,7 +153,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

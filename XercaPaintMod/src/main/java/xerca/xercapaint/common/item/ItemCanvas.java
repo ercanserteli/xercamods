@@ -36,7 +36,7 @@ public class ItemCanvas extends Item {
     private final CanvasType canvasType;
 
     ItemCanvas(CanvasType canvasType) {
-        super(new Properties().tab(Items.paintTab).stacksTo(1));
+        super(new Properties().stacksTo(1));
         this.canvasType = canvasType;
     }
 

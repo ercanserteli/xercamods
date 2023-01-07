@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemConfettiBall extends Item {
 
     ItemConfettiBall() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+        super(new Item.Properties());
     }
 
     /**
@@ -41,14 +41,5 @@ public class ItemConfettiBall extends Item {
             worldIn.addFreshEntity(entityball);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isConfettiEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 }

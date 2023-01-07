@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 import net.minecraft.world.level.Level;
@@ -19,7 +20,7 @@ public class RecipeConditionCampfire extends CampfireCookingRecipe {
     private final RecipeSerializer<?> serializer;
 
     public RecipeConditionCampfire(CampfireCookingRecipe CampfireCookingRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
-        super(CampfireCookingRecipe.getId(), CampfireCookingRecipe.getGroup(), CampfireCookingRecipe.getIngredients().get(0), CampfireCookingRecipe.getResultItem(), CampfireCookingRecipe.getExperience(), CampfireCookingRecipe.getCookingTime());
+        super(CampfireCookingRecipe.getId(), CampfireCookingRecipe.getGroup(), CookingBookCategory.FOOD, CampfireCookingRecipe.getIngredients().get(0), CampfireCookingRecipe.getResultItem(), CampfireCookingRecipe.getExperience(), CampfireCookingRecipe.getCookingTime());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -52,7 +53,7 @@ public class RecipeConditionCampfire extends CampfireCookingRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<RecipeConditionCampfire> {
-        private static final SimpleCookingSerializer<CampfireCookingRecipe> furnaceSerializer = RecipeSerializer.CAMPFIRE_COOKING_RECIPE;
+        private static final RecipeSerializer<CampfireCookingRecipe> furnaceSerializer = RecipeSerializer.CAMPFIRE_COOKING_RECIPE;
         private final Supplier<Boolean> condition;
 
         public Serializer(Supplier<Boolean> condition){

@@ -3,6 +3,7 @@ package xerca.xercamod.common.crafting;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -15,8 +16,8 @@ import xerca.xercamod.common.item.Items;
 import java.util.Objects;
 
 public class RecipeTeaSugaring extends CustomRecipe {
-    public RecipeTeaSugaring(ResourceLocation p_i48170_1_) {
-        super(p_i48170_1_);
+    public RecipeTeaSugaring(ResourceLocation pId, CraftingBookCategory pCategory) {
+        super(pId, pCategory);
     }
 
     /**

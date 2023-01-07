@@ -17,6 +17,6 @@ public class SoundEvents {
 
     private static RegistryObject<SoundEvent> createSoundEvent(String soundName) {
         final ResourceLocation soundID = new ResourceLocation(XercaPaint.MODID, soundName);
-        return SOUND_EVENTS.register(soundName, () -> new SoundEvent(soundID));
+        return SOUND_EVENTS.register(soundName, () -> SoundEvent.createVariableRangeEvent(soundID));
     }
 }

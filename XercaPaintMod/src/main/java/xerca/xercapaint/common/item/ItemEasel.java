@@ -42,7 +42,7 @@ public class ItemEasel extends Item {
             AABB aabb = Entities.EASEL.get().getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
             if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
                 if (level instanceof ServerLevel serverlevel) {
-                    EntityEasel easel = Entities.EASEL.get().create(serverlevel, itemstack.getTag(), null, ctx.getPlayer(), blockpos, MobSpawnType.SPAWN_EGG, true, true);
+                    EntityEasel easel = Entities.EASEL.get().create(serverlevel, itemstack.getTag(), null, blockpos, MobSpawnType.SPAWN_EGG, true, true);
                     if (easel == null) {
                         return InteractionResult.FAIL;
                     }

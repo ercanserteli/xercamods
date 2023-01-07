@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -59,7 +60,7 @@ import static xerca.xercamod.common.item.Items.ENCHANTMENT_GUILLOTINE;
 
 @ParametersAreNonnullByDefault
 public class ItemScythe extends DiggerItem {
-    private static final net.minecraft.tags.TagKey<Block> EFFECTIVE_ON = net.minecraft.tags.TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(XercaMod.MODID, "mineable/scythe"));
+    private static final net.minecraft.tags.TagKey<Block> EFFECTIVE_ON = net.minecraft.tags.TagKey.create(Registries.BLOCK, new ResourceLocation(XercaMod.MODID, "mineable/scythe"));
 
     public ItemScythe(Tier tier, int attackDamageIn, float attackSpeedIn, Item.Properties builder) {
         super(attackDamageIn, attackSpeedIn, tier, EFFECTIVE_ON, builder.defaultDurability(tier.getUses()));
@@ -227,15 +228,6 @@ public class ItemScythe extends DiggerItem {
 
     private static void spawnHead(Player player, Level world, double x, double y, double z){
         spawnHead(NbtUtils.writeGameProfile(new CompoundTag(), player.getGameProfile()), world, x, y, z, null);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isScytheEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 
     @Override

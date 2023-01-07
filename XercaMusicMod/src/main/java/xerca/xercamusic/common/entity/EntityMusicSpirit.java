@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -26,8 +27,6 @@ import xerca.xercamusic.common.item.Items;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -136,7 +135,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 import net.minecraft.world.item.crafting.SmokingRecipe;
@@ -19,7 +20,7 @@ public class RecipeConditionSmoking extends SmokingRecipe {
     private final RecipeSerializer<?> serializer;
 
     public RecipeConditionSmoking(SmokingRecipe SmokingRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
-        super(SmokingRecipe.getId(), SmokingRecipe.getGroup(), SmokingRecipe.getIngredients().get(0), SmokingRecipe.getResultItem(), SmokingRecipe.getExperience(), SmokingRecipe.getCookingTime());
+        super(SmokingRecipe.getId(), SmokingRecipe.getGroup(), CookingBookCategory.FOOD, SmokingRecipe.getIngredients().get(0), SmokingRecipe.getResultItem(), SmokingRecipe.getExperience(), SmokingRecipe.getCookingTime());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -52,7 +53,7 @@ public class RecipeConditionSmoking extends SmokingRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<RecipeConditionSmoking> {
-        private static final SimpleCookingSerializer<SmokingRecipe> furnaceSerializer = RecipeSerializer.SMOKING_RECIPE;
+        private static final RecipeSerializer<SmokingRecipe> furnaceSerializer = RecipeSerializer.SMOKING_RECIPE;
         private final Supplier<Boolean> condition;
 
         public Serializer(Supplier<Boolean> condition){

@@ -1,22 +1,25 @@
 package xerca.xercamod.common.data;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.Blocks;
 
+import java.util.concurrent.CompletableFuture;
+
 public class BlockTags extends BlockTagsProvider implements DataProvider
 {
-    public BlockTags(DataGenerator gen, ExistingFileHelper existingFileHelper)
+    public BlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper)
     {
-        super(gen, XercaMod.MODID, existingFileHelper);
+        super(output, lookupProvider, XercaMod.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags()
-    {
+    protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         this.tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_AXE).add(
                 Blocks.BLOCK_BOOKCASE.get(),
                 Blocks.CARVING_STATION.get(),

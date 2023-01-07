@@ -9,7 +9,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -19,8 +19,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.Config;
-import xerca.xercamod.common.DecoCreativeTab;
-import xerca.xercamod.common.TeaCreativeTab;
 import xerca.xercamod.common.XercaMod;
 import xerca.xercamod.common.block.BlockPizza;
 import xerca.xercamod.common.block.Blocks;
@@ -41,8 +39,8 @@ public final class Items {
 
     public static final RegistryObject<ItemGlass> ITEM_GLASS = ITEMS.register("item_glass", ItemGlass::new);
     public static final RegistryObject<ItemEnderBow> ENDER_BOW = ITEMS.register("ender_bow", ItemEnderBow::new);
-    public static final RegistryObject<Item> ITEM_GOLDEN_COIN_1 = ITEMS.register("item_golden_coin_1", ()->new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_MISC), Config::isCoinsEnabled));
-    public static final RegistryObject<Item> ITEM_GOLDEN_COIN_5 = ITEMS.register("item_golden_coin_5", ()->new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_MISC), Config::isCoinsEnabled));
+    public static final RegistryObject<Item> ITEM_GOLDEN_COIN_1 = ITEMS.register("item_golden_coin_1", ()->new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ITEM_GOLDEN_COIN_5 = ITEMS.register("item_golden_coin_5", ()->new Item(new Item.Properties()));
     public static final RegistryObject<Item> RAW_SHISH_KEBAB = ITEMS.register("raw_shish_kebab", ()->makeFoodItem(Foods.RAW_SHISH_KEBAB));
     public static final RegistryObject<Item> ITEM_SHISH_KEBAB = ITEMS.register("item_shish_kebab", ()->makeFoodItem(Foods.SHISH_KEBAB));
     public static final RegistryObject<Item> ITEM_YOGHURT = ITEMS.register("item_yoghurt", ()->makeContainedFoodItem(Foods.YOGHURT, net.minecraft.world.item.Items.BUCKET, 16));
@@ -93,8 +91,8 @@ public final class Items {
     public static final RegistryObject<Item> ITEM_ULTIMATE_BOTTOM = ITEMS.register("item_ultimate_bottom", ()->makeFoodItem(Foods.ULTIMATE_BOTTOM));
     public static final RegistryObject<Item> ITEM_ULTIMATE_TOP = ITEMS.register("item_ultimate_top", ()->makeFoodItem(Foods.ULTIMATE_TOP));
     public static final RegistryObject<Item> CHEESEBURGER = ITEMS.register("cheeseburger", ()->makeFoodItem(Foods.CHEESEBURGER));
-    public static final RegistryObject<Item> COLA_EXTRACT = ITEMS.register("cola_extract", ()->new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE)));
-    public static final RegistryObject<Item> COLA_POWDER = ITEMS.register("cola_powder", ()->new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING)));
+    public static final RegistryObject<Item> COLA_EXTRACT = ITEMS.register("cola_extract", ()->new Item(new Item.Properties().craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE)));
+    public static final RegistryObject<Item> COLA_POWDER = ITEMS.register("cola_powder", ()->new Item(new Item.Properties()));
     public static final RegistryObject<Item> CARBONATED_WATER = ITEMS.register("carbonated_water", ()->makeDrinkItem(Foods.CARBONATED_WATER, ITEM_GLASS.get()));
     public static final RegistryObject<Item> ITEM_ULTIMATE_BURGER = ITEMS.register("item_ultimate_burger", ItemUltimateBurger::new);
     public static final RegistryObject<Item> ITEM_ROTTEN_BURGER = ITEMS.register("item_rotten_burger", ()->makeFoodItem(Foods.ROTTEN_BURGER));
@@ -116,14 +114,14 @@ public final class Items {
     public static final RegistryObject<Item> ITEM_TOMATO_JUICE = ITEMS.register("item_tomato_juice", ()->makeDrinkItem(Foods.TOMATO_JUICE, ITEM_GLASS.get()));
     public static final RegistryObject<Item> ITEM_WHEAT_JUICE = ITEMS.register("item_wheat_juice", ()->makeDrinkItem(Foods.WHEAT_JUICE, ITEM_GLASS.get()));
     public static final RegistryObject<Item> ITEM_GLASS_OF_MILK = ITEMS.register("item_glass_of_milk", ()->makeDrinkItem(Foods.GLASS_OF_MILK, ITEM_GLASS.get()));
-    public static final RegistryObject<Item> ITEM_GLASS_OF_WATER = ITEMS.register("item_glass_of_water", ()->new ItemGlassOfWater(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.GLASS_OF_WATER), ITEM_GLASS.get()));
+    public static final RegistryObject<Item> ITEM_GLASS_OF_WATER = ITEMS.register("item_glass_of_water", ()->new ItemGlassOfWater(new Item.Properties().food(Foods.GLASS_OF_WATER), ITEM_GLASS.get()));
     public static final RegistryObject<Item> SODA = ITEMS.register("soda", ()->makeDrinkItem(Foods.SODA, ITEM_GLASS.get()));
     public static final RegistryObject<Item> CHEESE_TOAST = ITEMS.register("cheese_toast", ()->makeFoodItem(Foods.CHEESE_TOAST));
     public static final RegistryObject<Item> SQUID_INK_PAELLA = ITEMS.register("squid_ink_paella", ()->makeContainedFoodItem(Foods.SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16));
     public static final RegistryObject<Item> GLOW_SQUID_INK_PAELLA = ITEMS.register("glow_squid_ink_paella", ()->makeContainedFoodItem(Foods.GLOW_SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16));
 
-    public static final RegistryObject<Item> ITEM_APPLE_PIE = ITEMS.register("item_apple_pie", ()->new BlockConditionedItem(Blocks.BLOCK_APPLE_PIE.get(), new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled));
-    public static final RegistryObject<Item> SWEET_BERRY_PIE = ITEMS.register("sweet_berry_pie", ()->new BlockConditionedItem(Blocks.BLOCK_SWEET_BERRY_PIE.get(), new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled));
+    public static final RegistryObject<Item> ITEM_APPLE_PIE = ITEMS.register("item_apple_pie", ()->new BlockItem(Blocks.BLOCK_APPLE_PIE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> SWEET_BERRY_PIE = ITEMS.register("sweet_berry_pie", ()->new BlockItem(Blocks.BLOCK_SWEET_BERRY_PIE.get(), new Item.Properties()));
 
     public static final List<RegistryObject<Item>> RAW_PIZZAS = Arrays.<RegistryObject<Item>>asList(
             ITEMS.register(ItemRawPizza.genName(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI), () -> new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3)),
@@ -242,7 +240,7 @@ public final class Items {
             ITEMS.register(ItemPizza.genName(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY), () ->new ItemPizza(Blocks.PIZZA.get(), BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY))
     );
 
-    public static final RegistryObject<Item> ITEM_TEACUP = ITEMS.register("item_teacup", ()->new ItemTea(new Item.Properties().tab(Items.teaTab)));
+    public static final RegistryObject<Item> ITEM_TEACUP = ITEMS.register("item_teacup", ()->new ItemTea(new Item.Properties()));
     public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_0 = ITEMS.register("item_full_teacup_0", ()->new ItemTeacup(0, ITEM_TEACUP.get()));
     public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_1 = ITEMS.register("item_full_teacup_1", ()->new ItemTeacup(1, ITEM_TEACUP.get()));
     public static final RegistryObject<ItemTeacup> ITEM_FULL_TEACUP_2 = ITEMS.register("item_full_teacup_2", ()->new ItemTeacup(2, ITEM_TEACUP.get()));
@@ -267,17 +265,17 @@ public final class Items {
     public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_5 = ITEMS.register("item_hot_teapot_5", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 5, true));
     public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_6 = ITEMS.register("item_hot_teapot_6", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 6, true));
     public static final RegistryObject<ItemTeapot> ITEM_HOT_TEAPOT_7 = ITEMS.register("item_hot_teapot_7", ()->new ItemTeapot(Blocks.BLOCK_TEAPOT.get(), 7, true));
-    public static final RegistryObject<ItemEmptyTeapot> ITEM_TEAPOT = ITEMS.register("item_teapot", ()->new ItemEmptyTeapot(new Item.Properties().tab(Items.teaTab)));
-    public static final RegistryObject<Item> ITEM_TEA_SEEDS = ITEMS.register("item_tea_seeds", ()->new BlockNamedConditionedItem(Blocks.BLOCK_TEA_PLANT.get(), new Item.Properties().tab(Items.teaTab), Config::isTeaEnabled));
-    public static final RegistryObject<Item> ITEM_TEA_DRIED = ITEMS.register("item_tea_dried", ()->new ItemTea(new Item.Properties().tab(Items.teaTab)));
-    public static final RegistryObject<Item> ITEM_TEA_LEAF = ITEMS.register("item_tea_leaf", ()->new ItemTea(new Item.Properties().tab(Items.teaTab)));
+    public static final RegistryObject<ItemEmptyTeapot> ITEM_TEAPOT = ITEMS.register("item_teapot", ()->new ItemEmptyTeapot(new Item.Properties()));
+    public static final RegistryObject<Item> ITEM_TEA_SEEDS = ITEMS.register("item_tea_seeds", ()->new BlockItem(Blocks.BLOCK_TEA_PLANT.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ITEM_TEA_DRIED = ITEMS.register("item_tea_dried", ()->new ItemTea(new Item.Properties()));
+    public static final RegistryObject<Item> ITEM_TEA_LEAF = ITEMS.register("item_tea_leaf", ()->new ItemTea(new Item.Properties()));
 
     public static final RegistryObject<ItemGoldenCupcake> ITEM_GOLDEN_CUPCAKE = ITEMS.register("item_golden_cupcake", ItemGoldenCupcake::new);
 
     public static final RegistryObject<ItemKnife> ITEM_KNIFE = ITEMS.register("item_knife", ItemKnife::new);
     public static final RegistryObject<ItemTomato> ITEM_TOMATO = ITEMS.register("item_tomato", ItemTomato::new);
-    public static final RegistryObject<Item> ITEM_TOMATO_SEEDS = ITEMS.register("item_tomato_seeds", ()->new BlockNamedConditionedItem(Blocks.BLOCK_TOMATO_PLANT.get(), new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS), Config::isFoodEnabled));
-    public static final RegistryObject<Item> ITEM_RICE_SEEDS = ITEMS.register("item_rice_seeds", ()->new BlockNamedConditionedItem(Blocks.BLOCK_RICE_PLANT.get(), new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS), Config::isFoodEnabled));
+    public static final RegistryObject<Item> ITEM_TOMATO_SEEDS = ITEMS.register("item_tomato_seeds", ()->new BlockItem(Blocks.BLOCK_TOMATO_PLANT.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ITEM_RICE_SEEDS = ITEMS.register("item_rice_seeds", ()->new BlockItem(Blocks.BLOCK_RICE_PLANT.get(), new Item.Properties()));
     public static final RegistryObject<ItemGavel> ITEM_GAVEL = ITEMS.register("item_gavel", ItemGavel::new);
     public static final RegistryObject<ItemBadge> ITEM_PROSECUTOR_BADGE = ITEMS.register("item_prosecutor_badge", ItemBadge::new);
     public static final RegistryObject<ItemBadge> ITEM_ATTORNEY_BADGE = ITEMS.register("item_attorney_badge", ItemBadge::new);
@@ -295,174 +293,174 @@ public final class Items {
     public static final RegistryObject<Item> ITEM_POTATO_SLICES = ITEMS.register("item_potato_slices", ()->makeFoodItem(Foods.POTATO_SLICES));
     public static final RegistryObject<Item> ITEM_RAW_SAUSAGE = ITEMS.register("item_raw_sausage", ()->makeFoodItem(Foods.RAW_SAUSAGE));
 
-    public static final RegistryObject<ItemCushion> BLACK_CUSHION = ITEMS.register("black_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLACK_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> BLUE_CUSHION = ITEMS.register("blue_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BLUE_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> BROWN_CUSHION = ITEMS.register("brown_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.BROWN_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> CYAN_CUSHION = ITEMS.register("cyan_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.CYAN_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> GRAY_CUSHION = ITEMS.register("gray_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.GRAY_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> GREEN_CUSHION = ITEMS.register("green_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.GREEN_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> LIGHT_BLUE_CUSHION = ITEMS.register("light_blue_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIGHT_BLUE_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> LIGHT_GRAY_CUSHION = ITEMS.register("light_gray_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIGHT_GRAY_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> LIME_CUSHION = ITEMS.register("lime_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.LIME_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> MAGENTA_CUSHION = ITEMS.register("magenta_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.MAGENTA_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> ORANGE_CUSHION = ITEMS.register("orange_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.ORANGE_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> PINK_CUSHION = ITEMS.register("pink_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.PINK_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> PURPLE_CUSHION = ITEMS.register("purple_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.PURPLE_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> RED_CUSHION = ITEMS.register("red_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.RED_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> WHITE_CUSHION = ITEMS.register("white_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.WHITE_CUSHION.get()));
-    public static final RegistryObject<ItemCushion> YELLOW_CUSHION = ITEMS.register("yellow_cushion", ()->new ItemCushion(new Item.Properties().tab(Items.decoTab), Blocks.YELLOW_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> BLACK_CUSHION = ITEMS.register("black_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.BLACK_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> BLUE_CUSHION = ITEMS.register("blue_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.BLUE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> BROWN_CUSHION = ITEMS.register("brown_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.BROWN_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> CYAN_CUSHION = ITEMS.register("cyan_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.CYAN_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> GRAY_CUSHION = ITEMS.register("gray_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.GRAY_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> GREEN_CUSHION = ITEMS.register("green_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.GREEN_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> LIGHT_BLUE_CUSHION = ITEMS.register("light_blue_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.LIGHT_BLUE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> LIGHT_GRAY_CUSHION = ITEMS.register("light_gray_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.LIGHT_GRAY_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> LIME_CUSHION = ITEMS.register("lime_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.LIME_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> MAGENTA_CUSHION = ITEMS.register("magenta_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.MAGENTA_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> ORANGE_CUSHION = ITEMS.register("orange_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.ORANGE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> PINK_CUSHION = ITEMS.register("pink_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.PINK_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> PURPLE_CUSHION = ITEMS.register("purple_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.PURPLE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> RED_CUSHION = ITEMS.register("red_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.RED_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> WHITE_CUSHION = ITEMS.register("white_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.WHITE_CUSHION.get()));
+    public static final RegistryObject<ItemCushion> YELLOW_CUSHION = ITEMS.register("yellow_cushion", ()->new ItemCushion(new Item.Properties(), Blocks.YELLOW_CUSHION.get()));
 
-    public static final RegistryObject<ItemFlask> FLASK = ITEMS.register("flask", ()->new ItemFlask(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).stacksTo(1).durability(160), false));
+    public static final RegistryObject<ItemFlask> FLASK = ITEMS.register("flask", ()->new ItemFlask(new Item.Properties().stacksTo(1).durability(160), false));
     public static final RegistryObject<ItemFlask> FLASK_MILK = ITEMS.register("flask_milk", ()->new ItemFlask(new Item.Properties().stacksTo(1).durability(160), true));
 
-    public static final RegistryObject<Item> ITEM_BLOCK_LEATHER = ITEMS.register("item_block_leather", ()->new BlockConditionedItem(Blocks.BLOCK_LEATHER.get(), new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled));
-    public static final RegistryObject<Item> ITEM_BLOCK_STRAW = ITEMS.register("item_block_straw", ()->new BlockConditionedItem(Blocks.BLOCK_STRAW.get(), new Item.Properties().tab(Items.decoTab), Config::isLeatherStrawEnabled));
+    public static final RegistryObject<Item> ITEM_BLOCK_LEATHER = ITEMS.register("item_block_leather", ()->new BlockItem(Blocks.BLOCK_LEATHER.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ITEM_BLOCK_STRAW = ITEMS.register("item_block_straw", ()->new BlockItem(Blocks.BLOCK_STRAW.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> CARVED_OAK_1 = ITEMS.register("carved_oak_1", ()->new CarvedWoodItem(Blocks.CARVED_OAK_1.get(), new Item.Properties().tab(Items.decoTab), 1));
-    public static final RegistryObject<Item> CARVED_OAK_2 = ITEMS.register("carved_oak_2", ()->new CarvedWoodItem(Blocks.CARVED_OAK_2.get(), new Item.Properties().tab(Items.decoTab), 2));
-    public static final RegistryObject<Item> CARVED_OAK_3 = ITEMS.register("carved_oak_3", ()->new CarvedWoodItem(Blocks.CARVED_OAK_3.get(), new Item.Properties().tab(Items.decoTab), 3));
-    public static final RegistryObject<Item> CARVED_OAK_4 = ITEMS.register("carved_oak_4", ()->new CarvedWoodItem(Blocks.CARVED_OAK_4.get(), new Item.Properties().tab(Items.decoTab), 4));
-    public static final RegistryObject<Item> CARVED_OAK_5 = ITEMS.register("carved_oak_5", ()->new CarvedWoodItem(Blocks.CARVED_OAK_5.get(), new Item.Properties().tab(Items.decoTab), 5));
-    public static final RegistryObject<Item> CARVED_OAK_6 = ITEMS.register("carved_oak_6", ()->new CarvedWoodItem(Blocks.CARVED_OAK_6.get(), new Item.Properties().tab(Items.decoTab), 6));
-    public static final RegistryObject<Item> CARVED_OAK_7 = ITEMS.register("carved_oak_7", ()->new CarvedWoodItem(Blocks.CARVED_OAK_7.get(), new Item.Properties().tab(Items.decoTab), 7));
-    public static final RegistryObject<Item> CARVED_OAK_8 = ITEMS.register("carved_oak_8", ()->new CarvedWoodItem(Blocks.CARVED_OAK_8.get(), new Item.Properties().tab(Items.decoTab), 8));
-    public static final RegistryObject<Item> CARVED_BIRCH_1 = ITEMS.register("carved_birch_1", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_1.get(), new Item.Properties().tab(Items.decoTab), 1));
-    public static final RegistryObject<Item> CARVED_BIRCH_2 = ITEMS.register("carved_birch_2", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_2.get(), new Item.Properties().tab(Items.decoTab), 2));
-    public static final RegistryObject<Item> CARVED_BIRCH_3 = ITEMS.register("carved_birch_3", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_3.get(), new Item.Properties().tab(Items.decoTab), 3));
-    public static final RegistryObject<Item> CARVED_BIRCH_4 = ITEMS.register("carved_birch_4", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_4.get(), new Item.Properties().tab(Items.decoTab), 4));
-    public static final RegistryObject<Item> CARVED_BIRCH_5 = ITEMS.register("carved_birch_5", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_5.get(), new Item.Properties().tab(Items.decoTab), 5));
-    public static final RegistryObject<Item> CARVED_BIRCH_6 = ITEMS.register("carved_birch_6", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_6.get(), new Item.Properties().tab(Items.decoTab), 6));
-    public static final RegistryObject<Item> CARVED_BIRCH_7 = ITEMS.register("carved_birch_7", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_7.get(), new Item.Properties().tab(Items.decoTab), 7));
-    public static final RegistryObject<Item> CARVED_BIRCH_8 = ITEMS.register("carved_birch_8", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_8.get(), new Item.Properties().tab(Items.decoTab), 8));
-    public static final RegistryObject<Item> CARVED_DARK_OAK_1 = ITEMS.register("carved_dark_oak_1", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_1.get(), new Item.Properties().tab(Items.decoTab), 1));
-    public static final RegistryObject<Item> CARVED_DARK_OAK_2 = ITEMS.register("carved_dark_oak_2", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_2.get(), new Item.Properties().tab(Items.decoTab), 2));
-    public static final RegistryObject<Item> CARVED_DARK_OAK_3 = ITEMS.register("carved_dark_oak_3", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_3.get(), new Item.Properties().tab(Items.decoTab), 3));
-    public static final RegistryObject<Item> CARVED_DARK_OAK_4 = ITEMS.register("carved_dark_oak_4", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_4.get(), new Item.Properties().tab(Items.decoTab), 4));
-    public static final RegistryObject<Item> CARVED_DARK_OAK_5 = ITEMS.register("carved_dark_oak_5", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_5.get(), new Item.Properties().tab(Items.decoTab), 5));
-    public static final RegistryObject<Item> CARVED_DARK_OAK_6 = ITEMS.register("carved_dark_oak_6", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_6.get(), new Item.Properties().tab(Items.decoTab), 6));
-    public static final RegistryObject<Item> CARVED_DARK_OAK_7 = ITEMS.register("carved_dark_oak_7", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_7.get(), new Item.Properties().tab(Items.decoTab), 7));
-    public static final RegistryObject<Item> CARVED_DARK_OAK_8 = ITEMS.register("carved_dark_oak_8", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_8.get(), new Item.Properties().tab(Items.decoTab), 8));
-    public static final RegistryObject<Item> CARVED_ACACIA_1 = ITEMS.register("carved_acacia_1", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_1.get(), new Item.Properties().tab(Items.decoTab), 1));
-    public static final RegistryObject<Item> CARVED_ACACIA_2 = ITEMS.register("carved_acacia_2", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_2.get(), new Item.Properties().tab(Items.decoTab), 2));
-    public static final RegistryObject<Item> CARVED_ACACIA_3 = ITEMS.register("carved_acacia_3", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_3.get(), new Item.Properties().tab(Items.decoTab), 3));
-    public static final RegistryObject<Item> CARVED_ACACIA_4 = ITEMS.register("carved_acacia_4", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_4.get(), new Item.Properties().tab(Items.decoTab), 4));
-    public static final RegistryObject<Item> CARVED_ACACIA_5 = ITEMS.register("carved_acacia_5", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_5.get(), new Item.Properties().tab(Items.decoTab), 5));
-    public static final RegistryObject<Item> CARVED_ACACIA_6 = ITEMS.register("carved_acacia_6", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_6.get(), new Item.Properties().tab(Items.decoTab), 6));
-    public static final RegistryObject<Item> CARVED_ACACIA_7 = ITEMS.register("carved_acacia_7", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_7.get(), new Item.Properties().tab(Items.decoTab), 7));
-    public static final RegistryObject<Item> CARVED_ACACIA_8 = ITEMS.register("carved_acacia_8", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_8.get(), new Item.Properties().tab(Items.decoTab), 8));
-    public static final RegistryObject<Item> CARVED_JUNGLE_1 = ITEMS.register("carved_jungle_1", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_1.get(), new Item.Properties().tab(Items.decoTab), 1));
-    public static final RegistryObject<Item> CARVED_JUNGLE_2 = ITEMS.register("carved_jungle_2", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_2.get(), new Item.Properties().tab(Items.decoTab), 2));
-    public static final RegistryObject<Item> CARVED_JUNGLE_3 = ITEMS.register("carved_jungle_3", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_3.get(), new Item.Properties().tab(Items.decoTab), 3));
-    public static final RegistryObject<Item> CARVED_JUNGLE_4 = ITEMS.register("carved_jungle_4", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_4.get(), new Item.Properties().tab(Items.decoTab), 4));
-    public static final RegistryObject<Item> CARVED_JUNGLE_5 = ITEMS.register("carved_jungle_5", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_5.get(), new Item.Properties().tab(Items.decoTab), 5));
-    public static final RegistryObject<Item> CARVED_JUNGLE_6 = ITEMS.register("carved_jungle_6", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_6.get(), new Item.Properties().tab(Items.decoTab), 6));
-    public static final RegistryObject<Item> CARVED_JUNGLE_7 = ITEMS.register("carved_jungle_7", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_7.get(), new Item.Properties().tab(Items.decoTab), 7));
-    public static final RegistryObject<Item> CARVED_JUNGLE_8 = ITEMS.register("carved_jungle_8", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_8.get(), new Item.Properties().tab(Items.decoTab), 8));
-    public static final RegistryObject<Item> CARVED_SPRUCE_1 = ITEMS.register("carved_spruce_1", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_1.get(), new Item.Properties().tab(Items.decoTab), 1));
-    public static final RegistryObject<Item> CARVED_SPRUCE_2 = ITEMS.register("carved_spruce_2", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_2.get(), new Item.Properties().tab(Items.decoTab), 2));
-    public static final RegistryObject<Item> CARVED_SPRUCE_3 = ITEMS.register("carved_spruce_3", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_3.get(), new Item.Properties().tab(Items.decoTab), 3));
-    public static final RegistryObject<Item> CARVED_SPRUCE_4 = ITEMS.register("carved_spruce_4", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_4.get(), new Item.Properties().tab(Items.decoTab), 4));
-    public static final RegistryObject<Item> CARVED_SPRUCE_5 = ITEMS.register("carved_spruce_5", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_5.get(), new Item.Properties().tab(Items.decoTab), 5));
-    public static final RegistryObject<Item> CARVED_SPRUCE_6 = ITEMS.register("carved_spruce_6", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_6.get(), new Item.Properties().tab(Items.decoTab), 6));
-    public static final RegistryObject<Item> CARVED_SPRUCE_7 = ITEMS.register("carved_spruce_7", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_7.get(), new Item.Properties().tab(Items.decoTab), 7));
-    public static final RegistryObject<Item> CARVED_SPRUCE_8 = ITEMS.register("carved_spruce_8", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_8.get(), new Item.Properties().tab(Items.decoTab), 8));
-    public static final RegistryObject<Item> CARVED_CRIMSON_1 = ITEMS.register("carved_crimson_1", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_1.get(), new Item.Properties().tab(Items.decoTab), 1));
-    public static final RegistryObject<Item> CARVED_CRIMSON_2 = ITEMS.register("carved_crimson_2", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_2.get(), new Item.Properties().tab(Items.decoTab), 2));
-    public static final RegistryObject<Item> CARVED_CRIMSON_3 = ITEMS.register("carved_crimson_3", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_3.get(), new Item.Properties().tab(Items.decoTab), 3));
-    public static final RegistryObject<Item> CARVED_CRIMSON_4 = ITEMS.register("carved_crimson_4", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_4.get(), new Item.Properties().tab(Items.decoTab), 4));
-    public static final RegistryObject<Item> CARVED_CRIMSON_5 = ITEMS.register("carved_crimson_5", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_5.get(), new Item.Properties().tab(Items.decoTab), 5));
-    public static final RegistryObject<Item> CARVED_CRIMSON_6 = ITEMS.register("carved_crimson_6", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_6.get(), new Item.Properties().tab(Items.decoTab), 6));
-    public static final RegistryObject<Item> CARVED_CRIMSON_7 = ITEMS.register("carved_crimson_7", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_7.get(), new Item.Properties().tab(Items.decoTab), 7));
-    public static final RegistryObject<Item> CARVED_CRIMSON_8 = ITEMS.register("carved_crimson_8", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_8.get(), new Item.Properties().tab(Items.decoTab), 8));
-    public static final RegistryObject<Item> CARVED_WARPED_1 = ITEMS.register("carved_warped_1", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_1.get(), new Item.Properties().tab(Items.decoTab), 1));
-    public static final RegistryObject<Item> CARVED_WARPED_2 = ITEMS.register("carved_warped_2", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_2.get(), new Item.Properties().tab(Items.decoTab), 2));
-    public static final RegistryObject<Item> CARVED_WARPED_3 = ITEMS.register("carved_warped_3", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_3.get(), new Item.Properties().tab(Items.decoTab), 3));
-    public static final RegistryObject<Item> CARVED_WARPED_4 = ITEMS.register("carved_warped_4", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_4.get(), new Item.Properties().tab(Items.decoTab), 4));
-    public static final RegistryObject<Item> CARVED_WARPED_5 = ITEMS.register("carved_warped_5", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_5.get(), new Item.Properties().tab(Items.decoTab), 5));
-    public static final RegistryObject<Item> CARVED_WARPED_6 = ITEMS.register("carved_warped_6", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_6.get(), new Item.Properties().tab(Items.decoTab), 6));
-    public static final RegistryObject<Item> CARVED_WARPED_7 = ITEMS.register("carved_warped_7", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_7.get(), new Item.Properties().tab(Items.decoTab), 7));
-    public static final RegistryObject<Item> CARVED_WARPED_8 = ITEMS.register("carved_warped_8", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_8.get(), new Item.Properties().tab(Items.decoTab), 8));
+    public static final RegistryObject<Item> CARVED_OAK_1 = ITEMS.register("carved_oak_1", ()->new CarvedWoodItem(Blocks.CARVED_OAK_1.get(), new Item.Properties(), 1));
+    public static final RegistryObject<Item> CARVED_OAK_2 = ITEMS.register("carved_oak_2", ()->new CarvedWoodItem(Blocks.CARVED_OAK_2.get(), new Item.Properties(), 2));
+    public static final RegistryObject<Item> CARVED_OAK_3 = ITEMS.register("carved_oak_3", ()->new CarvedWoodItem(Blocks.CARVED_OAK_3.get(), new Item.Properties(), 3));
+    public static final RegistryObject<Item> CARVED_OAK_4 = ITEMS.register("carved_oak_4", ()->new CarvedWoodItem(Blocks.CARVED_OAK_4.get(), new Item.Properties(), 4));
+    public static final RegistryObject<Item> CARVED_OAK_5 = ITEMS.register("carved_oak_5", ()->new CarvedWoodItem(Blocks.CARVED_OAK_5.get(), new Item.Properties(), 5));
+    public static final RegistryObject<Item> CARVED_OAK_6 = ITEMS.register("carved_oak_6", ()->new CarvedWoodItem(Blocks.CARVED_OAK_6.get(), new Item.Properties(), 6));
+    public static final RegistryObject<Item> CARVED_OAK_7 = ITEMS.register("carved_oak_7", ()->new CarvedWoodItem(Blocks.CARVED_OAK_7.get(), new Item.Properties(), 7));
+    public static final RegistryObject<Item> CARVED_OAK_8 = ITEMS.register("carved_oak_8", ()->new CarvedWoodItem(Blocks.CARVED_OAK_8.get(), new Item.Properties(), 8));
+    public static final RegistryObject<Item> CARVED_BIRCH_1 = ITEMS.register("carved_birch_1", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_1.get(), new Item.Properties(), 1));
+    public static final RegistryObject<Item> CARVED_BIRCH_2 = ITEMS.register("carved_birch_2", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_2.get(), new Item.Properties(), 2));
+    public static final RegistryObject<Item> CARVED_BIRCH_3 = ITEMS.register("carved_birch_3", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_3.get(), new Item.Properties(), 3));
+    public static final RegistryObject<Item> CARVED_BIRCH_4 = ITEMS.register("carved_birch_4", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_4.get(), new Item.Properties(), 4));
+    public static final RegistryObject<Item> CARVED_BIRCH_5 = ITEMS.register("carved_birch_5", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_5.get(), new Item.Properties(), 5));
+    public static final RegistryObject<Item> CARVED_BIRCH_6 = ITEMS.register("carved_birch_6", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_6.get(), new Item.Properties(), 6));
+    public static final RegistryObject<Item> CARVED_BIRCH_7 = ITEMS.register("carved_birch_7", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_7.get(), new Item.Properties(), 7));
+    public static final RegistryObject<Item> CARVED_BIRCH_8 = ITEMS.register("carved_birch_8", ()->new CarvedWoodItem(Blocks.CARVED_BIRCH_8.get(), new Item.Properties(), 8));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_1 = ITEMS.register("carved_dark_oak_1", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_1.get(), new Item.Properties(), 1));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_2 = ITEMS.register("carved_dark_oak_2", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_2.get(), new Item.Properties(), 2));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_3 = ITEMS.register("carved_dark_oak_3", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_3.get(), new Item.Properties(), 3));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_4 = ITEMS.register("carved_dark_oak_4", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_4.get(), new Item.Properties(), 4));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_5 = ITEMS.register("carved_dark_oak_5", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_5.get(), new Item.Properties(), 5));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_6 = ITEMS.register("carved_dark_oak_6", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_6.get(), new Item.Properties(), 6));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_7 = ITEMS.register("carved_dark_oak_7", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_7.get(), new Item.Properties(), 7));
+    public static final RegistryObject<Item> CARVED_DARK_OAK_8 = ITEMS.register("carved_dark_oak_8", ()->new CarvedWoodItem(Blocks.CARVED_DARK_OAK_8.get(), new Item.Properties(), 8));
+    public static final RegistryObject<Item> CARVED_ACACIA_1 = ITEMS.register("carved_acacia_1", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_1.get(), new Item.Properties(), 1));
+    public static final RegistryObject<Item> CARVED_ACACIA_2 = ITEMS.register("carved_acacia_2", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_2.get(), new Item.Properties(), 2));
+    public static final RegistryObject<Item> CARVED_ACACIA_3 = ITEMS.register("carved_acacia_3", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_3.get(), new Item.Properties(), 3));
+    public static final RegistryObject<Item> CARVED_ACACIA_4 = ITEMS.register("carved_acacia_4", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_4.get(), new Item.Properties(), 4));
+    public static final RegistryObject<Item> CARVED_ACACIA_5 = ITEMS.register("carved_acacia_5", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_5.get(), new Item.Properties(), 5));
+    public static final RegistryObject<Item> CARVED_ACACIA_6 = ITEMS.register("carved_acacia_6", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_6.get(), new Item.Properties(), 6));
+    public static final RegistryObject<Item> CARVED_ACACIA_7 = ITEMS.register("carved_acacia_7", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_7.get(), new Item.Properties(), 7));
+    public static final RegistryObject<Item> CARVED_ACACIA_8 = ITEMS.register("carved_acacia_8", ()->new CarvedWoodItem(Blocks.CARVED_ACACIA_8.get(), new Item.Properties(), 8));
+    public static final RegistryObject<Item> CARVED_JUNGLE_1 = ITEMS.register("carved_jungle_1", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_1.get(), new Item.Properties(), 1));
+    public static final RegistryObject<Item> CARVED_JUNGLE_2 = ITEMS.register("carved_jungle_2", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_2.get(), new Item.Properties(), 2));
+    public static final RegistryObject<Item> CARVED_JUNGLE_3 = ITEMS.register("carved_jungle_3", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_3.get(), new Item.Properties(), 3));
+    public static final RegistryObject<Item> CARVED_JUNGLE_4 = ITEMS.register("carved_jungle_4", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_4.get(), new Item.Properties(), 4));
+    public static final RegistryObject<Item> CARVED_JUNGLE_5 = ITEMS.register("carved_jungle_5", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_5.get(), new Item.Properties(), 5));
+    public static final RegistryObject<Item> CARVED_JUNGLE_6 = ITEMS.register("carved_jungle_6", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_6.get(), new Item.Properties(), 6));
+    public static final RegistryObject<Item> CARVED_JUNGLE_7 = ITEMS.register("carved_jungle_7", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_7.get(), new Item.Properties(), 7));
+    public static final RegistryObject<Item> CARVED_JUNGLE_8 = ITEMS.register("carved_jungle_8", ()->new CarvedWoodItem(Blocks.CARVED_JUNGLE_8.get(), new Item.Properties(), 8));
+    public static final RegistryObject<Item> CARVED_SPRUCE_1 = ITEMS.register("carved_spruce_1", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_1.get(), new Item.Properties(), 1));
+    public static final RegistryObject<Item> CARVED_SPRUCE_2 = ITEMS.register("carved_spruce_2", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_2.get(), new Item.Properties(), 2));
+    public static final RegistryObject<Item> CARVED_SPRUCE_3 = ITEMS.register("carved_spruce_3", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_3.get(), new Item.Properties(), 3));
+    public static final RegistryObject<Item> CARVED_SPRUCE_4 = ITEMS.register("carved_spruce_4", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_4.get(), new Item.Properties(), 4));
+    public static final RegistryObject<Item> CARVED_SPRUCE_5 = ITEMS.register("carved_spruce_5", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_5.get(), new Item.Properties(), 5));
+    public static final RegistryObject<Item> CARVED_SPRUCE_6 = ITEMS.register("carved_spruce_6", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_6.get(), new Item.Properties(), 6));
+    public static final RegistryObject<Item> CARVED_SPRUCE_7 = ITEMS.register("carved_spruce_7", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_7.get(), new Item.Properties(), 7));
+    public static final RegistryObject<Item> CARVED_SPRUCE_8 = ITEMS.register("carved_spruce_8", ()->new CarvedWoodItem(Blocks.CARVED_SPRUCE_8.get(), new Item.Properties(), 8));
+    public static final RegistryObject<Item> CARVED_CRIMSON_1 = ITEMS.register("carved_crimson_1", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_1.get(), new Item.Properties(), 1));
+    public static final RegistryObject<Item> CARVED_CRIMSON_2 = ITEMS.register("carved_crimson_2", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_2.get(), new Item.Properties(), 2));
+    public static final RegistryObject<Item> CARVED_CRIMSON_3 = ITEMS.register("carved_crimson_3", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_3.get(), new Item.Properties(), 3));
+    public static final RegistryObject<Item> CARVED_CRIMSON_4 = ITEMS.register("carved_crimson_4", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_4.get(), new Item.Properties(), 4));
+    public static final RegistryObject<Item> CARVED_CRIMSON_5 = ITEMS.register("carved_crimson_5", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_5.get(), new Item.Properties(), 5));
+    public static final RegistryObject<Item> CARVED_CRIMSON_6 = ITEMS.register("carved_crimson_6", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_6.get(), new Item.Properties(), 6));
+    public static final RegistryObject<Item> CARVED_CRIMSON_7 = ITEMS.register("carved_crimson_7", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_7.get(), new Item.Properties(), 7));
+    public static final RegistryObject<Item> CARVED_CRIMSON_8 = ITEMS.register("carved_crimson_8", ()->new CarvedWoodItem(Blocks.CARVED_CRIMSON_8.get(), new Item.Properties(), 8));
+    public static final RegistryObject<Item> CARVED_WARPED_1 = ITEMS.register("carved_warped_1", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_1.get(), new Item.Properties(), 1));
+    public static final RegistryObject<Item> CARVED_WARPED_2 = ITEMS.register("carved_warped_2", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_2.get(), new Item.Properties(), 2));
+    public static final RegistryObject<Item> CARVED_WARPED_3 = ITEMS.register("carved_warped_3", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_3.get(), new Item.Properties(), 3));
+    public static final RegistryObject<Item> CARVED_WARPED_4 = ITEMS.register("carved_warped_4", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_4.get(), new Item.Properties(), 4));
+    public static final RegistryObject<Item> CARVED_WARPED_5 = ITEMS.register("carved_warped_5", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_5.get(), new Item.Properties(), 5));
+    public static final RegistryObject<Item> CARVED_WARPED_6 = ITEMS.register("carved_warped_6", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_6.get(), new Item.Properties(), 6));
+    public static final RegistryObject<Item> CARVED_WARPED_7 = ITEMS.register("carved_warped_7", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_7.get(), new Item.Properties(), 7));
+    public static final RegistryObject<Item> CARVED_WARPED_8 = ITEMS.register("carved_warped_8", ()->new CarvedWoodItem(Blocks.CARVED_WARPED_8.get(), new Item.Properties(), 8));
 
-    public static final RegistryObject<Item> BLACK_TERRATILE = ITEMS.register("black_terratile", ()->new BlockConditionedItem(Blocks.BLACK_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> BLUE_TERRATILE = ITEMS.register("blue_terratile", ()->new BlockConditionedItem(Blocks.BLUE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> BROWN_TERRATILE = ITEMS.register("brown_terratile", ()->new BlockConditionedItem(Blocks.BROWN_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> CYAN_TERRATILE = ITEMS.register("cyan_terratile", ()->new BlockConditionedItem(Blocks.CYAN_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> GRAY_TERRATILE = ITEMS.register("gray_terratile", ()->new BlockConditionedItem(Blocks.GRAY_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> GREEN_TERRATILE = ITEMS.register("green_terratile", ()->new BlockConditionedItem(Blocks.GREEN_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE = ITEMS.register("light_blue_terratile", ()->new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE = ITEMS.register("light_gray_terratile", ()->new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIME_TERRATILE = ITEMS.register("lime_terratile", ()->new BlockConditionedItem(Blocks.LIME_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> MAGENTA_TERRATILE = ITEMS.register("magenta_terratile", ()->new BlockConditionedItem(Blocks.MAGENTA_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> ORANGE_TERRATILE = ITEMS.register("orange_terratile", ()->new BlockConditionedItem(Blocks.ORANGE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> PINK_TERRATILE = ITEMS.register("pink_terratile", ()->new BlockConditionedItem(Blocks.PINK_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> PURPLE_TERRATILE = ITEMS.register("purple_terratile", ()->new BlockConditionedItem(Blocks.PURPLE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> RED_TERRATILE = ITEMS.register("red_terratile", ()->new BlockConditionedItem(Blocks.RED_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> WHITE_TERRATILE = ITEMS.register("white_terratile", ()->new BlockConditionedItem(Blocks.WHITE_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> YELLOW_TERRATILE = ITEMS.register("yellow_terratile", ()->new BlockConditionedItem(Blocks.YELLOW_TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> TERRATILE = ITEMS.register("terratile", ()->new BlockConditionedItem(Blocks.TERRATILE.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BLACK_TERRATILE = ITEMS.register("black_terratile", ()->new BlockItem(Blocks.BLACK_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> BLUE_TERRATILE = ITEMS.register("blue_terratile", ()->new BlockItem(Blocks.BLUE_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> BROWN_TERRATILE = ITEMS.register("brown_terratile", ()->new BlockItem(Blocks.BROWN_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> CYAN_TERRATILE = ITEMS.register("cyan_terratile", ()->new BlockItem(Blocks.CYAN_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GRAY_TERRATILE = ITEMS.register("gray_terratile", ()->new BlockItem(Blocks.GRAY_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GREEN_TERRATILE = ITEMS.register("green_terratile", ()->new BlockItem(Blocks.GREEN_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE = ITEMS.register("light_blue_terratile", ()->new BlockItem(Blocks.LIGHT_BLUE_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE = ITEMS.register("light_gray_terratile", ()->new BlockItem(Blocks.LIGHT_GRAY_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIME_TERRATILE = ITEMS.register("lime_terratile", ()->new BlockItem(Blocks.LIME_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> MAGENTA_TERRATILE = ITEMS.register("magenta_terratile", ()->new BlockItem(Blocks.MAGENTA_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ORANGE_TERRATILE = ITEMS.register("orange_terratile", ()->new BlockItem(Blocks.ORANGE_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> PINK_TERRATILE = ITEMS.register("pink_terratile", ()->new BlockItem(Blocks.PINK_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> PURPLE_TERRATILE = ITEMS.register("purple_terratile", ()->new BlockItem(Blocks.PURPLE_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> RED_TERRATILE = ITEMS.register("red_terratile", ()->new BlockItem(Blocks.RED_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> WHITE_TERRATILE = ITEMS.register("white_terratile", ()->new BlockItem(Blocks.WHITE_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> YELLOW_TERRATILE = ITEMS.register("yellow_terratile", ()->new BlockItem(Blocks.YELLOW_TERRATILE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> TERRATILE = ITEMS.register("terratile", ()->new BlockItem(Blocks.TERRATILE.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> BLACK_TERRATILE_SLAB = ITEMS.register("black_terratile_slab", ()->new BlockConditionedItem(Blocks.BLACK_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> BLUE_TERRATILE_SLAB = ITEMS.register("blue_terratile_slab", ()->new BlockConditionedItem(Blocks.BLUE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> BROWN_TERRATILE_SLAB = ITEMS.register("brown_terratile_slab", ()->new BlockConditionedItem(Blocks.BROWN_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> CYAN_TERRATILE_SLAB = ITEMS.register("cyan_terratile_slab", ()->new BlockConditionedItem(Blocks.CYAN_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> GRAY_TERRATILE_SLAB = ITEMS.register("gray_terratile_slab", ()->new BlockConditionedItem(Blocks.GRAY_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> GREEN_TERRATILE_SLAB = ITEMS.register("green_terratile_slab", ()->new BlockConditionedItem(Blocks.GREEN_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE_SLAB = ITEMS.register("light_blue_terratile_slab", ()->new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE_SLAB = ITEMS.register("light_gray_terratile_slab", ()->new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIME_TERRATILE_SLAB = ITEMS.register("lime_terratile_slab", ()->new BlockConditionedItem(Blocks.LIME_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> MAGENTA_TERRATILE_SLAB = ITEMS.register("magenta_terratile_slab", ()->new BlockConditionedItem(Blocks.MAGENTA_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> ORANGE_TERRATILE_SLAB = ITEMS.register("orange_terratile_slab", ()->new BlockConditionedItem(Blocks.ORANGE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> PINK_TERRATILE_SLAB = ITEMS.register("pink_terratile_slab", ()->new BlockConditionedItem(Blocks.PINK_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> PURPLE_TERRATILE_SLAB = ITEMS.register("purple_terratile_slab", ()->new BlockConditionedItem(Blocks.PURPLE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> RED_TERRATILE_SLAB = ITEMS.register("red_terratile_slab", ()->new BlockConditionedItem(Blocks.RED_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> WHITE_TERRATILE_SLAB = ITEMS.register("white_terratile_slab", ()->new BlockConditionedItem(Blocks.WHITE_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> YELLOW_TERRATILE_SLAB = ITEMS.register("yellow_terratile_slab", ()->new BlockConditionedItem(Blocks.YELLOW_TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> TERRATILE_SLAB = ITEMS.register("terratile_slab", ()->new BlockConditionedItem(Blocks.TERRATILE_SLAB.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BLACK_TERRATILE_SLAB = ITEMS.register("black_terratile_slab", ()->new BlockItem(Blocks.BLACK_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> BLUE_TERRATILE_SLAB = ITEMS.register("blue_terratile_slab", ()->new BlockItem(Blocks.BLUE_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> BROWN_TERRATILE_SLAB = ITEMS.register("brown_terratile_slab", ()->new BlockItem(Blocks.BROWN_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> CYAN_TERRATILE_SLAB = ITEMS.register("cyan_terratile_slab", ()->new BlockItem(Blocks.CYAN_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GRAY_TERRATILE_SLAB = ITEMS.register("gray_terratile_slab", ()->new BlockItem(Blocks.GRAY_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GREEN_TERRATILE_SLAB = ITEMS.register("green_terratile_slab", ()->new BlockItem(Blocks.GREEN_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE_SLAB = ITEMS.register("light_blue_terratile_slab", ()->new BlockItem(Blocks.LIGHT_BLUE_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE_SLAB = ITEMS.register("light_gray_terratile_slab", ()->new BlockItem(Blocks.LIGHT_GRAY_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIME_TERRATILE_SLAB = ITEMS.register("lime_terratile_slab", ()->new BlockItem(Blocks.LIME_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> MAGENTA_TERRATILE_SLAB = ITEMS.register("magenta_terratile_slab", ()->new BlockItem(Blocks.MAGENTA_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ORANGE_TERRATILE_SLAB = ITEMS.register("orange_terratile_slab", ()->new BlockItem(Blocks.ORANGE_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> PINK_TERRATILE_SLAB = ITEMS.register("pink_terratile_slab", ()->new BlockItem(Blocks.PINK_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> PURPLE_TERRATILE_SLAB = ITEMS.register("purple_terratile_slab", ()->new BlockItem(Blocks.PURPLE_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> RED_TERRATILE_SLAB = ITEMS.register("red_terratile_slab", ()->new BlockItem(Blocks.RED_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> WHITE_TERRATILE_SLAB = ITEMS.register("white_terratile_slab", ()->new BlockItem(Blocks.WHITE_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> YELLOW_TERRATILE_SLAB = ITEMS.register("yellow_terratile_slab", ()->new BlockItem(Blocks.YELLOW_TERRATILE_SLAB.get(), new Item.Properties()));
+    public static final RegistryObject<Item> TERRATILE_SLAB = ITEMS.register("terratile_slab", ()->new BlockItem(Blocks.TERRATILE_SLAB.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> BLACK_TERRATILE_STAIRS = ITEMS.register("black_terratile_stairs", ()->new BlockConditionedItem(Blocks.BLACK_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> BLUE_TERRATILE_STAIRS = ITEMS.register("blue_terratile_stairs", ()->new BlockConditionedItem(Blocks.BLUE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> BROWN_TERRATILE_STAIRS = ITEMS.register("brown_terratile_stairs", ()->new BlockConditionedItem(Blocks.BROWN_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> CYAN_TERRATILE_STAIRS = ITEMS.register("cyan_terratile_stairs", ()->new BlockConditionedItem(Blocks.CYAN_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> GRAY_TERRATILE_STAIRS = ITEMS.register("gray_terratile_stairs", ()->new BlockConditionedItem(Blocks.GRAY_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> GREEN_TERRATILE_STAIRS = ITEMS.register("green_terratile_stairs", ()->new BlockConditionedItem(Blocks.GREEN_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE_STAIRS = ITEMS.register("light_blue_terratile_stairs", ()->new BlockConditionedItem(Blocks.LIGHT_BLUE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE_STAIRS = ITEMS.register("light_gray_terratile_stairs", ()->new BlockConditionedItem(Blocks.LIGHT_GRAY_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> LIME_TERRATILE_STAIRS = ITEMS.register("lime_terratile_stairs", ()->new BlockConditionedItem(Blocks.LIME_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> MAGENTA_TERRATILE_STAIRS = ITEMS.register("magenta_terratile_stairs", ()->new BlockConditionedItem(Blocks.MAGENTA_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> ORANGE_TERRATILE_STAIRS = ITEMS.register("orange_terratile_stairs", ()->new BlockConditionedItem(Blocks.ORANGE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> PINK_TERRATILE_STAIRS = ITEMS.register("pink_terratile_stairs", ()->new BlockConditionedItem(Blocks.PINK_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> PURPLE_TERRATILE_STAIRS = ITEMS.register("purple_terratile_stairs", ()->new BlockConditionedItem(Blocks.PURPLE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> RED_TERRATILE_STAIRS = ITEMS.register("red_terratile_stairs", ()->new BlockConditionedItem(Blocks.RED_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> WHITE_TERRATILE_STAIRS = ITEMS.register("white_terratile_stairs", ()->new BlockConditionedItem(Blocks.WHITE_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> YELLOW_TERRATILE_STAIRS = ITEMS.register("yellow_terratile_stairs", ()->new BlockConditionedItem(Blocks.YELLOW_TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
-    public static final RegistryObject<Item> TERRATILE_STAIRS = ITEMS.register("terratile_stairs", ()->new BlockConditionedItem(Blocks.TERRATILE_STAIRS.get(), new Item.Properties().tab(Items.decoTab), Config::isTerracottaTileEnabled));
+    public static final RegistryObject<Item> BLACK_TERRATILE_STAIRS = ITEMS.register("black_terratile_stairs", ()->new BlockItem(Blocks.BLACK_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> BLUE_TERRATILE_STAIRS = ITEMS.register("blue_terratile_stairs", ()->new BlockItem(Blocks.BLUE_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> BROWN_TERRATILE_STAIRS = ITEMS.register("brown_terratile_stairs", ()->new BlockItem(Blocks.BROWN_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> CYAN_TERRATILE_STAIRS = ITEMS.register("cyan_terratile_stairs", ()->new BlockItem(Blocks.CYAN_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GRAY_TERRATILE_STAIRS = ITEMS.register("gray_terratile_stairs", ()->new BlockItem(Blocks.GRAY_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GREEN_TERRATILE_STAIRS = ITEMS.register("green_terratile_stairs", ()->new BlockItem(Blocks.GREEN_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIGHT_BLUE_TERRATILE_STAIRS = ITEMS.register("light_blue_terratile_stairs", ()->new BlockItem(Blocks.LIGHT_BLUE_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIGHT_GRAY_TERRATILE_STAIRS = ITEMS.register("light_gray_terratile_stairs", ()->new BlockItem(Blocks.LIGHT_GRAY_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> LIME_TERRATILE_STAIRS = ITEMS.register("lime_terratile_stairs", ()->new BlockItem(Blocks.LIME_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> MAGENTA_TERRATILE_STAIRS = ITEMS.register("magenta_terratile_stairs", ()->new BlockItem(Blocks.MAGENTA_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ORANGE_TERRATILE_STAIRS = ITEMS.register("orange_terratile_stairs", ()->new BlockItem(Blocks.ORANGE_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> PINK_TERRATILE_STAIRS = ITEMS.register("pink_terratile_stairs", ()->new BlockItem(Blocks.PINK_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> PURPLE_TERRATILE_STAIRS = ITEMS.register("purple_terratile_stairs", ()->new BlockItem(Blocks.PURPLE_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> RED_TERRATILE_STAIRS = ITEMS.register("red_terratile_stairs", ()->new BlockItem(Blocks.RED_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> WHITE_TERRATILE_STAIRS = ITEMS.register("white_terratile_stairs", ()->new BlockItem(Blocks.WHITE_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> YELLOW_TERRATILE_STAIRS = ITEMS.register("yellow_terratile_stairs", ()->new BlockItem(Blocks.YELLOW_TERRATILE_STAIRS.get(), new Item.Properties()));
+    public static final RegistryObject<Item> TERRATILE_STAIRS = ITEMS.register("terratile_stairs", ()->new BlockItem(Blocks.TERRATILE_STAIRS.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> CARVING_STATION = ITEMS.register("carving_station", ()->new BlockConditionedItem(Blocks.CARVING_STATION.get(), new Item.Properties().tab(Items.decoTab), Config::isCarvedWoodEnabled){
+    public static final RegistryObject<Item> CARVING_STATION = ITEMS.register("carving_station", ()->new BlockItem(Blocks.CARVING_STATION.get(), new Item.Properties()){
         @Override public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {return 300;}
     });
-    public static final RegistryObject<Item> ITEM_BOOKCASE = ITEMS.register("item_bookcase", ()->new BlockConditionedItem(Blocks.BLOCK_BOOKCASE.get(), new Item.Properties().tab(Items.decoTab), Config::isBookcaseEnabled){
+    public static final RegistryObject<Item> ITEM_BOOKCASE = ITEMS.register("item_bookcase", ()->new BlockItem(Blocks.BLOCK_BOOKCASE.get(), new Item.Properties()){
         @Override public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> recipeType) {return 300;}
     });
 
-    public static final RegistryObject<Item> ROPE = ITEMS.register("rope", ()->new BlockConditionedItem(Blocks.ROPE.get(), new Item.Properties().tab(Items.decoTab), Config::isRopeEnabled){
+    public static final RegistryObject<Item> ROPE = ITEMS.register("rope", ()->new BlockItem(Blocks.ROPE.get(), new Item.Properties()){
         public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
             MutableComponent text = Component.translatable("xercamod.rope_tooltip");
             tooltip.add(text.withStyle(ChatFormatting.BLUE));
         }
     });
 
-    public static final RegistryObject<Item> VAT = ITEMS.register("vat", ()->new BlockConditionedItem(Blocks.VAT.get(), new Item.Properties().tab(Items.decoTab), Config::isFoodEnabled));
-    public static final RegistryObject<Item> CHEESE_WHEEL = ITEMS.register("cheese_wheel", ()->new BlockConditionedItem(Blocks.CHEESE_WHEEL.get(), new Item.Properties().tab(CreativeModeTab.TAB_FOOD), Config::isFoodEnabled));
+    public static final RegistryObject<Item> VAT = ITEMS.register("vat", ()->new BlockItem(Blocks.VAT.get(), new Item.Properties()));
+    public static final RegistryObject<Item> CHEESE_WHEEL = ITEMS.register("cheese_wheel", ()->new BlockItem(Blocks.CHEESE_WHEEL.get(), new Item.Properties()));
     public static final RegistryObject<Item> CHEESE_SLICE = ITEMS.register("cheese_slice", ()->makeFoodItem(Foods.CHEESE_SLICE));
 
-    public static final RegistryObject<BlockItemOmniChest> OMNI_CHEST = ITEMS.register("omni_chest", ()->new BlockItemOmniChest(Blocks.OMNI_CHEST.get(), new Item.Properties().tab(Items.decoTab)));
+    public static final RegistryObject<BlockItemOmniChest> OMNI_CHEST = ITEMS.register("omni_chest", ()->new BlockItemOmniChest(Blocks.OMNI_CHEST.get(), new Item.Properties()));
 
-    public static final RegistryObject<ItemScythe> WOODEN_SCYTHE = ITEMS.register("wooden_scythe", ()->new ItemScythe(Tiers.WOOD, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-    public static final RegistryObject<ItemScythe> STONE_SCYTHE = ITEMS.register("stone_scythe", ()->new ItemScythe(Tiers.STONE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-    public static final RegistryObject<ItemScythe> IRON_SCYTHE = ITEMS.register("iron_scythe", ()->new ItemScythe(Tiers.IRON, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-    public static final RegistryObject<ItemScythe> GOLDEN_SCYTHE = ITEMS.register("golden_scythe", ()->new ItemScythe(Tiers.GOLD, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-    public static final RegistryObject<ItemScythe> DIAMOND_SCYTHE = ITEMS.register("diamond_scythe", ()->new ItemScythe(Tiers.DIAMOND, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS)));
-    public static final RegistryObject<ItemScythe> NETHERITE_SCYTHE = ITEMS.register("netherite_scythe", ()->new ItemScythe(Tiers.NETHERITE, 3, -2.6f, (new Item.Properties()).tab(CreativeModeTab.TAB_TOOLS).fireResistant()));
+    public static final RegistryObject<ItemScythe> WOODEN_SCYTHE = ITEMS.register("wooden_scythe", ()->new ItemScythe(Tiers.WOOD, 3, -2.6f, (new Item.Properties())));
+    public static final RegistryObject<ItemScythe> STONE_SCYTHE = ITEMS.register("stone_scythe", ()->new ItemScythe(Tiers.STONE, 3, -2.6f, (new Item.Properties())));
+    public static final RegistryObject<ItemScythe> IRON_SCYTHE = ITEMS.register("iron_scythe", ()->new ItemScythe(Tiers.IRON, 3, -2.6f, (new Item.Properties())));
+    public static final RegistryObject<ItemScythe> GOLDEN_SCYTHE = ITEMS.register("golden_scythe", ()->new ItemScythe(Tiers.GOLD, 3, -2.6f, (new Item.Properties())));
+    public static final RegistryObject<ItemScythe> DIAMOND_SCYTHE = ITEMS.register("diamond_scythe", ()->new ItemScythe(Tiers.DIAMOND, 3, -2.6f, (new Item.Properties())));
+    public static final RegistryObject<ItemScythe> NETHERITE_SCYTHE = ITEMS.register("netherite_scythe", ()->new ItemScythe(Tiers.NETHERITE, 3, -2.6f, (new Item.Properties()).fireResistant()));
 
     public static final RegistryObject<Enchantment> ENCHANTMENT_HEAVY = ENCHANTMENTS.register("enchantment_heavy", ()->new EnchantmentHeavy(Enchantment.Rarity.UNCOMMON, EquipmentSlot.MAINHAND));
     public static final RegistryObject<Enchantment> ENCHANTMENT_MAIM = ENCHANTMENTS.register("enchantment_maim", ()->new EnchantmentMaim(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
@@ -480,26 +478,23 @@ public final class Items {
     public static final RegistryObject<Enchantment> ENCHANTMENT_CHUG = ENCHANTMENTS.register("enchantment_chug", ()->new EnchantmentChug(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
     public static final RegistryObject<Enchantment> ENCHANTMENT_DEVOUR = ENCHANTMENTS.register("enchantment_devour", ()->new EnchantmentDevour(Enchantment.Rarity.RARE, EquipmentSlot.MAINHAND));
 
-    public static final TeaCreativeTab teaTab = new TeaCreativeTab();
-    public static final DecoCreativeTab decoTab = new DecoCreativeTab();
-
 
     public static final RegistryObject<RecipeSerializer<RecipeTeaSugaring>> CRAFTING_SPECIAL_TEA_SUGARING = RECIPE_SERIALIZERS.register(
-            "crafting_special_tea_sugaring", () -> new SimpleRecipeSerializer<>(RecipeTeaSugaring::new));
+            "crafting_special_tea_sugaring", () -> new SimpleCraftingRecipeSerializer<>(RecipeTeaSugaring::new));
     public static final RegistryObject<RecipeSerializer<RecipeTeaPouring>> CRAFTING_SPECIAL_TEA_POURING = RECIPE_SERIALIZERS.register(
-            "crafting_special_tea_pouring", () -> new SimpleRecipeSerializer<>(RecipeTeaPouring::new));
+            "crafting_special_tea_pouring", () -> new SimpleCraftingRecipeSerializer<>(RecipeTeaPouring::new));
     public static final RegistryObject<RecipeSerializer<RecipeTeaFilling>> CRAFTING_SPECIAL_TEA_FILLING = RECIPE_SERIALIZERS.register(
-            "crafting_special_tea_filling", () -> new SimpleRecipeSerializer<>(RecipeTeaFilling::new));
+            "crafting_special_tea_filling", () -> new SimpleCraftingRecipeSerializer<>(RecipeTeaFilling::new));
     public static final RegistryObject<RecipeSerializer<RecipeTeaRefilling>> CRAFTING_SPECIAL_TEA_REFILLING = RECIPE_SERIALIZERS.register(
-            "crafting_special_tea_refilling", () -> new SimpleRecipeSerializer<>(RecipeTeaRefilling::new));
+            "crafting_special_tea_refilling", () -> new SimpleCraftingRecipeSerializer<>(RecipeTeaRefilling::new));
     public static final RegistryObject<RecipeSerializer<RecipeFlaskFilling>> CRAFTING_SPECIAL_FLASK_FILLING = RECIPE_SERIALIZERS.register(
-            "crafting_special_flask_filling", () -> new SimpleRecipeSerializer<>(RecipeFlaskFilling::new));
+            "crafting_special_flask_filling", () -> new SimpleCraftingRecipeSerializer<>(RecipeFlaskFilling::new));
     public static final RegistryObject<RecipeSerializer<RecipeEnderBowFilling>> CRAFTING_SPECIAL_ENDER_BOW_FILLING = RECIPE_SERIALIZERS.register(
-            "crafting_special_ender_bow_filling", () -> new SimpleRecipeSerializer<>(RecipeEnderBowFilling::new));
+            "crafting_special_ender_bow_filling", () -> new SimpleCraftingRecipeSerializer<>(RecipeEnderBowFilling::new));
     public static final RegistryObject<RecipeSerializer<RecipeFlaskMilkFilling>> CRAFTING_SPECIAL_FLASK_MILK_FILLING = RECIPE_SERIALIZERS.register(
-            "crafting_special_flask_milk_filling", () -> new SimpleRecipeSerializer<>(RecipeFlaskMilkFilling::new));
+            "crafting_special_flask_milk_filling", () -> new SimpleCraftingRecipeSerializer<>(RecipeFlaskMilkFilling::new));
     public static final RegistryObject<RecipeSerializer<RecipeWoodCarving>> CRAFTING_SPECIAL_WOOD_CARVING = RECIPE_SERIALIZERS.register(
-            "crafting_special_wood_carving", () -> new SimpleRecipeSerializer<>(RecipeWoodCarving::new));
+            "crafting_special_wood_carving", () -> new SimpleCraftingRecipeSerializer<>(RecipeWoodCarving::new));
 
     public static final RegistryObject<RecipeSerializer<RecipeCarvingStation>> CARVING = RECIPE_SERIALIZERS.register(
             "carving", () -> new RecipeCarvingStation.Serializer<>(RecipeCarvingStation::new));
@@ -558,16 +553,15 @@ public final class Items {
 
 
     static Item makeFoodItem(FoodProperties food){
-        return new ItemConditioned(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), Config::isFoodEnabled);
+        return new Item(new Item.Properties().food(food));
     }
 
     static Item makeContainedFoodItem(FoodProperties food, Item container, @SuppressWarnings("SameParameterValue") int stackSize){
-        return new ItemConditionedContainedFood(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food).
-                craftRemainder(container), container, stackSize);
+        return new ItemStackableContainedFood(new Item.Properties().food(food).craftRemainder(container), container, stackSize);
     }
 
     static Item makeDrinkItem(FoodProperties food, Item container){
-        return new ItemDrink(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), container);
+        return new ItemDrink(new Item.Properties().food(food), container);
     }
 
     static void registerCompostable(float chance, ItemLike itemIn) {

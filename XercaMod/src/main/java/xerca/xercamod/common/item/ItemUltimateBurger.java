@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 class ItemUltimateBurger extends Item {
 
     public ItemUltimateBurger() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ULTIMATE_BURGER));
+        super(new Item.Properties().food(Foods.ULTIMATE_BURGER));
     }
 
     @Nonnull
@@ -33,14 +33,5 @@ class ItemUltimateBurger extends Item {
             }
         }
         return entityLiving.eat(worldIn, stack);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isFoodEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 }

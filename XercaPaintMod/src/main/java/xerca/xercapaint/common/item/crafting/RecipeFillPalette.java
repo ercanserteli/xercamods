@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -21,8 +22,8 @@ import java.util.ArrayList;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeFillPalette extends CustomRecipe {
-    public RecipeFillPalette(ResourceLocation p_i48170_1_) {
-        super(p_i48170_1_);
+    public RecipeFillPalette(ResourceLocation pId, CraftingBookCategory pCategory) {
+        super(pId, pCategory);
     }
 
     private boolean isPalette(ItemStack stack){

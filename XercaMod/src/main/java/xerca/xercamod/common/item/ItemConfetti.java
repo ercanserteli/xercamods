@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemConfetti extends Item {
 
     ItemConfetti() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+        super(new Item.Properties());
     }
 
     @Override
@@ -47,14 +47,5 @@ public class ItemConfetti extends Item {
 
     static public void playSound(Level world, @Nullable Player player, double x, double y, double z){
         world.playSound(player, x, y, z, SoundEvents.CONFETTI.get(), SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.8F);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isConfettiEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 }
