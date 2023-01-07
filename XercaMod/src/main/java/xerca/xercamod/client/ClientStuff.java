@@ -132,7 +132,7 @@ public class ClientStuff {
         }
 
         @SubscribeEvent
-        public static void onModelBakeEvent(BakingCompleted event) {
+        public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event) {
             bakeCrimsonModel(Blocks.CARVED_CRIMSON_1.get(), event);
             bakeCrimsonModel(Blocks.CARVED_CRIMSON_2.get(), event);
             bakeCrimsonModel(Blocks.CARVED_CRIMSON_3.get(), event);
@@ -143,7 +143,7 @@ public class ClientStuff {
             bakeCrimsonModel(Blocks.CARVED_CRIMSON_8.get(), event);
         }
 
-        private static void bakeCrimsonModel(Block crimson, BakingCompleted event){
+        private static void bakeCrimsonModel(Block crimson, ModelEvent.ModifyBakingResult event){
             for (BlockState blockState : crimson.getStateDefinition().getPossibleStates()) {
                 ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
                 BakedModel existingModel = event.getModels().get(variantMRL);
@@ -244,12 +244,12 @@ public class ClientStuff {
             }
         }
 
-        @SubscribeEvent
-        public static void handleTextureStitch(TextureStitchEvent.Pre event) {
-            if(event.getAtlas().location().equals(Sheets.CHEST_SHEET)){
-                event.addSprite(OmniChestTileEntityRenderer.texture);
-            }
-        }
+//        @SubscribeEvent
+//        public static void handleTextureStitch(TextureStitchEvent event) {
+//            if(event.getAtlas().location().equals(Sheets.CHEST_SHEET)){
+//                event.addSprite(OmniChestTileEntityRenderer.texture);
+//            }
+//        }
     }
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)

@@ -22,13 +22,4 @@ public class ItemDrink extends ItemStackableContainedFood {
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
         return UseAnim.DRINK;
     }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isFoodEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
-    }
 }

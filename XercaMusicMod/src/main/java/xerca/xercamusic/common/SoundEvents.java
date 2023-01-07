@@ -48,7 +48,7 @@ public class SoundEvents {
 
     private static SoundEvent createSoundEvent(String soundName, final RegisterEvent event) {
         final ResourceLocation soundID = new ResourceLocation(XercaMusic.MODID, soundName);
-        final SoundEvent soundEvent = new SoundEvent(soundID);
+        final SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundID);
         event.register(ForgeRegistries.Keys.SOUND_EVENTS, soundID, ()->soundEvent);
         return soundEvent;
     }

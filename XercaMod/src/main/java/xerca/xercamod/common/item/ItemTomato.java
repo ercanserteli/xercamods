@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ItemTomato extends Item {
     public ItemTomato() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+        super(new Item.Properties());
     }
 
     /**
@@ -42,14 +42,5 @@ public class ItemTomato extends Item {
             worldIn.addFreshEntity(entitytomato);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isFoodEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 }

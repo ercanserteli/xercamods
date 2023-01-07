@@ -31,7 +31,7 @@ import java.util.List;
 
 public class ItemEnderBow extends Item {
     public ItemEnderBow() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).stacksTo(1).durability(160));
+        super(new Item.Properties().stacksTo(1).durability(160));
     }
 
     @Override
@@ -113,15 +113,6 @@ public class ItemEnderBow extends Item {
     @Override
     public boolean isFoil(@NotNull ItemStack stack) {
         return super.isFoil(stack);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isEnderFlaskEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 
     @Override

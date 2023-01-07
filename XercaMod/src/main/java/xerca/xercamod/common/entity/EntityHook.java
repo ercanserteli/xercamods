@@ -3,6 +3,7 @@ package xerca.xercamod.common.entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -32,8 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.HookReturningEvent;
 import xerca.xercamod.common.SoundEvents;
 import xerca.xercamod.common.item.Items;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     private static final EntityDataAccessor<Integer> cau_ent = SynchedEntityData.defineId(EntityHook.class, EntityDataSerializers.INT);
@@ -124,7 +123,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

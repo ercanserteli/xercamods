@@ -43,7 +43,7 @@ public class ItemMusicSheet extends Item {
     static final private int addToOldEnd = 8;
 
     ItemMusicSheet() {
-        super(new Properties().tab(Items.musicTab).stacksTo(1));
+        super(new Properties().stacksTo(1));
     }
 
     public static ArrayList<NoteEvent> oldMusicToNotes(byte[] music){

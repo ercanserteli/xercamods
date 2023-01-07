@@ -8,6 +8,7 @@ import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -17,8 +18,8 @@ import xerca.xercamod.common.item.ItemFlask;
 import xerca.xercamod.common.item.Items;
 
 public class RecipeFlaskFilling extends CustomRecipe {
-    public RecipeFlaskFilling(ResourceLocation resourceLocation) {
-        super(resourceLocation);
+    public RecipeFlaskFilling(ResourceLocation pId, CraftingBookCategory pCategory) {
+        super(pId, pCategory);
     }
 
     /**

@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -29,9 +30,6 @@ import xerca.xercapaint.common.packets.PaletteUpdatePacket;
 import java.util.*;
 
 import static org.lwjgl.glfw.GLFW.*;
-
-import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.client.gui.components.Button.OnTooltip;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCanvasEdit extends BasePalette {
@@ -149,7 +147,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         int x = getMinecraft().getWindow().getGuiScaledWidth() - 120;
         int y = getMinecraft().getWindow().getGuiScaledHeight() - 30;
-        this.buttonSign = this.addRenderableWidget(new Button(x, y, 98, 20, Component.translatable("canvas.signButton"), button -> {
+        this.buttonSign = this.addRenderableWidget(Button.builder(Component.translatable("canvas.signButton"), button -> {
             if (!isSigned) {
                 gettingSigned = true;
                 resetPositions();
@@ -157,8 +155,8 @@ public class GuiCanvasEdit extends BasePalette {
 
                 GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
-        }));
-        this.buttonFinalize = this.addRenderableWidget(new Button( (int)canvasX - 100, 100, 98, 20, Component.translatable("canvas.finalizeButton"), button -> {
+        }).bounds(x, y, 98, 20).build());
+        this.buttonFinalize = this.addRenderableWidget(Button.builder( Component.translatable("canvas.finalizeButton"), button -> {
             if (!isSigned) {
                 canvasDirty = true;
                 isSigned = true;
@@ -167,21 +165,20 @@ public class GuiCanvasEdit extends BasePalette {
                 }
             }
 
-        }));
-        this.buttonCancel = this.addRenderableWidget(new Button( (int)canvasX - 100, 130, 98, 20, Component.translatable("gui.cancel"), button -> {
+        }).bounds((int)canvasX - 100, 100, 98, 20).build());
+        this.buttonCancel = this.addRenderableWidget(Button.builder( Component.translatable("gui.cancel"), button -> {
             if (!isSigned) {
                 gettingSigned = false;
                 updateButtons();
 
                 GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
-        }));
+        }).bounds((int)canvasX - 100, 130, 98, 20).build());
 
         x = (int)(getMinecraft().getWindow().getGuiScaledWidth()*0.95) - 21;
         y = (int)(getMinecraft().getWindow().getGuiScaledHeight()*0.05);
         this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
-                paletteTextures, 256, 256, button -> showHelp = !showHelp,
-                (button, poseStack, i, j) -> renderTooltip(poseStack, Component.literal("Toggle help tooltips"), i, j)));
+                paletteTextures, 256, 256, button -> showHelp = !showHelp, Tooltip.create(Component.literal("Toggle help tooltips"))));
 
         updateButtons();
     }
@@ -193,8 +190,8 @@ public class GuiCanvasEdit extends BasePalette {
             this.buttonFinalize.visible = this.gettingSigned;
             this.buttonFinalize.active = !this.canvasTitle.trim().isEmpty();
 
-            this.buttonFinalize.x = (int)canvasX - 100;
-            this.buttonCancel.x = (int)canvasX - 100;
+            this.buttonFinalize.setX((int)canvasX - 100);
+            this.buttonCancel.setX((int)canvasX - 100);
         }
     }
 
@@ -762,14 +759,15 @@ public class GuiCanvasEdit extends BasePalette {
         protected final int texWidth;
         protected final int texHeight;
 
-        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, OnTooltip onTooltip) {
-            super(x, y, width, height, Component.empty(), onClick, onTooltip);
+        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Tooltip tooltip) {
+            super(x, y, width, height, Component.empty(), onClick, Button.DEFAULT_NARRATION);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
             this.xTexStart = xTexStart;
             this.yTexStart = yTexStart;
             this.yDiffText = yDiffText;
             this.resourceLocation = texture;
+            setTooltip(tooltip);
         }
 
         protected void postRender(){
@@ -785,10 +783,7 @@ public class GuiCanvasEdit extends BasePalette {
                 yTexStartNew += this.yDiffText;
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
-            blit(matrixStack, this.x, this.y, (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
-            if (this.isHovered) {
-                this.renderToolTip(matrixStack, p_230431_2_, p_230431_3_);
-            }
+            blit(matrixStack, this.getX(), this.getY(), (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
         }
     }

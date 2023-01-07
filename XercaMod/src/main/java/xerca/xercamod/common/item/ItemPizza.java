@@ -2,10 +2,7 @@ package xerca.xercamod.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,13 +18,13 @@ import java.util.List;
 import static xerca.xercamod.common.block.BlockPizza.isAllEmpty;
 import static xerca.xercamod.common.block.BlockPizza.postfix;
 
-public class ItemPizza extends BlockConditionedItem {
+public class ItemPizza extends BlockItem {
     private final BlockPizza.Ingredient slot1;
     private final BlockPizza.Ingredient slot2;
     private final BlockPizza.Ingredient slot3;
 
     public ItemPizza(Block blockIn, BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
-        super(blockIn, isAllEmpty(slot1, slot2, slot3) ? new Item.Properties().tab(CreativeModeTab.TAB_FOOD) : new Item.Properties(),  Config::isFoodEnabled);
+        super(blockIn, new Properties());
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;

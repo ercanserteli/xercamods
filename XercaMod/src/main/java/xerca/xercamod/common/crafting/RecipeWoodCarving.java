@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -14,8 +15,8 @@ import xerca.xercamod.common.item.ItemKnife;
 import xerca.xercamod.common.item.Items;
 
 public class RecipeWoodCarving extends CustomRecipe {
-    public RecipeWoodCarving(ResourceLocation p_i48170_1_) {
-        super(p_i48170_1_);
+    public RecipeWoodCarving(ResourceLocation pId, CraftingBookCategory pCategory) {
+        super(pId, pCategory);
     }
 
     /**

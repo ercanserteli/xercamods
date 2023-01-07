@@ -3,19 +3,16 @@ package xerca.xercamusic.common.item;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import xerca.xercamusic.common.MusicCreativeTab;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.Blocks;
 
 public final class Items {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, XercaMusic.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, XercaMusic.MODID);
-
-    public static final MusicCreativeTab musicTab = new MusicCreativeTab();
 
     public static final RegistryObject<ItemInstrument> HARP_MC = ITEMS.register("harp_mc", () -> new ItemInstrument(false, -1, 0, 7, new Item.Properties()));
     public static final RegistryObject<ItemMusicSheet> MUSIC_SHEET = ITEMS.register("music_sheet", ItemMusicSheet::new);
@@ -40,14 +37,14 @@ public final class Items {
     public static final RegistryObject<Item> FRENCH_HORN = ITEMS.register( "french_horn", () -> new ItemInstrument(true, 17,0, 5));
     public static final RegistryObject<Item> BASS_GUITAR = ITEMS.register( "bass_guitar", () -> new ItemInstrument(false, 18,1, 4));
 
-    public static final RegistryObject<Item> MUSIC_BOX = ITEMS.register("music_box", () -> new BlockItem(Blocks.MUSIC_BOX.get(), new Item.Properties().tab(musicTab)));
-    public static final RegistryObject<Item> METRONOME = ITEMS.register("metronome", () -> new BlockItem(Blocks.BLOCK_METRONOME.get(), new Item.Properties().tab(musicTab)));
+    public static final RegistryObject<Item> MUSIC_BOX = ITEMS.register("music_box", () -> new BlockItem(Blocks.MUSIC_BOX.get(), new Item.Properties()));
+    public static final RegistryObject<Item> METRONOME = ITEMS.register("metronome", () -> new BlockItem(Blocks.BLOCK_METRONOME.get(), new Item.Properties()));
 
     public static IItemInstrument[] instruments;
 
 
     public static final RegistryObject<RecipeSerializer<RecipeNoteCloning>> CRAFTING_SPECIAL_NOTECLONING = RECIPE_SERIALIZERS.register(
-            "crafting_special_notecloning", () -> new SimpleRecipeSerializer<>(RecipeNoteCloning::new));
+            "crafting_special_notecloning", () -> new SimpleCraftingRecipeSerializer<>(RecipeNoteCloning::new));
 
     public static void setup() {
         instruments = new IItemInstrument[]{

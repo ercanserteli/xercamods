@@ -31,7 +31,7 @@ import static xerca.xercamod.common.item.Items.ENCHANTMENT_GRAPPLING;
 public class ItemGrabHook extends FishingRodItem {
 
     public ItemGrabHook() {
-        super((new Item.Properties()).tab(CreativeModeTab.TAB_COMBAT).defaultDurability(210));
+        super((new Item.Properties()).defaultDurability(210));
     }
 
     @Nonnull
@@ -85,15 +85,6 @@ public class ItemGrabHook extends FishingRodItem {
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
         return enchantment.category == EnchantmentCategory.BREAKABLE || enchantment == Items.ENCHANTMENT_GRAPPLING.get();
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isGrabHookEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 
     @OnlyIn(Dist.CLIENT)

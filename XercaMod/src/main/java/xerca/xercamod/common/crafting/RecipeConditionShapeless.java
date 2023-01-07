@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
@@ -18,7 +19,7 @@ public class RecipeConditionShapeless extends ShapelessRecipe {
     private final RecipeSerializer<?> serializer;
 
     public RecipeConditionShapeless(ShapelessRecipe shapedRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getResultItem(), shapedRecipe.getIngredients());
+        super(shapedRecipe.getId(), shapedRecipe.getGroup(), CraftingBookCategory.MISC, shapedRecipe.getResultItem(), shapedRecipe.getIngredients());
         this.condition = condition;
         this.serializer = serializer;
     }

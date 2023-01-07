@@ -4,10 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.serialization.Codec;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -30,6 +33,8 @@ import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.*;
 import xerca.xercamusic.common.tile_entity.TileEntities;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 
@@ -120,7 +125,39 @@ public class XercaMusic
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void registerDataEvent(final GatherDataEvent event) {
-            event.getGenerator().addProvider(event.includeServer(), new BlockTags(event.getGenerator(), event.getExistingFileHelper()));
+            event.getGenerator().addProvider(event.includeServer(), new BlockTags(event.getGenerator().getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
+        }
+
+        @SubscribeEvent
+        public static void buildContents(CreativeModeTabEvent.Register event) {
+            event.registerCreativeModeTab(new ResourceLocation(MODID, "paint_tab"), builder ->
+                    builder.title(Component.translatable("item_group." + MODID + ".music_tab"))
+                            .icon(() -> new ItemStack(Items.GUITAR.get()))
+                            .displayItems((enabledFlags, populator, hasPermissions) -> {
+                                populator.accept(Items.MUSIC_SHEET.get());
+                                populator.accept(Items.GUITAR.get());
+                                populator.accept(Items.LYRE.get());
+                                populator.accept(Items.BANJO.get());
+                                populator.accept(Items.DRUM.get());
+                                populator.accept(Items.CYMBAL.get());
+                                populator.accept(Items.DRUM_KIT.get());
+                                populator.accept(Items.XYLOPHONE.get());
+                                populator.accept(Items.TUBULAR_BELL.get());
+                                populator.accept(Items.SANSULA.get());
+                                populator.accept(Items.VIOLIN.get());
+                                populator.accept(Items.CELLO.get());
+                                populator.accept(Items.FLUTE.get());
+                                populator.accept(Items.SAXOPHONE.get());
+                                populator.accept(Items.GOD.get());
+                                populator.accept(Items.PIANO.get());
+                                populator.accept(Items.OBOE.get());
+                                populator.accept(Items.REDSTONE_GUITAR.get());
+                                populator.accept(Items.FRENCH_HORN.get());
+                                populator.accept(Items.BASS_GUITAR.get());
+                                populator.accept(Items.MUSIC_BOX.get());
+                                populator.accept(Items.METRONOME.get());
+                            })
+            );
         }
     }
 

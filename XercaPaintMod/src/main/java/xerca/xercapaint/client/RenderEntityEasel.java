@@ -3,8 +3,7 @@ package xerca.xercapaint.client;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -20,14 +19,13 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.item.ItemCanvas;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-
-import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
@@ -57,11 +55,11 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     public void render(EntityEasel entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
 
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-entityYaw));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(-entityYaw));
 
         this.model.setupAnim(entity, 0, 0, 0, 0, 0);
 
-        matrixStackIn.mulPose(Quaternion.fromXYZDegrees(new Vector3f(180, 0, 0)));
+        matrixStackIn.mulPose((new Quaternionf()).rotationXYZ((float) Math.PI, 0, 0));
         matrixStackIn.translate(0, -1.5, 0);
 
         RenderType rendertype = this.model.renderType(this.getTextureLocation(entity));

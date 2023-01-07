@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -15,8 +16,8 @@ import xerca.xercamod.common.item.ItemFlask;
 import xerca.xercamod.common.item.Items;
 
 public class RecipeFlaskMilkFilling extends CustomRecipe {
-    public RecipeFlaskMilkFilling(ResourceLocation resourceLocation) {
-        super(resourceLocation);
+    public RecipeFlaskMilkFilling(ResourceLocation pId, CraftingBookCategory pCategory) {
+        super(pId, pCategory);
     }
 
     /**

@@ -3,6 +3,7 @@ package xerca.xercamod.common.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -18,10 +19,10 @@ import java.util.List;
 
 import net.minecraft.world.item.Item.Properties;
 
-public class CarvedWoodItem extends BlockConditionedItem {
+public class CarvedWoodItem extends BlockItem {
     private final int variation;
     public CarvedWoodItem(Block blockIn, Properties properties, int variation) {
-        super(blockIn, properties,  Config::isCarvedWoodEnabled);
+        super(blockIn, properties);
         this.variation = variation;
     }
 

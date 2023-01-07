@@ -58,7 +58,7 @@ public class ItemGoldenCupcake extends Item {
                         lightningBoltEntity.setVisualOnly(true);
                         worldIn.addFreshEntity(lightningBoltEntity);
                     }
-                    worldIn.explode(null, player.getX(), player.getY(), player.getZ(), 1.1F, false, Explosion.BlockInteraction.BREAK);
+                    worldIn.explode(null, player.getX(), player.getY(), player.getZ(), 1.1F, false, Level.ExplosionInteraction.TNT);
                     EntityConfettiBall entityBall = new EntityConfettiBall(worldIn, player);
                     entityBall.shootFromRotation(player, 270, player.getYRot() + 90, 0.0F, 1.0F, 1.0F);
                     worldIn.addFreshEntity(entityBall);

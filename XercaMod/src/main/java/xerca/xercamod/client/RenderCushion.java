@@ -1,7 +1,8 @@
 package xerca.xercamod.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
+import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -33,9 +34,9 @@ public class RenderCushion extends EntityRenderer<EntityCushion> {
             matrixStackIn.pushPose();
 
             matrixStackIn.translate(0.0D, 0.5D, 0.0D);
-            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees( -90.0F));
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees( -90.0F));
             matrixStackIn.translate(-0.5F, -0.5F, 0.5F);
-            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(90.0F));
             BlockState bs = entity.block.defaultBlockState();
 
             blockRenderDispatcher.renderSingleBlock(bs, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);

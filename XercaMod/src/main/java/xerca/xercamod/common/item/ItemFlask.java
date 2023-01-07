@@ -189,15 +189,6 @@ public class ItemFlask extends Item {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isEnderFlaskEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
-    }
-
-    @Override
     public int getEnchantmentValue() {
         return 1;
     }

@@ -2,6 +2,7 @@ package xerca.xercamod.common.item;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
@@ -12,10 +13,10 @@ import java.util.function.Consumer;
 
 import net.minecraft.world.item.Item.Properties;
 
-public class BlockItemOmniChest extends BlockConditionedItem {
+public class BlockItemOmniChest extends BlockItem {
     public BlockItemOmniChest(Block block, Properties properties)
     {
-        super(block, properties, Config::isOmniChestEnabled);
+        super(block, properties);
     }
 
     @Override

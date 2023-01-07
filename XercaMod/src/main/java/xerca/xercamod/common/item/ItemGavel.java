@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemGavel extends Item {
 
     public ItemGavel() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS));
+        super(new Item.Properties());
     }
 
     /**
@@ -37,15 +37,6 @@ public class ItemGavel extends Item {
             worldIn.playSound(playerIn, pos, SoundEvents.GAVEL.get(), SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.2F + 0.8F);
         }
         return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if(!Config.isCourtroomEnabled()){
-            return;
-        }
-        super.fillItemCategory(group, items);
     }
 
     @Override
