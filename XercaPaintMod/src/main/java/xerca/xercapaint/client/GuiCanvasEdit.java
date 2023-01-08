@@ -1,6 +1,7 @@
 package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -141,19 +142,21 @@ public class GuiCanvasEdit extends BasePalette {
 
         updateCanvasPos(0, 0);
         updatePalettePos(0, 0);
+        
+        Window window = minecraft.getWindow();
 
         // Hide mouse cursor
-        GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-        int x = getMinecraft().getWindow().getGuiScaledWidth() - 120;
-        int y = getMinecraft().getWindow().getGuiScaledHeight() - 30;
+        int x = window.getGuiScaledWidth() - 120;
+        int y = window.getGuiScaledHeight() - 30;
         this.buttonSign = this.addRenderableWidget(Button.builder(Component.translatable("canvas.signButton"), button -> {
             if (!isSigned) {
                 gettingSigned = true;
                 resetPositions();
                 updateButtons();
 
-                GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }).bounds(x, y, 98, 20).build());
         this.buttonFinalize = this.addRenderableWidget(Button.builder( Component.translatable("canvas.finalizeButton"), button -> {
@@ -171,12 +174,12 @@ public class GuiCanvasEdit extends BasePalette {
                 gettingSigned = false;
                 updateButtons();
 
-                GLFW.glfwSetInputMode(this.getMinecraft().getWindow().getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
         }).bounds((int)canvasX - 100, 130, 98, 20).build());
 
-        x = (int)(getMinecraft().getWindow().getGuiScaledWidth()*0.95) - 21;
-        y = (int)(getMinecraft().getWindow().getGuiScaledHeight()*0.05);
+        x = (int)(window.getGuiScaledWidth()*0.95) - 21;
+        y = (int)(window.getGuiScaledHeight()*0.05);
         this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
                 paletteTextures, 256, 256, button -> showHelp = !showHelp, Tooltip.create(Component.literal("Toggle help tooltips"))));
 
