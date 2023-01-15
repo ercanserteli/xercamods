@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +19,7 @@ import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -61,7 +63,7 @@ public class TileEntityMusicBox extends BlockEntity {
             parent.put("note", noteTag);
         }
         if (this.instrument != null) {
-            ResourceLocation resourcelocation = Registry.ITEM.getKey((Item) this.instrument);
+            ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey((Item) this.instrument);
             parent.putString("instrument_id", resourcelocation.toString());
         }
     }
@@ -75,7 +77,7 @@ public class TileEntityMusicBox extends BlockEntity {
             setNoteStack(note, false);
         }
         if (parent.contains("instrument_id", 8)) {
-            this.setInstrument(Registry.ITEM.get(new ResourceLocation(parent.getString("instrument_id"))));
+            this.setInstrument(BuiltInRegistries.ITEM.get(new ResourceLocation(parent.getString("instrument_id"))));
         }
     }
 
@@ -113,6 +115,10 @@ public class TileEntityMusicBox extends BlockEntity {
                         if (data != null) {
                             t.notes.clear();
                             t.notes.addAll(data.notes);
+                        }
+                        else{
+                            XercaMusic.LOGGER.info("Clearing tag data from unknown music sheet");
+                            t.noteStack.setTag(new CompoundTag());
                         }
                     }
                 }

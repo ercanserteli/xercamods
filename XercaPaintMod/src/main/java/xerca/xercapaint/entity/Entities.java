@@ -2,6 +2,7 @@ package xerca.xercapaint.entity;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -16,7 +17,7 @@ public class Entities {
             .dimensions(new EntityDimensions(0.8f, 1.975F, true)).build();
 
     public static void registerEntities() {
-        Registry.register(Registry.ENTITY_TYPE, new ResourceLocation(Mod.modId, "canvas"), CANVAS);
-        Registry.register(Registry.ENTITY_TYPE, new ResourceLocation(Mod.modId, "easel"), EASEL);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.modId, "canvas"), CANVAS);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.modId, "easel"), EASEL);
     }
 }

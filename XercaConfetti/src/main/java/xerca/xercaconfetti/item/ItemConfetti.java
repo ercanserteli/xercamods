@@ -1,13 +1,11 @@
 package xerca.xercaconfetti.item;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -22,7 +20,7 @@ import static xerca.xercaconfetti.Mod.sendToClientsAround;
 public class ItemConfetti extends Item {
 
     public ItemConfetti() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+        super(new Item.Properties());
     }
 
     @Override
@@ -43,10 +41,5 @@ public class ItemConfetti extends Item {
 
     static public void playSound(Level world, @Nullable Player player, double x, double y, double z){
         world.playSound(player, x, y, z, Mod.SOUND_CONFETTI, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.8F);
-    }
-
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
     }
 }

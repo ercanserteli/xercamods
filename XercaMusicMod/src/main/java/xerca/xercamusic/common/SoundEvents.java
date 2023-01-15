@@ -1,6 +1,7 @@
 package xerca.xercamusic.common;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -39,8 +40,8 @@ public class SoundEvents {
 
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = new ResourceLocation(XercaMusic.MODID, soundName);
-        final SoundEvent soundEvent = new SoundEvent(soundID);
-        Registry.register(Registry.SOUND_EVENT, soundID, soundEvent);
+        final SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundID);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, soundID, soundEvent);
         return soundEvent;
     }
 

@@ -17,13 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class ItemGlass extends Item {
     public ItemGlass() {
-        super((new Item.Properties()).tab(CreativeModeTab.TAB_MISC));
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
+        super((new Item.Properties()));
     }
 
     @Override

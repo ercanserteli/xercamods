@@ -18,7 +18,7 @@ public class ItemTeapot extends BlockItem {
     private final boolean isHot;
 
     public ItemTeapot(BlockTeapot blockTeapot, int teaAmount, boolean isHot) {
-        super(blockTeapot, (teaAmount == 7 ? new Item.Properties().tab(Items.teaTab) : new Item.Properties()).defaultDurability(maxTea));
+        super(blockTeapot, new Item.Properties().defaultDurability(maxTea));
         this.teaAmount = teaAmount;
         this.isHot = isHot;
     }
@@ -40,14 +40,6 @@ public class ItemTeapot extends BlockItem {
     @Override
     public boolean isBarVisible(ItemStack stack) {
         return false;
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            items.add(new ItemStack(this));
-        }
     }
 
     @Override

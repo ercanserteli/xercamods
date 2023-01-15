@@ -2,7 +2,7 @@ package xerca.xercamusic.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
+import org.joml.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.renderer.GameRenderer;
@@ -79,7 +79,7 @@ public class BetterSlider extends AbstractSliderButton {
 
     private void setValueFromMouse(double mouseX)
     {
-        this.setSliderValue((mouseX - (this.x + 4)) / (this.width - 8));
+        this.setSliderValue((mouseX - (this.getX() + 4)) / (this.width - 8));
     }
 
     private void setSliderValue(double newValue)
@@ -116,7 +116,7 @@ public class BetterSlider extends AbstractSliderButton {
         if (this.visible) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
-            blitWithBorder(stack, this.x + (int)(this.value * (float)(this.width - 8)), this.y, 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
+            blitWithBorder(stack, this.getX() + (int)(this.value * (float)(this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
         }
     }
 

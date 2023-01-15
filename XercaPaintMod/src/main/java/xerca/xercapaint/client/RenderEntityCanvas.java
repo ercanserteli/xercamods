@@ -4,9 +4,10 @@ import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -181,20 +182,20 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             final float hScale = height/16.0f;
 
             ms.pushPose();
-            Matrix3f mn = ms.last().normal().copy();
+            Matrix3f mn = ms.last().normal();
 
             float xOffset = facing.getStepX();
             float yOffset = facing.getStepY();
             float zOffset = facing.getStepZ();
 
             if(canvas != null && canvas.getRotation() > 0) {
-                ms.mulPose(Vector3f.XP.rotationDegrees( pitch));
-                ms.mulPose(Vector3f.YP.rotationDegrees( 180-yaw));
-                ms.mulPose(Vector3f.ZP.rotationDegrees(90*canvas.getRotation()));
-                ms.mulPose(Vector3f.YP.rotationDegrees( -180+yaw));
-                ms.mulPose(Vector3f.XP.rotationDegrees( -pitch));
+                ms.mulPose(Axis.XP.rotationDegrees( pitch));
+                ms.mulPose(Axis.YP.rotationDegrees( 180-yaw));
+                ms.mulPose(Axis.ZP.rotationDegrees(90*canvas.getRotation()));
+                ms.mulPose(Axis.YP.rotationDegrees( -180+yaw));
+                ms.mulPose(Axis.XP.rotationDegrees( -pitch));
             }
-            ms.last().normal().load(mn);
+            ms.last().normal().set(mn);
 
             float f = 1.0f/32.0f;
             if(canvas != null) {
@@ -212,12 +213,11 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                     f /= 2.0f;
                 }
             }
-            ms.mulPose(Vector3f.XP.rotationDegrees( pitch));
-            ms.mulPose(Vector3f.YP.rotationDegrees( 180-yaw));
+            ms.mulPose(Axis.XP.rotationDegrees( pitch));
+            ms.mulPose(Axis.YP.rotationDegrees( 180-yaw));
 
             ms.scale(f, f, f);
 
-//            textureManager.bind(location);
             RenderSystem.setShaderTexture(0, location);
 
             Matrix4f m = ms.last().pose();

@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +36,7 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayCha
             }
 
             if(!msg.getInstrumentId().isEmpty()){
-                tileEntityMusicBox.setInstrument(Registry.ITEM.get(new ResourceLocation(msg.getInstrumentId())));
+                tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.get(new ResourceLocation(msg.getInstrumentId())));
             }else{
                 tileEntityMusicBox.removeInstrument();
             }

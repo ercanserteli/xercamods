@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ItemPalette extends Item {
     ItemPalette() {
-        super(new Properties().tab(Items.paintTab).stacksTo(1));
+        super(new Properties().stacksTo(1));
     }
 
     @Nonnull
@@ -33,25 +33,6 @@ public class ItemPalette extends Item {
             ModClient.showCanvasGui(playerIn);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
-    }
-
-    /**
-     * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
-     */
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            // Empty palette
-            items.add(new ItemStack(this));
-
-            // Full palette
-            ItemStack fullPalette = new ItemStack(this);
-            byte[] basicColors = new byte[16];
-            Arrays.fill(basicColors, (byte)1);
-            fullPalette.getOrCreateTag().putByteArray("basic", basicColors);
-            items.add(fullPalette);
-        }
     }
 
     public static boolean isFull(ItemStack stack){

@@ -17,10 +17,15 @@ public class PaletteUpdatePacketHandler implements ServerPlayNetworking.PlayChan
     private static void processMessage(PaletteUpdatePacket msg, ServerPlayer pl) {
         ItemStack palette = pl.getMainHandItem();
 
-        if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
-            CompoundTag paletteComp = palette.getOrCreateTag();
-            writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
+        if (palette.isEmpty() || palette.getItem() != Items.ITEM_PALETTE) {
+            palette = pl.getOffhandItem();
+            if (palette.isEmpty() || palette.getItem() != Items.ITEM_PALETTE) {
+                return;
+            }
         }
+
+        CompoundTag paletteComp = palette.getOrCreateTag();
+        writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
     }
 
     @Override

@@ -57,19 +57,19 @@ def add_lang_entry(mod_id, entry_name, lang_id, trans_name, prefix):
 def add_item_mod_entry(mod_id, item_name, item_class):
     line = f'    public static final {item_class} {item_name.upper()} = new {item_class}(new Item.Settings());\n'
     add_to_java_file("Mod.java", "// Item Definitions", line, mod_id)
-    line = f'        Registry.register(Registry.ITEM, new ResourceLocation(modId, "{item_name}"), {item_name.upper()});\n'
+    line = f'        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(modId, "{item_name}"), {item_name.upper()});\n'
     add_to_java_file("Mod.java", "// Item Registration", line, mod_id)
 
 
 def add_block_mod_entry(mod_id, block_name, block_class, is_pure):
     line = f'    public static final {block_class} {block_name.upper()} = new {block_class}(AbstractBlock.Settings.of(Material.SOIL).strength(0.5f));\n'
     add_to_java_file("Mod.java", "// Block Definitions", line, mod_id)
-    line = f'        Registry.register(Registry.BLOCK, new ResourceLocation(modId, "{block_name}"), {block_name.upper()});\n'
+    line = f'        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(modId, "{block_name}"), {block_name.upper()});\n'
     add_to_java_file("Mod.java", "// Block Registration", line, mod_id)
     
     line = f'    public static final BlockItem {block_name.upper()}_ITEM = new BlockItem({block_name.upper()}, new Item.Settings().group(ItemGroup.DECORATIONS));\n'
     add_to_java_file("Mod.java", "// Item Definitions", line, mod_id)
-    line = f'        Registry.register(Registry.ITEM, new ResourceLocation(modId, "{block_name}"), {block_name.upper()}_ITEM);\n'
+    line = f'        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(modId, "{block_name}"), {block_name.upper()}_ITEM);\n'
     add_to_java_file("Mod.java", "// Item Registration", line, mod_id)
    
 
@@ -172,7 +172,7 @@ public class {entity_class}Renderer extends EntityRenderer<{entity_class}> {{
 
 def add_entity_mod_entry(mod_id, entity_name, entity_class, is_mob=False):
     line = f"""
-    public static final EntityType<{entity_class}> {entity_name.upper()} = Registry.register(Registry.ENTITY_TYPE, new ResourceLocation(modId, "{entity_name}"),
+    public static final EntityType<{entity_class}> {entity_name.upper()} = Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(modId, "{entity_name}"),
             FabricEntityTypeBuilder.create(SpawnGroup.MISC, (EntityType.EntityFactory<{entity_class}>){entity_class}::new)
             .dimensions(new EntityDimensions( 1.0f, 1.0f, true)).build());
     """

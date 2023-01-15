@@ -20,7 +20,7 @@ public class ItemKnife extends Item implements FabricItem {
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
 
     ItemKnife() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS).stacksTo(1).defaultDurability(maxDamage));
+        super(new Item.Properties().stacksTo(1).defaultDurability(maxDamage));
 
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", weaponDamage, AttributeModifier.Operation.ADDITION));

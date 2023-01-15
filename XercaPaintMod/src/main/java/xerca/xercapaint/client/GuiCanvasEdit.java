@@ -8,12 +8,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
@@ -23,6 +25,7 @@ import xerca.xercapaint.packets.CanvasMiniUpdatePacket;
 import xerca.xercapaint.packets.CanvasUpdatePacket;
 import xerca.xercapaint.packets.EaselLeftPacket;
 import xerca.xercapaint.entity.EntityEasel;
+import xerca.xercapaint.packets.PaletteUpdatePacket;
 
 import java.util.*;
 
@@ -51,7 +54,6 @@ public class GuiCanvasEdit extends BasePalette {
     private Button buttonSign;
     private Button buttonCancel;
     private Button buttonFinalize;
-    private Button buttonHelpToggle;
     private int updateCount;
     private BrushSound brushSound = null;
     private final int canvasHolderHeight = 10;
@@ -65,7 +67,6 @@ public class GuiCanvasEdit extends BasePalette {
     private final CanvasType canvasType;
     private boolean isSigned = false;
     private int[] pixels;
-    private String authorName = "";
     private String canvasTitle = "";
     private String name = "";
     private int version = 0;
@@ -106,7 +107,6 @@ public class GuiCanvasEdit extends BasePalette {
         this.editingPlayer = player;
         if (canvasTag != null && !canvasTag.isEmpty()) {
             int[] nbtPixels = canvasTag.getIntArray("pixels");
-            this.authorName = canvasTag.getString("author");
             this.canvasTitle = canvasTag.getString("title");
             this.name = canvasTag.getString("name");
             this.version = canvasTag.getInt("v");
@@ -149,7 +149,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         int x = window.getGuiScaledWidth() - 120;
         int y = window.getGuiScaledHeight() - 30;
-        this.buttonSign = this.addRenderableWidget(new Button(x, y, 98, 20, Component.translatable("canvas.signButton"), button -> {
+        this.buttonSign = this.addRenderableWidget(Button.builder(Component.translatable("canvas.signButton"), button -> {
             if (!isSigned) {
                 gettingSigned = true;
                 resetPositions();
@@ -157,30 +157,30 @@ public class GuiCanvasEdit extends BasePalette {
 
                 GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
-        }));
-        this.buttonFinalize = this.addRenderableWidget(new Button( (int)canvasX - 100, 100, 98, 20, Component.translatable("canvas.finalizeButton"), button -> {
+        }).bounds(x, y, 98, 20).build());
+        this.buttonFinalize = this.addRenderableWidget(Button.builder( Component.translatable("canvas.finalizeButton"), button -> {
             if (!isSigned) {
-                dirty = true;
+                canvasDirty = true;
                 isSigned = true;
                 if(minecraft != null){
                     minecraft.setScreen(null);
                 }
             }
 
-        }));
-        this.buttonCancel = this.addRenderableWidget(new Button( (int)canvasX - 100, 130, 98, 20, Component.translatable("gui.cancel"), button -> {
+        }).bounds((int)canvasX - 100, 100, 98, 20).build());
+        this.buttonCancel = this.addRenderableWidget(Button.builder( Component.translatable("gui.cancel"), button -> {
             if (!isSigned) {
                 gettingSigned = false;
                 updateButtons();
 
                 GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
-        }));
+        }).bounds((int)canvasX - 100, 130, 98, 20).build());
 
         x = (int)(window.getGuiScaledWidth()*0.95) - 21;
         y = (int)(window.getGuiScaledHeight()*0.05);
-        this.buttonHelpToggle = this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
-                paletteTextures, 256, 256, button -> showHelp = !showHelp, (button, poseStack, i, j) -> renderTooltip(poseStack, Component.literal("Toggle help tooltips"), i, j)));
+        this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
+                paletteTextures, 256, 256, button -> showHelp = !showHelp, Tooltip.create(Component.literal("Toggle help tooltips"))));
 
         updateButtons();
     }
@@ -192,8 +192,8 @@ public class GuiCanvasEdit extends BasePalette {
             this.buttonFinalize.visible = this.gettingSigned;
             this.buttonFinalize.active = !this.canvasTitle.trim().isEmpty();
 
-            this.buttonFinalize.x = (int)canvasX - 100;
-            this.buttonCancel.x = (int)canvasX - 100;
+            this.buttonFinalize.setX((int)canvasX - 100);
+            this.buttonCancel.setX((int)canvasX - 100);
         }
     }
 
@@ -210,6 +210,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
+    @SuppressWarnings("PointlessArithmeticExpression")
     private void setPixelsAt(int mouseX, int mouseY, PaletteUtil.Color color, int brushSize, float opacity){
         int x, y;
         final int pixelHalf = canvasPixelScale/2;
@@ -295,7 +296,7 @@ public class GuiCanvasEdit extends BasePalette {
             if(easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(editingPlayer) > 64){
                 this.onClose();
             }
-            if(skippedUpdate && timeSinceLastUpdate > 20 && dirty){
+            if(skippedUpdate && timeSinceLastUpdate > 20 && canvasDirty){
                 updateCanvas(false);
                 skippedUpdate = false;
             }
@@ -305,7 +306,7 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float f) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
         if(!gettingSigned) {
             super.render(matrixStack, mouseX, mouseY, f);
         }
@@ -394,8 +395,6 @@ public class GuiCanvasEdit extends BasePalette {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             fill(matrixStack, mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
-//            GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
-//            GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = brushSpriteY - brushSpriteSize*brushSize;
             blit(matrixStack, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize);
@@ -438,8 +437,6 @@ public class GuiCanvasEdit extends BasePalette {
                 textureVec = outlinePoss2[brushSize];
             }
 
-//            GlStateManager._color4f(0.3F, 0.3F, 0.3F, 1.0F);
-//            GlStateManager._clearColor(0.3F, 0.3F, 0.3F, 1.0F);
             RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 1.0F);
             blit(matrixStack, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
         }
@@ -466,7 +463,7 @@ public class GuiCanvasEdit extends BasePalette {
         this.font.draw(matrixStack, s, i + 26 + (116 - l) / 2.0f, j + 48, 0);
         String s2 = I18n.get("canvas.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(s2);
-        this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2, j + 48 + 10, 0);
+        this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2.0f, j + 48 + 10, 0);
         this.font.drawWordWrap(Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
     }
 
@@ -487,9 +484,11 @@ public class GuiCanvasEdit extends BasePalette {
                     break;
                 case GLFW.GLFW_KEY_ENTER:
                     if (!this.canvasTitle.isEmpty()) {
-                        dirty = true;
+                        canvasDirty = true;
                         this.isSigned = true;
-                        this.minecraft.setScreen(null);
+                        if (this.minecraft != null) {
+                            this.minecraft.setScreen(null);
+                        }
                     }
                     break;
                 default:
@@ -501,7 +500,7 @@ public class GuiCanvasEdit extends BasePalette {
             if (keyCode == GLFW.GLFW_KEY_Z && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
                 if (undoStack.size() > 0) {
                     pixels = undoStack.pop();
-                    dirty = true;
+                    canvasDirty = true;
                     if(easel != null){
                         updateCanvas(false);
                     }
@@ -622,7 +621,7 @@ public class GuiCanvasEdit extends BasePalette {
             // "Erase" with right click
             setPixelsAt(mouseX, mouseY, PaletteUtil.Color.WHITE, brushSize, 1.0f);
         }
-        dirty = true;
+        canvasDirty = true;
     }
 
     @Override
@@ -722,18 +721,24 @@ public class GuiCanvasEdit extends BasePalette {
 
     private void updateCanvas(boolean closing){
         if(closing){
-            if (dirty) {
+            if (canvasDirty) {
                 version++;
                 CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, easel, customColors, canvasType);
                 ClientPlayNetworking.send(Mod.CANVAS_UPDATE_PACKET_ID, pack.encode());
             }
-            else if(easel != null){
-                EaselLeftPacket pack = new EaselLeftPacket(easel);
-                ClientPlayNetworking.send(Mod.EASEL_LEFT_PACKET_ID, pack.encode());
+            else{
+                if(easel != null) {
+                    EaselLeftPacket pack = new EaselLeftPacket(easel);
+                    ClientPlayNetworking.send(Mod.EASEL_LEFT_PACKET_ID, pack.encode());
+                }
+                if(paletteDirty) {
+                    PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
+                    ClientPlayNetworking.send(Mod.PALETTE_UPDATE_PACKET_ID, pack.encode());
+                }
             }
         }
         else{
-            if (dirty) {
+            if (canvasDirty) {
                 if(timeSinceLastUpdate < 10){
                     skippedUpdate = true;
                 }
@@ -741,7 +746,7 @@ public class GuiCanvasEdit extends BasePalette {
                     version ++;
                     CanvasMiniUpdatePacket pack = new CanvasMiniUpdatePacket(pixels, name, version, easel, canvasType);
                     ClientPlayNetworking.send(Mod.CANVAS_MINI_UPDATE_PACKET_ID, pack.encode());
-                    dirty = false;
+                    canvasDirty = false;
                     timeSinceLastUpdate = 0;
                 }
             }
@@ -750,25 +755,21 @@ public class GuiCanvasEdit extends BasePalette {
 
     public static class ToggleHelpButton extends Button {
         protected final ResourceLocation resourceLocation;
-        protected int xTexStart;
-        protected int yTexStart;
+        protected final int xTexStart;
+        protected final int yTexStart;
         protected final int yDiffText;
         protected final int texWidth;
         protected final int texHeight;
 
-        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, OnTooltip onTooltip) {
-            super(x, y, width, height, Component.empty(), onClick, onTooltip);
+        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Tooltip tooltip) {
+            super(x, y, width, height, Component.empty(), onClick, Button.DEFAULT_NARRATION);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
             this.xTexStart = xTexStart;
             this.yTexStart = yTexStart;
             this.yDiffText = yDiffText;
             this.resourceLocation = texture;
-        }
-
-        public void setTexStarts(int x, int y) {
-            this.xTexStart = x;
-            this.yTexStart = y;
+            setTooltip(tooltip);
         }
 
         protected void postRender(){
@@ -776,7 +777,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         @Override
-        public void renderButton(PoseStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderButton(@NotNull PoseStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, this.resourceLocation);
             GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
@@ -784,10 +785,7 @@ public class GuiCanvasEdit extends BasePalette {
                 yTexStartNew += this.yDiffText;
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
-            blit(matrixStack, this.x, this.y, (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
-            if (this.isHovered) {
-                this.renderToolTip(matrixStack, p_230431_2_, p_230431_3_);
-            }
+            blit(matrixStack, this.getX(), this.getY(), (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
         }
     }

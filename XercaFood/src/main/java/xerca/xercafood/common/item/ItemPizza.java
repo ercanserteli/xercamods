@@ -17,7 +17,7 @@ public class ItemPizza extends BlockItem {
     private final BlockPizza.Ingredient slot3;
 
     public ItemPizza(Block blockIn, BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
-        super(blockIn, BlockPizza.isAllEmpty(slot1, slot2, slot3) ? new Item.Properties().tab(CreativeModeTab.TAB_FOOD) : new Item.Properties());
+        super(blockIn, new Item.Properties());
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;

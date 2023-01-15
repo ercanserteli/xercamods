@@ -1,13 +1,11 @@
 package xerca.xercaconfetti.item;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -17,7 +15,7 @@ import xerca.xercaconfetti.entity.EntityConfettiBall;
 public class ItemConfettiBall extends Item {
 
     public ItemConfettiBall() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_MISC));
+        super(new Item.Properties());
     }
 
     /**
@@ -38,10 +36,5 @@ public class ItemConfettiBall extends Item {
             worldIn.addFreshEntity(entityball);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
-    }
-
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
     }
 }

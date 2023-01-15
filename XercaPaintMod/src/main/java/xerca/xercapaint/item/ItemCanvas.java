@@ -33,7 +33,7 @@ public class ItemCanvas extends HangingEntityItem {
     private final CanvasType canvasType;
 
     ItemCanvas(CanvasType canvasType) {
-        super(Entities.CANVAS, new FabricItemSettings().group(Items.paintTab).stacksTo(1));
+        super(Entities.CANVAS, new FabricItemSettings().stacksTo(1));
         this.canvasType = canvasType;
     }
 

@@ -68,7 +68,7 @@ public class GuiPalette extends BasePalette {
 
     @Override
     public void removed() {
-        if (dirty) {
+        if (paletteDirty) {
             PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
             ClientPlayNetworking.send(Mod.PALETTE_UPDATE_PACKET_ID, pack.encode());
         }

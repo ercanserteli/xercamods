@@ -1,7 +1,8 @@
 package xerca.xercafood.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
+import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -27,7 +28,7 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityD
         matrixStackIn.pushPose();
 
         matrixStackIn.translate(0.5f, 0.f, 0.5f);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(2*f));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(2*f));
         matrixStackIn.translate(-0.5f, 0.f, -0.5f);
 
         BlockState bs = blockEntity.getBlockState();

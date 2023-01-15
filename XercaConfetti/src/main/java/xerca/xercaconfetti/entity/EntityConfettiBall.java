@@ -6,6 +6,7 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -82,7 +83,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket()
+    public Packet<ClientGamePacketListener> getAddEntityPacket()
     {
         FriendlyByteBuf buffer = PacketByteBufs.create();
         ClientboundAddEntityPacket pack = new ClientboundAddEntityPacket(this);

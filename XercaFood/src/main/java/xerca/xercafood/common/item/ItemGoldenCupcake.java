@@ -68,7 +68,7 @@ public class ItemGoldenCupcake extends Item {
                     lightningBoltEntity.setVisualOnly(true);
                     worldIn.addFreshEntity(lightningBoltEntity);
 
-                    worldIn.explode(null, player.getX(), player.getY(), player.getZ(), 1.1F, false, Explosion.BlockInteraction.BREAK);
+                    worldIn.explode(null, player.getX(), player.getY(), player.getZ(), 1.1F, false, Level.ExplosionInteraction.TNT);
 
                     float multiplier = 0.5f;
                     float motionX = worldIn.random.nextFloat() - 0.5f;

@@ -16,6 +16,12 @@ repositories {
     // for more information about repositories.
 }
 
+tasks.register('buildCopy', Copy) {
+    dependsOn build
+    from "$buildDir/libs/${archivesBaseName}-${version}.jar"
+    into "$buildDir/../../builds"
+}
+
 dependencies {
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     // To change the versions see the gradle.properties file
