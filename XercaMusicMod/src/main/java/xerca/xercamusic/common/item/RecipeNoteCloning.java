@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.WrittenBookItem;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -14,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 @MethodsReturnNonnullByDefault
 public class RecipeNoteCloning extends CustomRecipe {
-    public RecipeNoteCloning(ResourceLocation p_i48170_1_) {
-        super(p_i48170_1_);
+    public RecipeNoteCloning(ResourceLocation location, CraftingBookCategory category) {
+        super(location, category);
     }
 
     /**

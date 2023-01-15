@@ -1,24 +1,21 @@
 package xerca.xercafood.common.item;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import xerca.xercafood.common.SoundEvents;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 class ItemUltimateBurger extends Item {
 
     public ItemUltimateBurger() {
-        super(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ULTIMATE_BURGER));
+        super(new Item.Properties().food(Foods.ULTIMATE_BURGER));
     }
 
     @Nonnull
@@ -32,12 +29,5 @@ class ItemUltimateBurger extends Item {
             }
         }
         return entityLiving.eat(worldIn, stack);
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        
-        super.fillItemCategory(group, items);
     }
 }

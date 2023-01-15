@@ -39,7 +39,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
 
     private final int instrumentId;
     public ItemBlockInstrument(int instrumentId, int minOctave, int maxOctave, Block block) {
-        this(instrumentId, minOctave, maxOctave, new Properties().tab(Items.musicTab), block);
+        this(instrumentId, minOctave, maxOctave, new Properties(), block);
     }
 
     public ItemBlockInstrument(int instrumentId, int minOctave, int maxOctave, Properties properties, Block block) {

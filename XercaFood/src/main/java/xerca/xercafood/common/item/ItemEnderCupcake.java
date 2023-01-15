@@ -1,23 +1,20 @@
 package xerca.xercafood.common.item;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 class ItemEnderCupcake extends Item {
 
     public ItemEnderCupcake() {
-        super(new Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.ENDER_CUPCAKE));
+        super(new Properties().food(Foods.ENDER_CUPCAKE));
     }
 
     @Nonnull
@@ -50,11 +47,5 @@ class ItemEnderCupcake extends Item {
         }
 
         return lvt_4_1_;
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
     }
 }

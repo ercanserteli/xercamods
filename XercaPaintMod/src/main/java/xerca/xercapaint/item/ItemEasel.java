@@ -39,9 +39,9 @@ public class ItemEasel extends Item {
             ItemStack itemstack = ctx.getItemInHand();
             Vec3 vec3 = Vec3.atBottomCenterOf(blockpos);
             AABB aabb = Entities.EASEL.getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
-            if (level.noCollision((Entity)null, aabb) && level.getEntities((Entity)null, aabb).isEmpty()) {
+            if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
                 if (level instanceof ServerLevel serverlevel) {
-                    EntityEasel easel = Entities.EASEL.create(serverlevel, itemstack.getTag(), (Component)null, ctx.getPlayer(), blockpos, MobSpawnType.SPAWN_EGG, true, true);
+                    EntityEasel easel = Entities.EASEL.create(serverlevel, itemstack.getTag(), null, blockpos, MobSpawnType.SPAWN_EGG, true, true);
                     if (easel == null) {
                         return InteractionResult.FAIL;
                     }

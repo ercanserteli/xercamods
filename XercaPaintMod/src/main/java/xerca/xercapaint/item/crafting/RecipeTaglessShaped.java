@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -15,12 +16,12 @@ import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
 
 public class RecipeTaglessShaped extends ShapedRecipe {
 
-    public RecipeTaglessShaped(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn) {
-        super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
+    public RecipeTaglessShaped(ResourceLocation idIn, String groupIn, CraftingBookCategory bookCategory, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn) {
+        super(idIn, groupIn, bookCategory, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
     }
 
     public RecipeTaglessShaped(ShapedRecipe shapedRecipe){
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.getWidth(), shapedRecipe.getHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem());
+        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.category(), shapedRecipe.getWidth(), shapedRecipe.getHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem());
     }
 
     /**

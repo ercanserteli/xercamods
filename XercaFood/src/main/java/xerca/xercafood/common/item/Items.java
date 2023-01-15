@@ -1,15 +1,15 @@
 package xerca.xercafood.common.item;
 
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
 import xerca.xercafood.common.XercaFood;
@@ -21,19 +21,16 @@ import xerca.xercafood.common.crafting.RecipeTeaRefilling;
 import xerca.xercafood.common.crafting.RecipeTeaSugaring;
 
 public final class Items {
-    public static final CreativeModeTab teaTab = FabricItemGroupBuilder.build(new ResourceLocation(XercaFood.MODID, "tea_tab"),
-            () -> new ItemStack(Items.ITEM_FULL_TEAPOT_1));
-
     public static final Item ITEM_KNIFE = new ItemKnife();
     public static final Item ITEM_GLASS = new ItemGlass();
     public static final Item ENDER_CUPCAKE = new ItemEnderCupcake();
-    public static final Item COLA_EXTRACT = new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE));
-    public static final Item COLA_POWDER = new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING));
+    public static final Item COLA_EXTRACT = new Item(new Item.Properties().craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE));
+    public static final Item COLA_POWDER = new Item(new Item.Properties());
     public static final Item ITEM_ULTIMATE_BURGER = new ItemUltimateBurger();
-    public static final Item ITEM_GLASS_OF_WATER = new ItemGlassOfWater(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(Foods.GLASS_OF_WATER), ITEM_GLASS);
-    public static final Item ITEM_APPLE_PIE = new BlockItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD));
-    public static final Item SWEET_BERRY_PIE = new BlockItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties().tab(CreativeModeTab.TAB_FOOD));
-    public static final Item ITEM_TEACUP = new ItemTea(new Item.Properties().tab(Items.teaTab));
+    public static final Item ITEM_GLASS_OF_WATER = new ItemGlassOfWater(new Item.Properties().food(Foods.GLASS_OF_WATER), ITEM_GLASS);
+    public static final Item ITEM_APPLE_PIE = new BlockItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties());
+    public static final Item SWEET_BERRY_PIE = new BlockItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties());
+    public static final Item ITEM_TEACUP = new ItemTea(new Item.Properties());
     public static final ItemTeacup ITEM_FULL_TEACUP_0 = new ItemTeacup(0, ITEM_TEACUP);
     public static final ItemTeacup ITEM_FULL_TEACUP_1 = new ItemTeacup(1, ITEM_TEACUP);
     public static final ItemTeacup ITEM_FULL_TEACUP_2 = new ItemTeacup(2, ITEM_TEACUP);
@@ -57,16 +54,16 @@ public final class Items {
     public static final ItemTeapot ITEM_HOT_TEAPOT_5 = new ItemTeapot(Blocks.BLOCK_TEAPOT, 5, true);
     public static final ItemTeapot ITEM_HOT_TEAPOT_6 = new ItemTeapot(Blocks.BLOCK_TEAPOT, 6, true);
     public static final ItemTeapot ITEM_HOT_TEAPOT_7 = new ItemTeapot(Blocks.BLOCK_TEAPOT, 7, true);
-    public static final ItemEmptyTeapot ITEM_TEAPOT = new ItemEmptyTeapot(new Item.Properties().tab(Items.teaTab));
-    public static final Item ITEM_TEA_SEEDS = new BlockItem(Blocks.BLOCK_TEA_PLANT, new Item.Properties().tab(Items.teaTab));
-    public static final Item ITEM_TEA_DRIED = new ItemTea(new Item.Properties().tab(Items.teaTab));
-    public static final Item ITEM_TEA_LEAF = new ItemTea(new Item.Properties().tab(Items.teaTab));
+    public static final ItemEmptyTeapot ITEM_TEAPOT = new ItemEmptyTeapot(new Item.Properties());
+    public static final Item ITEM_TEA_SEEDS = new BlockItem(Blocks.BLOCK_TEA_PLANT, new Item.Properties());
+    public static final Item ITEM_TEA_DRIED = new ItemTea(new Item.Properties());
+    public static final Item ITEM_TEA_LEAF = new ItemTea(new Item.Properties());
     public static final ItemGoldenCupcake ITEM_GOLDEN_CUPCAKE = new ItemGoldenCupcake();
     public static final ItemTomato ITEM_TOMATO = new ItemTomato();
-    public static final Item ITEM_TOMATO_SEEDS = new BlockItem(Blocks.BLOCK_TOMATO_PLANT, new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS));
-    public static final Item ITEM_RICE_SEEDS = new BlockItem(Blocks.BLOCK_RICE_PLANT, new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS));
-    public static final Item VAT = new BlockItem(Blocks.VAT, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
-    public static final Item CHEESE_WHEEL = new BlockItem(Blocks.CHEESE_WHEEL, new Item.Properties().tab(CreativeModeTab.TAB_FOOD));
+    public static final Item ITEM_TOMATO_SEEDS = new BlockItem(Blocks.BLOCK_TOMATO_PLANT, new Item.Properties());
+    public static final Item ITEM_RICE_SEEDS = new BlockItem(Blocks.BLOCK_RICE_PLANT, new Item.Properties());
+    public static final Item VAT = new BlockItem(Blocks.VAT, new Item.Properties());
+    public static final Item CHEESE_WHEEL = new BlockItem(Blocks.CHEESE_WHEEL, new Item.Properties());
     public static final Item ITEM_APPLE_CUPCAKE = makeFoodItem(Foods.APPLE_CUPCAKE);
     public static final Item ITEM_PUMPKIN_CUPCAKE = makeFoodItem(Foods.PUMPKIN_CUPCAKE);
     public static final Item ITEM_COCOA_CUPCAKE = makeFoodItem(Foods.COCOA_CUPCAKE);
@@ -258,26 +255,38 @@ public final class Items {
     public static final Item PIZZA_CHICKEN = new ItemPizza(Blocks.PIZZA_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
     public static final Item PIZZA = new ItemPizza(Blocks.PIZZA, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
 
-    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING = new SimpleRecipeSerializer<>(RecipeTeaSugaring::new);
-    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING = new SimpleRecipeSerializer<>(RecipeTeaPouring::new);
-    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new SimpleRecipeSerializer<>(RecipeTeaFilling::new);
-    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING = new SimpleRecipeSerializer<>(RecipeTeaRefilling::new);
+//    public static final CreativeModeTab teaTab = FabricItemGroup.builder(new ResourceLocation(XercaFood.MODID, "tea_tab"))
+//            .icon(() -> new ItemStack(Items.ITEM_FULL_TEAPOT_1))
+//            .displayItems((enabledFeatures, entries, operatorEnabled) -> {
+//                entries.accept(ITEM_TEACUP);
+//                entries.accept(ITEM_TEA_LEAF);
+//                entries.accept(ITEM_TEA_DRIED);
+//                entries.accept(ITEM_TEAPOT);
+//                entries.accept(ITEM_FULL_TEACUP_0);
+//                entries.accept(ITEM_HOT_TEAPOT_7);
+//            })
+//            .build();
+
+    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING = new SimpleCraftingRecipeSerializer<>(RecipeTeaSugaring::new);
+    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING = new SimpleCraftingRecipeSerializer<>(RecipeTeaPouring::new);
+    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeTeaFilling::new);
+    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING = new SimpleCraftingRecipeSerializer<>(RecipeTeaRefilling::new);
 
     static Item makeFoodItem(FoodProperties food){
-        return new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food));
+        return new Item(new Item.Properties().food(food));
     }
 
     static Item makeContainedFoodItem(FoodProperties food, Item container, int stackSize){
-        return new ItemStackableContainedFood(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food).
+        return new ItemStackableContainedFood(new Item.Properties().food(food).
                 craftRemainder(container), container, stackSize);
     }
 
     static Item makeDrinkItem(FoodProperties food, Item container){
-        return new ItemDrink(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(food), container);
+        return new ItemDrink(new Item.Properties().food(food), container);
     }
 
     private static void registerItem(String name, Item item) {
-        Registry.register(Registry.ITEM, new ResourceLocation(XercaFood.MODID, name), item);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaFood.MODID, name), item);
     }
 
     static void registerCompostable(float chance, ItemLike itemIn) {
@@ -294,13 +303,124 @@ public final class Items {
     }
 
     public static void registerRecipes() {
-        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
-        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
-        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
-        Registry.register(Registry.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
     }
 
     public static void registerItems() {
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
+            entries.accept(Items.ITEM_TOMATO);
+            entries.accept(Items.RAW_SHISH_KEBAB);
+            entries.accept(Items.ITEM_SHISH_KEBAB);
+            entries.accept(Items.ITEM_YOGHURT);
+            entries.accept(Items.ITEM_HONEYBERRY_YOGHURT);
+            entries.accept(Items.ITEM_HONEY_CUPCAKE);
+            entries.accept(Items.ITEM_DONER_WRAP);
+            entries.accept(Items.ITEM_CHUBBY_DONER);
+            entries.accept(Items.ITEM_ALEXANDER);
+            entries.accept(Items.ITEM_AYRAN);
+            entries.accept(Items.DONER_SLICE);
+            entries.accept(Items.BAKED_RICE_PUDDING);
+            entries.accept(Items.SWEET_BERRY_JUICE);
+            entries.accept(Items.RICE_PUDDING);
+            entries.accept(Items.SWEET_BERRY_CUPCAKE_FANCY);
+            entries.accept(Items.SWEET_BERRY_CUPCAKE);
+            entries.accept(Items.ENDER_CUPCAKE);
+            entries.accept(Items.SASHIMI);
+            entries.accept(Items.OYAKODON);
+            entries.accept(Items.BEEF_DONBURI);
+            entries.accept(Items.EGG_SUSHI);
+            entries.accept(Items.NIGIRI_SUSHI);
+            entries.accept(Items.OMURICE);
+            entries.accept(Items.SAKE);
+            entries.accept(Items.RICEBALL);
+            entries.accept(Items.SUSHI);
+            entries.accept(Items.COOKED_RICE);
+            entries.accept(Items.COLA);
+            entries.accept(Items.ITEM_APPLE_CUPCAKE);
+            entries.accept(Items.ITEM_PUMPKIN_CUPCAKE);
+            entries.accept(Items.ITEM_COCOA_CUPCAKE);
+            entries.accept(Items.ITEM_MELON_CUPCAKE);
+            entries.accept(Items.ITEM_CARROT_CUPCAKE);
+            entries.accept(Items.ITEM_FANCY_APPLE_CUPCAKE);
+            entries.accept(Items.ITEM_FANCY_PUMPKIN_CUPCAKE);
+            entries.accept(Items.GLOWBERRY_CUPCAKE);
+            entries.accept(Items.ITEM_DONUT);
+            entries.accept(Items.ITEM_FANCY_DONUT);
+            entries.accept(Items.ITEM_SPRINKLES);
+            entries.accept(Items.ITEM_CHOCOLATE);
+            entries.accept(Items.ITEM_BUN);
+            entries.accept(Items.ITEM_RAW_PATTY);
+            entries.accept(Items.ITEM_COOKED_PATTY);
+            entries.accept(Items.ITEM_RAW_CHICKEN_PATTY);
+            entries.accept(Items.ITEM_COOKED_CHICKEN_PATTY);
+            entries.accept(Items.ITEM_HAMBURGER);
+            entries.accept(Items.ITEM_CHICKEN_BURGER);
+            entries.accept(Items.ITEM_MUSHROOM_BURGER);
+            entries.accept(Items.ITEM_ULTIMATE_BOTTOM);
+            entries.accept(Items.ITEM_ULTIMATE_TOP);
+            entries.accept(Items.CHEESEBURGER);
+            entries.accept(Items.COLA_EXTRACT);
+            entries.accept(Items.COLA_POWDER);
+            entries.accept(Items.CARBONATED_WATER);
+            entries.accept(Items.ITEM_ULTIMATE_BURGER);
+            entries.accept(Items.ITEM_ROTTEN_BURGER);
+            entries.accept(Items.ITEM_COOKED_SAUSAGE);
+            entries.accept(Items.ITEM_HOTDOG);
+            entries.accept(Items.ITEM_FISH_BREAD);
+            entries.accept(Items.ITEM_DAISY_SANDWICH);
+            entries.accept(Items.ITEM_CHICKEN_WRAP);
+            entries.accept(Items.ITEM_RAW_SCHNITZEL);
+            entries.accept(Items.ITEM_COOKED_SCHNITZEL);
+            entries.accept(Items.ITEM_FRIED_EGG);
+            entries.accept(Items.ITEM_CROISSANT);
+            entries.accept(Items.ITEM_POTATO_FRIES);
+            entries.accept(Items.ITEM_ICE_TEA);
+            entries.accept(Items.ITEM_APPLE_JUICE);
+            entries.accept(Items.ITEM_CARROT_JUICE);
+            entries.accept(Items.ITEM_MELON_JUICE);
+            entries.accept(Items.ITEM_PUMPKIN_JUICE);
+            entries.accept(Items.ITEM_TOMATO_JUICE);
+            entries.accept(Items.ITEM_WHEAT_JUICE);
+            entries.accept(Items.ITEM_GLASS_OF_MILK);
+            entries.accept(Items.ITEM_GLASS_OF_WATER);
+            entries.accept(Items.SODA);
+            entries.accept(Items.CHEESE_TOAST);
+            entries.accept(Items.SQUID_INK_PAELLA);
+            entries.accept(Items.GLOW_SQUID_INK_PAELLA);
+            entries.accept(Items.ITEM_APPLE_PIE);
+            entries.accept(Items.SWEET_BERRY_PIE);
+            entries.accept(Items.RAW_PIZZA);
+            entries.accept(Items.PIZZA);
+            entries.accept(Items.ITEM_TOMATO_SLICES);
+            entries.accept(Items.ITEM_POTATO_SLICES);
+            entries.accept(Items.ITEM_RAW_SAUSAGE);
+            entries.accept(Items.CHEESE_WHEEL);
+            entries.accept(Items.CHEESE_SLICE);
+            entries.accept(Items.ITEM_TEA_LEAF);
+            entries.accept(Items.ITEM_TEA_DRIED);
+            entries.accept(Items.ITEM_FULL_TEACUP_0);
+            entries.accept(Items.ITEM_HOT_TEAPOT_7);
+        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+            entries.accept(Items.ITEM_KNIFE);
+        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
+            entries.accept(Items.ITEM_GLASS);
+            entries.accept(Items.ITEM_TEACUP);
+            entries.accept(Items.ITEM_TEAPOT);
+        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.NATURAL_BLOCKS).register(entries -> {
+            entries.accept(Items.ITEM_TOMATO_SEEDS);
+            entries.accept(Items.ITEM_RICE_SEEDS);
+            entries.accept(Items.ITEM_TEA_SEEDS);
+        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> {
+            entries.accept(Items.VAT);
+        });
+
         registerItem("item_knife", ITEM_KNIFE);
         registerItem("item_glass", ITEM_GLASS);
         registerItem("ender_cupcake", ENDER_CUPCAKE);

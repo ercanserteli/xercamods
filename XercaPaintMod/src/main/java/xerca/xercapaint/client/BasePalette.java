@@ -101,7 +101,8 @@ public abstract class BasePalette extends Screen {
     boolean isPickingColor = false;
     boolean isCarryingColor = false;
     boolean isCarryingWater = false;
-    boolean dirty = false;
+    boolean canvasDirty = false;
+    boolean paletteDirty = false;
     PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
     static PaletteUtil.Color currentColor = basicColors[0];
@@ -322,7 +323,7 @@ public abstract class BasePalette extends Screen {
                                 playSound(SoundEvents.MIX);
                             }
                         }
-                        dirty = true;
+                        paletteDirty = true;
                         break;
                     }
                 }

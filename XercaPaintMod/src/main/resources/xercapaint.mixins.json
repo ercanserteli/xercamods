@@ -6,7 +6,6 @@
   "mixins": [
   ],
   "client": [
-    "ClientPacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

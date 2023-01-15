@@ -3,6 +3,7 @@ package xerca.xercamusic.common.packets.clientbound;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +33,7 @@ public class MusicBoxUpdatePacket implements IPacket {
             }
         }
         if(itemInstrument != null){
-            ResourceLocation resourcelocation = Registry.ITEM.getKey(itemInstrument);
+            ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey(itemInstrument);
             this.instrumentId = resourcelocation.toString();
         }else{
             this.instrumentId = "";

@@ -1,12 +1,14 @@
 package xerca.xercaconfetti;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Position;
 import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,6 +17,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -45,21 +48,26 @@ public class Mod implements ModInitializer {
 
 
     // Sound Definitions
-    public final static SoundEvent SOUND_CRACK = new SoundEvent(new ResourceLocation(Mod.modId, "crack"));
-    public final static SoundEvent SOUND_CONFETTI = new SoundEvent(new ResourceLocation(Mod.modId, "confetti"));
+    public final static SoundEvent SOUND_CRACK = SoundEvent.createVariableRangeEvent(new ResourceLocation(Mod.modId, "crack"));
+    public final static SoundEvent SOUND_CONFETTI = SoundEvent.createVariableRangeEvent(new ResourceLocation(Mod.modId, "confetti"));
 
     @Override
     public void onInitialize() {
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+            entries.accept(ITEM_CONFETTI);
+            entries.accept(ITEM_CONFETTI_BALL);
+        });
+
         // Entity Registration
-        Registry.register(Registry.ENTITY_TYPE, new ResourceLocation(modId, "confetti_ball"), ENTITY_CONFETTI_BALL);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(modId, "confetti_ball"), ENTITY_CONFETTI_BALL);
 
         // Item Registration
-        Registry.register(Registry.ITEM, new ResourceLocation(modId, "confetti_ball"), ITEM_CONFETTI_BALL);
-        Registry.register(Registry.ITEM, new ResourceLocation(modId, "confetti"), ITEM_CONFETTI);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(modId, "confetti_ball"), ITEM_CONFETTI_BALL);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(modId, "confetti"), ITEM_CONFETTI);
 
         // Sound Registration
-        Registry.register(Registry.SOUND_EVENT, SOUND_CRACK.getLocation(), SOUND_CRACK);
-        Registry.register(Registry.SOUND_EVENT, SOUND_CONFETTI.getLocation(), SOUND_CONFETTI);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CRACK.getLocation(), SOUND_CRACK);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CONFETTI.getLocation(), SOUND_CONFETTI);
 
 
         DispenserBlock.registerBehavior(ITEM_CONFETTI_BALL, new AbstractProjectileDispenseBehavior()
