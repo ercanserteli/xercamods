@@ -66,9 +66,8 @@ public class ItemMusicSheet extends Item {
                 else if(i == music.length-1){
                     l = addToOldEnd;
                 }
-
                 byte note = (byte)(music[i] + 32);
-                notes.add(new NoteEvent(note, (short)i, (byte)64, (byte)l));
+                notes.add(new NoteEvent(note, (short)i, (byte)64, l));
             }
         }
         return notes;

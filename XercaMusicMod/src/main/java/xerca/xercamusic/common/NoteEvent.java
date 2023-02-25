@@ -12,9 +12,9 @@ public class NoteEvent implements INBTSerializable<CompoundNBT> {
     public byte note;
     public short time;
     public byte volume;
-    public byte length;
+    public int length;
 
-    public NoteEvent(byte note, short time, byte volume, byte length) {
+    public NoteEvent(byte note, short time, byte volume, int length) {
         this.note = note;
         this.time = time;
         this.volume = volume;
@@ -38,7 +38,7 @@ public class NoteEvent implements INBTSerializable<CompoundNBT> {
         tag.putByte("n", note);
         tag.putShort("d", time);
         tag.putByte("v", volume);
-        tag.putByte("l", length);
+        tag.putByte("l", (byte) length);
         return tag;
     }
 

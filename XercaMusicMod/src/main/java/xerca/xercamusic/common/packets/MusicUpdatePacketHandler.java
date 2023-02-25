@@ -5,9 +5,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xerca.xercamusic.common.MusicManager;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
 
+import java.util.ArrayList;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MusicUpdatePacketHandler {
@@ -51,7 +54,16 @@ public class MusicUpdatePacketHandler {
                 comp.putInt("generation", 0);
             }
             if(flag.hasNotes){
-                MusicManager.setMusicData(comp.getUniqueId("id"), comp.getInt("ver"), msg.getNotes(), pl.server);
+                ArrayList<NoteEvent> notes = msg.getNotes();
+                UUID id = comp.getUniqueId("id");
+                if(notes == null) {
+                    // Get if large note was sent in parts
+                    notes = MusicManager.getFinishedNotesFromBuffer(id);
+                    if(notes == null){
+                        return;
+                    }
+                }
+                MusicManager.setMusicData(id, comp.getInt("ver"), notes, pl.server);
                 if(!comp.contains("bps")) {
                     comp.putByte("bps", (byte)8);
                 }

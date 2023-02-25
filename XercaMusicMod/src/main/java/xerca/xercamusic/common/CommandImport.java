@@ -27,9 +27,8 @@ public class CommandImport {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicimport")
-                        .requires((p) -> p.hasPermissionLevel(1))
-                        .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                    .then(Commands.argument("name", StringArgumentType.word())
+                            .executes((p) -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
@@ -49,25 +48,30 @@ public class CommandImport {
         return 1;
     }
 
-    public static void doImport(CompoundNBT tag, ServerPlayerEntity player){
+    public static void doImport(CompoundNBT tag, ArrayList<NoteEvent> notes, ServerPlayerEntity player){
         if(tag.getInt("generation") > 0){
             tag.putInt("generation", tag.getInt("generation") + 1);
         }
-        if(tag.contains("notes") && tag.contains("id") && tag.contains("ver")) {
-            ArrayList<NoteEvent> notes = new ArrayList<>();
-            NoteEvent.fillArrayFromNBT(notes, tag);
+        if(tag.contains("id") && tag.contains("ver")) {
             UUID id = tag.getUniqueId("id");
             int ver = tag.getInt("ver");
+            if(notes == null) {
+                // Get if large note was sent in parts
+                notes = MusicManager.getFinishedNotesFromBuffer(id);
+                if(notes == null){
+                    return;
+                }
+            }
             MusicManager.setMusicData(id, ver, notes, player.server);
 
             MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
-            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(()->player), packet);
+            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), packet);
             tag.remove("notes");
         }
         else if(tag.contains("music")){
             // Old version
             XercaMusic.LOGGER.info("Old music file version");
-            ArrayList<NoteEvent> notes = convertFromOld(tag, player.server);
+            notes = convertFromOld(tag, player.server);
             UUID id = tag.getUniqueId("id");
             int ver = tag.getInt("ver");
 

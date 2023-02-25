@@ -1,12 +1,7 @@
 package xerca.xercamusic.client;
 
-import javax.annotation.Nullable;
-
-import org.lwjgl.glfw.GLFW;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -18,10 +13,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.packets.SingleNotePacket;
+
+import javax.annotation.Nullable;
 
 public class GuiInstrument extends Screen {
     private static final ResourceLocation insGuiTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/instrument_gui.png");
@@ -31,8 +29,6 @@ public class GuiInstrument extends Screen {
     private final boolean[] buttonPushStates;
     private final NoteSound[] noteSounds;
     private static int currentKeyboardOctave = 0;
-    private Button octaveUp;
-    private Button octaveDown;
 
     private static final int guiHeight = 201;
     private static final int guiWidth = 401;
@@ -84,11 +80,11 @@ public class GuiInstrument extends Screen {
         guiBaseY = (this.height - guiHeight) / 2;
         octaveButtonX = guiBaseX - 10;
 
-        this.octaveUp = this.addButton(new Button(octaveButtonX, octaveButtonY, 10, 10,
+        this.addButton(new Button(octaveButtonX, octaveButtonY, 10, 10,
                 new TranslationTextComponent("note.upButton"), button -> increaseOctave(),
                 (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslationTextComponent("ins.octaveTooltip"), x, y)));
 
-        this.octaveDown = this.addButton(new Button(octaveButtonX, octaveButtonY + 25, 10, 10,
+        this.addButton(new Button(octaveButtonX, octaveButtonY + 25, 10, 10,
                 new TranslationTextComponent("note.downButton"), button -> decreaseOctave(),
                 (button, poseStack, x, y) -> renderTooltip(poseStack, new TranslationTextComponent("ins.octaveTooltip"), x, y)));
     }

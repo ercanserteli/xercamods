@@ -1,23 +1,11 @@
 package xerca.xercamusic.client;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.UUID;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.glfw.GLFW;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.fonts.Font;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -31,12 +19,13 @@ import net.minecraft.util.SharedConstants;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.gui.widget.Slider;
+import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.SoundEvents;
@@ -44,7 +33,14 @@ import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.ItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
+import xerca.xercamusic.common.packets.ImportMusicSendPacket;
 import xerca.xercamusic.common.packets.MusicUpdatePacket;
+import xerca.xercamusic.common.packets.NotesPartAckFromServerPacketHandler;
+import xerca.xercamusic.common.packets.SendNotesPartToServerPacket;
+
+import java.util.*;
+
+import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
 
 public class GuiMusicSheet extends Screen {
     public enum MidiControl {
@@ -266,7 +262,7 @@ public class GuiMusicSheet extends Screen {
             }
             notePlaySounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, editingPlayer.getPosX(), editingPlayer.getPosY(), editingPlayer.getPosZ(), ((float)volume)/128.f, noteSound.pitch));
             if(recording) {
-                NoteEvent newNote = new NoteEvent((byte)note, (short)(Math.max(0, previewCursor-1)), volume, (byte)1);
+                NoteEvent newNote = new NoteEvent((byte)note, (short)(Math.max(0, previewCursor-1)), volume, 1);
                 addRecordingNote(newNote);
                 previewNextNoteID++;
                 dirtyFlag.hasNotes = true;
@@ -363,13 +359,9 @@ public class GuiMusicSheet extends Screen {
                 }
             }));
         }
-        this.buttonPreview = this.addButton(new ChangeableImageButton(noteImageLeftX + 50, 16, 16, 16, 224, 0, 16, noteGuiTextures, button -> {
-            previewButton();
-        }));
+        this.buttonPreview = this.addButton(new ChangeableImageButton(noteImageLeftX + 50, 16, 16, 16, 224, 0, 16, noteGuiTextures, button -> previewButton()));
 
-        this.buttonRecord = this.addButton(new ChangeableImageButton(noteImageLeftX + 70, 16, 16, 16, 176, 0, 16, noteGuiTextures, button -> {
-            recordButton();
-        }));
+        this.buttonRecord = this.addButton(new ChangeableImageButton(noteImageLeftX + 70, 16, 16, 16, 176, 0, 16, noteGuiTextures, button -> recordButton()));
 
         this.buttonHideNeighbors = this.addButton(new ChangeableImageButton(noteImageLeftX + 90, 16, 16, 16, 192, 0, 16, noteGuiTextures, button -> {
             neighborsHidden = !neighborsHidden;
@@ -408,7 +400,7 @@ public class GuiMusicSheet extends Screen {
                         previewCursor = previewCursorStart;
                         for(NoteEvent note : notes){
                             note.time *= mult;
-                            note.length = (byte)Math.min(maxNoteLength, note.length*mult);
+                            note.length = Math.min(maxNoteLength, note.length*mult);
                         }
                         updateLength();
                     }
@@ -436,7 +428,7 @@ public class GuiMusicSheet extends Screen {
                         previewCursor = previewCursorStart;
                         for(NoteEvent note : notes){
                             note.time = (short)Math.round(note.time*mult);
-                            note.length = (byte)Math.max(Math.round(note.length*mult), 1);
+                            note.length = Math.max(Math.round(note.length*mult), 1);
                         }
                         updateLength();
                         removeDuplicates();
@@ -466,9 +458,7 @@ public class GuiMusicSheet extends Screen {
         }));
 
         this.sliderTime = this.addButton(new Slider(noteImageLeftX + noteRegionLeft, noteImageY + noteRegionBottom + 4, noteRegionRight-noteRegionLeft, 10,
-                StringTextComponent.EMPTY, StringTextComponent.EMPTY, 0, 1, 0, false, false, b -> {}, (slider) -> {
-            sliderPosition = (int)(slider.sliderValue * (double)maxSliderPosition);
-        }));
+                StringTextComponent.EMPTY, StringTextComponent.EMPTY, 0, 1, 0, false, false, b -> {}, (slider) -> sliderPosition = (int)(slider.sliderValue * (double)maxSliderPosition)));
 
         this.sliderSheetVolume = this.addButton(new Slider(noteImageLeftX + noteRegionRight - 55, noteImageY + 12, 54, 10,
                 new StringTextComponent("S Vol "), StringTextComponent.EMPTY, 0, 100, volume*100.f, false, true, b -> {}, (slider) -> {
@@ -500,9 +490,7 @@ public class GuiMusicSheet extends Screen {
 
         this.noteEditBox = this.addButton(new NoteEditBox(0, 0, 70, 55, StringTextComponent.EMPTY));
 
-        this.buttonHelp = this.addButton(new Button(noteImageLeftX + noteRegionRight + 30, noteImageY + bpmButY, 20, 20, new StringTextComponent("?"), button -> {
-            toggleHelp();
-        }));
+        this.buttonHelp = this.addButton(new Button(noteImageLeftX + noteRegionRight + 30, noteImageY + bpmButY, 20, 20, new StringTextComponent("?"), button -> toggleHelp()));
 
         updateButtons();
 
@@ -1228,7 +1216,7 @@ public class GuiMusicSheet extends Screen {
         }
         int i = findNote(note, time);
         if(i < 0){
-            addNote(note, time, (byte)(127.f*brushVolume), (byte)1);
+            addNote(note, time, (byte)(127.f*brushVolume), 1);
         }
         else{
             notes.remove(i);
@@ -1236,7 +1224,7 @@ public class GuiMusicSheet extends Screen {
         updateLength();
     }
 
-    private void addNote(byte note, short time, byte volume, byte length) {
+    private void addNote(byte note, short time, byte volume, int length) {
         NoteEvent newEvent = new NoteEvent(note, time, volume, length);
         currentlyAddedNote = newEvent;
         for(int i=0; i<notes.size(); i++){
@@ -1311,7 +1299,7 @@ public class GuiMusicSheet extends Screen {
             if (currentlyAddedNote != null && validClick(mx, my)) {
                 int time = ((mx - noteRegionLeft)/3) + sliderPosition;
                 if(currentlyAddedNote.time < time && time - currentlyAddedNote.time <= maxNoteLength){
-                    currentlyAddedNote.length = (byte)(time - currentlyAddedNote.time);
+                    currentlyAddedNote.length = (time - currentlyAddedNote.time);
                 }
             }
         }
@@ -1501,12 +1489,12 @@ public class GuiMusicSheet extends Screen {
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         setListener(null);
         super.keyReleased(keyCode, scanCode, modifiers);
-//        return this.getFocused() != null && this.getFocused().keyReleased(keyCode, scanCode, modifiers);
-
-        if (scanCode >= 16 && scanCode <= 27) {
+        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
+        int lastScanCode = firstScanCode + 11;
+        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
             if(currentOctave >= 0){
                 if(recording){
-                    endSound(ItemInstrument.noteToId((byte) ((scanCode - 15 + ItemInstrument.minNote) + 12 * currentOctave)));
+                    endSound(ItemInstrument.noteToId((byte) ((scanCode - firstScanCode + 1 + ItemInstrument.minNote) + 12 * currentOctave)));
                 }
             }
         }
@@ -1740,15 +1728,15 @@ public class GuiMusicSheet extends Screen {
                 i--;
             }
             else if(event.time < editCursor && event.endTime() >= editCursor && event.endTime() <= editCursorEnd) {
-                event.length = (byte)(editCursor - event.time);
+                event.length = (editCursor - event.time);
             }
             else if(event.time >= editCursor && event.time <= editCursorEnd && event.endTime() > editCursorEnd) {
-                event.length = (byte)(event.endTime() - editCursorEnd);
+                event.length = (event.endTime() - editCursorEnd);
                 event.time = (short)(editCursor + 1);
                 doSort = true;
             }
             else if(event.time < editCursor && event.endTime() > editCursorEnd) {
-                event.length = (byte)(editCursor - event.time);
+                event.length = (editCursor - event.time);
             }
             else if(event.time > editCursorEnd){
                 event.time -= editCursorEnd - editCursor;
@@ -1825,9 +1813,25 @@ public class GuiMusicSheet extends Screen {
                 MusicManagerClient.setMusicData(id, version, notes);
             }
 
-            MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, notes, lengthBeats, bps, volume, isSigned,
-                    noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
-            XercaMusic.NETWORK_HANDLER.sendToServer(pack);
+            try {
+                MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, notes, lengthBeats, bps, volume, isSigned,
+                        noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
+                XercaMusic.NETWORK_HANDLER.sendToServer(pack);
+            } catch (ImportMusicSendPacket.NotesTooLargeException e) {
+                int partsCount = (int)Math.ceil((double)notes.size()/(double)MAX_NOTES_IN_PACKET);
+
+                try {
+                    MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, null, lengthBeats, bps, volume, isSigned,
+                            noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
+                    NotesPartAckFromServerPacketHandler.addCallback(id, ()-> XercaMusic.NETWORK_HANDLER.sendToServer(pack));
+                    for(int i=0; i<partsCount; i++) {
+                        SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(id, partsCount, i, notes.subList(i*MAX_NOTES_IN_PACKET, Math.min((i+1)*MAX_NOTES_IN_PACKET, notes.size())));
+                        XercaMusic.NETWORK_HANDLER.sendToServer(partPack);
+                    }
+                } catch (ImportMusicSendPacket.NotesTooLargeException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
 
         }
         editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.world.rand.nextFloat()*0.4f);
@@ -1976,9 +1980,7 @@ public class GuiMusicSheet extends Screen {
                     previewSound.stopSound();
                 }
             });
-            buttonPrev = new Button(0, 0, 10, 10, new TranslationTextComponent("note.startPreviewButton"), (button) -> {
-                playPrev();
-            });
+            buttonPrev = new Button(0, 0, 10, 10, new TranslationTextComponent("note.startPreviewButton"), (button) -> playPrev());
 
             children[0] = sliderVelocity;
             children[1] = buttonNoteDown;

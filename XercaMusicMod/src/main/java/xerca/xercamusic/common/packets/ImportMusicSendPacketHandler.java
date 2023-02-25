@@ -18,6 +18,6 @@ public class ImportMusicSendPacketHandler {
     }
 
     private static void processMessage(ImportMusicSendPacket msg, ServerPlayerEntity sender) {
-        CommandImport.doImport(msg.getTag(), sender);
+        CommandImport.doImport(msg.getTag(), msg.getNotes(), sender);
     }
 }
