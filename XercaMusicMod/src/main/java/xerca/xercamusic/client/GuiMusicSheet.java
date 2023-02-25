@@ -33,9 +33,15 @@ import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
+import xerca.xercamusic.common.packets.ImportMusicSendPacket;
 import xerca.xercamusic.common.packets.MusicUpdatePacket;
+import xerca.xercamusic.common.packets.NotesPartAckFromServerPacketHandler;
+import xerca.xercamusic.common.packets.SendNotesPartToServerPacket;
 
+import java.io.IOException;
 import java.util.*;
+
+import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
 
 public class GuiMusicSheet extends Screen {
     public enum MidiControl {
@@ -1814,10 +1820,25 @@ public class GuiMusicSheet extends Screen {
                 MusicManagerClient.setMusicData(id, version, notes);
             }
 
-            MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, notes, lengthBeats, bps, volume, isSigned,
-                    noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
-            XercaMusic.NETWORK_HANDLER.sendToServer(pack);
+            try {
+                MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, notes, lengthBeats, bps, volume, isSigned,
+                        noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
+                XercaMusic.NETWORK_HANDLER.sendToServer(pack);
+            } catch (ImportMusicSendPacket.NotesTooLargeException e) {
+                int partsCount = (int)Math.ceil((double)notes.size()/(double)MAX_NOTES_IN_PACKET);
 
+                try {
+                    MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, null, lengthBeats, bps, volume, isSigned,
+                            noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
+                    NotesPartAckFromServerPacketHandler.addCallback(id, ()-> XercaMusic.NETWORK_HANDLER.sendToServer(pack));
+                    for(int i=0; i<partsCount; i++) {
+                        SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(id, partsCount, i, notes.subList(i*MAX_NOTES_IN_PACKET, Math.min((i+1)*MAX_NOTES_IN_PACKET, notes.size())));
+                        XercaMusic.NETWORK_HANDLER.sendToServer(partPack);
+                    }
+                } catch (ImportMusicSendPacket.NotesTooLargeException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         }
         if (SoundEvents.CLOSE_SCROLL != null) {
             editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.level.random.nextFloat()*0.4f);

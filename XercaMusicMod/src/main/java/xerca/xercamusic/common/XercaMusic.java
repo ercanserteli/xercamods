@@ -33,8 +33,6 @@ import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.*;
 import xerca.xercamusic.common.tile_entity.TileEntities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 
@@ -43,8 +41,9 @@ public class XercaMusic
 {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
+    public static final int MAX_NOTES_IN_PACKET = 5000;
 
-    private static final String PROTOCOL_VERSION = Integer.toString(1);
+    private static final String PROTOCOL_VERSION = Integer.toString(2);
     public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
             .named(new ResourceLocation(MODID, "main_channel"))
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
@@ -72,6 +71,8 @@ public class XercaMusic
         NETWORK_HANDLER.registerMessage(msg_id++, MusicDataRequestPacket.class, MusicDataRequestPacket::encode, MusicDataRequestPacket::decode, MusicDataRequestPacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, MusicDataResponsePacket.class, MusicDataResponsePacket::encode, MusicDataResponsePacket::decode, MusicDataResponsePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, TripleNoteClientPacket.class, TripleNoteClientPacket::encode, TripleNoteClientPacket::decode, TripleNoteClientPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, SendNotesPartToServerPacket.class, SendNotesPartToServerPacket::encode, SendNotesPartToServerPacket::decode, SendNotesPartToServerPacketHandler::handle);
+        NETWORK_HANDLER.registerMessage(msg_id++, NotesPartAckFromServerPacket.class, NotesPartAckFromServerPacket::encode, NotesPartAckFromServerPacket::decode, NotesPartAckFromServerPacketHandler::handle);
     }
 
     public XercaMusic() {

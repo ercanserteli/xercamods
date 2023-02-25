@@ -23,6 +23,15 @@ public class MusicDataResponsePacket {
         this.messageIsValid = false;
     }
 
+    public static void encode(MusicDataResponsePacket pkt, FriendlyByteBuf buf) {
+        buf.writeUUID(pkt.getId());
+        buf.writeInt(pkt.getVersion());
+        buf.writeInt(pkt.notes.size());
+        for(NoteEvent event : pkt.notes){
+            event.encodeToBuffer(buf);
+        }
+    }
+
     public static MusicDataResponsePacket decode(FriendlyByteBuf buf) {
         MusicDataResponsePacket result = new MusicDataResponsePacket();
         try {
@@ -39,15 +48,6 @@ public class MusicDataResponsePacket {
         }
         result.messageIsValid = true;
         return result;
-    }
-
-    public static void encode(MusicDataResponsePacket pkt, FriendlyByteBuf buf) {
-        buf.writeUUID(pkt.getId());
-        buf.writeInt(pkt.getVersion());
-        buf.writeInt(pkt.notes.size());
-        for(NoteEvent event : pkt.notes){
-            event.encodeToBuffer(buf);
-        }
     }
 
     public boolean isMessageValid() {
