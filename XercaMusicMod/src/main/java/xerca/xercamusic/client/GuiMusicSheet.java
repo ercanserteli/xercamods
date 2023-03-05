@@ -38,7 +38,6 @@ import xerca.xercamusic.common.packets.MusicUpdatePacket;
 import xerca.xercamusic.common.packets.NotesPartAckFromServerPacketHandler;
 import xerca.xercamusic.common.packets.SendNotesPartToServerPacket;
 
-import java.io.IOException;
 import java.util.*;
 
 import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
@@ -1494,12 +1493,12 @@ public class GuiMusicSheet extends Screen {
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         setFocused(null);
         super.keyReleased(keyCode, scanCode, modifiers);
-//        return this.getFocused() != null && this.getFocused().keyReleased(keyCode, scanCode, modifiers);
-
-        if (scanCode >= 16 && scanCode <= 27) {
+        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
+        int lastScanCode = firstScanCode + 11;
+        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
             if(currentOctave >= 0){
                 if(recording){
-                    endSound(IItemInstrument.noteToId((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave)));
+                    endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + 1 + IItemInstrument.minNote) + 12 * currentOctave)));
                 }
             }
         }
@@ -1526,13 +1525,13 @@ public class GuiMusicSheet extends Screen {
         if (!this.isSigned) {
             if (this.gettingSigned) {
                 switch (keyCode) {
-                    case GLFW.GLFW_KEY_BACKSPACE:
+                    case GLFW.GLFW_KEY_BACKSPACE -> {
                         if (!this.noteTitle.isEmpty()) {
                             this.noteTitle = this.noteTitle.substring(0, this.noteTitle.length() - 1);
                             this.updateButtons();
                         }
-                        break;
-                    case GLFW.GLFW_KEY_ENTER:
+                    }
+                    case GLFW.GLFW_KEY_ENTER -> {
                         if (!this.noteTitle.isEmpty()) {
                             dirtyFlag.hasSigned = true;
                             dirtyFlag.hasTitle = true;
@@ -1541,39 +1540,35 @@ public class GuiMusicSheet extends Screen {
                                 this.minecraft.setScreen(null);
                             }
                         }
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                    }
                 }
                 return true;
             } else {
                 int x = editCursor;
                 boolean resetEditCursorEnd = true;
                 switch (keyCode) {
-                    case GLFW.GLFW_KEY_DELETE:
+                    case GLFW.GLFW_KEY_DELETE -> {
                         if (lengthBeats == 0 || lengthBeats <= x) break;
                         pushUndo();
-
                         dirtyFlag.hasNotes = true;
                         dirtyFlag.hasLength = true;
-                        if(editCursorEnd == x){
+                        if (editCursorEnd == x) {
                             delAtCursor(x);
-                        }
-                        else {
+                        } else {
                             deleteSelected();
                             updateLength();
                         }
-                        break;
-                    case GLFW.GLFW_KEY_BACKSPACE:
-                        if(editCursorEnd == x){
-                            if(x == 0){
+                    }
+                    case GLFW.GLFW_KEY_BACKSPACE -> {
+                        if (editCursorEnd == x) {
+                            if (x == 0) {
                                 break;
                             }
-                            if (lengthBeats == 0 || lengthBeats < x){
+                            if (lengthBeats == 0 || lengthBeats < x) {
                                 addEditCursor(-1);
-                                break;
-                            }
-                            else{
+                            } else {
                                 pushUndo();
 
                                 dirtyFlag.hasNotes = true;
@@ -1581,8 +1576,7 @@ public class GuiMusicSheet extends Screen {
                                 addEditCursor(-1);
                                 delAtCursor(editCursor);
                             }
-                        }
-                        else {
+                        } else {
                             pushUndo();
 
                             dirtyFlag.hasNotes = true;
@@ -1590,72 +1584,61 @@ public class GuiMusicSheet extends Screen {
                             deleteSelected();
                             updateLength();
                         }
-                        break;
-                    case GLFW.GLFW_KEY_SPACE:
-                        putSpace(x-1);
-                        break;
-                    case GLFW.GLFW_KEY_RIGHT:
+                    }
+                    case GLFW.GLFW_KEY_SPACE -> putSpace(x - 1);
+                    case GLFW.GLFW_KEY_RIGHT -> {
                         addEditCursor(1);
                         if (editCursor > maxLengthBeats - 1) setEditCursor(maxLengthBeats - 1);
-                        break;
-                    case GLFW.GLFW_KEY_LEFT:
+                    }
+                    case GLFW.GLFW_KEY_LEFT -> {
                         addEditCursor(-1);
                         if (editCursor < 0) setEditCursor(0);
-                        break;
-                    case GLFW.GLFW_KEY_ENTER:
-                        previewButton();
-                        break;
-                    case GLFW.GLFW_KEY_LEFT_ALT:
-                    case GLFW.GLFW_KEY_RIGHT_ALT:
-                        recordButton();
-                        break;
-                    case GLFW.GLFW_KEY_C:
-                        if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
+                    }
+                    case GLFW.GLFW_KEY_ENTER -> previewButton();
+                    case GLFW.GLFW_KEY_LEFT_ALT, GLFW.GLFW_KEY_RIGHT_ALT -> recordButton();
+                    case GLFW.GLFW_KEY_C -> {
+                        if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
                             encodeToClipboard();
                         }
-                        break;
-                    case GLFW.GLFW_KEY_V:
-                        if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
+                    }
+                    case GLFW.GLFW_KEY_V -> {
+                        if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
                             decodeFromClipboard(!((modifiers & GLFW.GLFW_MOD_SHIFT) == GLFW.GLFW_MOD_SHIFT));
                         }
-                        break;
-                    case GLFW.GLFW_KEY_H:
-                        toggleHelp();
-                        break;
-                    case GLFW.GLFW_KEY_Z:
-                        if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
-                            if(noteEditBox.active) {
+                    }
+                    case GLFW.GLFW_KEY_H -> toggleHelp();
+                    case GLFW.GLFW_KEY_Z -> {
+                        if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
+                            if (noteEditBox.active) {
                                 break;
                             }
-                            if(!undoStack.isEmpty()) {
+                            if (!undoStack.isEmpty()) {
                                 notes = undoStack.pop();
                                 updateLength(false);
                             }
                         }
-                        break;
-                    case GLFW.GLFW_KEY_A:
-                        if((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL){
+                    }
+                    case GLFW.GLFW_KEY_A -> {
+                        if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
                             editCursor = 0;
                             editCursorEnd = lengthBeats - 1;
                             resetEditCursorEnd = false;
-                        }
-                        else{
-                            if(editCursor == editCursorEnd){
-                                currentOctave --;
-                                if(currentOctave < -2){
+                        } else {
+                            if (editCursor == editCursorEnd) {
+                                currentOctave--;
+                                if (currentOctave < -2) {
                                     currentOctave = -2;
                                 }
                                 midiHandler.currentOctave = currentOctave;
-                                if(recording) {
+                                if (recording) {
                                     recordingNotes.clear();
                                 }
-                            }
-                            else{
+                            } else {
                                 boolean changed = false;
                                 for (NoteEvent event : notes) {
                                     if (event.endTime() >= editCursor && event.time <= editCursorEnd) {
                                         if (IItemInstrument.noteToId(event.note) / 12 > 0) {
-                                            if(!changed) {
+                                            if (!changed) {
                                                 pushUndo();
                                                 dirtyFlag.hasNotes = true;
                                                 dirtyFlag.hasLength = true;
@@ -1669,23 +1652,23 @@ public class GuiMusicSheet extends Screen {
                                 resetEditCursorEnd = false;
                             }
                         }
-                        break;
-                    case GLFW.GLFW_KEY_S:
-                        if(editCursor == editCursorEnd){
-                            currentOctave ++;
-                            if(currentOctave > 7){
+                    }
+                    case GLFW.GLFW_KEY_S -> {
+                        if (editCursor == editCursorEnd) {
+                            currentOctave++;
+                            if (currentOctave > 7) {
                                 currentOctave = 7;
                             }
                             midiHandler.currentOctave = currentOctave;
-                            if(recording) {
+                            if (recording) {
                                 recordingNotes.clear();
                             }
-                        } else{
+                        } else {
                             boolean changed = false;
                             for (NoteEvent event : notes) {
                                 if (event.endTime() >= editCursor && event.time <= editCursorEnd) {
                                     if (IItemInstrument.noteToId(event.note) / 12 < 7) {
-                                        if(!changed) {
+                                        if (!changed) {
                                             pushUndo();
                                             dirtyFlag.hasNotes = true;
                                             dirtyFlag.hasLength = true;
@@ -1698,25 +1681,23 @@ public class GuiMusicSheet extends Screen {
                             }
                             resetEditCursorEnd = false;
                         }
-                        break;
-                    case GLFW.GLFW_KEY_LEFT_CONTROL:
-                    case GLFW.GLFW_KEY_RIGHT_CONTROL:
-                        resetEditCursorEnd = false;
-                        break;
-                    default:
-                        if (scanCode >= 16 && scanCode <= 27) {
-                            if(currentOctave >= 0){
-                                if(recording){
-                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave)), (byte)100);
-                                }
-                                else{
-                                    putSpace(x-1);
-                                    addNote((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave), (short)(x), false);
+                    }
+                    case GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT_CONTROL -> resetEditCursorEnd = false;
+                    default -> {
+                        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
+                        int lastScanCode = firstScanCode + 11;
+                        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
+                            if (currentOctave >= 0) {
+                                if (recording) {
+                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + 1 + IItemInstrument.minNote) + 12 * currentOctave)), (byte) 100);
+                                } else {
+                                    putSpace(x - 1);
+                                    addNote((byte) ((scanCode - firstScanCode + 1 + IItemInstrument.minNote) + 12 * currentOctave), (short) (x), false);
                                     finishAddingNote();
                                 }
                             }
-                            break;
                         }
+                    }
                 }
                 if(resetEditCursorEnd) {
                     editCursorEnd = editCursor;
