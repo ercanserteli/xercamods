@@ -253,8 +253,10 @@ public class GuiInstrument extends Screen {
         setListener(null);
         super.keyPressed(keyCode, scanCode, modifiers);
 
-        if (scanCode >= 16 && scanCode <= 27) {
-            int noteId = scanCode - 16 + 12 * Math.max(0, currentKeyboardOctave);
+        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
+        int lastScanCode = firstScanCode + 11;
+        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
+            int noteId = scanCode - firstScanCode + 12 * Math.max(0, currentKeyboardOctave);
             playSound(noteId);
         }
 
@@ -285,8 +287,10 @@ public class GuiInstrument extends Screen {
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers){
-        if (scanCode >= 16 && scanCode <= 27) {
-            int noteId = scanCode - 16 + 12 * Math.max(0, currentKeyboardOctave);
+        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
+        int lastScanCode = firstScanCode + 11;
+        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
+            int noteId = scanCode - firstScanCode + 12 * Math.max(0, currentKeyboardOctave);
             stopSound(noteId);
         }
         return true;

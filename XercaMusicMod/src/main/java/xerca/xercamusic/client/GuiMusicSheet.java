@@ -1697,14 +1697,16 @@ public class GuiMusicSheet extends Screen {
                         resetEditCursorEnd = false;
                         break;
                     default:
-                        if (scanCode >= 16 && scanCode <= 27) {
+                        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
+                        int lastScanCode = firstScanCode + 11;
+                        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
                             if(currentOctave >= 0){
                                 if(recording){
-                                    startSound(ItemInstrument.noteToId((byte) ((scanCode - 15 + ItemInstrument.minNote) + 12 * currentOctave)), (byte)100);
+                                    startSound(ItemInstrument.noteToId((byte) ((scanCode - firstScanCode + 1 + ItemInstrument.minNote) + 12 * currentOctave)), (byte)100);
                                 }
                                 else{
                                     putSpace(x-1);
-                                    addNote((byte) ((scanCode - 15 + ItemInstrument.minNote) + 12 * currentOctave), (short)(x), false);
+                                    addNote((byte) ((scanCode - firstScanCode + 1 + ItemInstrument.minNote) + 12 * currentOctave), (short)(x), false);
                                     finishAddingNote();
                                 }
                             }
