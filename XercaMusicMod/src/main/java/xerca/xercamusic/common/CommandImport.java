@@ -25,7 +25,6 @@ public class CommandImport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicimport")
-                        .requires((p) -> p.hasPermission(1))
                         .then(Commands.argument("name", StringArgumentType.word())
                                 .executes((p) -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
@@ -47,25 +46,30 @@ public class CommandImport {
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, ServerPlayer player){
+    public static void doImport(CompoundTag tag, ArrayList<NoteEvent> notes, ServerPlayer player){
         if(tag.getInt("generation") > 0){
             tag.putInt("generation", tag.getInt("generation") + 1);
         }
-        if(tag.contains("notes") && tag.contains("id") && tag.contains("ver")) {
-            ArrayList<NoteEvent> notes = new ArrayList<>();
-            NoteEvent.fillArrayFromNBT(notes, tag);
+        if(tag.contains("id") && tag.contains("ver")) {
             UUID id = tag.getUUID("id");
             int ver = tag.getInt("ver");
+            if(notes == null) {
+                // Get if large note was sent in parts
+                notes = MusicManager.getFinishedNotesFromBuffer(id);
+                if(notes == null){
+                    return;
+                }
+            }
             MusicManager.setMusicData(id, ver, notes, player.server);
 
             MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
-            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(()->player), packet);
+            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), packet);
             tag.remove("notes");
         }
         else if(tag.contains("music")){
             // Old version
             XercaMusic.LOGGER.info("Old music file version");
-            ArrayList<NoteEvent> notes = convertFromOld(tag, player.server);
+            notes = convertFromOld(tag, player.server);
             UUID id = tag.getUUID("id");
             int ver = tag.getInt("ver");
 
