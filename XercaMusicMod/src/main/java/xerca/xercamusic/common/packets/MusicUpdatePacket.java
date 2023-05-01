@@ -6,6 +6,8 @@ import xerca.xercamusic.common.NoteEvent;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
+
 public class MusicUpdatePacket {
     private FieldFlag availability;
     private ArrayList<NoteEvent> notes;
@@ -22,9 +24,8 @@ public class MusicUpdatePacket {
     private boolean messageIsValid;
 
     public MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed,
-                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) {
+                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws ImportMusicSendPacket.NotesTooLargeException {
         this.availability = availability;
-        this.notes = notes;
         this.lengthBeats = lengthBeats;
         this.bps = bps;
         this.volume = volume;
@@ -35,6 +36,10 @@ public class MusicUpdatePacket {
         this.id = id;
         this.version = version;
         this.highlightInterval = highlightInterval;
+        this.notes = notes;
+        if(availability.hasNotes && this.notes != null && this.notes.size() > MAX_NOTES_IN_PACKET) {
+            throw new ImportMusicSendPacket.NotesTooLargeException(notes, id);
+        }
     }
 
     public MusicUpdatePacket() {
@@ -53,9 +58,11 @@ public class MusicUpdatePacket {
             if(flag.hasLength) result.lengthBeats = buf.readShort();
             if(flag.hasNotes){
                 int eventCount = buf.readInt();
-                result.notes = new ArrayList<>(eventCount);
-                for(int i=0; i<eventCount; i++){
-                    result.notes.add(NoteEvent.fromBuffer(buf));
+                if(eventCount != 0) {  // if this is false, notes may have been sent in parts beforehand
+                    result.notes = new ArrayList<>(eventCount);
+                    for (int i = 0; i < eventCount; i++) {
+                        result.notes.add(NoteEvent.fromBuffer(buf));
+                    }
                 }
             }
             if(flag.hasPrevIns) result.prevInstrument = buf.readByte();
@@ -79,9 +86,14 @@ public class MusicUpdatePacket {
         if(pkt.availability.hasVolume) buf.writeFloat(pkt.volume);
         if(pkt.availability.hasLength) buf.writeShort(pkt.lengthBeats);
         if(pkt.availability.hasNotes){
-            buf.writeInt(pkt.notes.size());
-            for(NoteEvent event : pkt.notes){
-                event.encodeToBuffer(buf);
+            if(pkt.notes != null) {
+                buf.writeInt(pkt.notes.size());
+                for (NoteEvent event : pkt.notes) {
+                    event.encodeToBuffer(buf);
+                }
+            }
+            else{
+                buf.writeInt(0);
             }
         }
         if(pkt.availability.hasPrevIns) buf.writeByte(pkt.prevInstrument);
@@ -197,16 +209,16 @@ public class MusicUpdatePacket {
 
         public int toInt(){
             return (hasNotes ? notesFlag : 0) |
-                   (hasLength ? lengthFlag : 0) |
-                   (hasBps ? bpsFlag : 0) |
-                   (hasVolume ? volumeFlag : 0) |
-                   (hasSigned ? signedFlag : 0) |
-                   (hasTitle ? titleFlag : 0) |
-                   (hasPrevIns ? prevInsFlag : 0) |
-                   (hasPrevInsLocked ? prevInsLockedFlag : 0) |
-                   (hasId ? idFlag : 0) |
-                   (hasVersion ? versionFlag : 0) |
-                   (hasHlInterval ? hlIntervalFlag : 0);
+                    (hasLength ? lengthFlag : 0) |
+                    (hasBps ? bpsFlag : 0) |
+                    (hasVolume ? volumeFlag : 0) |
+                    (hasSigned ? signedFlag : 0) |
+                    (hasTitle ? titleFlag : 0) |
+                    (hasPrevIns ? prevInsFlag : 0) |
+                    (hasPrevInsLocked ? prevInsLockedFlag : 0) |
+                    (hasId ? idFlag : 0) |
+                    (hasVersion ? versionFlag : 0) |
+                    (hasHlInterval ? hlIntervalFlag : 0);
         }
 
         static public FieldFlag fromInt(int packed){
@@ -222,7 +234,7 @@ public class MusicUpdatePacket {
                     (packed & idFlag) != 0,
                     (packed & versionFlag) != 0,
                     (packed & hlIntervalFlag) != 0
-                    );
+            );
         }
 
         public boolean hasAny() {
