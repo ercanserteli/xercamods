@@ -21,7 +21,6 @@ public class CommandExport {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
                 Commands.literal("paintexport")
-                        .requires((p) -> p.hasPermission(1))
                         .then(Commands.argument("name", StringArgumentType.word())
                                 .executes((p) -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
