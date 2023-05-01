@@ -26,7 +26,6 @@ public class CommandImport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicimport")
-                        .requires((p) -> p.hasPermission(1))
                         .then(Commands.argument("name", StringArgumentType.word())
                                 .executes((p) -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
