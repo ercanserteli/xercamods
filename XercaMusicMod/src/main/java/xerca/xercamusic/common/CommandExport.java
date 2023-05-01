@@ -24,7 +24,6 @@ public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicexport")
-                .requires((p) -> p.hasPermission(1))
                         .then(Commands.argument("name", StringArgumentType.word())
                                 .executes((p) -> musicExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
