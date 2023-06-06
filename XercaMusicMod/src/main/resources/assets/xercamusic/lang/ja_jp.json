@@ -49,7 +49,7 @@
   "note.stopPreviewButton": "■",
   "note.exitButton": "❌",
   "note.hideNeighborsButton": "N",
-  "note.toggleTooltip": "Toggle neighbor sheets",
+  "note.toggleTooltip": "隣の楽譜の表示をトグルする",
   "note.lockTooltip": "プレビュー楽器を固定する",
   "note.previewTooltip": "音楽を試聴する",
   "note.recordTooltip": "音楽を収録する",
