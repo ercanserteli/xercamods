@@ -1,26 +1,26 @@
 {
-  "item_group.xercapaint.paint_tab": "描け",
+  "item_group.xercapaint.paint_tab": "描く",
 
-  "item.xercapaint.item_palette": "Palette",
-  "item.xercapaint.item_canvas": "Canvas",
-  "item.xercapaint.item_canvas_large": "Large Canvas",
-  "item.xercapaint.item_canvas_long": "Long Canvas",
-  "item.xercapaint.item_canvas_tall": "Tall Canvas",
-  "item.xercapaint.item_easel": "Easel",
+  "item.xercapaint.item_palette": "パレット",
+  "item.xercapaint.item_canvas": "キャンバス",
+  "item.xercapaint.item_canvas_large": "大きなキャンバス",
+  "item.xercapaint.item_canvas_long": "広いキャンバス",
+  "item.xercapaint.item_canvas_tall": "高いキャンバス",
+  "item.xercapaint.item_easel": "イーゼル",
 
-  "palette.basic_count": "%1$s basic colors",
-  "palette.custom_count": "%1$s custom colors",
-  "palette.empty": "Empty palette",
+  "palette.basic_count": "%1$s色の基本色",
+  "palette.custom_count": "%1$s色のカスタム色",
+  "palette.empty": "空のパレット",
 
-  "canvas.empty": "Empty canvas",
-  "canvas.byAuthor": "by %1$s",
-  "canvas.signButton": "Sign",
-  "canvas.finalizeButton": "Sign and Close",
-  "canvas.finalizeWarning": "Note! When you sign the painting, it will no longer be editable.",
-  "canvas.generation.0": "Original",
-  "canvas.generation.1": "Copy of original",
-  "canvas.generation.2": "Copy of copy",
-  "canvas.editTitle": "Enter Painting Title:",
+  "canvas.empty": "白紙のキャンバス",
+  "canvas.byAuthor": "画家：%1$s",
+  "canvas.signButton": "署名",
+  "canvas.finalizeButton": "署名して閉じる",
+  "canvas.finalizeWarning": "注意！絵画に署名をすると、二度と編集ができなくなります。",
+  "canvas.generation.0": "オリジナル",
+  "canvas.generation.1": "オリジナルのコピー",
+  "canvas.generation.2": "コピーのコピー",
+  "canvas.editTitle": "絵画のタイトルを入力してください：",
 
   "xercapaint.export.success": "Painting exported to %1$s",
   "xercapaint.export.fail": "Could not export painting",
@@ -30,5 +30,5 @@
   "xercapaint.import.fail.3": "You must have a palette with all basic colors on your off-hand to import a painting in survival mode",
   "xercapaint.import.fail.4": "Could not parse command or read the painting file (%1$s)",
 
-  "easel.deny": "Someone else is working on this painting right now"
+  "easel.deny": "今、この絵画を描いている人がいるんです"
 }
