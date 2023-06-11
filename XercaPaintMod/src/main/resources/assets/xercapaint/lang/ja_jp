@@ -22,13 +22,13 @@
   "canvas.generation.2": "コピーのコピー",
   "canvas.editTitle": "絵画のタイトルを入力してください：",
 
-  "xercapaint.export.success": "Painting exported to %1$s",
-  "xercapaint.export.fail": "Could not export painting",
-  "xercapaint.import.success": "Painting imported",
-  "xercapaint.import.fail.1": "You must have an empty canvas on your main-hand to import a painting in survival mode",
-  "xercapaint.import.fail.2": "Your canvas must be the correct size to import this painting in survival mode (%1$s)",
-  "xercapaint.import.fail.3": "You must have a palette with all basic colors on your off-hand to import a painting in survival mode",
-  "xercapaint.import.fail.4": "Could not parse command or read the painting file (%1$s)",
+  "xercapaint.export.success": "絵画は%1$sに書き出されました",
+  "xercapaint.export.fail": "絵画を書き出すことができませんでした",
+  "xercapaint.import.success": "絵画を読み込みました",
+  "xercapaint.import.fail.1": "サバイバルモードで絵画を読み込むには、利き手に空のキャンバスがある必要があります",
+  "xercapaint.import.fail.2": "この絵画をサバイバルモードで読み込むには、キャンバスが正しい大きさ（%1$s）である必要があります",
+  "xercapaint.import.fail.3": "サバイバルモードで絵画を読み込むには、オフハンドに基本色がすべて入ったパレットを持っている必要があります",
+  "xercapaint.import.fail.4": "コマンドを解釈できなかったか、絵画ファイル（%1$s）を読み取れませんでした",
 
   "easel.deny": "今、この絵画を描いている人がいるんです"
 }
