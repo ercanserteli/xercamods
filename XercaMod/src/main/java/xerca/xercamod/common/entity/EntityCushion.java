@@ -70,7 +70,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public boolean skipAttackInteraction(@NotNull Entity entityIn) {
-        return entityIn instanceof Player && this.hurt(DamageSource.playerAttack((Player) entityIn), 0.0F);
+        return entityIn instanceof Player && this.hurt(damageSources().playerAttack((Player) entityIn), 0.0F);
     }
 
     @Override

@@ -16,11 +16,15 @@ public class BetterSlider extends ForgeSlider {
         super(x, y, width, height, prefix, suffix, minValue, maxValue, currentValue, stepSize, precision, drawString);
     }
 
-    @Override
     protected void renderBg(@NotNull PoseStack stack, @NotNull Minecraft minecraft, int _1, int _2) {
-        if (this.visible)
-        {
-            ScreenUtils.blitWithBorder(stack, WIDGETS_LOCATION, this.getX() + (int)(this.value * (float)(this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
+        ScreenUtils.blitWithBorder(stack, WIDGETS_LOCATION, this.getX() + (int)(this.value * (float)(this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, 0);
+    }
+
+    @Override
+    public void render(@NotNull PoseStack stack, int p_93658_, int p_93659_, float p_93660_) {
+        if (this.visible) {
+            renderBg(stack, Minecraft.getInstance(), p_93658_, p_93659_);
+            super.render(stack, p_93658_, p_93659_, p_93660_);
         }
     }
 

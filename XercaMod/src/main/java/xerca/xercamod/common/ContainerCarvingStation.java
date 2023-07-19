@@ -1,6 +1,7 @@
 package xerca.xercamod.common;
 
 import com.google.common.collect.Lists;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -171,7 +172,7 @@ public class ContainerCarvingStation extends AbstractContainerMenu {
     private void updateRecipeResultSlot() {
         if (!this.recipes.isEmpty()) {
             RecipeCarvingStation RecipeCarvingStation = this.recipes.get(this.selectedRecipe.get());
-            this.outputInventorySlot.set(RecipeCarvingStation.assemble(this.inputInventory));
+            this.outputInventorySlot.set(RecipeCarvingStation.assemble(this.inputInventory, RegistryAccess.EMPTY));
         } else {
             this.outputInventorySlot.set(ItemStack.EMPTY);
         }

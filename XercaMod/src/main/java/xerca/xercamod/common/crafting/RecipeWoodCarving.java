@@ -1,5 +1,6 @@
 package xerca.xercamod.common.crafting;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -320,7 +321,7 @@ public class RecipeWoodCarving extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
         int invSize = inv.getContainerSize();
         if(invSize != 4 && invSize != 9){
             return ItemStack.EMPTY;

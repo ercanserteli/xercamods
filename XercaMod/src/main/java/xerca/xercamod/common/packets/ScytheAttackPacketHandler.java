@@ -56,7 +56,7 @@ public class ScytheAttackPacketHandler {
             if(target instanceof LivingEntity targetLiving){
                 float enchantBonus = EnchantmentHelper.getDamageBonus(st, targetLiving.getMobType());
                 damage += enchantBonus;
-                targetLiving.hurt(DamageSource.playerAttack(pl), damage);
+                targetLiving.hurt(pl.damageSources().playerAttack(pl), damage);
 
                 if(targetLiving.getHealth() <= 0){
                     pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.BEHEAD.get(), SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.2F + 0.9f);

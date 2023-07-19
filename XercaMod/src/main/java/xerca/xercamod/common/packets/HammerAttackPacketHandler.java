@@ -90,7 +90,7 @@ public class HammerAttackPacketHandler {
                 }
 
                 damage += enchantBonus;
-                targetLiving.hurt(DamageSource.playerAttack(pl), damage);
+                targetLiving.hurt(pl.damageSources().playerAttack(pl), damage);
 
                 int maimLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_MAIM.get(), st);
                 if(maimLevel > 0){

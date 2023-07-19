@@ -1,6 +1,7 @@
 package xerca.xercapaint.common.item.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -18,7 +19,7 @@ import static xerca.xercapaint.common.item.Items.CRAFTING_TAGLESS_SHAPED;
 public class RecipeTaglessShaped extends ShapedRecipe {
 
     public RecipeTaglessShaped(ShapedRecipe shapedRecipe, CraftingBookCategory category){
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), category, shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem());
+        super(shapedRecipe.getId(), shapedRecipe.getGroup(), category, shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem(RegistryAccess.EMPTY));
     }
 
     /**
@@ -43,8 +44,8 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
-        ItemStack result = super.assemble(inv);
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess access) {
+        ItemStack result = super.assemble(inv, access);
         if(!result.isEmpty()){
             for(int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);

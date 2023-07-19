@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -134,7 +135,10 @@ class EventHandler {
             // Handle scythe devour
             if(attacker.getMainHandItem().getItem() instanceof ItemScythe){
                 int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_DEVOUR.get(), attacker.getMainHandItem());
-                if(devourLevel > 0 && !s.isExplosion() && !s.isFall() && !s.isFire() && !s.isMagic() && !s.isProjectile()){
+                if(devourLevel > 0 && !s.is(DamageTypeTags.IS_EXPLOSION) && !s.is(DamageTypeTags.IS_FALL) &&
+                        !s.is(DamageTypeTags.IS_FIRE) && !s.is(DamageTypeTags.IS_DROWNING) &&
+                        !s.is(DamageTypeTags.IS_PROJECTILE) && !s.is(DamageTypeTags.IS_LIGHTNING) &&
+                        !s.is(DamageTypeTags.IS_FREEZING)){
                     EntityHealthOrb.award((ServerLevel) attacker.level, event.getEntity(), attacker, devourLevel*2);
                 }
             }

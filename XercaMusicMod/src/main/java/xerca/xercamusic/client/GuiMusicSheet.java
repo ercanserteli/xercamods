@@ -673,7 +673,7 @@ public class GuiMusicSheet extends Screen {
         String authorStr = I18n.get("note.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(authorStr);
         this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + authorStr, left + (116 - i1) / 2.0f, top + 42, 0);
-        this.font.drawWordWrap(Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0);
+        this.font.drawWordWrap(matrixStack, Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0);
     }
 
     private int noteToPixelX(int noteX) {
@@ -895,31 +895,31 @@ public class GuiMusicSheet extends Screen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        if(buttonHideNeighbors.isHoveredOrFocused()){
+        if(buttonHideNeighbors.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.toggleTooltip"), mouseX, mouseY);
         }
-        else if(buttonLockPrevIns.isHoveredOrFocused()){
+        else if(buttonLockPrevIns.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.lockTooltip"), mouseX, mouseY);
         }
-        else if(buttonPreview.isHoveredOrFocused()){
+        else if(buttonPreview.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.previewTooltip"), mouseX, mouseY);
         }
-        else if(buttonRecord.isHoveredOrFocused()){
+        else if(buttonRecord.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.recordTooltip"), mouseX, mouseY);
         }
-        else if(bpmDown.isHoveredOrFocused() || bpmUp.isHoveredOrFocused()){
+        else if(bpmDown.isHovered() || bpmUp.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.tempoTooltip"), mouseX, mouseY);
         }
-        else if(hlDown.isHoveredOrFocused() || hlUp.isHoveredOrFocused()){
+        else if(hlDown.isHovered() || hlUp.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.measureTooltip"), mouseX, mouseY);
         }
-        else if(sliderSheetVolume.isHoveredOrFocused()){
+        else if(sliderSheetVolume.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.sheetVolumeTooltip"), mouseX, mouseY);
         }
-        else if(sliderNoteVolume.isHoveredOrFocused()){
+        else if(sliderNoteVolume.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.noteVolumeTooltip"), mouseX, mouseY);
         }
-        else if(buttonHelp.isHoveredOrFocused()){
+        else if(buttonHelp.isHovered()){
             renderTooltip(matrixStack, Component.translatable("note.helpTooltip"), mouseX, mouseY);
         }
 
@@ -1877,7 +1877,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void renderButton(@NotNull PoseStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderWidget(@NotNull PoseStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
             int yTexStartNew = preRender();
             blit(matrixStack, this.getX(), this.getY(), (float)this.xTexStart, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
@@ -1899,7 +1899,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void renderButton(@NotNull PoseStack matrixStack, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
+        public void renderWidget(@NotNull PoseStack matrixStack, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
             int yTexStartNew = preRender();
 
             blit(matrixStack, this.getX(), this.getY(), (float)this.xTexStart, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
@@ -2007,19 +2007,24 @@ public class GuiMusicSheet extends Screen {
                 int octave = noteId / 12;
                 font.draw(poseStack, noteNames[noteId % 12] + (noteId % 12 < 3 ? octave : octave + 1) , getX() + 15, getY() + noteY, 0xFFD3C200);
                 font.draw(poseStack, noteNamesSolfege[noteId % 12], getX() + 35, getY() + noteY, 0xFFD3C200);
-                font.draw(poseStack, ("" + event.length) + (event.length == 1 ? " Beat" : " Beats"), getX() + 15, getY() + lengthY, 0xFF495EE5);
+                font.draw(poseStack, (String.valueOf(event.length)) + (event.length == 1 ? " Beat" : " Beats"), getX() + 15, getY() + lengthY, 0xFF495EE5);
 
                 for(AbstractWidget widget : children) {
                     widget.render(poseStack, mouseX, mouseY, partialTicks);
                 }
 
-                if(buttonPrev.isHoveredOrFocused()) {
+                if(buttonPrev.isHovered()) {
                     renderTooltip(poseStack, Component.translatable("note.previewNoteTooltip"), mouseX, mouseY);
                 }
-                else if(buttonExit.isHoveredOrFocused()) {
+                else if(buttonExit.isHovered()) {
                     renderTooltip(poseStack, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
                 }
             }
+        }
+
+        @Override
+        public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+
         }
 
         public void appear(int x, int y, NoteEvent event) {

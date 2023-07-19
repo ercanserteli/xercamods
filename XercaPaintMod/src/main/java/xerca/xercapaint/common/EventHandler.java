@@ -37,14 +37,14 @@ class EventHandlerMod {
         event.registerCreativeModeTab(new ResourceLocation(XercaPaint.MODID, "paint_tab"), builder ->
                 builder.title(Component.translatable("item_group." + XercaPaint.MODID + ".paint_tab"))
                         .icon(() -> new ItemStack(Items.ITEM_PALETTE.get()))
-                        .displayItems((enabledFlags, populator, hasPermissions) -> {
-                            populator.accept(Items.ITEM_PALETTE.get());
-                            populator.accept(fullPalette);
-                            populator.accept(Items.ITEM_CANVAS.get());
-                            populator.accept(Items.ITEM_CANVAS_LONG.get());
-                            populator.accept(Items.ITEM_CANVAS_TALL.get());
-                            populator.accept(Items.ITEM_CANVAS_LARGE.get());
-                            populator.accept(Items.ITEM_EASEL.get());
+                        .displayItems((params, output) -> {
+                            output.accept(Items.ITEM_PALETTE.get());
+                            output.accept(fullPalette);
+                            output.accept(Items.ITEM_CANVAS.get());
+                            output.accept(Items.ITEM_CANVAS_LONG.get());
+                            output.accept(Items.ITEM_CANVAS_TALL.get());
+                            output.accept(Items.ITEM_CANVAS_LARGE.get());
+                            output.accept(Items.ITEM_EASEL.get());
                         })
         );
     }

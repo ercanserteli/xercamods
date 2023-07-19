@@ -78,7 +78,7 @@ public class HammerQuakePacketHandler {
                 for(LivingEntity target : targets){
                     Vec3 knockvec = target.position().subtract(pos).normalize().scale(push);
                     target.push(knockvec.x, knockvec.y, knockvec.z);
-                    target.hurt(DamageSource.playerAttack(pl), damage);
+                    target.hurt(pl.damageSources().playerAttack(pl), damage);
                 }
                 st.hurtAndBreak(1, pl, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
                 pl.level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.STOMP.get(), SoundSource.PLAYERS, (float) volume, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);

@@ -2,6 +2,7 @@ package xerca.xercapaint.common.item.crafting;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.item.Items;
 
 import javax.annotation.Nullable;
@@ -95,7 +97,7 @@ public class RecipeCraftPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
         int plankRow = findPlankRow(inv);
         if(plankRow < 0){
             return ItemStack.EMPTY;
