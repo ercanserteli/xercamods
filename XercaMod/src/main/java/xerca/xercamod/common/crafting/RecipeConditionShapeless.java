@@ -1,6 +1,7 @@
 package xerca.xercamod.common.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -19,7 +20,7 @@ public class RecipeConditionShapeless extends ShapelessRecipe {
     private final RecipeSerializer<?> serializer;
 
     public RecipeConditionShapeless(ShapelessRecipe shapedRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), CraftingBookCategory.MISC, shapedRecipe.getResultItem(), shapedRecipe.getIngredients());
+        super(shapedRecipe.getId(), shapedRecipe.getGroup(), CraftingBookCategory.MISC, shapedRecipe.getResultItem(RegistryAccess.EMPTY), shapedRecipe.getIngredients());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -37,11 +38,11 @@ public class RecipeConditionShapeless extends ShapelessRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess access) {
         if(!condition.get()){
             return ItemStack.EMPTY;
         }
-        return super.assemble(inv);
+        return super.assemble(inv, access);
     }
 
     public @NotNull RecipeSerializer<?> getSerializer() {

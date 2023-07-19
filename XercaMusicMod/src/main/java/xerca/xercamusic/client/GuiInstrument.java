@@ -109,7 +109,7 @@ public class GuiInstrument extends Screen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, insGuiTextures);
 
-        blit(matrixStack, guiBaseX, guiBaseY, this.getBlitOffset(), 0, 0, guiWidth, guiHeight, 512, 512);
+        blit(matrixStack, guiBaseX, guiBaseY, 0, 0, 0, guiWidth, guiHeight, 512, 512);
 
         for(int i=0; i<buttonPushStates.length; i++){
             if(buttonPushStates[i]){
@@ -120,7 +120,7 @@ public class GuiInstrument extends Screen {
                     x -= 4 + 48*guiNoteWidth;
                     y = guiBaseY + guiBottomKeyboardTop + 2;
                 }
-                blit(matrixStack, x, y, this.getBlitOffset(), 402, 11, 7, 82, 512, 512);
+                blit(matrixStack, x, y, 0, 402, 11, 7, 82, 512, 512);
             }
         }
 
@@ -131,7 +131,7 @@ public class GuiInstrument extends Screen {
             octaveHighlightX -= 4 * guiOctaveWidth;
             octaveHighlightY = guiBaseY + guiBottomKeyboardTop - 6;
         }
-        blit(matrixStack, octaveHighlightX, octaveHighlightY, this.getBlitOffset(), 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
+        blit(matrixStack, octaveHighlightX, octaveHighlightY, 0, 0, 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
 
         for(int i=0; i<8; i++){
             if(i < instrument.getMinOctave() || i > instrument.getMaxOctave()){
@@ -141,7 +141,7 @@ public class GuiInstrument extends Screen {
                     x -= 4 * guiOctaveWidth;
                     y = guiBaseY + guiBottomKeyboardTop + 2;
                 }
-                blit(matrixStack, x, y, this.getBlitOffset(), guiOctaveBlockX, guiOctaveBlockY, guiOctaveBlockWidth, guiOctaveBlockHeight, 512, 512);
+                blit(matrixStack, x, y, 0, 0, guiOctaveBlockX, guiOctaveBlockY, guiOctaveBlockWidth, guiOctaveBlockHeight, 512, 512);
             }
         }
 

@@ -105,7 +105,7 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
         this.move(MoverType.SELF, this.getDeltaMovement());
         float f = 0.98F;
         if (this.onGround) {
-            BlockPos pos =new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ());
+            BlockPos pos = new BlockPos((int) this.getX(), (int) (this.getY() - 1.0D), (int) this.getZ());
             f = this.level.getBlockState(pos).getFriction(this.level, pos, this) * 0.98F;
         }
 

@@ -1,6 +1,7 @@
 package xerca.xercamod.common.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -17,7 +18,7 @@ public class RecipeConditionSmelting extends SmeltingRecipe {
     private final RecipeSerializer<?> serializer;
 
     public RecipeConditionSmelting(SmeltingRecipe furnaceRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
-        super(furnaceRecipe.getId(), furnaceRecipe.getGroup(), CookingBookCategory.FOOD, furnaceRecipe.getIngredients().get(0), furnaceRecipe.getResultItem(), furnaceRecipe.getExperience(), furnaceRecipe.getCookingTime());
+        super(furnaceRecipe.getId(), furnaceRecipe.getGroup(), CookingBookCategory.FOOD, furnaceRecipe.getIngredients().get(0), furnaceRecipe.getResultItem(RegistryAccess.EMPTY), furnaceRecipe.getExperience(), furnaceRecipe.getCookingTime());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -37,11 +38,11 @@ public class RecipeConditionSmelting extends SmeltingRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container inv) {
+    public @NotNull ItemStack assemble(@NotNull Container inv, @NotNull RegistryAccess access) {
         if(!condition.get()){
             return ItemStack.EMPTY;
         }
-        return super.assemble(inv);
+        return super.assemble(inv, access);
     }
 
     @Override

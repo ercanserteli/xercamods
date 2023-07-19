@@ -2,7 +2,7 @@ package xerca.xercamod.common.packets;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +42,7 @@ public class KnifeAttackPacketHandler {
         if (target instanceof LivingEntity targetLiving) {
             float critBonus = ItemKnife.critDamage(targetLiving, pl, st);
             float enchantBonus = EnchantmentHelper.getDamageBonus(st, targetLiving.getMobType());
-            target.hurt(new EntityDamageSource("offhand_knife", pl), 3.0f + enchantBonus + critBonus);
+            target.hurt(pl.damageSources().playerAttack(pl), 3.0f + enchantBonus + critBonus);
             st.getItem().hurtEnemy(st, (LivingEntity) target, pl);
             if(enchantBonus > 0.0f){
                 pl.magicCrit(target);

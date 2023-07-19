@@ -1,5 +1,6 @@
 package xerca.xercamod.common.crafting;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +21,7 @@ public class RecipeTeaFilling extends CustomRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
+    @Override
     public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
         if(!Config.isTeaEnabled()){
             return false;
@@ -58,7 +60,8 @@ public class RecipeTeaFilling extends CustomRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv) {
+    @Override
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess access) {
         if(!Config.isTeaEnabled()){
             return ItemStack.EMPTY;
         }
@@ -99,6 +102,7 @@ public class RecipeTeaFilling extends CustomRecipe {
         }
     }
 
+    @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_TEA_FILLING.get();
     }
@@ -106,6 +110,7 @@ public class RecipeTeaFilling extends CustomRecipe {
     /**
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
+    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return width >= 2 && height >= 2;
     }

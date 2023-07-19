@@ -159,7 +159,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
                 if(!hasGentle){
                     level.playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT.get(), SoundSource.PLAYERS, 1.0f, level.random.nextFloat() * 0.2F + 0.9F);
 
-                    caughtEntity.hurt(DamageSource.thrown(this, this.angler), 3);
+                    caughtEntity.hurt(damageSources().thrown(this, this.angler), 3);
                     if(!this.caughtEntity.isAlive()){
                         this.remove();
                         return true;

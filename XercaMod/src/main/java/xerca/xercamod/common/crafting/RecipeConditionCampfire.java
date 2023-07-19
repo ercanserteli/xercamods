@@ -1,6 +1,7 @@
 package xerca.xercamod.common.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -20,7 +21,7 @@ public class RecipeConditionCampfire extends CampfireCookingRecipe {
     private final RecipeSerializer<?> serializer;
 
     public RecipeConditionCampfire(CampfireCookingRecipe CampfireCookingRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
-        super(CampfireCookingRecipe.getId(), CampfireCookingRecipe.getGroup(), CookingBookCategory.FOOD, CampfireCookingRecipe.getIngredients().get(0), CampfireCookingRecipe.getResultItem(), CampfireCookingRecipe.getExperience(), CampfireCookingRecipe.getCookingTime());
+        super(CampfireCookingRecipe.getId(), CampfireCookingRecipe.getGroup(), CookingBookCategory.FOOD, CampfireCookingRecipe.getIngredients().get(0), CampfireCookingRecipe.getResultItem(RegistryAccess.EMPTY), CampfireCookingRecipe.getExperience(), CampfireCookingRecipe.getCookingTime());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -40,11 +41,11 @@ public class RecipeConditionCampfire extends CampfireCookingRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container inv) {
+    public @NotNull ItemStack assemble(@NotNull Container inv, @NotNull RegistryAccess access) {
         if(!condition.get()){
             return ItemStack.EMPTY;
         }
-        return super.assemble(inv);
+        return super.assemble(inv, access);
     }
 
     @Override

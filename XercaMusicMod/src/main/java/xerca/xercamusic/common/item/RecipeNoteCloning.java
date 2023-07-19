@@ -2,6 +2,7 @@ package xerca.xercamusic.common.item;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -53,7 +54,7 @@ public class RecipeNoteCloning extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 

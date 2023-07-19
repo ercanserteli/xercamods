@@ -1,6 +1,7 @@
 package xerca.xercamod.common.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -20,7 +21,7 @@ public class RecipeConditionSmoking extends SmokingRecipe {
     private final RecipeSerializer<?> serializer;
 
     public RecipeConditionSmoking(SmokingRecipe SmokingRecipe, Supplier<Boolean> condition, RecipeSerializer<?> serializer){
-        super(SmokingRecipe.getId(), SmokingRecipe.getGroup(), CookingBookCategory.FOOD, SmokingRecipe.getIngredients().get(0), SmokingRecipe.getResultItem(), SmokingRecipe.getExperience(), SmokingRecipe.getCookingTime());
+        super(SmokingRecipe.getId(), SmokingRecipe.getGroup(), CookingBookCategory.FOOD, SmokingRecipe.getIngredients().get(0), SmokingRecipe.getResultItem(RegistryAccess.EMPTY), SmokingRecipe.getExperience(), SmokingRecipe.getCookingTime());
         this.condition = condition;
         this.serializer = serializer;
     }
@@ -40,11 +41,11 @@ public class RecipeConditionSmoking extends SmokingRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public @NotNull ItemStack assemble(@NotNull Container inv) {
+    public @NotNull ItemStack assemble(@NotNull Container inv, @NotNull RegistryAccess access) {
         if(!condition.get()){
             return ItemStack.EMPTY;
         }
-        return super.assemble(inv);
+        return super.assemble(inv, access);
     }
 
     @Override

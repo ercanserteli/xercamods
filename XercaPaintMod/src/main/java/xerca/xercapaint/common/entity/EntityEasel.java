@@ -11,6 +11,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -67,7 +68,7 @@ public class EntityEasel extends Entity {
 
     public boolean hurt(@NotNull DamageSource damageSource, float pAmount) {
         if (!this.level.isClientSide && !this.isRemoved()) {
-            if(!getItem().isEmpty() && !damageSource.isExplosion()){
+            if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
                 this.dropItem(damageSource.getEntity(), false);
             }
             else{

@@ -282,9 +282,8 @@ public class ItemScythe extends DiggerItem {
 
                     for(LivingEntity livingentity : player.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(1.0D, 0.25D, 1.0D))) {
                         if (livingentity != player && livingentity != entity && !player.isAlliedTo(livingentity) && (!(livingentity instanceof ArmorStand) || !((ArmorStand)livingentity).isMarker()) && player.distanceToSqr(livingentity) < 9.0D) {
-//                        livingentity.knockback(player, 0.4F, MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
                             livingentity.knockback(0.4F, Mth.sin(player.getYRot() * ((float)Math.PI / 180F)), -Mth.cos(player.getYRot() * ((float)Math.PI / 180F)));
-                            livingentity.hurt(DamageSource.playerAttack(player), sweepDamage);
+                            livingentity.hurt(player.damageSources().playerAttack(player), sweepDamage);
                         }
                     }
 

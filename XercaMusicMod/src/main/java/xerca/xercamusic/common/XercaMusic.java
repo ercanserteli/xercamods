@@ -134,29 +134,29 @@ public class XercaMusic
             event.registerCreativeModeTab(new ResourceLocation(MODID, "paint_tab"), builder ->
                     builder.title(Component.translatable("item_group." + MODID + ".music_tab"))
                             .icon(() -> new ItemStack(Items.GUITAR.get()))
-                            .displayItems((enabledFlags, populator, hasPermissions) -> {
-                                populator.accept(Items.MUSIC_SHEET.get());
-                                populator.accept(Items.GUITAR.get());
-                                populator.accept(Items.LYRE.get());
-                                populator.accept(Items.BANJO.get());
-                                populator.accept(Items.DRUM.get());
-                                populator.accept(Items.CYMBAL.get());
-                                populator.accept(Items.DRUM_KIT.get());
-                                populator.accept(Items.XYLOPHONE.get());
-                                populator.accept(Items.TUBULAR_BELL.get());
-                                populator.accept(Items.SANSULA.get());
-                                populator.accept(Items.VIOLIN.get());
-                                populator.accept(Items.CELLO.get());
-                                populator.accept(Items.FLUTE.get());
-                                populator.accept(Items.SAXOPHONE.get());
-                                populator.accept(Items.GOD.get());
-                                populator.accept(Items.PIANO.get());
-                                populator.accept(Items.OBOE.get());
-                                populator.accept(Items.REDSTONE_GUITAR.get());
-                                populator.accept(Items.FRENCH_HORN.get());
-                                populator.accept(Items.BASS_GUITAR.get());
-                                populator.accept(Items.MUSIC_BOX.get());
-                                populator.accept(Items.METRONOME.get());
+                            .displayItems((params, output) -> {
+                                output.accept(Items.MUSIC_SHEET.get());
+                                output.accept(Items.GUITAR.get());
+                                output.accept(Items.LYRE.get());
+                                output.accept(Items.BANJO.get());
+                                output.accept(Items.DRUM.get());
+                                output.accept(Items.CYMBAL.get());
+                                output.accept(Items.DRUM_KIT.get());
+                                output.accept(Items.XYLOPHONE.get());
+                                output.accept(Items.TUBULAR_BELL.get());
+                                output.accept(Items.SANSULA.get());
+                                output.accept(Items.VIOLIN.get());
+                                output.accept(Items.CELLO.get());
+                                output.accept(Items.FLUTE.get());
+                                output.accept(Items.SAXOPHONE.get());
+                                output.accept(Items.GOD.get());
+                                output.accept(Items.PIANO.get());
+                                output.accept(Items.OBOE.get());
+                                output.accept(Items.REDSTONE_GUITAR.get());
+                                output.accept(Items.FRENCH_HORN.get());
+                                output.accept(Items.BASS_GUITAR.get());
+                                output.accept(Items.MUSIC_BOX.get());
+                                output.accept(Items.METRONOME.get());
                             })
             );
         }

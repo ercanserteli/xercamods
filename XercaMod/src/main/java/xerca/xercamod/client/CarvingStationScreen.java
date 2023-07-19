@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -58,12 +59,20 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
         int i1 = this.topPos + 14;
         int j1 = this.recipeIndexOffset + 12;
         this.renderButtons(matrixStack, x, y, l, i1, j1);
-        this.drawRecipesItems(l, i1, j1);
+        this.drawRecipesItems(matrixStack, l, i1, j1);
+    }
+
+    private RegistryAccess getRegistryAccess() {
+        if(minecraft != null && minecraft.level != null){
+            return minecraft.level.registryAccess();
+        }
+        return RegistryAccess.EMPTY;
     }
 
     @Override
     protected void renderTooltip(@NotNull PoseStack matrixStack, int x, int y) {
         super.renderTooltip(matrixStack, x, y);
+        RegistryAccess access = getRegistryAccess();
         if (this.hasItemsInInputSlot) {
             int i = this.leftPos + 52;
             int j = this.topPos + 14;
@@ -75,7 +84,7 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
                 int j1 = i + i1 % 4 * 16;
                 int k1 = j + i1 / 4 * 18 + 2;
                 if (x >= j1 && x < j1 + 16 && y >= k1 && y < k1 + 18) {
-                    this.renderTooltip(matrixStack, list.get(l).getResultItem(), x, y);
+                    this.renderTooltip(matrixStack, list.get(l).getResultItem(access), x, y);
                 }
             }
         }
@@ -95,13 +104,14 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
                 j1 += 36;
             }
 
-            this.blit(p_238853_1_, k, i1 - 1, 0, j1, 16, 18);
+            blit(p_238853_1_, k, i1 - 1, 0, j1, 16, 18);
         }
 
     }
 
-    private void drawRecipesItems(int left, int top, int recipeIndexOffsetMax) {
+    private void drawRecipesItems(@NotNull PoseStack matrixStack, int left, int top, int recipeIndexOffsetMax) {
         if (this.minecraft != null) {
+            RegistryAccess access = getRegistryAccess();
             List<RecipeCarvingStation> list = this.menu.getRecipeList();
 
             for(int i = this.recipeIndexOffset; i < recipeIndexOffsetMax && i < this.menu.getRecipeListSize(); ++i) {
@@ -109,7 +119,7 @@ public class CarvingStationScreen extends AbstractContainerScreen<ContainerCarvi
                 int k = left + j % 4 * 16;
                 int l = j / 4;
                 int i1 = top + l * 18 + 2;
-                this.minecraft.getItemRenderer().renderAndDecorateItem(list.get(i).getResultItem(), k, i1);
+                this.minecraft.getItemRenderer().renderAndDecorateItem(matrixStack, list.get(i).getResultItem(access), k, i1);
             }
         }
     }

@@ -48,7 +48,7 @@ public class EntityTomato extends ThrowableItemProjectile {
     protected void onHit(HitResult result) {
         if (result.getType() == HitResult.Type.ENTITY) {
             EntityHitResult entityRayTraceResult = (EntityHitResult) result;
-            entityRayTraceResult.getEntity().hurt(DamageSource.thrown(this, this.getOwner()), 1f);
+            entityRayTraceResult.getEntity().hurt(damageSources().thrown(this, this.getOwner()), 1f);
         }
 
         if (!this.level.isClientSide) {
