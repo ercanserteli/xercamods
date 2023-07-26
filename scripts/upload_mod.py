@@ -162,7 +162,7 @@ def main():
         if args.project_id in mod_name_to_id:
             args.project_id = mod_name_to_id[args.project_id]
 
-        args.game_versions = [get_game_version_id(version_name, args.api_token) for version_name in args.game_versions]
+        args.game_versions = [get_game_version_id(version_name, args.curseforge_api_token) for version_name in args.game_versions]
         upload_mod_to_curseforge(
             args.curseforge_api_token,
             args.project_id,
