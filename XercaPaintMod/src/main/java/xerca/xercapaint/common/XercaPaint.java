@@ -36,6 +36,7 @@ public class XercaPaint {
 
         MinecraftForge.EVENT_BUS.register(this);
         Items.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Items.TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
         Items.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         Entities.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         SoundEvents.SOUND_EVENTS.register(FMLJavaModLoadingContext.get().getModEventBus());
