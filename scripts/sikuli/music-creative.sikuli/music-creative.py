@@ -230,7 +230,8 @@ def testItemsInCreative(mc, win, mcLoc):
     
     # Help
     clickw(813, 76)
-    testAssert(exists("1689795047937.png"))
+    hoverw(806, 127)
+    testAssert(exists("1690478755949.png"))
     clickw(813, 76)
     testAssert(exists("1689795099653.png"))
 
@@ -362,7 +363,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("1")
     rclick()
     win.click("1689797679952.png")
-    testAssert(exists("1689797713350.png"))
+    testAssert(exists("1690479042183.png") and exists("1690479055437.png"))
     win.click("1689797728271.png")
     testAssert(exists("1689797743619.png"))
     win.click("1689797679952.png")
