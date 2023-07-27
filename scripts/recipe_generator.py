@@ -271,7 +271,7 @@ class CarvingRecipe(Recipe):
 
 
 class SmithingRecipe(Recipe):
-    def __init__(self, base, addition, result, group="", folder="", type="minecraft:smithing"):
+    def __init__(self, base, addition, result, group="", folder="", type="minecraft:smithing_transform"):
         super().__init__(type, group, None, folder)
         self.base = base
         self.addition = addition
@@ -290,6 +290,9 @@ class SmithingRecipe(Recipe):
     }},
     "result": {{
         "item": "{result}"
+    }},
+    "template": {{
+        "item": "minecraft:netherite_upgrade_smithing_template"
     }}
 }}
         """

@@ -14,7 +14,7 @@ public class ConfigTrigger extends SimpleCriterionTrigger<ConfigTrigger.Instance
     }
 
     @Override
-    protected @NotNull Instance createInstance(@NotNull JsonObject json, EntityPredicate.@NotNull Composite entityPredicate, @NotNull DeserializationContext conditionsParser) {
+    protected @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate entityPredicate, @NotNull DeserializationContext conditionsParser) {
         return new ConfigTrigger.Instance(entityPredicate, ConfigPredicate.deserialize(json));
     }
 
@@ -29,7 +29,7 @@ public class ConfigTrigger extends SimpleCriterionTrigger<ConfigTrigger.Instance
     public static class Instance extends AbstractCriterionTriggerInstance {
         private final ConfigPredicate predicate;
 
-        public Instance(EntityPredicate.Composite player, ConfigPredicate predicate) {
+        public Instance(ContextAwarePredicate player, ConfigPredicate predicate) {
             super(ConfigTrigger.ID, player);
             this.predicate = predicate;
         }

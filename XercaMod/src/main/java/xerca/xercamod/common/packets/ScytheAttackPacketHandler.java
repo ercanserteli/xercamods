@@ -3,7 +3,6 @@ package xerca.xercamod.common.packets;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -48,7 +47,7 @@ public class ScytheAttackPacketHandler {
                 XercaMod.LOGGER.warn("Pull duration too short");
                 return;
             }
-            Entity target = pl.level.getEntity(msg.getTargetId());
+            Entity target = pl.level().getEntity(msg.getTargetId());
             AttributeInstance attackDamage = pl.getAttribute(Attributes.ATTACK_DAMAGE);
             float damage = attackDamage == null ? 0 : ((float) attackDamage.getValue() * 1.3f);
 
@@ -59,16 +58,16 @@ public class ScytheAttackPacketHandler {
                 targetLiving.hurt(pl.damageSources().playerAttack(pl), damage);
 
                 if(targetLiving.getHealth() <= 0){
-                    pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.BEHEAD.get(), SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.2F + 0.9f);
+                    pl.level().playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.BEHEAD.get(), SoundSource.PLAYERS, 1.0f, pl.level().random.nextFloat() * 0.2F + 0.9f);
 
                     BeheadParticlePacket pack = new BeheadParticlePacket(96, targetLiving.getX(), targetLiving.getY(), targetLiving.getZ());
-                    XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(targetLiving.getX(), targetLiving.getY(), targetLiving.getZ(), 64.0D, pl.getLevel().dimension())), pack);
+                    XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(targetLiving.getX(), targetLiving.getY(), targetLiving.getZ(), 64.0D, pl.level().dimension())), pack);
 
                     ItemScythe.spawnHead(targetLiving);
                     Triggers.BEHEAD.trigger(pl);
                 }
                 else{
-                    pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.2F + 0.9f);
+                    pl.level().playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0f, pl.level().random.nextFloat() * 0.2F + 0.9f);
                 }
             }
         }else{

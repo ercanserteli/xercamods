@@ -27,7 +27,7 @@ public class ContainerFunctionalBookcase extends AbstractContainerMenu {
     private TileEntityFunctionalBookcase tileEntity;
 
     public ContainerFunctionalBookcase(int windowId, Inventory inv, FriendlyByteBuf extraData){
-        this(windowId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(windowId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public ContainerFunctionalBookcase(int windowId, Inventory invPlayer, BlockEntity tileEntityInventoryBookcase) {

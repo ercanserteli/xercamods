@@ -2,7 +2,6 @@ package xerca.xercamod.common.packets;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +32,7 @@ public class KnifeAttackPacketHandler {
     }
 
     private static void processMessage(KnifeAttackPacket msg, ServerPlayer pl) {
-        Entity target = pl.level.getEntity(msg.getTargetId());
+        Entity target = pl.level().getEntity(msg.getTargetId());
         ItemStack st = pl.getOffhandItem();
         if (st.getItem() != Items.ITEM_KNIFE.get()) {
             XercaMod.LOGGER.warn("No knife at offhand!");
@@ -46,10 +45,10 @@ public class KnifeAttackPacketHandler {
             st.getItem().hurtEnemy(st, (LivingEntity) target, pl);
             if(enchantBonus > 0.0f){
                 pl.magicCrit(target);
-                pl.level.playSound(null, pl.getX(), pl.getY(), pl.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, pl.getSoundSource(), 1.0F, 1.0F);
+                pl.level().playSound(null, pl.getX(), pl.getY(), pl.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, pl.getSoundSource(), 1.0F, 1.0F);
             }
             else {
-                pl.level.playSound(null, pl.getX(), pl.getY(), pl.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, pl.getSoundSource(), 1.0F, 1.0F);
+                pl.level().playSound(null, pl.getX(), pl.getY(), pl.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, pl.getSoundSource(), 1.0F, 1.0F);
             }
         }
     }

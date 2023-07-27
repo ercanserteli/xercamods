@@ -14,7 +14,6 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -89,7 +88,7 @@ public class ItemGoldenCupcake extends Item {
                     player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 150, 3));
                 }
                 case 2 -> {
-                    List<Player> targets = player.level.getNearbyPlayers(yahooPredicate, player, player.getBoundingBox().inflate(16.0D, 8.0D, 16.0D));
+                    List<Player> targets = player.level().getNearbyPlayers(yahooPredicate, player, player.getBoundingBox().inflate(16.0D, 8.0D, 16.0D));
                     targets.add(player);
                     for (Player p : targets) {
                         worldIn.playSound(null, p.getX(), p.getY() + 3, p.getZ(), SoundEvents.YAHOO.get(), SoundSource.PLAYERS, 1.0f, worldIn.random.nextFloat() * 0.2F + 0.9F);
