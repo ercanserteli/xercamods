@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -243,13 +241,6 @@ public class ClientStuff {
                 );
             }
         }
-
-//        @SubscribeEvent
-//        public static void handleTextureStitch(TextureStitchEvent event) {
-//            if(event.getAtlas().location().equals(Sheets.CHEST_SHEET)){
-//                event.addSprite(OmniChestTileEntityRenderer.texture);
-//            }
-//        }
     }
 
     @Mod.EventBusSubscriber(modid = XercaMod.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -257,7 +248,7 @@ public class ClientStuff {
         @SubscribeEvent
         public static void hookReturningEvent(HookReturningEvent ev) {
             EntityHook ent = (EntityHook) ev.getEntity();
-            if (ent.level.isClientSide) {
+            if (ent.level().isClientSide) {
                 mc.getSoundManager().play(new HookSound(ent, true));
             }
         }
@@ -266,7 +257,7 @@ public class ClientStuff {
         public static void entityConstEvent(EntityEvent.EntityConstructing ev) {
             Entity ent = ev.getEntity();
             if (ent instanceof EntityHook hook) {
-                if (ent.level.isClientSide) {
+                if (ent.level().isClientSide) {
                     mc.getSoundManager().play(new HookSound(hook, false));
                 }
             }

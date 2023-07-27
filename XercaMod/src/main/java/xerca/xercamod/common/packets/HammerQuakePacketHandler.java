@@ -3,7 +3,6 @@ package xerca.xercamod.common.packets;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -57,7 +56,7 @@ public class HammerQuakePacketHandler {
             int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_QUAKE.get(), st);
             if(quakeLevel > 0){
                 double range = rangeForQuake(quakeLevel);
-                List<LivingEntity> targets = pl.level.getEntitiesOfClass(LivingEntity.class, new AABB(pl.position().subtract(5, 5, 5), pl.position().add(5, 5, 5)), entity -> (!entity.is(pl) && entity.position().distanceToSqr(msg.getPosition()) < range));
+                List<LivingEntity> targets = pl.level().getEntitiesOfClass(LivingEntity.class, new AABB(pl.position().subtract(5, 5, 5), pl.position().add(5, 5, 5)), entity -> (!entity.is(pl) && entity.position().distanceToSqr(msg.getPosition()) < range));
                 if(targets.size() >= 6){
                     Triggers.QUAKE.trigger(pl);
                 }
@@ -81,11 +80,11 @@ public class HammerQuakePacketHandler {
                     target.hurt(pl.damageSources().playerAttack(pl), damage);
                 }
                 st.hurtAndBreak(1, pl, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-                pl.level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.STOMP.get(), SoundSource.PLAYERS, (float) volume, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);
+                pl.level().playSound(null, pos.x, pos.y, pos.z, SoundEvents.STOMP.get(), SoundSource.PLAYERS, (float) volume, pl.level().random.nextFloat() * 0.1F + 0.4F + pitch);
 
                 int particleCount = (int) (volume*64);
                 QuakeParticlePacket pack = new QuakeParticlePacket(particleCount, pos.x, pos.y, pos.z);
-                XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, pl.getLevel().dimension())), pack);
+                XercaMod.NETWORK_HANDLER.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.x, pos.y, pos.z, 64.0D, pl.level().dimension())), pack);
 
             }
             else{

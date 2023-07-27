@@ -78,7 +78,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if (!this.isRemoved() && !this.level.isClientSide) {
+            if (!this.isRemoved() && !this.level().isClientSide) {
                 this.remove(RemovalReason.DISCARDED);
                 this.markHurt();
                 this.onBroken(source.getEntity());
@@ -89,7 +89,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public void onBroken(@Nullable Entity brokenEntity) {
-        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(SoundEvents.WOOL_BREAK, 1.0F, 1.0F);
             if (brokenEntity instanceof Player entityplayer) {
                 if (entityplayer.getAbilities().instabuild) {
@@ -146,7 +146,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
      */
     @Override
     public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             player.startRiding(this);
         }
         return InteractionResult.SUCCESS;
@@ -162,7 +162,7 @@ public class EntityCushion extends Entity implements IEntityAdditionalSpawnData 
         if (player.isSteppingCarefully()) {
             return InteractionResult.PASS;
         } else {
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 if(!this.isVehicle()) {
                     player.startRiding(this);
                 }

@@ -17,7 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -179,8 +179,8 @@ public class XercaMod {
         }
 
         @SubscribeEvent
-        public static void buildContents(CreativeModeTabEvent.BuildContents event) {
-            if (event.getTab() == CreativeModeTabs.FOOD_AND_DRINKS) {
+        public static void buildContents(BuildCreativeModeTabContentsEvent event) {
+            if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
                 if(Config.isFoodEnabled()) {
                     event.accept(Items.ITEM_TOMATO);
                     event.accept(Items.RAW_SHISH_KEBAB);
@@ -278,7 +278,7 @@ public class XercaMod {
                     event.accept(Items.ITEM_HOT_TEAPOT_7);
                 }
             }
-            else if (event.getTab() == CreativeModeTabs.COMBAT) {
+            else if (event.getTabKey() == CreativeModeTabs.COMBAT) {
                 if(Config.isWarhammerEnabled()) {
                     event.accept(Items.ITEM_NETHERITE_WARHAMMER);
                     event.accept(Items.ITEM_DIAMOND_WARHAMMER);
@@ -301,14 +301,14 @@ public class XercaMod {
                     event.accept(Items.ENDER_BOW);
                 }
             }
-            else if (event.getTab() == CreativeModeTabs.NATURAL_BLOCKS) {
+            else if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
                 if(Config.isFoodEnabled()) {
                     event.accept(Items.ITEM_TOMATO_SEEDS);
                     event.accept(Items.ITEM_RICE_SEEDS);
                     event.accept(Items.ITEM_TEA_SEEDS);
                 }
             }
-            else if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            else if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
                 if(Config.isFoodEnabled()) {
                     event.accept(Items.VAT);
                 }
@@ -325,7 +325,7 @@ public class XercaMod {
                     event.accept(Items.OMNI_CHEST);
                 }
             }
-            else if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            else if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
                 event.accept(Items.ITEM_KNIFE);
                 if(Config.isGrabHookEnabled()) {
                     event.accept(Items.ITEM_GRAB_HOOK);
@@ -348,7 +348,7 @@ public class XercaMod {
                     event.accept(Items.ITEM_ATTORNEY_BADGE);
                 }
             }
-            else if (event.getTab() == CreativeModeTabs.INGREDIENTS) {
+            else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
                 if(Config.isFoodEnabled()) {
                     event.accept(Items.ITEM_GLASS);
                 }
@@ -357,7 +357,7 @@ public class XercaMod {
                     event.accept(Items.ITEM_TEAPOT);
                 }
             }
-            else if (event.getTab() == CreativeModeTabs.COLORED_BLOCKS) {
+            else if (event.getTabKey() == CreativeModeTabs.COLORED_BLOCKS) {
                 if(Config.isTerracottaTileEnabled()) {
                     event.accept(Items.BLACK_TERRATILE);
                     event.accept(Items.BLUE_TERRATILE);
@@ -430,7 +430,7 @@ public class XercaMod {
                     event.accept(Items.YELLOW_CUSHION);
                 }
             }
-            else if (event.getTab() == CreativeModeTabs.BUILDING_BLOCKS) {
+            else if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
                 if(Config.isLeatherStrawEnabled()) {
                     event.accept(Items.ITEM_BLOCK_LEATHER);
                     event.accept(Items.ITEM_BLOCK_STRAW);

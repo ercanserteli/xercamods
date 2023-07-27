@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
@@ -17,8 +18,6 @@ import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -42,7 +41,7 @@ public class BlockVat extends AbstractCauldronBlock {
     private final VatContent content;
 
     public BlockVat(VatContent content) {
-        super(Block.Properties.of(Material.METAL, MaterialColor.COLOR_ORANGE).strength(1.5F).noOcclusion().randomTicks(), Map.of());
+        super(Block.Properties.of().mapColor(DyeColor.ORANGE).strength(1.5F).noOcclusion().randomTicks(), Map.of());
         this.content = content;
     }
 

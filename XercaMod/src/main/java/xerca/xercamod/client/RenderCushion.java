@@ -2,7 +2,6 @@ package xerca.xercamod.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -28,22 +27,22 @@ public class RenderCushion extends EntityRenderer<EntityCushion> {
      * Renders the desired {@code T} type Entity.
      */
     @Override
-    public void render(EntityCushion entity, float entityYaw, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(EntityCushion entity, float entityYaw, float partialTicks, @NotNull PoseStack stack, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
         if(entity.block != null){
             BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
-            matrixStackIn.pushPose();
+            stack.pushPose();
 
-            matrixStackIn.translate(0.0D, 0.5D, 0.0D);
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees( -90.0F));
-            matrixStackIn.translate(-0.5F, -0.5F, 0.5F);
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(90.0F));
+            stack.translate(0.0D, 0.5D, 0.0D);
+            stack.mulPose(Axis.YP.rotationDegrees( -90.0F));
+            stack.translate(-0.5F, -0.5F, 0.5F);
+            stack.mulPose(Axis.YP.rotationDegrees(90.0F));
             BlockState bs = entity.block.defaultBlockState();
 
-            blockRenderDispatcher.renderSingleBlock(bs, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
-            matrixStackIn.popPose();
+            blockRenderDispatcher.renderSingleBlock(bs, stack, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
+            stack.popPose();
         }
 
-        super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
     }
 
     /**

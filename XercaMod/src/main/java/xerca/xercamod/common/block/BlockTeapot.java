@@ -21,8 +21,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -37,8 +37,6 @@ import xerca.xercamod.common.item.Items;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class BlockTeapot extends Block {
     public static final IntegerProperty TEA_AMOUNT = IntegerProperty.create("tea", 0, 7);
     private static final VoxelShape centerShape = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 10.0D, 12.0D);
@@ -48,7 +46,7 @@ public class BlockTeapot extends Block {
     private static final VoxelShape shape = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape), handleShape), tipShape);
 
     public BlockTeapot() {
-        super(Properties.of(Material.CLAY).strength(0.0F, 1.0F).sound(SoundType.STONE));
+        super(Properties.of().mapColor(MapColor.CLAY).strength(0.0F, 1.0F).sound(SoundType.STONE));
         this.registerDefaultState(this.stateDefinition.any().setValue(TEA_AMOUNT, 0));
     }
 
@@ -89,7 +87,7 @@ public class BlockTeapot extends Block {
     }
 
     @Override
-    public @NotNull List<ItemStack> getDrops(BlockState state, LootContext.@NotNull Builder builder) {
+    public @NotNull List<ItemStack> getDrops(BlockState state, LootParams.@NotNull Builder builder) {
         int teaAmount = state.getValue(TEA_AMOUNT);
         ItemStack teapotStack;
         if(teaAmount == 0){
@@ -102,7 +100,7 @@ public class BlockTeapot extends Block {
 
     @Override
     public boolean canSurvive(@NotNull BlockState blockState, LevelReader worldReader, BlockPos blockPos) {
-        return worldReader.getBlockState(blockPos.below()).getMaterial().isSolid();
+        return worldReader.getBlockState(blockPos.below()).isSolid();
     }
 
     @Override
