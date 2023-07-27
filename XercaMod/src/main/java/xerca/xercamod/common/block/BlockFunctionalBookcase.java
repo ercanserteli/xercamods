@@ -32,7 +32,7 @@ public class BlockFunctionalBookcase extends Block implements EntityBlock {
     public static final IntegerProperty BOOK_AMOUNT = IntegerProperty.create("books", 0, 6);
 
     public BlockFunctionalBookcase() {
-        super(Block.Properties.of(Material.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD));
+        super(Block.Properties.mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD));
         this.registerDefaultState(this.stateDefinition.any().setValue(BOOK_AMOUNT, 0));
     }
 

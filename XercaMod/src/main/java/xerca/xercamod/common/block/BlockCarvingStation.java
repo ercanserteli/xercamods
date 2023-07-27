@@ -31,7 +31,7 @@ public class BlockCarvingStation extends Block {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public BlockCarvingStation() {
-        super(Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2.0f, 3.0f));
+        super(Properties.mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(2.0f, 3.0f));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

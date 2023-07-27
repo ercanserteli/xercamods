@@ -93,13 +93,13 @@ public class ItemInstrument extends Item implements IItemInstrument {
 
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, LivingEntity attacker) {
-        Level world = attacker.level;
+        Level world = attacker.level();
         if (!world.isClientSide) {
             int note1 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
             int note2 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
             int note3 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
 
-            PacketDistributor.PacketTarget networkTarget = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(target.getX(), target.getY(), target.getZ(), 24.0D, target.level.dimension()));
+            PacketDistributor.PacketTarget networkTarget = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(target.getX(), target.getY(), target.getZ(), 24.0D, target.level().dimension()));
             TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, this, target);
             XercaMusic.NETWORK_HANDLER.send(networkTarget, packet);
         }
