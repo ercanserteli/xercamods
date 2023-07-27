@@ -20,15 +20,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class BlockPizza extends Block {
     public enum Ingredient {
@@ -47,7 +45,7 @@ public class BlockPizza extends Block {
     };
 
     public BlockPizza(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
-        super(Properties.of(Material.CAKE, DyeColor.YELLOW).sound(SoundType.WOOL).strength(0.5F));
+        super(Properties.of().pushReaction(PushReaction.DESTROY).mapColor(DyeColor.YELLOW).sound(SoundType.WOOL).strength(0.5F));
         this.hungerPerBite = 1 + (slot1.equals(Ingredient.EMPTY) ? 0 : 1) +  (slot2.equals(Ingredient.EMPTY) ? 0 : 1) + (slot3.equals(Ingredient.EMPTY) ? 0 : 1);
     }
 
@@ -104,7 +102,7 @@ public class BlockPizza extends Block {
 
     @Override
     public boolean canSurvive(@NotNull BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
-        return levelReader.getBlockState(blockPos.below()).getMaterial().isSolid();
+        return levelReader.getBlockState(blockPos.below()).isSolid();
     }
 
     @Override

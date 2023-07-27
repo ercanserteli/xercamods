@@ -12,16 +12,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.item.Items;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     BlockRicePlant() {
-        super(Properties.of(Material.PLANT).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
+        super(Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
     }
 
     @Override

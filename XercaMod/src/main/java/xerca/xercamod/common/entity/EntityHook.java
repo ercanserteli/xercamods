@@ -144,7 +144,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private boolean checkCollision() {
-        HitResult raytraceresult = ProjectileUtil.getHitResult(this, (entity) -> !entity.isSpectator() && (entity.isPickable() || entity instanceof ItemEntity) && (entity != this.angler || this.ticksInAir >= 5));
+        HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, (entity) -> !entity.isSpectator() && (entity.isPickable() || entity instanceof ItemEntity) && (entity != this.angler || this.ticksInAir >= 5));
         if (raytraceresult.getType() != HitResult.Type.MISS) {
             if (raytraceresult.getType() == HitResult.Type.ENTITY) {
                 Entity caught = ((EntityHitResult) raytraceresult).getEntity();
@@ -157,7 +157,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
                 this.caughtEntity = caught;
 
                 if(!hasGentle){
-                    level.playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT.get(), SoundSource.PLAYERS, 1.0f, level.random.nextFloat() * 0.2F + 0.9F);
+                    level().playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT.get(), SoundSource.PLAYERS, 1.0f, level().random.nextFloat() * 0.2F + 0.9F);
 
                     caughtEntity.hurt(damageSources().thrown(this, this.angler), 3);
                     if(!this.caughtEntity.isAlive()){
@@ -165,7 +165,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
                         return true;
                     }
                 }else{
-                    level.playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT.get(), SoundSource.PLAYERS, 0.6f, level.random.nextFloat() * 0.2F + 1.5f);
+                    level().playSound(null, getX(), getY(), getZ(), SoundEvents.HOOK_IMPACT.get(), SoundSource.PLAYERS, 0.6f, level().random.nextFloat() * 0.2F + 1.5f);
                 }
 
                 this.caughtEntity.noPhysics = true;
@@ -233,7 +233,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
      */
     @Override
     public void tick() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.angler == null) {
                 this.remove();
                 return;
@@ -243,11 +243,11 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         this.baseTick();
         age++;
 
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             int i = this.getEntityData().get(cau_ent);
 
             if (i > 0 && this.caughtEntity == null) {
-                this.caughtEntity = this.level.getEntity(i - 1);
+                this.caughtEntity = this.level().getEntity(i - 1);
                 MinecraftForge.EVENT_BUS.post(new HookReturningEvent(this));
             }
         } else {
@@ -278,7 +278,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
         if (this.ticksInAir == 20) {
             setReturning();
         }
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             boolean caughtSomething = checkCollision();
             if(caughtSomething){
                 return;
@@ -347,7 +347,7 @@ public class EntityHook extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
         int id = additionalData.readInt();
-        Entity ent = level.getEntity(id);
+        Entity ent = level().getEntity(id);
         if (ent instanceof Player) {
             angler = (Player) ent;
         }

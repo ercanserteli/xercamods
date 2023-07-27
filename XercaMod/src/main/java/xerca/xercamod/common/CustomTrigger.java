@@ -92,7 +92,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
          */
         public Instance(ResourceLocation resourceLocation)
         {
-            super(resourceLocation, EntityPredicate.Composite.ANY);
+            super(resourceLocation, EntityPredicate.wrap(EntityPredicate.ANY));
         }
     }
 
