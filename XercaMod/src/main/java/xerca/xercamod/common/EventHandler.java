@@ -139,7 +139,7 @@ class EventHandler {
                         !s.is(DamageTypeTags.IS_FIRE) && !s.is(DamageTypeTags.IS_DROWNING) &&
                         !s.is(DamageTypeTags.IS_PROJECTILE) && !s.is(DamageTypeTags.IS_LIGHTNING) &&
                         !s.is(DamageTypeTags.IS_FREEZING)){
-                    EntityHealthOrb.award((ServerLevel) attacker.level, event.getEntity(), attacker, devourLevel*2);
+                    EntityHealthOrb.award((ServerLevel) attacker.level(), event.getEntity(), attacker, devourLevel*2);
                 }
             }
         }

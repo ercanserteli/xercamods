@@ -12,17 +12,15 @@ import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class BlockRope extends PipeBlock {
     protected BlockRope() {
-        super(0.125F, Properties.of(Material.WOOL).noOcclusion().sound(SoundType.WOOL));
+        super(0.125F, Properties.of().mapColor(MapColor.WOOL).noOcclusion().sound(SoundType.WOOL));
         this.registerDefaultState(this.stateDefinition.any().setValue(NORTH, Boolean.FALSE).setValue(EAST, false).setValue(SOUTH, Boolean.FALSE).setValue(WEST, Boolean.FALSE).setValue(UP, Boolean.FALSE).setValue(DOWN, Boolean.FALSE));
     }
 

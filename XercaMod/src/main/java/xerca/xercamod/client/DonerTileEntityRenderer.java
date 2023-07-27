@@ -3,6 +3,7 @@ package xerca.xercamod.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -24,22 +25,22 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<TileEntityDo
     }
 
     @Override
-    public void render(@NotNull TileEntityDoner tileEntityIn, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(@NotNull TileEntityDoner tileEntityIn, float partialTicks, @NotNull PoseStack stack, @NotNull MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if(blockRenderer == null) blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
         float f = tileEntityIn.getAnimationProgress(partialTicks);
-        matrixStackIn.pushPose();
+        stack.pushPose();
 
-        matrixStackIn.translate(0.5f, 0.f, 0.5f);
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(2*f));
-        matrixStackIn.translate(-0.5f, 0.f, -0.5f);
+        stack.translate(0.5f, 0.f, 0.5f);
+        stack.mulPose(Axis.YP.rotationDegrees(2*f));
+        stack.translate(-0.5f, 0.f, -0.5f);
 
         BlockState bs = tileEntityIn.getBlockState();
 
         Blocks.BLOCK_DONER.get().setRenderType(RenderShape.MODEL);
-        blockRenderer.renderSingleBlock(bs, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY);
+        blockRenderer.renderSingleBlock(bs, stack, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY);
         Blocks.BLOCK_DONER.get().setRenderType(RenderShape.ENTITYBLOCK_ANIMATED);
 
-        matrixStackIn.popPose();
+        stack.popPose();
     }
 }
