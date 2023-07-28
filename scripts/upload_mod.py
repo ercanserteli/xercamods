@@ -159,18 +159,19 @@ def main():
             "music": 341448,
             "paint": 350727
         }
-        if args.project_id in mod_name_to_id:
-            args.project_id = mod_name_to_id[args.project_id]
+        cf_project_id = args.project_id
+        if cf_project_id in mod_name_to_id:
+            cf_project_id = mod_name_to_id[cf_project_id]
 
-        args.game_versions = [get_game_version_id(version_name, args.api_token) for version_name in args.game_versions]
+        cf_game_versions = [get_game_version_id(version_name, args.curseforge_api_token) for version_name in args.game_versions]
         upload_mod_to_curseforge(
             args.curseforge_api_token,
-            args.project_id,
+            cf_project_id,
             args.file_path,
             args.changelog,
             args.changelog_type,
             args.display_name,
-            args.game_versions,
+            cf_game_versions,
             args.release_type,
             args.relations,
             args.dry
@@ -192,6 +193,10 @@ def main():
             args.project_id = mod_name_to_id[args.project_id]
 
         version = '-'.join(os.path.splitext(os.path.basename(args.file_path))[0].split('-')[1:])
+        if version.startswith("fabric-"):
+            version = version[7:]
+        if version.startswith("forge-"):
+            version = version[6:]
         version_name = f'{title} {version}'
 
         upload_mod_to_modrinth(

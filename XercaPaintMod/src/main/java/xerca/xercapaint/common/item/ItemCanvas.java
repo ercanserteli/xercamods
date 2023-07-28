@@ -71,25 +71,7 @@ public class ItemCanvas extends Item {
                     return InteractionResult.SUCCESS;
                 }
 
-                int rotation = 0;
-                if (direction.getAxis() == Direction.Axis.Y) {
-                    double xDiff = blockpos.getX() - player.getX();
-                    double zDiff = blockpos.getZ() - player.getZ();
-                    if (Math.abs(xDiff) > Math.abs(zDiff)) {
-                        if (xDiff > 0) {
-                            rotation = 1;
-                        } else {
-                            rotation = 3;
-                        }
-                    } else {
-                        if (zDiff > 0) {
-                            rotation = 2;
-                        }
-                    }
-                    if (direction == Direction.DOWN && Math.abs(xDiff) < Math.abs(zDiff)) {
-                        rotation += 2;
-                    }
-                }
+                int rotation = getRotation(direction, blockpos, player);
 
                 if (!world.isClientSide) {
                     EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
@@ -105,6 +87,29 @@ public class ItemCanvas extends Item {
         return InteractionResult.SUCCESS;
     }
 
+    private static int getRotation(Direction direction, BlockPos blockpos, Player player) {
+        int rotation = 0;
+        if (direction.getAxis() == Direction.Axis.Y) {
+            double xDiff = blockpos.getX() - player.getX();
+            double zDiff = blockpos.getZ() - player.getZ();
+            if (Math.abs(xDiff) > Math.abs(zDiff)) {
+                if (xDiff > 0) {
+                    rotation = 1;
+                } else {
+                    rotation = 3;
+                }
+            } else {
+                if (zDiff > 0) {
+                    rotation = 2;
+                }
+            }
+            if (direction == Direction.DOWN && Math.abs(xDiff) < Math.abs(zDiff)) {
+                rotation += 2;
+            }
+        }
+        return rotation;
+    }
+
     public static boolean hasTitle(@Nonnull ItemStack stack){
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
@@ -117,7 +122,6 @@ public class ItemCanvas extends Item {
     }
 
     public static Component getFullLabel(@Nonnull ItemStack stack){
-//        Component label = Component.literal("");
         String labelString = "";
         int generation = 0;
         Component title = getCustomTitle(stack);
