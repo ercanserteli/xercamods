@@ -25,7 +25,6 @@ import xerca.xercapaint.entity.EntityCanvas;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.List;
 
 @NonnullDefault
@@ -50,56 +49,61 @@ public class ItemCanvas extends HangingEntityItem {
         BlockPos blockpos = context.getClickedPos();
         Direction direction = context.getClickedFace();
         BlockPos pos = blockpos.relative(direction);
-        Player playerentity = context.getPlayer();
+        Player player = context.getPlayer();
         ItemStack itemstack = context.getItemInHand();
-        if (playerentity != null && !this.mayPlace(playerentity, direction, itemstack, pos)) {
-            if(context.getLevel().isClientSide){
-                ModClient.showCanvasGui(playerentity);
-            }
-        } else {
-            Level world = context.getLevel();
-
-            CompoundTag tag = itemstack.getTag();
-            if(tag == null || !tag.contains("pixels") || !tag.contains("name")){
-                if(context.getLevel().isClientSide) {
-                    ModClient.showCanvasGui(playerentity);
+        if (player != null) {
+            if (!this.mayPlace(player, direction, itemstack, pos)) {
+                if (context.getLevel().isClientSide) {
+                    ModClient.showCanvasGui(player);
                 }
-                return InteractionResult.SUCCESS;
-            }
+            } else {
+                Level world = context.getLevel();
 
-            int rotation = 0;
-            if(direction.getAxis() == Direction.Axis.Y){
-                double xDiff = blockpos.getX() - playerentity.getX();
-                double zDiff = blockpos.getZ() - playerentity.getZ();
-                if(Math.abs(xDiff) > Math.abs(zDiff)){
-                    if(xDiff > 0){
-                        rotation = 1;
-                    }else{
-                        rotation = 3;
+                CompoundTag tag = itemstack.getTag();
+                if (tag == null || !tag.contains("pixels") || !tag.contains("name")) {
+                    if (context.getLevel().isClientSide) {
+                        ModClient.showCanvasGui(player);
                     }
-                }else{
-                    if(zDiff > 0){
-                        rotation = 2;
-                    }else{
-                        rotation = 0;
+                    return InteractionResult.SUCCESS;
+                }
+
+                int rotation = getRotation(direction, blockpos, player);
+
+                if (!world.isClientSide) {
+                    EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
+
+                    if (entityCanvas.survives()) {
+                        entityCanvas.playPlacementSound();
+                        world.addFreshEntity(entityCanvas);
+                        itemstack.shrink(1);
                     }
-                }
-                if(direction == Direction.DOWN && Math.abs(xDiff) < Math.abs(zDiff)){
-                    rotation += 2;
-                }
-            }
-
-            if (!world.isClientSide) {
-                EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
-
-                if (entityCanvas.survives()) {
-                    entityCanvas.playPlacementSound();
-                    world.addFreshEntity(entityCanvas);
-                    itemstack.shrink(1);
                 }
             }
         }
         return InteractionResult.SUCCESS;
+    }
+
+    private static int getRotation(Direction direction, BlockPos blockpos, Player player) {
+        int rotation = 0;
+        if (direction.getAxis() == Direction.Axis.Y) {
+            double xDiff = blockpos.getX() - player.getX();
+            double zDiff = blockpos.getZ() - player.getZ();
+            if (Math.abs(xDiff) > Math.abs(zDiff)) {
+                if (xDiff > 0) {
+                    rotation = 1;
+                } else {
+                    rotation = 3;
+                }
+            } else {
+                if (zDiff > 0) {
+                    rotation = 2;
+                }
+            }
+            if (direction == Direction.DOWN && Math.abs(xDiff) < Math.abs(zDiff)) {
+                rotation += 2;
+            }
+        }
+        return rotation;
     }
 
     public static boolean hasTitle(@Nonnull ItemStack stack){
@@ -114,14 +118,13 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     public static Component getFullLabel(@Nonnull ItemStack stack){
-//        TextComponent label = new TextComponent("");
         String labelString = "";
         int generation = 0;
         Component title = getCustomTitle(stack);
         if(title != null){
             labelString += (title.getString() + " ");
         }
-        if (stack.hasTag()) {
+        if (stack.hasTag() && stack.getTag() != null) {
             CompoundTag tag = stack.getTag();
             String s = tag.getString("author");
 
@@ -130,9 +133,6 @@ public class ItemCanvas extends HangingEntityItem {
             }
 
             generation = tag.getInt("generation");
-//            if(generation > 0){
-//                labelString += (Component.translatable("canvas.generation." + (generation - 1))).getString();
-//            }
         }
         MutableComponent label = Component.literal(labelString);
         if(generation == 1){
@@ -171,7 +171,7 @@ public class ItemCanvas extends HangingEntityItem {
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (stack.hasTag()) {
+        if (stack.hasTag() && stack.getTag() != null) {
             CompoundTag tag = stack.getTag();
             String s = tag.getString("author");
 

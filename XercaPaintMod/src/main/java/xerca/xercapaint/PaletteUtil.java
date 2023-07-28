@@ -32,16 +32,7 @@ public class PaletteUtil {
             return val;
         }
 
-        public int bgrVal() {
-            int val = b;
-            val = (val << 8) + g;
-            val = (val << 8) + r;
-            val += 0xFF000000;
-            return val;
-        }
-
         public void setGLColor(){
-//            GlStateManager._color4f(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
             RenderSystem.setShaderColor(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
         }
 
