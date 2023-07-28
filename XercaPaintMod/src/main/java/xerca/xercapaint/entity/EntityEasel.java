@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
@@ -55,17 +57,13 @@ public class EntityEasel extends Entity {
         this.painter = painter;
     }
 
-    public Player getPainter(){
-        return this.painter;
-    }
-
     public boolean isPushable() {
     return false;
 }
 
-    public boolean hurt(DamageSource damageSource, float p_31580_) {
+    public boolean hurt(@NotNull DamageSource damageSource, float p_31580_) {
         if (!this.level.isClientSide && !this.isRemoved()) {
-            if(!getItem().isEmpty() && !damageSource.isExplosion()){
+            if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
                 this.dropItem(damageSource.getEntity(), false);
             }
             else{
@@ -78,7 +76,7 @@ public class EntityEasel extends Entity {
 
     private void showBreakingParticles() {
         if (this.level instanceof ServerLevel) {
-            ((ServerLevel)this.level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, (double)(this.getBbWidth() / 4.0F), (double)(this.getBbHeight() / 4.0F), (double)(this.getBbWidth() / 4.0F), 0.05D);
+            ((ServerLevel)this.level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
         }
     }
 
@@ -120,8 +118,7 @@ public class EntityEasel extends Entity {
             this.spawnAtLocation(canvasStack);
         }
 
-        if (entity instanceof Player) {
-            Player player = (Player)entity;
+        if (entity instanceof Player player) {
             if (player.getAbilities().instabuild) {
                 return;
             }
@@ -157,13 +154,13 @@ public class EntityEasel extends Entity {
         }
     }
 
-    public SlotAccess getSlot(int i) {
+    public @NotNull SlotAccess getSlot(int i) {
         return i == 0 ? new SlotAccess() {
-            public ItemStack get() {
+            public @NotNull ItemStack get() {
                 return EntityEasel.this.getItem();
             }
 
-            public boolean set(ItemStack itemStack) {
+            public boolean set(@NotNull ItemStack itemStack) {
                 EntityEasel.this.setItem(itemStack);
                 return true;
             }
@@ -171,11 +168,11 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return new ClientboundAddEntityPacket(this);
     }
 
-    public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> accessor) {
         super.onSyncedDataUpdated(accessor);
         if (accessor.equals(DATA_CANVAS)) {
             ItemStack itemStack = this.getItem();
@@ -185,7 +182,7 @@ public class EntityEasel extends Entity {
         }
     }
 
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         if (!this.getItem().isEmpty()) {
             tag.put("Item", this.getItem().save(new CompoundTag()));
         }
@@ -193,7 +190,7 @@ public class EntityEasel extends Entity {
 
     public void readAdditionalSaveData(CompoundTag tag) {
         CompoundTag itemTag = tag.getCompound("Item");
-        if (itemTag != null && !itemTag.isEmpty()) {
+        if (!itemTag.isEmpty()) {
             ItemStack var3 = ItemStack.of(itemTag);
             if (var3.isEmpty()) {
                 Mod.LOGGER.warn("Unable to load item from: {}", itemTag);
@@ -202,7 +199,7 @@ public class EntityEasel extends Entity {
         }
     }
 
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;
@@ -218,7 +215,7 @@ public class EntityEasel extends Entity {
                 }
             }else{
                 boolean unused = this.painter == null;
-                boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag().getInt("generation") > 0);
+                boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag() != null && getItem().getTag().getInt("generation") > 0);
                 boolean allowed = unused || !toEdit;
                 OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
                 ServerPlayNetworking.send((ServerPlayer) player, Mod.OPEN_GUI_PACKET_ID, pack.encode());
@@ -260,8 +257,6 @@ public class EntityEasel extends Entity {
             }
             else if(painter.distanceToSqr(this) > 64){
                 painter = null;
-//                CloseGuiPacket pack = new CloseGuiPacket();
-//                XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) painter), pack);
             }
         }
     }
@@ -273,7 +268,7 @@ public class EntityEasel extends Entity {
 
 
     @Override
-    public void setItemSlot(EquipmentSlot equipmentSlot, ItemStack itemStack) {
+    public void setItemSlot(@NotNull EquipmentSlot equipmentSlot, @NotNull ItemStack itemStack) {
 
     }
 

@@ -14,7 +14,7 @@ public class CloseGuiPacket {
         return PacketByteBufs.empty();
     }
 
-    public static CloseGuiPacket decode(FriendlyByteBuf buf) {
+    public static CloseGuiPacket decode() {
         CloseGuiPacket result = new CloseGuiPacket();
         result.messageIsValid = true;
         return result;

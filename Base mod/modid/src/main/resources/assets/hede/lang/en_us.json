@@ -1,0 +1,13 @@
+{
+  "block.expblock.exp_block": "Experience Block",
+
+  "item.expblock.banana": "Banana",
+
+  "item.expblock.basic_exp_helmet": "Basic Experience Helmet",
+
+  "entity.expblock.xp_zombie": "EXP Zombie",
+
+  "enchantment.level.100": "100",
+
+  "entity.minecraft.ender_dragon": "Experience Dragon"
+}

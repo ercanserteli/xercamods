@@ -27,19 +27,19 @@ public final class Items {
     public static final ItemEasel ITEM_EASEL = new ItemEasel(new Item.Properties().stacksTo(1));
     public static final CreativeModeTab paintTab = FabricItemGroup.builder(new ResourceLocation(Mod.modId, "paint_tab"))
             .icon(() -> new ItemStack(Items.ITEM_PALETTE))
-            .displayItems((enabledFeatures, entries, operatorEnabled) -> {
+            .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
                 byte[] basicColors = new byte[16];
                 Arrays.fill(basicColors, (byte)1);
                 fullPalette.getOrCreateTag().putByteArray("basic", basicColors);
 
-                entries.accept(ITEM_PALETTE);
-                entries.accept(fullPalette);
-                entries.accept(ITEM_CANVAS);
-                entries.accept(ITEM_CANVAS_LARGE);
-                entries.accept(ITEM_CANVAS_LONG);
-                entries.accept(ITEM_CANVAS_TALL);
-                entries.accept(ITEM_EASEL);
+                output.accept(ITEM_PALETTE);
+                output.accept(fullPalette);
+                output.accept(ITEM_CANVAS);
+                output.accept(ITEM_CANVAS_LARGE);
+                output.accept(ITEM_CANVAS_LONG);
+                output.accept(ITEM_CANVAS_TALL);
+                output.accept(ITEM_EASEL);
             })
             .build();
 

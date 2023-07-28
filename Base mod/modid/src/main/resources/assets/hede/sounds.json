@@ -1,0 +1,9 @@
+{
+  "laser": {
+    "sounds": [
+      {
+        "name": "modid:laser"
+      }
+    ]
+  }
+}

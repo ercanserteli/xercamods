@@ -4,8 +4,6 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -18,11 +16,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -41,13 +40,12 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     }
 
     @Override
-    public EaselModel getModel() {
+    public @NotNull EaselModel getModel() {
         return this.model;
     }
 
-    @Nullable
     @Override
-    public ResourceLocation getTextureLocation(EntityEasel entity) {
+    public @NotNull ResourceLocation getTextureLocation(EntityEasel entity) {
         return woodTexture;
     }
 
@@ -97,7 +95,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
     public static class RenderEntityEaselFactory implements EntityRendererProvider<EntityEasel> {
         @Override
-        public EntityRenderer<EntityEasel> create(Context ctx) {
+        public @NotNull EntityRenderer<EntityEasel> create(Context ctx) {
             theInstance = new RenderEntityEasel(ctx);
             return theInstance;
         }

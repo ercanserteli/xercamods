@@ -67,7 +67,7 @@ public class CommandImport {
             ItemStack mainhand = player.getMainHandItem();
             ItemStack offhand = player.getOffhandItem();
 
-            if(!(mainhand.getItem() instanceof ItemCanvas) || (mainhand.hasTag() && !mainhand.getTag().isEmpty())){
+            if(!(mainhand.getItem() instanceof ItemCanvas) || (mainhand.hasTag() && mainhand.getTag() != null && !mainhand.getTag().isEmpty())){
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }

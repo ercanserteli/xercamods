@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec2;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
@@ -147,7 +148,7 @@ public abstract class BasePalette extends Screen {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
 //        Minecraft.getInstance().getTextureManager().bind(paletteTextures);
@@ -346,9 +347,9 @@ public abstract class BasePalette extends Screen {
 
     protected void playSound(SoundEvent soundEvent, float volume){
         Minecraft m = Minecraft.getInstance();
-        if(m.level != null){
+        if(m.level != null && m.player != null){
             m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
-                    0.8f + m.level.random.nextFloat()*0.4f, m.level.random, Minecraft.getInstance().player.blockPosition()));
+                    0.8f + m.level.random.nextFloat()*0.4f, m.player.getRandom(), m.player.blockPosition()));
         }
     }
 

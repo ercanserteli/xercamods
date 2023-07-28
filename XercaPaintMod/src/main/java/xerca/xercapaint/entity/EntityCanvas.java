@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.Items;
@@ -101,7 +102,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    protected float getEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+    protected float getEyeHeight(@NotNull Pose poseIn, @NotNull EntityDimensions sizeIn) {
         return 0.0F;
     }
 
@@ -117,8 +118,7 @@ public class EntityCanvas extends HangingEntity {
     public void dropItem(@Nullable Entity brokenEntity) {
         if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
-            if (brokenEntity instanceof Player) {
-                Player playerentity = (Player)brokenEntity;
+            if (brokenEntity instanceof Player playerentity) {
                 if (playerentity.getAbilities().instabuild) {
                     return;
                 }
@@ -177,7 +177,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    protected void setDirection(Direction facingDirectionIn) {
+    protected void setDirection(@NotNull Direction facingDirectionIn) {
         Validate.notNull(facingDirectionIn);
         this.direction = facingDirectionIn;
         if (facingDirectionIn.getAxis().isHorizontal()) {
@@ -200,43 +200,34 @@ public class EntityCanvas extends HangingEntity {
     @Override
     protected void recalculateBoundingBox(){
         if(canvasType != null){
-            if (this.direction != null) {
-                double d1 = (double)this.pos.getX() + 0.5D - (double)this.direction.getStepX() * 0.46875D;
-                double d2 = (double)this.pos.getY() + 0.5D - (double)this.direction.getStepY() * 0.46875D;
-                double d3 = (double)this.pos.getZ() + 0.5D - (double)this.direction.getStepZ() * 0.46875D;
+            double d1 = (double) this.pos.getX() + 0.5D - (double) this.direction.getStepX() * 0.46875D;
+            double d2 = (double)this.pos.getY() + 0.5D - (double)this.direction.getStepY() * 0.46875D;
+            double d3 = (double)this.pos.getZ() + 0.5D - (double)this.direction.getStepZ() * 0.46875D;
 
-                if(this.direction.getAxis().isHorizontal()){
-                    double d4 = this.offs(this.getWidth());
-                    double d5 = this.offs(this.getHeight());
-                    d2 = d2 + d5;
-                    Direction direction = this.direction.getCounterClockWise();
-                    d1 = d1 + d4 * (double)direction.getStepX();
-                    d3 = d3 + d4 * (double)direction.getStepZ();
-                }else{
-
-                }
-
-                this.setPosRaw(d1, d2, d3);
-                double d6 = this.getWidth()-2;
-                double d7 = this.getHeight()-2;
-                double d8 = this.getWidth()-2;
-                Direction.Axis direction$axis = this.direction.getAxis();
-                switch(direction$axis) {
-                    case X:
-                        d6 = 1.0D;
-                        break;
-                    case Y:
-                        d7 = 1.0D;
-                        break;
-                    case Z:
-                        d8 = 1.0D;
-                }
-
-                d6 = d6 / 32.0D;
-                d7 = d7 / 32.0D;
-                d8 = d8 / 32.0D;
-                this.setBoundingBox(new AABB(d1 - d6, d2 - d7, d3 - d8, d1 + d6, d2 + d7, d3 + d8));
+            if(this.direction.getAxis().isHorizontal()){
+                double d4 = this.offs(this.getWidth());
+                double d5 = this.offs(this.getHeight());
+                d2 = d2 + d5;
+                Direction direction = this.direction.getCounterClockWise();
+                d1 = d1 + d4 * (double)direction.getStepX();
+                d3 = d3 + d4 * (double)direction.getStepZ();
             }
+
+            this.setPosRaw(d1, d2, d3);
+            double d6 = this.getWidth()-2;
+            double d7 = this.getHeight()-2;
+            double d8 = this.getWidth()-2;
+            Direction.Axis direction$axis = this.direction.getAxis();
+            switch (direction$axis) {
+                case X -> d6 = 1.0D;
+                case Y -> d7 = 1.0D;
+                case Z -> d8 = 1.0D;
+            }
+
+            d6 = d6 / 32.0D;
+            d7 = d7 / 32.0D;
+            d8 = d8 / 32.0D;
+            this.setBoundingBox(new AABB(d1 - d6, d2 - d7, d3 - d8, d1 + d6, d2 + d7, d3 + d8));
         }
     }
 
@@ -263,7 +254,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         ClientboundAddCanvasPacket p = new ClientboundAddCanvasPacket(this);
         FriendlyByteBuf buf = PacketByteBufs.create();
         p.write(buf);
@@ -336,7 +327,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    public void recreateFromPacket(ClientboundAddEntityPacket clientboundAddEntityPacket) {
+    public void recreateFromPacket(@NotNull ClientboundAddEntityPacket clientboundAddEntityPacket) {
         super.recreateFromPacket(clientboundAddEntityPacket);
         if(clientboundAddEntityPacket instanceof ClientboundAddCanvasPacket cp) {
             this.canvasName = cp.getCanvasName();
@@ -354,7 +345,7 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
         if(canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE){
             if (!this.level.isClientSide) {
                 setRotation(getRotation() + 1);

@@ -1,13 +1,11 @@
 package xerca.xercapaint.client;
 
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,6 +17,9 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.entity.EntityCanvas;
@@ -49,9 +50,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         this.textureManager = Minecraft.getInstance().getTextureManager();
     }
 
-    @Nullable
     @Override
-    public ResourceLocation getTextureLocation(EntityCanvas entity) {
+    public @NotNull ResourceLocation getTextureLocation(EntityCanvas entity) {
         return getCanvasRendererInstance(entity).location;
     }
 
@@ -64,16 +64,9 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
         @Override
-        public EntityRenderer<EntityCanvas> create(Context ctx) {
+        public @NotNull EntityRenderer<EntityCanvas> create(Context ctx) {
             theInstance = new RenderEntityCanvas(ctx);
             return theInstance;
-        }
-    }
-
-    public void updateTexture(String name, int version) {
-        Instance instance = this.getMapInstanceIfExists(name);
-        if(instance != null){
-            instance.updateCanvasTexture(name, version);
         }
     }
 
@@ -102,26 +95,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         }
 
         return instance;
-    }
-
-    @Nullable
-    public Instance getMapInstanceIfExists(String name) {
-        return this.loadedCanvases.get(name);
-    }
-
-    /**
-     * Clears the currently loaded maps and removes their corresponding textures
-     */
-    public void clearLoadedCanvases() {
-        for(Instance instance : this.loadedCanvases.values()) {
-            instance.close();
-        }
-
-        this.loadedCanvases.clear();
-    }
-
-    public void close() {
-        this.clearLoadedCanvases();
     }
 
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
@@ -165,10 +138,13 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                     return;
                 }
 
-                for (int i = 0; i < height; ++i) {
-                    for (int j = 0; j < width; ++j) {
-                        int k = j + i * width;
-                        canvasTexture.getPixels().setPixelRGBA(j, i, swapColor(pixels[k]));
+                NativeImage image = canvasTexture.getPixels();
+                if(image != null) {
+                    for (int i = 0; i < height; ++i) {
+                        for (int j = 0; j < width; ++j) {
+                            int k = j + i * width;
+                            image.setPixelRGBA(j, i, swapColor(pixels[k]));
+                        }
                     }
                 }
 
@@ -267,11 +243,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         private void addVertex(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
         {
             vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(mn, xOff, yOff, zOff).endVertex();
-        }
-
-        private void addVertexFront(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
-        {
-            vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).uv2(lightmap).endVertex();
         }
 
         public void close() {

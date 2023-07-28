@@ -2,6 +2,7 @@ package xerca.xercapaint.item.crafting;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -11,6 +12,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
@@ -24,7 +26,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(CraftingContainer inv, @NotNull Level worldIn) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 
@@ -60,7 +62,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 
@@ -90,11 +92,11 @@ public class RecipeCanvasCloning extends CustomRecipe {
         }
 
         int gen = WrittenBookItem.getGeneration(orgCanvas);
-        if (!orgCanvas.isEmpty() && orgCanvas.hasTag() && !freshCanvas.isEmpty() && !freshCanvas.hasTag() && gen < 3 && gen > 0) {
+        if (!orgCanvas.isEmpty() && orgCanvas.hasTag() && orgCanvas.getTag() != null && !freshCanvas.isEmpty() && !freshCanvas.hasTag() && gen < 3 && gen > 0) {
             ItemStack resultStack = new ItemStack(orgCanvas.getItem());
-            CompoundTag nbttagcompound = orgCanvas.getTag().copy();
-            nbttagcompound.putInt("generation", gen + 1);
-            resultStack.setTag(nbttagcompound);
+            CompoundTag compoundTag = orgCanvas.getTag().copy();
+            compoundTag.putInt("generation", gen + 1);
+            resultStack.setTag(compoundTag);
             return resultStack;
         } else {
             return ItemStack.EMPTY;

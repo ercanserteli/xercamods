@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.packets.PaletteUpdatePacket;
 
@@ -31,7 +32,7 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float f) {
+    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
         super.render(matrixStack, mouseX, mouseY, f);
 
         renderCursor(matrixStack, mouseX, mouseY);
