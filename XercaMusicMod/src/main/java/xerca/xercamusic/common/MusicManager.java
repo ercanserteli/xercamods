@@ -6,11 +6,11 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
+import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
 
 public class MusicManager {
     public static MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
@@ -23,11 +23,11 @@ public class MusicManager {
                 return data;
             }
             else{
-                XercaMusic.LOGGER.info("Music data in server is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)", id, data.version, ver);
+                XercaMusic.LOGGER.debug("Music data in server is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)", id, data.version, ver);
             }
         }
         else{
-            XercaMusic.LOGGER.info("Music data not found in server (id: {}, requested ver: {}) (getMusicData)", id, ver);
+            XercaMusic.LOGGER.debug("Music data not found in server (id: {}, requested ver: {}) (getMusicData)", id, ver);
         }
         return null;
     }
@@ -35,9 +35,40 @@ public class MusicManager {
     public static void setMusicData(UUID id, int ver, ArrayList<NoteEvent> notes, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic::load, SavedDataMusic::new, "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
-        musicMap.put(id, new MusicData(ver, notes));
+        musicMap.put(id, new MusicManager.MusicData(ver, notes));
         savedDataMusic.setDirty();
     }
+
+    public static ArrayList<NoteEvent> getFinishedNotesFromBuffer(UUID id) {
+        if(MusicManager.TEMP_NOTES_MAP.containsKey(id)){
+            MusicManager.TempNotesBuffer buffer = MusicManager.TEMP_NOTES_MAP.get(id);
+            if(buffer.isFinished()){
+                return buffer.joinParts();
+            }
+            else{
+                XercaMusic.LOGGER.warn("Packet did not have notes, and temp buffer was not finished");
+            }
+        }
+        else{
+            XercaMusic.LOGGER.warn("Packet did not have notes, and temp buffer was not found");
+        }
+        return null;
+    }
+
+    public static boolean addNotesPart(SendNotesPartToServerPacket pkt) {
+        TempNotesBuffer buffer;
+        if(TEMP_NOTES_MAP.containsKey(pkt.getUuid())){
+            buffer = TEMP_NOTES_MAP.get(pkt.getUuid());
+            buffer.addPart(pkt.getPartId(), pkt.getNotes());
+        }
+        else{
+            buffer = new TempNotesBuffer(pkt.getPartsCount());
+            buffer.addPart(pkt.getPartId(), pkt.getNotes());
+            TEMP_NOTES_MAP.put(pkt.getUuid(), buffer);
+        }
+        return buffer.isFinished();
+    }
+
 
     public static class MusicData {
         public MusicData(int version, ArrayList<NoteEvent> notes) {
@@ -80,7 +111,7 @@ public class MusicManager {
         }
 
         @Override
-        public CompoundTag save(@NotNull CompoundTag tag) {
+        public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
             ListTag musicDataList = new ListTag();
             for(Map.Entry<UUID, MusicData> entry : musicMap.entrySet()){
                 CompoundTag nbt = new CompoundTag();
@@ -98,4 +129,39 @@ public class MusicManager {
         }
     }
 
+    public static class TempNotesBuffer {
+        int partsCount;
+        boolean[] finishedParts;
+        List<NoteEvent>[] notesParts;
+
+        public TempNotesBuffer(int partsCount) {
+            this.partsCount = partsCount;
+            finishedParts = new boolean[partsCount];
+            notesParts = new ArrayList[partsCount];
+        }
+
+        public void addPart(int partId, List<NoteEvent> part) {
+            if(partId < partsCount && partId >= 0){
+                notesParts[partId] = part;
+                finishedParts[partId] = true;
+            }
+        }
+
+        public boolean isFinished() {
+            boolean result = true;
+            for(boolean f : finishedParts) {
+                result &= f;
+            }
+            return result;
+        }
+
+        public ArrayList<NoteEvent> joinParts() {
+            ArrayList<NoteEvent> notes = new ArrayList<>(partsCount*MAX_NOTES_IN_PACKET);
+            for(List<NoteEvent> notesPart : notesParts) {
+                notes.addAll(notesPart);
+            }
+            return notes;
+        }
+    }
+    public static Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
 }

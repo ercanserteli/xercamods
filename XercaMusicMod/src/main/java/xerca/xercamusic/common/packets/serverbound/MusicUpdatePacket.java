@@ -10,6 +10,8 @@ import xerca.xercamusic.common.packets.IPacket;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
+
 public class MusicUpdatePacket implements IPacket {
     public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_update");
     private FieldFlag availability;
@@ -27,9 +29,8 @@ public class MusicUpdatePacket implements IPacket {
     private boolean messageIsValid;
 
     public MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed,
-                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) {
+                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws ImportMusicSendPacket.NotesTooLargeException {
         this.availability = availability;
-        this.notes = notes;
         this.lengthBeats = lengthBeats;
         this.bps = bps;
         this.volume = volume;
@@ -40,6 +41,10 @@ public class MusicUpdatePacket implements IPacket {
         this.id = id;
         this.version = version;
         this.highlightInterval = highlightInterval;
+        this.notes = notes;
+        if(availability.hasNotes && this.notes != null && this.notes.size() > MAX_NOTES_IN_PACKET) {
+            throw new ImportMusicSendPacket.NotesTooLargeException(notes, id);
+        }
     }
 
     public MusicUpdatePacket() {
@@ -58,9 +63,11 @@ public class MusicUpdatePacket implements IPacket {
             if(flag.hasLength) result.lengthBeats = buf.readShort();
             if(flag.hasNotes){
                 int eventCount = buf.readInt();
-                result.notes = new ArrayList<>(eventCount);
-                for(int i=0; i<eventCount; i++){
-                    result.notes.add(NoteEvent.fromBuffer(buf));
+                if(eventCount != 0) {  // if this is false, notes may have been sent in parts beforehand
+                    result.notes = new ArrayList<>(eventCount);
+                    for (int i = 0; i < eventCount; i++) {
+                        result.notes.add(NoteEvent.fromBuffer(buf));
+                    }
                 }
             }
             if(flag.hasPrevIns) result.prevInstrument = buf.readByte();
@@ -85,9 +92,14 @@ public class MusicUpdatePacket implements IPacket {
         if(availability.hasVolume) buf.writeFloat(volume);
         if(availability.hasLength) buf.writeShort(lengthBeats);
         if(availability.hasNotes){
-            buf.writeInt(notes.size());
-            for(NoteEvent event : notes){
-                event.encodeToBuffer(buf);
+            if(notes != null) {
+                buf.writeInt(notes.size());
+                for (NoteEvent event : notes) {
+                    event.encodeToBuffer(buf);
+                }
+            }
+            else{
+                buf.writeInt(0);
             }
         }
         if(availability.hasPrevIns) buf.writeByte(prevInstrument);
@@ -256,7 +268,7 @@ public class MusicUpdatePacket implements IPacket {
         }
 
         public String toString() {
-            return "" + (hasNotes ? "Notes, " : "") + (hasLength ? "Length, " : "") + (hasBps ? "Bps, " : "")
+            return (hasNotes ? "Notes, " : "") + (hasLength ? "Length, " : "") + (hasBps ? "Bps, " : "")
                     + (hasVolume ? "Volume, " : "") + (hasSigned ? "Signed, " : "") + (hasTitle ? "Title, " : "")
                     + (hasPrevIns ? "PrevIns, " : "") + (hasPrevInsLocked ? "PrevInsLocked, " : "")
                     + (hasId ? "Id, " : "") + (hasVersion ? "Version, " : "") + (hasHlInterval ? "HL Interval" : "");

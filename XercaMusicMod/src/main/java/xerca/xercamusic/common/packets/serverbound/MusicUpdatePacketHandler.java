@@ -9,8 +9,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.common.MusicManager;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {
@@ -38,7 +42,16 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChanne
                 comp.putInt("generation", 0);
             }
             if(flag.hasNotes){
-                MusicManager.setMusicData(comp.getUUID("id"), comp.getInt("ver"), msg.getNotes(), pl.server);
+                ArrayList<NoteEvent> notes = msg.getNotes();
+                UUID id = comp.getUUID("id");
+                if(notes == null) {
+                    // Get if large note was sent in parts
+                    notes = MusicManager.getFinishedNotesFromBuffer(id);
+                    if(notes == null){
+                        return;
+                    }
+                }
+                MusicManager.setMusicData(id, comp.getInt("ver"), notes, pl.server);
                 if(!comp.contains("bps")) {
                     comp.putByte("bps", (byte)8);
                 }

@@ -109,7 +109,7 @@ def emptyInventory():
 def testItemsInCreative(mc, win, mcLoc):
     emptyInventory()
     
-    win.click("1689794186807.png")
+    win.click("1690565858766.png")
     win.click("1689794207237.png")
     
     
@@ -215,18 +215,18 @@ def testItemsInCreative(mc, win, mcLoc):
     clickw(624, 73)
     win.click(preview_btn)
     wait(0.85)
-    clickw(718, 73)
+    clickw(722, 73)
     
 
     # Keyboard notes
     win.type("qwerty")
-    testAssert(exists("1689794946862.png"))
+    testAssert(exists("1690571157012.png"))
 
     # Octave wheel
     wheelUp(3)
     testAssert(exists("1689794960532.png"))
     wheelDown(3)
-    testAssert(exists("1689794970931.png"))
+    testAssert(exists("1690571257297.png"))
     
     # Help
     clickw(813, 76)
@@ -238,7 +238,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type(Key.ESC)
     wait(1)
     rclick()
-    testAssert(exists("1689795136779.png"))
+    testAssert(exists("1690571257297.png"))
     clickw(412, 67)
 
     # Middle click
@@ -282,14 +282,14 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("c", KeyModifier.CTRL)
     win.type(Key.RIGHT)
     win.type("v", KeyModifier.CTRL)
-    testAssert(exists("1689796028262.png"))
+    testAssert(exists("1690571480492.png"))
 
     # Select all, delete with backspace (delete button does not work for some reason)
     win.type("a", KeyModifier.CTRL)
     win.type(Key.BACKSPACE)
     testAssert(exists("1689796061344.png"))
     win.type("z", KeyModifier.CTRL)
-    testAssert(exists("1689796028262.png"))
+    testAssert(exists("1690571480492.png"))
 
     # Record
     rclickw(398, 264)
@@ -362,9 +362,9 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("1")
     rclick()
     win.click("1689797679952.png")
-    testAssert(exists("1689797713350.png"))
+    testAssert(exists("1690571576218.png") and exists("1690571588471.png"))
     win.click("1689797728271.png")
-    testAssert(exists("1689797743619.png"))
+    testAssert(exists("1690571643086.png") and exists("1690571652749.png"))
     win.click("1689797679952.png")
     win.type("Masterpiece")
     win.click("1689797794031.png")

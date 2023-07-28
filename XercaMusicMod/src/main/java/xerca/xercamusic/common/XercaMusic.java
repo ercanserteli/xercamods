@@ -29,6 +29,7 @@ public class XercaMusic implements ModInitializer
 {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
+    public static final int MAX_NOTES_IN_PACKET = 5000;
 
 
     private void networkRegistry() {
@@ -37,13 +38,10 @@ public class XercaMusic implements ModInitializer
         ServerPlayNetworking.registerGlobalReceiver(ImportMusicSendPacket.ID, new ImportMusicSendPacketHandler());
         ServerPlayNetworking.registerGlobalReceiver(MusicDataRequestPacket.ID, new MusicDataRequestPacketHandler());
         ServerPlayNetworking.registerGlobalReceiver(SingleNotePacket.ID, new SingleNotePacketHandler());
+        ServerPlayNetworking.registerGlobalReceiver(SendNotesPartToServerPacket.ID, new SendNotesPartToServerPacketHandler());
     }
 
-//    private void enqueueIMC(final InterModEnqueueEvent event) todo this later
-//    {
-//        // Send music sheet's resource location to xercafood for the bookcase interaction
-//        InterModComms.sendTo("xercafood", "send_note", () ->  new ResourceLocation(MODID, "music_sheet"));
-//    }
+//    private void enqueueIMC(final InterModEnqueueEvent event) {} todo this later
 
     private void registerTriggers() {
         for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++) {

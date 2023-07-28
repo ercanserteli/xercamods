@@ -31,7 +31,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     }
 
     @Override
-    public ResourceLocation getId()
+    public @NotNull ResourceLocation getId()
     {
         return RL;
     }
@@ -80,7 +80,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
      * @return the tame bird trigger. instance
      */
     @Override
-    public Instance createInstance(@NotNull JsonObject json, @NotNull DeserializationContext context)
+    public @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull DeserializationContext context)
     {
         return new Instance(getId());
     }
