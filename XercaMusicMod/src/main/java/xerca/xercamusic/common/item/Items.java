@@ -39,29 +39,29 @@ public final class Items {
 
     public static final CreativeModeTab paintTab = FabricItemGroup.builder(new ResourceLocation(XercaMusic.MODID, "music_tab"))
             .icon(() -> new ItemStack(Items.GUITAR))
-            .displayItems((enabledFeatures, entries, operatorEnabled) -> {
-                entries.accept(MUSIC_SHEET);
-                entries.accept(GUITAR);
-                entries.accept(LYRE);
-                entries.accept(BANJO);
-                entries.accept(DRUM);
-                entries.accept(CYMBAL);
-                entries.accept(DRUM_KIT);
-                entries.accept(XYLOPHONE);
-                entries.accept(TUBULAR_BELL);
-                entries.accept(SANSULA);
-                entries.accept(VIOLIN);
-                entries.accept(CELLO);
-                entries.accept(FLUTE);
-                entries.accept(SAXOPHONE);
-                entries.accept(GOD);
-                entries.accept(PIANO);
-                entries.accept(OBOE);
-                entries.accept(FRENCH_HORN);
-                entries.accept(REDSTONE_GUITAR);
-                entries.accept(BASS_GUITAR);
-                entries.accept(Blocks.MUSIC_BOX);
-                entries.accept(Blocks.BLOCK_METRONOME);
+            .displayItems((params, output) -> {
+                output.accept(MUSIC_SHEET);
+                output.accept(GUITAR);
+                output.accept(LYRE);
+                output.accept(BANJO);
+                output.accept(DRUM);
+                output.accept(CYMBAL);
+                output.accept(DRUM_KIT);
+                output.accept(XYLOPHONE);
+                output.accept(TUBULAR_BELL);
+                output.accept(SANSULA);
+                output.accept(VIOLIN);
+                output.accept(CELLO);
+                output.accept(FLUTE);
+                output.accept(SAXOPHONE);
+                output.accept(GOD);
+                output.accept(PIANO);
+                output.accept(OBOE);
+                output.accept(FRENCH_HORN);
+                output.accept(REDSTONE_GUITAR);
+                output.accept(BASS_GUITAR);
+                output.accept(Blocks.MUSIC_BOX);
+                output.accept(Blocks.BLOCK_METRONOME);
             })
             .build();
 

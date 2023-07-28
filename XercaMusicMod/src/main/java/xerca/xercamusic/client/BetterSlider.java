@@ -2,13 +2,14 @@ package xerca.xercamusic.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import org.joml.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 import java.text.DecimalFormat;
 
@@ -21,6 +22,7 @@ public class BetterSlider extends AbstractSliderButton {
     protected final double stepSize;
     protected final boolean drawString;
     private final DecimalFormat format;
+    private static final ResourceLocation SLIDER_LOCATION = new ResourceLocation("textures/gui/slider.png");
 
     public BetterSlider(int x, int y, int width, int height, Component prefix, Component suffix, double minValue, double maxValue, double currentValue, double stepSize, boolean drawString) {
         super(x, y, width, height, Component.empty(), 0D);
@@ -111,13 +113,43 @@ public class BetterSlider extends AbstractSliderButton {
         return Mth.map(sliderValue, minValue, maxValue, 0D, 1D);
     }
 
+    protected void renderBg(@NotNull PoseStack stack) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+        blitWithBorder(stack, this.getX() + (int)(this.value * (float)(this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, 0);
+    }
+
     @Override
-    protected void renderBg(@NotNull PoseStack stack, @NotNull Minecraft minecraft, int _1, int _2) {
+    public void render(@NotNull PoseStack stack, int p_93658_, int p_93659_, float p_93660_) {
         if (this.visible) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
-            blitWithBorder(stack, this.getX() + (int)(this.value * (float)(this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
+            renderBg(stack);
+            super.render(stack, p_93658_, p_93659_, p_93660_);
         }
+    }
+
+    @Override
+    public void renderWidget(@NotNull PoseStack poseStack, int i, int j, float f) {
+        Minecraft minecraft = Minecraft.getInstance();
+        RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        blitNineSliced(poseStack, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getTextureY());
+        blitNineSliced(poseStack, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight(), 20, 4, 200, 20, 0, this.getHandleTextureY());
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        int k = this.active ? 16777215 : 10526880;
+        this.renderScrollingString(poseStack, minecraft.font, 2, k | Mth.ceil(this.alpha * 255.0F) << 24);
+    }
+
+    private int getTextureY() {
+        int i = this.isFocused() ? 1 : 0;
+        return i * 20;
+    }
+
+    private int getHandleTextureY() {
+        int i = !this.isHovered ? 2 : 3;
+        return i * 20;
     }
 
     public static void blitWithBorder(PoseStack poseStack, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight,

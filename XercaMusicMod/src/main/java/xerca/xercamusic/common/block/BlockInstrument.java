@@ -29,7 +29,7 @@ public abstract class BlockInstrument extends Block {
     public abstract IItemInstrument getItemInstrument();
 
     @Override
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if(new Vec3(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.position()) > 4){
             return InteractionResult.PASS;
         }
@@ -52,7 +52,7 @@ public abstract class BlockInstrument extends Block {
 
     private void playMusic(Level worldIn, Player playerIn, BlockPos pos){
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
-        if(musicSpirits.size() == 0){
+        if(musicSpirits.isEmpty()){
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, pos, getItemInstrument()));
         }
         else {

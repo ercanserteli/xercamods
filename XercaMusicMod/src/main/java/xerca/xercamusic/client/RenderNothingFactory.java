@@ -8,7 +8,7 @@ import xerca.xercamusic.common.entity.EntityMusicSpirit;
 class RenderNothingFactory implements EntityRendererProvider<EntityMusicSpirit> {
 
     @Override
-    public EntityRenderer<EntityMusicSpirit> create(@NotNull Context ctx) {
+    public @NotNull EntityRenderer<EntityMusicSpirit> create(@NotNull Context ctx) {
         return new RenderNothing<>(ctx);
     }
 }

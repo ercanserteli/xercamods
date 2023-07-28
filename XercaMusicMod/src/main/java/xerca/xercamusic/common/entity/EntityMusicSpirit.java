@@ -135,7 +135,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         FriendlyByteBuf buffer = PacketByteBufs.create();
         ClientboundAddEntityPacket pack = new ClientboundAddEntityPacket(this);
         pack.write(buffer);
@@ -144,9 +144,6 @@ public class EntityMusicSpirit extends Entity {
     }
 
     public void writeSpawnData(FriendlyByteBuf buffer) {
-//        buffer.writeInt(getId());
-//        buffer.writeUUID(getUUID());
-
         buffer.writeInt(body != null ? body.getId() : -1);
         if(blockInstrument != null && blockInsPos != null){
             buffer.writeInt(blockInsPos.getX());
@@ -161,9 +158,6 @@ public class EntityMusicSpirit extends Entity {
     }
 
     public void readSpawnData(FriendlyByteBuf buffer) {
-//        setId(buffer.readInt());
-//        setUUID(buffer.readUUID());
-
         int entityId = buffer.readInt();
         Entity ent = level.getEntity(entityId);
         if (ent instanceof Player) {
