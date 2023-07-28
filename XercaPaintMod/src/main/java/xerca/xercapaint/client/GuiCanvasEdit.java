@@ -122,7 +122,7 @@ public class GuiCanvasEdit extends BasePalette {
             Arrays.fill(this.pixels, basicColors[15].rgbVal());
 
             long secs = System.currentTimeMillis()/1000;
-            this.name = "" + player.getUUID() + "_" + secs;
+            this.name = player.getUUID() + "_" + secs;
         }
 
         if(paletteComplete){
@@ -452,9 +452,9 @@ public class GuiCanvasEdit extends BasePalette {
 
         if (!this.isSigned) {
             if (this.updateCount / 6 % 2 == 0) {
-                s = s + "" + ChatFormatting.BLACK + "_";
+                s = s + ChatFormatting.BLACK + "_";
             } else {
-                s = s + "" + ChatFormatting.GRAY + "_";
+                s = s + ChatFormatting.GRAY + "_";
             }
         }
         String s1 = I18n.get("canvas.editTitle");
@@ -477,13 +477,13 @@ public class GuiCanvasEdit extends BasePalette {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers){
         if (this.gettingSigned) {
             switch (keyCode) {
-                case GLFW.GLFW_KEY_BACKSPACE:
+                case GLFW.GLFW_KEY_BACKSPACE -> {
                     if (!this.canvasTitle.isEmpty()) {
                         this.canvasTitle = this.canvasTitle.substring(0, this.canvasTitle.length() - 1);
                         this.updateButtons();
                     }
-                    break;
-                case GLFW.GLFW_KEY_ENTER:
+                }
+                case GLFW.GLFW_KEY_ENTER -> {
                     if (!this.canvasTitle.isEmpty()) {
                         canvasDirty = true;
                         this.isSigned = true;
@@ -491,15 +491,15 @@ public class GuiCanvasEdit extends BasePalette {
                             this.minecraft.setScreen(null);
                         }
                     }
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
             return true;
         }
         else {
             if (keyCode == GLFW.GLFW_KEY_Z && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                if (undoStack.size() > 0) {
+                if (!undoStack.isEmpty()) {
                     pixels = undoStack.pop();
                     canvasDirty = true;
                     if(easel != null){
