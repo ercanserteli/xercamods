@@ -5,3 +5,4 @@ run/
 .idea/
 builds/
 desktop.ini
+**/.cache
