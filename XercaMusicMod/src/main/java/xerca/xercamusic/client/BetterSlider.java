@@ -3,6 +3,7 @@ package xerca.xercamusic.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -120,26 +121,25 @@ public class BetterSlider extends AbstractSliderButton {
     }
 
     @Override
-    public void render(@NotNull PoseStack stack, int p_93658_, int p_93659_, float p_93660_) {
+    public void render(@NotNull GuiGraphics guiGraphics, int p_93658_, int p_93659_, float p_93660_) {
         if (this.visible) {
-            renderBg(stack);
-            super.render(stack, p_93658_, p_93659_, p_93660_);
+            renderBg(guiGraphics.pose());
+            super.render(guiGraphics, p_93658_, p_93659_, p_93660_);
         }
     }
 
     @Override
-    public void renderWidget(@NotNull PoseStack poseStack, int i, int j, float f) {
+    public void renderWidget(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.setShaderTexture(0, SLIDER_LOCATION);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        blitNineSliced(poseStack, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getTextureY());
-        blitNineSliced(poseStack, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight(), 20, 4, 200, 20, 0, this.getHandleTextureY());
+        guiGraphics.blitNineSliced(SLIDER_LOCATION, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getTextureY());
+        guiGraphics.blitNineSliced(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight(), 20, 4, 200, 20, 0, this.getHandleTextureY());
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int k = this.active ? 16777215 : 10526880;
-        this.renderScrollingString(poseStack, minecraft.font, 2, k | Mth.ceil(this.alpha * 255.0F) << 24);
+        this.renderScrollingString(guiGraphics, minecraft.font, 2, k | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 
     private int getTextureY() {

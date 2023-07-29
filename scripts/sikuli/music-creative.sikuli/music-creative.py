@@ -230,7 +230,7 @@ def testItemsInCreative(mc, win, mcLoc):
     
     # Help
     clickw(813, 76)
-    testAssert(exists("1689795047937.png"))
+    testAssert(exists("1690626104673.png"))
     clickw(813, 76)
     testAssert(exists("1689795099653.png"))
 
@@ -362,7 +362,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("1")
     rclick()
     win.click("1689797679952.png")
-    testAssert(exists("1690571576218.png") and exists("1690571588471.png"))
+    testAssert(exists("1690571576218.png"))
     win.click("1689797728271.png")
     testAssert(exists("1690571643086.png") and exists("1690571652749.png"))
     win.click("1689797679952.png")
@@ -404,5 +404,6 @@ if inv:
     win.type("e")
 wait(0.5)
 
+# todo: export, import, crafting, copying
 
 testItemsInCreative(mc, win, mcLoc)

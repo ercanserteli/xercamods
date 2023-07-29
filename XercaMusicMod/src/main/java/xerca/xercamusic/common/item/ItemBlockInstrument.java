@@ -104,13 +104,13 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
 
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, LivingEntity attacker) {
-        Level world = attacker.level;
+        Level world = attacker.level();
         if (!world.isClientSide) {
             int note1 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
             int note2 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
             int note3 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
 
-            Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level, target.position(), 24.D);
+            Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level(), target.position(), 24.D);
             TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, this, target);
             for (ServerPlayer player : players) {
                 sendToClient(player, packet);

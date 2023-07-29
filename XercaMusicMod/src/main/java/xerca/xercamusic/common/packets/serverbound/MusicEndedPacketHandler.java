@@ -11,7 +11,7 @@ import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
 public class MusicEndedPacketHandler implements ServerPlayNetworking.PlayChannelHandler {
      private static void processMessage(MusicEndedPacket msg, ServerPlayer pl) {
-        Entity ent = pl.level.getEntity(msg.getPlayerId());
+        Entity ent = pl.level().getEntity(msg.getPlayerId());
         if(ent instanceof EntityMusicSpirit spirit){
             spirit.setPlaying(false);
         }

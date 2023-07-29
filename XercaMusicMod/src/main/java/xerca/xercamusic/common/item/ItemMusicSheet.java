@@ -227,8 +227,7 @@ public class ItemMusicSheet extends Item {
     public boolean isFoil(ItemStack stack) {
         if(stack.hasTag()){
             CompoundTag ntc = stack.getTag();
-            //noinspection ConstantConditions
-            if(ntc.contains("generation")){
+            if(ntc != null && ntc.contains("generation")){
                 int generation = ntc.getInt("generation");
                 return generation > 0;
             }
