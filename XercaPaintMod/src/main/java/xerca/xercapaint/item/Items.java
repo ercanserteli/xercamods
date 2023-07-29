@@ -3,6 +3,7 @@ package xerca.xercapaint.item;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -25,7 +26,7 @@ public final class Items {
     public static final ItemCanvas ITEM_CANVAS_LONG = new ItemCanvas(CanvasType.LONG);
     public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL);
     public static final ItemEasel ITEM_EASEL = new ItemEasel(new Item.Properties().stacksTo(1));
-    public static final CreativeModeTab paintTab = FabricItemGroup.builder(new ResourceLocation(Mod.modId, "paint_tab"))
+    public static final CreativeModeTab paintTab = FabricItemGroup.builder()
             .icon(() -> new ItemStack(Items.ITEM_PALETTE))
             .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
@@ -36,11 +37,12 @@ public final class Items {
                 output.accept(ITEM_PALETTE);
                 output.accept(fullPalette);
                 output.accept(ITEM_CANVAS);
-                output.accept(ITEM_CANVAS_LARGE);
                 output.accept(ITEM_CANVAS_LONG);
                 output.accept(ITEM_CANVAS_TALL);
+                output.accept(ITEM_CANVAS_LARGE);
                 output.accept(ITEM_EASEL);
             })
+            .title(Component.translatable("itemGroup.xercapaint.paint_tab"))
             .build();
 
     public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = new SimpleCraftingRecipeSerializer<>(RecipeCraftPalette::new);
@@ -62,6 +64,8 @@ public final class Items {
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_canvas_long"), ITEM_CANVAS_LONG);
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_canvas_tall"), ITEM_CANVAS_TALL);
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_easel"), ITEM_EASEL);
+
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(Mod.modId, "paint_tab"), paintTab);
     }
 
 }

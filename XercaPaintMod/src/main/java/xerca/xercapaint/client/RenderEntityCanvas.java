@@ -100,8 +100,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public class Instance implements AutoCloseable {
         int version = 0;
-        int width;
-        int height;
+        final int width;
+        final int height;
         boolean loaded;
         boolean started;
         public final DynamicTexture canvasTexture;

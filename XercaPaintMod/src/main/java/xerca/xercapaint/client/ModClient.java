@@ -24,8 +24,8 @@ import xerca.xercapaint.packets.*;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class ModClient implements ClientModInitializer {
-    public static ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(new ResourceLocation(Mod.modId, "easel"), "main");
-    public static ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(new ResourceLocation(Mod.modId, "easel"), "canvas");
+    public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(new ResourceLocation(Mod.modId, "easel"), "main");
+    public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(new ResourceLocation(Mod.modId, "easel"), "canvas");
     public static CanvasItemRenderer CANVAS_ITEM_RENDERER;
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette){

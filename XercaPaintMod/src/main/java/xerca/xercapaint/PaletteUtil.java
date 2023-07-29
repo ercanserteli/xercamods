@@ -8,7 +8,7 @@ public class PaletteUtil {
     final public static Color emptinessColor = new Color(255, 236, 229);
 
     public static class Color {
-        public static Color WHITE = new Color(0xFFFFFFFF);
+        public static final Color WHITE = new Color(0xFFFFFFFF);
 
         public int r, g, b;
 

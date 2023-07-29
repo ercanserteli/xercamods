@@ -1,7 +1,7 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
@@ -70,12 +70,12 @@ public class GuiCanvasView extends Screen {
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         for(int i=0; i<canvasPixelHeight; i++){
             for(int j=0; j<canvasPixelWidth; j++){
                 int x = canvasX + j*canvasPixelScale;
                 int y = canvasY + i*canvasPixelScale;
-                fill(matrixStack, x, y, x+canvasPixelScale, y+canvasPixelScale, getPixelAt(j, i));
+                guiGraphics.fill(x, y, x+canvasPixelScale, y+canvasPixelScale, getPixelAt(j, i));
             }
         }
         
@@ -91,10 +91,10 @@ public class GuiCanvasView extends Screen {
             float minX = Math.min(genX, titleX);
             float maxX = Math.max(genX + genWidth, titleX + titleWidth);
 
-            fill(matrixStack, (int)(minX - 10), canvasY - 30, (int)(maxX + 10), canvasY - 4, 0xFFEEEEEE);
+            guiGraphics.fill((int)(minX - 10), canvasY - 30, (int)(maxX + 10), canvasY - 4, 0xFFEEEEEE);
 
-            this.font.draw(matrixStack, title, titleX, canvasY - 25, 0xFF111111);
-            this.font.draw(matrixStack, gen, genX, canvasY - 14, 0xFF444444);
+            guiGraphics.drawString(font, title, (int)titleX, (canvasY - 25), 0xFF111111, false);
+            guiGraphics.drawString(font, gen, (int)genX, canvasY - 14, 0xFF444444, false);
         }
     }
 

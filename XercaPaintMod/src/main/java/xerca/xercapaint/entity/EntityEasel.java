@@ -62,7 +62,7 @@ public class EntityEasel extends Entity {
 }
 
     public boolean hurt(@NotNull DamageSource damageSource, float p_31580_) {
-        if (!this.level.isClientSide && !this.isRemoved()) {
+        if (!this.level().isClientSide && !this.isRemoved()) {
             if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
                 this.dropItem(damageSource.getEntity(), false);
             }
@@ -75,8 +75,8 @@ public class EntityEasel extends Entity {
     }
 
     private void showBreakingParticles() {
-        if (this.level instanceof ServerLevel) {
-            ((ServerLevel)this.level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
+        if (this.level() instanceof ServerLevel) {
+            ((ServerLevel)this.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
         }
     }
 
@@ -96,7 +96,7 @@ public class EntityEasel extends Entity {
 
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if(painter != null){
-            if(!level.isClientSide){
+            if(!this.level().isClientSide){
                 if(dropDeferred == null){
                     CloseGuiPacket pack = new CloseGuiPacket();
                     ServerPlayNetworking.send((ServerPlayer) painter, Mod.CLOSE_GUI_PACKET_ID, pack.encode());
@@ -124,7 +124,7 @@ public class EntityEasel extends Entity {
             }
         }
 
-        if (dropSelf && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (dropSelf && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.spawnAtLocation(this.getEaselItemStack());
         }
     }
@@ -204,7 +204,7 @@ public class EntityEasel extends Entity {
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;
         boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
-        if(this.level.isClientSide){
+        if(this.level().isClientSide){
             return !isEaselFilled && !handHoldsCanvas ? InteractionResult.PASS : InteractionResult.SUCCESS;
         }
         else {
@@ -241,7 +241,7 @@ public class EntityEasel extends Entity {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
-        if(!level.isClientSide){
+        if(!this.level().isClientSide){
             if(dropDeferred != null){
                 dropWaitTicks ++;
                 if(painter == null || dropWaitTicks > 80){
