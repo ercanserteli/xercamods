@@ -220,8 +220,7 @@ public class TileEntityMusicBox extends BlockEntity {
             }
 
             this.noteStack = noteStack;
-            //noinspection ConstantConditions
-            if (noteStack.hasTag() && noteStack.getTag().contains("id") && noteStack.getTag().contains("ver") && noteStack.getTag().contains("l")) {
+            if (noteStack.hasTag() && noteStack.getTag() != null && noteStack.getTag().contains("id") && noteStack.getTag().contains("ver") && noteStack.getTag().contains("l")) {
                 CompoundTag comp = noteStack.getTag();
                 mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
                 mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;

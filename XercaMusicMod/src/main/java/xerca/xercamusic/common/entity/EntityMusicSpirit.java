@@ -66,7 +66,7 @@ public class EntityMusicSpirit extends Entity {
 
     private void setBlockPosAndInstrument(BlockPos pos){
         this.blockInsPos = pos;
-        Block block = level.getBlockState(blockInsPos).getBlock();
+        Block block = level().getBlockState(blockInsPos).getBlock();
 
         if(block instanceof BlockInstrument) {
             blockInstrument = (BlockInstrument)block;
@@ -159,7 +159,7 @@ public class EntityMusicSpirit extends Entity {
 
     public void readSpawnData(FriendlyByteBuf buffer) {
         int entityId = buffer.readInt();
-        Entity ent = level.getEntity(entityId);
+        Entity ent = level().getEntity(entityId);
         if (ent instanceof Player) {
             body = (Player) ent;
         }
@@ -196,7 +196,7 @@ public class EntityMusicSpirit extends Entity {
             UUID id = comp.getUUID("id");
             int ver = comp.getInt("ver");
 
-            if(level.isClientSide){
+            if(level().isClientSide){
                 MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
                     MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
                     if(data != null){
@@ -224,7 +224,7 @@ public class EntityMusicSpirit extends Entity {
 
     @Override
     public void tick() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (body == null || !isPlaying) {
                 this.remove(RemovalReason.DISCARDED);
                 return;
@@ -236,7 +236,7 @@ public class EntityMusicSpirit extends Entity {
             }
 
             if(blockInsPos != null && blockInstrument != null){
-                if(level.getBlockState(blockInsPos).getBlock() != blockInstrument){
+                if(level().getBlockState(blockInsPos).getBlock() != blockInstrument){
                     this.remove(RemovalReason.DISCARDED);
                     return;
                 }

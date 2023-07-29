@@ -90,8 +90,7 @@ public class CommandImport {
         else{
             ItemStack mainHandItem = player.getMainHandItem();
 
-            //noinspection ConstantConditions
-            if(!(mainHandItem.getItem() instanceof ItemMusicSheet) || (mainHandItem.hasTag() && !mainHandItem.getTag().isEmpty())){
+            if(!(mainHandItem.getItem() instanceof ItemMusicSheet) || (mainHandItem.hasTag() && mainHandItem.getTag() != null && !mainHandItem.getTag().isEmpty())){
                 player.sendSystemMessage(Component.translatable("import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }

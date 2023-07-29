@@ -43,10 +43,6 @@ public class NotesPartAckFromServerPacket implements IPacket {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     @SuppressWarnings("unused")
     public boolean isMessageValid() {
         return messageIsValid;

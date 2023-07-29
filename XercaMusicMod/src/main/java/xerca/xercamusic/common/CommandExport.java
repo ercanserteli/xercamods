@@ -57,8 +57,8 @@ public class CommandExport {
 
         for(ItemStack s : player.getHandSlots()){
             if(s.getItem() instanceof ItemMusicSheet){
-                if(s.hasTag()){
-                    @SuppressWarnings("ConstantConditions") CompoundTag tag = s.getTag().copy();
+                if(s.hasTag() && s.getTag() != null){
+                    CompoundTag tag = s.getTag().copy();
                     if(tag.contains("id") && tag.contains("ver")){
                         UUID id = tag.getUUID("id");
                         int ver = tag.getInt("ver");

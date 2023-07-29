@@ -60,9 +60,9 @@ public class TileEntityMetronome extends BlockEntity {
                     else{
                         // Server side
                         if(metronome.countDown == 3){
-                            @SuppressWarnings("ConstantConditions") List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
+                            List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
                                     player -> player.getMainHandItem().getItem() instanceof IItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
-                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag().getInt("bps") == bps);
+                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag() != null && player.getOffhandItem().getTag().getInt("bps") == bps);
                             XercaMusic.LOGGER.info("Metronome found " + players.size() + " players");
                             for(Player player : players){
                                 IItemInstrument.playMusic(level, player, false);

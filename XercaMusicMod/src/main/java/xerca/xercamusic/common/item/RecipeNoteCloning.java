@@ -78,9 +78,9 @@ public class RecipeNoteCloning extends CustomRecipe {
         }
 
         int gen = WrittenBookItem.getGeneration(orgNote);
-        if (!orgNote.isEmpty() && orgNote.hasTag() && !freshNote.isEmpty() && !freshNote.hasTag() && gen < 3 && gen > 0) {
+        if (!orgNote.isEmpty() && orgNote.hasTag() && orgNote.getTag() != null && !freshNote.isEmpty() && !freshNote.hasTag() && gen < 3 && gen > 0) {
             ItemStack resultStack = new ItemStack(Items.MUSIC_SHEET);
-            @SuppressWarnings("ConstantConditions") CompoundTag compoundTag = orgNote.getTag().copy();
+            CompoundTag compoundTag = orgNote.getTag().copy();
             compoundTag.putInt("generation", gen + 1);
             resultStack.setTag(compoundTag);
             return resultStack;

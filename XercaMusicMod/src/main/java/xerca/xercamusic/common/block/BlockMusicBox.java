@@ -24,7 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -40,7 +41,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     public static final BooleanProperty HAS_INSTRUMENT = BooleanProperty.create("has_instrument");
 
     public BlockMusicBox() {
-        super(Properties.of(Material.WOOD).strength(2.f, 6.f).sound(SoundType.WOOD).isRedstoneConductor((blockState, blockGetter, blockPos)->false));
+        super(Properties.of().mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).isRedstoneConductor((blockState, blockGetter, blockPos)->false));
         this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).
                 setValue(HAS_MUSIC, false).setValue(HAS_INSTRUMENT, false).setValue(FACING, Direction.NORTH).setValue(POWERING, false));
     }

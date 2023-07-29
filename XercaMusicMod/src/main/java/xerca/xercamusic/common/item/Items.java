@@ -3,6 +3,7 @@ package xerca.xercamusic.common.item;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -37,7 +38,7 @@ public final class Items {
     public static final Item BASS_GUITAR = new ItemInstrument(18,1, 4);
     public static final Item MUSIC_SHEET = new ItemMusicSheet();
 
-    public static final CreativeModeTab paintTab = FabricItemGroup.builder(new ResourceLocation(XercaMusic.MODID, "music_tab"))
+    public static final CreativeModeTab musicTab = FabricItemGroup.builder()
             .icon(() -> new ItemStack(Items.GUITAR))
             .displayItems((params, output) -> {
                 output.accept(MUSIC_SHEET);
@@ -63,6 +64,7 @@ public final class Items {
                 output.accept(Blocks.MUSIC_BOX);
                 output.accept(Blocks.BLOCK_METRONOME);
             })
+            .title(Component.translatable("itemGroup.xercamusic.music_tab"))
             .build();
 
     public static final IItemInstrument[] instruments = new IItemInstrument[]{
@@ -105,5 +107,7 @@ public final class Items {
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "music_sheet"), MUSIC_SHEET);
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "music_box"), new BlockItem(Blocks.MUSIC_BOX, new Item.Properties()));
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "metronome"), new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties()));
+
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(XercaMusic.MODID, "music_tab"), musicTab);
     }
 }
