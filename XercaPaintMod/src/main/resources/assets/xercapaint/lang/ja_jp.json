@@ -1,0 +1,34 @@
+{
+  "item_group.xercapaint.paint_tab": "描く",
+
+  "item.xercapaint.item_palette": "パレット",
+  "item.xercapaint.item_canvas": "キャンバス",
+  "item.xercapaint.item_canvas_large": "大きなキャンバス",
+  "item.xercapaint.item_canvas_long": "広いキャンバス",
+  "item.xercapaint.item_canvas_tall": "高いキャンバス",
+  "item.xercapaint.item_easel": "イーゼル",
+
+  "palette.basic_count": "%1$s色の基本色",
+  "palette.custom_count": "%1$s色のカスタム色",
+  "palette.empty": "空のパレット",
+
+  "canvas.empty": "白紙のキャンバス",
+  "canvas.byAuthor": "画家：%1$s",
+  "canvas.signButton": "署名",
+  "canvas.finalizeButton": "署名して閉じる",
+  "canvas.finalizeWarning": "注意！絵画に署名をすると、二度と編集ができなくなります。",
+  "canvas.generation.0": "オリジナル",
+  "canvas.generation.1": "オリジナルのコピー",
+  "canvas.generation.2": "コピーのコピー",
+  "canvas.editTitle": "絵画のタイトルを入力してください：",
+
+  "xercapaint.export.success": "絵画は%1$sに書き出されました",
+  "xercapaint.export.fail": "絵画を書き出すことができませんでした",
+  "xercapaint.import.success": "絵画を読み込みました",
+  "xercapaint.import.fail.1": "サバイバルモードで絵画を読み込むには、利き手に空のキャンバスがある必要があります",
+  "xercapaint.import.fail.2": "この絵画をサバイバルモードで読み込むには、キャンバスが正しい大きさ（%1$s）である必要があります",
+  "xercapaint.import.fail.3": "サバイバルモードで絵画を読み込むには、オフハンドに基本色がすべて入ったパレットを持っている必要があります",
+  "xercapaint.import.fail.4": "コマンドを解釈できなかったか、絵画ファイル（%1$s）を読み取れませんでした",
+
+  "easel.deny": "今、この絵画を描いている人がいるんです"
+}
