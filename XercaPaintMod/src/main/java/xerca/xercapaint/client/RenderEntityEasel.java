@@ -28,7 +28,7 @@ import java.util.List;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
-    protected EaselModel model;
+    protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
     static public RenderEntityEasel theInstance;
     static private final ResourceLocation woodTexture = new ResourceLocation(Mod.modId, "textures/block/birch_long.png");

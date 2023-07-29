@@ -1,8 +1,8 @@
 package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -107,8 +107,8 @@ public abstract class BasePalette extends Screen {
     PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
     static PaletteUtil.Color currentColor = basicColors[0];
-    PaletteUtil.CustomColor[] customColors;
-    boolean[] basicColorFlags;
+    final PaletteUtil.CustomColor[] customColors;
+    final boolean[] basicColorFlags;
     boolean paletteComplete = false;
     boolean isCarryingPalette = false;
 
@@ -143,48 +143,44 @@ public abstract class BasePalette extends Screen {
         }
     }
 
-    protected void superRender(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    protected void superRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-//        Minecraft.getInstance().getTextureManager().bind(paletteTextures);
         RenderSystem.setShaderTexture(0, paletteTextures);
 
         // Draw basic colors
-        for(int i=0; i<basicColorFlags.length; i++){
-            int x = (int)paletteX + (int)basicColorCenters[i].x;
-            int y = (int)paletteY + (int)basicColorCenters[i].y;
-            int r = (int)basicColorRadius;
-            if(basicColorFlags[i]){
-                fill(matrixStack, x-r, y-r, x+r+1, y+r+1, basicColors[i].rgbVal());
+        for (int i = 0; i < basicColorFlags.length; i++) {
+            int x = (int) paletteX + (int) basicColorCenters[i].x;
+            int y = (int) paletteY + (int) basicColorCenters[i].y;
+            int r = (int) basicColorRadius;
+            if (basicColorFlags[i]) {
+                guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, basicColors[i].rgbVal());
 
-//                GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                blit(matrixStack, x - 8, y - 8, dyeSpriteX, i*dyeSpriteSize, dyeSpriteSize, dyeSpriteSize);
-            }
-            else{
-                fill(matrixStack, x-r, y-r, x+r+1, y+r+1, emptinessColor.rgbVal());
+                guiGraphics.blit(paletteTextures, x - 8, y - 8, dyeSpriteX, i * dyeSpriteSize, dyeSpriteSize, dyeSpriteSize);
+            } else {
+                guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, emptinessColor.rgbVal());
             }
         }
 
         // Draw custom colors
-        for(int i=0; i<customColors.length; i++){
-            int x = (int)paletteX + (int)customColorCenters[i].x;
-            int y = (int)paletteY + (int)customColorCenters[i].y;
-            fill(matrixStack, x-6, y-7, x+7, y+6, customColors[i].getColor().rgbVal());
+        for (int i = 0; i < customColors.length; i++) {
+            int x = (int) paletteX + (int) customColorCenters[i].x;
+            int y = (int) paletteY + (int) customColorCenters[i].y;
+            guiGraphics.fill(x - 6, y - 7, x + 7, y + 6, customColors[i].getColor().rgbVal());
         }
 
-//        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        blit(matrixStack, (int)paletteX, (int)paletteY, 0, 0, paletteWidth, paletteHeight);
+        guiGraphics.blit(paletteTextures, (int) paletteX, (int) paletteY, 0, 0, paletteWidth, paletteHeight);
 
         // Draw color picker
-        if(paletteComplete){
-            blit(matrixStack, (int)paletteX + colorPickerPosX, (int)paletteY + colorPickerPosY, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
+        if (paletteComplete) {
+            guiGraphics.blit(paletteTextures, (int) paletteX + colorPickerPosX, (int) paletteY + colorPickerPosY, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
         }
     }
 

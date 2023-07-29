@@ -3,10 +3,10 @@ package xerca.xercapaint.client;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.resources.language.I18n;
@@ -21,10 +21,10 @@ import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
+import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.packets.CanvasMiniUpdatePacket;
 import xerca.xercapaint.packets.CanvasUpdatePacket;
 import xerca.xercapaint.packets.EaselLeftPacket;
-import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.packets.PaletteUpdatePacket;
 
 import java.util.*;
@@ -131,6 +131,9 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public void init() {
+        if(minecraft == null){
+            return;
+        }
         canvasX = canvasXs[canvasType.ordinal()];
         canvasY = canvasYs[canvasType.ordinal()];
         paletteX = paletteXs[canvasType.ordinal()];
@@ -306,23 +309,23 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         if(!gettingSigned) {
-            super.render(matrixStack, mouseX, mouseY, f);
+            super.render(guiGraphics, mouseX, mouseY, f);
         }
         else {
-            super.superRender(matrixStack, mouseX, mouseY, f);
+            super.superRender(guiGraphics, mouseX, mouseY, f);
         }
 
         // Draw the canvas holder
-        fill(matrixStack, (int)(canvasX + canvasWidth*0.25), (int)canvasY - canvasHolderHeight, (int)(canvasX + canvasWidth*0.75), (int)canvasY, 0xffe1e1e1);
+        guiGraphics.fill((int)(canvasX + canvasWidth*0.25), (int)canvasY - canvasHolderHeight, (int)(canvasX + canvasWidth*0.75), (int)canvasY, 0xffe1e1e1);
 
         // Draw the canvas
         for(int i=0; i<canvasPixelHeight; i++){
             for(int j=0; j<canvasPixelWidth; j++){
                 int y = (int)canvasY + i* canvasPixelScale;
                 int x = (int)canvasX + j* canvasPixelScale;
-                fill(matrixStack, x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
+                guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
             }
         }
 
@@ -330,24 +333,24 @@ public class GuiCanvasEdit extends BasePalette {
             // Draw brush meter
             for(int i=0; i<4; i++){
                 int y = brushMeterY + i*brushSpriteSize;
-                fill(matrixStack, brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
+                guiGraphics.fill(brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
             }
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            blit(matrixStack, brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
-            blit(matrixStack, brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
+            guiGraphics.blit(paletteTextures, brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
+            guiGraphics.blit(paletteTextures, brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
 
             // Draw opacity meter
-            blit(matrixStack, brushOpacityMeterX, brushOpacityMeterY, brushOpacitySpriteX, brushOpacitySpriteY, brushOpacitySpriteSize, brushOpacitySpriteSize*4+3);
-            blit(matrixStack, brushOpacityMeterX-1, brushOpacityMeterY-1 + brushOpacitySetting*(brushOpacitySpriteSize+1), 212, 240, 16, 16);
+            guiGraphics.blit(paletteTextures, brushOpacityMeterX, brushOpacityMeterY, brushOpacitySpriteX, brushOpacitySpriteY, brushOpacitySpriteSize, brushOpacitySpriteSize*4+3);
+            guiGraphics.blit(paletteTextures, brushOpacityMeterX-1, brushOpacityMeterY-1 + brushOpacitySetting*(brushOpacitySpriteSize+1), 212, 240, 16, 16);
 
             // Draw brush and outline
-            renderCursor(matrixStack, mouseX, mouseY);
+            renderCursor(guiGraphics, mouseX, mouseY);
 
             if(showHelp){
                 if(inBrushMeter(mouseX, mouseY)){
                     int selectedSize = 3 - (mouseY - brushMeterY)/brushSpriteSize;
                     if(selectedSize <= 3 && selectedSize >= 0){
-                        this.renderTooltip(matrixStack, Component.literal("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(font, Component.literal("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
                     }
                 }
                 else if(inBrushOpacityMeter(mouseX, mouseY)){
@@ -355,53 +358,53 @@ public class GuiCanvasEdit extends BasePalette {
                     int selectedOpacity = relativeY/(brushOpacitySpriteSize+1);
                     if(selectedOpacity >= 0 && selectedOpacity <= 3){
                         int percentage = 100 - 25*selectedOpacity;
-                        this.renderTooltip(matrixStack, Component.literal("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(font, Component.literal("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
                     }
                 }
                 else if(inColorPicker(mouseX-(int)paletteX, mouseY-(int)paletteY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Color picker"),
+                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Color picker"),
                             Component.literal("Select the tool, then pick up a color from the canvas and drag-and-drop it to a custom color slot.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }
                 else if(inWater(mouseX-(int)paletteX, mouseY-(int)paletteY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Color remover"),
+                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Color remover"),
                             Component.literal("Pick up some water and drag-and-drop it to a custom color slot to clear it.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }else if(inCanvasHolder(mouseX, mouseY)){
-                    this.renderComponentTooltip(matrixStack, Arrays.asList(Component.literal("Canvas holder"),
+                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Canvas holder"),
                             Component.literal("Pick up the canvas and move it wherever you want. You can move the palette in the same way.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }
             }
         }
         else{
-            drawSigning(matrixStack);
+            drawSigning(guiGraphics);
         }
     }
 
-    private void renderCursor(PoseStack matrixStack, int mouseX, int mouseY){
+    private void renderCursor(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY){
         if(isCarryingColor){
             carriedColor.setGLColor();
-            blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            guiGraphics.blit(paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
 
         }else if(isCarryingWater){
             waterColor.setGLColor();
-            blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            guiGraphics.blit(paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
         }else if(isPickingColor){
-            drawOutline(matrixStack, mouseX, mouseY, 0);
+            drawOutline(guiGraphics, mouseX, mouseY, 0);
             PaletteUtil.Color.WHITE.setGLColor();
-            blit(matrixStack, mouseX, mouseY-colorPickerSize, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
+            guiGraphics.blit(paletteTextures, mouseX, mouseY-colorPickerSize, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
         }
         else{
-            drawOutline(matrixStack, mouseX, mouseY, brushSize);
+            drawOutline(guiGraphics, mouseX, mouseY, brushSize);
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            fill(matrixStack, mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
+            guiGraphics.fill(mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = brushSpriteY - brushSpriteSize*brushSize;
-            blit(matrixStack, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize);
+            guiGraphics.blit(paletteTextures, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize);
         }
     }
 
-    private void drawOutline(PoseStack matrixStack, int mouseX, int mouseY, int brushSize){
+    private void drawOutline(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int brushSize){
         if(inCanvas(mouseX, mouseY)){
             // Render drawing outline
             int x = 0;
@@ -438,15 +441,15 @@ public class GuiCanvasEdit extends BasePalette {
             }
 
             RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 1.0F);
-            blit(matrixStack, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
+            guiGraphics.blit(paletteTextures, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
         }
     }
 
-    private void drawSigning(PoseStack matrixStack) {
+    private void drawSigning(@NotNull GuiGraphics guiGraphics) {
         int i = (int)canvasX;
         int j = (int)canvasY;
 
-        fill(matrixStack, i + 10, j + 10, i + 150, j + 150, 0xFFEEEEEE);
+        guiGraphics.fill(i + 10, j + 10, i + 150, j + 150, 0xFFEEEEEE);
         String s = this.canvasTitle;
 
         if (!this.isSigned) {
@@ -458,13 +461,13 @@ public class GuiCanvasEdit extends BasePalette {
         }
         String s1 = I18n.get("canvas.editTitle");
         int k = this.font.width(s1);
-        this.font.draw(matrixStack, s1, i + 26 + (116 - k) / 2.0f, j + 16 + 16, 0);
+        guiGraphics.drawString(this.font, s1, (int)(i + 26 + (116 - k) / 2.0f), (j + 16 + 16), 0, false);
         int l = this.font.width(s);
-        this.font.draw(matrixStack, s, i + 26 + (116 - l) / 2.0f, j + 48, 0);
+        guiGraphics.drawString(this.font, s, (int)(i + 26 + (116 - l) / 2.0f), j + 48, 0, false);
         String s2 = I18n.get("canvas.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(s2);
-        this.font.draw(matrixStack, ChatFormatting.DARK_GRAY + s2, i + 26 + (116 - i1) / 2.0f, j + 48 + 10, 0);
-        this.font.drawWordWrap(matrixStack, Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
+        guiGraphics.drawString(this.font, ChatFormatting.DARK_GRAY + s2, (int)(i + 26 + (116 - i1) / 2.0f), j + 48 + 10, 0, false);
+        guiGraphics.drawWordWrap(this.font,  Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
     }
 
     private void playBrushSound(){
@@ -777,7 +780,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         @Override
-        public void renderWidget(@NotNull PoseStack matrixStack, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
             RenderSystem.setShaderTexture(0, this.resourceLocation);
             GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
@@ -785,7 +788,7 @@ public class GuiCanvasEdit extends BasePalette {
                 yTexStartNew += this.yDiffText;
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
-            blit(matrixStack, this.getX(), this.getY(), (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
         }
     }

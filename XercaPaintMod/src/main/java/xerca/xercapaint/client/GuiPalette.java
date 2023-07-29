@@ -1,7 +1,7 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -27,25 +27,20 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+        super.render(guiGraphics, mouseX, mouseY, f);
+
+        renderCursor(guiGraphics, mouseX, mouseY);
     }
 
-    @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float f) {
-        super.render(matrixStack, mouseX, mouseY, f);
-
-        renderCursor(matrixStack, mouseX, mouseY);
-    }
-
-    private void renderCursor(PoseStack matrixStack, int mouseX, int mouseY){
+    private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY){
         if(isCarryingColor){
             carriedColor.setGLColor();
-            blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            guiGraphics.blit(paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
 
         }else if(isCarryingWater){
             waterColor.setGLColor();
-            blit(matrixStack, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            guiGraphics.blit(paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
         }
     }
 
