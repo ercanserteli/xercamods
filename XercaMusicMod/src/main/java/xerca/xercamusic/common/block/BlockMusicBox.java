@@ -69,7 +69,13 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
         if (!world.isClientSide) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof TileEntityMusicBox te) {
-                ItemStack itemstack = isMusic ? te.getNoteStack().copy() : new ItemStack((ItemLike) te.getInstrument());
+                ItemStack itemstack;
+                if (isMusic) {
+                    itemstack = te.getNoteStack();
+                } else {
+                    IItemInstrument instrument = te.getInstrument();
+                    itemstack = instrument != null ? new ItemStack((ItemLike) instrument) : ItemStack.EMPTY;
+                }
                 if (!itemstack.isEmpty()) {
                     if (!isBreaking) {
                         if (isMusic) {
