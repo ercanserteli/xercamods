@@ -1,0 +1,34 @@
+{
+  "item_group.xercapaint.paint_tab": "Pintar",
+
+  "item.xercapaint.item_palette": "Paleta",
+  "item.xercapaint.item_canvas": "Canvas",
+  "item.xercapaint.item_canvas_large": "Canvas Grande",
+  "item.xercapaint.item_canvas_long": "Canvas Longo",
+  "item.xercapaint.item_canvas_tall": "Canvas Alto",
+  "item.xercapaint.item_easel": "Cavalete",
+
+  "palette.basic_count": "%1$s Cores Básicas",
+  "palette.custom_count": "%1$s Cores Customizadas",
+  "palette.empty": "Paleta Vazia",
+
+  "canvas.empty": "Canvas Vazio",
+  "canvas.byAuthor": "Por %1$s",
+  "canvas.signButton": "Assinar",
+  "canvas.finalizeButton": "Assinar e Fechar",
+  "canvas.finalizeWarning": "Aviso! Quando você assinar a pintura, ela não sera mais editavel.",
+  "canvas.generation.0": "Original",
+  "canvas.generation.1": "Cópia do Original",
+  "canvas.generation.2": "Cópia da Cópia",
+  "canvas.editTitle": "Título da Pintura:",
+
+  "xercapaint.export.success": "Pintura Exportada em: %1$s",
+  "xercapaint.export.fail": "Não foi possível exportar a pintura", 
+  "xercapaint.import.success": "Pintura Importada",
+  "xercapaint.import.fail.1": "Você tem que ter um Canvas Vazio na sua mão principal para importar a pintura no modo sobrevivência.", 
+  "xercapaint.import.fail.2": "Seu Canvas deve estar no tamanho correto para importar essa pintura no modo sobrevivência (%1$s)",
+  "xercapaint.import.fail.3": "Você dever ter uma Paleta com todas as cores basicas na sua mão secundaria para importar uma pintura no modo sobrevivência.",
+  "xercapaint.import.fail.4": "Não foi possível executar o comando ou ler o arquivo de pintura! (%1$s)",
+
+  "easel.deny": "Alguém já esta pintando nesta pintura no momento."
+}

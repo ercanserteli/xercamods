@@ -44,7 +44,8 @@ public class MidiHandler
 
                 XercaMusic.LOGGER.debug(device.getDeviceInfo() + " was opened");
 
-            } catch (MidiUnavailableException ignored) {
+            } catch (MidiUnavailableException exception) {
+                XercaMusic.LOGGER.debug("Midi unavailable: " + exception.getMessage());
             }
         }
     }

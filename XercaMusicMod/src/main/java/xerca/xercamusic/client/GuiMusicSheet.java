@@ -560,7 +560,7 @@ public class GuiMusicSheet extends Screen {
         this.hlDown.active = (!this.isSigned || this.selfSigned || this.generation > 1) && (!this.recording && !this.preRecording);
         this.sliderNoteVolume.active = (this.sliderNoteVolume.visible = !this.isSigned && !this.gettingSigned) && (!this.recording && !this.preRecording);
         this.buttonHelp.active = (this.buttonHelp.visible = !this.isSigned && !this.gettingSigned) && (!this.recording && !this.preRecording);
-        this.buttonHideNeighbors.visible = (!this.neighborNotes.isEmpty()) && !this.gettingSigned;
+        this.buttonHideNeighbors.visible = !this.neighborNotes.isEmpty() && !this.gettingSigned;
         this.buttonHideNeighbors.active = (!this.recording && !this.preRecording);
         this.buttonRecord.visible = !this.gettingSigned && !this.isSigned;
         this.buttonRecord.active = this.recording || this.preRecording || !this.previewing;
@@ -1491,12 +1491,12 @@ public class GuiMusicSheet extends Screen {
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         setFocused(null);
         super.keyReleased(keyCode, scanCode, modifiers);
-//        return this.getFocused() != null && this.getFocused().keyReleased(keyCode, scanCode, modifiers);
-
-        if (scanCode >= 16 && scanCode <= 27) {
+        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
+        int lastScanCode = firstScanCode + 11;
+        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
             if(currentOctave >= 0){
                 if(recording){
-                    endSound(IItemInstrument.noteToId((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave)));
+                    endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave)));
                 }
             }
         }
@@ -1682,13 +1682,15 @@ public class GuiMusicSheet extends Screen {
                     }
                     case GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT_CONTROL -> resetEditCursorEnd = false;
                     default -> {
-                        if (scanCode >= 16 && scanCode <= 27) {
+                        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
+                        int lastScanCode = firstScanCode + 11;
+                        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
                             if (currentOctave >= 0) {
                                 if (recording) {
-                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave)), (byte) 100);
+                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave)), (byte) 100);
                                 } else {
                                     putSpace(x - 1);
-                                    addNote((byte) ((scanCode - 16 + IItemInstrument.minNote) + 12 * currentOctave), (short) (x), false);
+                                    addNote((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave), (short) (x), false);
                                     finishAddingNote();
                                 }
                             }
@@ -1816,9 +1818,10 @@ public class GuiMusicSheet extends Screen {
                     throw new RuntimeException(ex);
                 }
             }
-
         }
-        editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.level().random.nextFloat()*0.4f);
+        if (SoundEvents.CLOSE_SCROLL != null) {
+            editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.level().random.nextFloat()*0.4f);
+        }
     }
 
     private boolean validClick(int x, int y) {
@@ -1906,7 +1909,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-     public class NoteEditBox extends AbstractWidget {
+    public class NoteEditBox extends AbstractWidget {
         public final Button buttonNoteDown;
         public final Button buttonNoteUp;
         public final Button buttonLengthDown;
@@ -2017,12 +2020,12 @@ public class GuiMusicSheet extends Screen {
             }
         }
 
-         @Override
-         public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        @Override
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
-         }
+        }
 
-         public void appear(int x, int y, NoteEvent event) {
+        public void appear(int x, int y, NoteEvent event) {
             changed = false;
             this.setX(x);
             this.setY(y);
@@ -2093,15 +2096,15 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
+        protected void updateWidgetNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {
+            defaultButtonNarrationText(pNarrationElementOutput);
+        }
+
+        @Override
         public boolean mouseReleased(double posX, double posY, int mouseButton) {
             sliderVelocity.onRelease(posX, posY);
             return true;
         }
-
-         @Override
-         protected void updateWidgetNarration(@NotNull NarrationElementOutput pNarrationElementOutput) {
-             defaultButtonNarrationText(pNarrationElementOutput);
-         }
 
         private final String[] noteNames = {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
         private final String[] noteNamesSolfege = {"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
