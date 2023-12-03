@@ -463,27 +463,31 @@ public class GuiMusicSheet extends Screen {
             }
         }).bounds(noteImageLeftX + 15, noteImageY + noteRegionBottom, bpmButW, bpmButH).build());
 
-        this.sliderTime = this.addRenderableWidget(new BetterSlider(noteImageLeftX + noteRegionLeft,
-                noteImageY + noteRegionBottom + 4, noteRegionRight-noteRegionLeft, 10,
-                Component.empty(), Component.empty(), 0, 1, 0, 0.001, 3, false){
-            @Override public void applyValue() {sliderPosition = (int)(this.value * (double)maxSliderPosition);}
+        this.sliderTime = this.addRenderableWidget(new BetterSlider(noteImageLeftX + noteRegionLeft, noteImageY + noteRegionBottom + 4, noteRegionRight-noteRegionLeft, 10,
+                Component.empty(), Component.empty(), 0, 1, 0, 0.001, 3, false) {
+            @Override
+            public void applyValue() {
+                sliderPosition = (int)(value * (double)maxSliderPosition);
+            }
         });
 
         this.sliderSheetVolume = this.addRenderableWidget(new BetterSlider(noteImageLeftX + noteRegionRight - 55, noteImageY + 12, 54, 10,
-                Component.literal("S Vol "), Component.empty(), 0, 100, volume*100.f, true){
-            @Override public void applyValue() {
-                if(!isSigned || selfSigned || generation > 1) {
-                    volume = ((float) this.value);
+                Component.literal("S Vol "), Component.empty(), 0, 100, volume*100.f, true) {
+            @Override
+            public void applyValue() {
+                if (!isSigned || selfSigned || generation > 1) {
+                    volume = ((float) value);
                     dirtyFlag.hasVolume = true;
                 }
             }
         });
 
         this.sliderNoteVolume = this.addRenderableWidget(new BetterSlider(noteImageLeftX + 130, noteImageY + 12, 54, 10,
-                Component.literal("N Vol "), Component.empty(), 0, 100, brushVolume*100.f, true){
-            @Override public void applyValue() {
-                if(!isSigned) {
-                    brushVolume = ((float) this.value);
+                Component.literal("N Vol "), Component.empty(), 0, 100, brushVolume*100.f, true) {
+            @Override
+            public void applyValue() {
+                if (!isSigned) {
+                    brushVolume = ((float) value);
                 }
             }
         });
@@ -791,9 +795,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-//        RenderSystem.setShaderTexture(0, noteGuiLeftTexture);
         guiGraphics.blit(noteGuiLeftTexture, noteImageLeftX, noteImageY + 7, noteImageLeftTexX, noteImageLeftTexY, noteImageLeftWidth, noteImageLeftHeight);
-//        RenderSystem.setShaderTexture(0, noteGuiTextures);
         guiGraphics.blit(noteGuiTextures, noteImageX, noteImageY, noteImageTexX, noteImageTexY, noteImageWidth, noteImageHeight);
         if (gettingSigned) {
             drawSigning(guiGraphics);
@@ -992,6 +994,23 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
+    private void setNeighborNextNodeIDs() {
+        if(!neighborsHidden) {
+            for (int i=0; i<neighborNotes.size(); i++){
+                ArrayList<NoteEvent> nn = neighborNotes.get(i);
+                for(int j=0; j<nn.size(); j++){
+                    if(nn.get(j).time >= previewCursor){
+                        neighborPreviewNextNoteIDs.set(i, j);
+                        break;
+                    }
+                }
+            }
+        }
+
+        this.previewCursorStart = editCursor;
+        this.previewStarted = false;
+    }
+
     private void startPreview() {
         this.previewCursor = editCursor;
         boolean noteFound = false;
@@ -1004,20 +1023,7 @@ public class GuiMusicSheet extends Screen {
         }
         // Only start preview if you find a note to play next
         if(noteFound){
-            if(!neighborsHidden) {
-                for (int i=0; i<neighborNotes.size(); i++){
-                    ArrayList<NoteEvent> nn = neighborNotes.get(i);
-                    for(int j=0; j<nn.size(); j++){
-                        if(nn.get(j).time >= previewCursor){
-                            neighborPreviewNextNoteIDs.set(i, j);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            this.previewCursorStart = editCursor;
-            this.previewStarted = false;
+            setNeighborNextNodeIDs();
             this.previewing = true;
             this.cumMillis = 0;
             this.lastMillis = System.currentTimeMillis();
@@ -1039,20 +1045,7 @@ public class GuiMusicSheet extends Screen {
                 break;
             }
         }
-        if(!neighborsHidden) {
-            for (int i=0; i<neighborNotes.size(); i++){
-                ArrayList<NoteEvent> nn = neighborNotes.get(i);
-                for(int j=0; j<nn.size(); j++){
-                    if(nn.get(j).time >= previewCursor){
-                        neighborPreviewNextNoteIDs.set(i, j);
-                        break;
-                    }
-                }
-            }
-        }
-
-        this.previewCursorStart = editCursor;
-        this.previewStarted = false;
+        setNeighborNextNodeIDs();
         this.cumMillis = 0;
         this.oldPreRecordBeat = 0;
         this.lastMillis = System.currentTimeMillis();
@@ -1502,7 +1495,7 @@ public class GuiMusicSheet extends Screen {
         if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
             if(currentOctave >= 0){
                 if(recording){
-                    endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + 1 + IItemInstrument.minNote) + 12 * currentOctave)));
+                    endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave)));
                 }
             }
         }
@@ -1693,10 +1686,10 @@ public class GuiMusicSheet extends Screen {
                         if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
                             if (currentOctave >= 0) {
                                 if (recording) {
-                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + 1 + IItemInstrument.minNote) + 12 * currentOctave)), (byte) 100);
+                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave)), (byte) 100);
                                 } else {
                                     putSpace(x - 1);
-                                    addNote((byte) ((scanCode - firstScanCode + 1 + IItemInstrument.minNote) + 12 * currentOctave), (short) (x), false);
+                                    addNote((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave), (short) (x), false);
                                     finishAddingNote();
                                 }
                             }
@@ -1932,7 +1925,7 @@ public class GuiMusicSheet extends Screen {
 
         public NoteEditBox(int x, int y, int w, int h, Component msg) {
             super(x, y, w, h, msg);
-            sliderVelocity = new BetterSlider(10, 0, 50, 10, Component.literal("Vol "), Component.empty(), 0, 100, 50, true){
+            sliderVelocity = new BetterSlider(10, 0, 50, 10, Component.literal("Vol "), Component.empty(), 0, 100, 50, true) {
                 @Override public void applyValue() {
                     setChanged();
                     event.volume = (byte)Math.round(value * 127.0f);
