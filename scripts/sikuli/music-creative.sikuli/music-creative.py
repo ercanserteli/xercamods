@@ -220,26 +220,26 @@ def testItemsInCreative(mc, win, mcLoc):
 
     # Keyboard notes
     win.type("qwerty")
-    testAssert(exists("1689794946862.png"))
+    testAssert(exists("1701618166399.png"))
 
     # Octave wheel
     wheelUp(3)
     testAssert(exists("1689794960532.png"))
     wheelDown(3)
-    testAssert(exists("1689794970931.png"))
+    testAssert(exists("1701618356769.png"))
     
     # Help
     clickw(813, 76)
     hoverw(806, 127)
     testAssert(exists("1690478755949.png"))
     clickw(813, 76)
-    testAssert(exists("1689795099653.png"))
+    testAssert(exists("1701618406624.png"))
 
     # Exit to save
     win.type(Key.ESC)
     wait(1)
     rclick()
-    testAssert(exists("1689795136779.png"))
+    testAssert(exists("1701618436375.png"))
     clickw(412, 67)
 
     # Middle click
@@ -283,14 +283,14 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("c", KeyModifier.CTRL)
     win.type(Key.RIGHT)
     win.type("v", KeyModifier.CTRL)
-    testAssert(exists("1689796028262.png"))
+    testAssert(exists("1701618742438.png"))
 
     # Select all, delete with backspace (delete button does not work for some reason)
     win.type("a", KeyModifier.CTRL)
     win.type(Key.BACKSPACE)
     testAssert(exists("1689796061344.png"))
     win.type("z", KeyModifier.CTRL)
-    testAssert(exists("1689796028262.png"))
+    testAssert(exists("1701618763367.png"))
 
     # Record
     rclickw(398, 264)
@@ -365,7 +365,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.click("1689797679952.png")
     testAssert(exists("1690479042183.png") and exists("1690479055437.png"))
     win.click("1689797728271.png")
-    testAssert(exists("1689797743619.png"))
+    testAssert(exists("1701621046768.png"))
     win.click("1689797679952.png")
     win.type("Masterpiece")
     win.click("1689797794031.png")
