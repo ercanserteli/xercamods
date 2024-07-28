@@ -27,7 +27,7 @@ artifacts {
     archives jar
 }
 
-version = "1.19.4-1.0.0"
+version = "1.19.4-1.0.1"
 group = 'xerca.music' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'xercamusic'
 

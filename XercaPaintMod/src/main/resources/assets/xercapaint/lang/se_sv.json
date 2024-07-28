@@ -29,6 +29,7 @@
   "xercapaint.import.fail.2": "Målarduken måste ha rätt storlek för att du ska kunna importera en målning i överlevnadsläge (%1$s)",
   "xercapaint.import.fail.3": "Du måste ha en palett med alla grundfärger i din andra hand för att kunna importera en målning i överlevnadsläge",
   "xercapaint.import.fail.4": "Kunde inte tolka kommandot eller läsa målningens fil (%1$s)",
+  "xercapaint.import.fail.5": "Målningsfilen är trasig",
 
   "easel.deny": "Någon annan håller på med den här målningen just nu"
 }
