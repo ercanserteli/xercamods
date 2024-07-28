@@ -10,9 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
@@ -51,7 +48,7 @@ public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayChanne
             } catch (IOException | ImportMusicSendPacket.NotesTooLargeException | NullPointerException e) {
                 e.printStackTrace();
                 if (player != null) {
-                    player.sendSystemMessage(Component.translatable("import.fail.4", filepath).withStyle(ChatFormatting.RED));
+                    player.sendSystemMessage(Component.translatable("xercamusic.import.fail.4", filepath).withStyle(ChatFormatting.RED));
                 }
             }
         }

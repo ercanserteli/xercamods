@@ -109,6 +109,12 @@ def testItemsInCreative(mc, win, mcLoc):
     testAssert(exists("1689434429864.png"))
     win.type(Key.ESC)
     
+    # Empty large canvas
+    win.type("6")
+    rclick(win)
+    testAssert(exists("1689434530128.png"))
+    win.type(Key.ESC)
+    
     # Empty long canvas
     win.type("4")
     rclick(win)
@@ -119,12 +125,6 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("5")
     rclick(win)
     testAssert(exists("1689434515287.png"))
-    win.type(Key.ESC)
-    
-    # Empty large canvas
-    win.type("6")
-    rclick(win)
-    testAssert(exists("1689434530128.png"))
     win.type(Key.ESC)
 
 

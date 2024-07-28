@@ -77,7 +77,7 @@ def upload_mod_to_curseforge(api_token, project_id, file_path, changelog, change
         print(f'Metadata: {metadata}')
 
 
-def upload_mod_to_modrinth(api_token, project_id, file_path, name, version_number, version_type, game_versions, changelog, loaders, is_featured, status, is_dry):
+def upload_mod_to_modrinth(api_token, project_id, file_path, name, version_number, version_type, game_versions, changelog, loader, is_featured, status, is_dry):
     # Header
     headers = {
         'Authorization': api_token
@@ -95,7 +95,7 @@ def upload_mod_to_modrinth(api_token, project_id, file_path, name, version_numbe
         "dependencies": [],  # Add dependencies if any
         "game_versions": game_versions,
         "version_type": version_type,
-        "loaders": loaders,
+        "loaders": [loader],
         "featured": is_featured,
         "status": status,
         "file_parts": [os.path.basename(file_path)],  # Add the filename to file_parts
@@ -147,11 +147,12 @@ def main():
     parser.add_argument('--release-type', choices=['alpha', 'beta', 'release'], required=True, help='Release type')
     parser.add_argument('--relations', nargs='+', type=json.loads, required=False, help='List of related projects. Use format: \'{"slug": "mantle", "type": ["embeddedLibrary"]}\'')
     parser.add_argument('--dry', action='store_true', help="Dry run, don't actually upload the file. Useful for testing.")
-    parser.add_argument('--loaders', nargs='+', default=['forge'], help='The mod loaders that this version supports')
+    parser.add_argument('--loader', default='forge', choices=['forge', 'fabric'], help='The mod loader that this version supports')
     parser.add_argument('--featured', action='store_true', help='Whether the version is featured or not')
     parser.add_argument('--status', default='listed', choices=['listed', 'archived', 'draft', 'unlisted', 'scheduled', 'unknown'], help='The status of the version')
 
     args = parser.parse_args()
+    args.display_name = args.loader.capitalize() + " " + args.display_name
 
     if args.curseforge_api_token:
         mod_name_to_id = {
@@ -208,7 +209,7 @@ def main():
             args.release_type,
             args.game_versions,
             args.changelog,
-            args.loaders,
+            args.loader,
             args.featured,
             args.status,
             args.dry
