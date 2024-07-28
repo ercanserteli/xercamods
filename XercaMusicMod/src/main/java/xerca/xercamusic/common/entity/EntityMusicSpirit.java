@@ -10,10 +10,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.MusicManager;
@@ -72,8 +71,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     private void setBlockPosAndInstrument(BlockPos pos, int instrumentId){
         if (instrumentId < Items.instruments.length) {
             ItemInstrument instrument = Items.instruments[instrumentId];
-            if (instrument instanceof ItemBlockInstrument) {
-                ItemBlockInstrument itemBlockInstrument = (ItemBlockInstrument) instrument;
+            if (instrument instanceof ItemBlockInstrument itemBlockInstrument) {
                 this.blockInstrument = itemBlockInstrument.getBlock();
                 this.blockInsPos = pos;
                 setPos((double)pos.getX()+0.5, (double)pos.getY()-0.5, (double)pos.getZ()+0.5);
