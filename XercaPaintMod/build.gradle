@@ -24,7 +24,7 @@ artifacts {
     archives jar
 }
 
-version = "1.16.5-2.1"
+version = "1.16.5-2.1.1"
 group= "xerca.xercapaint" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "xercapaint"
 
@@ -40,7 +40,7 @@ minecraft {
     // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
-            workingDirectory project.file('../run')
+            workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -50,6 +50,8 @@ minecraft {
 
             args '--username', 'Dev###'
 
+            jvmArgs '-Dminecraft.api.auth.host=https://nope.invalid', '-Dminecraft.api.account.host=https://nope.invalid', '-Dminecraft.api.session.host=https://nope.invalid', '-Dminecraft.api.services.host=https://nope.invalid'
+
             mods {
                 xercapaint {
                     source sourceSets.main
@@ -58,7 +60,7 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('../run')
+            workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'

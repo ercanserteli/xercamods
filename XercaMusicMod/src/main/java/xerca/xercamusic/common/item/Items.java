@@ -2,7 +2,6 @@ package xerca.xercamusic.common.item;
 
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.event.RegistryEvent;
@@ -11,6 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 import xerca.xercamusic.common.MusicCreativeTab;
 import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.block.Blocks;
 
 import static xerca.xercamusic.common.XercaMusic.Null;
@@ -62,7 +62,7 @@ public final class Items {
                     new ItemInstrument("banjo", false, 2, 0, 4),
                     new ItemInstrument("drum", false, 3, 1, 4),
                     new ItemInstrument("cymbal", false, 4, 0, 4),
-                    new ItemBlockInstrument("drum_kit", false, 5, Blocks.DRUM_KIT, 0, 7),
+                    new ItemBlockInstrument("drum_kit", false, 5, (BlockInstrument) Blocks.DRUM_KIT, 0, 7),
                     new ItemInstrument("xylophone", false, 6, 0, 5),
                     new ItemInstrument("tubular_bell", false, 7, 1, 4),
                     new ItemInstrument("sansula", false, 8, 1, 5),
@@ -71,7 +71,7 @@ public final class Items {
                     new ItemInstrument("flute", true, 11, 1, 6),
                     new ItemInstrument("saxophone", true, 12, 0, 4),
                     new ItemInstrument("god", false, 13, 0, 5),
-                    new ItemBlockInstrument("piano", false, 14, Blocks.PIANO, 0, 7),
+                    new ItemBlockInstrument("piano", false, 14, (BlockInstrument) Blocks.PIANO, 0, 7),
                     new ItemInstrument("oboe", true, 15,0, 4),
                     new ItemInstrument("redstone_guitar", true, 16,0, 5),
                     new ItemInstrument("french_horn", true, 17,0, 5),

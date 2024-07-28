@@ -37,7 +37,7 @@ public class ImportPaintingPacketHandler {
             XercaPaint.NETWORK_HANDLER.sendToServer(pack);
         } catch (IOException e) {
             e.printStackTrace();
-            Minecraft.getInstance().player.sendMessage(new TranslationTextComponent("import.fail.4", filepath).withStyle(TextFormatting.RED), Util.NIL_UUID);
+            Minecraft.getInstance().player.sendMessage(new TranslationTextComponent("xercapaint.import.fail.4", filepath).withStyle(TextFormatting.RED), Util.NIL_UUID);
         }
     }
 }

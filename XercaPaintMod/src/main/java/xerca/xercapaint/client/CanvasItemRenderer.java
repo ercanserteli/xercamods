@@ -32,7 +32,7 @@ public class CanvasItemRenderer extends ItemStackTileEntityRenderer
         if (stack.getItem() instanceof ItemCanvas) {
             ItemCanvas itemCanvas = (ItemCanvas) stack.getItem();
             CompoundNBT nbt = stack.getTag();
-            if(nbt != null){
+            if(nbt != null && RenderEntityCanvas.theInstance != null){
                 RenderEntityCanvas.Instance canvasIns = RenderEntityCanvas.theInstance.getCanvasRendererInstance(nbt, itemCanvas.getWidth(), itemCanvas.getHeight());
                 if(canvasIns != null){
                     canvasIns.render(null, 0, 0, matrixStack, buffer, Direction.UP, combinedLight);

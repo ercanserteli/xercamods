@@ -49,10 +49,27 @@ public class CommandImport {
     }
 
     public static void doImport(CompoundNBT tag, ArrayList<NoteEvent> notes, ServerPlayerEntity player){
+        // Sanitizing
+        if ((tag.contains("author", 8) && !tag.contains("title", 8)) ||
+                (!tag.contains("author", 8) && tag.contains("title", 8))) {
+            player.sendMessage(new TranslationTextComponent("xercamusic.import.fail.5").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+            XercaMusic.LOGGER.warn("Broken paint file");
+            return;
+        }
+        if (tag.contains("title", 8) && tag.getString("title").length() > 16) {
+            tag.putString("title", tag.getString("title").substring(0, 16));
+        }
+        if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
+            tag.putString("author", tag.getString("author").substring(0, 16));
+        }
+        if (!tag.contains("ver", 3)) {
+            tag.putInt("ver", 1);
+        }
+
         if(tag.getInt("generation") > 0){
             tag.putInt("generation", tag.getInt("generation") + 1);
         }
-        if(tag.contains("id") && tag.contains("ver")) {
+        if(tag.contains("id")) {
             UUID id = tag.getUniqueId("id");
             int ver = tag.getInt("ver");
             if(notes == null) {
@@ -93,11 +110,11 @@ public class CommandImport {
             ItemStack mainhand = player.getHeldItemMainhand();
 
             if(!(mainhand.getItem() instanceof ItemMusicSheet) || (mainhand.hasTag() && !mainhand.getTag().isEmpty())){
-                player.sendMessage(new TranslationTextComponent("import.fail.1").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+                player.sendMessage(new TranslationTextComponent("xercamusic.import.fail.1").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                 return;
             }
             mainhand.setTag(tag);
         }
-        player.sendMessage(new TranslationTextComponent("import.success").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
+        player.sendMessage(new TranslationTextComponent("xercamusic.import.success").mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
     }
 }

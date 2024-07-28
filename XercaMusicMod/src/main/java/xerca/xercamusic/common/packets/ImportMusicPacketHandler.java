@@ -52,7 +52,7 @@ public class ImportMusicPacketHandler {
         } catch (IOException | ImportMusicSendPacket.NotesTooLargeException | NullPointerException e) {
             e.printStackTrace();
             Minecraft mc = Minecraft.getInstance();
-            mc.player.sendMessage(new TranslationTextComponent("import.fail.4", filepath).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+            mc.player.sendMessage(new TranslationTextComponent("xercamusic.import.fail.4", filepath).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
         }
     }
 }

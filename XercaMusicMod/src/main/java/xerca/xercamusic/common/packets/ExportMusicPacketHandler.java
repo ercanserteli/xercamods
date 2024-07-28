@@ -26,9 +26,9 @@ public class ExportMusicPacketHandler {
     private static void processMessage(ExportMusicPacket msg) {
     	Minecraft mc = Minecraft.getInstance();
         if(CommandExport.doExport(mc.player, msg.getName())){
-            mc.player.sendMessage(new TranslationTextComponent("export.success", msg.getName()).mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
+            mc.player.sendMessage(new TranslationTextComponent("xercamusic.export.success", msg.getName()).mergeStyle(TextFormatting.GREEN), Util.DUMMY_UUID);
         }else{
-            mc.player.sendMessage(new TranslationTextComponent("export.fail", msg.getName()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+            mc.player.sendMessage(new TranslationTextComponent("xercamusic.export.fail", msg.getName()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
         }
     }
 }

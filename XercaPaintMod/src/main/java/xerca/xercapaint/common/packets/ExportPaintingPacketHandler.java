@@ -25,9 +25,9 @@ public class ExportPaintingPacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(ExportPaintingPacket msg) {
         if(CommandExport.doExport(Minecraft.getInstance().player, msg.getName())){
-            Minecraft.getInstance().player.sendMessage(new TranslationTextComponent("export.success", msg.getName()).withStyle(TextFormatting.GREEN), Util.NIL_UUID);
+            Minecraft.getInstance().player.sendMessage(new TranslationTextComponent("xercapaint.export.success", msg.getName()).withStyle(TextFormatting.GREEN), Util.NIL_UUID);
         }else{
-            Minecraft.getInstance().player.sendMessage(new TranslationTextComponent("export.fail", msg.getName()).withStyle(TextFormatting.RED), Util.NIL_UUID);
+            Minecraft.getInstance().player.sendMessage(new TranslationTextComponent("xercapaint.export.fail", msg.getName()).withStyle(TextFormatting.RED), Util.NIL_UUID);
         }
     }
 }
