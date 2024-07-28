@@ -28,9 +28,9 @@ public class ExportPaintingPacketHandler {
         LocalPlayer player = Minecraft.getInstance().player;
         if(player != null) {
             if (CommandExport.doExport(player, msg.getName())) {
-                player.sendMessage(new TranslatableComponent("export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("xercapaint.export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
             } else {
-                player.sendMessage(new TranslatableComponent("export.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("xercapaint.export.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
         }
     }

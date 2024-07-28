@@ -25,7 +25,7 @@ artifacts {
     archives jar
 }
 
-version = '1.18.2-1.1.0'
+version = '1.18.2-1.1.1'
 group = 'xerca.music' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'xercamusic'
 
@@ -43,7 +43,7 @@ minecraft {
     // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
-            workingDirectory project.file('../run')
+            workingDirectory project.file('run')
             //  workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
@@ -62,7 +62,7 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('../run')
+            workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -78,7 +78,7 @@ minecraft {
         }
 
         data {
-            workingDirectory project.file('../run')
+            workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.

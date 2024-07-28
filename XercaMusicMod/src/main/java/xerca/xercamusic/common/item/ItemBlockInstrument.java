@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 
@@ -37,8 +38,8 @@ import java.util.Objects;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ItemBlockInstrument extends ItemInstrument{
-    private final Block block;
-    ItemBlockInstrument(String name, boolean shouldCutOff, int instrumentId, Block block, int minOctave, int maxOctave) {
+    private final BlockInstrument block;
+    ItemBlockInstrument(String name, boolean shouldCutOff, int instrumentId, BlockInstrument block, int minOctave, int maxOctave) {
         super(name, shouldCutOff, instrumentId, minOctave, maxOctave);
         this.block = block;
     }
@@ -196,13 +197,8 @@ public class ItemBlockInstrument extends ItemInstrument{
     }
 
     @Nullable
-    public Block getBlock() {
-        return this.getBlockRaw() == null ? null : this.getBlockRaw().delegate.get();
-    }
-
-    @Nullable
-    private Block getBlockRaw() {
-        return this.block;
+    public BlockInstrument getBlock() {
+        return this.block == null ? null : (BlockInstrument) this.block.delegate.get();
     }
 
     public void addToBlockToItemMap(Map<Block, Item> blockToItemMap, Item itemIn) {

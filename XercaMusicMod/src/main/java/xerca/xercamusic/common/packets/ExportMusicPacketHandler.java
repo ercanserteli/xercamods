@@ -26,11 +26,11 @@ public class ExportMusicPacketHandler {
     private static void processMessage(ExportMusicPacket msg) {
         if(CommandExport.doExport(Minecraft.getInstance().player, msg.getName())){
             if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("xercamusic.export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
             }
         }else{
             if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                Minecraft.getInstance().player.sendMessage(new TranslatableComponent("xercamusic.export.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
         }
     }
