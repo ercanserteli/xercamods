@@ -44,6 +44,34 @@ public class CommandImport {
     }
 
     public static void doImport(CompoundTag tag, ServerPlayer player){
+        // Sanitizing
+        if (!tag.contains("name", 8)) {
+            player.sendMessage(new TranslatableComponent("xercapaint.import.fail.5").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            Mod.LOGGER.warn("Broken paint file");
+            return;
+        }
+        String name = tag.getString("name");
+        if (!name.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_[0-9]+$")) {
+            player.sendMessage(new TranslatableComponent("xercapaint.import.fail.5").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            Mod.LOGGER.warn("Broken paint file");
+            return;
+        }
+        if ((tag.contains("author", 8) && !tag.contains("title", 8)) ||
+                (!tag.contains("author", 8) && tag.contains("title", 8))) {
+            player.sendMessage(new TranslatableComponent("xercapaint.import.fail.5").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            Mod.LOGGER.warn("Broken paint file");
+            return;
+        }
+        if (tag.contains("title", 8) && tag.getString("title").length() > 16) {
+            tag.putString("title", tag.getString("title").substring(0, 16));
+        }
+        if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
+            tag.putString("author", tag.getString("author").substring(0, 16));
+        }
+        if (!tag.contains("v", 3)) {
+            tag.putInt("v", 1);
+        }
+
         byte canvasType = tag.getByte("ct");
         tag.remove("ct");
         if(tag.getInt("generation") > 0){
@@ -70,7 +98,7 @@ public class CommandImport {
             ItemStack offhand = player.getOffhandItem();
 
             if(!(mainhand.getItem() instanceof ItemCanvas) || (mainhand.hasTag() && !mainhand.getTag().isEmpty())){
-                player.sendMessage(new TranslatableComponent("import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("xercapaint.import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
             if(((ItemCanvas)mainhand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
@@ -80,15 +108,15 @@ public class CommandImport {
                     case TALL -> type = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
                     case LARGE -> type = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
                 }
-                player.sendMessage(new TranslatableComponent("import.fail.2", type).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("xercapaint.import.fail.2", type).withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
             if(!ItemPalette.isFull(offhand)){
-                player.sendMessage(new TranslatableComponent("import.fail.3").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("xercapaint.import.fail.3").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
             mainhand.setTag(tag);
         }
-        player.sendMessage(new TranslatableComponent("import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+        player.sendMessage(new TranslatableComponent("xercapaint.import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
     }
 }

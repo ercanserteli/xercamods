@@ -37,7 +37,7 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implemen
     public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         if (stack.getItem() instanceof ItemCanvas itemCanvas) {
             CompoundTag nbt = stack.getTag();
-            if(nbt != null){
+            if(nbt != null && RenderEntityCanvas.theInstance != null){
                 RenderEntityCanvas.Instance canvasIns = RenderEntityCanvas.theInstance.getCanvasRendererInstance(nbt, itemCanvas.getWidth(), itemCanvas.getHeight());
                 if(canvasIns != null){
                     canvasIns.render(null, 0, 0, matrixStack, buffer, Direction.UP, combinedLight);

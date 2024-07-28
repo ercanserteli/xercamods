@@ -47,11 +47,27 @@ public class CommandImport {
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, ServerPlayer player){
+    public static void doImport(CompoundTag tag, ServerPlayer player) {
+        // Sanitizing
+        if ((tag.contains("author", 8) && !tag.contains("title", 8)) ||
+                (!tag.contains("author", 8) && tag.contains("title", 8))) {
+            player.sendMessage(new TranslatableComponent("xercamusic.import.fail.5").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            XercaMusic.LOGGER.warn("Broken paint file");
+            return;
+        }
+        if (tag.contains("title", 8) && tag.getString("title").length() > 16) {
+            tag.putString("title", tag.getString("title").substring(0, 16));
+        }
+        if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
+            tag.putString("author", tag.getString("author").substring(0, 16));
+        }
+        if (!tag.contains("ver", 3)) {
+            tag.putInt("ver", 1);
+        }
         if(tag.getInt("generation") > 0){
             tag.putInt("generation", tag.getInt("generation") + 1);
         }
-        if(tag.contains("notes") && tag.contains("id") && tag.contains("ver")) {
+        if(tag.contains("notes") && tag.contains("id")) {
             ArrayList<NoteEvent> notes = new ArrayList<>();
             NoteEvent.fillArrayFromNBT(notes, tag);
             UUID id = tag.getUUID("id");
@@ -88,11 +104,11 @@ public class CommandImport {
 
             //noinspection ConstantConditions
             if(!(mainHandItem.getItem() instanceof ItemMusicSheet) || (mainHandItem.hasTag() && !mainHandItem.getTag().isEmpty())){
-                player.sendMessage(new TranslatableComponent("import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("xercamusic.import.fail.1").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
             mainHandItem.setTag(tag);
         }
-        player.sendMessage(new TranslatableComponent("import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+        player.sendMessage(new TranslatableComponent("xercamusic.import.success").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
     }
 }

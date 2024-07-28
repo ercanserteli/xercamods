@@ -27,7 +27,7 @@ public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayCha
             ClientPlayNetworking.send(Mod.IMPORT_PAINTING_SEND_PACKET_ID, pack.encode());
         } catch (IOException e) {
             e.printStackTrace();
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("import.fail.4", filepath).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("xercapaint.import.fail.4", filepath).withStyle(ChatFormatting.RED), Util.NIL_UUID);
         }
     }
 

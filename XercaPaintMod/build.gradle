@@ -33,6 +33,12 @@ processResources {
     }
 }
 
+tasks.register('buildCopy', Copy) {
+    dependsOn build
+    from "$buildDir/libs/${archivesBaseName}-${version}.jar"
+    into "$buildDir/../../builds"
+}
+
 def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is

@@ -13,9 +13,9 @@ import xerca.xercapaint.CommandExport;
 public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
         private static void processMessage(ExportPaintingPacket msg) {
         if(CommandExport.doExport(Minecraft.getInstance().player, msg.getName())){
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("xercapaint.export.success", msg.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
         }else{
-            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("export.fail", msg.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            Minecraft.getInstance().player.sendMessage(new TranslatableComponent("xercapaint.export.fail", msg.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
         }
     }
 
