@@ -46,15 +46,37 @@ public class CommandImport {
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, ServerPlayer player){
+    public static void doImport(CompoundTag tag, ArrayList<NoteEvent> notes, ServerPlayer player){
+        // Sanitizing
+        if ((tag.contains("author", 8) && !tag.contains("title", 8)) ||
+                (!tag.contains("author", 8) && tag.contains("title", 8))) {
+            player.sendSystemMessage(Component.translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+            XercaMusic.LOGGER.warn("Broken paint file");
+            return;
+        }
+        if (tag.contains("title", 8) && tag.getString("title").length() > 16) {
+            tag.putString("title", tag.getString("title").substring(0, 16));
+        }
+        if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
+            tag.putString("author", tag.getString("author").substring(0, 16));
+        }
+        if (!tag.contains("ver", 3)) {
+            tag.putInt("ver", 1);
+        }
+
         if(tag.getInt("generation") > 0){
             tag.putInt("generation", tag.getInt("generation") + 1);
         }
-        if(tag.contains("notes") && tag.contains("id") && tag.contains("ver")) {
-            ArrayList<NoteEvent> notes = new ArrayList<>();
-            NoteEvent.fillArrayFromNBT(notes, tag);
+        if(tag.contains("id")) {
             UUID id = tag.getUUID("id");
             int ver = tag.getInt("ver");
+            if(notes == null) {
+                // Get if large note was sent in parts
+                notes = MusicManager.getFinishedNotesFromBuffer(id);
+                if(notes == null){
+                    return;
+                }
+            }
             MusicManager.setMusicData(id, ver, notes, player.server);
 
             MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
@@ -64,7 +86,7 @@ public class CommandImport {
         else if(tag.contains("music")){
             // Old version
             XercaMusic.LOGGER.info("Old music file version");
-            ArrayList<NoteEvent> notes = convertFromOld(tag, player.server);
+            notes = convertFromOld(tag, player.server);
             UUID id = tag.getUUID("id");
             int ver = tag.getInt("ver");
 
@@ -87,11 +109,11 @@ public class CommandImport {
 
             //noinspection ConstantConditions
             if(!(mainHandItem.getItem() instanceof ItemMusicSheet) || (mainHandItem.hasTag() && !mainHandItem.getTag().isEmpty())){
-                player.sendSystemMessage(Component.translatable("import.fail.1").withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.translatable("xercamusic.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
             mainHandItem.setTag(tag);
         }
-        player.sendSystemMessage(Component.translatable("import.success").withStyle(ChatFormatting.GREEN));
+        player.sendSystemMessage(Component.translatable("xercamusic.import.success").withStyle(ChatFormatting.GREEN));
     }
 }

@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "Music Maker Mod",
   "description": "",
-  "authors": [],
+  "authors": ["xerca"],
   "contact": {},
   "license": "GPL-3.0",
   "icon": "assets/xercamusic/textures/item/music_sheet.png",

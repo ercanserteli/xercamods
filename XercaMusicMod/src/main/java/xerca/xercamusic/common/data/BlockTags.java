@@ -15,7 +15,7 @@ public class BlockTags implements DataGeneratorEntrypoint {
 
     private static class BlockTagGenerator extends FabricTagProvider<Block> {
         public BlockTagGenerator(FabricDataGenerator dataGenerator) {
-            super(dataGenerator, Registry.BLOCK/*, "mineable_with_axe"*/);
+            super(dataGenerator, Registry.BLOCK);
         }
 
         @Override

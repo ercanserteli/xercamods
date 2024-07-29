@@ -18,6 +18,7 @@ import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -80,7 +81,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         return this.saveWithFullMetadata();
     }
 
@@ -113,6 +114,10 @@ public class TileEntityMusicBox extends BlockEntity {
                         if (data != null) {
                             t.notes.clear();
                             t.notes.addAll(data.notes);
+                        }
+                        else{
+                            XercaMusic.LOGGER.info("Clearing tag data from unknown music sheet");
+                            t.noteStack.setTag(new CompoundTag());
                         }
                     }
                 }

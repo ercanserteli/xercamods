@@ -101,6 +101,7 @@ public class ClientStuff implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(MusicDataResponsePacket.ID, new MusicDataResponsePacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(SingleNoteClientPacket.ID, new SingleNoteClientPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(TripleNoteClientPacket.ID, new TripleNoteClientPacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(NotesPartAckFromServerPacket.ID, new NotesPartAckFromServerPacketHandler());
 
         ClientPlayConnectionEvents.JOIN.register((ClientPacketListener handler, PacketSender sender, Minecraft client) -> {
             XercaMusic.LOGGER.debug("ClientPacketListener Join Event");
