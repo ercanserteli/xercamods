@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -85,6 +84,7 @@ public class XercaMusic
 
         Blocks.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         Items.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Items.TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
         Items.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         Entities.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         TileEntities.BLOCK_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -127,38 +127,6 @@ public class XercaMusic
         @SubscribeEvent
         public static void registerDataEvent(final GatherDataEvent event) {
             event.getGenerator().addProvider(event.includeServer(), new BlockTags(event.getGenerator().getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
-        }
-
-        @SubscribeEvent
-        public static void buildContents(CreativeModeTabEvent.Register event) {
-            event.registerCreativeModeTab(new ResourceLocation(MODID, "paint_tab"), builder ->
-                    builder.title(Component.translatable("item_group." + MODID + ".music_tab"))
-                            .icon(() -> new ItemStack(Items.GUITAR.get()))
-                            .displayItems((params, output) -> {
-                                output.accept(Items.MUSIC_SHEET.get());
-                                output.accept(Items.GUITAR.get());
-                                output.accept(Items.LYRE.get());
-                                output.accept(Items.BANJO.get());
-                                output.accept(Items.DRUM.get());
-                                output.accept(Items.CYMBAL.get());
-                                output.accept(Items.DRUM_KIT.get());
-                                output.accept(Items.XYLOPHONE.get());
-                                output.accept(Items.TUBULAR_BELL.get());
-                                output.accept(Items.SANSULA.get());
-                                output.accept(Items.VIOLIN.get());
-                                output.accept(Items.CELLO.get());
-                                output.accept(Items.FLUTE.get());
-                                output.accept(Items.SAXOPHONE.get());
-                                output.accept(Items.GOD.get());
-                                output.accept(Items.PIANO.get());
-                                output.accept(Items.OBOE.get());
-                                output.accept(Items.REDSTONE_GUITAR.get());
-                                output.accept(Items.FRENCH_HORN.get());
-                                output.accept(Items.BASS_GUITAR.get());
-                                output.accept(Items.MUSIC_BOX.get());
-                                output.accept(Items.METRONOME.get());
-                            })
-            );
         }
     }
 

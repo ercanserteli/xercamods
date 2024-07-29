@@ -1,7 +1,7 @@
 package xerca.xercamod.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,16 +27,15 @@ public class GuiFunctionalBookcase extends AbstractContainerScreen<ContainerFunc
 
     // Draw the background for the GUI - rendered first
     @Override
-    protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int x, int y) {
-        RenderSystem.setShaderTexture(0, texture);
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTicks, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        this.blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        renderTooltip(matrixStack, mouseX, mouseY);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        renderTooltip(guiGraphics, mouseX, mouseY);
     }
 }

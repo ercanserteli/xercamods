@@ -113,7 +113,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     @Override
     public void dropItem(@Nullable Entity brokenEntity) {
-        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             if (brokenEntity instanceof Player player) {
                 if (player.getAbilities().instabuild) {
@@ -159,7 +159,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         this.xo = this.getX();
         this.yo = this.getY();
         this.zo = this.getZ();
-        if (this.tickCounter1++ == 50 && !this.level.isClientSide) {
+        if (this.tickCounter1++ == 50 && !this.level().isClientSide) {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.survives()) {
                 this.remove(RemovalReason.DISCARDED);
@@ -233,12 +233,12 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
         if(direction.getAxis().isHorizontal()){
             return super.survives();
         }
-        if (!this.level.noCollision(this)) {
+        if (!this.level().noCollision(this)) {
             return false;
         } else {
-            BlockState blockstate = this.level.getBlockState(this.pos.relative(this.direction.getOpposite()));
-            return (blockstate.getMaterial().isSolid() ||
-                    this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(blockstate)) && this.level.getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
+            BlockState blockstate = this.level().getBlockState(this.pos.relative(this.direction.getOpposite()));
+            return (blockstate.isSolid() ||
+                    this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(blockstate)) && this.level().getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
         }
     }
 
@@ -351,7 +351,7 @@ public class EntityCanvas extends HangingEntity implements IEntityAdditionalSpaw
 
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
         if(canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE){
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 setRotation(getRotation() + 1);
             }
             return InteractionResult.SUCCESS;

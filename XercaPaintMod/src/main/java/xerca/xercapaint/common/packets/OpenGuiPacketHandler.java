@@ -32,7 +32,7 @@ public class OpenGuiPacketHandler {
         Player player = Minecraft.getInstance().player;
         if(player != null) {
             if (msg.isAllowed()) {
-                Entity entity = player.level.getEntity(msg.getEaselId());
+                Entity entity = player.level().getEntity(msg.getEaselId());
                 if (entity instanceof EntityEasel easel) {
                     ItemStack itemInHand = player.getItemInHand(msg.getHand());
                     boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;

@@ -15,7 +15,8 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.ContainerCarvingStation;
@@ -23,15 +24,13 @@ import xerca.xercamod.common.ContainerCarvingStation;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 @ParametersAreNonnullByDefault
 public class BlockCarvingStation extends Block {
     private static final Component CONTAINER_NAME = Component.translatable("container.xercamod.carving_station");
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public BlockCarvingStation() {
-        super(Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2.0f, 3.0f));
+        super(Properties.of().mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(2.0f, 3.0f));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

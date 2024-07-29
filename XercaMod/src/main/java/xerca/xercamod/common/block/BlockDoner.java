@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -41,7 +41,7 @@ public class BlockDoner extends Block implements EntityBlock {
     private RenderShape renderType = RenderShape.ENTITYBLOCK_ANIMATED;
 
     public BlockDoner() {
-        super(Block.Properties.of(Material.CAKE).sound(SoundType.METAL).strength(1).noOcclusion());
+        super(Block.Properties.of().pushReaction(PushReaction.DESTROY).sound(SoundType.METAL).strength(1).noOcclusion());
         registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(IS_RAW, true));
     }
 

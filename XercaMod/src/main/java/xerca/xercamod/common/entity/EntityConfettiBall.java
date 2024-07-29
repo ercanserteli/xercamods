@@ -40,7 +40,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
 
     private void spawnConfetti(double x, double y, double z) {
         for (int j = 0; j < 12; ++j) {
-            this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_CONFETTI.get())), x, y, z, ((double) this.random.nextFloat() - 0.5D) * 0.3D, ((double) this.random.nextFloat()) * 0.5D, ((double) this.random.nextFloat() - 0.5D) * 0.3D);
+            this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_CONFETTI.get())), x, y, z, ((double) this.random.nextFloat() - 0.5D) * 0.3D, ((double) this.random.nextFloat()) * 0.5D, ((double) this.random.nextFloat() - 0.5D) * 0.3D);
         }
     }
 
@@ -51,8 +51,8 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     @Override
     protected void onHit(HitResult result) {
         spawnConfetti(result.getLocation());
-        if (!this.level.isClientSide) {
-            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CRACK.get(), SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
+        if (!this.level().isClientSide) {
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CRACK.get(), SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -66,8 +66,8 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     public void tick() {
         super.tick();
         if(this.tickCount % 4 == 0){
-            if(!this.level.isClientSide){
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CRACK.get(), SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
+            if(!this.level().isClientSide){
+                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.CRACK.get(), SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             }
             else{
                 spawnConfetti(this.getX(), this.getY(), this.getZ());

@@ -2,6 +2,7 @@ package xerca.xercamusic.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -93,7 +94,7 @@ public class GuiInstrument extends Screen {
     public void tick() {
         super.tick();
         if(blockInsPos != null && minecraft != null ){
-            if(player.level.getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns){
+            if(player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns){
                 if(blockIns.getItemInstrument() != instrument){
                     minecraft.setScreen(null);
                 }
@@ -105,11 +106,11 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, insGuiTextures);
 
-        blit(matrixStack, guiBaseX, guiBaseY, 0, 0, 0, guiWidth, guiHeight, 512, 512);
+        guiGraphics.blit(insGuiTextures, guiBaseX, guiBaseY, 0, 0, 0, guiWidth, guiHeight, 512, 512);
 
         for(int i=0; i<buttonPushStates.length; i++){
             if(buttonPushStates[i]){
@@ -120,7 +121,7 @@ public class GuiInstrument extends Screen {
                     x -= 4 + 48*guiNoteWidth;
                     y = guiBaseY + guiBottomKeyboardTop + 2;
                 }
-                blit(matrixStack, x, y, 0, 402, 11, 7, 82, 512, 512);
+                guiGraphics.blit(insGuiTextures, x, y, 0, 402, 11, 7, 82, 512, 512);
             }
         }
 
@@ -131,7 +132,7 @@ public class GuiInstrument extends Screen {
             octaveHighlightX -= 4 * guiOctaveWidth;
             octaveHighlightY = guiBaseY + guiBottomKeyboardTop - 6;
         }
-        blit(matrixStack, octaveHighlightX, octaveHighlightY, 0, 0, 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
+        guiGraphics.blit(insGuiTextures, octaveHighlightX, octaveHighlightY, 0, 0, 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
 
         for(int i=0; i<8; i++){
             if(i < instrument.getMinOctave() || i > instrument.getMaxOctave()){
@@ -141,12 +142,12 @@ public class GuiInstrument extends Screen {
                     x -= 4 * guiOctaveWidth;
                     y = guiBaseY + guiBottomKeyboardTop + 2;
                 }
-                blit(matrixStack, x, y, 0, 0, guiOctaveBlockX, guiOctaveBlockY, guiOctaveBlockWidth, guiOctaveBlockHeight, 512, 512);
+                guiGraphics.blit(insGuiTextures, x, y, 0, 0, guiOctaveBlockX, guiOctaveBlockY, guiOctaveBlockWidth, guiOctaveBlockHeight, 512, 512);
             }
         }
 
-        drawCenteredString(matrixStack, this.font, "" + (currentKeyboardOctave), octaveButtonX + 4, octaveButtonY + 14, 0xFFFFFFFF);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        guiGraphics.drawCenteredString(this.font, "" + (currentKeyboardOctave), octaveButtonX + 4, octaveButtonY + 14, 0xFFFFFFFF);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     private int noteIdFromPos(int mouseX, int mouseY) {
@@ -179,7 +180,7 @@ public class GuiInstrument extends Screen {
                 return;
             }
             noteSounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch));
-            player.level.addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
+            player.level().addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
             buttonPushStates[noteId] = true;
 
             SingleNotePacket pack = new SingleNotePacket(note, instrument, false, data.volume());
