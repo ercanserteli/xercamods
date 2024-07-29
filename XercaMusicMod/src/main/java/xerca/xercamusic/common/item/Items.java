@@ -1,7 +1,11 @@
 package xerca.xercamusic.common.item;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraftforge.registries.DeferredRegister;
@@ -12,6 +16,7 @@ import xerca.xercamusic.common.block.Blocks;
 
 public final class Items {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, XercaMusic.MODID);
+    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, XercaMusic.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, XercaMusic.MODID);
 
     public static final RegistryObject<ItemInstrument> HARP_MC = ITEMS.register("harp_mc", () -> new ItemInstrument(false, -1, 0, 7, new Item.Properties()));
@@ -39,6 +44,34 @@ public final class Items {
 
     public static final RegistryObject<Item> MUSIC_BOX = ITEMS.register("music_box", () -> new BlockItem(Blocks.MUSIC_BOX.get(), new Item.Properties()));
     public static final RegistryObject<Item> METRONOME = ITEMS.register("metronome", () -> new BlockItem(Blocks.BLOCK_METRONOME.get(), new Item.Properties()));
+
+    public static final RegistryObject<CreativeModeTab> MUSIC_TAB = TABS.register("music_tab", () -> CreativeModeTab.builder()
+            .title(Component.translatable("item_group." + XercaMusic.MODID + ".music_tab"))
+            .icon(() -> GUITAR.get().getDefaultInstance())
+            .displayItems((params, output) -> {
+                output.accept(MUSIC_SHEET.get());
+                output.accept(GUITAR.get());
+                output.accept(LYRE.get());
+                output.accept(BANJO.get());
+                output.accept(DRUM.get());
+                output.accept(CYMBAL.get());
+                output.accept(DRUM_KIT.get());
+                output.accept(XYLOPHONE.get());
+                output.accept(TUBULAR_BELL.get());
+                output.accept(SANSULA.get());
+                output.accept(VIOLIN.get());
+                output.accept(CELLO.get());
+                output.accept(FLUTE.get());
+                output.accept(SAXOPHONE.get());
+                output.accept(GOD.get());
+                output.accept(PIANO.get());
+                output.accept(OBOE.get());
+                output.accept(REDSTONE_GUITAR.get());
+                output.accept(FRENCH_HORN.get());
+                output.accept(BASS_GUITAR.get());
+                output.accept(MUSIC_BOX.get());
+                output.accept(METRONOME.get());
+            }).build());
 
     public static IItemInstrument[] instruments;
 

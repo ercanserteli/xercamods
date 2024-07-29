@@ -19,7 +19,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
@@ -55,11 +54,11 @@ public class ItemKnife extends Item {
     public static float critDamage(LivingEntity target, LivingEntity attacker, ItemStack stack) {
         float angleDiff = Mth.abs(Mth.wrapDegrees(target.getYRot()) - Mth.wrapDegrees(attacker.getYRot()));
         if (attacker.isSteppingCarefully() && (angleDiff < 65.0F || angleDiff > 295.0f)) {
-            if(!target.level.isClientSide){
+            if(!target.level().isClientSide){
                 ClientboundAnimatePacket packetOut = new ClientboundAnimatePacket(target, 4);
-                ((ServerLevel)target.level).getChunkSource().broadcastAndSend(attacker, packetOut);
+                ((ServerLevel)target.level()).getChunkSource().broadcastAndSend(attacker, packetOut);
             }
-            attacker.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.SNEAK_HIT.get(), SoundSource.PLAYERS, 1.0f, attacker.level.random.nextFloat() * 0.2F + 0.8F);
+            attacker.level().playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.SNEAK_HIT.get(), SoundSource.PLAYERS, 1.0f, attacker.level().random.nextFloat() * 0.2F + 0.8F);
             float bonus = defaultBonus;
             if(stack.isEnchanted()){
                 bonus += EnchantmentHelper.getItemEnchantmentLevel(Items.ENCHANTMENT_STEALTH.get(), stack)*2;

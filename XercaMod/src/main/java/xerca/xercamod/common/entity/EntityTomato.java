@@ -5,7 +5,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -51,9 +50,9 @@ public class EntityTomato extends ThrowableItemProjectile {
             entityRayTraceResult.getEntity().hurt(damageSources().thrown(this, this.getOwner()), 1f);
         }
 
-        if (!this.level.isClientSide) {
-            this.level.broadcastEntityEvent(this, (byte)3);
-            level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, SoundEvents.TOMATO_SPLASH.get(), SoundSource.PLAYERS, 1.0f, this.random.nextFloat() * 0.2F + 0.9F);
+        if (!this.level().isClientSide) {
+            this.level().broadcastEntityEvent(this, (byte)3);
+            level().playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, SoundEvents.TOMATO_SPLASH.get(), SoundSource.PLAYERS, 1.0f, this.random.nextFloat() * 0.2F + 0.9F);
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -69,7 +68,7 @@ public class EntityTomato extends ThrowableItemProjectile {
         if (id == 3)
         {
             for (int j = 0; j < 8; ++j) {
-                this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO.get())), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.28D, ((double) this.random.nextFloat() - 0.3D) * 0.28D, ((double) this.random.nextFloat() - 0.5D) * 0.28D);
+                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO.get())), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.28D, ((double) this.random.nextFloat() - 0.3D) * 0.28D, ((double) this.random.nextFloat() - 0.5D) * 0.28D);
             }
         }
     }

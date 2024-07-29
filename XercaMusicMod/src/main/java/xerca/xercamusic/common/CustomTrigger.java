@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.advancements.CriterionTrigger.Listener;
-
 public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
 {
     private final ResourceLocation RL;
@@ -104,7 +102,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
          */
         public Instance(ResourceLocation parRL)
         {
-            super(parRL,  EntityPredicate.Composite.ANY);
+            super(parRL,  EntityPredicate.wrap(EntityPredicate.ANY));
         }
     }
 

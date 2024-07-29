@@ -1,14 +1,16 @@
-
 {
-    "type": "minecraft:smithing",
-    "base": {
-        "item": "xercamod:diamond_scythe"
-    },
-    "addition": {
-        "item": "minecraft:netherite_ingot"
-    },
-    "result": {
-        "item": "xercamod:netherite_scythe"
-    }
+  "type": "minecraft:smithing_transform",
+  "base": {
+    "item": "xercamod:diamond_scythe"
+  },
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "item": "xercamod:netherite_scythe"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
 }
         

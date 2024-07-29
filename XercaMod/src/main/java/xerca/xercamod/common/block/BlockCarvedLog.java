@@ -10,7 +10,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 
 public class BlockCarvedLog extends HorizontalDirectionalBlock {
     private boolean isNether;
@@ -19,7 +20,8 @@ public class BlockCarvedLog extends HorizontalDirectionalBlock {
         this(false);
     }
     public BlockCarvedLog(boolean isNether) {
-        this(Block.Properties.of(isNether ? Material.NETHER_WOOD : Material.WOOD).sound(isNether ? SoundType.STEM : SoundType.WOOD));
+        this(isNether ? Block.Properties.of().sound(SoundType.STEM).mapColor(MapColor.NETHER).instrument(NoteBlockInstrument.BASEDRUM) :
+                Block.Properties.of().sound(SoundType.WOOD).ignitedByLava().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS));
         this.isNether = isNether;
     }
     public BlockCarvedLog(BlockBehaviour.Properties properties) {

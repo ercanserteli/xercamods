@@ -9,16 +9,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CakeBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 class BlockSweetBerryPie extends CakeBlock {
     public BlockSweetBerryPie() {
-        super(Properties.of(Material.CAKE, DyeColor.ORANGE));
+        super(Properties.of().mapColor(DyeColor.ORANGE).sound(SoundType.HONEY_BLOCK).pushReaction(PushReaction.DESTROY));
     }
 
     @Override

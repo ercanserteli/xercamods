@@ -3,9 +3,6 @@ package xerca.xercamod.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,6 +16,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import xerca.xercamod.common.entity.EntityHook;
 
 import javax.annotation.Nonnull;
@@ -35,16 +34,16 @@ class RenderHook extends EntityRenderer<EntityHook> {
      * Renders the desired {@code T} type Entity.
      */
     @Override
-    public void render(EntityHook entity, float entityYaw, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn)
+    public void render(EntityHook entity, float entityYaw, float partialTicks, @NotNull PoseStack stack, @NotNull MultiBufferSource bufferIn, int packedLightIn)
     {
         Player player = entity.getAngler();
         if (player != null) {
-            matrixStackIn.pushPose();
-            matrixStackIn.pushPose();
-            matrixStackIn.scale(0.5F, 0.5F, 0.5F);
-            matrixStackIn.mulPose(this.entityRenderDispatcher.cameraOrientation());
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F));
-            PoseStack.Pose pose = matrixStackIn.last();
+            stack.pushPose();
+            stack.pushPose();
+            stack.scale(0.5F, 0.5F, 0.5F);
+            stack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+            stack.mulPose(Axis.YP.rotationDegrees(180.0F));
+            PoseStack.Pose pose = stack.last();
             Matrix4f matrix4f = pose.pose();
             Matrix3f matrix3f = pose.normal();
             VertexConsumer buffer = bufferIn.getBuffer(renderType);
@@ -52,7 +51,7 @@ class RenderHook extends EntityRenderer<EntityHook> {
             vertex(buffer, matrix4f, matrix3f, packedLightIn, 1.0F, 0, 1, 1);
             vertex(buffer, matrix4f, matrix3f, packedLightIn, 1.0F, 1, 1, 0);
             vertex(buffer, matrix4f, matrix3f, packedLightIn, 0.0F, 1, 0, 0);
-            matrixStackIn.popPose();
+            stack.popPose();
             int i = player.getMainArm() == HumanoidArm.RIGHT ? 1 : -1;
             ItemStack itemstack = player.getMainHandItem();
             if (!(itemstack.getItem() instanceof net.minecraft.world.item.FishingRodItem)) {
@@ -93,14 +92,14 @@ class RenderHook extends EntityRenderer<EntityHook> {
             float f5 = (float)(d5 - d10) + f3;
             float f6 = (float)(d6 - d8);
             VertexConsumer buffer1 = bufferIn.getBuffer(RenderType.lines());
-            PoseStack.Pose pose1 = matrixStackIn.last();
+            PoseStack.Pose pose1 = stack.last();
 
             for(int k = 0; k <= 16; ++k) {
                 stringVertex(f4, f5, f6, buffer1, pose1, floatDivision(k, 16), floatDivision(k + 1, 16));
             }
 
-            matrixStackIn.popPose();
-            super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+            stack.popPose();
+            super.render(entity, entityYaw, partialTicks, stack, bufferIn, packedLightIn);
         }
     }
 

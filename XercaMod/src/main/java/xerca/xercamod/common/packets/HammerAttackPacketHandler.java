@@ -1,18 +1,17 @@
 package xerca.xercamod.common.packets;
 
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamod.common.SoundEvents;
@@ -52,7 +51,7 @@ public class HammerAttackPacketHandler {
     }
 
     private static void processMessage(HammerAttackPacket msg, ServerPlayer pl) {
-        Entity target = pl.level.getEntity(msg.getTargetId());
+        Entity target = pl.level().getEntity(msg.getTargetId());
         if(target == null){
             return;
         }
@@ -71,7 +70,7 @@ public class HammerAttackPacketHandler {
             double bonusVelY = (uppercutLevel * 0.25) * pull;
 
             float pitch = (2.0f / (damage + heavyLevel));
-            pl.level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.HAMMER.get(), SoundSource.PLAYERS, 1.0f, pl.level.random.nextFloat() * 0.1F + 0.4F + pitch);
+            pl.level().playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), SoundEvents.HAMMER.get(), SoundSource.PLAYERS, 1.0f, pl.level().random.nextFloat() * 0.1F + 0.4F + pitch);
             st.hurtAndBreak(1, pl, (p) -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
             if(target instanceof LivingEntity targetLiving){
                 float enchantBonus = EnchantmentHelper.getDamageBonus(st, targetLiving.getMobType());
@@ -79,13 +78,13 @@ public class HammerAttackPacketHandler {
 
                 // Critical hit
                 boolean cooledAttack = pull > 0.9F;
-                boolean critical = cooledAttack && pl.fallDistance > 0.0F && !pl.isOnGround() && !pl.onClimbable() &&
+                boolean critical = cooledAttack && pl.fallDistance > 0.0F && !pl.onGround() && !pl.onClimbable() &&
                         !pl.isInWater() && !pl.hasEffect(MobEffects.BLINDNESS) && !pl.isPassenger() && !pl.isSprinting();
                 net.minecraftforge.event.entity.player.CriticalHitEvent hitResult = net.minecraftforge.common.ForgeHooks.getCriticalHit(pl, target, critical, critical ? 1.5F : 1.0F);
                 critical = hitResult != null;
                 if (critical) {
                     damage *= hitResult.getDamageModifier();
-                    pl.level.playSound(null, pl.getX(), pl.getY(), pl.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_CRIT, pl.getSoundSource(), 1.0F, 1.0F);
+                    pl.level().playSound(null, pl.getX(), pl.getY(), pl.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_CRIT, pl.getSoundSource(), 1.0F, 1.0F);
                     pl.crit(target);
                 }
 

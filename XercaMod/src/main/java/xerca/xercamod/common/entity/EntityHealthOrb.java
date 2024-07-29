@@ -77,11 +77,11 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
             this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.03D, 0.0D));
         }
 
-        if (this.level.getFluidState(this.blockPosition()).is(FluidTags.LAVA)) {
+        if (this.level().getFluidState(this.blockPosition()).is(FluidTags.LAVA)) {
             this.setDeltaMovement((this.random.nextFloat() - this.random.nextFloat()) * 0.2F, 0.2F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
         }
 
-        if (!this.level.noCollision(this.getBoundingBox())) {
+        if (!this.level().noCollision(this.getBoundingBox())) {
             this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D, this.getZ());
         }
 
@@ -104,13 +104,13 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
 
         this.move(MoverType.SELF, this.getDeltaMovement());
         float f = 0.98F;
-        if (this.onGround) {
+        if (this.onGround()) {
             BlockPos pos = new BlockPos((int) this.getX(), (int) (this.getY() - 1.0D), (int) this.getZ());
-            f = this.level.getBlockState(pos).getFriction(this.level, pos, this) * 0.98F;
+            f = this.level().getBlockState(pos).getFriction(this.level(), pos, this) * 0.98F;
         }
 
         this.setDeltaMovement(this.getDeltaMovement().multiply(f, 0.98D, f));
-        if (this.onGround) {
+        if (this.onGround()) {
             this.setDeltaMovement(this.getDeltaMovement().multiply(1.0D, -0.9D, 1.0D));
         }
 
@@ -128,16 +128,16 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
             }
             else{
                 if(donorPlayer != null){
-                    this.followingPlayer = this.level.getNearestPlayer(TargetingConditions.forNonCombat().range(5.0D), donorPlayer);
+                    this.followingPlayer = this.level().getNearestPlayer(TargetingConditions.forNonCombat().range(5.0D), donorPlayer);
                 }
                 else{
-                    this.followingPlayer = this.level.getNearestPlayer(this, 5.0D);
+                    this.followingPlayer = this.level().getNearestPlayer(this, 5.0D);
                 }
             }
         }
 
-        if (this.level instanceof ServerLevel) {
-            for(EntityHealthOrb healthOrb : this.level.getEntities(EntityTypeTest.forClass(EntityHealthOrb.class), this.getBoundingBox().inflate(0.5D), this::canMerge)) {
+        if (this.level() instanceof ServerLevel) {
+            for(EntityHealthOrb healthOrb : this.level().getEntities(EntityTypeTest.forClass(EntityHealthOrb.class), this.getBoundingBox().inflate(0.5D), this::canMerge)) {
                 this.merge(healthOrb);
             }
         }
@@ -192,7 +192,7 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public boolean hurt(@NotNull DamageSource source, float damage) {
-        if (this.level.isClientSide || this.isRemoved()) return false; //Forge: Fixes MC-53850
+        if (this.level().isClientSide || this.isRemoved()) return false; //Forge: Fixes MC-53850
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
@@ -221,13 +221,13 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
         int donorId = tag.getInt("DonorId");
         int attackerId = tag.getInt("AttackerId");
         if(donorId >= 0){
-            Entity donor = level.getEntity(donorId);
+            Entity donor = level().getEntity(donorId);
             if(donor instanceof Player playerDonor){
                 donorPlayer = playerDonor;
             }
         }
         if(attackerId >= 0){
-            Entity attacker = level.getEntity(attackerId);
+            Entity attacker = level().getEntity(attackerId);
             if(attacker instanceof Player playerAttacker){
                 attackingPlayer = playerAttacker;
             }
@@ -235,9 +235,9 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void playerTouch(@NotNull Player player) {
-        if (!this.level.isClientSide && !player.equals(donorPlayer) && (age > 80 || player.equals(attackingPlayer))) {
+        if (!this.level().isClientSide && !player.equals(donorPlayer) && (age > 80 || player.equals(attackingPlayer))) {
             if (player.takeXpDelay == 0) {
-                player.level.playSound(null, player, SoundEvents.ABSORB.get(), getSoundSource(), 1.0f, 0.8f + random.nextFloat()*0.4f);
+                player.level().playSound(null, player, SoundEvents.ABSORB.get(), getSoundSource(), 1.0f, 0.8f + random.nextFloat()*0.4f);
                 player.takeXpDelay = 1;
                 player.setHealth(player.getHealth() + 1);
 
@@ -274,14 +274,14 @@ public class EntityHealthOrb extends Entity implements IEntityAdditionalSpawnDat
     public void readSpawnData(FriendlyByteBuf additionalData) {
         int donorId = additionalData.readInt();
         if(donorId >= 0){
-            Entity donor = level.getEntity(donorId);
+            Entity donor = level().getEntity(donorId);
             if(donor instanceof Player playerDonor){
                 donorPlayer = playerDonor;
             }
         }
         int attackerId = additionalData.readInt();
         if(attackerId >= 0){
-            Entity attacker = level.getEntity(attackerId);
+            Entity attacker = level().getEntity(attackerId);
             if(attacker instanceof Player playerAttacker){
                 attackingPlayer = playerAttacker;
             }

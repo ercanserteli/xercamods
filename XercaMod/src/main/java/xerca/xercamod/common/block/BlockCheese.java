@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -30,8 +30,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamod.common.item.Items;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 class BlockCheese extends Block {
     public static final int MAX_BITES = 3;
@@ -45,7 +43,7 @@ class BlockCheese extends Block {
     };
 
     public BlockCheese() {
-        super(Properties.of(Material.CAKE, DyeColor.YELLOW).sound(SoundType.SLIME_BLOCK).strength(0.5F));
+        super(Properties.of().pushReaction(PushReaction.DESTROY).mapColor(DyeColor.YELLOW).sound(SoundType.SLIME_BLOCK).strength(0.5F));
     }
 
     @Override
@@ -132,7 +130,7 @@ class BlockCheese extends Block {
 
     @Override
     public boolean canSurvive(@NotNull BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
-        return levelReader.getBlockState(blockPos.below()).getMaterial().isSolid();
+        return levelReader.getBlockState(blockPos.below()).isSolid();
     }
 
     @Override

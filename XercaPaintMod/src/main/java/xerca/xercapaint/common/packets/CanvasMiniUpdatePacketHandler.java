@@ -34,7 +34,7 @@ public class CanvasMiniUpdatePacketHandler {
         Entity entityEasel = null;
 
         if(msg.getEaselId() > -1){
-            entityEasel = pl.level.getEntity(msg.getEaselId());
+            entityEasel = pl.level().getEntity(msg.getEaselId());
             if(entityEasel == null){
                 XercaPaint.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: " + msg.getEaselId());
                 return;
