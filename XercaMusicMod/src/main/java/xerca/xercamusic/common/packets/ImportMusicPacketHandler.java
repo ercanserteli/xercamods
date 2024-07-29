@@ -6,13 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.network.NetworkEvent;
-import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
@@ -53,7 +50,7 @@ public class ImportMusicPacketHandler {
         } catch (IOException | ImportMusicSendPacket.NotesTooLargeException | NullPointerException e) {
             e.printStackTrace();
             if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("import.fail.4", filepath).withStyle(ChatFormatting.RED));
+                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("xercamusic.import.fail.4", filepath).withStyle(ChatFormatting.RED));
             }
         }
     }

@@ -22,6 +22,6 @@
   "canvas.generation.1": "Kopya",
   "canvas.generation.2": "Korsan",
 
-  "export.success": "Resim dışa aktarıldı: %1$s",
-  "import.success": "Resim içe aktarıldı"
+  "xercapaint.export.success": "Resim dışa aktarıldı: %1$s",
+  "xercapaint.import.success": "Resim içe aktarıldı"
 }

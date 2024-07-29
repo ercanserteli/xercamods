@@ -21,6 +21,7 @@ import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
+import xerca.xercamusic.common.item.ItemBlockInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -58,7 +59,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
 
     public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, IItemInstrument instrument) {
         this(worldIn, body, instrument);
-        setBlockPosAndInstrument(blockInsPos);
+        setBlockPosAndInstrument(blockInsPos, instrument.getInstrumentId());
     }
 
     public EntityMusicSpirit(EntityType<EntityMusicSpirit> type, Level world) {
@@ -69,19 +70,20 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         this(world);
     }
 
-    private void setBlockPosAndInstrument(BlockPos pos){
-        this.blockInsPos = pos;
-        Block block = level.getBlockState(blockInsPos).getBlock();
+    private void setBlockPosAndInstrument(BlockPos pos, int instrumentId){
+        if (instrumentId < Items.instruments.length) {
+            IItemInstrument instrument = Items.instruments[instrumentId];
+            if (instrument instanceof ItemBlockInstrument itemBlockInstrument) {
+                this.blockInstrument = (BlockInstrument) itemBlockInstrument.getBlock();
+                this.blockInsPos = pos;
+                setPos((double)pos.getX()+0.5, (double)pos.getY()-0.5, (double)pos.getZ()+0.5);
+                return;
+            }
+        }
 
-        if(block instanceof BlockInstrument) {
-            blockInstrument = (BlockInstrument)block;
-            setPos((double)blockInsPos.getX()+0.5, (double)blockInsPos.getY()-0.5, (double)blockInsPos.getZ()+0.5);
-        }
-        else{
-            XercaMusic.LOGGER.warn("Got invalid block as instrument");
-            blockInstrument = null;
-            blockInsPos = null;
-        }
+        XercaMusic.LOGGER.warn("Got invalid block as instrument");
+        blockInstrument = null;
+        blockInsPos = null;
     }
 
     private boolean isBodyHandLegit(){
@@ -116,8 +118,8 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         this.mBPS = tag.getByte("bps");
         this.mVolume = tag.getFloat("vol");
         this.isPlaying = tag.getBoolean("playing");
-        if(tag.contains("bX") && tag.contains("bY") && tag.contains("bZ")){
-            setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")));
+        if(tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")){
+            setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")), tag.getInt("bIns"));
         }
     }
 
@@ -132,6 +134,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             tag.putInt("bX", blockInsPos.getX());
             tag.putInt("bY", blockInsPos.getY());
             tag.putInt("bZ", blockInsPos.getZ());
+            tag.putInt("bIns", blockInstrument.getItemInstrument().getInstrumentId());
         }
     }
 
@@ -147,10 +150,12 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             buffer.writeInt(blockInsPos.getX());
             buffer.writeInt(blockInsPos.getY());
             buffer.writeInt(blockInsPos.getZ());
+            buffer.writeInt(blockInstrument.getItemInstrument().getInstrumentId());
         }
         else{
             buffer.writeInt(-1);
             buffer.writeInt(-1000);
+            buffer.writeInt(-1);
             buffer.writeInt(-1);
         }
     }
@@ -166,8 +171,9 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         int bx = buffer.readInt();
         int by = buffer.readInt();
         int bz = buffer.readInt();
+        int bIns = buffer.readInt();
         if(by > -1000){
-            setBlockPosAndInstrument(new BlockPos(bx, by ,bz));
+            setBlockPosAndInstrument(new BlockPos(bx, by ,bz), bIns);
         }
 
         if(blockInsPos != null){
