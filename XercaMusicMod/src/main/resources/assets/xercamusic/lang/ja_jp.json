@@ -105,9 +105,10 @@
 
   "ins.octaveTooltip": "キーボードのオクターブを変更する",
 
-  "export.success": "楽譜が%1$sに書き出されました",
-  "export.fail": "楽譜を書き出すことができませんでした",
-  "import.success": "楽譜を読み込みました",
-  "import.fail.1": "サバイバルモードで楽譜を読み込むには、利き手に空の楽譜アイテムがある必要があります",
-  "import.fail.4": "コマンドを解釈できなかったか、楽譜ファイル（%1$s）を読み取れませんでした"
+  "xercamusic.export.success": "楽譜が%1$sに書き出されました",
+  "xercamusic.export.fail": "楽譜を書き出すことができませんでした",
+  "xercamusic.import.success": "楽譜を読み込みました",
+  "xercamusic.import.fail.1": "サバイバルモードで楽譜を読み込むには、利き手に空の楽譜アイテムがある必要があります",
+  "xercamusic.import.fail.4": "コマンドを解釈できなかったか、楽譜ファイル（%1$s）を読み取れませんでした",
+  "xercamusic.import.fail.5": "楽譜ファイルが壊れています"
 }

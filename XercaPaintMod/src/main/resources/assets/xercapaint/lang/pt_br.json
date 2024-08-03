@@ -29,6 +29,7 @@
   "xercapaint.import.fail.2": "Seu Canvas deve estar no tamanho correto para importar essa pintura no modo sobrevivência (%1$s)",
   "xercapaint.import.fail.3": "Você dever ter uma Paleta com todas as cores basicas na sua mão secundaria para importar uma pintura no modo sobrevivência.",
   "xercapaint.import.fail.4": "Não foi possível executar o comando ou ler o arquivo de pintura! (%1$s)",
+  "xercapaint.import.fail.5": "O arquivo de pintura está quebrado",
 
   "easel.deny": "Alguém já esta pintando nesta pintura no momento."
 }

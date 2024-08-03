@@ -1,5 +1,5 @@
 {
-  "itemGroup.xercapaint.paint_tab": "Картина",
+  "item_group.xercapaint.paint_tab": "Картина",
 
   "item.xercapaint.item_palette": "Палитра",
   "item.xercapaint.item_canvas": "Холст",
@@ -29,6 +29,7 @@
   "xercapaint.import.fail.2": "Ваш холст должен быть подходящего размера, чтобы импортировать эту картину (%1$s)",
   "xercapaint.import.fail.3": "Чтобы импортировать картину, в дополнительной руке у вас должна быть палитра со всеми основными цветами",
   "xercapaint.import.fail.4": "Не удалось проанализировать команду или прочитать файл картины (%1$s)",
+  "xercapaint.import.fail.5": "Файл с картинкой сломан",
 
   "easel.deny": "Кто-то уже работает над этой картиной"
 }

@@ -105,9 +105,10 @@
 
   "ins.octaveTooltip": "Ändra tangentbordets oktav",
 
-  "export.success": "Notblad exporterades till %1$s",
-  "export.fail": "Kunde inte exportera notblad",
-  "import.success": "Notblad importerades",
-  "import.fail.1": "Man måste ha ett tomt notblad i sin primära hand för att kunna importera ett notblad i överlevnadsläge",
-  "import.fail.4": "Kunde inte tolka kommandot eller läsa notbladsfilen (%1$s)"
+  "xercamusic.export.success": "Notblad exporterades till %1$s",
+  "xercamusic.export.fail": "Kunde inte exportera notblad",
+  "xercamusic.import.success": "Notblad importerades",
+  "xercamusic.import.fail.1": "Man måste ha ett tomt notblad i sin primära hand för att kunna importera ett notblad i överlevnadsläge",
+  "xercamusic.import.fail.4": "Kunde inte tolka kommandot eller läsa notbladsfilen (%1$s)",
+  "xercamusic.import.fail.5": "Notbladsfilen är trasig"
 }
