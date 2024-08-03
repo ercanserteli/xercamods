@@ -1,5 +1,5 @@
 {
-  "item_group.xercamusic.music_tab": "Tónlist",
+  "itemGroup.xercamusic.music_tab": "Tónlist",
 
   "item.xercamusic.instrument_gui": "Hljóðfæri",
   "item.xercamusic.music_sheet": "Nótnablöð",
@@ -105,9 +105,10 @@
 
   "ins.octaveTooltip": "Breyt áttund lyklaborðsins",
 
-  "export.success": "Nótnablað flutt út til %1$s",
-  "export.fail": "Ekki tókst að flytja nótnablað út",
-  "import.success": "Nótnablað flutt inn",
-  "import.fail.1": "Þú verður að hafa tómt nótnablað í aðalhöndinni til að flytja inn nótnablað í lifunarham",
-  "import.fail.4": "Gat ekki unnið úr skipun eða lesið skrána á nótnablaðinu (%1$s)"
+  "xercamusic.export.success": "Nótnablað flutt út til %1$s",
+  "xercamusic.export.fail": "Ekki tókst að flytja nótnablað út",
+  "xercamusic.import.success": "Nótnablað flutt inn",
+  "xercamusic.import.fail.1": "Þú verður að hafa tómt nótnablað í aðalhöndinni til að flytja inn nótnablað í lifunarham",
+  "xercamusic.import.fail.4": "Gat ekki unnið úr skipun eða lesið skrána á nótnablaðinu (%1$s)",
+  "xercamusic.import.fail.5": "Nótnablað er bilað"
 }

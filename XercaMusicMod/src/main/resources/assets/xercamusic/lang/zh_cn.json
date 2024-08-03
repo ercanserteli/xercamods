@@ -104,9 +104,10 @@
 
   "ins.octaveTooltip": "切换键盘所对应的八度音阶",
 
-  "export.success": "乐谱已导出至%1$s",
-  "export.fail": "导出乐谱失败",
-  "import.success": "乐谱已导入",
-  "import.fail.1": "生存模式下必须主手持空白乐谱以导入",
-  "import.fail.4": "分析命令或读取乐谱（%1$s）错误"
+  "xercamusic.export.success": "乐谱已导出至%1$s",
+  "xercamusic.export.fail": "导出乐谱失败",
+  "xercamusic.import.success": "乐谱已导入",
+  "xercamusic.import.fail.1": "生存模式下必须主手持空白乐谱以导入",
+  "xercamusic.import.fail.4": "分析命令或读取乐谱（%1$s）错误",
+  "xercamusic.import.fail.5": "乐谱文件已损坏"
 }
