@@ -108,7 +108,7 @@ public class MusicManagerClient {
         try {
             NbtIo.writeCompressed(tag, new File(filepath));
         } catch (IOException e) {
-            XercaMusic.LOGGER.warn("Could not write music data to cache file: " + filepath);
+            XercaMusic.LOGGER.warn("Could not write music data to cache file: {}", filepath);
             e.printStackTrace();
         }
 

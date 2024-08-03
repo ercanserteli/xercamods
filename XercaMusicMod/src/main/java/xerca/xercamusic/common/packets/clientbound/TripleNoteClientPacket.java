@@ -52,7 +52,7 @@ public class TripleNoteClientPacket implements IPacket {
             result.entity = level.getEntity(entityId);
             result.instrumentItem = Items.instruments[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: " + ioe);
+            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: {}", ioe);
             return null;
         }
         result.messageIsValid = true;

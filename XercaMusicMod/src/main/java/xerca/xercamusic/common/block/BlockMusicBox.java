@@ -2,6 +2,8 @@ package xerca.xercamusic.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -28,6 +30,7 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
@@ -125,7 +128,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
             ((TileEntityMusicBox) blockEntity).setInstrument(instrument);
             worldIn.setBlock(pos, state.setValue(HAS_INSTRUMENT, Boolean.TRUE), 3);
         }
-        worldIn.levelEvent(null, 1012, pos, 0); // play door close sound
+        worldIn.playSound(null, pos, SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 1.0F, worldIn.getRandom().nextFloat() * 0.1F + 0.9F);
     }
 
     @Override
@@ -141,7 +144,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
             if(heldItem.getItem() == Items.MUSIC_SHEET && !state.getValue(HAS_MUSIC)){
                 return InteractionResult.PASS;
             }
-            worldIn.levelEvent(null, 1006, pos, 0); //play door open sound
+            worldIn.playSound(player, pos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1.0F, worldIn.getRandom().nextFloat() * 0.1F + 0.9F);
             ejectItem(worldIn, pos, state, false, false);
             return InteractionResult.SUCCESS;
         }

@@ -15,11 +15,11 @@ public class EaselLeftPacketHandler implements ServerPlayNetworking.PlayChannelH
         if(msg.getEaselId() > -1){
             Entity entityEasel = pl.level().getEntity(msg.getEaselId());
             if(entityEasel == null){
-                Mod.LOGGER.error("EaselLeftPacket: Easel entity not found! easelId: " + msg.getEaselId());
+                Mod.LOGGER.error("EaselLeftPacket: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
             if(!(entityEasel instanceof EntityEasel easel)){
-                Mod.LOGGER.error("EaselLeftPacket: Entity found is not an easel! easelId: " + msg.getEaselId());
+                Mod.LOGGER.error("EaselLeftPacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
             easel.setPainter(null);

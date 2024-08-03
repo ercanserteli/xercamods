@@ -31,7 +31,7 @@ public class CommandImport {
     }
 
     private static int musicImport(CommandSourceStack stack, String name){
-        XercaMusic.LOGGER.debug("Music import called. name: " + name);
+        XercaMusic.LOGGER.debug("Music import called. name: {}", name);
 
         ImportMusicPacket pack = new ImportMusicPacket(name);
         try {

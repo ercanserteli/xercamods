@@ -26,7 +26,7 @@ public class CommandImport {
     }
 
     private static int paintImport(CommandSourceStack stack, String name){
-        Mod.LOGGER.debug("Paint import called. name: " + name);
+        Mod.LOGGER.debug("Paint import called. name: {}", name);
 
         ImportPaintingPacket pack = new ImportPaintingPacket(name);
         try {
