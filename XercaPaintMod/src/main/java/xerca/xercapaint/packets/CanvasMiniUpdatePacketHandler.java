@@ -23,11 +23,11 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
         if(msg.getEaselId() > -1){
             entityEasel = pl.level().getEntity(msg.getEaselId());
             if(entityEasel == null){
-                Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: " + msg.getEaselId());
+                Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
             if(!(entityEasel instanceof EntityEasel easel)){
-                Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: " + msg.getEaselId());
+                Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
             canvas = easel.getItem();
@@ -56,7 +56,7 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
                 easel.setItem(canvas, false);
             }
 
-            Mod.LOGGER.debug("Handling canvas update: Name: " + msg.getName() + " V: " + msg.getVersion());
+            Mod.LOGGER.debug("Handling canvas update: Name: {} V: {}", msg.getName(), msg.getVersion());
         }
     }
 

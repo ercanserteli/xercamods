@@ -134,7 +134,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             }
             if(loaded || !started){
                 if(pixels.length < height*width){
-                    Mod.LOGGER.warn("Pixels array length (" + pixels.length + ") is smaller than canvas area (" + height*width + ")");
+                    Mod.LOGGER.warn("Pixels array length ({}) is smaller than canvas area ({})", pixels.length, height * width);
                     return;
                 }
 

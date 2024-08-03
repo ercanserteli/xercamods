@@ -32,7 +32,7 @@ public class NotesPartAckFromServerPacket implements IPacket {
         try {
             result.id = buf.readUUID();
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading NotesPartAckFromServerPacket: " + ioe);
+            XercaMusic.LOGGER.error("Exception while reading NotesPartAckFromServerPacket: {}", ioe);
             return null;
         }
         result.messageIsValid = true;

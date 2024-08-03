@@ -27,7 +27,7 @@ public class CommandExport {
     }
 
     private static int paintExport(CommandSourceStack stack, String name){
-        Mod.LOGGER.debug("Paint export called. name: " + name);
+        Mod.LOGGER.debug("Paint export called. name: {}", name);
         if(stack.getEntity() == null){
             Mod.LOGGER.error("Command entity is not found");
             return 0;

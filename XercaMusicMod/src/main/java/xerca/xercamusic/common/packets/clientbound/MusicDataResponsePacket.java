@@ -38,7 +38,7 @@ public class MusicDataResponsePacket implements IPacket {
                 result.notes.add(NoteEvent.fromBuffer(buf));
             }
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket: " + ioe);
+            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket: {}", ioe);
             return null;
         }
         result.messageIsValid = true;
