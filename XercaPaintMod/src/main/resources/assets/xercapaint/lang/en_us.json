@@ -29,6 +29,7 @@
   "xercapaint.import.fail.2": "Your canvas must be the correct size to import this painting in survival mode (%1$s)",
   "xercapaint.import.fail.3": "You must have a palette with all basic colors on your off-hand to import a painting in survival mode",
   "xercapaint.import.fail.4": "Could not parse command or read the painting file (%1$s)",
+  "xercapaint.import.fail.5": "Painting file is broken",
 
   "easel.deny": "Someone else is working on this painting right now"
 }
