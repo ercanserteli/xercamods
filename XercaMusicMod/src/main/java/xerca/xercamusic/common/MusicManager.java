@@ -130,19 +130,22 @@ public class MusicManager {
     }
 
     public static class TempNotesBuffer {
-        int partsCount;
-        boolean[] finishedParts;
-        List<NoteEvent>[] notesParts;
+        final int partsCount;
+        final boolean[] finishedParts;
+        final List<List<NoteEvent>> notesParts;
 
         public TempNotesBuffer(int partsCount) {
             this.partsCount = partsCount;
             finishedParts = new boolean[partsCount];
-            notesParts = new ArrayList[partsCount];
+            notesParts = new ArrayList<>(partsCount);
+            for (int i = 0; i < partsCount; i++) {
+                notesParts.add(new ArrayList<>());
+            }
         }
 
         public void addPart(int partId, List<NoteEvent> part) {
             if(partId < partsCount && partId >= 0){
-                notesParts[partId] = part;
+                notesParts.set(partId, part);
                 finishedParts[partId] = true;
             }
         }
@@ -163,5 +166,5 @@ public class MusicManager {
             return notes;
         }
     }
-    public static Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
+    public static final Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
 }

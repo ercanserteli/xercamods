@@ -132,6 +132,9 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public void init() {
+        if(minecraft == null){
+            return;
+        }
         canvasX = canvasXs[canvasType.ordinal()];
         canvasY = canvasYs[canvasType.ordinal()];
         paletteX = paletteXs[canvasType.ordinal()];

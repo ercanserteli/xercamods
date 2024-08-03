@@ -63,7 +63,7 @@ public class TileEntityMetronome extends BlockEntity {
                             List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange), metronome.worldPosition.offset(halfRange)),
                                     player -> player.getMainHandItem().getItem() instanceof IItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
                                             && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag() != null && player.getOffhandItem().getTag().getInt("bps") == bps);
-                            XercaMusic.LOGGER.info("Metronome found " + players.size() + " players");
+                            XercaMusic.LOGGER.info("Metronome found {} players", players.size());
                             for(Player player : players){
                                 IItemInstrument.playMusic(level, player, false);
                             }

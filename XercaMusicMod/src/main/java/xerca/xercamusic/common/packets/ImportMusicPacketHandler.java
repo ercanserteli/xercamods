@@ -31,7 +31,7 @@ public class ImportMusicPacketHandler {
         try {
             CompoundTag tag = NbtIo.read(new File(filepath));
             if (tag == null) {
-                throw new NullPointerException("Tag is null");
+                throw new IOException("File not found!");
             }
             try {
                 ImportMusicSendPacket pack = new ImportMusicSendPacket(tag);

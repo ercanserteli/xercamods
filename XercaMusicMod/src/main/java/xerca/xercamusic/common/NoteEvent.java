@@ -95,6 +95,7 @@ public class NoteEvent implements INBTSerializable<CompoundTag> {
         return ((float)volume)/127.0f;
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public NoteEvent clone() {
         return new NoteEvent(note, time, volume, length);

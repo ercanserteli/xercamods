@@ -47,7 +47,7 @@ public class MusicBoxUpdatePacket {
             result.noteStackNBT = buf.readNbt();
             result.instrumentId = buf.readUtf(255);
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicBoxUpdatePacket: " + ioe);
+            XercaMusic.LOGGER.error("Exception while reading MusicBoxUpdatePacket: {}", ioe.toString());
             return null;
         }
         result.messageIsValid = true;

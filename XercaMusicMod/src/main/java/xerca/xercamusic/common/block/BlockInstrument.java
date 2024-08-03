@@ -22,8 +22,6 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class BlockInstrument extends Block {
@@ -57,7 +55,7 @@ public abstract class BlockInstrument extends Block {
 
     private void playMusic(Level worldIn, Player playerIn, BlockPos pos){
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
-        if(musicSpirits.size() == 0){
+        if(musicSpirits.isEmpty()){
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, pos, getItemInstrument()));
         }
         else {

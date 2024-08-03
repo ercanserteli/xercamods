@@ -27,8 +27,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     private ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> sounds;
     private IItemInstrument.InsSound[] insSounds;
@@ -152,7 +150,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
         if(id >= 0 && id < totalNotes) {
             return insSounds[id];
         }
-        XercaMusic.LOGGER.warn("Requested invalid note from Instrument getSound: " + note);
+        XercaMusic.LOGGER.warn("Requested invalid note from Instrument getSound: {}", note);
         return null;
     }
 }

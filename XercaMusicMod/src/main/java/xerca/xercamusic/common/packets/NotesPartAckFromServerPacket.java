@@ -1,10 +1,8 @@
 package xerca.xercamusic.common.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
-import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class NotesPartAckFromServerPacket {
@@ -28,7 +26,7 @@ public class NotesPartAckFromServerPacket {
         try {
             result.id = buf.readUUID();
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading NotesPartAckFromServerPacket: " + ioe);
+            XercaMusic.LOGGER.error("Exception while reading NotesPartAckFromServerPacket: {}", ioe.toString());
             return null;
         }
         result.messageIsValid = true;
