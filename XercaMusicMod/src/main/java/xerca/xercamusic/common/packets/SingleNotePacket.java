@@ -38,7 +38,7 @@ public class SingleNotePacket {
             }
             result.instrumentItem = Items.instruments[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: " + ioe);
+            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: {}", ioe.toString());
             return null;
         }
         result.messageIsValid = true;

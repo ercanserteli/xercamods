@@ -28,7 +28,7 @@ public class CommandImport {
     }
 
     private static int paintImport(CommandSourceStack stack, String name){
-        XercaPaint.LOGGER.debug("Paint import called. name: " + name);
+        XercaPaint.LOGGER.debug("Paint import called. name: {}", name);
 
         ImportPaintingPacket pack = new ImportPaintingPacket(name);
         try {

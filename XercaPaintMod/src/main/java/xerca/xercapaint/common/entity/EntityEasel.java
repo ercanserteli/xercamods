@@ -62,10 +62,12 @@ public class EntityEasel extends Entity {
         this.painter = painter;
     }
 
+    @Override
     public boolean isPushable() {
         return false;
     }
 
+    @Override
     public boolean hurt(@NotNull DamageSource damageSource, float pAmount) {
         if (!this.getCommandSenderWorld().isClientSide && !this.isRemoved()) {
             if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
@@ -85,6 +87,7 @@ public class EntityEasel extends Entity {
         }
     }
 
+    @Override
     public void kill() {
         showBreakingParticles();
         this.remove(Entity.RemovalReason.KILLED);
@@ -159,12 +162,15 @@ public class EntityEasel extends Entity {
         }
     }
 
+    @Override
     public @NotNull SlotAccess getSlot(int i) {
         return i == 0 ? new SlotAccess() {
+            @Override
             public @NotNull ItemStack get() {
                 return EntityEasel.this.getItem();
             }
 
+            @Override
             public boolean set(@NotNull ItemStack itemStack) {
                 EntityEasel.this.setItem(itemStack);
                 return true;
@@ -177,6 +183,7 @@ public class EntityEasel extends Entity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
+    @Override
     public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> accessor) {
         super.onSyncedDataUpdated(accessor);
         if (accessor.equals(DATA_CANVAS)) {
@@ -187,12 +194,14 @@ public class EntityEasel extends Entity {
         }
     }
 
+    @Override
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         if (!this.getItem().isEmpty()) {
             tag.put("Item", this.getItem().save(new CompoundTag()));
         }
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         CompoundTag itemTag = tag.getCompound("Item");
         if (!itemTag.isEmpty()) {
@@ -204,6 +213,7 @@ public class EntityEasel extends Entity {
         }
     }
 
+    @Override
     public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
         boolean isEaselFilled = !this.getItem().isEmpty();
@@ -237,11 +247,13 @@ public class EntityEasel extends Entity {
         return new ItemStack(Items.ITEM_EASEL.get());
     }
 
+    @Override
     public ItemStack getPickResult() {
         ItemStack canvas = this.getItem();
         return canvas.isEmpty() ? this.getEaselItemStack() : canvas.copy();
     }
 
+    @Override
     public void tick() {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));

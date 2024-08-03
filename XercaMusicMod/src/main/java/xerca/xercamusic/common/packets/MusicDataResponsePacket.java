@@ -43,7 +43,7 @@ public class MusicDataResponsePacket {
                 result.notes.add(NoteEvent.fromBuffer(buf));
             }
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket: " + ioe);
+            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket: {}", ioe.toString());
             return null;
         }
         result.messageIsValid = true;

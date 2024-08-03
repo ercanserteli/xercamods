@@ -3,7 +3,6 @@ package xerca.xercamusic.common.packets;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
-import xerca.xercamusic.common.CommandImport;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.XercaMusic;
 

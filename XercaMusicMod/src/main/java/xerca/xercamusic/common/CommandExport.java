@@ -30,7 +30,7 @@ public class CommandExport {
     }
 
     private static int musicExport(CommandSourceStack stack, String name){
-        XercaMusic.LOGGER.debug("Music export called. name: " + name);
+        XercaMusic.LOGGER.debug("Music export called. name: {}", name);
         if(stack.getEntity() == null){
             XercaMusic.LOGGER.error("Command entity is not found");
             return 0;

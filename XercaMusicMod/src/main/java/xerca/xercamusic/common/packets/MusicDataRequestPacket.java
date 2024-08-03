@@ -25,7 +25,7 @@ public class MusicDataRequestPacket {
             result.id = buf.readUUID();
             result.version = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket: " + ioe);
+            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket: {}", ioe.toString());
             return null;
         }
         result.messageIsValid = true;

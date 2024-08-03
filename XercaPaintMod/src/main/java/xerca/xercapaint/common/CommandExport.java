@@ -28,7 +28,7 @@ public class CommandExport {
     }
 
     private static int paintExport(CommandSourceStack stack, String name){
-        XercaPaint.LOGGER.debug("Paint export called. name: " + name);
+        XercaPaint.LOGGER.debug("Paint export called. name: {}", name);
         if(stack.getEntity() == null){
             XercaPaint.LOGGER.error("Command entity is not found");
             return 0;

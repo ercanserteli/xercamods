@@ -2,10 +2,7 @@ package xerca.xercamusic.common.packets;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.PacketDistributor;
-import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -80,10 +77,6 @@ public class ImportMusicSendPacket {
         return notes;
     }
 
-    public void deleteNotes() {
-        this.notes = null;
-    }
-
     public boolean isMessageValid() {
         return messageIsValid;
     }
@@ -93,8 +86,8 @@ public class ImportMusicSendPacket {
     }
 
     public static class NotesTooLargeException extends Exception {
-        public ArrayList<NoteEvent> notes;
-        public UUID id;
+        public final ArrayList<NoteEvent> notes;
+        public final UUID id;
 
         public NotesTooLargeException(ArrayList<NoteEvent> notes, UUID id) {
             this.notes = notes;

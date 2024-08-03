@@ -242,14 +242,14 @@ public class GuiMusicSheet extends Screen {
     private void startSound(int noteId, byte volume) {
         //TEMP
         if(noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
-            XercaMusic.LOGGER.warn("Key pushed twice noteId: " + noteId + " vol: " + volume);
+            XercaMusic.LOGGER.warn("Key pushed twice noteId: {} vol: {}", noteId, volume);
         }
         if(noteId >= 0 && noteId < buttonPushStates.length && !buttonPushStates[noteId]) {
             buttonPushStates[noteId] = true;
             int note = IItemInstrument.idToNote(noteId);
             for(NoteEvent noteEvent : recordingNotes){
                 if(noteEvent.note == note){
-                    XercaMusic.LOGGER.warn("Existing note pushed? " + noteId + " vol: " + volume);
+                    XercaMusic.LOGGER.warn("Existing note pushed? {} vol: {}", noteId, volume);
                     return;
                 }
             }
@@ -263,7 +263,7 @@ public class GuiMusicSheet extends Screen {
                 noteSound = Items.HARP_MC.get().getSound(note);
             }
             if(noteSound == null){
-                XercaMusic.LOGGER.warn("noteSound not found - noteId: " + noteId + " vol: " + volume);
+                XercaMusic.LOGGER.warn("noteSound not found - noteId: {} vol: {}", noteId, volume);
                 return;
             }
             notePlaySounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), ((float)volume)/128.f, noteSound.pitch));
@@ -591,7 +591,7 @@ public class GuiMusicSheet extends Screen {
 
     private NoteSound playSound(NoteEvent event, int previewInstrument, float sheetVolume){
         if(event.note < IItemInstrument.minNote || event.note > IItemInstrument.maxNote){
-            XercaMusic.LOGGER.warn("Note is invalid: " + event.note);
+            XercaMusic.LOGGER.warn("Note is invalid: {}", event.note);
             return null;
         }
 
@@ -1390,7 +1390,7 @@ public class GuiMusicSheet extends Screen {
                 // Check if all values are valid
                 for (byte b : byteArray) {
                     if (b < 0 || b > 48) {
-                        XercaMusic.LOGGER.info("User tried to copy invalid data into music: " + b);
+                        XercaMusic.LOGGER.info("User tried to copy invalid data into music: {}", b);
                         return;
                     }
                 }

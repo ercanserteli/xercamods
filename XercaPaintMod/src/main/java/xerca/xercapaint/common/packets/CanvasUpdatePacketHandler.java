@@ -39,11 +39,11 @@ public class CanvasUpdatePacketHandler {
         if(msg.getEaselId() > -1){
             entityEasel = pl.level().getEntity(msg.getEaselId());
             if(entityEasel == null){
-                XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: " + msg.getEaselId());
+                XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
             if(!(entityEasel instanceof EntityEasel easel)){
-                XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: " + msg.getEaselId());
+                XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
             canvas = easel.getItem();
@@ -95,7 +95,7 @@ public class CanvasUpdatePacketHandler {
                 easel.setPainter(null);
             }
 
-            XercaPaint.LOGGER.debug("Handling canvas update: Name: " + msg.getName() + " V: " + msg.getVersion());
+            XercaPaint.LOGGER.debug("Handling canvas update: Name: {} V: {}", msg.getName(), msg.getVersion());
         }
     }
 }

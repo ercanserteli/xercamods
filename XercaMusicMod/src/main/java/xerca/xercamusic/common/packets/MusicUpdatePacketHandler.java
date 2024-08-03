@@ -7,7 +7,6 @@ import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;

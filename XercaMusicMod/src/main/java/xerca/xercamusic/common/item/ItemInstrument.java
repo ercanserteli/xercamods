@@ -25,8 +25,6 @@ import xerca.xercamusic.common.packets.TripleNoteClientPacket;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class ItemInstrument extends Item implements IItemInstrument {
     private ArrayList<Pair<Integer, SoundEvent>> sounds;
     private InsSound[] insSounds;
@@ -141,7 +139,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
         if(id >= 0 && id < totalNotes) {
             return insSounds[id];
         }
-        XercaMusic.LOGGER.warn("Requested invalid note from Instrument getSound: " + note);
+        XercaMusic.LOGGER.warn("Requested invalid note from Instrument getSound: {}", note);
         return null;
     }
 
