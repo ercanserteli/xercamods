@@ -42,6 +42,34 @@ public class CommandImport {
     }
 
     public static void doImport(CompoundTag tag, ServerPlayer player){
+        // Sanitizing
+        if (!tag.contains("name", 8)) {
+            player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
+            Mod.LOGGER.warn("Broken paint file");
+            return;
+        }
+        String name = tag.getString("name");
+        if (!name.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_[0-9]+$")) {
+            player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
+            Mod.LOGGER.warn("Broken paint file");
+            return;
+        }
+        if ((tag.contains("author", 8) && !tag.contains("title", 8)) ||
+                (!tag.contains("author", 8) && tag.contains("title", 8))) {
+            player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
+            Mod.LOGGER.warn("Broken paint file");
+            return;
+        }
+        if (tag.contains("title", 8) && tag.getString("title").length() > 16) {
+            tag.putString("title", tag.getString("title").substring(0, 16));
+        }
+        if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
+            tag.putString("author", tag.getString("author").substring(0, 16));
+        }
+        if (!tag.contains("v", 3)) {
+            tag.putInt("v", 1);
+        }
+
         byte canvasType = tag.getByte("ct");
         tag.remove("ct");
         if(tag.getInt("generation") > 0){
@@ -50,13 +78,18 @@ public class CommandImport {
 
         if(player.isCreative()){
             ItemStack itemStack;
-            switch (CanvasType.fromByte(canvasType)){
+            CanvasType type = CanvasType.fromByte(canvasType);
+            if (type == null) {
+                Mod.LOGGER.error("Invalid canvas type");
+                return;
+            }
+            switch (type){
                 case SMALL -> itemStack = new ItemStack(Items.ITEM_CANVAS);
                 case LONG -> itemStack = new ItemStack(Items.ITEM_CANVAS_LONG);
                 case TALL -> itemStack = new ItemStack(Items.ITEM_CANVAS_TALL);
                 case LARGE -> itemStack = new ItemStack(Items.ITEM_CANVAS_LARGE);
                 default -> {
-                    Mod.LOGGER.error("Invalid canvas type");
+                    Mod.LOGGER.error("Unknown canvas type");
                     return;
                 }
             }
@@ -72,13 +105,17 @@ public class CommandImport {
                 return;
             }
             if(((ItemCanvas)mainhand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
-                Component type = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
-                switch (CanvasType.fromByte(canvasType)){
-                    case LONG -> type = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
-                    case TALL -> type = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
-                    case LARGE -> type = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
+                Component typeName = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
+                CanvasType type = CanvasType.fromByte(canvasType);
+                if (type == null) {
+                    return;
                 }
-                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", type).withStyle(ChatFormatting.RED));
+                switch (type){
+                    case LONG -> typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
+                    case TALL -> typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
+                    case LARGE -> typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
+                }
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", typeName).withStyle(ChatFormatting.RED));
                 return;
             }
             if(!ItemPalette.isFull(offhand)){

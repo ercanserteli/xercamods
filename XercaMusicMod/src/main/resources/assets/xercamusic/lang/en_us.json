@@ -105,9 +105,10 @@
 
   "ins.octaveTooltip": "Change keyboard octave",
 
-  "export.success": "Music sheet exported to %1$s",
-  "export.fail": "Could not export music sheet",
-  "import.success": "Music sheet imported",
-  "import.fail.1": "You must have an empty music sheet item on your main-hand to import a music sheet in survival mode",
-  "import.fail.4": "Could not parse command or read the music sheet file (%1$s)"
+  "xercamusic.export.success": "Music sheet exported to %1$s",
+  "xercamusic.export.fail": "Could not export music sheet",
+  "xercamusic.import.success": "Music sheet imported",
+  "xercamusic.import.fail.1": "You must have an empty music sheet item on your main-hand to import a music sheet in survival mode",
+  "xercamusic.import.fail.4": "Could not parse command or read the music sheet file (%1$s)",
+  "xercamusic.import.fail.5": "Sheet file is broken"
 }

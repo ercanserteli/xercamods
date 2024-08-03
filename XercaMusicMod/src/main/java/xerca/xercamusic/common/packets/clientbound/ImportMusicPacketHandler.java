@@ -48,7 +48,7 @@ public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayChanne
             } catch (IOException | ImportMusicSendPacket.NotesTooLargeException | NullPointerException e) {
                 e.printStackTrace();
                 if (player != null) {
-                    player.sendSystemMessage(Component.translatable("import.fail.4", filepath).withStyle(ChatFormatting.RED));
+                    player.sendSystemMessage(Component.translatable("xercamusic.import.fail.4", filepath).withStyle(ChatFormatting.RED));
                 }
             }
         }

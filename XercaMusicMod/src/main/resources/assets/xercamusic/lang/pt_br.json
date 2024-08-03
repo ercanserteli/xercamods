@@ -1,5 +1,5 @@
 {
-  "item_group.xercamusic.music_tab": "Música",
+  "itemGroup.xercamusic.music_tab": "Música",
 
   "item.xercamusic.instrument_gui": "Instrumento",
   "item.xercamusic.music_sheet": "Partitura",
@@ -105,9 +105,10 @@
 
   "ins.octaveTooltip": "Mudar a Oitava do teclado",
 
-  "export.success": "Partitura exportado para %1$s",
-  "export.fail": "A partitura não pode ser exportada.",
-  "import.success": "Partitura importada",
-  "import.fail.1": "Você precisa ter uma partitura em branco na sua mão principal para importar uma música no modo sobrevivência!",
-  "import.fail.4": "Não foi possível executar o comando ou ler o arquivo da Partitura (%1$s)"
+  "xercamusic.export.success": "Partitura exportado para %1$s",
+  "xercamusic.export.fail": "A partitura não pode ser exportada.",
+  "xercamusic.import.success": "Partitura importada",
+  "xercamusic.import.fail.1": "Você precisa ter uma partitura em branco na sua mão principal para importar uma música no modo sobrevivência!",
+  "xercamusic.import.fail.4": "Não foi possível executar o comando ou ler o arquivo da Partitura (%1$s)",
+  "xercamusic.import.fail.5": "O arquivo da partitura está quebrado"
 }
