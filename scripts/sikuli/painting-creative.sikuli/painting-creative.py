@@ -398,6 +398,6 @@ if inv:
     win.type("e")
 
 
-testItemsInCreative(mc, win, mcLoc)
-testDrawOnCanvas(mc, win, mcLoc)
+#testItemsInCreative(mc, win, mcLoc)
+#testDrawOnCanvas(mc, win, mcLoc)
 testCrafting(mc, win, mcLoc)

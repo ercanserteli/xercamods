@@ -538,26 +538,26 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public boolean mouseScrolled(double posX, double posY, double scroll) {
+    public boolean mouseScrolled(double posX, double posY, double scrollX, double scrollY) {
         int mouseX = (int)Math.floor(posX);
         int mouseY = (int)Math.floor(posY);
-        if (!gettingSigned && scroll != 0.d) {
+        if (!gettingSigned && scrollY != 0.d) {
             if(inBrushOpacityMeter(mouseX, mouseY)){
                 final int maxBrushOpacity = 3;
-                brushOpacitySetting += scroll < 0 ? 1 : -1;
+                brushOpacitySetting += scrollY < 0 ? 1 : -1;
                 if (brushOpacitySetting > maxBrushOpacity) brushOpacitySetting = 0;
                 else if (brushOpacitySetting < 0) brushOpacitySetting = maxBrushOpacity;
                 return true;
             }
             else{
                 final int maxBrushSize = 3;
-                brushSize += scroll > 0 ? 1 : -1;
+                brushSize += scrollY > 0 ? 1 : -1;
                 if (brushSize > maxBrushSize) brushSize = 0;
                 else if (brushSize < 0) brushSize = maxBrushSize;
                 return true;
             }
         }
-        return super.mouseScrolled(posX, posY, scroll);
+        return super.mouseScrolled(posX, posY, scrollX, scrollY);
     }
 
     // Mouse button 0: left, 1: right

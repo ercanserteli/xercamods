@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class RecipeCraftPalette extends CustomRecipe {
     private static final ResourceLocation plank = new ResourceLocation("minecraft:planks");
 
-    public RecipeCraftPalette(ResourceLocation resourceLocation, CraftingBookCategory craftingBookCategory) {
-        super(resourceLocation, craftingBookCategory);
+    public RecipeCraftPalette(CraftingBookCategory craftingBookCategory) {
+        super(craftingBookCategory);
     }
 
     private boolean isPlank(ItemStack stack){

@@ -45,7 +45,7 @@ public class XercaMusic implements ModInitializer
 
     private void registerTriggers() {
         for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++) {
-            CriteriaTriggers.register(Triggers.TRIGGER_ARRAY[i]);
+            CriteriaTriggers.register("become_musician", Triggers.TRIGGER_ARRAY[i]);
         }
     }
 

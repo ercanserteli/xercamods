@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
@@ -14,7 +15,7 @@ import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
 
 public class MusicManager {
     public static MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
-        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic::load, SavedDataMusic::new, "music_map");
+        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         if(musicMap.containsKey(id)){
             MusicData data = musicMap.get(id);
@@ -33,7 +34,7 @@ public class MusicManager {
     }
 
     public static void setMusicData(UUID id, int ver, ArrayList<NoteEvent> notes, MinecraftServer server) {
-        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic::load, SavedDataMusic::new, "music_map");
+        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         musicMap.put(id, new MusicManager.MusicData(ver, notes));
         savedDataMusic.setDirty();

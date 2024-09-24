@@ -71,7 +71,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     }
 
     private Instance getCanvasRendererInstance(EntityCanvas canvas) {
-        return getCanvasRendererInstance(canvas.getCanvasName(), canvas.getCanvasVersion(), canvas.getWidth(), canvas.getHeight());
+        return getCanvasRendererInstance(canvas.getCanvasName(), canvas.getVersion(), canvas.getWidth(), canvas.getHeight());
     }
 
     Instance getCanvasRendererInstance(CompoundTag tag, int width, int height) {

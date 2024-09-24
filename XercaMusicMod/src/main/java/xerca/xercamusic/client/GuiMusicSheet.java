@@ -737,6 +737,9 @@ public class GuiMusicSheet extends Screen {
     }
 
     @Override
+    public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {}
+
+    @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         PoseStack stack = guiGraphics.pose();
         if (previewing || recording || preRecording) {
@@ -795,7 +798,6 @@ public class GuiMusicSheet extends Screen {
             }
         }
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(noteGuiLeftTexture, noteImageLeftX, noteImageY + 7, noteImageLeftTexX, noteImageLeftTexY, noteImageLeftWidth, noteImageLeftHeight);
         guiGraphics.blit(noteGuiTextures, noteImageX, noteImageY, noteImageTexX, noteImageTexY, noteImageWidth, noteImageHeight);
         if (gettingSigned) {
@@ -897,7 +899,6 @@ public class GuiMusicSheet extends Screen {
             drawCursor(guiGraphics, i, 0xFFAA8822);
         }
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         if(buttonHelp.isHovered()){
@@ -1365,7 +1366,10 @@ public class GuiMusicSheet extends Screen {
             event.encodeToBuffer(buffer);
             event.time += (short) editCursor; // Convert time back to normal
         }
-        String encodeBytes = Base64.getEncoder().encodeToString(buffer.accessByteBufWithCorrectSize());
+        int index = buffer.writerIndex();
+        byte[] bytes = new byte[index];
+        buffer.getBytes(0, bytes);
+        String encodeBytes = Base64.getEncoder().encodeToString(bytes);
         GLFW.glfwSetClipboardString(Minecraft.getInstance().getWindow().getWindow(), encodeBytes);
 
         editCursorEnd = editCursor;
@@ -1769,19 +1773,19 @@ public class GuiMusicSheet extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double x, double y, double scroll){
-        if (scroll != 0.d) {
-            if(scroll > 0){
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY){
+        if (scrollY != 0.d) {
+            if(scrollY > 0){
                 octaveUp.playDownSound(Minecraft.getInstance().getSoundManager());
                 octaveUp.onPress();
             }
-            else if(scroll < 0){
+            else if(scrollY < 0){
                 octaveDown.playDownSound(Minecraft.getInstance().getSoundManager());
                 octaveDown.onPress();
             }
             return true;
         }
-        return super.mouseScrolled(x, y, scroll);
+        return super.mouseScrolled(x, y, scrollX, scrollY);
     }
 
     /**

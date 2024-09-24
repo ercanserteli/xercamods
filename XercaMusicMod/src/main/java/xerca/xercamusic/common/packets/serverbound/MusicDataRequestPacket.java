@@ -29,7 +29,7 @@ public class MusicDataRequestPacket implements IPacket {
             result.id = buf.readUUID();
             result.version = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket: {}", ioe);
+            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket:", ioe);
             return null;
         }
         result.messageIsValid = true;

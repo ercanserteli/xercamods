@@ -103,8 +103,8 @@ public class ImportMusicSendPacket implements IPacket {
     }
 
     public static class NotesTooLargeException extends Exception {
-        public ArrayList<NoteEvent> notes;
-        public UUID id;
+        public final ArrayList<NoteEvent> notes;
+        public final UUID id;
 
         public NotesTooLargeException(ArrayList<NoteEvent> notes, UUID id) {
             this.notes = notes;
