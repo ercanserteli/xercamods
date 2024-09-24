@@ -65,7 +65,7 @@ public class MidiHandler
 
     public class MidiInputReceiver implements Receiver {
         @SuppressWarnings("unused")
-        public String name;
+        public final String name;
         public static final int NOTE_ON = 0x90;
         public static final int NOTE_OFF = 0x80;
         public static final int CONTROL = 176;
@@ -88,7 +88,7 @@ public class MidiHandler
         @Override
         public void send(MidiMessage msg, long timeStamp) {
             if (msg instanceof ShortMessage sm) {
-                if(((ShortMessage) msg).getCommand() == CONTROL && midiControlHandler != null){
+                if(sm.getCommand() == CONTROL && midiControlHandler != null){
                     int data = sm.getData1();
                     switch (data){
                         case DATA_BEGINNING -> Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.BEGINNING));

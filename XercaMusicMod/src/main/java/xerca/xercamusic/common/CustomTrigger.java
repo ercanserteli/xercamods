@@ -5,35 +5,27 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
 
 public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
 {
-    private final ResourceLocation RL;
     private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
+    public static final EntityPredicate ANY = EntityPredicate.Builder.entity().build();
 
     @SuppressWarnings("SameParameterValue")
-    CustomTrigger(String registryName)
+    CustomTrigger()
     {
         super();
-        RL = new ResourceLocation(registryName);
-    }
-
-    @Override
-    public @NotNull ResourceLocation getId()
-    {
-        return RL;
     }
 
     @Override
@@ -82,7 +74,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
     @Override
     public @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull DeserializationContext context)
     {
-        return new Instance(getId());
+        return new Instance();
     }
 
     /**
@@ -106,9 +98,9 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance>
         /**
          * Instantiates a new instance.
          */
-        public Instance(ResourceLocation parRL)
+        public Instance()
         {
-            super(parRL,  EntityPredicate.wrap(EntityPredicate.ANY));
+            super(EntityPredicate.wrap(Optional.of(ANY)));
         }
     }
 

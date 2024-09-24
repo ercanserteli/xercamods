@@ -1,9 +1,11 @@
 package xerca.xercapaint.item.crafting;
 
-import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -15,7 +17,7 @@ import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
 
 public class RecipeTaglessShaped extends ShapedRecipe {
     public RecipeTaglessShaped(ShapedRecipe shapedRecipe){
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.category(), shapedRecipe.getWidth(), shapedRecipe.getHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem(RegistryAccess.EMPTY));
+        super(shapedRecipe.getGroup(), shapedRecipe.category(), shapedRecipe.getWidth(), shapedRecipe.getHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem(RegistryAccess.EMPTY));
     }
 
     /**
@@ -64,13 +66,33 @@ public class RecipeTaglessShaped extends ShapedRecipe {
 
         public TaglessSerializer(){}
 
-        public @NotNull RecipeTaglessShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-            ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);
-            return new RecipeTaglessShaped(shapedRecipe);
+        @Override
+        public @NotNull Codec<RecipeTaglessShaped> codec() {
+            return new Codec<>() {
+                @Override
+                public <T> DataResult<T> encode(RecipeTaglessShaped input, DynamicOps<T> ops, T prefix) {
+                    return shapedSerializer.codec().encode(input, ops, prefix);
+                }
+
+                @Override
+                public <T> DataResult<Pair<RecipeTaglessShaped, T>> decode(DynamicOps<T> ops, T input) {
+                    return shapedSerializer.codec().decode(ops, input).flatMap(pair -> {
+                        ShapedRecipe shapedRecipe = pair.getFirst();
+                        T rest = pair.getSecond();
+                        try {
+                            RecipeTaglessShaped recipe = new RecipeTaglessShaped(shapedRecipe);
+                            return DataResult.success(Pair.of(recipe, rest));
+                        } catch (Exception e) {
+                            return DataResult.error(() -> "Failed to create RecipeTaglessShaped: " + e.getMessage());
+                        }
+                    });
+                }
+            };
         }
 
-        public @NotNull RecipeTaglessShaped fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
-            ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(recipeId, buffer);
+        @Override
+        public @NotNull RecipeTaglessShaped fromNetwork(@NotNull FriendlyByteBuf buffer) {
+            ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(buffer);
             return new RecipeTaglessShaped(shapedRecipe);
         }
 

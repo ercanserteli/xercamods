@@ -113,6 +113,5 @@ public class ModClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(Mod.IMPORT_PAINTING_PACKET_ID, new ImportPaintingPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(Mod.OPEN_GUI_PACKET_ID, new OpenGuiPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(Mod.PICTURE_SEND_PACKET_ID, new PictureSendPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(Mod.ADD_CANVAS_PACKET_ID, new ClientboundAddCanvasPacketHandler());
     }
 }

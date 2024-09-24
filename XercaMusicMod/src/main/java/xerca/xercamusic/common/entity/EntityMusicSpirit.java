@@ -1,20 +1,18 @@
 package xerca.xercamusic.common.entity;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
@@ -23,14 +21,12 @@ import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
-import xerca.xercamusic.common.item.ItemBlockInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class EntityMusicSpirit extends Entity {
-    public static final ResourceLocation spawnPacketId = new ResourceLocation(XercaMusic.MODID, "spawn_music_spirit");
     private Player body;
     private ItemStack note;
     private IItemInstrument instrument;
@@ -57,25 +53,26 @@ public class EntityMusicSpirit extends Entity {
 
     public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, IItemInstrument instrument) {
         this(worldIn, body, instrument);
-        setBlockPosAndInstrument(blockInsPos, instrument.getInstrumentId());
+        setBlockPosAndInstrument(blockInsPos);
     }
 
     public EntityMusicSpirit(EntityType<EntityMusicSpirit> type, Level world) {
         super(type, world);
     }
 
-    private void setBlockPosAndInstrument(BlockPos pos, int instrumentId){
-        if (instrumentId < Items.instruments.length) {
-            IItemInstrument instrument = Items.instruments[instrumentId];
-            if (instrument instanceof ItemBlockInstrument itemBlockInstrument) {
-                this.blockInstrument = (BlockInstrument) itemBlockInstrument.getBlock();
+    private void setBlockPosAndInstrument(BlockPos pos){
+        Level level = this.level();
+        if (level.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()))) {
+            Block b = level.getBlockState(pos).getBlock();
+            if (b instanceof BlockInstrument blockIns) {
+                this.blockInstrument = blockIns;
                 this.blockInsPos = pos;
                 setPos((double)pos.getX()+0.5, (double)pos.getY()-0.5, (double)pos.getZ()+0.5);
                 return;
             }
         }
 
-        XercaMusic.LOGGER.warn("Got invalid block as instrument");
+        XercaMusic.LOGGER.warn("Did not find a block instrument at the set position");
         blockInstrument = null;
         blockInsPos = null;
     }
@@ -116,8 +113,8 @@ public class EntityMusicSpirit extends Entity {
         this.mBPS = tag.getByte("bps");
         this.mVolume = tag.getFloat("vol");
         this.isPlaying = tag.getBoolean("playing");
-        if(tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")){
-            setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")), tag.getInt("bIns"));
+        if(tag.contains("bX") && tag.contains("bY") && tag.contains("bZ")){
+            setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")));
         }
     }
 
@@ -128,52 +125,46 @@ public class EntityMusicSpirit extends Entity {
         tag.putByte("bps", mBPS);
         tag.putFloat("vol", mVolume);
         tag.putBoolean("playing", isPlaying);
-        if(blockInstrument != null && blockInsPos != null){
+        if(blockInsPos != null){
             tag.putInt("bX", blockInsPos.getX());
             tag.putInt("bY", blockInsPos.getY());
             tag.putInt("bZ", blockInsPos.getZ());
-            tag.putInt("bIns", blockInstrument.getItemInstrument().getInstrumentId());
         }
     }
 
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        FriendlyByteBuf buffer = PacketByteBufs.create();
-        ClientboundAddEntityPacket pack = new ClientboundAddEntityPacket(this);
-        pack.write(buffer);
-        writeSpawnData(buffer);
-        return ServerPlayNetworking.createS2CPacket(spawnPacketId, buffer);
+        if (body == null) {
+            XercaMusic.LOGGER.error("Body is null on EntityMusicSpirit.getAddEntityPacket, this shouldn't happen!");
+        }
+
+        int data = blockInstrument == null ? body.getId() : -body.getId();
+        return new ClientboundAddEntityPacket(this, data);
     }
 
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        buffer.writeInt(body != null ? body.getId() : -1);
-        if(blockInstrument != null && blockInsPos != null){
-            buffer.writeInt(blockInsPos.getX());
-            buffer.writeInt(blockInsPos.getY());
-            buffer.writeInt(blockInsPos.getZ());
-            buffer.writeInt(blockInstrument.getItemInstrument().getInstrumentId());
+    @Override
+    public void recreateFromPacket(@NotNull ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+        int data = packet.getData();
+        int bodyId = data > 0 ? data : -data;
+        int biX = -1;
+        int biY = -1000;
+        int biZ = -1;
+        if (data < 0) {
+            biX = (int)Math.round(packet.getX() - 0.5);
+            biY = (int)Math.round(packet.getY() + 0.5);
+            biZ = (int)Math.round(packet.getZ() - 0.5);
         }
-        else{
-            buffer.writeInt(-1);
-            buffer.writeInt(-1000);
-            buffer.writeInt(-1);
-            buffer.writeInt(-1);
-        }
+        this.buildFromSpawnData(bodyId, biX, biY, biZ);
     }
 
-    public void readSpawnData(FriendlyByteBuf buffer) {
-        int entityId = buffer.readInt();
-        Entity ent = level().getEntity(entityId);
+    public void buildFromSpawnData(int bodyId, int bx, int by, int bz) {
+        Entity ent = level().getEntity(bodyId);
         if (ent instanceof Player) {
             body = (Player) ent;
         }
-
-        int bx = buffer.readInt();
-        int by = buffer.readInt();
-        int bz = buffer.readInt();
-        int bIns = buffer.readInt();
         if(by > -1000){
-            setBlockPosAndInstrument(new BlockPos(bx, by ,bz), bIns);
+            setBlockPosAndInstrument(new BlockPos(bx, by ,bz));
         }
 
         if(blockInsPos != null) {

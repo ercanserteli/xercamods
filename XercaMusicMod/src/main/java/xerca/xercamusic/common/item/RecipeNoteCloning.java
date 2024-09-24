@@ -4,7 +4,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.WrittenBookItem;
@@ -16,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 @MethodsReturnNonnullByDefault
 public class RecipeNoteCloning extends CustomRecipe {
-    public RecipeNoteCloning(ResourceLocation location, CraftingBookCategory category) {
-        super(location, category);
+    public RecipeNoteCloning(CraftingBookCategory category) {
+        super(category);
     }
 
     /**

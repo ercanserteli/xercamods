@@ -58,7 +58,7 @@ public class SingleNoteClientPacket implements IPacket {
             result.playerEntity = (Player) entity;
             result.instrumentItem = Items.instruments[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: {}", ioe);
+            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket:", ioe);
             return null;
         }
         result.messageIsValid = true;

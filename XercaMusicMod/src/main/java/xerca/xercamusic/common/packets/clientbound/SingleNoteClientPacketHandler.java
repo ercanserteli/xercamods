@@ -57,8 +57,8 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayC
 
     @SuppressWarnings("unused")
     private static class NoteSoundEntry{
-        public NoteSound noteSound;
-        public Player playerEntity;
+        public final NoteSound noteSound;
+        public final Player playerEntity;
 
         public NoteSoundEntry(NoteSound noteSound, Player playerEntity) {
             this.noteSound = noteSound;

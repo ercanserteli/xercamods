@@ -4,7 +4,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.WrittenBookItem;
@@ -18,8 +17,8 @@ import xerca.xercapaint.item.Items;
 
 @MethodsReturnNonnullByDefault
 public class RecipeCanvasCloning extends CustomRecipe {
-    public RecipeCanvasCloning(ResourceLocation resourceLocation, CraftingBookCategory craftingBookCategory) {
-        super(resourceLocation, craftingBookCategory);
+    public RecipeCanvasCloning(CraftingBookCategory craftingBookCategory) {
+        super(craftingBookCategory);
     }
 
     /**

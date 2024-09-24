@@ -76,24 +76,12 @@ public class SendNotesPartToServerPacket implements IPacket {
         return partsCount;
     }
 
-    public void setPartsCount(int partsCount) {
-        this.partsCount = partsCount;
-    }
-
     public int getPartId() {
         return partId;
     }
 
-    public void setPartId(int partId) {
-        this.partId = partId;
-    }
-
     public UUID getUuid() {
         return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
     }
 
     @Override

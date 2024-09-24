@@ -25,7 +25,6 @@ public class Mod implements ModInitializer {
     public static final ResourceLocation PALETTE_UPDATE_PACKET_ID = new ResourceLocation(Mod.modId, "palette_update");
     public static final ResourceLocation PICTURE_REQUEST_PACKET_ID = new ResourceLocation(Mod.modId, "picture_request");
     public static final ResourceLocation PICTURE_SEND_PACKET_ID = new ResourceLocation(Mod.modId, "picture_send");
-    public static final ResourceLocation ADD_CANVAS_PACKET_ID = new ResourceLocation(Mod.modId, "add_canvas");
 
     @Override
     public void onInitialize() {

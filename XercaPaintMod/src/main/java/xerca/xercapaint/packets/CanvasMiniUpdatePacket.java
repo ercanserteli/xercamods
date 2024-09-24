@@ -79,7 +79,4 @@ public class CanvasMiniUpdatePacket {
         return easelId;
     }
 
-    public CanvasType getCanvasType() {
-        return canvasType;
-    }
 }
