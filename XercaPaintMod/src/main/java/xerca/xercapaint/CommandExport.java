@@ -16,6 +16,7 @@ import xerca.xercapaint.packets.ExportPaintingPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -58,7 +59,7 @@ public class CommandExport {
                     try {
                         CompoundTag tag = s.getTag().copy();
                         tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
-                        NbtIo.write(tag, new File(filepath));
+                        NbtIo.write(tag, Path.of(filepath));
                         return true;
                     } catch (IOException e) {
                         e.printStackTrace();

@@ -1,5 +1,6 @@
 package xerca.xercamusic.common.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -26,8 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -37,15 +35,21 @@ import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 import javax.annotation.Nullable;
 
 public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityBlock {
+    public static final MapCodec<BlockMusicBox> CODEC = BlockMusicBox.simpleCodec(BlockMusicBox::new);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty POWERING = BooleanProperty.create("powering");
     public static final BooleanProperty HAS_MUSIC = BooleanProperty.create("has_music");
     public static final BooleanProperty HAS_INSTRUMENT = BooleanProperty.create("has_instrument");
 
-    public BlockMusicBox() {
-        super(Properties.of().mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).isRedstoneConductor((blockState, blockGetter, blockPos)->false));
+    public BlockMusicBox(Properties properties) {
+        super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).
                 setValue(HAS_MUSIC, false).setValue(HAS_INSTRUMENT, false).setValue(FACING, Direction.NORTH).setValue(POWERING, false));
+    }
+
+    @Override
+    protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     @Override

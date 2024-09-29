@@ -1,6 +1,7 @@
 package xerca.xercamusic.client;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
@@ -9,6 +10,7 @@ import xerca.xercamusic.common.packets.serverbound.MusicDataRequestPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class MusicManagerClient {
                 String fileName = file.getName();
                 try {
                     UUID id = UUID.fromString(fileName);
-                    CompoundTag tag = NbtIo.readCompressed(file);
+                    CompoundTag tag = NbtIo.readCompressed(file.toPath(), NbtAccounter.unlimitedHeap());
                     if(tag.contains("id") && id.equals(tag.getUUID("id")) && tag.contains("ver") && tag.contains("notes")){
                         int version = tag.getInt("ver");
                         ArrayList<NoteEvent> notes = new ArrayList<>();
@@ -106,7 +108,7 @@ public class MusicManagerClient {
         tag.putInt("ver", ver);
         NoteEvent.fillNBTFromArray(notes, tag);
         try {
-            NbtIo.writeCompressed(tag, new File(filepath));
+            NbtIo.writeCompressed(tag, Path.of(filepath));
         } catch (IOException e) {
             XercaMusic.LOGGER.warn("Could not write music data to cache file: {}", filepath);
             e.printStackTrace();

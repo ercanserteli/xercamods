@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -15,6 +16,7 @@ import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static xerca.xercamusic.client.ClientStuff.sendToServer;
 import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
@@ -24,7 +26,7 @@ public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayChanne
             String filename = msg.getName() + ".sheet";
             String filepath = "music_sheets/" + filename;
             try {
-                CompoundTag tag = NbtIo.read(new File(filepath));
+                CompoundTag tag = NbtIo.read(Path.of(filepath));
                 if(tag == null) {
                     throw new IOException("File not found!");
                 }

@@ -1,5 +1,6 @@
 package xerca.xercamusic.common.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -15,8 +16,10 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.*;
-import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.SoundEvents;
@@ -26,12 +29,13 @@ import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 import javax.annotation.Nullable;
 
 public class BlockMetronome extends BaseEntityBlock {
+    public static final MapCodec<BlockMetronome> CODEC = BlockMetronome.simpleCodec(BlockMetronome::new);
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-    public BlockMetronome() {
-        super(Properties.of().mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD));
+    public BlockMetronome(Properties properties) {
+        super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(BPS, 6).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
     }
 
@@ -98,6 +102,11 @@ public class BlockMetronome extends BaseEntityBlock {
                 TileEntityMetronome.tick(level1, blockPos, blockState1, (TileEntityMetronome) t);
             }
         };
+    }
+
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
