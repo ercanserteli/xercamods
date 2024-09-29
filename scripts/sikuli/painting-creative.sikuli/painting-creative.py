@@ -196,26 +196,22 @@ def testDrawOnCanvas(mc, win, mcLoc):
     Settings.MinSimilarity = old_similarity
 
 
+def getItem(win, item, count=1):
+    win.type("t")
+    win.paste("/give @s {} {}".format(item, count))
+    win.type(Key.ENTER)
+    wait(0.2)
+
+
 def testCrafting(mc, win, mcLoc):
     Settings.MinSimilarity = 0.99
     emptyInventory()
     win.type("e")
-    win.type("t")
-    win.paste("/give @s crafting_table")
-    win.type(Key.ENTER)
-    wait(0.2)
-    win.type("t")
-    win.paste("/give @s stick 64")
-    win.type(Key.ENTER)
-    wait(0.2)
-    win.type("t")
-    win.paste("/give @s paper 8")
-    win.type(Key.ENTER)
-    wait(0.2)
-    win.type("t")
-    win.paste("/give @s oak_planks 3")
-    win.type(Key.ENTER)
-    wait(0.2)
+    
+    getItem(win, "crafting_table")
+    getItem(win, "stick", 64)
+    getItem(win, "paper", 8)
+    getItem(win, "oak_planks", 3)
     
     dye_colors = [
         'black',
@@ -236,10 +232,8 @@ def testCrafting(mc, win, mcLoc):
         'white'
     ]
     for c in dye_colors:
-        win.type("t")
-        win.paste("/give @s {}_dye".format(c))
-        win.type(Key.ENTER)
-        wait(0.2)
+        getItem(win, "{}_dye".format(c))
+        
     popup("Place and use the crafting table.")
     testAssert(exists("1689507699969.png"))
     stick = win.find("1689507809001.png")
@@ -253,7 +247,7 @@ def testCrafting(mc, win, mcLoc):
     win.click(stick)
     easel = win.exists("1689510546908.png")
     testAssert(easel)
-    print(easel)
+
     win.doubleClick(stick)
     win.click(stick)
     win.click(mcLoc.offset(200, 150))
@@ -398,6 +392,6 @@ if inv:
     win.type("e")
 
 
-#testItemsInCreative(mc, win, mcLoc)
-#testDrawOnCanvas(mc, win, mcLoc)
+testItemsInCreative(mc, win, mcLoc)
+testDrawOnCanvas(mc, win, mcLoc)
 testCrafting(mc, win, mcLoc)

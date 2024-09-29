@@ -1,23 +1,26 @@
 package xerca.xercapaint.item.crafting;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Field;
 
 import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
 
 public class RecipeTaglessShaped extends ShapedRecipe {
-    public RecipeTaglessShaped(ShapedRecipe shapedRecipe){
-        super(shapedRecipe.getGroup(), shapedRecipe.category(), shapedRecipe.getWidth(), shapedRecipe.getHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem(RegistryAccess.EMPTY));
+    public RecipeTaglessShaped(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification){
+        super(group, category,pattern,result,showNotification);
     }
 
     /**
@@ -56,49 +59,54 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         return ItemStack.EMPTY;
     }
 
+    public ShapedRecipePattern getPattern() {
+        try {
+            Field patternField = ShapedRecipe.class.getDeclaredField("pattern");
+            patternField.setAccessible(true);
+            return (ShapedRecipePattern) patternField.get(this);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("Failed to access pattern field in ShapedRecipe", e);
+        }
+    }
+
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         return CRAFTING_TAGLESS_SHAPED;
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
-        private static final Serializer shapedSerializer = new Serializer();
+        public static final Codec<RecipeTaglessShaped> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(ShapedRecipe::getGroup),
+                CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(RecipeTaglessShaped::category),
+                ShapedRecipePattern.MAP_CODEC.forGetter(RecipeTaglessShaped::getPattern),
+                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(recipe -> recipe.getResultItem(RegistryAccess.EMPTY)),
+                ExtraCodecs.strictOptionalField(Codec.BOOL, "show_notification", true).forGetter(RecipeTaglessShaped::showNotification)
+        ).apply(instance, RecipeTaglessShaped::new));
 
-        public TaglessSerializer(){}
+        public TaglessSerializer() {}
 
         @Override
         public @NotNull Codec<RecipeTaglessShaped> codec() {
-            return new Codec<>() {
-                @Override
-                public <T> DataResult<T> encode(RecipeTaglessShaped input, DynamicOps<T> ops, T prefix) {
-                    return shapedSerializer.codec().encode(input, ops, prefix);
-                }
-
-                @Override
-                public <T> DataResult<Pair<RecipeTaglessShaped, T>> decode(DynamicOps<T> ops, T input) {
-                    return shapedSerializer.codec().decode(ops, input).flatMap(pair -> {
-                        ShapedRecipe shapedRecipe = pair.getFirst();
-                        T rest = pair.getSecond();
-                        try {
-                            RecipeTaglessShaped recipe = new RecipeTaglessShaped(shapedRecipe);
-                            return DataResult.success(Pair.of(recipe, rest));
-                        } catch (Exception e) {
-                            return DataResult.error(() -> "Failed to create RecipeTaglessShaped: " + e.getMessage());
-                        }
-                    });
-                }
-            };
+            return CODEC;
         }
 
         @Override
         public @NotNull RecipeTaglessShaped fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(buffer);
-            return new RecipeTaglessShaped(shapedRecipe);
+            String string = buffer.readUtf();
+            CraftingBookCategory craftingBookCategory = buffer.readEnum(CraftingBookCategory.class);
+            ShapedRecipePattern shapedRecipePattern = ShapedRecipePattern.fromNetwork(buffer);
+            ItemStack itemStack = buffer.readItem();
+            boolean bl = buffer.readBoolean();
+            return new RecipeTaglessShaped(string, craftingBookCategory, shapedRecipePattern, itemStack, bl);
         }
 
+        @Override
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RecipeTaglessShaped recipe) {
-            shapedSerializer.toNetwork(buffer, recipe);
+            buffer.writeUtf(recipe.getGroup());
+            buffer.writeEnum(recipe.category());
+            recipe.getPattern().toNetwork(buffer);
+            buffer.writeItem(recipe.getResultItem(RegistryAccess.EMPTY));
+            buffer.writeBoolean(recipe.showNotification());
         }
-
     }
 }

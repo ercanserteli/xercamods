@@ -333,8 +333,8 @@ def generate_json(main_dir, json_string, r):
             else:
                 break
 
-    with open(file_dir, "w") as f:
-        f.write(json_string)
+    with open(file_dir, "w", newline='\n') as f:
+        f.write(json_string.strip() + "\n")
 
 
 def clean_recipe_jsons(mod_id_input):

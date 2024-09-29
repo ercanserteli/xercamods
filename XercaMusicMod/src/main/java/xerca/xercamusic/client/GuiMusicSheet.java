@@ -2000,7 +2000,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible && event != null) {
                 guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFFEEEEEE);
                 Minecraft minecraft = Minecraft.getInstance();
@@ -2022,11 +2022,6 @@ public class GuiMusicSheet extends Screen {
                     guiGraphics.renderTooltip(font, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
                 }
             }
-        }
-
-        @Override
-        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-
         }
 
         public void appear(int x, int y, NoteEvent event) {

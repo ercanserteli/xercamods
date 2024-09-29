@@ -16,6 +16,7 @@ import xerca.xercamusic.common.packets.clientbound.ExportMusicPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import static xerca.xercamusic.common.XercaMusic.sendToClient;
@@ -67,7 +68,7 @@ public class CommandExport {
                             if(data != null){
                                 NoteEvent.fillNBTFromArray(data.notes, tag);
                                 try {
-                                    NbtIo.write(tag, new File(filepath));
+                                    NbtIo.write(tag, Path.of(filepath));
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

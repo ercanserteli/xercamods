@@ -14,6 +14,7 @@ import xerca.xercapaint.Mod;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
 
@@ -21,7 +22,7 @@ public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayCha
         String filename = msg.getName() + ".paint";
         String filepath = "paintings/" + filename;
         try {
-            CompoundTag tag = NbtIo.read(new File(filepath));
+            CompoundTag tag = NbtIo.read(Path.of(filepath));
 
             ImportPaintingSendPacket pack = new ImportPaintingSendPacket(tag);
             ClientPlayNetworking.send(Mod.IMPORT_PAINTING_SEND_PACKET_ID, pack.encode());
