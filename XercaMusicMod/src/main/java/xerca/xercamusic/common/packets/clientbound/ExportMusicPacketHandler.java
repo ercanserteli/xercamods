@@ -1,22 +1,19 @@
 package xerca.xercamusic.common.packets.clientbound;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import xerca.xercamusic.common.CommandExport;
 
-public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
+public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<ExportMusicPacket> {
 
     private static void processMessage(ExportMusicPacket msg) {
         LocalPlayer player = Minecraft.getInstance().player;
         if(player != null) {
-            if (CommandExport.doExport(player, msg.getName())) {
-                player.sendSystemMessage(Component.translatable("xercamusic.export.success", msg.getName()).withStyle(ChatFormatting.GREEN));
+            if (CommandExport.doExport(player, msg.name())) {
+                player.sendSystemMessage(Component.translatable("xercamusic.export.success", msg.name()).withStyle(ChatFormatting.GREEN));
             } else {
                 player.sendSystemMessage(Component.translatable("xercamusic.export.fail").withStyle(ChatFormatting.RED));
             }
@@ -24,10 +21,9 @@ public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayChanne
     }
 
     @Override
-    public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        ExportMusicPacket packet = ExportMusicPacket.decode(buf);
+    public void receive(ExportMusicPacket packet, ClientPlayNetworking.Context context) {
         if(packet != null) {
-            client.execute(()->processMessage(packet));
+            context.client().execute(()->processMessage(packet));
         }
     }
 }

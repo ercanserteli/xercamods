@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -7,6 +6,5 @@
         "sss"
     ],
     "key": {"s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:iron_nugget"}},
-    "result": {"item": "xercamusic:oboe"}
+    "result": {"id": "xercamusic:oboe"}
 }
-        

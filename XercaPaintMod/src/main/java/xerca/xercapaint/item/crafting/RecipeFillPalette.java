@@ -1,9 +1,8 @@
 package xerca.xercapaint.item.crafting;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
@@ -13,6 +12,7 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
@@ -81,7 +81,7 @@ public class RecipeFillPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
+    public ItemStack assemble(CraftingContainer inv, @NotNull HolderLookup.Provider provider) {
         int paletteId = findPalette(inv);
         if(paletteId < 0){
             return ItemStack.EMPTY;
@@ -91,31 +91,21 @@ public class RecipeFillPalette extends CustomRecipe {
             return ItemStack.EMPTY;
         }
 
-        byte[] basicColors;
         ItemStack inputPalette = inv.getItem(paletteId);
-        CompoundTag orgTag = inputPalette.getOrCreateTag().copy();
-        if(orgTag.contains("basic")){
-            basicColors = orgTag.getByteArray("basic");
-//            Mod.LOGGER.debug("Basic found. Len: " + basicColors.length);
-        }
-        else{
-            basicColors = new byte[16];
-//            Mod.LOGGER.debug("Basic not found. Creating");
-        }
+        byte[] basicColors = inputPalette.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[16]).clone();
 
         for(ItemStack dye : dyes){
             DyeColor color = ((DyeItem)(dye.getItem())).getDyeColor();
             int realColorId = 15 - color.getId();
             if(basicColors[realColorId] > 0){
-//                Mod.LOGGER.debug("Color already exists in palette.");
+                Mod.LOGGER.debug("Color already exists in palette.");
                 return ItemStack.EMPTY;
             }
             basicColors[realColorId] = 1;
         }
-        orgTag.putByteArray("basic", basicColors);
 
         ItemStack result = new ItemStack(Items.ITEM_PALETTE);
-        result.setTag(orgTag);
+        result.set(Items.PALETTE_BASIC_COLORS, basicColors);
         return result;
     }
 

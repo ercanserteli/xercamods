@@ -1,11 +1,8 @@
 package xerca.xercamusic.common.packets.clientbound;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -13,29 +10,32 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
-public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayChannelHandler {
+public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPayloadHandler<MusicBoxUpdatePacket> {
     private static void processMessage(MusicBoxUpdatePacket msg) {
         Level world = Minecraft.getInstance().level;
-        if(world == null || !world.hasChunkAt(msg.getPos())){
+        if(world == null || !world.hasChunkAt(msg.pos())){
             return;
         }
 
-        BlockEntity te =  world.getBlockEntity(msg.getPos());
+        BlockEntity te =  world.getBlockEntity(msg.pos());
         if(te instanceof TileEntityMusicBox tileEntityMusicBox){
 
-            if(msg.getNoteStackNBT() != null){
-                if(msg.getNoteStackNBT().isEmpty()){
-                    tileEntityMusicBox.removeNoteStack();
-                }
-                else{
-                    ItemStack noteStack = new ItemStack(Items.MUSIC_SHEET);
-                    noteStack.setTag(msg.getNoteStackNBT());
-                    tileEntityMusicBox.setNoteStack(noteStack, false);
+            if (msg.sheetSent()) {
+                if (msg.noSheet()) {
+                    tileEntityMusicBox.removeSheetStack();
+                } else {
+                    ItemStack sheetStack = new ItemStack(Items.MUSIC_SHEET);
+                    sheetStack.set(Items.SHEET_ID, msg.sheetId());
+                    sheetStack.set(Items.SHEET_VERSION, msg.version());
+                    sheetStack.set(Items.SHEET_BPS, msg.bps());
+                    sheetStack.set(Items.SHEET_LENGTH, msg.length());
+                    sheetStack.set(Items.SHEET_VOLUME, msg.volume());
+                    tileEntityMusicBox.setSheetStack(sheetStack, false);
                 }
             }
 
-            if(!msg.getInstrumentId().isEmpty()){
-                tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.get(new ResourceLocation(msg.getInstrumentId())));
+            if(!msg.instrumentId().isEmpty()){
+                tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.get(new ResourceLocation(msg.instrumentId())));
             }else{
                 tileEntityMusicBox.removeInstrument();
             }
@@ -43,10 +43,9 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayCha
     }
 
     @Override
-    public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        MusicBoxUpdatePacket packet = MusicBoxUpdatePacket.decode(buf);
+    public void receive(MusicBoxUpdatePacket packet, ClientPlayNetworking.Context context) {
         if(packet != null) {
-            client.execute(()->processMessage(packet));
+            context.client().execute(()->processMessage(packet));
         }
     }
 }

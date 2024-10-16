@@ -12,11 +12,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.item.ItemCanvas;
+import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.ExportPaintingPacket;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -40,7 +42,7 @@ public class CommandExport {
         }
 
         ExportPaintingPacket pack = new ExportPaintingPacket(name);
-        ServerPlayNetworking.send(player, Mod.EXPORT_PAINTING_PACKET_ID, pack.encode());
+        ServerPlayNetworking.send(player, pack);
         return 1;
     }
 
@@ -55,10 +57,26 @@ public class CommandExport {
 
         for(ItemStack s : player.getHandSlots()){
             if(s.getItem() instanceof ItemCanvas){
-                if(s.hasTag() && s.getTag() != null){
+                List<Integer> pixels = s.get(Items.CANVAS_PIXELS);
+                String canvasId = s.get(Items.CANVAS_ID);
+                if(pixels != null && canvasId != null){
                     try {
-                        CompoundTag tag = s.getTag().copy();
+                        int version = s.getOrDefault(Items.CANVAS_VERSION, 1);
+                        int generation = s.getOrDefault(Items.CANVAS_GENERATION, 0);
+                        String title = s.get(Items.CANVAS_TITLE);
+                        String author = s.get(Items.CANVAS_AUTHOR);
+
+                        CompoundTag tag = new CompoundTag();
+
+                        tag.putIntArray("pixels", pixels);
+                        tag.putString("name", canvasId);
+                        tag.putInt("v", version);
+                        tag.putInt("generation", generation);
                         tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                        if (title != null && author != null) {
+                            tag.putString("title", title);
+                            tag.putString("author", author);
+                        }
                         NbtIo.write(tag, Path.of(filepath));
                         return true;
                     } catch (IOException e) {

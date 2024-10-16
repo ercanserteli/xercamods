@@ -7,5 +7,5 @@
         "sss"
     ],
     "key": {"p": {"item": "minecraft:paper"}, "s": {"item": "minecraft:stick"}},
-    "result": {"item": "xercapaint:item_canvas"}
+    "result": {"id": "xercapaint:item_canvas"}
 }

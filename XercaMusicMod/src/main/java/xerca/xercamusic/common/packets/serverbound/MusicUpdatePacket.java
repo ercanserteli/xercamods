@@ -1,90 +1,91 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.IPacket;
+import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket.NotesTooLargeException;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
+import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
-public class MusicUpdatePacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_update");
-    private FieldFlag availability;
-    private ArrayList<NoteEvent> notes;
-    private short lengthBeats;
-    private byte bps;
-    private float volume;
-    private boolean signed;
-    private String title;
-    private byte prevInstrument;
-    private boolean prevInsLocked;
-    private UUID id;
-    private int version;
-    private byte highlightInterval;
-    private boolean messageIsValid;
+public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) implements CustomPacketPayload  {
+    public static final Type<MusicUpdatePacket> PACKET_ID = new Type<>(new ResourceLocation(Mod.MODID, "music_update"));
+    public static final StreamCodec<FriendlyByteBuf, MusicUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicUpdatePacket::encode, MusicUpdatePacket::decode);
 
-    public MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed,
-                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws ImportMusicSendPacket.NotesTooLargeException {
-        this.availability = availability;
-        this.lengthBeats = lengthBeats;
-        this.bps = bps;
-        this.volume = volume;
-        this.signed = signed;
-        this.title = title;
-        this.prevInstrument = prevInstrument;
-        this.prevInsLocked = prevInsLocked;
-        this.id = id;
-        this.version = version;
-        this.highlightInterval = highlightInterval;
-        this.notes = notes;
-        if(availability.hasNotes && this.notes != null && this.notes.size() > MAX_NOTES_IN_PACKET) {
-            throw new ImportMusicSendPacket.NotesTooLargeException(notes, id);
+    public static MusicUpdatePacket create(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws NotesTooLargeException {
+        if (notes != null && notes.size() > MAX_NOTES_IN_PACKET) {
+            throw new NotesTooLargeException(notes, id);
         }
-    }
-
-    public MusicUpdatePacket() {
-        this.messageIsValid = false;
+        return new MusicUpdatePacket(availability, notes, lengthBeats, bps, volume, signed, title, prevInstrument, prevInsLocked, id, version, highlightInterval);
     }
 
     public static MusicUpdatePacket decode(FriendlyByteBuf buf) {
-        MusicUpdatePacket result = new MusicUpdatePacket();
         try {
             FieldFlag flag = FieldFlag.fromInt(buf.readInt());
-            result.availability = flag;
-            if(flag.hasTitle) result.title = buf.readUtf(255);
-            if(flag.hasSigned) result.signed = buf.readBoolean();
-            if(flag.hasBps) result.bps = buf.readByte();
-            if(flag.hasVolume) result.volume = buf.readFloat();
-            if(flag.hasLength) result.lengthBeats = buf.readShort();
-            if(flag.hasNotes){
+
+            ArrayList<NoteEvent> notes = null;
+            short lengthBeats = 0;
+            byte bps = 0;
+            float volume = 0.0f;
+            boolean signed = false;
+            String title = null;
+            byte prevInstrument = 0;
+            boolean prevInsLocked = false;
+            UUID id = null;
+            int version = 0;
+            byte highlightInterval = 0;
+
+            if (flag.hasTitle) title = buf.readUtf(255);
+            if (flag.hasSigned) signed = buf.readBoolean();
+            if (flag.hasBps) bps = buf.readByte();
+            if (flag.hasVolume) volume = buf.readFloat();
+            if (flag.hasLength) lengthBeats = buf.readShort();
+            if (flag.hasNotes) {
                 int eventCount = buf.readInt();
-                if(eventCount != 0) {  // if this is false, notes may have been sent in parts beforehand
-                    result.notes = new ArrayList<>(eventCount);
+                if (eventCount != 0) {  // Notes may have been sent in parts beforehand
+                    notes = new ArrayList<>(eventCount);
                     for (int i = 0; i < eventCount; i++) {
-                        result.notes.add(NoteEvent.fromBuffer(buf));
+                        notes.add(NoteEvent.fromBuffer(buf));
                     }
                 }
             }
-            if(flag.hasPrevIns) result.prevInstrument = buf.readByte();
-            if(flag.hasPrevInsLocked) result.prevInsLocked = buf.readBoolean();
-            if(flag.hasId) result.id = buf.readUUID();
-            if(flag.hasVersion) result.version = buf.readInt();
-            if(flag.hasHlInterval) result.highlightInterval = buf.readByte();
+            if (flag.hasPrevIns) prevInstrument = buf.readByte();
+            if (flag.hasPrevInsLocked) prevInsLocked = buf.readBoolean();
+            if (flag.hasId) id = buf.readUUID();
+            if (flag.hasVersion) version = buf.readInt();
+            if (flag.hasHlInterval) highlightInterval = buf.readByte();
+
+            return MusicUpdatePacket.create(
+                    flag,
+                    notes,
+                    lengthBeats,
+                    bps,
+                    volume,
+                    signed,
+                    title,
+                    prevInstrument,
+                    prevInsLocked,
+                    id,
+                    version,
+                    highlightInterval
+            );
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
             return null;
+        } catch (NotesTooLargeException e) {
+            System.err.println("NotesTooLargeException while reading MusicUpdatePacket: " + e);
+            return null;
         }
-        result.messageIsValid = true;
-        return result;
     }
 
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         buf.writeInt(availability.toInt());
         if(availability.hasTitle) buf.writeUtf(title);
         if(availability.hasSigned) buf.writeBoolean(signed);
@@ -110,82 +111,9 @@ public class MusicUpdatePacket implements IPacket {
         return buf;
     }
 
-    public ArrayList<NoteEvent> getNotes() {
-        return notes;
-    }
-
-    public short getLengthBeats() {
-        return lengthBeats;
-    }
-
-    public byte getBps() {
-        return bps;
-    }
-
-    public float getVolume() {
-        return volume;
-    }
-
-    public boolean getSigned() {
-        return signed;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public byte getPrevInstrument() {
-        return prevInstrument;
-    }
-
-    public boolean getPrevInsLocked() {
-        return prevInsLocked;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isMessageValid() {
-        return messageIsValid;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    @SuppressWarnings("unused")
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    @SuppressWarnings("unused")
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public byte getHighlightInterval() {
-        return highlightInterval;
-    }
-
-    @SuppressWarnings("unused")
-    public void setHighlightInterval(byte highlightInterval) {
-        this.highlightInterval = highlightInterval;
-    }
-
-    public FieldFlag getAvailability() {
-        return availability;
-    }
-
-    @SuppressWarnings("unused")
-    public void setAvailability(FieldFlag availability) {
-        this.availability = availability;
-    }
-
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 
     public static class FieldFlag {

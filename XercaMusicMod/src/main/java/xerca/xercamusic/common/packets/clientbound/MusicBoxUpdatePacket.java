@@ -1,106 +1,92 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.IPacket;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.Mod;
+import xerca.xercamusic.common.item.Items;
 
-public class MusicBoxUpdatePacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_box_update");
-    private BlockPos pos;
-    private CompoundTag noteStackNBT;
-    private String instrumentId;
-    private boolean messageIsValid;
+import java.util.UUID;
 
-    public MusicBoxUpdatePacket(BlockPos pos, ItemStack noteStack, Item itemInstrument) {
-        this.pos = pos;
 
-        if(noteStack == null){
-            this.noteStackNBT = null;
+public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sheetSent, boolean noSheet, UUID sheetId, int version, byte bps, int length, float volume) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MusicBoxUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "music_box_update"));
+    public static final StreamCodec<FriendlyByteBuf, MusicBoxUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicBoxUpdatePacket::encode, MusicBoxUpdatePacket::decode);
+
+    public static MusicBoxUpdatePacket create(BlockPos pos, ItemStack sheetStack, Item itemInstrument) {
+        String instrumentId = "";
+        if (itemInstrument != null) {
+            ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey(itemInstrument);
+            instrumentId = resourcelocation.toString();
         }
-        else{
-            if(noteStack.hasTag()){
-                this.noteStackNBT = noteStack.getTag();
-            }else{
-                this.noteStackNBT = new CompoundTag();
+
+        if (sheetStack != null) {
+            UUID sheetId = sheetStack.get(Items.SHEET_ID);
+            int version = sheetStack.getOrDefault(Items.SHEET_VERSION, -1);
+            byte bps = sheetStack.getOrDefault(Items.SHEET_BPS, (byte)0);
+            int length = sheetStack.getOrDefault(Items.SHEET_LENGTH, 0);
+            float volume = sheetStack.getOrDefault(Items.SHEET_VOLUME, 1.f);
+            if (sheetId != null && version >= 0 && bps > 0 && length > 0) {
+                return new MusicBoxUpdatePacket(pos, instrumentId, true, false, sheetId, version, bps, length, volume);
+            }
+            else {
+                return new MusicBoxUpdatePacket(pos, instrumentId, true, true, sheetId, version, bps, length, volume);
             }
         }
-        if(itemInstrument != null){
-            ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey(itemInstrument);
-            this.instrumentId = resourcelocation.toString();
-        }else{
-            this.instrumentId = "";
-        }
-    }
-
-    public MusicBoxUpdatePacket() {
-        this.messageIsValid = false;
+        return new MusicBoxUpdatePacket(pos, instrumentId, false, false,null, 0, (byte)0, 0, 0);
     }
 
     public static MusicBoxUpdatePacket decode(FriendlyByteBuf buf) {
-        MusicBoxUpdatePacket result = new MusicBoxUpdatePacket();
         try {
-            result.pos = buf.readBlockPos();
-            result.noteStackNBT = buf.readNbt();
-            result.instrumentId = buf.readUtf(255);
+            BlockPos pos = buf.readBlockPos();
+            String instrumentId = buf.readUtf(255);
+            boolean noSheet = buf.readBoolean();
+            boolean sheetSent = buf.readBoolean();
+            if (sheetSent) {
+                if (!noSheet) {
+                    UUID sheetId = buf.readUUID();
+                    int version = buf.readInt();
+                    byte bps = buf.readByte();
+                    int length = buf.readInt();
+                    float volume = buf.readFloat();
+                    return new MusicBoxUpdatePacket(pos, instrumentId, true, false, sheetId, version, bps, length, volume);
+                }
+                else {
+                    return new MusicBoxUpdatePacket(pos, instrumentId, true, true, null, 0, (byte)0, 0, 0);
+                }
+            }
+            else {
+                return new MusicBoxUpdatePacket(pos, instrumentId, false, true, null, 0, (byte)0, 0, 0);
+            }
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicBoxUpdatePacket:", ioe);
+            Mod.LOGGER.error("Exception while reading MusicBoxUpdatePacket:", ioe);
             return null;
         }
-        result.messageIsValid = true;
-        return result;
     }
 
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
-        buf.writeNbt(noteStackNBT);
         buf.writeUtf(instrumentId);
+        buf.writeBoolean(noSheet);
+        buf.writeBoolean(sheetSent);
+        if (sheetSent && !noSheet) {
+            buf.writeUUID(sheetId);
+            buf.writeInt(version);
+            buf.writeByte(bps);
+            buf.writeInt(length);
+            buf.writeFloat(volume);
+        }
         return buf;
     }
 
-    @SuppressWarnings("unused")
-    public boolean isMessageValid() {
-        return messageIsValid;
-    }
-
-
-    public CompoundTag getNoteStackNBT() {
-        return noteStackNBT;
-    }
-
-    @SuppressWarnings("unused")
-    public void setNoteStackNBT(CompoundTag noteStackNBT) {
-        this.noteStackNBT = noteStackNBT;
-    }
-
-    public String getInstrumentId() {
-        return instrumentId;
-    }
-
-    @SuppressWarnings("unused")
-    public void setInstrumentId(String instrumentId) {
-        this.instrumentId = instrumentId;
-    }
-
-    public BlockPos getPos() {
-        return pos;
-    }
-
-    @SuppressWarnings("unused")
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
-    }
-
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
-
 }

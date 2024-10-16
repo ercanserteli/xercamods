@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -7,6 +6,5 @@
         " s "
     ],
     "key": {"s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:string"}},
-    "result": {"item": "xercamusic:lyre"}
+    "result": {"id": "xercamusic:lyre"}
 }
-        

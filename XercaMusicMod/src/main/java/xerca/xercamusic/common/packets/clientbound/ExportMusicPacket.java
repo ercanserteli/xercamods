@@ -1,53 +1,34 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.IPacket;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.Mod;
 
 @SuppressWarnings("unused")
-public class ExportMusicPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "export_music");
-    private String name;
-    private boolean messageIsValid;
+public record ExportMusicPacket(String name) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ExportMusicPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "export_music"));
+    public static final StreamCodec<FriendlyByteBuf, ExportMusicPacket> PACKET_CODEC = StreamCodec.ofMember(ExportMusicPacket::encode, ExportMusicPacket::decode);
 
-    public ExportMusicPacket(String name) {
-        this.name = name;
-    }
-
-    public ExportMusicPacket() {
-        this.messageIsValid = false;
-    }
-
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         buf.writeUtf(name);
         return buf;
     }
 
     public static ExportMusicPacket decode(FriendlyByteBuf buf) {
-        ExportMusicPacket result = new ExportMusicPacket();
         try {
-            result.name = buf.readUtf(64);
+            String name = buf.readUtf(64);
+            return new ExportMusicPacket(name);
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading ExportMusicPacket: " + ioe);
             return null;
         }
-        result.messageIsValid = true;
-        return result;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
     }
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }

@@ -31,7 +31,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
     static public RenderEntityEasel theInstance;
-    static private final ResourceLocation woodTexture = new ResourceLocation(Mod.modId, "textures/block/birch_long.png");
+    static private final ResourceLocation woodTexture = new ResourceLocation(Mod.MODID, "textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -86,10 +86,10 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     }
 
     @Override
-    protected void renderNameTag(EntityEasel easel, Component component, PoseStack poseStack, MultiBufferSource bufferSource, int p_115087_) {
+    protected void renderNameTag(EntityEasel easel, Component displayName, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float partialTick) {
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, p_115087_);
+        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, buffer, packedLight, partialTick);
         poseStack.popPose();
     }
 

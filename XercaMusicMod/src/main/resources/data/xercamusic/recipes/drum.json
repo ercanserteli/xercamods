@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -8,6 +7,5 @@
         " p "
     ],
     "key": {"p": {"tag": "minecraft:planks"}, "l": {"item": "minecraft:leather"}},
-    "result": {"item": "xercamusic:drum"}
+    "result": {"id": "xercamusic:drum"}
 }
-        

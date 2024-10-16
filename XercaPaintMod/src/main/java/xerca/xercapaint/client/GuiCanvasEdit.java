@@ -5,23 +5,22 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercapaint.CanvasType;
-import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
 import xerca.xercapaint.entity.EntityEasel;
+import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.CanvasMiniUpdatePacket;
 import xerca.xercapaint.packets.CanvasUpdatePacket;
 import xerca.xercapaint.packets.EaselLeftPacket;
@@ -68,7 +67,7 @@ public class GuiCanvasEdit extends BasePalette {
     private boolean isSigned = false;
     private int[] pixels;
     private String canvasTitle = "";
-    private String name = "";
+    private String canvasId = "";
     private int version = 0;
     private final EntityEasel easel;
     private int timeSinceLastUpdate = 0;
@@ -91,8 +90,8 @@ public class GuiCanvasEdit extends BasePalette {
     private static final int maxUndoLength = 16;
     private final Deque<int[]> undoStack = new ArrayDeque<>(maxUndoLength);
 
-    protected GuiCanvasEdit(Player player, CompoundTag canvasTag, CompoundTag paletteTag, Component title, CanvasType canvasType, EntityEasel easel) {
-        super(title, paletteTag);
+    protected GuiCanvasEdit(Player player, ItemStack canvasStack, ItemStack paletteStack, Component title, CanvasType canvasType, EntityEasel easel) {
+        super(title, paletteStack);
         updateCount = 0;
 
         this.canvasType = canvasType;
@@ -105,27 +104,22 @@ public class GuiCanvasEdit extends BasePalette {
         this.easel = easel;
 
         this.editingPlayer = player;
-        if (canvasTag != null && !canvasTag.isEmpty()) {
-            int[] nbtPixels = canvasTag.getIntArray("pixels");
-            this.canvasTitle = canvasTag.getString("title");
-            this.name = canvasTag.getString("name");
-            this.version = canvasTag.getInt("v");
+        List<Integer> stackPixels = canvasStack.get(Items.CANVAS_PIXELS);
+        String canvasId = canvasStack.get(Items.CANVAS_ID);
+        if (stackPixels != null && canvasId != null){
+            this.pixels =  stackPixels.stream().mapToInt(i->i).toArray();
+            this.canvasId = canvasId;
+            this.version = canvasStack.getOrDefault(Items.CANVAS_VERSION, 1);
 
-            this.pixels =  Arrays.copyOfRange(nbtPixels, 0, canvasPixelArea);
-        } else {
-            this.isSigned = false;
+            canvasTitle = canvasStack.getOrDefault(Items.CANVAS_TITLE, "");
+            isSigned = !canvasTitle.isEmpty();
         }
-
-        if (this.pixels == null) {
+        else {
             this.pixels = new int[canvasPixelArea];
             Arrays.fill(this.pixels, basicColors[15].rgbVal());
 
             long secs = System.currentTimeMillis()/1000;
-            this.name = player.getUUID() + "_" + secs;
-        }
-
-        if(paletteComplete){
-            Mod.LOGGER.warn("Is complete");
+            this.canvasId = player.getUUID() + "_" + secs;
         }
     }
 
@@ -521,13 +515,17 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
+    private static boolean isAllowedChatCharacter(char var0) {
+        return var0 != 167 && var0 >= ' ' && var0 != 127;
+    }
+
     @Override
     public boolean charTyped(char typedChar, int something) {
         super.charTyped(typedChar, something);
 
         if (!this.isSigned) {
             if (this.gettingSigned) {
-                if (this.canvasTitle.length() < 16 && SharedConstants.isAllowedChatCharacter(typedChar)) {
+                if (this.canvasTitle.length() < 16 && isAllowedChatCharacter(typedChar)) {
                     this.canvasTitle = this.canvasTitle + typedChar;
                     this.updateButtons();
                 }
@@ -726,17 +724,16 @@ public class GuiCanvasEdit extends BasePalette {
         if(closing){
             if (canvasDirty) {
                 version++;
-                CanvasUpdatePacket pack = new CanvasUpdatePacket(pixels, isSigned, canvasTitle, name, version, easel, customColors, canvasType);
-                ClientPlayNetworking.send(Mod.CANVAS_UPDATE_PACKET_ID, pack.encode());
+                int easelId = easel == null ? -1 : easel.getId();
+                ClientPlayNetworking.send(new CanvasUpdatePacket(pixels, isSigned, canvasTitle, canvasId, version, easelId, customColors, canvasType));
             }
             else{
                 if(easel != null) {
-                    EaselLeftPacket pack = new EaselLeftPacket(easel);
-                    ClientPlayNetworking.send(Mod.EASEL_LEFT_PACKET_ID, pack.encode());
+                    ClientPlayNetworking.send(new EaselLeftPacket(easel.getId()));
                 }
                 if(paletteDirty) {
                     PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
-                    ClientPlayNetworking.send(Mod.PALETTE_UPDATE_PACKET_ID, pack.encode());
+                    ClientPlayNetworking.send(pack);
                 }
             }
         }
@@ -747,8 +744,7 @@ public class GuiCanvasEdit extends BasePalette {
                 }
                 else{
                     version ++;
-                    CanvasMiniUpdatePacket pack = new CanvasMiniUpdatePacket(pixels, name, version, easel, canvasType);
-                    ClientPlayNetworking.send(Mod.CANVAS_MINI_UPDATE_PACKET_ID, pack.encode());
+                    ClientPlayNetworking.send(new CanvasMiniUpdatePacket(pixels, canvasId, version, easel.getId(), canvasType));
                     canvasDirty = false;
                     timeSinceLastUpdate = 0;
                 }

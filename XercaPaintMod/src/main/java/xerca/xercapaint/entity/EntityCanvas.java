@@ -16,9 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +33,8 @@ import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.PictureRequestPacket;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,24 +45,26 @@ public class EntityCanvas extends HangingEntity {
     private int canvasGeneration = 0;
     private boolean canvasSigned;
     private int tickCounter1 = 0;
-    private static final EntityDataAccessor<String> CANVAS_NAME = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> CANVAS_ID = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> CANVAS_VERSION = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Byte> CANVAS_TYPE_KEY = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> CANVAS_ROTATION = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);
     public static final Map<String, Picture> PICTURES = Maps.newHashMap();
     public static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
 
-    public EntityCanvas(Level world, CompoundTag canvasNBT, BlockPos pos, Direction facing, CanvasType canvasType, int rotation) {
+    public EntityCanvas(Level world, ItemStack stack, BlockPos pos, Direction facing, CanvasType canvasType, int rotation) {
         super(Entities.CANVAS, world, pos);
-        String name = canvasNBT.getString("name");
-        int version = canvasNBT.getInt("v");
-        this.setCanvasName(name);
+        String id = stack.get(Items.CANVAS_ID);
+        int version = stack.getOrDefault(Items.CANVAS_VERSION, 0);
+        String title = stack.get(Items.CANVAS_TITLE);
+        String author = stack.get(Items.CANVAS_AUTHOR);
+        this.setCanvasName(id);
         this.setVersion(version);
-        if(canvasNBT.contains("title") && canvasNBT.contains("author")){
+        if(title != null && author != null){
             this.canvasSigned = true;
-            this.canvasTitle = canvasNBT.getString("title");
-            this.canvasAuthor = canvasNBT.getString("author");
-            this.canvasGeneration = canvasNBT.getInt("generation");
+            this.canvasTitle = title;
+            this.canvasAuthor = author;
+            this.canvasGeneration = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
         }else{
             this.canvasSigned = false;
         }
@@ -70,28 +72,33 @@ public class EntityCanvas extends HangingEntity {
         this.setRotation(rotation);
         this.setDirection(facing);
 
-        Picture picture = PICTURES.get(name);
+        Picture picture = PICTURES.get(id);
         if(picture == null || picture.version < version){
-            PICTURES.put(name, new Picture(version, canvasNBT.getIntArray("pixels")));
+            int[] pixels = null;
+            List<Integer> pixelList = stack.get(Items.CANVAS_PIXELS);
+            if (pixelList != null) {
+                pixels = pixelList.stream().mapToInt(i->i).toArray();
+            }
+            PICTURES.put(id, new Picture(version, pixels));
         }
     }
 
     public EntityCanvas(EntityType<? extends HangingEntity> entityCanvasEntityType, Level world) {
         super(entityCanvasEntityType, world);
 
-        Picture picture = PICTURES.get(getCanvasName());
-        if(picture == null || picture.version < getVersion()){
+        Picture picture = PICTURES.get(getCanvasID());
+        if(world.isClientSide && (picture == null || picture.version < getVersion())){
             requestPicture();
         }
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.getEntityData().define(CANVAS_NAME, "");
-        this.getEntityData().define(CANVAS_VERSION, 0);
-        this.getEntityData().define(CANVAS_TYPE_KEY, (byte)0);
-        this.getEntityData().define(CANVAS_ROTATION, (byte)0);
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CANVAS_ID, "");
+        builder.define(CANVAS_VERSION, 0);
+        builder.define(CANVAS_TYPE_KEY, (byte)0);
+        builder.define(CANVAS_ROTATION, (byte)0);
     }
 
     @Override
@@ -109,11 +116,6 @@ public class EntityCanvas extends HangingEntity {
     @Override
     public int getHeight() {
         return CanvasType.getHeight(getCanvasType());
-    }
-
-    @Override
-    protected float getEyeHeight(@NotNull Pose poseIn, @NotNull EntityDimensions sizeIn) {
-        return 0.0F;
     }
 
     @Override
@@ -142,21 +144,18 @@ public class EntityCanvas extends HangingEntity {
                 Mod.LOGGER.error("Invalid canvas type");
                 return;
             }
-            CompoundTag nbt = new CompoundTag();
-            nbt.putString("name", getCanvasName());
-            nbt.putInt("v", getVersion());
-            nbt.putInt("generation", 0);
-            if (canvasSigned) {
-                nbt.putString("author", canvasAuthor);
-                nbt.putString("title", canvasTitle);
-                nbt.putInt("generation", canvasGeneration);
-            }
-            Picture picture = PICTURES.get(getCanvasName());
-            if(picture != null){
-                nbt.putIntArray("pixels", picture.pixels);
-            }
 
-            canvasItem.setTag(nbt);
+            canvasItem.set(Items.CANVAS_ID, getCanvasID());
+            canvasItem.set(Items.CANVAS_VERSION, getVersion());
+            if (canvasSigned) {
+                canvasItem.set(Items.CANVAS_AUTHOR, canvasAuthor);
+                canvasItem.set(Items.CANVAS_TITLE, canvasTitle);
+                canvasItem.set(Items.CANVAS_GENERATION, canvasGeneration);
+            }
+            Picture picture = PICTURES.get(getCanvasID());
+            if(picture != null){
+                canvasItem.set(Items.CANVAS_PIXELS, Arrays.stream(picture.pixels).boxed().toList());
+            }
             this.spawnAtLocation(canvasItem);
         }
     }
@@ -267,12 +266,12 @@ public class EntityCanvas extends HangingEntity {
         this.getEntityData().set(CANVAS_ROTATION, (byte)(rotation % 4));
     }
 
-    public String getCanvasName() {
-        return this.getEntityData().get(CANVAS_NAME);
+    public String getCanvasID() {
+        return this.getEntityData().get(CANVAS_ID);
     }
 
-    private void setCanvasName(String canvasName) {
-        this.getEntityData().set(CANVAS_NAME, canvasName);
+    private void setCanvasName(String canvasID) {
+        this.getEntityData().set(CANVAS_ID, canvasID);
     }
 
     public int getVersion() {
@@ -314,8 +313,8 @@ public class EntityCanvas extends HangingEntity {
             canvasNBT = tagCompound.getCompound("canvas");
         }
         this.canvasSigned = canvasNBT.contains("author") && canvasNBT.contains("title");
-        String name = canvasNBT.getString("name");
-        this.setCanvasName(name);
+        String canvasId = canvasNBT.getString("name");
+        this.setCanvasName(canvasId);
         int version = canvasNBT.getInt("v");
         this.setVersion(version);
         if(canvasSigned)
@@ -325,9 +324,9 @@ public class EntityCanvas extends HangingEntity {
             this.canvasGeneration = canvasNBT.getInt("generation");
         }
 
-        Picture picture = PICTURES.get(name);
+        Picture picture = PICTURES.get(canvasId);
         if(picture == null || picture.version < version){
-            PICTURES.put(name, new Picture(version, canvasNBT.getIntArray("pixels")));
+            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels")));
         }
 
         CanvasType canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
@@ -354,7 +353,7 @@ public class EntityCanvas extends HangingEntity {
         tagCompound.putInt("TileX", blockpos.getX());
         tagCompound.putInt("TileY", blockpos.getY());
         tagCompound.putInt("TileZ", blockpos.getZ());
-        tagCompound.putString("name", getCanvasName());
+        tagCompound.putString("name", getCanvasID());
         tagCompound.putInt("v", getVersion());
         if(canvasSigned){
             tagCompound.putString("author", canvasAuthor);
@@ -365,18 +364,17 @@ public class EntityCanvas extends HangingEntity {
         tagCompound.putByte("RealFace", (byte)this.direction.get3DDataValue());
         tagCompound.putByte("Rotation", (byte)this.getRotation());
 
-        Picture picture = PICTURES.get(getCanvasName());
+        Picture picture = PICTURES.get(getCanvasID());
         if(picture != null){
             tagCompound.putIntArray("pixels", picture.pixels);
         }
     }
 
     private void requestPicture(){
-        String name = this.getCanvasName();
-        if(!PICTURE_REQUESTS.contains(name)){
-            PICTURE_REQUESTS.add(name);
-            PictureRequestPacket pack = new PictureRequestPacket(name);
-            ClientPlayNetworking.send(Mod.PICTURE_REQUEST_PACKET_ID, pack.encode());
+        String canvasID = this.getCanvasID();
+        if(!PICTURE_REQUESTS.contains(canvasID)){
+            PICTURE_REQUESTS.add(canvasID);
+            ClientPlayNetworking.send(new PictureRequestPacket(canvasID));
         }
     }
 

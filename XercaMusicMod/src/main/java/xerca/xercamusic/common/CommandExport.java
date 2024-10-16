@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.common.item.ItemMusicSheet;
+import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.clientbound.ExportMusicPacket;
 
 import java.io.File;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -31,14 +32,14 @@ public class CommandExport {
     }
 
     private static int musicExport(CommandSourceStack stack, String name){
-        XercaMusic.LOGGER.debug("Music export called. name: {}", name);
+        Mod.LOGGER.debug("Music export called. name: {}", name);
         if(stack.getEntity() == null){
-            XercaMusic.LOGGER.error("Command entity is not found");
+            Mod.LOGGER.error("Command entity is not found");
             return 0;
         }
         Entity commander = stack.getEntity();
         if(!(commander instanceof ServerPlayer player)){
-            XercaMusic.LOGGER.error("Command entity is not a player");
+            Mod.LOGGER.error("Command entity is not a player");
             return 0;
         }
 
@@ -58,25 +59,55 @@ public class CommandExport {
 
         for(ItemStack s : player.getHandSlots()){
             if(s.getItem() instanceof ItemMusicSheet){
-                if(s.hasTag() && s.getTag() != null){
-                    CompoundTag tag = s.getTag().copy();
-                    if(tag.contains("id") && tag.contains("ver")){
-                        UUID id = tag.getUUID("id");
-                        int ver = tag.getInt("ver");
-                        MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
-                            MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
-                            if(data != null){
-                                NoteEvent.fillNBTFromArray(data.notes, tag);
-                                try {
-                                    NbtIo.write(tag, Path.of(filepath));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                UUID id = s.get(Items.SHEET_ID);
+                int ver = s.getOrDefault(Items.SHEET_VERSION, -1);
+                int length = s.getOrDefault(Items.SHEET_LENGTH, 0);
+                if (id != null && ver >= 0 && length > 0) {
+                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                        if(data != null){
+                            CompoundTag tag = new CompoundTag();
+                            tag.putInt("ver", ver);
+                            tag.putUUID("id", id);
+                            tag.putInt("l", length);
+                            tag.putInt("generation", s.getOrDefault(Items.SHEET_GENERATION, 0));
+                            Byte bps = s.get(Items.SHEET_BPS);
+                            if (bps != null) {
+                                tag.putByte("bps", bps);
                             }
-                        });
-                    }
-                    return true;
+                            Boolean piLocked = s.get(Items.SHEET_PREV_INSTRUMENT_LOCKED);
+                            if (piLocked != null){
+                                tag.putBoolean("piLocked", piLocked);
+                            }
+                            Byte prevIns = s.get(Items.SHEET_PREV_INSTRUMENT);
+                            if (prevIns != null) {
+                                tag.putByte("prevIns", prevIns);
+                            }
+                            String title = s.get(Items.SHEET_TITLE);
+                            String author = s.get(Items.SHEET_AUTHOR);
+                            if (title != null && author != null) {
+                                tag.putString("title", title);
+                                tag.putString("author", author);
+                            }
+                            Byte highlightInterval = s.get(Items.SHEET_HIGHLIGHT_INTERVAL);
+                            if (highlightInterval != null) {
+                                tag.putByte("hl", highlightInterval);
+                            }
+                            Float volume = s.get(Items.SHEET_VOLUME);
+                            if (volume != null) {
+                                tag.putFloat("vol", volume);
+                            }
+
+                            NoteEvent.fillNBTFromArray(data.notes(), tag);
+                            try {
+                                NbtIo.write(tag, Path.of(filepath));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 }
+                return true;
             }
         }
         return false;

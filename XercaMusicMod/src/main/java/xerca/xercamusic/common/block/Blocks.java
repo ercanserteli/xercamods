@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 
 
 public class Blocks {
@@ -18,9 +18,9 @@ public class Blocks {
     public static final Block DRUM_KIT = new BlockDrums();
 
     public static void registerBlocks() {
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(XercaMusic.MODID, "block_metronome"), BLOCK_METRONOME);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(XercaMusic.MODID, "music_box"), MUSIC_BOX);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(XercaMusic.MODID, "piano"), PIANO);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(XercaMusic.MODID, "drum_kit"), DRUM_KIT);
+        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Mod.MODID, "block_metronome"), BLOCK_METRONOME);
+        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Mod.MODID, "music_box"), MUSIC_BOX);
+        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Mod.MODID, "piano"), PIANO);
+        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Mod.MODID, "drum_kit"), DRUM_KIT);
     }
 }

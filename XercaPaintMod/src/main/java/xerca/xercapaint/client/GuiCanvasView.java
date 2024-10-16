@@ -4,18 +4,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityEasel;
+import xerca.xercapaint.item.Items;
 
-import java.util.Arrays;
+import java.util.List;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiCanvasView extends Screen {
-    private int canvasX; // = 140;
+    private int canvasX;
     private int canvasY = 40;
     private final int canvasWidth;
     private final int canvasPixelScale;
@@ -30,25 +31,24 @@ public class GuiCanvasView extends Screen {
     private final EntityEasel easel;
     private final Player player;
 
-    protected GuiCanvasView(CompoundTag canvasTag, Component title, CanvasType canvasType, EntityEasel easel) {
+    protected GuiCanvasView(ItemStack canvasStack, Component title, CanvasType canvasType, EntityEasel easel) {
         super(title);
 
         this.canvasType = canvasType;
         this.canvasPixelScale = canvasType == CanvasType.SMALL ? 10 : 5;
         this.canvasPixelWidth = CanvasType.getWidth(canvasType);
         this.canvasPixelHeight = CanvasType.getHeight(canvasType);
-        int canvasPixelArea = canvasPixelHeight*canvasPixelWidth;
         this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
         this.easel = easel;
         this.player = Minecraft.getInstance().player;
 
-        if (canvasTag != null && !canvasTag.isEmpty()) {
-            int[] nbtPixels = canvasTag.getIntArray("pixels");
-            this.authorName = canvasTag.getString("author");
-            this.canvasTitle = canvasTag.getString("title");
-            this.generation = canvasTag.getInt("generation");
+        List<Integer> stackPixels = canvasStack.get(Items.CANVAS_PIXELS);
+        if (stackPixels != null){
+            this.authorName = canvasStack.get(Items.CANVAS_AUTHOR);
+            this.canvasTitle = canvasStack.getOrDefault(Items.CANVAS_TITLE, "");
+            this.generation = canvasStack.getOrDefault(Items.CANVAS_GENERATION, 0);
 
-            this.pixels =  Arrays.copyOfRange(nbtPixels, 0, canvasPixelArea);
+            this.pixels =  stackPixels.stream().mapToInt(i->i).toArray();
         }
     }
 

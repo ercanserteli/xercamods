@@ -1,26 +1,26 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 
-public class CloseGuiPacket {
-    private boolean messageIsValid;
+public record CloseGuiPacket() implements CustomPacketPayload  {
+    public static final CustomPacketPayload.Type<CloseGuiPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "close_gui"));
+    public static final StreamCodec<FriendlyByteBuf, CloseGuiPacket> PACKET_CODEC = StreamCodec.ofMember(CloseGuiPacket::encode, CloseGuiPacket::decode);
 
-    public CloseGuiPacket() {
-        this.messageIsValid = false;
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+        return buf;
     }
 
-    public FriendlyByteBuf encode() {
-        return PacketByteBufs.empty();
+    public static CloseGuiPacket decode(FriendlyByteBuf buf) {
+        return new CloseGuiPacket();
     }
 
-    public static CloseGuiPacket decode() {
-        CloseGuiPacket result = new CloseGuiPacket();
-        result.messageIsValid = true;
-        return result;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }

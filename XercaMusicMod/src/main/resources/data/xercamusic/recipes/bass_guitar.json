@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -8,6 +7,5 @@
         "rpr"
     ],
     "key": {"p": {"item": "minecraft:spruce_planks"}, "s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:string"}, "r": {"item": "minecraft:redstone"}},
-    "result": {"item": "xercamusic:bass_guitar"}
+    "result": {"id": "xercamusic:bass_guitar"}
 }
-        

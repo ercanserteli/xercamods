@@ -1,7 +1,7 @@
 package xerca.xercamusic.client;
 
 import net.minecraft.client.Minecraft;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 
 import javax.sound.midi.*;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class MidiHandler
             try {
                 device = MidiSystem.getMidiDevice(info);
 
-                XercaMusic.LOGGER.debug(info);
+                Mod.LOGGER.debug(info);
                 List<Transmitter> transmitters = device.getTransmitters();
 
                 for (Transmitter transmitter : transmitters) {
@@ -42,10 +42,10 @@ public class MidiHandler
                 device.open();
                 devices.add(device);
 
-                XercaMusic.LOGGER.debug("{} was opened", device.getDeviceInfo());
+                Mod.LOGGER.debug("{} was opened", device.getDeviceInfo());
 
             } catch (MidiUnavailableException exception) {
-                XercaMusic.LOGGER.debug("Midi unavailable: {}", exception.getMessage());
+                Mod.LOGGER.debug("Midi unavailable: {}", exception.getMessage());
             }
         }
     }

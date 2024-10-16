@@ -17,7 +17,10 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
@@ -89,8 +92,8 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.getEntityData().define(DATA_CANVAS, ItemStack.EMPTY);
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+        builder.define(DATA_CANVAS, ItemStack.EMPTY);
     }
 
     public void dropItem(@Nullable Entity entity) {
@@ -102,7 +105,7 @@ public class EntityEasel extends Entity {
             if(!this.level().isClientSide){
                 if(dropDeferred == null){
                     CloseGuiPacket pack = new CloseGuiPacket();
-                    ServerPlayNetworking.send((ServerPlayer) painter, Mod.CLOSE_GUI_PACKET_ID, pack.encode());
+                    ServerPlayNetworking.send((ServerPlayer) painter, pack);
                     dropDeferred = () -> doDrop(entity, dropSelf);
                 }
             }
@@ -192,7 +195,7 @@ public class EntityEasel extends Entity {
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         if (!this.getItem().isEmpty()) {
-            tag.put("Item", this.getItem().save(new CompoundTag()));
+            tag.put("Item", this.getItem().save(this.registryAccess()));
         }
     }
 
@@ -200,11 +203,11 @@ public class EntityEasel extends Entity {
     public void readAdditionalSaveData(CompoundTag tag) {
         CompoundTag itemTag = tag.getCompound("Item");
         if (!itemTag.isEmpty()) {
-            ItemStack var3 = ItemStack.of(itemTag);
-            if (var3.isEmpty()) {
+            ItemStack itemStack = ItemStack.parseOptional(this.registryAccess(), itemTag);
+            if (itemStack.isEmpty()) {
                 Mod.LOGGER.warn("Unable to load item from: {}", itemTag);
             }
-            this.setItem(var3, false);
+            this.setItem(itemStack, false);
         }
     }
 
@@ -225,10 +228,10 @@ public class EntityEasel extends Entity {
                 }
             }else{
                 boolean unused = this.painter == null;
-                boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag() != null && getItem().getTag().getInt("generation") > 0);
+                boolean toEdit = handHoldsPalette && !(getItem().getOrDefault(Items.CANVAS_GENERATION, 0) > 0);
                 boolean allowed = unused || !toEdit;
                 OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
-                ServerPlayNetworking.send((ServerPlayer) player, Mod.OPEN_GUI_PACKET_ID, pack.encode());
+                ServerPlayNetworking.send((ServerPlayer) player, pack);
                 if(toEdit && allowed){
                     this.painter = player;
                 }
@@ -276,12 +279,6 @@ public class EntityEasel extends Entity {
     @Override
     public boolean isPickable() {
         return true;
-    }
-
-
-    @Override
-    public void setItemSlot(@NotNull EquipmentSlot equipmentSlot, @NotNull ItemStack itemStack) {
-
     }
 
 }

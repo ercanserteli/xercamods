@@ -1,10 +1,8 @@
 package xerca.xercapaint.item;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringUtil;
@@ -13,6 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HangingEntityItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -32,7 +31,7 @@ public class ItemCanvas extends HangingEntityItem {
     private final CanvasType canvasType;
 
     ItemCanvas(CanvasType canvasType) {
-        super(Entities.CANVAS, new FabricItemSettings().stacksTo(1));
+        super(Entities.CANVAS, new Item.Properties().stacksTo(1));
         this.canvasType = canvasType;
     }
 
@@ -59,8 +58,9 @@ public class ItemCanvas extends HangingEntityItem {
             } else {
                 Level world = context.getLevel();
 
-                CompoundTag tag = itemstack.getTag();
-                if (tag == null || !tag.contains("pixels") || !tag.contains("name")) {
+                String canvasId = itemstack.get(Items.CANVAS_ID);
+                List<Integer> canvasPixles = itemstack.get(Items.CANVAS_PIXELS);
+                if (canvasId == null || canvasPixles == null) {
                     if (context.getLevel().isClientSide) {
                         ModClient.showCanvasGui(player);
                     }
@@ -70,7 +70,7 @@ public class ItemCanvas extends HangingEntityItem {
                 int rotation = getRotation(direction, blockpos, player);
 
                 if (!world.isClientSide) {
-                    EntityCanvas entityCanvas = new EntityCanvas(world, tag, pos, direction, canvasType, rotation);
+                    EntityCanvas entityCanvas = new EntityCanvas(world, itemstack, pos, direction, canvasType, rotation);
 
                     if (entityCanvas.survives()) {
                         entityCanvas.playPlacementSound();
@@ -107,33 +107,22 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     public static boolean hasTitle(@Nonnull ItemStack stack){
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            if(tag != null){
-                String s = tag.getString("title");
-                return !StringUtil.isNullOrEmpty(s);
-            }
-        }
-        return false;
+        return !StringUtil.isNullOrEmpty(stack.get(Items.CANVAS_TITLE));
     }
 
     public static Component getFullLabel(@Nonnull ItemStack stack){
         String labelString = "";
-        int generation = 0;
         Component title = getCustomTitle(stack);
         if(title != null){
             labelString += (title.getString() + " ");
         }
-        if (stack.hasTag() && stack.getTag() != null) {
-            CompoundTag tag = stack.getTag();
-            String s = tag.getString("author");
+        String author = stack.get(Items.CANVAS_AUTHOR);
 
-            if (!StringUtil.isNullOrEmpty(s)) {
-                labelString += (Component.translatable("canvas.byAuthor", s)).getString() + " ";
-            }
-
-            generation = tag.getInt("generation");
+        if (!StringUtil.isNullOrEmpty(author)) {
+            labelString += (Component.translatable("canvas.byAuthor", author)).getString() + " ";
         }
+
+        int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
         MutableComponent label = Component.literal(labelString);
         if(generation == 1){
             label.withStyle(ChatFormatting.YELLOW);
@@ -146,14 +135,9 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Nullable
     public static Component getCustomTitle(@Nonnull ItemStack stack){
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            if(tag != null){
-                String s = tag.getString("title");
-                if (!StringUtil.isNullOrEmpty(s)) {
-                    return Component.literal(s);
-                }
-            }
+        String s = stack.get(Items.CANVAS_TITLE);
+        if (!StringUtil.isNullOrEmpty(s)) {
+            return Component.literal(s);
         }
         return null;
     }
@@ -170,36 +154,29 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (stack.hasTag() && stack.getTag() != null) {
-            CompoundTag tag = stack.getTag();
-            String s = tag.getString("author");
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        List<Integer> pixels = stack.get(Items.CANVAS_PIXELS);
+        if (pixels != null) {
+            String author = stack.get(Items.CANVAS_AUTHOR);
 
-            if (!StringUtil.isNullOrEmpty(s)) {
-                tooltip.add(Component.translatable("canvas.byAuthor", s));
+            if (!StringUtil.isNullOrEmpty(author)) {
+                tooltipComponents.add(Component.translatable("canvas.byAuthor", author));
             }
 
-            int generation = tag.getInt("generation");
+            int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltip.add((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
+                tooltipComponents.add((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
             }
         }else{
-            tooltip.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
     }
 
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public boolean isFoil(ItemStack stack) {
-        if(stack.hasTag()){
-            CompoundTag tag = stack.getTag();
-            if(tag != null) {
-                int generation = tag.getInt("generation");
-                return generation > 0;
-            }
-        }
-        return false;
+        return stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0;
     }
 
     public int getWidth() {

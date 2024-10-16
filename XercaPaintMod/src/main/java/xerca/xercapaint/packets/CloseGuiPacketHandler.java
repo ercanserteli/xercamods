@@ -1,18 +1,15 @@
 package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.FriendlyByteBuf;
 
-public class CloseGuiPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
+public class CloseGuiPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<CloseGuiPacket> {
     private static void processMessage() {
         Minecraft.getInstance().setScreen(null);
     }
 
     @Override
-    public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        client.execute(CloseGuiPacketHandler::processMessage);
+    public void receive(CloseGuiPacket payload, ClientPlayNetworking.Context context) {
+        context.client().execute(CloseGuiPacketHandler::processMessage);
     }
 }

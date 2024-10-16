@@ -4,6 +4,7 @@ package xerca.xercamusic.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -19,7 +20,7 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 
 import java.util.List;
 
-import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
+import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 
 public abstract class BlockInstrument extends Block {
     public BlockInstrument(Properties properties) {
@@ -28,24 +29,28 @@ public abstract class BlockInstrument extends Block {
 
     public abstract IItemInstrument getItemInstrument();
 
+
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         if(new Vec3(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.position()) > 4){
-            return InteractionResult.PASS;
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
         ItemStack handStack = player.getItemInHand(hand);
         if(handStack.getItem() instanceof ItemMusicSheet){
-            playMusic(worldIn, player, pos);
-            return InteractionResult.SUCCESS;
+            playMusic(level, player, pos);
+            return ItemInteractionResult.SUCCESS;
         }
-        else{
-            ItemStack offhandStack = player.getItemInHand(InteractionHand.values()[(hand.ordinal() + 1)%2]);
-            if(!(offhandStack.getItem() instanceof ItemMusicSheet)){
-                if (worldIn.isClientSide) {
-                    onlyRunOnClient(() -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
-                }
-                return InteractionResult.SUCCESS;
-            }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, BlockPos pos, Player player, @NotNull BlockHitResult hitResult)  {
+        if(new Vec3(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.position()) > 4){
+            return InteractionResult.PASS;
+        }
+        if (level.isClientSide) {
+            onlyRunOnClient(() -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

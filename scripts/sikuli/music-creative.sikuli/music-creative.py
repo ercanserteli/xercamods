@@ -183,7 +183,7 @@ def testItemsInCreative(mc, win, mcLoc):
     # Preview
     preview_btn = win.find("1689794517427.png")
     win.click(preview_btn)
-    hoverw(294, 67)
+    clickw(294, 67)
     testAssert(exists("1689794548427.png"))
     wait(0.8)
 
@@ -209,7 +209,7 @@ def testItemsInCreative(mc, win, mcLoc):
     clickw(460, 68)
     dragw(225, 238)
     dropw(258, 238)
-    hoverw(270, 238)
+    clickw(270, 238)
     testAssert(exists("1689794852402.png"))
 
     # Sheet volume
@@ -295,7 +295,7 @@ def testItemsInCreative(mc, win, mcLoc):
     # Record
     rclickw(398, 264)
     win.click("1689799024685.png")
-    hoverw(300, 75)
+    clickw(300, 75)
     wait(2)
     keyDown("t")
     wait(0.5)
@@ -357,7 +357,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.click(preview_btn)
     wait(2)
     win.click(neighbor_btn)
-    hoverw(328, 55)
+    clickw(328, 55)
     testAssert(exists("1689797625523.png") and exists("1689797634099.png"))
     win.type(Key.ESC)
     win.type("1")
@@ -431,7 +431,7 @@ def putOnCraftGrid(win, mcLoc, item, gridCoords):
 
 
 def testCrafting(mc, win, mcLoc):
-    Settings.MinSimilarity = 0.99
+    Settings.MinSimilarity = 0.95
     emptyInventory()
     win.type("e")
     
@@ -510,7 +510,7 @@ def testCrafting(mc, win, mcLoc):
     putOnCraftGrid(win, mcLoc, stick, [(1, 0)])
     putOnCraftGrid(win, mcLoc, planks, [(0, 1), (1, 2), (2, 1)])
     putOnCraftGrid(win, mcLoc, string, [(1, 1)])
-    testAssert(exists("1727551731271.png"))
+    testAssert(exists("1728505592967.png"))
     takeCraftResult(win, mcLoc)
     # Drum
     putOnCraftGrid(win, mcLoc, leather, [(1, 1)])

@@ -5,5 +5,5 @@
         "cc"
     ],
     "key": {"c": {"item": "xercapaint:item_canvas"}},
-    "result": {"item": "xercapaint:item_canvas_long"}
+    "result": {"id": "xercapaint:item_canvas_long"}
 }

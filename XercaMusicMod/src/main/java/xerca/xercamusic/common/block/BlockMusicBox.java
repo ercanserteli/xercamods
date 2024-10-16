@@ -6,7 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -77,7 +77,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
             if (blockEntity instanceof TileEntityMusicBox te) {
                 ItemStack itemstack;
                 if (isMusic) {
-                    itemstack = te.getNoteStack();
+                    itemstack = te.getSheetStack();
                 } else {
                     IItemInstrument instrument = te.getInstrument();
                     itemstack = instrument != null ? new ItemStack((ItemLike) instrument) : ItemStack.EMPTY;
@@ -85,7 +85,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
                 if (!itemstack.isEmpty()) {
                     if (!isBreaking) {
                         if (isMusic) {
-                            te.removeNoteStack();
+                            te.removeSheetStack();
                             world.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.FALSE), 3);
                         }
                         else {
@@ -117,10 +117,10 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
         }
     }
 
-    public static void insertMusic(LevelAccessor worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
+    public static void insertMusic(LevelAccessor worldIn, BlockPos pos, BlockState state, ItemStack sheetStack) {
         BlockEntity blockEntity = worldIn.getBlockEntity(pos);
         if (blockEntity instanceof TileEntityMusicBox) {
-            ((TileEntityMusicBox) blockEntity).setNoteStack(noteStack, true);
+            ((TileEntityMusicBox) blockEntity).setSheetStack(sheetStack, true);
             worldIn.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.TRUE), 3);
         }
     }
@@ -135,23 +135,23 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
+    public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, BlockHitResult hitResult) {
         ItemStack heldItem = player.getItemInHand(hand);
-        if (hit.getDirection() == Direction.UP && state.getValue(HAS_MUSIC)) {
+        if (hitResult.getDirection() == Direction.UP && state.getValue(HAS_MUSIC)) {
             if(heldItem.getItem() instanceof IItemInstrument && !state.getValue(HAS_INSTRUMENT)){
-                return InteractionResult.PASS;
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
-            ejectItem(worldIn, pos, state, true, false);
-            return InteractionResult.SUCCESS;
-        } else if (hit.getDirection() == state.getValue(FACING).getOpposite() && state.getValue(HAS_INSTRUMENT)) {
+            ejectItem(level, pos, state, true, false);
+            return ItemInteractionResult.SUCCESS;
+        } else if (hitResult.getDirection() == state.getValue(FACING).getOpposite() && state.getValue(HAS_INSTRUMENT)) {
             if(heldItem.getItem() == Items.MUSIC_SHEET && !state.getValue(HAS_MUSIC)){
-                return InteractionResult.PASS;
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
-            worldIn.playSound(player, pos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1.0F, worldIn.getRandom().nextFloat() * 0.1F + 0.9F);
-            ejectItem(worldIn, pos, state, false, false);
-            return InteractionResult.SUCCESS;
+            level.playSound(player, pos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+            ejectItem(level, pos, state, false, false);
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

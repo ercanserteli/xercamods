@@ -1,33 +1,28 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import xerca.xercamusic.common.packets.clientbound.SingleNoteClientPacket;
 
 import java.util.Collection;
 
-import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.Mod.sendToClient;
 
-public class SingleNotePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
+public class SingleNotePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<SingleNotePacket> {
      private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
         Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) pl.level(), pl.position(), 24.0D);
-        SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.getNote(), msg.getInstrumentItem(), pl, msg.isStop(), msg.getVolume());
+        SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.note(), msg.instrumentItem(), pl, msg.isStop(), msg.volume());
         for(ServerPlayer player : players){
             sendToClient(player, packet);
         }
     }
 
     @Override
-    public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        SingleNotePacket packet = SingleNotePacket.decode(buf);
+    public void receive(SingleNotePacket packet, ServerPlayNetworking.Context context) {
         if(packet != null){
-            server.execute(()->processMessage(packet, player));
+            context.server().execute(()->processMessage(packet, context.player()));
         }
     }
 }

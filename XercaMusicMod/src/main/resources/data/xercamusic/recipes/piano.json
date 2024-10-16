@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -8,6 +7,5 @@
         "ppp"
     ],
     "key": {"s": {"item": "minecraft:string"}, "i": {"item": "minecraft:iron_nugget"}, "p": {"tag": "minecraft:planks"}},
-    "result": {"item": "xercamusic:piano"}
+    "result": {"id": "xercamusic:piano"}
 }
-        

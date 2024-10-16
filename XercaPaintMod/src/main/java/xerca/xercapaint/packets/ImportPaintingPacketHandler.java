@@ -1,31 +1,24 @@
 package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import xerca.xercapaint.Mod;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
+public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<ImportPaintingPacket> {
 
     private static void processMessage(ImportPaintingPacket msg) {
-        String filename = msg.getName() + ".paint";
+        String filename = msg.canvasId() + ".paint";
         String filepath = "paintings/" + filename;
         try {
             CompoundTag tag = NbtIo.read(Path.of(filepath));
-
-            ImportPaintingSendPacket pack = new ImportPaintingSendPacket(tag);
-            ClientPlayNetworking.send(Mod.IMPORT_PAINTING_SEND_PACKET_ID, pack.encode());
+            ClientPlayNetworking.send(new ImportPaintingSendPacket(tag));
         } catch (IOException e) {
             e.printStackTrace();
             LocalPlayer player = Minecraft.getInstance().player;
@@ -36,10 +29,7 @@ public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayCha
     }
 
     @Override
-    public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        ImportPaintingPacket packet = ImportPaintingPacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
-        }
+    public void receive(ImportPaintingPacket packet, ClientPlayNetworking.Context context) {
+        context.client().execute(()->processMessage(packet));
     }
 }

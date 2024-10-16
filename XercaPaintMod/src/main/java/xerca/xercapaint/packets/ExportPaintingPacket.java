@@ -1,43 +1,27 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 
-public class ExportPaintingPacket {
-    private String name;
-    private boolean messageIsValid;
+public record ExportPaintingPacket(String canvasId) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ExportPaintingPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "export_painting"));
+    public static final StreamCodec<FriendlyByteBuf, ExportPaintingPacket> PACKET_CODEC = StreamCodec.ofMember(ExportPaintingPacket::encode, ExportPaintingPacket::decode);
 
-    public ExportPaintingPacket(String name) {
-        this.name = name;
-    }
-
-    public ExportPaintingPacket() {
-        this.messageIsValid = false;
-    }
-
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeUtf(name);
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+        buf.writeUtf(canvasId);
         return buf;
     }
 
     public static ExportPaintingPacket decode(FriendlyByteBuf buf) {
-        ExportPaintingPacket result = new ExportPaintingPacket();
-        try {
-            result.name = buf.readUtf(64);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ExportPaintingPacket: " + ioe);
-            return null;
-        }
-        result.messageIsValid = true;
-        return result;
+        return new ExportPaintingPacket(buf.readUtf(64));
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }
