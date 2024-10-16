@@ -1,12 +1,7 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.Mod;
@@ -15,23 +10,23 @@ import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-import static xerca.xercapaint.PaletteUtil.writeCustomColorArrayToNBT;
+import java.util.Arrays;
 
-public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
+public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<CanvasUpdatePacket> {
 
     public static void processMessage(CanvasUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
         ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.getEaselId() > -1){
-            entityEasel = pl.level().getEntity(msg.getEaselId());
+        if(msg.easelId() > -1){
+            entityEasel = pl.level().getEntity(msg.easelId());
             if(entityEasel == null){
-                Mod.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.getEaselId());
+                Mod.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.easelId());
                 return;
             }
             if(!(entityEasel instanceof EntityEasel easel)){
-                Mod.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.getEaselId());
+                Mod.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
             canvas = easel.getItem();
@@ -61,21 +56,18 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
         }
 
         if (!canvas.isEmpty() && canvas.getItem() instanceof ItemCanvas) {
-            CompoundTag comp = canvas.getOrCreateTag();
-
-            comp.putIntArray("pixels", msg.getPixels());
-            comp.putString("name", msg.getName());
-            comp.putInt("v", msg.getVersion());
-            comp.putInt("generation", 0);
-            if (msg.getSigned()) {
-                comp.putString("author", pl.getName().getString());
-                comp.putString("title", msg.getTitle().trim());
-                comp.putInt("generation", 1);
+            canvas.set(Items.CANVAS_PIXELS, Arrays.stream(msg.pixels()).boxed().toList());
+            canvas.set(Items.CANVAS_ID, msg.canvasId());
+            canvas.set(Items.CANVAS_VERSION, msg.version());
+            canvas.set(Items.CANVAS_GENERATION, 0);
+            if (msg.signed()) {
+                canvas.set(Items.CANVAS_AUTHOR, pl.getName().getString());
+                canvas.set(Items.CANVAS_TITLE, msg.title().trim());
+                canvas.set(Items.CANVAS_GENERATION, 1);
             }
 
             if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
-                CompoundTag paletteComp = palette.getOrCreateTag();
-                writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
+                palette.set(Items.PALETTE_CUSTOM_COLORS, new ItemPalette.ComponentCustomColor(msg.paletteColors()));
             }
 
             if(entityEasel instanceof EntityEasel easel){
@@ -83,15 +75,12 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
                 easel.setPainter(null);
             }
 
-            Mod.LOGGER.debug("Handling canvas update: Name: {} V: {}", msg.getName(), msg.getVersion());
+            Mod.LOGGER.debug("Handling canvas update: Name: {} V: {}", msg.canvasId(), msg.version());
         }
     }
 
     @Override
-    public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        CanvasUpdatePacket packet = CanvasUpdatePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
-        }
+    public void receive(CanvasUpdatePacket packet, ServerPlayNetworking.Context context) {
+        context.server().execute(()->processMessage(packet, context.player()));
     }
 }

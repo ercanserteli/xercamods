@@ -1,74 +1,37 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.IPacket;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.Mod;
 
 import java.util.UUID;
 
-public class MusicDataRequestPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_data_request");
-    private UUID id;
-    private int version;
-    private boolean messageIsValid;
-
-    public MusicDataRequestPacket(UUID id, int version) {
-        this.id = id;
-        this.version = version;
-    }
-
-    public MusicDataRequestPacket() {
-        this.messageIsValid = false;
-    }
+public record MusicDataRequestPacket(UUID id, int version) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MusicDataRequestPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "music_data_request"));
+    public static final StreamCodec<FriendlyByteBuf, MusicDataRequestPacket> PACKET_CODEC = StreamCodec.ofMember(MusicDataRequestPacket::encode, MusicDataRequestPacket::decode);
 
     public static MusicDataRequestPacket decode(FriendlyByteBuf buf) {
-        MusicDataRequestPacket result = new MusicDataRequestPacket();
         try {
-            result.id = buf.readUUID();
-            result.version = buf.readInt();
+            UUID id = buf.readUUID();
+            int version = buf.readInt();
+            return new MusicDataRequestPacket(id, version);
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket:", ioe);
+            Mod.LOGGER.error("Exception while reading MusicDataRequestPacket:", ioe);
             return null;
         }
-        result.messageIsValid = true;
-        return result;
     }
 
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeUUID(getId());
-        buf.writeInt(getVersion());
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+        buf.writeUUID(id());
+        buf.writeInt(version());
         return buf;
     }
 
-    @SuppressWarnings("unused")
-    public boolean isMessageValid() {
-        return messageIsValid;
-    }
-
-
-    public UUID getId() {
-        return id;
-    }
-
-    @SuppressWarnings("unused")
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    @SuppressWarnings("unused")
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }

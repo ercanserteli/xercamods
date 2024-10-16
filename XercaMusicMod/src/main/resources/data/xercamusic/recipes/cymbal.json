@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -8,6 +7,5 @@
         " g "
     ],
     "key": {"g": {"item": "minecraft:gold_nugget"}, "i": {"item": "minecraft:iron_nugget"}},
-    "result": {"item": "xercamusic:cymbal"}
+    "result": {"id": "xercamusic:cymbal"}
 }
-        

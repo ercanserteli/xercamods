@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.netty.buffer.Unpooled;
 import net.minecraft.ChatFormatting;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,21 +13,21 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.SoundEvents;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
@@ -40,17 +39,17 @@ import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 import java.util.*;
 
 import static xerca.xercamusic.client.ClientStuff.sendToServer;
-import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
-import static xerca.xercamusic.common.XercaMusic.onlyCallOnClient;
+import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
+import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
 public class GuiMusicSheet extends Screen {
     public enum MidiControl {
         BEGINNING, END, STOP, PREVIEW, RECORD
     }
     private static final String[] octaveNames = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
-    private static final ResourceLocation noteGuiLeftTexture = new ResourceLocation(XercaMusic.MODID, "textures/gui/music_sheet_left.png");
-    private static final ResourceLocation noteGuiTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/music_sheet.png");
-    private static final ResourceLocation instrumentTextures = new ResourceLocation(XercaMusic.MODID, "textures/gui/instruments.png");
+    private static final ResourceLocation noteGuiLeftTexture = new ResourceLocation(Mod.MODID, "textures/gui/music_sheet_left.png");
+    private static final ResourceLocation noteGuiTextures = new ResourceLocation(Mod.MODID, "textures/gui/music_sheet.png");
+    private static final ResourceLocation instrumentTextures = new ResourceLocation(Mod.MODID, "textures/gui/instruments.png");
     private final Player editingPlayer;
     public final static int beatsInScreen = 91;
     private final static int noteImageLeftTexX = 175;
@@ -125,7 +124,7 @@ public class GuiMusicSheet extends Screen {
     private int version;
     private ArrayList<NoteEvent> notes = new ArrayList<>();
     private short lengthBeats = 0;
-    private byte bps;
+    private byte bps = 8;
     private int bpm;
     private final MusicUpdatePacket.FieldFlag dirtyFlag = new MusicUpdatePacket.FieldFlag();
     private int previewInstrument = -1;
@@ -158,51 +157,45 @@ public class GuiMusicSheet extends Screen {
         return -1;
     }
 
-    GuiMusicSheet(Player player, CompoundTag noteTag, Component title) {
+    GuiMusicSheet(Player player, ItemStack sheet, Component title) {
         super(title);
         this.editingPlayer = player;
-        if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
-            this.id = noteTag.getUUID("id");
-            this.version = noteTag.getInt("ver");
+        UUID sheetId = sheet.get(Items.SHEET_ID);
+        this.version = sheet.getOrDefault(Items.SHEET_VERSION, -1);
+        if (sheetId != null && this.version >= 0) {
             // Read notes from cache or server using id
-            MusicManager.MusicData data = MusicManagerClient.getMusicData(id, version);
+            MusicManager.MusicData data = MusicManagerClient.getMusicData(sheetId, version);
             if(data != null){
-                notes.addAll(data.notes);
+                notes.addAll(data.notes());
             }
 
-            this.lengthBeats = noteTag.getShort("l");
-            this.bps = noteTag.getByte("bps");
-            if(noteTag.contains("vol")){
-                this.volume = noteTag.getFloat("vol");
-            }
-            this.generation = noteTag.getInt("generation");
+            this.lengthBeats = (short)(int)sheet.getOrDefault(Items.SHEET_LENGTH, 0);
+            this.bps = sheet.getOrDefault(Items.SHEET_BPS, (byte)8);
+            this.volume = sheet.getOrDefault(Items.SHEET_VOLUME, 1.f);
+            this.generation = sheet.getOrDefault(Items.SHEET_GENERATION, 0);
             this.isSigned = generation > 0;
-            this.noteTitle = noteTag.getString("title");
-            String authorName = noteTag.getString("author");
-            this.prevInsLocked = noteTag.getBoolean("piLocked");
-            if(noteTag.contains("prevIns")){
-                this.previewInstrument = noteTag.getByte("prevIns");
+            this.noteTitle = sheet.getOrDefault(Items.SHEET_TITLE, "");
+            String authorName = sheet.getOrDefault(Items.SHEET_AUTHOR, "");
+            this.prevInsLocked = sheet.getOrDefault(Items.SHEET_PREV_INSTRUMENT_LOCKED, false);
+            if (sheet.has(Items.SHEET_PREV_INSTRUMENT)) {
+                this.previewInstrument = sheet.get(Items.SHEET_PREV_INSTRUMENT);
             }
-            if(noteTag.contains("hl")) {
-                this.highlightInterval = noteTag.getByte("hl");
-            }
+            this.highlightInterval = sheet.getOrDefault(Items.SHEET_HIGHLIGHT_INTERVAL, (byte)12);
 
             if(authorName.equals(player.getName().getString())){
                 this.selfSigned = true;
             }
         } else {
             this.isSigned = false;
-            this.id = UUID.randomUUID();
+            sheetId = UUID.randomUUID();
             this.version = 0;
             dirtyFlag.hasId = true;
             dirtyFlag.hasVersion = true;
         }
 
+        this.id = sheetId;
         if(this.notes.isEmpty()){
             this.lengthBeats = 0;
-        }
-        if(this.bps == 0){
-            this.bps = 8;
         }
         this.bpm = bps*60;
         this.tickCount = 0;
@@ -242,14 +235,14 @@ public class GuiMusicSheet extends Screen {
     private void startSound(int noteId, byte volume) {
         //TEMP
         if(noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
-            XercaMusic.LOGGER.warn("Key pushed twice noteId: {} vol: {}", noteId, volume);
+            Mod.LOGGER.warn("Key pushed twice noteId: {} vol: {}", noteId, volume);
         }
         if(noteId >= 0 && noteId < buttonPushStates.length && !buttonPushStates[noteId]) {
             buttonPushStates[noteId] = true;
             int note = IItemInstrument.idToNote(noteId);
             for(NoteEvent noteEvent : recordingNotes){
                 if(noteEvent.note == note){
-                    XercaMusic.LOGGER.warn("Existing note pushed? {} vol: {}", noteId, volume);
+                    Mod.LOGGER.warn("Existing note pushed? {} vol: {}", noteId, volume);
                     return;
                 }
             }
@@ -263,10 +256,10 @@ public class GuiMusicSheet extends Screen {
                 noteSound = ((IItemInstrument)Items.HARP_MC).getSound(note);
             }
             if(noteSound == null){
-                XercaMusic.LOGGER.warn("noteSound not found - noteId: {} vol: {}", noteId, volume);
+                Mod.LOGGER.warn("noteSound not found - noteId: {} vol: {}", noteId, volume);
                 return;
             }
-            notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ClientStuff.playNote(noteSound.sound, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), ((float)volume)/128.f, noteSound.pitch));
+            notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ClientStuff.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), ((float)volume)/128.f, noteSound.pitch()));
             if(recording) {
                 NoteEvent newNote = new NoteEvent((byte)note, (short)(Math.max(0, previewCursor-1)), volume, (byte)1);
                 addRecordingNote(newNote);
@@ -303,16 +296,15 @@ public class GuiMusicSheet extends Screen {
 
     private boolean addNeighborSheet(ItemStack neighbor){
         if(!neighbor.isEmpty() && neighbor.getItem() instanceof ItemMusicSheet){
-            int neighborBPS = ItemMusicSheet.getBPS(neighbor);
+            byte neighborBPS = ItemMusicSheet.getBPS(neighbor);
             if(neighborBPS == bps){
-                CompoundTag tag = neighbor.getTag();
-                if(tag != null && tag.contains("id") && tag.contains("ver")) {
-                    UUID id = tag.getUUID("id");
-                    int ver = tag.getInt("ver");
+                UUID id = neighbor.get(Items.SHEET_ID);
+                int ver = neighbor.getOrDefault(Items.SHEET_VERSION, -1);
+                if(id != null && ver >= 0) {
                     MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
                         MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
                         if(data != null){
-                            neighborNotes.add(new ArrayList<>(data.notes));
+                            neighborNotes.add(new ArrayList<>(data.notes()));
                             neighborPrevInstruments.add(ItemMusicSheet.getPrevInstrument(neighbor));
                             neighborPreviewNextNoteIDs.add(-1);
                             neighborVolumes.add(ItemMusicSheet.getVolume(neighbor));
@@ -591,7 +583,7 @@ public class GuiMusicSheet extends Screen {
 
     private NoteSound playSound(NoteEvent event, int previewInstrument, float sheetVolume){
         if(event.note < IItemInstrument.minNote || event.note > IItemInstrument.maxNote){
-            XercaMusic.LOGGER.warn("Note is invalid: {}", event.note);
+            Mod.LOGGER.warn("Note is invalid: {}", event.note);
             return null;
         }
 
@@ -608,8 +600,8 @@ public class GuiMusicSheet extends Screen {
         }
 
         return onlyCallOnClient(() -> () ->
-                ClientStuff.playNote(insSound.sound, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
-                        sheetVolume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length)));
+                ClientStuff.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
+                        sheetVolume*event.floatVolume(), insSound.pitch(), (byte)beatsToTicks(event.length)));
     }
 
     private int beatsToTicks(int beats){
@@ -1395,7 +1387,7 @@ public class GuiMusicSheet extends Screen {
                 // Check if all values are valid
                 for (byte b : byteArray) {
                     if (b < 0 || b > 48) {
-                        XercaMusic.LOGGER.info("User tried to copy invalid data into music: {}", b);
+                        Mod.LOGGER.info("User tried to copy invalid data into music: {}", b);
                         return;
                     }
                 }
@@ -1762,7 +1754,7 @@ public class GuiMusicSheet extends Screen {
 
         if (!this.isSigned) {
             if (this.gettingSigned) {
-                if (this.noteTitle.length() < 16 && SharedConstants.isAllowedChatCharacter(typedChar)) {
+                if (this.noteTitle.length() < 16 && StringUtil.isAllowedChatCharacter(typedChar)) {
                     this.noteTitle = this.noteTitle + typedChar;
                     this.updateButtons();
                 }
@@ -1804,14 +1796,14 @@ public class GuiMusicSheet extends Screen {
             }
 
             try {
-                MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, notes, lengthBeats, bps, volume, isSigned,
+                MusicUpdatePacket pack = MusicUpdatePacket.create(dirtyFlag, notes, lengthBeats, bps, volume, isSigned,
                         noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
                 sendToServer(pack);
             } catch (ImportMusicSendPacket.NotesTooLargeException e) {
                 int partsCount = (int)Math.ceil((double)notes.size()/(double)MAX_NOTES_IN_PACKET);
 
                 try {
-                    MusicUpdatePacket pack = new MusicUpdatePacket(dirtyFlag, null, lengthBeats, bps, volume, isSigned,
+                    MusicUpdatePacket pack = MusicUpdatePacket.create(dirtyFlag, null, lengthBeats, bps, volume, isSigned,
                             noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
                     NotesPartAckFromServerPacketHandler.addCallback(id, ()-> sendToServer(pack));
                     for(int i=0; i<partsCount; i++) {

@@ -1,25 +1,18 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 
-import java.util.Arrays;
+public record PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<PaletteUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "palette_update"));
+    public static final StreamCodec<FriendlyByteBuf, PaletteUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(PaletteUpdatePacket::encode, PaletteUpdatePacket::decode);
 
-public class PaletteUpdatePacket {
-    private PaletteUtil.CustomColor[] paletteColors;
-    private boolean messageIsValid;
-
-    public PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) {
-        this.paletteColors = Arrays.copyOfRange(paletteColors, 0, 12);
-    }
-
-    public PaletteUpdatePacket() {
-        this.messageIsValid = false;
-    }
-
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         for(PaletteUtil.CustomColor color : paletteColors){
             color.writeToBuffer(buf);
         }
@@ -27,25 +20,15 @@ public class PaletteUpdatePacket {
     }
 
     public static PaletteUpdatePacket decode(FriendlyByteBuf buf) {
-        PaletteUpdatePacket result = new PaletteUpdatePacket();
-        try {
-            result.paletteColors = new PaletteUtil.CustomColor[12];
-            for(int i=0; i<result.paletteColors.length; i++){
-                result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
-            }
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
-            return null;
+        PaletteUtil.CustomColor[] paletteColors = new PaletteUtil.CustomColor[12];
+        for(int i=0; i<paletteColors.length; i++){
+            paletteColors[i] = new PaletteUtil.CustomColor(buf);
         }
-        result.messageIsValid = true;
-        return result;
+        return new PaletteUpdatePacket(paletteColors);
     }
 
-    public PaletteUtil.CustomColor[] getPaletteColors() {
-        return paletteColors;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }

@@ -1,18 +1,12 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.item.ItemStack;
+import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-import static xerca.xercapaint.PaletteUtil.writeCustomColorArrayToNBT;
-
-public class PaletteUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
+public class PaletteUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<PaletteUpdatePacket> {
 
     private static void processMessage(PaletteUpdatePacket msg, ServerPlayer pl) {
         ItemStack palette = pl.getMainHandItem();
@@ -24,15 +18,11 @@ public class PaletteUpdatePacketHandler implements ServerPlayNetworking.PlayChan
             }
         }
 
-        CompoundTag paletteComp = palette.getOrCreateTag();
-        writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
+        palette.set(Items.PALETTE_CUSTOM_COLORS, new ItemPalette.ComponentCustomColor(msg.paletteColors()));
     }
 
     @Override
-    public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        PaletteUpdatePacket packet = PaletteUpdatePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
-        }
+    public void receive(PaletteUpdatePacket packet, ServerPlayNetworking.Context context) {
+        context.server().execute(()->processMessage(packet, context.player()));
     }
 }

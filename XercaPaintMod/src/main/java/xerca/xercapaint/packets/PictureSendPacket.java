@@ -1,61 +1,32 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 
-import java.util.Arrays;
+public record PictureSendPacket(String canvasId, int version, int[] pixels) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<PictureSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "picture_send"));
+    public static final StreamCodec<FriendlyByteBuf, PictureSendPacket> PACKET_CODEC = StreamCodec.ofMember(PictureSendPacket::encode, PictureSendPacket::decode);
 
-public class PictureSendPacket {
-    private String name;
-    private int version;
-    private int[] pixels;
-    private boolean messageIsValid;
-
-    public PictureSendPacket(String name, int version, int[] pixels) {
-        this.name = name;
-        this.version = version;
-        this.pixels = Arrays.copyOfRange(pixels, 0, pixels.length);
-    }
-
-    public PictureSendPacket() {
-        this.messageIsValid = false;
-    }
-
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeUtf(name);
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+        buf.writeUtf(canvasId);
         buf.writeInt(version);
         buf.writeVarIntArray(pixels);
         return buf;
     }
 
     public static PictureSendPacket decode(FriendlyByteBuf buf) {
-        PictureSendPacket result = new PictureSendPacket();
-        try {
-            result.name = buf.readUtf(64);
-            result.version = buf.readInt();
-            result.pixels = buf.readVarIntArray(1024);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading PictureSendPacket: " + ioe);
-            return null;
-        }
-        result.messageIsValid = true;
-        return result;
+        String canvasId = buf.readUtf(64);
+        int version = buf.readInt();
+        int[] pixels = buf.readVarIntArray(1024);
+        return new PictureSendPacket(canvasId, version, pixels);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public int[] getPixels() {
-        return pixels;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }

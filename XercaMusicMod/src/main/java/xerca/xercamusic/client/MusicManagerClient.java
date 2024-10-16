@@ -3,9 +3,9 @@ package xerca.xercamusic.client;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.packets.serverbound.MusicDataRequestPacket;
 
 import java.io.File;
@@ -56,17 +56,17 @@ public class MusicManagerClient {
     public static void checkMusicDataAndRun(UUID id, int ver, Runnable task) {
         if(musicMap.containsKey(id)){
             MusicManager.MusicData data = musicMap.get(id);
-            if(data.version >= ver){
-                XercaMusic.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
+            if(data.version() >= ver){
+                Mod.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
                 task.run();
                 return;
             }
             else{
-                XercaMusic.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (checkMusicDataAndRun)",
-                        id, data.version, ver);
+                Mod.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (checkMusicDataAndRun)",
+                        id, data.version(), ver);
             }
         }
-        XercaMusic.LOGGER.info("Requesting music data from server (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
+        Mod.LOGGER.info("Requesting music data from server (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
         taskMap.put(id, task);
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
@@ -76,16 +76,16 @@ public class MusicManagerClient {
     public static MusicManager.MusicData getMusicData(UUID id, int ver) {
         if(musicMap.containsKey(id)){
             MusicManager.MusicData data = musicMap.get(id);
-            if(data.version >= ver){
-                XercaMusic.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (getMusicData)", id, ver);
+            if(data.version() >= ver){
+                Mod.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (getMusicData)", id, ver);
                 return data;
             }
             else{
-                XercaMusic.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)",
-                        id, data.version, ver);
+                Mod.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)",
+                        id, data.version(), ver);
             }
         }
-        XercaMusic.LOGGER.info("Requesting music data from server (id: {}, requested ver: {}) (getMusicData)", id, ver);
+        Mod.LOGGER.info("Requesting music data from server (id: {}, requested ver: {}) (getMusicData)", id, ver);
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
         sendToServer(packet);
@@ -110,7 +110,7 @@ public class MusicManagerClient {
         try {
             NbtIo.writeCompressed(tag, Path.of(filepath));
         } catch (IOException e) {
-            XercaMusic.LOGGER.warn("Could not write music data to cache file: {}", filepath);
+            Mod.LOGGER.warn("Could not write music data to cache file: {}", filepath);
             e.printStackTrace();
         }
 

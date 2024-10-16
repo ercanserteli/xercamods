@@ -1,58 +1,42 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.IPacket;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SendNotesPartToServerPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "send_notes_part_to_server");
-    private UUID uuid;
-    private int partsCount;
-    private int partId;
-    private List<NoteEvent> notes;
-    private boolean messageIsValid;
-
-    public SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId, List<NoteEvent> notes) {
-        this.uuid = uuid;
-        this.partsCount = partsCount;
-        this.partId = partId;
-        this.notes = notes;
-    }
-
-    public SendNotesPartToServerPacket() {
-        this.messageIsValid = false;
-    }
+public record SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId, List<NoteEvent> notes) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SendNotesPartToServerPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "send_notes_part_to_server"));
+    public static final StreamCodec<FriendlyByteBuf, SendNotesPartToServerPacket> PACKET_CODEC = StreamCodec.ofMember(SendNotesPartToServerPacket::encode, SendNotesPartToServerPacket::decode);
 
     public static SendNotesPartToServerPacket decode(FriendlyByteBuf buf) {
-        SendNotesPartToServerPacket result = new SendNotesPartToServerPacket();
         try {
-            result.uuid = buf.readUUID();
-            result.partsCount = buf.readInt();
-            result.partId = buf.readInt();
+            UUID uuid = buf.readUUID();
+            int partsCount = buf.readInt();
+            int partId = buf.readInt();
             int eventCount = buf.readInt();
+            ArrayList<NoteEvent> notes = null;
             if(eventCount > 0) {
-                result.notes = new ArrayList<>(eventCount);
+                notes = new ArrayList<>(eventCount);
                 for (int i = 0; i < eventCount; i++) {
-                    result.notes.add(NoteEvent.fromBuffer(buf));
+                    notes.add(NoteEvent.fromBuffer(buf));
                 }
             }
+            return new SendNotesPartToServerPacket(uuid, partsCount, partId, notes);
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading SendNotesPartToServerPacket: " + ioe);
             return null;
         }
-        result.messageIsValid = true;
-        return result;
     }
 
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         buf.writeUUID(uuid);
         buf.writeInt(partsCount);
         buf.writeInt(partId);
@@ -63,30 +47,9 @@ public class SendNotesPartToServerPacket implements IPacket {
         return buf;
     }
 
-    public List<NoteEvent> getNotes() {
-        return notes;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isMessageValid() {
-        return messageIsValid;
-    }
-
-    public int getPartsCount() {
-        return partsCount;
-    }
-
-    public int getPartId() {
-        return partId;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }
 

@@ -2,8 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "xerca.xercapaint.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ItemStackComponentizationFixMixin",
+    "V1460Mixin"
   ],
   "client": [
   ],

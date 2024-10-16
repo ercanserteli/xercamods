@@ -2,8 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "xerca.xercamusic.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ItemStackComponentizationFixMixin",
+    "V1460Mixin"
   ],
   "client": [
   ],

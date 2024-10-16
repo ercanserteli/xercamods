@@ -1,43 +1,28 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 
-public class ImportPaintingPacket {
-    private String name;
-    private boolean messageIsValid;
+public record ImportPaintingPacket(String canvasId) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ImportPaintingPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "import_painting"));
+    public static final StreamCodec<FriendlyByteBuf, ImportPaintingPacket> PACKET_CODEC = StreamCodec.ofMember(ImportPaintingPacket::encode, ImportPaintingPacket::decode);
 
-    public ImportPaintingPacket(String name) {
-        this.name = name;
-    }
-
-    public ImportPaintingPacket() {
-        this.messageIsValid = false;
-    }
-
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeUtf(name);
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+        buf.writeUtf(canvasId);
         return buf;
     }
 
     public static ImportPaintingPacket decode(FriendlyByteBuf buf) {
-        ImportPaintingPacket result = new ImportPaintingPacket();
-        try {
-            result.name = buf.readUtf(64);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ImportPaintingPacket: " + ioe);
-            return null;
-        }
-        result.messageIsValid = true;
-        return result;
+        String canvasId = buf.readUtf(64);
+        return new ImportPaintingPacket(canvasId);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }

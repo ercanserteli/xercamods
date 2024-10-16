@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -7,6 +6,5 @@
         "ddd"
     ],
     "key": {"c": {"item": "xercamusic:cymbal"}, "d": {"item": "xercamusic:drum"}},
-    "result": {"item": "xercamusic:drum_kit"}
+    "result": {"id": "xercamusic:drum_kit"}
 }
-        

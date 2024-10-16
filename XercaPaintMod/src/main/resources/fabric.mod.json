@@ -20,9 +20,10 @@
   "mixins": [
     "xercapaint.mixins.json"
   ],
+  "accessWidener": "xercapaint.accesswidener",
   "depends": {
     "fabricloader": "*",
     "fabric-api": "*",
-    "minecraft": "1.20.4"
+    "minecraft": "1.20.6"
   }
 }

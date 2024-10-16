@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.packets.clientbound.TripleNoteClientPacket;
@@ -28,8 +28,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
-import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.Mod.onlyRunOnClient;
+import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     private ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> sounds;
@@ -126,7 +126,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
             int note = IItemInstrument.idToNote(i);
             int index = getClosest(note);
             if(index < 0 || index >= sounds.size()){
-                XercaMusic.LOGGER.error("Invalid sound index in Instrument construction");
+                Mod.LOGGER.error("Invalid sound index in Instrument construction");
             }
             int octave = i/12;
             if(octave >= minOctave && octave <= maxOctave){
@@ -155,7 +155,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
         if(id >= 0 && id < totalNotes) {
             return insSounds[id];
         }
-        XercaMusic.LOGGER.warn("Requested invalid note from Instrument getSound: {}", note);
+        Mod.LOGGER.warn("Requested invalid note from Instrument getSound: {}", note);
         return null;
     }
 }

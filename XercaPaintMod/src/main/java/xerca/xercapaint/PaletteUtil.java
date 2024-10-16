@@ -1,7 +1,6 @@
 package xerca.xercapaint;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
@@ -60,12 +59,11 @@ public class PaletteUtil {
         }
     }
     public static class CustomColor {
-        private int totalRed = 0;
-        private int totalGreen = 0;
-        private int totalBlue = 0;
-        private int totalMaximum = 0;
-
-        private int numberOfColors = 0;
+        public int totalRed = 0;
+        public int totalGreen = 0;
+        public int totalBlue = 0;
+        public int totalMaximum = 0;
+        public int numberOfColors = 0;
 
         private Color result;
 
@@ -75,6 +73,7 @@ public class PaletteUtil {
 
         public CustomColor(FriendlyByteBuf buf) {
             readFromBuffer(buf);
+            calculateResult();
         }
 
         public CustomColor(int totalRed, int totalGreen, int totalBlue, int totalMaximum, int numberOfColors) {
@@ -88,7 +87,7 @@ public class PaletteUtil {
 
         public void calculateResult(){
             if(numberOfColors == 0){
-                this.result = emptinessColor;//new PaletteUtil.Color(200, 200, 200);
+                this.result = emptinessColor;
                 return;
             }
             int averageRed = totalRed / numberOfColors;
@@ -146,39 +145,6 @@ public class PaletteUtil {
             totalBlue = buf.readInt();
             totalMaximum = buf.readInt();
             numberOfColors = buf.readInt();
-        }
-    }
-
-    public static void writeCustomColorArrayToNBT(CompoundTag tag, CustomColor[] customColors){
-        int[] totalReds = new int[12];
-        int[] totalGreens = new int[12];
-        int[] totalBlues = new int[12];
-        int[] totalMaximums = new int[12];
-        int[] numbersOfColors = new int[12];
-
-        for(int i=0; i<customColors.length; i++){
-            totalReds[i] = customColors[i].totalRed;
-            totalGreens[i] = customColors[i].totalGreen;
-            totalBlues[i] = customColors[i].totalBlue;
-            totalMaximums[i] = customColors[i].totalMaximum;
-            numbersOfColors[i] = customColors[i].numberOfColors;
-        }
-        tag.putIntArray("r", totalReds);
-        tag.putIntArray("g", totalGreens);
-        tag.putIntArray("b", totalBlues);
-        tag.putIntArray("m", totalMaximums);
-        tag.putIntArray("n", numbersOfColors);
-    }
-
-    public static void readCustomColorArrayFromNBT(CompoundTag tag, CustomColor[] customColors){
-        int[] totalReds = tag.getIntArray("r");
-        int[] totalGreens = tag.getIntArray("g");
-        int[] totalBlues = tag.getIntArray("b");
-        int[] totalMaximums = tag.getIntArray("m");
-        int[] numbersOfColors = tag.getIntArray("n");
-
-        for(int i=0; i<customColors.length; i++){
-            customColors[i] = new CustomColor(totalReds[i], totalGreens[i], totalBlues[i], totalMaximums[i], numbersOfColors[i]);
         }
     }
 }

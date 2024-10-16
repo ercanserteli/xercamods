@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -63,23 +64,30 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if (!worldIn.isClientSide) {
-            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
+    public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
+        if (!level.isClientSide) {
+            level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
-            if (player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET) {
-                note = player.getItemInHand(hand);
+            if (player.getMainHandItem().getItem() == Items.MUSIC_SHEET) {
+                note = player.getMainHandItem();
             } else if (player.getOffhandItem().getItem() == Items.MUSIC_SHEET) {
                 note = player.getOffhandItem();
             }
 
-            if (!note.isEmpty() && note.getTag() != null && note.getTag().contains("bps")) {
-                int bps = note.getTag().getInt("bps");
-                setBps(state, worldIn, pos, bps);
-            } else {
-                state = state.cycle(BPS); //cycle
-                worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
+            int bps = note.getOrDefault(Items.SHEET_BPS, (byte)0);
+            if (!note.isEmpty() && bps > 0) {
+                setBps(state, level, pos, bps);
+                return ItemInteractionResult.SUCCESS;
             }
+        }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+        if (!level.isClientSide) {
+            state = state.cycle(BPS); //cycle
+            level.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
         }
         return InteractionResult.SUCCESS;
     }

@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +20,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
+
+import java.util.function.Consumer;
 
 public class ItemEasel extends Item {
 
@@ -40,7 +43,8 @@ public class ItemEasel extends Item {
             AABB aabb = Entities.EASEL.getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
             if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
                 if (level instanceof ServerLevel serverlevel) {
-                    EntityEasel easel = Entities.EASEL.create(serverlevel, itemstack.getTag(), null, blockpos, MobSpawnType.SPAWN_EGG, true, true);
+                    Consumer<EntityEasel> consumer = EntityType.createDefaultStackConfig(serverlevel, itemstack, ctx.getPlayer());
+                    EntityEasel easel = Entities.EASEL.create(serverlevel, consumer, blockpos, MobSpawnType.SPAWN_EGG, true, true);
                     if (easel == null) {
                         return InteractionResult.FAIL;
                     }

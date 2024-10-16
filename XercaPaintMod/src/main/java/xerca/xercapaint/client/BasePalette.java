@@ -6,22 +6,23 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
+import xerca.xercapaint.item.ItemPalette;
+import xerca.xercapaint.item.Items;
 
 import static xerca.xercapaint.PaletteUtil.emptinessColor;
-import static xerca.xercapaint.PaletteUtil.readCustomColorArrayFromNBT;
 
 public abstract class BasePalette extends Screen {
-    protected static final ResourceLocation paletteTextures = new ResourceLocation(Mod.modId, "textures/gui/palette.png");
+    protected static final ResourceLocation paletteTextures = new ResourceLocation(Mod.MODID, "textures/gui/palette.png");
     final static int dyeSpriteX = 240;
     final static int dyeSpriteSize = 16;
     final static int brushSpriteX = 0;
@@ -112,33 +113,27 @@ public abstract class BasePalette extends Screen {
     boolean paletteComplete = false;
     boolean isCarryingPalette = false;
 
-    BasePalette(Component titleIn, CompoundTag paletteTag) {
+    BasePalette(Component titleIn, ItemStack paletteStack) {
         super(titleIn);
-        this.customColors = new PaletteUtil.CustomColor[12];
         this.basicColorFlags = new boolean[16];
 
-        if (paletteTag != null && !paletteTag.isEmpty()) {
-            if(paletteTag.contains("r") && paletteTag.contains("g") && paletteTag.contains("b")
-                    && paletteTag.contains("m") && paletteTag.contains("n")){
-                readCustomColorArrayFromNBT(paletteTag, this.customColors);
-
-            }else{
-                for(int i=0; i < customColors.length; i++){
-                    customColors[i] = new PaletteUtil.CustomColor();
-                }
-            }
-
-            if(paletteTag.contains("basic")){
-                paletteComplete = true;
-                byte[] basics = paletteTag.getByteArray("basic");
-                for(int i=0; i<basics.length; i++){
-                    basicColorFlags[i] = basics[i] > 0;
-                    paletteComplete &= basicColorFlags[i];
-                }
-            }
-        }else{
+        ItemPalette.ComponentCustomColor componentCustomColor = paletteStack.get(Items.PALETTE_CUSTOM_COLORS);
+        if(componentCustomColor != null) {
+            this.customColors = componentCustomColor.colors;
+        }
+        else {
+            this.customColors = new PaletteUtil.CustomColor[12];
             for(int i=0; i < customColors.length; i++){
                 customColors[i] = new PaletteUtil.CustomColor();
+            }
+        }
+
+        byte[] basics = paletteStack.get(Items.PALETTE_BASIC_COLORS);
+        if(basics != null){
+            paletteComplete = true;
+            for(int i=0; i<basics.length; i++){
+                basicColorFlags[i] = basics[i] > 0;
+                paletteComplete &= basicColorFlags[i];
             }
         }
     }

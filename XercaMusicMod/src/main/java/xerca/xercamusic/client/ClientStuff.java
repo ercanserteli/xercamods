@@ -9,16 +9,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
-import xerca.xercamusic.common.packets.IPacket;
+import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.clientbound.*;
 import xerca.xercamusic.common.packets.serverbound.MusicEndedPacket;
 
@@ -32,14 +32,13 @@ public class ClientStuff implements ClientModInitializer {
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet){
-                CompoundTag noteTag = heldItem.getTag();
-                if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
-                    UUID id = noteTag.getUUID("id");
-                    int version = noteTag.getInt("ver");
-                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet"))));
+                UUID id = heldItem.get(Items.SHEET_ID);
+                int version = heldItem.getOrDefault(Items.SHEET_VERSION, -1);
+                if (id != null && version >= 0) {
+                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, heldItem, Component.translatable("item.xercamusic.music_sheet"))));
                 }
                 else{
-                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet")));
+                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, heldItem, Component.translatable("item.xercamusic.music_sheet")));
                 }
             }
         }
@@ -85,24 +84,24 @@ public class ClientStuff implements ClientModInitializer {
         }
     }
 
-    public static void sendToServer(IPacket packet) {
-        ClientPlayNetworking.send(packet.getID(), packet.encode());
+    public static void sendToServer(CustomPacketPayload packet) {
+        ClientPlayNetworking.send(packet);
     }
 
     @Override
     public void onInitializeClient() {
         EntityRendererRegistry.register(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
 
-        ClientPlayNetworking.registerGlobalReceiver(ExportMusicPacket.ID, new ExportMusicPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(ImportMusicPacket.ID, new ImportMusicPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(MusicBoxUpdatePacket.ID, new MusicBoxUpdatePacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(MusicDataResponsePacket.ID, new MusicDataResponsePacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(SingleNoteClientPacket.ID, new SingleNoteClientPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(TripleNoteClientPacket.ID, new TripleNoteClientPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(NotesPartAckFromServerPacket.ID, new NotesPartAckFromServerPacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(ExportMusicPacket.PACKET_ID, new ExportMusicPacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(ImportMusicPacket.PACKET_ID, new ImportMusicPacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(MusicBoxUpdatePacket.PACKET_ID, new MusicBoxUpdatePacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(MusicDataResponsePacket.PACKET_ID, new MusicDataResponsePacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(SingleNoteClientPacket.PACKET_ID, new SingleNoteClientPacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(TripleNoteClientPacket.PACKET_ID, new TripleNoteClientPacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(NotesPartAckFromServerPacket.PACKET_ID, new NotesPartAckFromServerPacketHandler());
 
         ClientPlayConnectionEvents.JOIN.register((ClientPacketListener handler, PacketSender sender, Minecraft client) -> {
-            XercaMusic.LOGGER.debug("ClientPacketListener Join Event");
+            Mod.LOGGER.debug("ClientPacketListener Join Event");
             MusicManagerClient.load();
         });
     }

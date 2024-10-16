@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -8,6 +7,5 @@
         "wrw"
     ],
     "key": {"e": {"item": "minecraft:gold_ingot"}, "r": {"item": "minecraft:redstone"}, "w": {"tag": "minecraft:planks"}},
-    "result": {"item": "xercamusic:music_box"}
+    "result": {"id": "xercamusic:music_box"}
 }
-        

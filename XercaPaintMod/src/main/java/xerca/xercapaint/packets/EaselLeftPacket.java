@@ -1,44 +1,28 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
-import xerca.xercapaint.entity.EntityEasel;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 
-public class EaselLeftPacket {
-    private int easelId;
-    private boolean messageIsValid;
+public record EaselLeftPacket(int easelId) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<EaselLeftPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "easel_left"));
+    public static final StreamCodec<FriendlyByteBuf, EaselLeftPacket> PACKET_CODEC = StreamCodec.ofMember(EaselLeftPacket::encode, EaselLeftPacket::decode);
 
-    public EaselLeftPacket(EntityEasel easel) {
-        easelId = easel.getId();
-    }
-
-    public EaselLeftPacket() {
-        this.messageIsValid = false;
-    }
-
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         buf.writeInt(easelId);
         return buf;
     }
 
     public static EaselLeftPacket decode(FriendlyByteBuf buf) {
-        EaselLeftPacket result = new EaselLeftPacket();
-        try {
-            result.easelId = buf.readInt();
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading CanvasUpdatePacket: " + ioe);
-            return null;
-        }
-        result.messageIsValid = true;
-        return result;
+        int easelId = buf.readInt();
+        return new EaselLeftPacket(easelId);
     }
 
-    public int getEaselId() {
-        return easelId;
-    }
-
-    public boolean isMessageValid() {
-        return messageIsValid;
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }

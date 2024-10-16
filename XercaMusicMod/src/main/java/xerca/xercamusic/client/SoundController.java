@@ -3,8 +3,8 @@ package xerca.xercamusic.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
@@ -44,7 +44,7 @@ public class SoundController extends Thread {
     @Override
     public void run() {
         if(bps == 0){
-            XercaMusic.LOGGER.error("BPS is 0! This should not happen!");
+            Mod.LOGGER.error("BPS is 0! This should not happen!");
             return;
         }
 
@@ -89,11 +89,11 @@ public class SoundController extends Thread {
                 }
 
                 if(musicBox == null){
-                    ClientStuff.playNote(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
+                    ClientStuff.playNote(insSound.sound(), x, y, z, volume*event.floatVolume(), insSound.pitch(), (byte)beatsToTicks(event.length));
                     level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note) / 24.0D, 0.0D, 0.0D);
                 }
                 else{
-                    ClientStuff.playNoteTE(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
+                    ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume*event.floatVolume(), insSound.pitch(), (byte)beatsToTicks(event.length));
                     level.addParticle(ParticleTypes.NOTE, x+0.5D, y + 2.2D, z+0.5D, (note) / 24.0D, 0.0D, 0.0D);
                 }
             });

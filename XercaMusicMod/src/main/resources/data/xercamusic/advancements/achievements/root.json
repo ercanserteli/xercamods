@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "xercamusic:guitar"
+      "id": "xercamusic:guitar"
     },
     "title": {
       "translate": "advancements.xercamusic.achievements.root.title"

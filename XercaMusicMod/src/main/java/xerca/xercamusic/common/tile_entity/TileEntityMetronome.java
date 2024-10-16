@@ -3,24 +3,23 @@ package xerca.xercamusic.common.tile_entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.SoundEvents;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMetronome;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
+import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
 
-import static xerca.xercamusic.common.XercaMusic.onlyCallOnClient;
+import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
 public class TileEntityMetronome extends BlockEntity {
     private final static Vec3i halfRange = new Vec3i(8, 2, 8);
@@ -31,11 +30,6 @@ public class TileEntityMetronome extends BlockEntity {
 
     public TileEntityMetronome(BlockPos blockPos, BlockState blockState){
         super(BlockEntities.METRONOME, blockPos, blockState);
-    }
-
-    @Override
-    public void load(@NotNull CompoundTag parent) {
-		super.load(parent);
     }
 
     public static void tick(Level level, BlockPos ignoredBlockPos, BlockState ignoredBlockState, TileEntityMetronome metronome) {
@@ -61,9 +55,9 @@ public class TileEntityMetronome extends BlockEntity {
                         // Server side
                         if(metronome.countDown == 3){
                             List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange).getCenter(), metronome.worldPosition.offset(halfRange).getCenter()),
-                                    player -> player.getMainHandItem().getItem() instanceof IItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
-                                            && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag() != null && player.getOffhandItem().getTag().getInt("bps") == bps);
-                            XercaMusic.LOGGER.info("Metronome found {} players", players.size());
+                                    player -> player.getMainHandItem().getItem() instanceof IItemInstrument &&
+                                    player.getOffhandItem().getItem() instanceof ItemMusicSheet && (int)player.getOffhandItem().getOrDefault(Items.SHEET_BPS, (byte)0) == bps);
+                            Mod.LOGGER.info("Metronome found {} players", players.size());
                             for(Player player : players){
                                 IItemInstrument.playMusic(level, player, false);
                             }

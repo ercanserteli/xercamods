@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -16,9 +17,9 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
@@ -31,9 +32,9 @@ public class EntityMusicSpirit extends Entity {
     private ItemStack note;
     private IItemInstrument instrument;
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
-    private int mLengthBeats;
-    private float mVolume;
-    private byte mBPS;
+    private int length;
+    private float volume;
+    private byte bps;
     private boolean isPlaying = true;
     private BlockInstrument blockInstrument = null;
     private BlockPos blockInsPos = null;
@@ -72,7 +73,7 @@ public class EntityMusicSpirit extends Entity {
             }
         }
 
-        XercaMusic.LOGGER.warn("Did not find a block instrument at the set position");
+        Mod.LOGGER.warn("Did not find a block instrument at the set position");
         blockInstrument = null;
         blockInsPos = null;
     }
@@ -90,7 +91,7 @@ public class EntityMusicSpirit extends Entity {
 
     private void setNoteFromBody(){
         if(body == null) {
-            XercaMusic.LOGGER.warn("Body is null in MusicSpirit setNoteFromBody");
+            Mod.LOGGER.warn("Body is null in MusicSpirit setNoteFromBody");
             return;
         }
         ItemStack mainStack = body.getMainHandItem();
@@ -102,16 +103,16 @@ public class EntityMusicSpirit extends Entity {
             this.note = offStack;
         }
         else{
-            XercaMusic.LOGGER.warn("No music sheet found on body");
+            Mod.LOGGER.warn("No music sheet found on body");
         }
     }
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
         NoteEvent.fillArrayFromNBT(notes, tag);
-        this.mLengthBeats = tag.getInt("l");
-        this.mBPS = tag.getByte("bps");
-        this.mVolume = tag.getFloat("vol");
+        this.length = tag.getInt("l");
+        this.bps = tag.getByte("bps");
+        this.volume = tag.getFloat("vol");
         this.isPlaying = tag.getBoolean("playing");
         if(tag.contains("bX") && tag.contains("bY") && tag.contains("bZ")){
             setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")));
@@ -121,9 +122,9 @@ public class EntityMusicSpirit extends Entity {
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
         NoteEvent.fillNBTFromArray(notes, tag);
-        tag.putInt("l", mLengthBeats);
-        tag.putByte("bps", mBPS);
-        tag.putFloat("vol", mVolume);
+        tag.putInt("l", length);
+        tag.putByte("bps", bps);
+        tag.putFloat("vol", volume);
         tag.putBoolean("playing", isPlaying);
         if(blockInsPos != null){
             tag.putInt("bX", blockInsPos.getX());
@@ -135,7 +136,7 @@ public class EntityMusicSpirit extends Entity {
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         if (body == null) {
-            XercaMusic.LOGGER.error("Body is null on EntityMusicSpirit.getAddEntityPacket, this shouldn't happen!");
+            Mod.LOGGER.error("Body is null on EntityMusicSpirit.getAddEntityPacket, this shouldn't happen!");
         }
 
         int data = blockInstrument == null ? body.getId() : -body.getId();
@@ -148,7 +149,7 @@ public class EntityMusicSpirit extends Entity {
         int data = packet.getData();
         int bodyId = data > 0 ? data : -data;
         int biX = -1;
-        int biY = -1000;
+        int biY = -10000;
         int biZ = -1;
         if (data < 0) {
             biX = (int)Math.round(packet.getX() - 0.5);
@@ -163,7 +164,7 @@ public class EntityMusicSpirit extends Entity {
         if (ent instanceof Player) {
             body = (Player) ent;
         }
-        if(by > -1000){
+        if(by > -10000){
             setBlockPosAndInstrument(new BlockPos(bx, by ,bz));
         }
 
@@ -179,36 +180,36 @@ public class EntityMusicSpirit extends Entity {
                 this.setPos(body.getX(), body.getY(), body.getZ());
             }
             else {
-                XercaMusic.LOGGER.warn("Could not find instrument when spawning music spirit!");
+                Mod.LOGGER.warn("Could not find instrument when spawning music spirit!");
                 return;
             }
         }
 
-        if (note != null && note.hasTag() && note.getTag() != null && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
-            CompoundTag comp = note.getTag();
-            mLengthBeats = comp.getInt("l");
-            mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
-            mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
-            UUID id = comp.getUUID("id");
-            int ver = comp.getInt("ver");
+        if (note != null) {
+            UUID id = note.get(Items.SHEET_ID);
+            int ver = note.getOrDefault(Items.SHEET_VERSION, -1);
+            length = note.getOrDefault(Items.SHEET_LENGTH, 0);
+            if (id != null && ver >= 0 && length > 0) {
+                bps = note.getOrDefault(Items.SHEET_BPS, (byte)8);
+                volume = note.getOrDefault(Items.SHEET_VOLUME, 1.f);
 
-            if(level().isClientSide){
-                MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
-                    MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
-                    if(data != null){
-                        notes.addAll(data.notes);
-                    }
+                if(level().isClientSide){
+                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                        if(data != null){
+                            notes.addAll(data.notes());
+                        }
 
-                    soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, mBPS, mVolume, getId());
-                    soundController.start();
-                });
+                        soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, bps, volume, getId());
+                        soundController.start();
+                    });
+                }
             }
         }
     }
 
     @Override
-    protected void defineSynchedData() {
-
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
     }
 
     @Override

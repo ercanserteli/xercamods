@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "xercamusic:music_sheet"
+      "id": "xercamusic:music_sheet"
     },
     "title": {
       "translate": "advancements.xercamusic.achievements.musician.title"

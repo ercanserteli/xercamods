@@ -144,7 +144,7 @@ class ShapedRecipe(Recipe):
         return template.format(type=self.type, group=group_line, pattern=pattern_line, key=self.key, result=self.result).replace("'", '"')
 
     def get_name(self):
-        return self.result["item"].split(":", 1)[1]
+        return self.result["id"].split(":", 1)[1]
 
 
 class ShapelessRecipe(Recipe):
@@ -166,7 +166,7 @@ class ShapelessRecipe(Recipe):
         return template.format(type=self.type, group=group_line, ingredients=self.ingredients, result=self.result).replace("'", '"')
 
     def get_name(self):
-        return self.result["item"].split(":", 1)[1]
+        return self.result["id"].split(":", 1)[1]
 
 
 class CookingRecipe(Recipe):

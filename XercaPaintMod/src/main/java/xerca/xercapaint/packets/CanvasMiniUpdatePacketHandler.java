@@ -1,33 +1,31 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
+import xerca.xercapaint.item.Items;
 
-public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
+import java.util.Arrays;
+
+public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<CanvasMiniUpdatePacket> {
     public static void processMessage(CanvasMiniUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
         ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.getEaselId() > -1){
-            entityEasel = pl.level().getEntity(msg.getEaselId());
+        if(msg.easelId() > -1){
+            entityEasel = pl.level().getEntity(msg.easelId());
             if(entityEasel == null){
-                Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.getEaselId());
+                Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.easelId());
                 return;
             }
             if(!(entityEasel instanceof EntityEasel easel)){
-                Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
+                Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
             canvas = easel.getItem();
@@ -45,26 +43,23 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
         }
 
         if (!canvas.isEmpty() && canvas.getItem() instanceof ItemCanvas) {
-            CompoundTag comp = canvas.getOrCreateTag();
-
-            comp.putIntArray("pixels", msg.getPixels());
-            comp.putString("name", msg.getName());
-            comp.putInt("v", msg.getVersion());
-            comp.putInt("generation", 0);
+            canvas.set(Items.CANVAS_PIXELS, Arrays.stream(msg.pixels()).boxed().toList());
+            canvas.set(Items.CANVAS_ID, msg.canvasId());
+            canvas.set(Items.CANVAS_VERSION, msg.version());
+            canvas.set(Items.CANVAS_GENERATION, 0);
 
             if(entityEasel instanceof EntityEasel easel){
                 easel.setItem(canvas, false);
             }
 
-            Mod.LOGGER.debug("Handling canvas update: Name: {} V: {}", msg.getName(), msg.getVersion());
+            Mod.LOGGER.debug("Handling canvas update: Name: {} V: {}", msg.canvasId(), msg.version());
         }
     }
 
     @Override
-    public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        CanvasMiniUpdatePacket packet = CanvasMiniUpdatePacket.decode(buf);
+    public void receive(CanvasMiniUpdatePacket packet, ServerPlayNetworking.Context context) {
         if(packet != null){
-            server.execute(()->processMessage(packet, player));
+            context.server().execute(()->processMessage(packet, context.player()));
         }
     }
 }

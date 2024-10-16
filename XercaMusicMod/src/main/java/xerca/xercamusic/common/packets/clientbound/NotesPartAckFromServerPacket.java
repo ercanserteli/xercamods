@@ -1,56 +1,36 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.IPacket;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.Mod;
 
 import java.util.UUID;
 
-public class NotesPartAckFromServerPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "notes_part_ack_from_server");
-    private UUID id;
-    private boolean messageIsValid;
+public record NotesPartAckFromServerPacket(UUID id) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<NotesPartAckFromServerPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "notes_part_ack_from_server"));
+    public static final StreamCodec<FriendlyByteBuf, NotesPartAckFromServerPacket> PACKET_CODEC = StreamCodec.ofMember(NotesPartAckFromServerPacket::encode, NotesPartAckFromServerPacket::decode);
 
-    public NotesPartAckFromServerPacket(UUID id) {
-        this.id = id;
-    }
-
-    public NotesPartAckFromServerPacket() {
-        this.messageIsValid = false;
-    }
-
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         buf.writeUUID(id);
         return buf;
     }
 
     public static NotesPartAckFromServerPacket decode(FriendlyByteBuf buf) {
-        NotesPartAckFromServerPacket result = new NotesPartAckFromServerPacket();
         try {
-            result.id = buf.readUUID();
+            UUID id = buf.readUUID();
+            return new NotesPartAckFromServerPacket(id);
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading NotesPartAckFromServerPacket:", ioe);
+            Mod.LOGGER.error("Exception while reading NotesPartAckFromServerPacket:", ioe);
             return null;
         }
-        result.messageIsValid = true;
-        return result;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isMessageValid() {
-        return messageIsValid;
     }
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
 }
 

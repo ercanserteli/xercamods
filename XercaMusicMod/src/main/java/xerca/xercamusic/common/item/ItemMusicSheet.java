@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -25,13 +24,12 @@ import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
+import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 
 public class ItemMusicSheet extends Item {
     static final private HashMap<IItemInstrument.Pair<String, String>, UUID> convertMap = new HashMap<>();
@@ -119,82 +117,64 @@ public class ItemMusicSheet extends Item {
     @Nonnull
     @Override
     public Component getName(@Nonnull ItemStack stack) {
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            if(tag != null){
-                String s = tag.getString("title");
-                if (!StringUtil.isNullOrEmpty(s)) {
-                    return Component.literal(s);
-                }
-            }
+        String title = stack.get(Items.SHEET_TITLE);
+        if(title != null){
+            return Component.literal(title);
         }
         return super.getName(stack);
     }
 
-    public static int getBPS(@Nonnull ItemStack stack) {
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            if(tag != null && tag.contains("bps")){
-                return tag.getByte("bps");
-            }
-        }
-        return -1;
+    public static byte getBPS(@Nonnull ItemStack stack) {
+        return stack.getOrDefault(Items.SHEET_BPS, (byte)0);
     }
 
     public static int getPrevInstrument(@Nonnull ItemStack stack) {
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            if(tag != null && tag.contains("prevIns")){
-                return tag.getByte("prevIns");
-            }
+        Byte prevIns = stack.get(Items.SHEET_PREV_INSTRUMENT);
+        if (prevIns != null) {
+            return prevIns;
         }
         return -1;
     }
 
     public static float getVolume(@Nonnull ItemStack stack) {
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getTag();
-            if(tag != null && tag.contains("vol")){
-                return tag.getFloat("vol");
-            }
-        }
-        return 1.0f;
+        return stack.getOrDefault(Items.SHEET_VOLUME, 1.f);
+    }
+
+    public static boolean isEmptySheet(@Nonnull ItemStack stack) {
+        return stack.get(Items.SHEET_GENERATION) == null && stack.get(Items.SHEET_ID) == null && stack.get(Items.SHEET_VERSION) == null;
     }
 
     /**
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        if (stack.hasTag()) {
-            CompoundTag tag = stack.getOrCreateTag();
-            String s = tag.getString("author");
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag tooltipFlag) {
+        String s = stack.get(Items.SHEET_AUTHOR);
 
-            if (!StringUtil.isNullOrEmpty(s)) {
-                tooltip.add(Component.translatable("note.byAuthor", s));
-            }
+        if (s != null) {
+            tooltip.add(Component.translatable("note.byAuthor", s));
+        }
 
-            int generation = tag.getInt("generation");
-            // generation = 0 means empty, 1 means original, more means copy
-            if(generation > 0){
-                tooltip.add((Component.translatable("note.generation." + (generation - 1)))
-                        .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
-            }
+        int generation = stack.getOrDefault(Items.SHEET_GENERATION, 0);
+        // generation = 0 means empty, 1 means original, more means copy
+        if(generation > 0){
+            tooltip.add((Component.translatable("note.generation." + (generation - 1)))
+                    .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
+        }
 
-            if(tag.contains("l")) {
-                int lengthBeats = tag.getInt("l");
-                tooltip.add((Component.translatable("note.length", lengthBeats)).withStyle(ChatFormatting.GRAY));
-            }
-            if(tag.contains("bps")) {
-                int bps = tag.getInt("bps");
-                tooltip.add((Component.translatable("note.tempo", bps*60)).withStyle(ChatFormatting.GRAY));
-            }
-            if(tag.contains("prevIns")){
-                byte ins = tag.getByte("prevIns");
-                if(ins >= 0 && ins < Items.instruments.length){
-                    Component name = ((Item)Items.instruments[ins]).getName(new ItemStack((Item)Items.instruments[ins]));
-                    tooltip.add((Component.translatable("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
-                }
+        int length = stack.getOrDefault(Items.SHEET_LENGTH, 0);
+        if(length > 0) {
+            tooltip.add((Component.translatable("note.length", length)).withStyle(ChatFormatting.GRAY));
+        }
+        int bps = getBPS(stack);
+        if(bps > 0) {
+            tooltip.add((Component.translatable("note.tempo", bps*60)).withStyle(ChatFormatting.GRAY));
+        }
+        int prevIns = getPrevInstrument(stack);
+        if(prevIns >= 0){
+            if(prevIns < Items.instruments.length){
+                Component name = ((Item)Items.instruments[prevIns]).getName(new ItemStack((Item)Items.instruments[prevIns]));
+                tooltip.add((Component.translatable("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
             }
         }
     }
@@ -207,13 +187,11 @@ public class ItemMusicSheet extends Item {
         BlockState blockState = world.getBlockState(blockpos);
         if (blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_MUSIC)) {
             ItemStack itemstack = context.getItemInHand();
-            if (itemstack.hasTag()) {
-                if (!world.isClientSide) {
-                    BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());
+            if (!world.isClientSide && itemstack.get(Items.SHEET_ID) != null) {
+                BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());
 
-                    if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
-                        itemstack.shrink(1);
-                    }
+                if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
+                    itemstack.shrink(1);
                 }
             }
 
@@ -225,13 +203,6 @@ public class ItemMusicSheet extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        if(stack.hasTag()){
-            CompoundTag ntc = stack.getTag();
-            if(ntc != null && ntc.contains("generation")){
-                int generation = ntc.getInt("generation");
-                return generation > 0;
-            }
-        }
-        return false;
+        return stack.getOrDefault(Items.SHEET_GENERATION, 0) > 0;
     }
 }

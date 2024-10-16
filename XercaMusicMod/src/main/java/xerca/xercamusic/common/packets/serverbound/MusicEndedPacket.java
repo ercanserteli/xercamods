@@ -1,54 +1,34 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.IPacket;
+import org.jetbrains.annotations.NotNull;
+import xerca.xercamusic.common.Mod;
 
-public class MusicEndedPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_ended");
-    private int playerId;
-    private boolean messageIsValid;
 
-    public MusicEndedPacket(int playerId) {
-        this.playerId = playerId;
-    }
-
-    public MusicEndedPacket() {
-        this.messageIsValid = false;
-    }
+public record MusicEndedPacket(int playerId) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MusicEndedPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "music_ended"));
+    public static final StreamCodec<FriendlyByteBuf, MusicEndedPacket> PACKET_CODEC = StreamCodec.ofMember(MusicEndedPacket::encode, MusicEndedPacket::decode);
 
     public static MusicEndedPacket decode(FriendlyByteBuf buf) {
-        MusicEndedPacket result = new MusicEndedPacket();
         try {
-            result.playerId = buf.readInt();
+            int playerId = buf.readInt();
+            return new MusicEndedPacket(playerId);
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading MusicEndedPacket: " + ioe);
             return null;
         }
-        result.messageIsValid = true;
-        return result;
     }
 
-    public FriendlyByteBuf encode() {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         buf.writeInt(playerId);
         return buf;
     }
 
-    public int getPlayerId() {
-        return this.playerId;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isMessageValid() {
-        return messageIsValid;
-    }
-
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return PACKET_ID;
     }
-
 }

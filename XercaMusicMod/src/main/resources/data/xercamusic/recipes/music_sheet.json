@@ -1,8 +1,6 @@
-
 {
     "type": "minecraft:crafting_shapeless",
     
     "ingredients": [{"item": "minecraft:paper"}, {"item": "minecraft:ink_sac"}, {"item": "minecraft:feather"}],
-    "result": {"item": "xercamusic:music_sheet"}
+    "result": {"id": "xercamusic:music_sheet"}
 }
-        

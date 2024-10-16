@@ -1,9 +1,8 @@
 package xerca.xercapaint.item.crafting;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
@@ -97,7 +96,7 @@ public class RecipeCraftPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
+    public ItemStack assemble(CraftingContainer inv, @NotNull HolderLookup.Provider provider) {
         int plankRow = findPlankRow(inv);
         if(plankRow < 0){
             return ItemStack.EMPTY;
@@ -113,8 +112,7 @@ public class RecipeCraftPalette extends CustomRecipe {
             basicColors[15 - color.getId()] = 1;
         }
         ItemStack result = new ItemStack(Items.ITEM_PALETTE);
-        CompoundTag tag = result.getOrCreateTag();
-        tag.putByteArray("basic", basicColors);
+        result.set(Items.PALETTE_BASIC_COLORS, basicColors);
         return result;
     }
 

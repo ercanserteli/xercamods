@@ -1,4 +1,3 @@
-
 {
     "type": "minecraft:crafting_shaped",
     
@@ -8,6 +7,5 @@
         " p "
     ],
     "key": {"p": {"item": "minecraft:acacia_planks"}, "s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:string"}},
-    "result": {"item": "xercamusic:banjo"}
+    "result": {"id": "xercamusic:banjo"}
 }
-        
