@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.*;
-// TODO: data fixers? how to update itemstacks from old version, mapping nbt to component
+
 public class Mod implements ModInitializer {
     public static final String MODID = "xercapaint";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
