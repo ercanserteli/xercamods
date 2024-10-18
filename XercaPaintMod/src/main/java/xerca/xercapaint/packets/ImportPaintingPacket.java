@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 
 public record ImportPaintingPacket(String canvasId) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ImportPaintingPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "import_painting"));
+    public static final CustomPacketPayload.Type<ImportPaintingPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("import_painting"));
     public static final StreamCodec<FriendlyByteBuf, ImportPaintingPacket> PACKET_CODEC = StreamCodec.ofMember(ImportPaintingPacket::encode, ImportPaintingPacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {

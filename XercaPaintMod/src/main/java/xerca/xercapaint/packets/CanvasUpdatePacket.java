@@ -10,7 +10,7 @@ import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 
 public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, String canvasId, int version, int easelId, PaletteUtil.CustomColor[] paletteColors, CanvasType canvasType) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<CanvasUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "canvas_update"));
+    public static final CustomPacketPayload.Type<CanvasUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("canvas_update"));
     public static final StreamCodec<FriendlyByteBuf, CanvasUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(CanvasUpdatePacket::encode, CanvasUpdatePacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {

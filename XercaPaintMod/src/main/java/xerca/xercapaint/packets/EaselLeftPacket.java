@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 
 public record EaselLeftPacket(int easelId) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<EaselLeftPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "easel_left"));
+    public static final CustomPacketPayload.Type<EaselLeftPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("easel_left"));
     public static final StreamCodec<FriendlyByteBuf, EaselLeftPacket> PACKET_CODEC = StreamCodec.ofMember(EaselLeftPacket::encode, EaselLeftPacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {

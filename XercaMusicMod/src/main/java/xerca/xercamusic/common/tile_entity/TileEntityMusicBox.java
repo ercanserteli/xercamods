@@ -78,7 +78,7 @@ public class TileEntityMusicBox extends BlockEntity {
             setSheetStack(sheet, false);
         }
         if (parent.contains("instrument_id", 8)) {
-            this.setInstrument(BuiltInRegistries.ITEM.get(new ResourceLocation(parent.getString("instrument_id"))));
+            this.setInstrument(BuiltInRegistries.ITEM.get(ResourceLocation.parse(parent.getString("instrument_id"))));
         }
     }
 

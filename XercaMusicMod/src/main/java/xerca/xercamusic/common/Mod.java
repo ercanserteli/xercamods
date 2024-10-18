@@ -10,6 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -117,5 +118,9 @@ public class Mod implements ModInitializer
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public static ResourceLocation id(String location) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, location);
     }
 }

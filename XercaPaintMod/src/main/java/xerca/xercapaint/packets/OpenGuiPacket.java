@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 
 public record OpenGuiPacket(int easelId, boolean allowed, boolean edit, InteractionHand hand) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<OpenGuiPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "open_gui"));
+    public static final CustomPacketPayload.Type<OpenGuiPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("open_gui"));
     public static final StreamCodec<FriendlyByteBuf, OpenGuiPacket> PACKET_CODEC = StreamCodec.ofMember(OpenGuiPacket::encode, OpenGuiPacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {

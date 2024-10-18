@@ -9,7 +9,7 @@ import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 
 public record PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<PaletteUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "palette_update"));
+    public static final CustomPacketPayload.Type<PaletteUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("palette_update"));
     public static final StreamCodec<FriendlyByteBuf, PaletteUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(PaletteUpdatePacket::encode, PaletteUpdatePacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {

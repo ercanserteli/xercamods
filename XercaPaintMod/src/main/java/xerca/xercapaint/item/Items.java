@@ -81,7 +81,7 @@ public final class Items {
         registerItem("item_canvas_tall", ITEM_CANVAS_TALL);
         registerItem("item_easel", ITEM_EASEL);
 
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(Mod.MODID, "paint_tab"), paintTab);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Mod.id("paint_tab"), paintTab);
     }
 
     public static void registerDataComponents() {
@@ -96,14 +96,14 @@ public final class Items {
     }
 
     private static void registerComponentType(String name, DataComponentType<?> type) {
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, new ResourceLocation(Mod.MODID, name), type);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Mod.id(name), type);
     }
 
     private static void registerItem(String name, Item item) {
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, name), item);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id(name), item);
     }
 
     private static void registerRecipeSerializer(String name, RecipeSerializer<?> recipeSerializer) {
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.MODID, name), recipeSerializer);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id(name), recipeSerializer);
     }
 }

@@ -10,7 +10,7 @@ import xerca.xercamusic.common.Mod;
 import java.util.UUID;
 
 public record MusicDataRequestPacket(UUID id, int version) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<MusicDataRequestPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "music_data_request"));
+    public static final CustomPacketPayload.Type<MusicDataRequestPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("music_data_request"));
     public static final StreamCodec<FriendlyByteBuf, MusicDataRequestPacket> PACKET_CODEC = StreamCodec.ofMember(MusicDataRequestPacket::encode, MusicDataRequestPacket::decode);
 
     public static MusicDataRequestPacket decode(FriendlyByteBuf buf) {

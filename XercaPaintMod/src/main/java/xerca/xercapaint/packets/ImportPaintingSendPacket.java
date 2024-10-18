@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 
 public record ImportPaintingSendPacket(CompoundTag tag) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ImportPaintingSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "import_painting_send"));
+    public static final CustomPacketPayload.Type<ImportPaintingSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("import_painting_send"));
     public static final StreamCodec<FriendlyByteBuf, ImportPaintingSendPacket> PACKET_CODEC = StreamCodec.ofMember(ImportPaintingSendPacket::encode, ImportPaintingSendPacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {

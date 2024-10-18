@@ -31,7 +31,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
     static public RenderEntityEasel theInstance;
-    static private final ResourceLocation woodTexture = new ResourceLocation(Mod.MODID, "textures/block/birch_long.png");
+    static private final ResourceLocation woodTexture = Mod.id("textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -64,7 +64,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
         VertexConsumer vertexconsumer = bufferIn.getBuffer(rendertype);
 
         int i = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
-        this.model.renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, i, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, i);
 
         this.layers.forEach(renderlayer -> renderlayer.render(matrixStackIn, bufferIn, packedLightIn, entity, 0, 0, 0, 0, 0, 0));
 

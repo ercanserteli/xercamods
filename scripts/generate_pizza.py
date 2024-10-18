@@ -478,13 +478,13 @@ def generate_stuff(pizzas):
         # with open(recipe_gen_py_path, "r+") as f:
         #     content = f.read()
         #
-        #     # # Crafting recipes
+        #     # # Crafting recipe
         #     line_find = "# PIZZA RECIPES START"
         #     i = content.find(line_find) + len(line_find) + 1
         #     line = "    " + p.recipe_gen() + "\n"
         #     content = content[:i] + line + content[i:]
         #
-        #     # Cooking recipes
+        #     # Cooking recipe
         #     line_find = "# PIZZA COOKING RECIPES START"
         #     i = content.find(line_find) + len(line_find) + 1
         #     line = "    " + p.recipe_cooking_gen() + "\n"

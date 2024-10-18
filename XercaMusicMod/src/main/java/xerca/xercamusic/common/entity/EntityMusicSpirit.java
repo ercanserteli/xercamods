@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -134,13 +135,13 @@ public class EntityMusicSpirit extends Entity {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity serverEntity) {
         if (body == null) {
             Mod.LOGGER.error("Body is null on EntityMusicSpirit.getAddEntityPacket, this shouldn't happen!");
         }
 
         int data = blockInstrument == null ? body.getId() : -body.getId();
-        return new ClientboundAddEntityPacket(this, data);
+        return new ClientboundAddEntityPacket(this, serverEntity, data);
     }
 
     @Override

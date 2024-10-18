@@ -3,9 +3,9 @@ package xerca.xercamusic.common.item;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -21,11 +21,11 @@ public class RecipeNoteCloning extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingContainer inv, @NotNull Level worldIn) {
+    public boolean matches(CraftingInput inv, @NotNull Level worldIn) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for(int j = 0; j < inv.size(); ++j) {
             ItemStack item = inv.getItem(j);
             if (!item.isEmpty()) {
                 if (item.getItem() == Items.MUSIC_SHEET && item.getOrDefault(Items.SHEET_GENERATION, 0) > 0) {
@@ -48,11 +48,11 @@ public class RecipeNoteCloning extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(@NotNull CraftingContainer inv, HolderLookup.@NotNull Provider registries) {
+    public ItemStack assemble(@NotNull CraftingInput inv, HolderLookup.@NotNull Provider registries) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for(int j = 0; j < inv.size(); ++j) {
             ItemStack item = inv.getItem(j);
             if (!item.isEmpty()) {
                 if (item.getItem() == Items.MUSIC_SHEET && item.getOrDefault(Items.SHEET_GENERATION, 0) > 0) {
@@ -90,8 +90,8 @@ public class RecipeNoteCloning extends CustomRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        NonNullList<ItemStack> itemStacks = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
+        NonNullList<ItemStack> itemStacks = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 
         for(int i = 0; i < itemStacks.size(); ++i) {
             ItemStack itemStack = inv.getItem(i);

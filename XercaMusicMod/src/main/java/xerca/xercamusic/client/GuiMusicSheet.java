@@ -47,9 +47,9 @@ public class GuiMusicSheet extends Screen {
         BEGINNING, END, STOP, PREVIEW, RECORD
     }
     private static final String[] octaveNames = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
-    private static final ResourceLocation noteGuiLeftTexture = new ResourceLocation(Mod.MODID, "textures/gui/music_sheet_left.png");
-    private static final ResourceLocation noteGuiTextures = new ResourceLocation(Mod.MODID, "textures/gui/music_sheet.png");
-    private static final ResourceLocation instrumentTextures = new ResourceLocation(Mod.MODID, "textures/gui/instruments.png");
+    private static final ResourceLocation noteGuiLeftTexture = Mod.id("textures/gui/music_sheet_left.png");
+    private static final ResourceLocation noteGuiTextures = Mod.id("textures/gui/music_sheet.png");
+    private static final ResourceLocation instrumentTextures = Mod.id("textures/gui/instruments.png");
     private final Player editingPlayer;
     public final static int beatsInScreen = 91;
     private final static int noteImageLeftTexX = 175;

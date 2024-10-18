@@ -10,7 +10,7 @@ import xerca.xercamusic.common.Mod;
 import java.util.UUID;
 
 public record NotesPartAckFromServerPacket(UUID id) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<NotesPartAckFromServerPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "notes_part_ack_from_server"));
+    public static final CustomPacketPayload.Type<NotesPartAckFromServerPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("notes_part_ack_from_server"));
     public static final StreamCodec<FriendlyByteBuf, NotesPartAckFromServerPacket> PACKET_CODEC = StreamCodec.ofMember(NotesPartAckFromServerPacket::encode, NotesPartAckFromServerPacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {

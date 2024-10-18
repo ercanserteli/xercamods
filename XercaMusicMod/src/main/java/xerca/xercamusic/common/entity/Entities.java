@@ -15,6 +15,6 @@ public class Entities {
             .dimensions(new EntityDimensions(0.25f, 0.25f, 0.25f, EntityAttachments.createDefault(0.25f, 0.25f),true)).trackedUpdateRate(10).build();
 
     public static void registerEntities() {
-        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.MODID, "music_spirit"), MUSIC_SPIRIT);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, Mod.id("music_spirit"), MUSIC_SPIRIT);
     }
 }

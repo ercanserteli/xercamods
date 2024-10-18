@@ -23,8 +23,8 @@ import xerca.xercapaint.packets.*;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class ModClient implements ClientModInitializer {
-    public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(new ResourceLocation(Mod.MODID, "easel"), "main");
-    public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(new ResourceLocation(Mod.MODID, "easel"), "canvas");
+    public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(Mod.id("easel"), "main");
+    public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(Mod.id("easel"), "canvas");
     public static CanvasItemRenderer CANVAS_ITEM_RENDERER;
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette){
@@ -96,11 +96,11 @@ public class ModClient implements ClientModInitializer {
         };
         ClampedItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
                 ((float)ItemPalette.basicColorCount(stack)) / 16.0F;
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS, new ResourceLocation(Mod.MODID, "drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LARGE, new ResourceLocation(Mod.MODID, "drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LONG, new ResourceLocation(Mod.MODID, "drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_TALL, new ResourceLocation(Mod.MODID, "drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_PALETTE, new ResourceLocation(Mod.MODID, "colors"), colors);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS, Mod.id("drawn"), drawn);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LARGE, Mod.id("drawn"), drawn);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LONG, Mod.id("drawn"), drawn);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_TALL, Mod.id("drawn"), drawn);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_PALETTE, Mod.id("colors"), colors);
 
         ClientPlayNetworking.registerGlobalReceiver(CloseGuiPacket.PACKET_ID, new CloseGuiPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(ExportPaintingPacket.PACKET_ID, new ExportPaintingPacketHandler());

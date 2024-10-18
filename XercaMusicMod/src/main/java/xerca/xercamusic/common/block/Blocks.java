@@ -18,9 +18,9 @@ public class Blocks {
     public static final Block DRUM_KIT = new BlockDrums();
 
     public static void registerBlocks() {
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Mod.MODID, "block_metronome"), BLOCK_METRONOME);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Mod.MODID, "music_box"), MUSIC_BOX);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Mod.MODID, "piano"), PIANO);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Mod.MODID, "drum_kit"), DRUM_KIT);
+        Registry.register(BuiltInRegistries.BLOCK, Mod.id("block_metronome"), BLOCK_METRONOME);
+        Registry.register(BuiltInRegistries.BLOCK, Mod.id("music_box"), MUSIC_BOX);
+        Registry.register(BuiltInRegistries.BLOCK, Mod.id("piano"), PIANO);
+        Registry.register(BuiltInRegistries.BLOCK, Mod.id("drum_kit"), DRUM_KIT);
     }
 }

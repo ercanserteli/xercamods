@@ -26,8 +26,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer
 {
-    private static final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
-    private static final ResourceLocation emptyCanvasLocation = new ResourceLocation(Mod.MODID, "textures/block/empty.png");
+    private static final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
+    private static final ResourceLocation emptyCanvasLocation = Mod.id("textures/block/empty.png");
 
     public CanvasItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet entityModelSet) {
         super(dispatcher, entityModelSet);
@@ -53,7 +53,7 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implemen
 
     private void addVertex(VertexConsumer vb, Matrix4f m, PoseStack.Pose pose, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
     {
-        vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(pose, xOff, yOff, zOff).endVertex();
+        vb.addVertex(m, (float) x, (float)y, (float)z).setColor(255, 255, 255, 255).setUv(tx, ty).setOverlay(OverlayTexture.NO_OVERLAY).setLight(lightmap).setNormal(pose, xOff, yOff, zOff);
     }
 
     private void renderEmptyCanvas(PoseStack ms, MultiBufferSource buffer, float width, float height, int packedLight){

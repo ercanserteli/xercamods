@@ -16,7 +16,7 @@ public class BlockEntities {
         Mod.LOGGER.info("XercaMusic: Registering tile entities");
         METRONOME = FabricBlockEntityTypeBuilder.create(TileEntityMetronome::new, Blocks.BLOCK_METRONOME).build();
         MUSIC_BOX = FabricBlockEntityTypeBuilder.create(TileEntityMusicBox::new, Blocks.MUSIC_BOX).build();
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation(Mod.MODID, "metronome"), METRONOME);
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation(Mod.MODID, "music_box"), MUSIC_BOX);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("metronome"), METRONOME);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("music_box"), MUSIC_BOX);
     }
 }

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 
 public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sheetSent, boolean noSheet, UUID sheetId, int version, byte bps, int length, float volume) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<MusicBoxUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "music_box_update"));
+    public static final CustomPacketPayload.Type<MusicBoxUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("music_box_update"));
     public static final StreamCodec<FriendlyByteBuf, MusicBoxUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicBoxUpdatePacket::encode, MusicBoxUpdatePacket::decode);
 
     public static MusicBoxUpdatePacket create(BlockPos pos, ItemStack sheetStack, Item itemInstrument) {
