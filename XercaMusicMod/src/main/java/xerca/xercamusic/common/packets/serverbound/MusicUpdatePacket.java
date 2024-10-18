@@ -15,7 +15,7 @@ import java.util.UUID;
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
 public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) implements CustomPacketPayload  {
-    public static final Type<MusicUpdatePacket> PACKET_ID = new Type<>(new ResourceLocation(Mod.MODID, "music_update"));
+    public static final Type<MusicUpdatePacket> PACKET_ID = new Type<>(Mod.id("music_update"));
     public static final StreamCodec<FriendlyByteBuf, MusicUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicUpdatePacket::encode, MusicUpdatePacket::decode);
 
     public static MusicUpdatePacket create(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws NotesTooLargeException {

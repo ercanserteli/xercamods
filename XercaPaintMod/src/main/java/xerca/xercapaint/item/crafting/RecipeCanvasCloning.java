@@ -3,9 +3,9 @@ package xerca.xercapaint.item.crafting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -23,11 +23,11 @@ public class RecipeCanvasCloning extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingContainer inv, @NotNull Level worldIn) {
+    public boolean matches(CraftingInput inv, @NotNull Level worldIn) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for(int j = 0; j < inv.size(); ++j) {
             ItemStack stack = inv.getItem(j);
             if (!stack.isEmpty()) {
                 if (stack.getItem() instanceof ItemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
@@ -59,11 +59,11 @@ public class RecipeCanvasCloning extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for(int j = 0; j < inv.size(); ++j) {
             ItemStack stack = inv.getItem(j);
             if (!stack.isEmpty()) {
                 if (stack.getItem() instanceof ItemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
@@ -104,8 +104,8 @@ public class RecipeCanvasCloning extends CustomRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
+        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 
         for(int i = 0; i < nonnulllist.size(); ++i) {
             ItemStack stack = inv.getItem(i);

@@ -15,7 +15,7 @@ import xerca.xercamusic.common.item.Items;
 
 
 public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, Player playerEntity, boolean isStop, float volume) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SingleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "single_note_client"));
+    public static final CustomPacketPayload.Type<SingleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("single_note_client"));
     public static final StreamCodec<FriendlyByteBuf, SingleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(SingleNoteClientPacket::encode, SingleNoteClientPacket::decode);
 
     public static SingleNoteClientPacket decode(FriendlyByteBuf buf) {

@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import static xerca.xercamusic.client.ClientStuff.sendToServer;
 
 public class GuiInstrument extends Screen {
-    private static final ResourceLocation insGuiTextures = new ResourceLocation(Mod.MODID, "textures/gui/instrument_gui.png");
+    private static final ResourceLocation insGuiTextures = Mod.id("textures/gui/instrument_gui.png");
 
     private int guiBaseX = 45;
     private int guiBaseY = 80;

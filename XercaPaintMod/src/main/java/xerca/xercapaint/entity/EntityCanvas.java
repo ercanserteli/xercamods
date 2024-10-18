@@ -12,6 +12,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -94,7 +95,6 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        super.defineSynchedData(builder);
         builder.define(CANVAS_ID, "");
         builder.define(CANVAS_VERSION, 0);
         builder.define(CANVAS_TYPE_KEY, (byte)0);
@@ -108,12 +108,10 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
-    @Override
     public int getWidth() {
         return CanvasType.getWidth(getCanvasType());
     }
 
-    @Override
     public int getHeight() {
         return CanvasType.getHeight(getCanvasType());
     }
@@ -210,38 +208,34 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    protected void recalculateBoundingBox() {
-        //noinspection ConstantValue this inspection is false
-        if(getCanvasType() != null && this.direction != null) {
-            double d1 = (double)this.pos.getX() + 0.5D - (double)this.direction.getStepX() * 0.46875D;
-            double d2 = (double)this.pos.getY() + 0.5D - (double)this.direction.getStepY() * 0.46875D;
-            double d3 = (double)this.pos.getZ() + 0.5D - (double)this.direction.getStepZ() * 0.46875D;
+    protected @NotNull AABB calculateBoundingBox(@NotNull BlockPos pos, @NotNull Direction direction) {
+        double d1 = (double)pos.getX() + 0.5D - (double)direction.getStepX() * 0.46875D;
+        double d2 = (double)pos.getY() + 0.5D - (double)direction.getStepY() * 0.46875D;
+        double d3 = (double)pos.getZ() + 0.5D - (double)direction.getStepZ() * 0.46875D;
 
-            if(this.direction.getAxis().isHorizontal()){
-                double d4 = this.offs(this.getWidth());
-                double d5 = this.offs(this.getHeight());
-                d2 = d2 + d5;
-                Direction direction = this.direction.getCounterClockWise();
-                d1 = d1 + d4 * (double)direction.getStepX();
-                d3 = d3 + d4 * (double)direction.getStepZ();
-            }
-
-            this.setPosRaw(d1, d2, d3);
-            double d6 = this.getWidth()-2;
-            double d7 = this.getHeight()-2;
-            double d8 = this.getWidth()-2;
-            Direction.Axis direction$axis = this.direction.getAxis();
-            switch (direction$axis) {
-                case X -> d6 = 1.0D;
-                case Y -> d7 = 1.0D;
-                case Z -> d8 = 1.0D;
-            }
-
-            d6 = d6 / 32.0D;
-            d7 = d7 / 32.0D;
-            d8 = d8 / 32.0D;
-            this.setBoundingBox(new AABB(d1 - d6, d2 - d7, d3 - d8, d1 + d6, d2 + d7, d3 + d8));
+        if(direction.getAxis().isHorizontal()){
+            double d4 = this.offs(this.getWidth());
+            double d5 = this.offs(this.getHeight());
+            d2 = d2 + d5;
+            Direction ccwDirection = direction.getCounterClockWise();
+            d1 = d1 + d4 * (double)ccwDirection.getStepX();
+            d3 = d3 + d4 * (double)ccwDirection.getStepZ();
         }
+
+        double d6 = this.getWidth();
+        double d7 = this.getHeight();
+        double d8 = this.getWidth();
+        Direction.Axis direction$axis = direction.getAxis();
+        switch (direction$axis) {
+            case X -> d6 = 1.0D;
+            case Y -> d7 = 1.0D;
+            case Z -> d8 = 1.0D;
+        }
+
+        d6 = d6 / 32.0D;
+        d7 = d7 / 32.0D;
+        d8 = d8 / 32.0D;
+        return new AABB(d1 - d6, d2 - d7, d3 - d8, d1 + d6, d2 + d7, d3 + d8);
     }
 
     @Override
@@ -295,7 +289,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity entity) {
         return new ClientboundAddEntityPacket(this, this.direction.get3DDataValue(), this.getPos());
     }
 

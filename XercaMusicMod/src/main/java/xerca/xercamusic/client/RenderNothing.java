@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 
 class RenderNothing<T extends Entity> extends EntityRenderer<T> {
-    static final ResourceLocation texture = new ResourceLocation(Mod.MODID, "textures/dot.png");
+    static final ResourceLocation texture = Mod.id("textures/dot.png");
     RenderNothing(EntityRendererProvider.Context ctx) {
         super(ctx);
     }

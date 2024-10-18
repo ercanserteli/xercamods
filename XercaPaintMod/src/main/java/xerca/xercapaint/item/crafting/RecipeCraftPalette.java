@@ -4,11 +4,11 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeCraftPalette extends CustomRecipe {
-    private static final ResourceLocation plank = new ResourceLocation("minecraft:planks");
+    private static final ResourceLocation plank = ResourceLocation.fromNamespaceAndPath("minecraft", "planks");
 
     public RecipeCraftPalette(CraftingBookCategory craftingBookCategory) {
         super(craftingBookCategory);
@@ -36,10 +36,10 @@ public class RecipeCraftPalette extends CustomRecipe {
         return stack.getItem() instanceof DyeItem;
     }
 
-    private boolean isPlankRow(CraftingContainer inv, int row){
+    private boolean isPlankRow(CraftingInput inv, int row){
         int plankCount = 0;
-        for(int j = 0; j < inv.getWidth(); ++j) {
-            int id = row*inv.getWidth() + j;
+        for(int j = 0; j < inv.width(); ++j) {
+            int id = row*inv.width() + j;
             ItemStack stack = inv.getItem(id);
             if(isPlank(stack)){
                 plankCount++;
@@ -48,8 +48,8 @@ public class RecipeCraftPalette extends CustomRecipe {
         return plankCount == 3;
     }
 
-    private int findPlankRow(CraftingContainer inv){
-        for(int i = 0; i < inv.getHeight(); ++i) {
+    private int findPlankRow(CraftingInput inv){
+        for(int i = 0; i < inv.height(); ++i) {
             if(isPlankRow(inv, i)){
                 return i;
             }
@@ -58,14 +58,14 @@ public class RecipeCraftPalette extends CustomRecipe {
     }
 
     @Nullable
-    private ArrayList<ItemStack> findDyes(CraftingContainer inv, int plankRow){
+    private ArrayList<ItemStack> findDyes(CraftingInput inv, int plankRow){
         ArrayList<ItemStack> dyes = new ArrayList<>();
-        for(int i = 0; i < inv.getHeight(); ++i) {
+        for(int i = 0; i < inv.height(); ++i) {
             if(i == plankRow){
                 continue;
             }
-            for(int j = 0; j < inv.getWidth(); ++j) {
-                int id = i*inv.getWidth() + j;
+            for(int j = 0; j < inv.width(); ++j) {
+                int id = i*inv.width() + j;
                 ItemStack stack = inv.getItem(id);
                 if(isDye(stack)){
                     dyes.add(stack);
@@ -83,7 +83,7 @@ public class RecipeCraftPalette extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         int plankRow = findPlankRow(inv);
         if(plankRow < 0){
             return false;
@@ -96,7 +96,7 @@ public class RecipeCraftPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
         int plankRow = findPlankRow(inv);
         if(plankRow < 0){
             return ItemStack.EMPTY;
@@ -117,8 +117,8 @@ public class RecipeCraftPalette extends CustomRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        return NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
+        return NonNullList.withSize(inv.size(), ItemStack.EMPTY);
     }
 
     @Override

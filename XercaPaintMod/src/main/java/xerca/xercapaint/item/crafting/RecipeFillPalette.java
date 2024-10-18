@@ -3,11 +3,11 @@ package xerca.xercapaint.item.crafting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -35,8 +35,8 @@ public class RecipeFillPalette extends CustomRecipe {
         return stack.getItem() instanceof DyeItem;
     }
 
-    private int findPalette(CraftingContainer inv){
-        for(int i = 0; i < inv.getContainerSize(); ++i) {
+    private int findPalette(CraftingInput inv){
+        for(int i = 0; i < inv.size(); ++i) {
             ItemStack stack = inv.getItem(i);
             if(isPalette(stack)){
                 return i;
@@ -46,9 +46,9 @@ public class RecipeFillPalette extends CustomRecipe {
     }
 
     @Nullable
-    private ArrayList<ItemStack> findDyes(CraftingContainer inv, int paletteId){
+    private ArrayList<ItemStack> findDyes(CraftingInput inv, int paletteId){
         ArrayList<ItemStack> dyes = new ArrayList<>();
-        for(int i = 0; i < inv.getContainerSize(); ++i) {
+        for(int i = 0; i < inv.size(); ++i) {
             if(i == paletteId){
                 continue;
             }
@@ -68,7 +68,7 @@ public class RecipeFillPalette extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         int paletteId = findPalette(inv);
         if(paletteId < 0){
             return false;
@@ -81,7 +81,7 @@ public class RecipeFillPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
         int paletteId = findPalette(inv);
         if(paletteId < 0){
             return ItemStack.EMPTY;
@@ -110,8 +110,8 @@ public class RecipeFillPalette extends CustomRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        return NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
+        return NonNullList.withSize(inv.size(), ItemStack.EMPTY);
     }
 
     @Override

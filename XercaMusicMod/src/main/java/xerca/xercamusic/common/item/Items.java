@@ -139,18 +139,18 @@ public final class Items {
         registerItem( "music_box", new BlockItem(Blocks.MUSIC_BOX, new Item.Properties()));
         registerItem( "metronome", new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties()));
 
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(Mod.MODID, "music_tab"), musicTab);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Mod.id("music_tab"), musicTab);
     }
 
     private static void registerComponentType(String name, DataComponentType<?> type) {
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, new ResourceLocation(Mod.MODID, name), type);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Mod.id(name), type);
     }
 
     private static void registerItem(String name, Item item) {
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, name), item);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id(name), item);
     }
 
     private static void registerRecipeSerializer(String name, RecipeSerializer<?> recipeSerializer) {
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.MODID, name), recipeSerializer);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id(name), recipeSerializer);
     }
 }

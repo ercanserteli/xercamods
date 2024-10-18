@@ -22,7 +22,7 @@ import xerca.xercapaint.item.Items;
 import static xerca.xercapaint.PaletteUtil.emptinessColor;
 
 public abstract class BasePalette extends Screen {
-    protected static final ResourceLocation paletteTextures = new ResourceLocation(Mod.MODID, "textures/gui/palette.png");
+    protected static final ResourceLocation paletteTextures =  Mod.id("textures/gui/palette.png");
     final static int dyeSpriteX = 240;
     final static int dyeSpriteSize = 16;
     final static int brushSpriteX = 0;

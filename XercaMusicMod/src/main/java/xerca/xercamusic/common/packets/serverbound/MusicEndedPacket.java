@@ -9,7 +9,7 @@ import xerca.xercamusic.common.Mod;
 
 
 public record MusicEndedPacket(int playerId) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<MusicEndedPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "music_ended"));
+    public static final CustomPacketPayload.Type<MusicEndedPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("music_ended"));
     public static final StreamCodec<FriendlyByteBuf, MusicEndedPacket> PACKET_CODEC = StreamCodec.ofMember(MusicEndedPacket::encode, MusicEndedPacket::decode);
 
     public static MusicEndedPacket decode(FriendlyByteBuf buf) {

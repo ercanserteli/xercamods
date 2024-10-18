@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId, List<NoteEvent> notes) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SendNotesPartToServerPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "send_notes_part_to_server"));
+    public static final CustomPacketPayload.Type<SendNotesPartToServerPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("send_notes_part_to_server"));
     public static final StreamCodec<FriendlyByteBuf, SendNotesPartToServerPacket> PACKET_CODEC = StreamCodec.ofMember(SendNotesPartToServerPacket::encode, SendNotesPartToServerPacket::decode);
 
     public static SendNotesPartToServerPacket decode(FriendlyByteBuf buf) {

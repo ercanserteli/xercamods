@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public record MusicDataResponsePacket(UUID id, int version, ArrayList<NoteEvent> notes) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<MusicDataResponsePacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "music_data_response"));
+    public static final CustomPacketPayload.Type<MusicDataResponsePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("music_data_response"));
     public static final StreamCodec<FriendlyByteBuf, MusicDataResponsePacket> PACKET_CODEC = StreamCodec.ofMember(MusicDataResponsePacket::encode, MusicDataResponsePacket::decode);
 
     public static MusicDataResponsePacket decode(FriendlyByteBuf buf) {

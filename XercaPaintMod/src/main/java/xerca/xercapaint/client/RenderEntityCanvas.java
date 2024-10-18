@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.entity.EntityCanvas;
@@ -34,7 +36,7 @@ import java.util.Objects;
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     static public RenderEntityCanvas theInstance;
-    static private final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
+    static private final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
 
     static {
@@ -160,28 +162,34 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             final float hScale = height/16.0f;
 
             ms.pushPose();
-            Matrix3f mn = ms.last().normal();
 
             float xOffset = facing.getStepX();
             float yOffset = facing.getStepY();
             float zOffset = facing.getStepZ();
 
-            if(canvas != null && canvas.getRotation() > 0) {
-                ms.mulPose(Axis.XP.rotationDegrees( pitch));
-                ms.mulPose(Axis.YP.rotationDegrees( 180-yaw));
-                ms.mulPose(Axis.ZP.rotationDegrees(90*canvas.getRotation()));
-                ms.mulPose(Axis.YP.rotationDegrees( -180+yaw));
-                ms.mulPose(Axis.XP.rotationDegrees( -pitch));
+            boolean canvasIsNull = canvas == null;
+
+            if (!canvasIsNull) {
+                int rotation = canvas.getRotation();
+                if (rotation > 0) {
+                    ms.mulPose(Axis.XP.rotationDegrees(pitch));
+                    ms.mulPose(Axis.YP.rotationDegrees(180 - yaw));
+                    ms.mulPose(Axis.ZP.rotationDegrees(90 * rotation));
+                    ms.mulPose(Axis.YP.rotationDegrees(-180 + yaw));
+                    ms.mulPose(Axis.XP.rotationDegrees(-pitch));
+                }
             }
-            ms.last().normal().set(mn);
 
             float f = 1.0f/32.0f;
-            if(canvas != null) {
+            if(!canvasIsNull) {
                 if (facing.getAxis().isHorizontal()) {
                     ms.translate(zOffset * 0.5d * wScale, -0.5d * hScale, -xOffset * 0.5d * wScale);
                 } else {
                     ms.translate(0.5 * wScale, 0 * hScale, (yOffset > 0 ? 0.5 : -0.5) * wScale);
                 }
+                xOffset = 0;
+                yOffset = 0;
+                zOffset = -1;
             }
             else{
                 ms.translate(0.75, 0.5, 0.5);
@@ -211,7 +219,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             vb = buffer.getBuffer(RenderType.entitySolid(backLocation));
             // Draw the back and sides
             final float sideWidth = 1.0F/16.0F;
-//            textureManager.bind(backLocation);
+
             RenderSystem.setShaderTexture(0, backLocation);
             addVertex(vb, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, pose, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
@@ -244,7 +252,14 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
         private void addVertex(VertexConsumer vb, Matrix4f m, PoseStack.Pose pose, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
         {
-            vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(pose, xOff, yOff, zOff).endVertex();
+            Vector3f normal = new Vector3f(xOff, yOff, zOff);
+            normal.mul(pose.normal());
+            vb.addVertex(m, (float) x, (float)y, (float)z)
+                    .setColor(255, 255, 255, 255)
+                    .setUv(tx, ty)
+                    .setOverlay(OverlayTexture.NO_OVERLAY)
+                    .setLight(lightmap)
+                    .setNormal(normal.x(), normal.y(), normal.z());
         }
 
         public void close() {

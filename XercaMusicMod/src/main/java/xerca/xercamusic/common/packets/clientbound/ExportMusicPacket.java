@@ -9,7 +9,7 @@ import xerca.xercamusic.common.Mod;
 
 @SuppressWarnings("unused")
 public record ExportMusicPacket(String name) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ExportMusicPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "export_music"));
+    public static final CustomPacketPayload.Type<ExportMusicPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("export_music"));
     public static final StreamCodec<FriendlyByteBuf, ExportMusicPacket> PACKET_CODEC = StreamCodec.ofMember(ExportMusicPacket::encode, ExportMusicPacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {

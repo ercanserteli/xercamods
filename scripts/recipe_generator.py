@@ -46,9 +46,9 @@ class Recipe:
         if self.cond is None:
             template = """
 {{
-  "parent": "{mod_id}:recipes/root",
+  "parent": "{mod_id}:recipe/root",
   "rewards": {{
-    "recipes": [
+    "recipe": [
       "{mod_id}:{recipe_path}"
     ]
   }},
@@ -80,9 +80,9 @@ class Recipe:
         else:
             template = """
 {{
-  "parent": "{mod_id}:recipes/root",
+  "parent": "{mod_id}:recipe/root",
   "rewards": {{
-    "recipes": [
+    "recipe": [
       "{mod_id}:{recipe_path}"
     ]
   }},
@@ -313,7 +313,7 @@ def write_recipe_adv_root_json():
     ]
   ]
 }"""
-    file_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancements/recipes/root.json"
+    file_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipe/root.json"
     with open(file_dir, "w") as f:
         f.write(content)
 
@@ -340,8 +340,8 @@ def generate_json(main_dir, json_string, r):
 def clean_recipe_jsons(mod_id_input):
     global mod_id
     mod_id = mod_id_input
-    recipe_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipes"
-    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancements/recipes"
+    recipe_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipe"
+    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipe"
 
     try:
         shutil.rmtree(recipe_main_dir)
@@ -359,8 +359,8 @@ def clean_recipe_jsons(mod_id_input):
 def generate_recipe_jsons(recipes, mod_id_input):
     global mod_id
     mod_id = mod_id_input
-    recipe_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipes"
-    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancements/recipes"
+    recipe_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipe"
+    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipe"
 
     write_recipe_adv_root_json()
     for r in recipes:
@@ -379,7 +379,7 @@ def generate_recipe_code_from_files(mod_id_input):
         "crafting_shaped": "ShapedRecipe",
         "smelting": "CookingRecipe",
     }
-    file_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipes"
+    file_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipe"
 
     recipe_jsons = []
     for entry in os.scandir(file_dir):

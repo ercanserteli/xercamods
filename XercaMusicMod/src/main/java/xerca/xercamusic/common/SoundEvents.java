@@ -39,7 +39,7 @@ public class SoundEvents {
     public static ArrayList<Pair<Integer, SoundEvent>> bass_guitars;
 
     private static SoundEvent createSoundEvent(String soundName) {
-        final ResourceLocation soundID = new ResourceLocation(Mod.MODID, soundName);
+        final ResourceLocation soundID = Mod.id(soundName);
         final SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundID);
         Registry.register(BuiltInRegistries.SOUND_EVENT, soundID, soundEvent);
         return soundEvent;

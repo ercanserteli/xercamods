@@ -14,7 +14,7 @@ import xerca.xercamusic.common.item.Items;
 
 
 public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument instrumentItem, Entity entity) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<TripleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(new ResourceLocation(Mod.MODID, "triple_note_client"));
+    public static final CustomPacketPayload.Type<TripleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("triple_note_client"));
     public static final StreamCodec<FriendlyByteBuf, TripleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(TripleNoteClientPacket::encode, TripleNoteClientPacket::decode);
 
     public static TripleNoteClientPacket decode(FriendlyByteBuf buf) {
