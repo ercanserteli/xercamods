@@ -31,5 +31,8 @@
   "xercapaint.import.fail.4": "Kunde inte tolka kommandot eller läsa målningens fil (%1$s)",
   "xercapaint.import.fail.5": "Målningsfilen är trasig",
 
-  "easel.deny": "Någon annan håller på med den här målningen just nu"
+  "easel.deny": "Någon annan håller på med den här målningen just nu",
+
+  "entity.xercapaint.canvas": "Målarduk",
+  "entity.xercapaint.easel": "Staffli"
 }

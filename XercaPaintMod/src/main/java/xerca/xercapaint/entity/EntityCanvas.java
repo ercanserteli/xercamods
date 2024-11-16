@@ -59,7 +59,7 @@ public class EntityCanvas extends HangingEntity {
         int version = stack.getOrDefault(Items.CANVAS_VERSION, 0);
         String title = stack.get(Items.CANVAS_TITLE);
         String author = stack.get(Items.CANVAS_AUTHOR);
-        this.setCanvasName(id);
+        this.setCanvasID(id);
         this.setVersion(version);
         if(title != null && author != null){
             this.canvasSigned = true;
@@ -84,12 +84,26 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
-    public EntityCanvas(EntityType<? extends HangingEntity> entityCanvasEntityType, Level world) {
-        super(entityCanvasEntityType, world);
+    public EntityCanvas(EntityType<? extends HangingEntity> entityCanvasEntityType, Level level) {
+        super(entityCanvasEntityType, level);
+        clientPictureInit(level);
+    }
 
-        Picture picture = PICTURES.get(getCanvasID());
-        if(world.isClientSide && (picture == null || picture.version < getVersion())){
-            requestPicture();
+    private void clientPictureInit(Level level) {
+        if(!level.isClientSide) {
+            return;
+        }
+
+        String canvasID = getCanvasID();
+        int version = getVersion();
+        if (!canvasID.isEmpty() && version > 0) {
+            Picture picture = PICTURES.get(getCanvasID());
+            if (picture == null || picture.version < getVersion()) {
+                if(!PICTURE_REQUESTS.contains(canvasID)){
+                    PICTURE_REQUESTS.add(canvasID);
+                    ClientPlayNetworking.send(new PictureRequestPacket(canvasID));
+                }
+            }
         }
     }
 
@@ -105,6 +119,9 @@ public class EntityCanvas extends HangingEntity {
     public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
         if (CANVAS_TYPE_KEY.equals(key)) {
             this.recalculateBoundingBox();
+        }
+        else if (CANVAS_ID.equals(key) || CANVAS_VERSION.equals(key)) {
+            clientPictureInit(this.level());
         }
     }
 
@@ -264,7 +281,7 @@ public class EntityCanvas extends HangingEntity {
         return this.getEntityData().get(CANVAS_ID);
     }
 
-    private void setCanvasName(String canvasID) {
+    private void setCanvasID(String canvasID) {
         this.getEntityData().set(CANVAS_ID, canvasID);
     }
 
@@ -308,7 +325,7 @@ public class EntityCanvas extends HangingEntity {
         }
         this.canvasSigned = canvasNBT.contains("author") && canvasNBT.contains("title");
         String canvasId = canvasNBT.getString("name");
-        this.setCanvasName(canvasId);
+        this.setCanvasID(canvasId);
         int version = canvasNBT.getInt("v");
         this.setVersion(version);
         if(canvasSigned)
@@ -361,14 +378,6 @@ public class EntityCanvas extends HangingEntity {
         Picture picture = PICTURES.get(getCanvasID());
         if(picture != null){
             tagCompound.putIntArray("pixels", picture.pixels);
-        }
-    }
-
-    private void requestPicture(){
-        String canvasID = this.getCanvasID();
-        if(!PICTURE_REQUESTS.contains(canvasID)){
-            PICTURE_REQUESTS.add(canvasID);
-            ClientPlayNetworking.send(new PictureRequestPacket(canvasID));
         }
     }
 

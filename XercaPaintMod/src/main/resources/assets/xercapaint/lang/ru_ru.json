@@ -31,5 +31,8 @@
   "xercapaint.import.fail.4": "Не удалось проанализировать команду или прочитать файл картины (%1$s)",
   "xercapaint.import.fail.5": "Файл с картинкой сломан",
 
-  "easel.deny": "Кто-то уже работает над этой картиной"
+  "easel.deny": "Кто-то уже работает над этой картиной",
+
+  "entity.xercapaint.canvas": "Холст",
+  "entity.xercapaint.easel": "Мольберт"
 }
