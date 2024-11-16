@@ -31,5 +31,8 @@
   "xercapaint.import.fail.4": "Não foi possível executar o comando ou ler o arquivo de pintura! (%1$s)",
   "xercapaint.import.fail.5": "O arquivo de pintura está quebrado",
 
-  "easel.deny": "Alguém já esta pintando nesta pintura no momento."
+  "easel.deny": "Alguém já esta pintando nesta pintura no momento.",
+
+  "entity.xercapaint.canvas": "Canvas",
+  "entity.xercapaint.easel": "Cavalete"
 }

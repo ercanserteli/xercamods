@@ -31,5 +31,8 @@
   "xercapaint.import.fail.4": "Could not parse command or read the painting file (%1$s)",
   "xercapaint.import.fail.5": "Painting file is broken",
 
-  "easel.deny": "Someone else is working on this painting right now"
+  "easel.deny": "Someone else is working on this painting right now",
+
+  "entity.xercapaint.canvas": "Canvas",
+  "entity.xercapaint.easel": "Easel"
 }
