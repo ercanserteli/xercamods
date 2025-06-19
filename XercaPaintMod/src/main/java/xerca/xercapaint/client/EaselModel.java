@@ -14,7 +14,7 @@ import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-public class EaselModel extends EntityModel<EntityEasel> {
+public class EaselModel extends EntityModel<RenderEntityEasel> {
     private final ModelPart bb_main;
     private final ModelPart bottomBar;
     private final ModelPart topBar;

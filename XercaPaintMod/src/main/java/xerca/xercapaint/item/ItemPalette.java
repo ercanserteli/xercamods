@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.client.ModClient;
 
-import javax.annotation.Nonnull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;

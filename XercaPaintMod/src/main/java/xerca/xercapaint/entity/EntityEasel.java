@@ -29,15 +29,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.CloseGuiPacket;
 import xerca.xercapaint.packets.OpenGuiPacket;
-
-import javax.annotation.Nullable;
-
 
 public class EntityEasel extends Entity {
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
@@ -67,14 +65,14 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource damageSource, float p_31580_) {
-        if (!this.level().isClientSide && !this.isRemoved()) {
+    public boolean hurtServer(ServerLevel serverLevel, @NotNull DamageSource damageSource, float p_31580_) {
+        if (!this.isRemoved()) {
             if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
                 this.dropItem(damageSource.getEntity(), false);
             }
             else{
                 this.dropItem(damageSource.getEntity());
-                kill();
+                kill(serverLevel);
             }
         }
         return false;
@@ -87,7 +85,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public void kill() {
+    public void kill(ServerLevel serverLevel) {
         showBreakingParticles();
         this.remove(RemovalReason.KILLED);
     }
@@ -117,22 +115,24 @@ public class EntityEasel extends Entity {
     }
 
     public void doDrop(@Nullable Entity entity, boolean dropSelf){
-        ItemStack canvasStack = this.getItem();
-        this.setItem(ItemStack.EMPTY);
+        if(this.level() instanceof ServerLevel level) {
+            ItemStack canvasStack = this.getItem();
+            this.setItem(ItemStack.EMPTY);
 
-        if (!canvasStack.isEmpty()) {
-            canvasStack = canvasStack.copy();
-            this.spawnAtLocation(canvasStack);
-        }
-
-        if (entity instanceof Player player) {
-            if (player.getAbilities().instabuild) {
-                return;
+            if (!canvasStack.isEmpty()) {
+                canvasStack = canvasStack.copy();
+                this.spawnAtLocation(level, canvasStack);
             }
-        }
 
-        if (dropSelf && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(this.getEaselItemStack());
+            if (entity instanceof Player player) {
+                if (player.getAbilities().instabuild) {
+                    return;
+                }
+            }
+
+            if (dropSelf && level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+                this.spawnAtLocation(level, this.getEaselItemStack());
+            }
         }
     }
 

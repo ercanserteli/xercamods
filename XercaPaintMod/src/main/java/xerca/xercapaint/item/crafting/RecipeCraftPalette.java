@@ -13,13 +13,11 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeCraftPalette extends CustomRecipe {
     private static final ResourceLocation plank = ResourceLocation.fromNamespaceAndPath("minecraft", "planks");
@@ -122,7 +120,7 @@ public class RecipeCraftPalette extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Items.CRAFTING_SPECIAL_PALETTE_CRAFTING;
     }
 

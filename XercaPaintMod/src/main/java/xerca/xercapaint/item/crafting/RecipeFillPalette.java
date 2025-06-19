@@ -16,11 +16,9 @@ import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.ArrayList;
 
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeFillPalette extends CustomRecipe {
     public RecipeFillPalette(CraftingBookCategory craftingBookCategory) {

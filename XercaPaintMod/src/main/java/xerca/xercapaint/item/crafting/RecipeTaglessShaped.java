@@ -61,16 +61,19 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
         return CRAFTING_TAGLESS_SHAPED;
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
         public static final MapCodec<RecipeTaglessShaped> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
+                Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::group),
                 CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
                 ShapedRecipePattern.MAP_CODEC.forGetter(RecipeTaglessShaped::pattern),
-                ItemStack.STRICT_CODEC.fieldOf("result").forGetter(shapedRecipe -> shapedRecipe.getResultItem(RegistryAccess.EMPTY)),
+                ItemStack.STRICT_CODEC.fieldOf("result").forGetter(shapedRecipe -> {
+                    shapedRecipe.assemble()
+                    shapedRecipe.getResultItem(RegistryAccess.EMPTY)
+                }),
                 Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(ShapedRecipe::showNotification))
                 .apply(instance, RecipeTaglessShaped::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, RecipeTaglessShaped> STREAM_CODEC = StreamCodec.of(RecipeTaglessShaped.TaglessSerializer::toNetwork, RecipeTaglessShaped.TaglessSerializer::fromNetwork);
@@ -95,7 +98,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, RecipeTaglessShaped recipe) {
-            buffer.writeUtf(recipe.getGroup());
+            buffer.writeUtf(recipe.group());
             buffer.writeEnum(recipe.category());
             ShapedRecipePattern.STREAM_CODEC.encode(buffer, recipe.pattern());
             ItemStack.STREAM_CODEC.encode(buffer, recipe.getResultItem(RegistryAccess.EMPTY));

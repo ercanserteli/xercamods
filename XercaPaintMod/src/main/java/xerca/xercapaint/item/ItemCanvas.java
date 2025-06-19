@@ -22,8 +22,7 @@ import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityCanvas;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
 import java.util.List;
 
 @NonnullDefault

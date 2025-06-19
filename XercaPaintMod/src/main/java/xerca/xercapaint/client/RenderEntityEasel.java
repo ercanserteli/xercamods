@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -22,14 +23,12 @@ import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-@ParametersAreNonnullByDefault
-public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
+public class RenderEntityEasel extends EntityRenderState implements RenderLayerParent<RenderEntityEasel, EaselModel> {
     protected final EaselModel model;
-    protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
+    protected final List<RenderLayer<RenderEntityEasel, EaselModel>> layers = Lists.newArrayList();
     static public RenderEntityEasel theInstance;
     static private final ResourceLocation woodTexture = Mod.id("textures/block/birch_long.png");
 

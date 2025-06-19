@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -27,13 +28,11 @@ import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.entity.EntityCanvas;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.Map;
 import java.util.Objects;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-@ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     static public RenderEntityCanvas theInstance;
     static private final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
@@ -117,7 +116,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             this.width = width;
             this.height = height;
             this.canvasTexture = new DynamicTexture(width, height, true);
-            this.location = RenderEntityCanvas.this.textureManager.register("canvas/" + canvasId, this.canvasTexture);
+            this.location = Mod.id("canvas/" + canvasId);
+            RenderEntityCanvas.this.textureManager.register(this.location, this.canvasTexture);
 
             updateCanvasTexture(canvasId, version);
         }
@@ -147,7 +147,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                     for (int i = 0; i < height; ++i) {
                         for (int j = 0; j < width; ++j) {
                             int k = j + i * width;
-                            image.setPixelRGBA(j, i, swapColor(pixels[k]));
+                            image.setPixel(j, i, swapColor(pixels[k]));
                         }
                     }
                 }
