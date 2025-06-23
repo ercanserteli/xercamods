@@ -129,7 +129,7 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
 
     @Override
     public @Nullable ItemStack extractArgument(ItemStack itemStack) {
-        return null;
+        return itemStack;
     }
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked {

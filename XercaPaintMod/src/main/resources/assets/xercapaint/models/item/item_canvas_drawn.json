@@ -1,6 +1,6 @@
 {
     "textures": {
-        "layer0": "xercapaint:item/item_canvas_drawn"
+        "particle": "xercapaint:item/item_canvas_drawn"
     },
     "display": {
       "gui": {
