@@ -284,6 +284,14 @@ public class EntityEasel extends Entity {
         private ItemStack item;
         private float entityYaw;
 
+        public void setItem(ItemStack item) {
+            this.item = item;
+        }
+
+        public void setEntityYaw(float entityYaw) {
+            this.entityYaw = entityYaw;
+        }
+
         public float getEntityYaw() {
             return entityYaw;
         }

@@ -423,6 +423,38 @@ public class EntityCanvas extends HangingEntity {
         private Direction direction;
         int rotation;
 
+        public void setCanvasID(String canvasID) {
+            this.canvasID = canvasID;
+        }
+
+        public void setDirection(Direction direction) {
+            this.direction = direction;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public void setPitch(float pitch) {
+            this.pitch = pitch;
+        }
+
+        public void setRotation(int rotation) {
+            this.rotation = rotation;
+        }
+
+        public void setVersion(int version) {
+            this.version = version;
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
+        }
+
+        public void setYaw(float yaw) {
+            this.yaw = yaw;
+        }
+
         public int getRotation() {
             return rotation;
         }

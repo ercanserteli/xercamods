@@ -78,10 +78,7 @@ public class ModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         CANVAS_ITEM_RENDERER = new CanvasItemRenderer();
-        SpecialModelRenderers.ID_MAPPER.put(Mod.id("item_canvas"), CanvasItemRenderer.UnbakedSmall.MAP_CODEC);
-        SpecialModelRenderers.ID_MAPPER.put(Mod.id("item_canvas_large"), CanvasItemRenderer.UnbakedLarge.MAP_CODEC);
-        SpecialModelRenderers.ID_MAPPER.put(Mod.id("item_canvas_long"), CanvasItemRenderer.UnbakedLong.MAP_CODEC);
-        SpecialModelRenderers.ID_MAPPER.put(Mod.id("item_canvas_tall"), CanvasItemRenderer.UnbakedTall.MAP_CODEC);
+        SpecialModelRenderers.ID_MAPPER.put(Mod.id("canvas_drawn"), CanvasItemRenderer.Unbaked.MAP_CODEC);
 
         EntityRendererRegistry.register(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
         EntityRendererRegistry.register(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());

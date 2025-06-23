@@ -8,7 +8,7 @@
         "when": "drawn",
         "model": {
           "type": "minecraft:special",
-          "base": "xercapaint:item/item_canvas_drawn",
+          "base": "xercapaint:item/item_canvas_long_drawn",
           "model": {
             "type": "xercapaint:canvas_drawn"
           }
@@ -17,7 +17,7 @@
     ],
     "fallback": {
       "type": "minecraft:model",
-      "model": "xercapaint:item/item_canvas"
+      "model": "xercapaint:item/item_canvas_long"
     }
   }
 }

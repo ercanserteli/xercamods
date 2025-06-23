@@ -66,6 +66,17 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, EntityCanva
         return new EntityCanvas.RenderState();
     }
 
+    @Override
+    public void extractRenderState(EntityCanvas entity, EntityCanvas.RenderState entityRenderState, float f) {
+        entityRenderState.setCanvasID(entity.getCanvasID());
+        entityRenderState.setDirection(entity.getDirection());
+        entityRenderState.setHeight(entity.getHeight());
+        entityRenderState.setWidth(entity.getWidth());
+        entityRenderState.setPitch(entity.getYRot());
+        entityRenderState.setYaw(entity.getXRot());
+        entityRenderState.setRotation(entity.getRotation());
+        entityRenderState.setVersion(entity.getVersion());
+    }
 
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
         @Override

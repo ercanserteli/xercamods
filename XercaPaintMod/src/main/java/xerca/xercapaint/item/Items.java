@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -13,6 +14,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import xerca.xercapaint.CanvasType;
@@ -32,7 +34,7 @@ public final class Items {
     public static final ItemCanvas ITEM_CANVAS_LARGE = new ItemCanvas(CanvasType.LARGE);
     public static final ItemCanvas ITEM_CANVAS_LONG = new ItemCanvas(CanvasType.LONG);
     public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL);
-    public static final ItemEasel ITEM_EASEL = new ItemEasel(new Item.Properties().stacksTo(1));
+    public static final ItemEasel ITEM_EASEL = new ItemEasel();
 
     public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = new CustomRecipe.Serializer<>(RecipeCraftPalette::new);
     public static final RecipeSerializer<RecipeFillPalette> CRAFTING_SPECIAL_PALETTE_FILLING = new CustomRecipe.Serializer<>(RecipeFillPalette::new);
@@ -47,16 +49,20 @@ public final class Items {
     public static final DataComponentType<byte[]> PALETTE_BASIC_COLORS = DataComponentType.<byte[]>builder().persistent(Codec.BYTE_BUFFER.flatXmap(byteBuffer -> DataResult.success(byteBuffer.array()), bytes -> DataResult.success(ByteBuffer.wrap(bytes)))).networkSynchronized(ByteBufCodecs.BYTE_ARRAY).build();
     public static final DataComponentType<ItemPalette.ComponentCustomColor> PALETTE_CUSTOM_COLORS = DataComponentType.<ItemPalette.ComponentCustomColor>builder().persistent(ItemPalette.ComponentCustomColor.CODEC).build();
 
-    public static final CreativeModeTab paintTab = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(Items.ITEM_PALETTE))
-            .displayItems((params, output) -> {
-                ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
-                byte[] basicColors = new byte[16];
-                Arrays.fill(basicColors, (byte)1);
-                fullPalette.set(PALETTE_BASIC_COLORS, basicColors);
+    public static ItemStack createFullPalette() {
+        ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
+        byte[] basicColors = new byte[16];
+        Arrays.fill(basicColors, (byte)1);
+        fullPalette.set(PALETTE_BASIC_COLORS, basicColors);
+        fullPalette.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(16f), List.of(), List.of(), List.of()));
+        return fullPalette;
+    }
 
+    public static final CreativeModeTab paintTab = FabricItemGroup.builder()
+            .icon(Items::createFullPalette)
+            .displayItems((params, output) -> {
                 output.accept(ITEM_PALETTE);
-                output.accept(fullPalette);
+                output.accept(createFullPalette());
                 output.accept(ITEM_CANVAS);
                 output.accept(ITEM_CANVAS_LONG);
                 output.accept(ITEM_CANVAS_TALL);

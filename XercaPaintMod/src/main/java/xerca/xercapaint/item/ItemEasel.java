@@ -28,8 +28,8 @@ import java.util.function.Consumer;
 
 public class ItemEasel extends Item {
 
-    public ItemEasel(Properties properties) {
-        super(properties.setId(ResourceKey.create(Registries.ITEM, Mod.id("item_palette"))));
+    public ItemEasel() {
+        super(new Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, Mod.id("item_easel"))));
     }
 
     @Override

@@ -1,5 +1,4 @@
 {
-    "parent": "builtin/entity",
     "textures": {
         "layer0": "xercapaint:item/item_canvas_drawn"
     },
