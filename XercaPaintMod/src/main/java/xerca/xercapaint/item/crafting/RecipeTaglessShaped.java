@@ -13,8 +13,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.Items;
 
-import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
-
 public class RecipeTaglessShaped extends ShapedRecipe {
     private ItemStack result;
     public RecipeTaglessShaped(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification){
@@ -64,7 +62,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
 
     @Override
     public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
-        return CRAFTING_TAGLESS_SHAPED;
+        return Items.CRAFTING_TAGLESS_SHAPED;
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
