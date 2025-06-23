@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.BlitUtil;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
@@ -158,7 +159,7 @@ public abstract class BasePalette extends Screen {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, basicColors[i].rgbVal());
 
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                guiGraphics.blit(RenderType::guiTextured, paletteTextures, x - 8, y - 8, 0f, 0f, dyeSpriteX, i * dyeSpriteSize, dyeSpriteSize, dyeSpriteSize);
+                BlitUtil.blit(guiGraphics, paletteTextures, x - 8, y - 8, dyeSpriteX, i * dyeSpriteSize, dyeSpriteSize, dyeSpriteSize);
             } else {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, emptinessColor.rgbVal());
             }
@@ -172,11 +173,11 @@ public abstract class BasePalette extends Screen {
         }
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(RenderType::guiTextured,paletteTextures, (int) paletteX, (int) paletteY, 0f, 0, 0, 0, paletteWidth, paletteHeight);
+        BlitUtil.blit(guiGraphics,paletteTextures, (int) paletteX, (int) paletteY, 0, 0, paletteWidth, paletteHeight);
 
         // Draw color picker
         if (paletteComplete) {
-            guiGraphics.blit(RenderType::guiTextured,paletteTextures, (int) paletteX + colorPickerPosX, (int) paletteY + colorPickerPosY, 0f, 0f, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
+            BlitUtil.blit(guiGraphics,paletteTextures, (int) paletteX + colorPickerPosX, (int) paletteY + colorPickerPosY, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
         }
     }
 

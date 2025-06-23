@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.BlitUtil;
 import xerca.xercapaint.packets.PaletteUpdatePacket;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
@@ -36,11 +37,11 @@ public class GuiPalette extends BasePalette {
     private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY){
         if(isCarryingColor){
             carriedColor.setGLColor();
-            guiGraphics.blit(RenderType::guiTextured, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, 0f, 0f, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            BlitUtil.blit(guiGraphics, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
 
         }else if(isCarryingWater){
             waterColor.setGLColor();
-            guiGraphics.blit(RenderType::guiTextured, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, 0f, 0f, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            BlitUtil.blit(guiGraphics, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
         }
     }
 
