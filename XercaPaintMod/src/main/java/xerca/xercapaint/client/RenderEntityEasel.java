@@ -45,7 +45,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, EntityEasel.R
 
     @Override
     public void extractRenderState(EntityEasel entity, EntityEasel.RenderState entityRenderState, float f) {
-        entityRenderState.setEntityYaw(entity.getXRot());
+        entityRenderState.setEntityYaw(entity.getYRot());
         entityRenderState.setItem(entity.getItem());
     }
 

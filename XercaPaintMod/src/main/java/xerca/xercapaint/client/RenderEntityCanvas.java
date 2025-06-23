@@ -72,8 +72,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, EntityCanva
         entityRenderState.setDirection(entity.getDirection());
         entityRenderState.setHeight(entity.getHeight());
         entityRenderState.setWidth(entity.getWidth());
-        entityRenderState.setPitch(entity.getYRot());
-        entityRenderState.setYaw(entity.getXRot());
+        entityRenderState.setPitch(entity.getXRot());
+        entityRenderState.setYaw(entity.getYRot());
         entityRenderState.setRotation(entity.getRotation());
         entityRenderState.setVersion(entity.getVersion());
     }
@@ -160,7 +160,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, EntityCanva
                     for (int i = 0; i < height; ++i) {
                         for (int j = 0; j < width; ++j) {
                             int k = j + i * width;
-                            image.setPixel(j, i, swapColor(pixels[k]));
+                            image.setPixel(j, i, pixels[k]);//swapColor(pixels[k]));
                         }
                     }
                 }
