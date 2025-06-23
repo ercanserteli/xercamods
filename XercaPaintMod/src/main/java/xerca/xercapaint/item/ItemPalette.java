@@ -32,11 +32,6 @@ public class ItemPalette extends Item {
     }
 
     @Override
-    public void verifyComponentsAfterLoad(ItemStack itemStack) {
-        super.verifyComponentsAfterLoad(itemStack);
-    }
-
-    @Override
     public InteractionResult useOn(UseOnContext useOnContext) {
         if(useOnContext.getPlayer() == null){
             return InteractionResult.SUCCESS;
