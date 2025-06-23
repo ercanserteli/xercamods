@@ -132,8 +132,47 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
         return null;
     }
 
-    public static class Unbaked implements SpecialModelRenderer.Unbaked {
-        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
+    public static class UnbakedSmall implements SpecialModelRenderer.Unbaked {
+        public static final MapCodec<UnbakedSmall> MAP_CODEC = MapCodec.unit(UnbakedSmall::new);
+
+        @Override
+        public SpecialModelRenderer<ItemStack> bake(EntityModelSet entityModels) {
+            return new CanvasItemRenderer();
+        }
+
+        @Override
+        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
+            return MAP_CODEC;
+        }
+    }
+    public static class UnbakedTall implements SpecialModelRenderer.Unbaked {
+        public static final MapCodec<UnbakedTall> MAP_CODEC = MapCodec.unit(UnbakedTall::new);
+
+        @Override
+        public SpecialModelRenderer<ItemStack> bake(EntityModelSet entityModels) {
+            return new CanvasItemRenderer();
+        }
+
+        @Override
+        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
+            return MAP_CODEC;
+        }
+    }
+    public static class UnbakedLong implements SpecialModelRenderer.Unbaked {
+        public static final MapCodec<UnbakedLong> MAP_CODEC = MapCodec.unit(UnbakedLong::new);
+
+        @Override
+        public SpecialModelRenderer<ItemStack> bake(EntityModelSet entityModels) {
+            return new CanvasItemRenderer();
+        }
+
+        @Override
+        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
+            return MAP_CODEC;
+        }
+    }
+    public static class UnbakedLarge implements SpecialModelRenderer.Unbaked {
+        public static final MapCodec<UnbakedLarge> MAP_CODEC = MapCodec.unit(UnbakedLarge::new);
 
         @Override
         public SpecialModelRenderer<ItemStack> bake(EntityModelSet entityModels) {

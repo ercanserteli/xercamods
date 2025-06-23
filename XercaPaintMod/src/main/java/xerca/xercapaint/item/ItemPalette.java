@@ -4,7 +4,10 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.PrimitiveCodec;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -14,6 +17,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.client.ModClient;
 
@@ -24,7 +28,7 @@ import java.util.stream.IntStream;
 
 public class ItemPalette extends Item {
     ItemPalette() {
-        super(new Properties().stacksTo(1));
+        super(new Properties().setId(ResourceKey.create(Registries.ITEM, Mod.id("item_palette"))).stacksTo(1));
     }
 
     @Override

@@ -3,8 +3,10 @@ package xerca.xercapaint.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,6 +19,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercapaint.CanvasType;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityCanvas;
@@ -28,8 +31,22 @@ import java.util.List;
 public class ItemCanvas extends HangingEntityItem {
     private final CanvasType canvasType;
 
+    private static ResourceKey<Item> getResourceKey(CanvasType canvasType){
+        switch(canvasType){
+            case LONG:
+                return ResourceKey.create(Registries.ITEM, Mod.id("item_canvas_long"));
+            case TALL:
+                return ResourceKey.create(Registries.ITEM, Mod.id("item_canvas_tall"));
+            case SMALL:
+                return ResourceKey.create(Registries.ITEM, Mod.id("item_canvas"));
+            case LARGE:
+                return ResourceKey.create(Registries.ITEM, Mod.id("item_canvas_large"));
+        }
+        throw new UnsupportedOperationException("what");
+    }
+
     ItemCanvas(CanvasType canvasType) {
-        super(Entities.CANVAS, new Item.Properties().stacksTo(1));
+        super(Entities.CANVAS, new Item.Properties().setId(getResourceKey(canvasType)).stacksTo(1));
         this.canvasType = canvasType;
     }
 

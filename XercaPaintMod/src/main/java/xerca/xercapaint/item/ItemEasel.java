@@ -2,6 +2,8 @@ package xerca.xercapaint.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
 
@@ -26,7 +29,7 @@ import java.util.function.Consumer;
 public class ItemEasel extends Item {
 
     public ItemEasel(Properties properties) {
-        super(properties);
+        super(properties.setId(ResourceKey.create(Registries.ITEM, Mod.id("item_palette"))));
     }
 
     @Override
