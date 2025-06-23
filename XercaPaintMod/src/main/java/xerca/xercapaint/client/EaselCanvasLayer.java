@@ -17,7 +17,7 @@ public class EaselCanvasLayer extends RenderLayer<EntityEasel.RenderState, Easel
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int i, EntityEasel.RenderState entityRenderState, float f, float g) {
+    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, EntityEasel.RenderState entityRenderState, float f, float g) {
         ItemStack itemstack = entityRenderState.getItem();
         if (itemstack.getItem() instanceof ItemCanvas itemCanvas) {
             poseStack.pushPose();
@@ -55,7 +55,7 @@ public class EaselCanvasLayer extends RenderLayer<EntityEasel.RenderState, Easel
                 }
             }
 
-            ModClient.CANVAS_ITEM_RENDERER.renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, bufferSource, i, 0);
+            ModClient.CANVAS_ITEM_RENDERER.renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, bufferSource, packedLight, 0);
 
             poseStack.popPose();
         }
