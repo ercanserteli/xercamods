@@ -1,6 +1,7 @@
 package xerca.xercapaint.entity;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -275,6 +276,21 @@ public class EntityEasel extends Entity {
     @Override
     public boolean isPickable() {
         return true;
+    }
+
+
+
+    public static class RenderState extends EntityRenderState {
+        private ItemStack item;
+        private float entityYaw;
+
+        public float getEntityYaw() {
+            return entityYaw;
+        }
+
+        public ItemStack getItem() {
+            return item;
+        }
     }
 
 }

@@ -11,6 +11,11 @@ base {
 }
 
 repositories {
+    mavenCentral()
+    maven {
+        name = 'ParchmentMC'
+        url = 'https://maven.parchmentmc.org'
+    }
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -23,6 +28,7 @@ loom {
 }
 
 dependencies {
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()

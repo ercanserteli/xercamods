@@ -3,9 +3,12 @@ package xerca.xercapaint.item.crafting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -18,6 +21,7 @@ import xerca.xercapaint.item.Items;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 public class RecipeFillPalette extends CustomRecipe {
@@ -43,7 +47,6 @@ public class RecipeFillPalette extends CustomRecipe {
         return -1;
     }
 
-    @Nullable
     private ArrayList<ItemStack> findDyes(CraftingInput inv, int paletteId){
         ArrayList<ItemStack> dyes = new ArrayList<>();
         for(int i = 0; i < inv.size(); ++i) {
@@ -104,6 +107,8 @@ public class RecipeFillPalette extends CustomRecipe {
 
         ItemStack result = new ItemStack(Items.ITEM_PALETTE);
         result.set(Items.PALETTE_BASIC_COLORS, basicColors);
+        float colorCount = ItemPalette.basicColorCount(result);
+        result.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(colorCount), List.of(), List.of(),List.of()));
         return result;
     }
 
@@ -113,15 +118,8 @@ public class RecipeFillPalette extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Items.CRAFTING_SPECIAL_PALETTE_FILLING;
     }
 
-    /**
-     * Used to determine if this recipe can fit in a grid of the given width/height
-     */
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 2 && height >= 2;
-    }
 }

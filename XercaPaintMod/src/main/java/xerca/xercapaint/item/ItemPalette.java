@@ -7,11 +7,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.PaletteUtil;
@@ -27,13 +27,15 @@ public class ItemPalette extends Item {
         super(new Properties().stacksTo(1));
     }
 
-    @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
-        if(worldIn.isClientSide) {
-            ModClient.showCanvasGui(playerIn);
+    public InteractionResult useOn(UseOnContext useOnContext) {
+        if(useOnContext.getPlayer() == null){
+            return InteractionResult.SUCCESS;
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
+        if(useOnContext.getLevel().isClientSide) {
+            ModClient.showCanvasGui(useOnContext.getPlayer());
+        }
+        return InteractionResult.SUCCESS;
     }
 
     public static boolean isFull(ItemStack stack){

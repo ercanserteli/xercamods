@@ -3,8 +3,10 @@ package xerca.xercapaint.entity;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DiodeBlock;
@@ -172,6 +175,7 @@ public class EntityCanvas extends HangingEntity {
             Picture picture = PICTURES.get(getCanvasID());
             if(picture != null){
                 canvasItem.set(Items.CANVAS_PIXELS, Arrays.stream(picture.pixels).boxed().toList());
+                canvasItem.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of("drawn"), List.of()));
             }
             this.spawnAtLocation(serverLevel, canvasItem);
         }
@@ -405,6 +409,50 @@ public class EntityCanvas extends HangingEntity {
         public Picture(int version, int[] pixels){
             this.version = version;
             this.pixels = pixels;
+        }
+    }
+
+    public static class RenderState extends EntityRenderState{
+        //canvas.getCanvasID(), canvas.getVersion(), canvas.getWidth(), canvas.getHeight()
+        private String canvasID;
+        private int version;
+        private int width;
+        private int height;
+        private float yaw;
+        private float pitch;
+        private Direction direction;
+        int rotation;
+
+        public int getRotation() {
+            return rotation;
+        }
+
+        public String getCanvasID() {
+            return canvasID;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public int getVersion() {
+            return version;
+        }
+
+        public float getYaw() {
+            return yaw;
+        }
+
+        public float getPitch() {
+            return pitch;
+        }
+
+        public Direction getDirection() {
+            return direction;
         }
     }
 }

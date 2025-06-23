@@ -4,32 +4,31 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.entity.ItemEntityRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
-public class CanvasItemRenderer extends BlockEntityRenderer
-{
+public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
     private static final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final ResourceLocation emptyCanvasLocation = Mod.id("textures/block/empty.png");
 
-    public CanvasItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet entityModelSet) {
-        super(dispatcher, entityModelSet);
-    }
-
-    @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         if (stack.getItem() instanceof ItemCanvas itemCanvas) {
             boolean rendered = false;
@@ -124,7 +123,26 @@ public class CanvasItemRenderer extends BlockEntityRenderer
     }
 
     @Override
-    public void render(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
+    public void render(@Nullable ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, boolean bl) {
         renderByItem(stack, displayContext, matrices, vertexConsumers, light, overlay);
+    }
+
+    @Override
+    public @Nullable ItemStack extractArgument(ItemStack itemStack) {
+        return null;
+    }
+
+    public static class Unbaked implements SpecialModelRenderer.Unbaked {
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
+
+        @Override
+        public SpecialModelRenderer<ItemStack> bake(EntityModelSet entityModels) {
+            return new CanvasItemRenderer();
+        }
+
+        @Override
+        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
+            return MAP_CODEC;
+        }
     }
 }

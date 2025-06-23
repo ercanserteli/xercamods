@@ -2,13 +2,11 @@ package xerca.xercapaint.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
+import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -79,28 +77,17 @@ public class ModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        CANVAS_ITEM_RENDERER = new CanvasItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS, CANVAS_ITEM_RENDERER);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LARGE, CANVAS_ITEM_RENDERER);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LONG, CANVAS_ITEM_RENDERER);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_TALL, CANVAS_ITEM_RENDERER);
+        CANVAS_ITEM_RENDERER = new CanvasItemRenderer();
+        SpecialModelRenderers.ID_MAPPER.put(Mod.id("item_canvas"), CanvasItemRenderer.Unbaked.MAP_CODEC);
+        SpecialModelRenderers.ID_MAPPER.put(Mod.id("item_canvas_large"), CanvasItemRenderer.Unbaked.MAP_CODEC);
+        SpecialModelRenderers.ID_MAPPER.put(Mod.id("item_canvas_long"), CanvasItemRenderer.Unbaked.MAP_CODEC);
+        SpecialModelRenderers.ID_MAPPER.put(Mod.id("item_canvas_tall"), CanvasItemRenderer.Unbaked.MAP_CODEC);
 
         EntityRendererRegistry.register(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
         EntityRendererRegistry.register(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
         EntityModelLayerRegistry.registerModelLayer(EASEL_MAIN_LAYER, EaselModel::createBodyLayer);
         EntityModelLayerRegistry.registerModelLayer(EASEL_CANVAS_LAYER, EaselModel::createBodyLayer);
 
-        ClampedItemPropertyFunction drawn = (itemStack, level, livingEntity, i) -> {
-            if(itemStack.get(Items.CANVAS_PIXELS) == null) return 0.0f;
-            else return 1.0F;
-        };
-        ClampedItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
-                ((float)ItemPalette.basicColorCount(stack)) / 16.0F;
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LARGE, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LONG, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_TALL, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_PALETTE, Mod.id("colors"), colors);
 
         ClientPlayNetworking.registerGlobalReceiver(CloseGuiPacket.PACKET_ID, new CloseGuiPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(ExportPaintingPacket.PACKET_ID, new ExportPaintingPacketHandler());

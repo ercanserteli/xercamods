@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -33,7 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
+public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, EntityCanvas.RenderState> {
     static public RenderEntityCanvas theInstance;
     static private final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
@@ -53,27 +54,28 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         this.textureManager = Minecraft.getInstance().getTextureManager();
     }
 
+
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityCanvas entity) {
-        return getCanvasRendererInstance(entity).location;
+    public void render(EntityCanvas.RenderState renderState, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn) {
+        super.render(renderState, poseStack, multiBufferSource, packedLightIn);
+        getCanvasRendererInstance(renderState).render(renderState, renderState.getYaw(), renderState.getPitch(), poseStack, multiBufferSource, renderState.getDirection(), packedLightIn);
     }
 
     @Override
-    public void render(EntityCanvas entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-        getCanvasRendererInstance(entity).render(entity, entityYaw, entity.getXRot(), matrixStackIn, bufferIn, entity.getDirection(), packedLightIn);
+    public EntityCanvas.RenderState createRenderState() {
+        return new EntityCanvas.RenderState();
     }
 
 
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
         @Override
-        public @NotNull EntityRenderer<EntityCanvas> create(Context ctx) {
+        public @NotNull EntityRenderer<EntityCanvas, EntityCanvas.RenderState> create(Context ctx) {
             theInstance = new RenderEntityCanvas(ctx);
             return theInstance;
         }
     }
 
-    private Instance getCanvasRendererInstance(EntityCanvas canvas) {
+    private Instance getCanvasRendererInstance(EntityCanvas.RenderState canvas) {
         return getCanvasRendererInstance(canvas.getCanvasID(), canvas.getVersion(), canvas.getWidth(), canvas.getHeight());
     }
 
@@ -157,7 +159,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             this.started = true;
         }
 
-        public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, PoseStack ms, MultiBufferSource buffer, Direction facing, int packedLight) {
+        public void render(@Nullable EntityCanvas.RenderState canvas, float yaw, float pitch, PoseStack ms, MultiBufferSource buffer, Direction facing, int packedLight) {
             final float wScale = width/16.0f;
             final float hScale = height/16.0f;
 

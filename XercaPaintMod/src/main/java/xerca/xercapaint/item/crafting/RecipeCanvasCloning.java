@@ -3,7 +3,9 @@ package xerca.xercapaint.item.crafting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -12,6 +14,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
+
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 public class RecipeCanvasCloning extends CustomRecipe {
@@ -93,6 +97,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
             ItemStack resultStack = new ItemStack(orgCanvas.getItem());
             resultStack.set(Items.CANVAS_GENERATION, gen + 1);
             resultStack.set(Items.CANVAS_PIXELS, orgCanvas.get(Items.CANVAS_PIXELS));
+            resultStack.set(DataComponents.CUSTOM_MODEL_DATA, orgCanvas.get(DataComponents.CUSTOM_MODEL_DATA));
             resultStack.set(Items.CANVAS_ID, orgCanvas.get(Items.CANVAS_ID));
             resultStack.set(Items.CANVAS_VERSION, orgCanvas.get(Items.CANVAS_VERSION));
             resultStack.set(Items.CANVAS_TITLE, orgCanvas.get(Items.CANVAS_TITLE));
@@ -121,15 +126,8 @@ public class RecipeCanvasCloning extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Items.CRAFTING_SPECIAL_CANVAS_CLONING;
     }
 
-    /**
-     * Used to determine if this recipe can fit in a grid of the given width/height
-     */
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 2 && height >= 2;
-    }
 }

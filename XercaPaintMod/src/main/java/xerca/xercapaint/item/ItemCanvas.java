@@ -8,7 +8,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.Item;
@@ -34,13 +33,13 @@ public class ItemCanvas extends HangingEntityItem {
         this.canvasType = canvasType;
     }
 
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
-        if(worldIn.isClientSide){
-            ModClient.showCanvasGui(playerIn);
-        }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
-    }
+//    @Override
+//    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+//        if(worldIn.isClientSide){
+//            ModClient.showCanvasGui(playerIn);
+//        }
+//        return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
+//    }
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
@@ -105,11 +104,11 @@ public class ItemCanvas extends HangingEntityItem {
         return rotation;
     }
 
-    public static boolean hasTitle(@Nonnull ItemStack stack){
+    public static boolean hasTitle(ItemStack stack){
         return !StringUtil.isNullOrEmpty(stack.get(Items.CANVAS_TITLE));
     }
 
-    public static Component getFullLabel(@Nonnull ItemStack stack){
+    public static Component getFullLabel(ItemStack stack){
         String labelString = "";
         Component title = getCustomTitle(stack);
         if(title != null){
@@ -132,8 +131,7 @@ public class ItemCanvas extends HangingEntityItem {
         return label;
     }
 
-    @Nullable
-    public static Component getCustomTitle(@Nonnull ItemStack stack){
+    public static Component getCustomTitle(ItemStack stack){
         String s = stack.get(Items.CANVAS_TITLE);
         if (!StringUtil.isNullOrEmpty(s)) {
             return Component.literal(s);
@@ -141,9 +139,8 @@ public class ItemCanvas extends HangingEntityItem {
         return null;
     }
 
-    @Nonnull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         Component comp = getCustomTitle(stack);
         if(comp != null){
             return comp;

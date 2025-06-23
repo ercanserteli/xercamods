@@ -7,16 +7,19 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.ImportPaintingPacket;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class CommandImport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -130,6 +133,7 @@ public class CommandImport {
         itemStack.set(Items.CANVAS_VERSION, tag.getInt("v"));
         itemStack.set(Items.CANVAS_ID, canvasId);
         itemStack.set(Items.CANVAS_PIXELS, Arrays.stream(tag.getIntArray("pixels")).boxed().toList());
+        itemStack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of("drawn"), List.of()));
         itemStack.set(Items.CANVAS_GENERATION, tag.getInt("generation"));
         if (tag.contains("title", 8) && tag.contains("author", 8)) {
             itemStack.set(Items.CANVAS_TITLE, tag.getString("title"));

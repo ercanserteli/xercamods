@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
-    public EaselCanvasLayer(RenderLayerParent<EntityEasel, EaselModel> p_117183_) {
+public class EaselCanvasLayer extends RenderLayer<EntityEasel.RenderState, EaselModel> {
+    public EaselCanvasLayer(RenderLayerParent<EntityEasel.RenderState, EaselModel> p_117183_) {
         super(p_117183_);
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int i, EntityEasel entity, float v, float v1, float v2, float v3, float v4, float v5) {
-        ItemStack itemstack = entity.getItem();
+    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int i, EntityEasel.RenderState entityRenderState, float f, float g) {
+        ItemStack itemstack = entityRenderState.getItem();
         if (itemstack.getItem() instanceof ItemCanvas itemCanvas) {
             poseStack.pushPose();
 

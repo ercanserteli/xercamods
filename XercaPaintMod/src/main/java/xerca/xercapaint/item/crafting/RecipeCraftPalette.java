@@ -124,11 +124,4 @@ public class RecipeCraftPalette extends CustomRecipe {
         return Items.CRAFTING_SPECIAL_PALETTE_CRAFTING;
     }
 
-    /**
-     * Used to determine if this recipe can fit in a grid of the given width/height
-     */
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 3 && height >= 3;
-    }
 }

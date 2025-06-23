@@ -14,12 +14,13 @@ import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-public class EaselModel extends EntityModel<RenderEntityEasel> {
+public class EaselModel extends EntityModel<EntityEasel.RenderState> {
     private final ModelPart bb_main;
     private final ModelPart bottomBar;
     private final ModelPart topBar;
 
     public EaselModel(ModelPart model) {
+        super(model);
         this.bb_main = model;
         this.bottomBar = model.getChild("bottomBar");
         this.topBar = model.getChild("topBar");
@@ -60,8 +61,8 @@ public class EaselModel extends EntityModel<RenderEntityEasel> {
     }
 
     @Override
-    public void setupAnim(EntityEasel entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if(entity.getItem().getItem() instanceof ItemCanvas itemCanvas){
+    public void setupAnim(EntityEasel.RenderState entityRenderState) {
+        if(entityRenderState.getItem().getItem() instanceof ItemCanvas itemCanvas){
             if(itemCanvas.getCanvasType() == CanvasType.LONG){
                 bottomBar.y = 13.5f;
                 bottomBar.z = -3.25f;
@@ -85,8 +86,8 @@ public class EaselModel extends EntityModel<RenderEntityEasel> {
         topBar.z = -4.0f;
     }
 
-    @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        bb_main.render(poseStack, buffer, packedLight, packedOverlay);
-    }
+//    @Override
+//    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+//        bb_main.render(poseStack, buffer, packedLight, packedOverlay);
+//    }
 }
