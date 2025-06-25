@@ -17,7 +17,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
@@ -47,6 +49,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, EntityEasel.R
     public void extractRenderState(EntityEasel entity, EntityEasel.RenderState entityRenderState, float f) {
         entityRenderState.setEntityYaw(entity.getYRot());
         entityRenderState.setItem(entity.getItem());
+        entityRenderState.setShowNameTag(this.shouldShowName(entity, Minecraft.getInstance().player.distanceToSqr(entity)));
     }
 
     @Override
@@ -78,7 +81,15 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, EntityEasel.R
 
         this.layers.forEach(renderlayer -> renderlayer.render(matrixStackIn, bufferIn, packedLightIn, entityRenderState, 0, 0));
 
+        if(entityRenderState.isShowNameTag()) {
+            entityRenderState.nameTag = ItemCanvas.getFullLabel(entityRenderState.getItem());
+            entityRenderState.nameTagAttachment = new Vec3(0, 2, 0);
+        }else{
+            entityRenderState.nameTag = null;
+            entityRenderState.nameTagAttachment = null;
+        }
         matrixStackIn.popPose();
+        //entityRenderState.nameTag = Component.literal("hmm");
         super.render(entityRenderState, matrixStackIn, bufferIn, packedLightIn);
     }
 

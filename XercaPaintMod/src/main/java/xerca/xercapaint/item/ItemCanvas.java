@@ -138,7 +138,7 @@ public class ItemCanvas extends HangingEntityItem {
         }
 
         int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
-        MutableComponent label = Component.literal(labelString);
+        MutableComponent label = Component.literal(labelString.trim());
         if(generation == 1){
             label.withStyle(ChatFormatting.YELLOW);
         }
@@ -168,10 +168,17 @@ public class ItemCanvas extends HangingEntityItem {
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+//        Mod.LOGGER.warn("!!!!! HOVER TEXT BEGIN !!!!!");
         List<Integer> pixels = stack.get(Items.CANVAS_PIXELS);
+//        Mod.LOGGER.warn("!!!!! Pixels {}", pixels);
+//        Mod.LOGGER.warn("!!!!! Author {}", stack.get(Items.CANVAS_AUTHOR));
+//        Mod.LOGGER.warn("!!!!! Generation {}", stack.get(Items.CANVAS_GENERATION));
+//        Mod.LOGGER.warn("!!!!! Title {}", stack.get(Items.CANVAS_TITLE));
+//        Mod.LOGGER.warn("!!!!! Version {}", stack.get(Items.CANVAS_VERSION));
+//        Mod.LOGGER.warn("!!!!! Id {}", stack.get(Items.CANVAS_ID));
         if (pixels != null) {
-            String author = stack.get(Items.CANVAS_AUTHOR);
 
+            String author = stack.get(Items.CANVAS_AUTHOR);
             if (!StringUtil.isNullOrEmpty(author)) {
                 tooltipComponents.add(Component.translatable("canvas.byAuthor", author));
             }
@@ -184,6 +191,7 @@ public class ItemCanvas extends HangingEntityItem {
         }else{
             tooltipComponents.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
+//        Mod.LOGGER.warn("!!!!! HOVER TEXT END !!!!!");
     }
 
     @Override

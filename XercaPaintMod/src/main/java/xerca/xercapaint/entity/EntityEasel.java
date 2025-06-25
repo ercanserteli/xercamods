@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -283,6 +284,15 @@ public class EntityEasel extends Entity {
     public static class RenderState extends EntityRenderState {
         private ItemStack item;
         private float entityYaw;
+        private boolean showNameTag;
+
+        public void setShowNameTag(boolean showNameTag) {
+            this.showNameTag = showNameTag;
+        }
+
+        public boolean isShowNameTag() {
+            return showNameTag;
+        }
 
         public void setItem(ItemStack item) {
             this.item = item;
