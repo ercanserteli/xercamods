@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -134,8 +135,8 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    public void dropItem(@Nullable Entity brokenEntity) {
-        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+    public void dropItem(ServerLevel serverLevel, @Nullable Entity brokenEntity) {
+        if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             if (brokenEntity instanceof Player playerentity) {
                 if (playerentity.getAbilities().instabuild) {
@@ -171,7 +172,7 @@ public class EntityCanvas extends HangingEntity {
             if(picture != null){
                 canvasItem.set(Items.CANVAS_PIXELS, Arrays.stream(picture.pixels).boxed().toList());
             }
-            this.spawnAtLocation(canvasItem);
+            this.spawnAtLocation(serverLevel, canvasItem);
         }
     }
 
@@ -183,7 +184,7 @@ public class EntityCanvas extends HangingEntity {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.survives()) {
                 this.remove(RemovalReason.DISCARDED);
-                this.dropItem(null);
+                this.dropItem((ServerLevel) this.level(), null);
             }
         }
     }
@@ -343,7 +344,7 @@ public class EntityCanvas extends HangingEntity {
         CanvasType canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
         if (canvasType == null) {
             Mod.LOGGER.error("EntityCanvas invalid ctype in readAdditionalSaveData");
-            this.kill();
+            this.kill((ServerLevel) this.level());
             return;
         }
         this.setCanvasType(canvasType);

@@ -109,7 +109,6 @@ public class GuiInstrument extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, insGuiTextures);
 
         guiGraphics.blit(insGuiTextures, guiBaseX, guiBaseY, 0, 0, 0, guiWidth, guiHeight, 512, 512);

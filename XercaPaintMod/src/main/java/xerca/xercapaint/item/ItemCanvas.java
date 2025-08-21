@@ -8,7 +8,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.Item;
@@ -18,6 +17,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercapaint.CanvasType;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityCanvas;
@@ -30,17 +30,17 @@ import java.util.List;
 public class ItemCanvas extends HangingEntityItem {
     private final CanvasType canvasType;
 
-    ItemCanvas(CanvasType canvasType) {
-        super(Entities.CANVAS, new Item.Properties().stacksTo(1));
+    ItemCanvas(CanvasType canvasType, String name) {
+        super(Entities.CANVAS, new Item.Properties().stacksTo(1).setId(Mod.itemKey(name)));
         this.canvasType = canvasType;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResult use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         if(worldIn.isClientSide){
             ModClient.showCanvasGui(playerIn);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
+        return InteractionResult.SUCCESS.withoutItem();
     }
 
     @Override

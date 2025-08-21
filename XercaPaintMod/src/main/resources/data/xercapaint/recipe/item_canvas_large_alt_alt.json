@@ -5,6 +5,6 @@
         "c",
         "c"
     ],
-    "key": {"c": {"item": "xercapaint:item_canvas_long"}},
+    "key": {"c": "xercapaint:item_canvas_long"},
     "result": {"id": "xercapaint:item_canvas_large"}
 }
