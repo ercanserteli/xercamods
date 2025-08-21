@@ -31,10 +31,6 @@ public class PaletteUtil {
             return val;
         }
 
-        public void setGLColor(){
-            RenderSystem.setShaderColor(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
-        }
-
         static public Color mix(Color a, Color b, float ratio){
             if(ratio == 1.f) {
                 return a;

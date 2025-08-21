@@ -23,7 +23,7 @@ public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayPay
             e.printStackTrace();
             LocalPlayer player = Minecraft.getInstance().player;
             if(player != null) {
-                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("xercapaint.import.fail.4", filepath).withStyle(ChatFormatting.RED));
+                player.displayClientMessage(Component.translatable("xercapaint.import.fail.4", filepath).withStyle(ChatFormatting.RED), false);
             }
         }
     }

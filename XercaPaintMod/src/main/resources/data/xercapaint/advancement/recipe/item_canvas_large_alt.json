@@ -1,0 +1,30 @@
+{
+  "parent": "xercapaint:recipe/root",
+  "rewards": {
+    "recipe": [
+      "xercapaint:item_canvas_large"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": ["xercapaint:item_canvas_tall"]}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercapaint:item_canvas_large"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}

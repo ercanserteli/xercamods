@@ -4,16 +4,18 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.PrimitiveCodec;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.client.ModClient;
 
@@ -23,17 +25,17 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class ItemPalette extends Item {
-    ItemPalette() {
-        super(new Properties().stacksTo(1));
+    ItemPalette(String name) {
+        super(new Properties().stacksTo(1).setId(Mod.itemKey(name)));
     }
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResult use(Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
         if(worldIn.isClientSide) {
             ModClient.showCanvasGui(playerIn);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
+        return InteractionResult.SUCCESS.withoutItem();
     }
 
     public static boolean isFull(ItemStack stack){

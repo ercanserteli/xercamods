@@ -7,8 +7,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -18,6 +18,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
 
@@ -25,8 +26,8 @@ import java.util.function.Consumer;
 
 public class ItemEasel extends Item {
 
-    public ItemEasel(Properties properties) {
-        super(properties);
+    public ItemEasel(String name) {
+        super(new Item.Properties().stacksTo(1).setId(Mod.itemKey(name)));
     }
 
     @Override
@@ -44,7 +45,7 @@ public class ItemEasel extends Item {
             if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
                 if (level instanceof ServerLevel serverlevel) {
                     Consumer<EntityEasel> consumer = EntityType.createDefaultStackConfig(serverlevel, itemstack, ctx.getPlayer());
-                    EntityEasel easel = Entities.EASEL.create(serverlevel, consumer, blockpos, MobSpawnType.SPAWN_EGG, true, true);
+                    EntityEasel easel = Entities.EASEL.create(serverlevel, consumer, blockpos, EntitySpawnReason.SPAWN_ITEM_USE, true, true);
                     if (easel == null) {
                         return InteractionResult.FAIL;
                     }
@@ -57,7 +58,7 @@ public class ItemEasel extends Item {
                 }
 
                 itemstack.shrink(1);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             } else {
                 return InteractionResult.FAIL;
             }

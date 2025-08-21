@@ -8,17 +8,16 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
-    public EaselCanvasLayer(RenderLayerParent<EntityEasel, EaselModel> p_117183_) {
-        super(p_117183_);
+public class EaselCanvasLayer extends RenderLayer<RenderEntityEasel.EaselRenderState, EaselModel> {
+    public EaselCanvasLayer(RenderLayerParent<RenderEntityEasel.EaselRenderState, EaselModel> renderer) {
+        super(renderer);
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int i, EntityEasel entity, float v, float v1, float v2, float v3, float v4, float v5) {
-        ItemStack itemstack = entity.getItem();
+    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int i, RenderEntityEasel.EaselRenderState renderState, float yRot, float xRot) {
+        ItemStack itemstack = renderState.itemStack;
         if (itemstack.getItem() instanceof ItemCanvas itemCanvas) {
             poseStack.pushPose();
 
@@ -31,7 +30,6 @@ public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
                     poseStack.translate(-0.5, -1.17, -0.5);
                 }
                 case LARGE -> {
-//                    poseStack.scale(1.5F, 1.5f, 1.5f);
                     poseStack.scale(2F, 2f, 2f);
                     poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
                     poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
@@ -46,7 +44,6 @@ public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
                     poseStack.translate(-0.45, -0.915, -0.5);
                 }
                 case TALL -> {
-//                    poseStack.scale(1.75F, 1.75f, 1.75f);
                     poseStack.scale(2F, 2f, 2f);
                     poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
                     poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));

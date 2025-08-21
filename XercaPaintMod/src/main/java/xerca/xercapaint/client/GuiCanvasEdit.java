@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -67,7 +68,7 @@ public class GuiCanvasEdit extends BasePalette {
     private boolean isSigned = false;
     private int[] pixels;
     private String canvasTitle = "";
-    private String canvasId = "";
+    private final String canvasId;
     private int version = 0;
     private final EntityEasel easel;
     private int timeSinceLastUpdate = 0;
@@ -329,13 +330,12 @@ public class GuiCanvasEdit extends BasePalette {
                 int y = brushMeterY + i*brushSpriteSize;
                 guiGraphics.fill(brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
             }
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(paletteTextures, brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10);
-            guiGraphics.blit(paletteTextures, brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, brushMeterX, brushMeterY + (3 - brushSize)*brushSpriteSize, 15, 246, 10, 10, 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, brushMeterX, brushMeterY, brushSpriteX, brushSpriteY - brushSpriteSize*3, brushSpriteSize, brushSpriteSize*4, 256, 256);
 
             // Draw opacity meter
-            guiGraphics.blit(paletteTextures, brushOpacityMeterX, brushOpacityMeterY, brushOpacitySpriteX, brushOpacitySpriteY, brushOpacitySpriteSize, brushOpacitySpriteSize*4+3);
-            guiGraphics.blit(paletteTextures, brushOpacityMeterX-1, brushOpacityMeterY-1 + brushOpacitySetting*(brushOpacitySpriteSize+1), 212, 240, 16, 16);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, brushOpacityMeterX, brushOpacityMeterY, brushOpacitySpriteX, brushOpacitySpriteY, brushOpacitySpriteSize, brushOpacitySpriteSize*4+3, 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, brushOpacityMeterX-1, brushOpacityMeterY-1 + brushOpacitySetting*(brushOpacitySpriteSize+1), 212, 240, 16, 16, 256, 256);
 
             // Draw brush and outline
             renderCursor(guiGraphics, mouseX, mouseY);
@@ -375,26 +375,21 @@ public class GuiCanvasEdit extends BasePalette {
 
     private void renderCursor(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY){
         if(isCarryingColor){
-            carriedColor.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize, 256, 256, carriedColor.rgbVal());
 
         }else if(isCarryingWater){
-            waterColor.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize, 256, 256, waterColor.rgbVal());
         }else if(isPickingColor){
             drawOutline(guiGraphics, mouseX, mouseY, 0);
-            PaletteUtil.Color.WHITE.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX, mouseY-colorPickerSize, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, mouseX, mouseY-colorPickerSize, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize, 256, 256, PaletteUtil.Color.WHITE.rgbVal());
         }
         else{
             drawOutline(guiGraphics, mouseX, mouseY, brushSize);
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             guiGraphics.fill(mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = brushSpriteY - brushSpriteSize*brushSize;
-            guiGraphics.blit(paletteTextures, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, mouseX, mouseY, brushSpriteX, trueBrushY, brushSpriteSize, brushSpriteSize, 256, 256);
         }
     }
 
@@ -434,8 +429,7 @@ public class GuiCanvasEdit extends BasePalette {
                 textureVec = outlinePoss2[brushSize];
             }
 
-            RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 1.0F);
-            guiGraphics.blit(paletteTextures, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize);
+            guiGraphics.blit(RenderType::guiTextured, paletteTextures, x, y, (int)textureVec.x, (int)textureVec.y, outlineSize, outlineSize, 256, 256, 0xFF4D4D4D);
         }
     }
 
@@ -784,7 +778,7 @@ public class GuiCanvasEdit extends BasePalette {
                 yTexStartNew += this.yDiffText;
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
-            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
         }
     }

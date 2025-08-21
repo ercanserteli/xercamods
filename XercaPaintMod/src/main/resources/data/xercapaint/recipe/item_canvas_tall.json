@@ -5,6 +5,6 @@
         "c",
         "c"
     ],
-    "key": {"c": {"item": "xercapaint:item_canvas"}},
+    "key": {"c": "xercapaint:item_canvas"},
     "result": {"id": "xercapaint:item_canvas_tall"}
 }

@@ -4,13 +4,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -67,14 +63,14 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource damageSource, float p_31580_) {
+    public boolean hurtServer(@NotNull ServerLevel level, @NotNull DamageSource damageSource, float amount) {
         if (!this.level().isClientSide && !this.isRemoved()) {
             if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
                 this.dropItem(damageSource.getEntity(), false);
             }
             else{
                 this.dropItem(damageSource.getEntity());
-                kill();
+                kill((ServerLevel) this.level());
             }
         }
         return false;
@@ -87,9 +83,9 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public void kill() {
+    public void kill(@NotNull ServerLevel level) {
         showBreakingParticles();
-        this.remove(RemovalReason.KILLED);
+        super.kill(level);
     }
 
     @Override
@@ -117,22 +113,24 @@ public class EntityEasel extends Entity {
     }
 
     public void doDrop(@Nullable Entity entity, boolean dropSelf){
-        ItemStack canvasStack = this.getItem();
-        this.setItem(ItemStack.EMPTY);
+        if (this.level() instanceof ServerLevel serverLevel) {
+            ItemStack canvasStack = this.getItem();
+            this.setItem(ItemStack.EMPTY);
 
-        if (!canvasStack.isEmpty()) {
-            canvasStack = canvasStack.copy();
-            this.spawnAtLocation(canvasStack);
-        }
-
-        if (entity instanceof Player player) {
-            if (player.getAbilities().instabuild) {
-                return;
+            if (!canvasStack.isEmpty()) {
+                canvasStack = canvasStack.copy();
+                this.spawnAtLocation(serverLevel, canvasStack);
             }
-        }
 
-        if (dropSelf && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(this.getEaselItemStack());
+            if (entity instanceof Player player) {
+                if (player.getAbilities().instabuild) {
+                    return;
+                }
+            }
+
+            if (dropSelf && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+                this.spawnAtLocation(serverLevel, this.getEaselItemStack());
+            }
         }
     }
 
