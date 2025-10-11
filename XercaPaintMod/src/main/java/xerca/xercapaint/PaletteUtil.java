@@ -96,7 +96,7 @@ public class PaletteUtil {
             int averageMaximum = totalMaximum / numberOfColors;
 
             int maximumOfAverage = Math.max(Math.max(averageRed, averageGreen), averageBlue);
-            int gainFactor = averageMaximum / maximumOfAverage;
+            int gainFactor = maximumOfAverage == 0 ? 0 : averageMaximum / maximumOfAverage;
 
             int resultRed = averageRed * gainFactor;
             int resultGreen = averageGreen * gainFactor;
