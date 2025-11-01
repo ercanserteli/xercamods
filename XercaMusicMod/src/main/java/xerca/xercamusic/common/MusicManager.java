@@ -37,6 +37,8 @@ public class MusicManager {
     public static void setMusicData(UUID id, int ver, ArrayList<NoteEvent> notes, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
+        NoteEvent.sortNotes(notes);
+        NoteEvent.removeDuplicates(notes);
         musicMap.put(id, new MusicManager.MusicData(ver, notes));
         savedDataMusic.setDirty();
     }

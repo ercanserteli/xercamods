@@ -22,34 +22,32 @@ public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, i
     public static final StreamCodec<FriendlyByteBuf, SingleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(SingleNoteClientPacket::encode, SingleNoteClientPacket::decode);
 
     public static SingleNoteClientPacket decode(FriendlyByteBuf buf) {
-        try {
-            int note = buf.readInt();
-            int instrumentId = buf.readInt();
-            int playerId = buf.readInt();
-            boolean isStop = buf.readBoolean();
-            float volume = buf.readFloat();
+        int note = buf.readInt();
+        int instrumentId = buf.readInt();
+        int playerId = buf.readInt();
+        boolean isStop = buf.readBoolean();
+        float volume = buf.readFloat();
 
-            if(instrumentId < 0 || instrumentId >= Items.instruments.length){
-                throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
-            }
-
-            IItemInstrument instrumentItem = Items.instruments[instrumentId];
-            return new SingleNoteClientPacket(note, instrumentItem, playerId, isStop, volume);
-        } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading SingleNotePacket:", ioe);
-            return null;
+        if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+            Mod.LOGGER.warn("Invalid instrumentId: {}", instrumentId);
+            instrumentId = 0;
         }
+
+        IItemInstrument instrumentItem = Items.instruments[instrumentId];
+        return new SingleNoteClientPacket(note, instrumentItem, playerId, isStop, volume);
     }
 
     public Player playerEntity() {
         ClientLevel level = Minecraft.getInstance().level;
         if(level == null) {
+            Mod.LOGGER.warn("Level is null while trying to get entity");
             return null;
         }
 
         Entity entity = level.getEntity(playerId);
         if(!(entity instanceof Player playerEntity)){
-            throw new IndexOutOfBoundsException("Invalid playerId: " + playerId);
+            Mod.LOGGER.warn("Invalid playerId: {}", playerId);
+            return Minecraft.getInstance().player;
         }
 
         return playerEntity;
