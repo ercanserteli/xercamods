@@ -20,24 +20,23 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
 
     private static void processMessage(SingleNoteClientPacket msg) {
         Player playerEntity = msg.playerEntity();
-        if(!playerEntity.equals(Minecraft.getInstance().player)){
+        if (!playerEntity.equals(Minecraft.getInstance().player)) {
             IItemInstrument.InsSound sound = msg.instrumentItem().getSound(msg.note());
-            if(sound == null){
+            if (sound == null) {
                 return;
             }
-            if(!msg.isStop()){
+            if (!msg.isStop()) {
                 double x = playerEntity.getX();
                 double y = playerEntity.getY();
                 double z = playerEntity.getZ();
 
                 NoteSound noteSound = onlyCallOnClient(() -> () ->
-                        ClientStuff.playNote(sound.sound(), x, y, z, SoundSource.PLAYERS, msg.volume()*1.5f, sound.pitch(), (byte) -1));
+                        ClientStuff.playNote(sound.sound(), x, y, z, SoundSource.PLAYERS, msg.volume() * 1.5f, sound.pitch(), (byte) -1));
                 noteSounds.put(Pair.of(playerEntity, msg.note()), new NoteSoundEntry(noteSound, playerEntity));
                 playerEntity.level().addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (msg.note()) / 24.0D, 0.0D, 0.0D);
-            }
-            else{
+            } else {
                 NoteSoundEntry oldNoteSoundEntry = noteSounds.get(Pair.of(playerEntity, msg.note()));
-                if(oldNoteSoundEntry != null && !oldNoteSoundEntry.noteSound.isStopped()){
+                if (oldNoteSoundEntry != null && !oldNoteSoundEntry.noteSound.isStopped()) {
                     oldNoteSoundEntry.noteSound.stopSound();
                 }
             }
@@ -46,10 +45,11 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
 
     @Override
     public void receive(SingleNoteClientPacket packet, ClientPlayNetworking.Context context) {
-        if(packet != null) {
-            context.client().execute(()->processMessage(packet));
+        if (packet != null) {
+            context.client().execute(() -> processMessage(packet));
         }
     }
 
-    private record NoteSoundEntry(NoteSound noteSound, Player playerEntity) {}
+    private record NoteSoundEntry(NoteSound noteSound, Player playerEntity) {
+    }
 }

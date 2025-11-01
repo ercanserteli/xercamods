@@ -36,7 +36,7 @@ class BlockCheese extends Block {
     protected static final VoxelShape[] SHAPE_BY_BITE = new VoxelShape[]{
             Block.box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D),
             Shapes.or(Block.box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
-                      Block.box(1.0D, 0.0D, 1.0D, 8.0D, 8.0D, 8.0D)),
+                    Block.box(1.0D, 0.0D, 1.0D, 8.0D, 8.0D, 8.0D)),
             Block.box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
             Block.box(8.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D)
     };
@@ -51,13 +51,13 @@ class BlockCheese extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(handIn);
-        if(heldItem.getItem() == Items.ITEM_KNIFE){
-            if(!worldIn.isClientSide){
+        if (heldItem.getItem() == Items.ITEM_KNIFE) {
+            if (!worldIn.isClientSide) {
                 slice(worldIn, pos, state, player, handIn, heldItem);
             }
-            worldIn.playSound(player, pos, xerca.xercafood.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat()*0.1f);
+            worldIn.playSound(player, pos, xerca.xercafood.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat() * 0.1f);
             return InteractionResult.SUCCESS;
         }
 
@@ -74,7 +74,7 @@ class BlockCheese extends Block {
         }
 
         InteractionResult ate = eat(worldIn, pos, state, player);
-        if(ate.shouldSwing()){
+        if (ate.shouldSwing()) {
             worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
                     1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
         }
@@ -104,8 +104,8 @@ class BlockCheese extends Block {
         Vec3 boost = playerPos.subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
         boost = boost.normalize().scale(0.15d);
 
-        ItemEntity sliceEntity = new ItemEntity(level, pos.getX() + 0.5f + boost.x*6, pos.getY() + 0.5f,
-                pos.getZ() + 0.5f + boost.x*6, new ItemStack(Items.CHEESE_SLICE));
+        ItemEntity sliceEntity = new ItemEntity(level, pos.getX() + 0.5f + boost.x * 6, pos.getY() + 0.5f,
+                pos.getZ() + 0.5f + boost.x * 6, new ItemStack(Items.CHEESE_SLICE));
         sliceEntity.setDefaultPickUpDelay();
         sliceEntity.push(boost.x, 0, boost.z);
         sliceEntity.hurtMarked = true;

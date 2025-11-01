@@ -20,9 +20,9 @@ class BlockApplePie extends CakeBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         InteractionResult ate = super.use(state, worldIn, pos, player, handIn, hit);
-        if(ate.shouldSwing()){
+        if (ate.shouldSwing()) {
             worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL, 1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
         }
         return ate;

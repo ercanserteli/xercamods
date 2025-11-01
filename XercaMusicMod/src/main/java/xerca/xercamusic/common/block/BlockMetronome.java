@@ -30,10 +30,10 @@ import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 import javax.annotation.Nullable;
 
 public class BlockMetronome extends BaseEntityBlock {
-    public static final MapCodec<BlockMetronome> CODEC = BlockMetronome.simpleCodec(BlockMetronome::new);
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final MapCodec<BlockMetronome> CODEC = BlockMetronome.simpleCodec(BlockMetronome::new);
 
     public BlockMetronome(Properties properties) {
         super(properties);
@@ -74,7 +74,7 @@ public class BlockMetronome extends BaseEntityBlock {
                 note = player.getOffhandItem();
             }
 
-            int bps = note.getOrDefault(Items.SHEET_BPS, (byte)0);
+            int bps = note.getOrDefault(Items.SHEET_BPS, (byte) 0);
             if (!note.isEmpty() && bps > 0) {
                 setBps(state, level, pos, bps);
                 return ItemInteractionResult.SUCCESS;

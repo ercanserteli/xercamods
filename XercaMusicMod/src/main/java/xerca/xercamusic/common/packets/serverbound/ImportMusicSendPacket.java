@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
@@ -14,22 +13,23 @@ import java.util.UUID;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
-public record ImportMusicSendPacket(UUID uuid, CompoundTag tag, ArrayList<NoteEvent> notes) implements CustomPacketPayload {
+public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
+                                    ArrayList<NoteEvent> notes) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ImportMusicSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("import_music_send"));
     public static final StreamCodec<FriendlyByteBuf, ImportMusicSendPacket> PACKET_CODEC = StreamCodec.ofMember(ImportMusicSendPacket::encode, ImportMusicSendPacket::decode);
 
     public static ImportMusicSendPacket create(CompoundTag tag) throws NotesTooLargeException {
         UUID uuid = null;
         ArrayList<NoteEvent> notes = null;
-        if(tag.contains("id")) {
+        if (tag.contains("id")) {
             uuid = tag.getUUID("id");
         }
-        if(tag.contains("notes")) {
+        if (tag.contains("notes")) {
             notes = new ArrayList<>();
             NoteEvent.fillArrayFromNBT(notes, tag);
             tag.remove("notes");
 
-            if(notes.size() > MAX_NOTES_IN_PACKET) {
+            if (notes.size() > MAX_NOTES_IN_PACKET) {
                 throw new NotesTooLargeException(notes, uuid);
             }
         }
@@ -38,24 +38,10 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag, ArrayList<NoteEv
 
     public static ImportMusicSendPacket create(CompoundTag tag, ArrayList<NoteEvent> notes) {
         UUID uuid = null;
-        if(tag.contains("id")) {
+        if (tag.contains("id")) {
             uuid = tag.getUUID("id");
         }
         return new ImportMusicSendPacket(uuid, tag, notes);
-    }
-
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
-        if(notes != null) {
-            buf.writeInt(notes.size());
-            for(NoteEvent event : notes){
-                event.encodeToBuffer(buf);
-            }
-        }
-        else{
-            buf.writeInt(0);
-        }
-        buf.writeNbt(tag);
-        return buf;
     }
 
     public static ImportMusicSendPacket decode(FriendlyByteBuf buf) {
@@ -63,7 +49,7 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag, ArrayList<NoteEv
             int eventCount = buf.readInt();
 
             ArrayList<NoteEvent> notes = null;
-            if(eventCount > 0) {
+            if (eventCount > 0) {
                 notes = new ArrayList<>(eventCount);
                 for (int i = 0; i < eventCount; i++) {
                     notes.add(NoteEvent.fromBuffer(buf));
@@ -78,6 +64,19 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag, ArrayList<NoteEv
             System.err.println("NotesTooLargeException while reading ImportMusicSendPacket: " + e);
             return null;
         }
+    }
+
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+        if (notes != null) {
+            buf.writeInt(notes.size());
+            for (NoteEvent event : notes) {
+                event.encodeToBuffer(buf);
+            }
+        } else {
+            buf.writeInt(0);
+        }
+        buf.writeNbt(tag);
+        return buf;
     }
 
     @Override

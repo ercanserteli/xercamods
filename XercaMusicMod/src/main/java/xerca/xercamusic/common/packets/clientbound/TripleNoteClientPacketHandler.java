@@ -14,7 +14,7 @@ public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
         IItemInstrument.InsSound sound1 = msg.instrumentItem().getSound(msg.note1());
         IItemInstrument.InsSound sound2 = msg.instrumentItem().getSound(msg.note2());
         IItemInstrument.InsSound sound3 = msg.instrumentItem().getSound(msg.note3());
-        if(sound1 == null || sound2 == null || sound3 == null){
+        if (sound1 == null || sound2 == null || sound3 == null) {
             return;
         }
 
@@ -29,8 +29,8 @@ public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
 
     @Override
     public void receive(TripleNoteClientPacket packet, ClientPlayNetworking.Context context) {
-        if(packet != null) {
-            context.client().execute(()->processMessage(packet));
+        if (packet != null) {
+            context.client().execute(() -> processMessage(packet));
         }
     }
 }

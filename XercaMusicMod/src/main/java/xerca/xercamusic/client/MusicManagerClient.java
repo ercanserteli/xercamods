@@ -26,7 +26,7 @@ public class MusicManagerClient {
     public static void load() {
         // Load from disk
         File directory = new File(cacheDir);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdirs();
         }
         File[] directoryListing = directory.listFiles();
@@ -36,17 +36,15 @@ public class MusicManagerClient {
                 try {
                     UUID id = UUID.fromString(fileName);
                     CompoundTag tag = NbtIo.readCompressed(file.toPath(), NbtAccounter.unlimitedHeap());
-                    if(tag.contains("id") && id.equals(tag.getUUID("id")) && tag.contains("ver") && tag.contains("notes")){
+                    if (tag.contains("id") && id.equals(tag.getUUID("id")) && tag.contains("ver") && tag.contains("notes")) {
                         int version = tag.getInt("ver");
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, tag);
                         musicMap.put(id, new MusicManager.MusicData(version, notes));
-                    }
-                    else {
+                    } else {
                         file.delete();
                     }
-                }
-                catch (IllegalArgumentException | IOException e){
+                } catch (IllegalArgumentException | IOException e) {
                     file.delete();
                 }
             }
@@ -54,14 +52,13 @@ public class MusicManagerClient {
     }
 
     public static void checkMusicDataAndRun(UUID id, int ver, Runnable task) {
-        if(musicMap.containsKey(id)){
+        if (musicMap.containsKey(id)) {
             MusicManager.MusicData data = musicMap.get(id);
-            if(data.version() >= ver){
+            if (data.version() >= ver) {
                 Mod.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
                 task.run();
                 return;
-            }
-            else{
+            } else {
                 Mod.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (checkMusicDataAndRun)",
                         id, data.version(), ver);
             }
@@ -74,13 +71,12 @@ public class MusicManagerClient {
     }
 
     public static MusicManager.MusicData getMusicData(UUID id, int ver) {
-        if(musicMap.containsKey(id)){
+        if (musicMap.containsKey(id)) {
             MusicManager.MusicData data = musicMap.get(id);
-            if(data.version() >= ver){
+            if (data.version() >= ver) {
                 Mod.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (getMusicData)", id, ver);
                 return data;
-            }
-            else{
+            } else {
                 Mod.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)",
                         id, data.version(), ver);
             }
@@ -99,7 +95,7 @@ public class MusicManagerClient {
         String filename = id.toString();
         String filepath = cacheDir + "/" + filename;
         File directory = new File(cacheDir);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdirs();
         }
 
@@ -114,7 +110,7 @@ public class MusicManagerClient {
             e.printStackTrace();
         }
 
-        if(taskMap.containsKey(id)){
+        if (taskMap.containsKey(id)) {
             Runnable task = taskMap.get(id);
             taskMap.remove(id);
             task.run();

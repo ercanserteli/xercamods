@@ -29,55 +29,46 @@ public class BetterSlider extends AbstractSliderButton {
 
         if (Mth.equal(this.stepSize, Math.floor(this.stepSize))) {
             this.format = new DecimalFormat("0");
-        }
-        else {
+        } else {
             this.format = new DecimalFormat(Double.toString(this.stepSize).replaceAll("\\d", "0"));
         }
 
         this.updateMessage();
     }
 
-    public BetterSlider(int x, int y, int width, int height, Component prefix, Component suffix, double minValue, double maxValue, double currentValue, boolean drawString)
-    {
+    public BetterSlider(int x, int y, int width, int height, Component prefix, Component suffix, double minValue, double maxValue, double currentValue, boolean drawString) {
         this(x, y, width, height, prefix, suffix, minValue, maxValue, currentValue, 1D, drawString);
     }
 
-    public double getValue()
-    {
+    public double getValue() {
         return value * (interval) + minValue;
     }
 
-    public void setValue(double newValue)
-    {
+    public void setValue(double newValue) {
         value = snapToNearest((newValue - minValue) / (interval));
         updateMessage();
     }
 
-    public String getValueString()
-    {
+    public String getValueString() {
         return format.format(getValue());
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY)
-    {
+    public void onClick(double mouseX, double mouseY) {
         this.setValueFromMouse(mouseX);
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY)
-    {
+    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
         super.onDrag(mouseX, mouseY, dragX, dragY);
         this.setValueFromMouse(mouseX);
     }
 
-    private void setValueFromMouse(double mouseX)
-    {
+    private void setValueFromMouse(double mouseX) {
         this.setSliderValue((mouseX - (this.getX() + 4)) / (this.width - 8));
     }
 
-    private void setSliderValue(double newValue)
-    {
+    private void setSliderValue(double newValue) {
         double oldValue = value;
         value = snapToNearest(newValue);
         if (!Mth.equal(oldValue, value)) {
@@ -86,9 +77,8 @@ public class BetterSlider extends AbstractSliderButton {
         updateMessage();
     }
 
-    private double snapToNearest(double sliderValue)
-    {
-        if(stepSize <= 0D) {
+    private double snapToNearest(double sliderValue) {
+        if (stepSize <= 0D) {
             return Mth.clamp(sliderValue, 0D, 1D);
         }
 
@@ -97,8 +87,7 @@ public class BetterSlider extends AbstractSliderButton {
 
         if (minValue > maxValue) {
             sliderValue = Mth.clamp(sliderValue, maxValue, minValue);
-        }
-        else {
+        } else {
             sliderValue = Mth.clamp(sliderValue, minValue, maxValue);
         }
 
@@ -106,16 +95,15 @@ public class BetterSlider extends AbstractSliderButton {
     }
 
     @Override
-    protected void updateMessage()
-    {
+    protected void updateMessage() {
         if (this.drawString) {
             this.setMessage(Component.empty().append(prefix).append(this.getValueString()).append(suffix));
-        }
-        else {
+        } else {
             this.setMessage(Component.empty());
         }
     }
 
     @Override
-    public void applyValue() {}
+    public void applyValue() {
+    }
 }

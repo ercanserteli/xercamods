@@ -32,12 +32,12 @@ import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
-    private ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> sounds;
-    private IItemInstrument.InsSound[] insSounds;
     private final int minOctave;
     private final int maxOctave;
-
     private final int instrumentId;
+    private ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> sounds;
+    private IItemInstrument.InsSound[] insSounds;
+
     public ItemBlockInstrument(int instrumentId, int minOctave, int maxOctave, Block block) {
         this(instrumentId, minOctave, maxOctave, new Properties(), block);
     }
@@ -91,7 +91,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
             if (!world.isClientSide) {
                 BlockMusicBox.insertInstrument(world, blockpos, blockState, itemstack.getItem());
 
-                if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
+                if (context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
             }
@@ -106,9 +106,9 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, LivingEntity attacker) {
         Level world = attacker.level();
         if (!world.isClientSide) {
-            int note1 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
-            int note2 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
-            int note3 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
+            int note1 = minNote + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note2 = minNote + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note3 = minNote + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
 
             Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level(), target.position(), 24.D);
             TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, this, target);
@@ -119,18 +119,18 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
         return true;
     }
 
-    public void setSounds(ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> sounds){
+    public void setSounds(ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> sounds) {
         this.sounds = sounds;
         insSounds = new IItemInstrument.InsSound[totalNotes];
-        for(int i=0; i<totalNotes; i++){
+        for (int i = 0; i < totalNotes; i++) {
             int note = IItemInstrument.idToNote(i);
             int index = getClosest(note);
-            if(index < 0 || index >= sounds.size()){
+            if (index < 0 || index >= sounds.size()) {
                 Mod.LOGGER.error("Invalid sound index in Instrument construction");
             }
-            int octave = i/12;
-            if(octave >= minOctave && octave <= maxOctave){
-                float pitch = (float)Math.pow(1.05946314465679, note - sounds.get(index).first());
+            int octave = i / 12;
+            if (octave >= minOctave && octave <= maxOctave) {
+                float pitch = (float) Math.pow(1.05946314465679, note - sounds.get(index).first());
                 insSounds[i] = new IItemInstrument.InsSound(sounds.get(index).second(), pitch);
             }
         }
@@ -139,9 +139,9 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     private int getClosest(int note) {
         int minDiff = 100;
         int bestIndex = -1;
-        for(int i=0; i<sounds.size(); i++){
+        for (int i = 0; i < sounds.size(); i++) {
             int diff = Math.abs(sounds.get(i).first() - note);
-            if(diff < minDiff){
+            if (diff < minDiff) {
                 minDiff = diff;
                 bestIndex = i;
             }
@@ -152,7 +152,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     @Nullable
     public IItemInstrument.InsSound getSound(int note) {
         int id = IItemInstrument.noteToId(note);
-        if(id >= 0 && id < totalNotes) {
+        if (id >= 0 && id < totalNotes) {
             return insSounds[id];
         }
         Mod.LOGGER.warn("Requested invalid note from Instrument getSound: {}", note);

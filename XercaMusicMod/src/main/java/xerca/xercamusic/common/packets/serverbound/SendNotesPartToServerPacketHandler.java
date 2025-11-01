@@ -9,15 +9,15 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class SendNotesPartToServerPacketHandler implements ServerPlayNetworking.PlayPayloadHandler<SendNotesPartToServerPacket> {
     private static void processMessage(SendNotesPartToServerPacket pkt, ServerPlayer sender) {
-        if(MusicManager.addNotesPart(pkt)) {
+        if (MusicManager.addNotesPart(pkt)) {
             sendToClient(sender, new NotesPartAckFromServerPacket(pkt.uuid()));
         }
     }
 
     @Override
     public void receive(SendNotesPartToServerPacket packet, ServerPlayNetworking.Context context) {
-        if(packet != null){
-            context.server().execute(()->processMessage(packet, context.player()));
+        if (packet != null) {
+            context.server().execute(() -> processMessage(packet, context.player()));
         }
     }
 }

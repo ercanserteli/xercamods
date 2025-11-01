@@ -16,7 +16,7 @@ public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayP
         int version = msg.version();
         MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.server);
         MusicDataResponsePacket packet;
-        if(data != null) {
+        if (data != null) {
             packet = new MusicDataResponsePacket(id, data.version(), data.notes());
         } else {
             packet = new MusicDataResponsePacket(id, 0, new ArrayList<>());
@@ -26,8 +26,8 @@ public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayP
 
     @Override
     public void receive(MusicDataRequestPacket packet, ServerPlayNetworking.Context context) {
-        if(packet != null){
-            context.server().execute(()->processMessage(packet, context.player()));
+        if (packet != null) {
+            context.server().execute(() -> processMessage(packet, context.player()));
         }
     }
 }

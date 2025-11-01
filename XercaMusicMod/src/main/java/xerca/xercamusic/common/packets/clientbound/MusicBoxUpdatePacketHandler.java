@@ -13,12 +13,12 @@ import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPayloadHandler<MusicBoxUpdatePacket> {
     private static void processMessage(MusicBoxUpdatePacket msg) {
         Level world = Minecraft.getInstance().level;
-        if(world == null || !world.hasChunkAt(msg.pos())){
+        if (world == null || !world.hasChunkAt(msg.pos())) {
             return;
         }
 
-        BlockEntity te =  world.getBlockEntity(msg.pos());
-        if(te instanceof TileEntityMusicBox tileEntityMusicBox){
+        BlockEntity te = world.getBlockEntity(msg.pos());
+        if (te instanceof TileEntityMusicBox tileEntityMusicBox) {
 
             if (msg.sheetSent()) {
                 if (msg.noSheet()) {
@@ -34,9 +34,9 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPay
                 }
             }
 
-            if(!msg.instrumentId().isEmpty()){
+            if (!msg.instrumentId().isEmpty()) {
                 tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.get(ResourceLocation.parse(msg.instrumentId())));
-            }else{
+            } else {
                 tileEntityMusicBox.removeInstrument();
             }
         }
@@ -44,8 +44,8 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPay
 
     @Override
     public void receive(MusicBoxUpdatePacket packet, ClientPlayNetworking.Context context) {
-        if(packet != null) {
-            context.client().execute(()->processMessage(packet));
+        if (packet != null) {
+            context.client().execute(() -> processMessage(packet));
         }
     }
 }

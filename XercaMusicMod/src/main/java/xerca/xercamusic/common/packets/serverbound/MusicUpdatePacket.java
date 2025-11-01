@@ -3,7 +3,6 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
@@ -14,7 +13,9 @@ import java.util.UUID;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
-public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) implements CustomPacketPayload  {
+public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps,
+                                float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked,
+                                UUID id, int version, byte highlightInterval) implements CustomPacketPayload {
     public static final Type<MusicUpdatePacket> PACKET_ID = new Type<>(Mod.id("music_update"));
     public static final StreamCodec<FriendlyByteBuf, MusicUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicUpdatePacket::encode, MusicUpdatePacket::decode);
 
@@ -87,27 +88,26 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {
         buf.writeInt(availability.toInt());
-        if(availability.hasTitle) buf.writeUtf(title);
-        if(availability.hasSigned) buf.writeBoolean(signed);
-        if(availability.hasBps) buf.writeByte(bps);
-        if(availability.hasVolume) buf.writeFloat(volume);
-        if(availability.hasLength) buf.writeShort(lengthBeats);
-        if(availability.hasNotes){
-            if(notes != null) {
+        if (availability.hasTitle) buf.writeUtf(title);
+        if (availability.hasSigned) buf.writeBoolean(signed);
+        if (availability.hasBps) buf.writeByte(bps);
+        if (availability.hasVolume) buf.writeFloat(volume);
+        if (availability.hasLength) buf.writeShort(lengthBeats);
+        if (availability.hasNotes) {
+            if (notes != null) {
                 buf.writeInt(notes.size());
                 for (NoteEvent event : notes) {
                     event.encodeToBuffer(buf);
                 }
-            }
-            else{
+            } else {
                 buf.writeInt(0);
             }
         }
-        if(availability.hasPrevIns) buf.writeByte(prevInstrument);
-        if(availability.hasPrevInsLocked) buf.writeBoolean(prevInsLocked);
-        if(availability.hasId) buf.writeUUID(id);
-        if(availability.hasVersion) buf.writeInt(version);
-        if(availability.hasHlInterval) buf.writeByte(highlightInterval);
+        if (availability.hasPrevIns) buf.writeByte(prevInstrument);
+        if (availability.hasPrevInsLocked) buf.writeBoolean(prevInsLocked);
+        if (availability.hasId) buf.writeUUID(id);
+        if (availability.hasVersion) buf.writeInt(version);
+        if (availability.hasHlInterval) buf.writeByte(highlightInterval);
         return buf;
     }
 
@@ -143,7 +143,7 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
 
         public FieldFlag(boolean hasNotes, boolean hasLength, boolean hasBps, boolean hasVolume, boolean hasSigned,
                          boolean hasTitle, boolean hasPrevIns, boolean hasPrevInsLocked, boolean hasId,
-                         boolean hasVersion, boolean hasHlInterval){
+                         boolean hasVersion, boolean hasHlInterval) {
             this.hasNotes = hasNotes;
             this.hasLength = hasLength;
             this.hasBps = hasBps;
@@ -157,24 +157,10 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
             this.hasHlInterval = hasHlInterval;
         }
 
-        public FieldFlag(){
+        public FieldFlag() {
         }
 
-        public int toInt(){
-            return (hasNotes ? notesFlag : 0) |
-                   (hasLength ? lengthFlag : 0) |
-                   (hasBps ? bpsFlag : 0) |
-                   (hasVolume ? volumeFlag : 0) |
-                   (hasSigned ? signedFlag : 0) |
-                   (hasTitle ? titleFlag : 0) |
-                   (hasPrevIns ? prevInsFlag : 0) |
-                   (hasPrevInsLocked ? prevInsLockedFlag : 0) |
-                   (hasId ? idFlag : 0) |
-                   (hasVersion ? versionFlag : 0) |
-                   (hasHlInterval ? hlIntervalFlag : 0);
-        }
-
-        static public FieldFlag fromInt(int packed){
+        static public FieldFlag fromInt(int packed) {
             return new FieldFlag(
                     (packed & notesFlag) != 0,
                     (packed & lengthFlag) != 0,
@@ -187,7 +173,21 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
                     (packed & idFlag) != 0,
                     (packed & versionFlag) != 0,
                     (packed & hlIntervalFlag) != 0
-                    );
+            );
+        }
+
+        public int toInt() {
+            return (hasNotes ? notesFlag : 0) |
+                    (hasLength ? lengthFlag : 0) |
+                    (hasBps ? bpsFlag : 0) |
+                    (hasVolume ? volumeFlag : 0) |
+                    (hasSigned ? signedFlag : 0) |
+                    (hasTitle ? titleFlag : 0) |
+                    (hasPrevIns ? prevInsFlag : 0) |
+                    (hasPrevInsLocked ? prevInsLockedFlag : 0) |
+                    (hasId ? idFlag : 0) |
+                    (hasVersion ? versionFlag : 0) |
+                    (hasHlInterval ? hlIntervalFlag : 0);
         }
 
         public boolean hasAny() {
