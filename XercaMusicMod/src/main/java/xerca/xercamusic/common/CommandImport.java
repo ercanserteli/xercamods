@@ -72,7 +72,7 @@ public class CommandImport {
             UUID id = tag.getUUID("id");
             int ver = tag.getInt("ver");
             if(notes == null) {
-                // Get if large note was sent in parts
+                // Get if a large sheet was sent in parts
                 notes = MusicManager.getFinishedNotesFromBuffer(id);
                 if(notes == null){
                     return;

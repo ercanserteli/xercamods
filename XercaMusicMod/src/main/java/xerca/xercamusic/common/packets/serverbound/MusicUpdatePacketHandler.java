@@ -34,7 +34,7 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
                 ArrayList<NoteEvent> notes = msg.notes();
                 UUID id = note.get(Items.SHEET_ID);
                 if(notes == null) {
-                    // Get if large note was sent in parts
+                    // Get if a large sheet was sent in parts
                     notes = MusicManager.getFinishedNotesFromBuffer(id);
                     if(notes == null){
                         return;

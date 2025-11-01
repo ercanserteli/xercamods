@@ -4,8 +4,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercamusic.common.item.IItemInstrument;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class NoteEvent {
     public byte note;
@@ -77,6 +79,60 @@ public class NoteEvent {
         ListTag notesTag = tag.getList("notes", Tag.TAG_COMPOUND);
         for(int i=0; i<notesTag.size(); i++){
             noteEvents.add(NoteEvent.fromNBT(notesTag.getCompound(i)));
+        }
+        sortNotes(noteEvents);
+        removeDuplicates(noteEvents);
+    }
+
+    public static void sortNotes(ArrayList<NoteEvent> notes){
+        notes.sort(Comparator.comparingInt(NoteEvent::startTime));
+    }
+
+    public static void removeDuplicates(ArrayList<NoteEvent> notes) {
+        if (notes.isEmpty()) {
+            return;
+        }
+
+        short currentTime = notes.get(0).time;
+        long seenLo = 0L; // 0..63
+        long seenHi = 0L; // 64..127
+
+        for (int i = 0; i < notes.size(); ) {
+            NoteEvent e = notes.get(i);
+
+            if (e.note < IItemInstrument.minNote || e.note > IItemInstrument.maxNote) {
+                // invalid note
+                notes.remove(i);
+                continue;
+            }
+
+            // new time group -> reset bitsets
+            if (e.time != currentTime) {
+                currentTime = e.time;
+                seenLo = 0L;
+                seenHi = 0L;
+            }
+
+            int note = e.note & 0xFF;
+            if (note < 64) {
+                long bit = 1L << note;
+                if ((seenLo & bit) != 0L) {
+                    // duplicate found
+                    notes.remove(i);
+                    continue;
+                }
+                seenLo |= bit;
+            } else {
+                long bit = 1L << (note - 64);
+                if ((seenHi & bit) != 0L) {
+                    // duplicate found
+                    notes.remove(i);
+                    continue;
+                }
+                seenHi |= bit;
+            }
+
+            i++;
         }
     }
 

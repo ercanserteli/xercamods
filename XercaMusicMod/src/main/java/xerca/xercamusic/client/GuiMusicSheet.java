@@ -429,7 +429,7 @@ public class GuiMusicSheet extends Screen {
                             note.length = (byte)Math.max(Math.round(note.length*mult), 1);
                         }
                         updateLength();
-                        removeDuplicates();
+                        NoteEvent.removeDuplicates(notes);
                     }
                 }
                 else {
@@ -1406,7 +1406,7 @@ public class GuiMusicSheet extends Screen {
                 buffer.readByte();
 
                 // Read copied time length and note event count
-                length = buffer.readInt();
+                length = buffer.readInt() + 1;
                 int count = buffer.readInt();
 
                 // Read the note events into an array
@@ -1431,13 +1431,11 @@ public class GuiMusicSheet extends Screen {
                 notes.add(event);
             }
 
-            sortNotes();
-            if(!pushBack) {
-                removeDuplicates();
-            }
+            NoteEvent.sortNotes(notes);
+            NoteEvent.removeDuplicates(notes);
 
             updateLength();
-            editCursor += length + 1;
+            editCursor += length;
             editCursorEnd = editCursor;
 
             dirtyFlag.hasNotes = true;
@@ -1445,16 +1443,6 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void removeDuplicates() {
-        for(int i=0; i<notes.size()-1; i++) {
-            NoteEvent event1 = notes.get(i);
-            NoteEvent event2 = notes.get(i+1);
-            if (event1.time == event2.time && event1.note == event2.note &&  event1.length == event2.length) {
-                notes.remove(i);
-                i--;
-            }
-        }
-    }
 
     private void delAtCursor(int x){
         boolean doSort = false;
@@ -1478,7 +1466,7 @@ public class GuiMusicSheet extends Screen {
             }
         }
         if(doSort){
-            sortNotes();
+            NoteEvent.sortNotes(notes);
         }
         updateLength();
     }
@@ -1726,12 +1714,8 @@ public class GuiMusicSheet extends Screen {
             }
         }
         if(doSort) {
-            sortNotes();
+            NoteEvent.sortNotes(notes);
         }
-    }
-
-    private void sortNotes(){
-        notes.sort(Comparator.comparingInt(NoteEvent::startTime));
     }
 
     private void setEditCursor(int x){
