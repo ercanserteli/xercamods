@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -21,31 +22,34 @@ public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstr
     public static final StreamCodec<FriendlyByteBuf, TripleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(TripleNoteClientPacket::encode, TripleNoteClientPacket::decode);
 
     public static TripleNoteClientPacket decode(FriendlyByteBuf buf) {
-        try {
-            int note1 = buf.readInt();
-            int note2 = buf.readInt();
-            int note3 = buf.readInt();
-            int instrumentId = buf.readInt();
-            int entityId = buf.readInt();
+        int note1 = buf.readInt();
+        int note2 = buf.readInt();
+        int note3 = buf.readInt();
+        int instrumentId = buf.readInt();
+        int entityId = buf.readInt();
 
-            if(instrumentId < 0 || instrumentId >= Items.instruments.length){
-                throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
-            }
-
-            IItemInstrument instrumentItem = Items.instruments[instrumentId];
-            return new TripleNoteClientPacket(note1, note2, note3, instrumentItem, entityId);
-        } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading SingleNotePacket:", ioe);
-            return null;
+        if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+            Mod.LOGGER.warn("Invalid instrumentId: {}", instrumentId);
+            instrumentId = 0;
         }
+
+        IItemInstrument instrumentItem = Items.instruments[instrumentId];
+        return new TripleNoteClientPacket(note1, note2, note3, instrumentItem, entityId);
     }
 
     public Entity entity() {
         ClientLevel level = Minecraft.getInstance().level;
         if(level == null) {
+            Mod.LOGGER.warn("Level is null while trying to get entity");
             return null;
         }
-        return level.getEntity(entityId);
+
+        Entity entity = level.getEntity(entityId);
+        if(entity == null){
+            Mod.LOGGER.warn("Invalid entityId: {}", entityId);
+            return Minecraft.getInstance().player;
+        }
+        return entity;
     }
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {
