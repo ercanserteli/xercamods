@@ -11,18 +11,18 @@ import java.util.Collection;
 import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class SingleNotePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<SingleNotePacket> {
-     private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
+    private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
         Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) pl.level(), pl.position(), 24.0D);
         SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.note(), msg.instrumentItem(), pl, msg.isStop(), msg.volume());
-        for(ServerPlayer player : players){
+        for (ServerPlayer player : players) {
             sendToClient(player, packet);
         }
     }
 
     @Override
     public void receive(SingleNotePacket packet, ServerPlayNetworking.Context context) {
-        if(packet != null){
-            context.server().execute(()->processMessage(packet, context.player()));
+        if (packet != null) {
+            context.server().execute(() -> processMessage(packet, context.player()));
         }
     }
 }

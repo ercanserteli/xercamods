@@ -6,7 +6,7 @@ public class Triggers {
     /*
      * This array just makes it convenient to register all the criteria.
      */
-    public static final CustomTrigger[] TRIGGER_ARRAY = new CustomTrigger[] {
+    public static final CustomTrigger[] TRIGGER_ARRAY = new CustomTrigger[]{
             BECOME_MUSICIAN
     };
 }

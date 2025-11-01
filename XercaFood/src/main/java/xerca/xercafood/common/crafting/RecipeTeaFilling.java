@@ -38,7 +38,7 @@ public class RecipeTeaFilling extends CustomRecipe {
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemStack bucketStack = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.ITEM_TEAPOT) {
@@ -46,7 +46,7 @@ public class RecipeTeaFilling extends CustomRecipe {
                         return false;
                     }
                     teapotStack = itemstack;
-                }else if (itemstack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
+                } else if (itemstack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
                     if (!bucketStack.isEmpty()) {
                         return false;
                     }
@@ -72,7 +72,7 @@ public class RecipeTeaFilling extends CustomRecipe {
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemStack bucketStack = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.ITEM_TEAPOT) {
@@ -80,7 +80,7 @@ public class RecipeTeaFilling extends CustomRecipe {
                         return ItemStack.EMPTY;
                     }
                     teapotStack = itemstack;
-                }else if (itemstack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
+                } else if (itemstack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
                     if (!bucketStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }

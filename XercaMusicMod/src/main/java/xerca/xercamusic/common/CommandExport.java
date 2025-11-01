@@ -31,14 +31,14 @@ public class CommandExport {
         );
     }
 
-    private static int musicExport(CommandSourceStack stack, String name){
+    private static int musicExport(CommandSourceStack stack, String name) {
         Mod.LOGGER.debug("Music export called. name: {}", name);
-        if(stack.getEntity() == null){
+        if (stack.getEntity() == null) {
             Mod.LOGGER.error("Command entity is not found");
             return 0;
         }
         Entity commander = stack.getEntity();
-        if(!(commander instanceof ServerPlayer player)){
+        if (!(commander instanceof ServerPlayer player)) {
             Mod.LOGGER.error("Command entity is not a player");
             return 0;
         }
@@ -48,24 +48,24 @@ public class CommandExport {
         return 1;
     }
 
-    public static boolean doExport(Player player, String name){
+    public static boolean doExport(Player player, String name) {
         String dir = "music_sheets";
         String filename = name + ".sheet";
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
 
-        for(ItemStack s : player.getHandSlots()){
-            if(s.getItem() instanceof ItemMusicSheet){
+        for (ItemStack s : player.getHandSlots()) {
+            if (s.getItem() instanceof ItemMusicSheet) {
                 UUID id = s.get(Items.SHEET_ID);
                 int ver = s.getOrDefault(Items.SHEET_VERSION, -1);
                 int length = s.getOrDefault(Items.SHEET_LENGTH, 0);
                 if (id != null && ver >= 0 && length > 0) {
                     MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
                         MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
-                        if(data != null){
+                        if (data != null) {
                             CompoundTag tag = new CompoundTag();
                             tag.putInt("ver", ver);
                             tag.putUUID("id", id);
@@ -76,7 +76,7 @@ public class CommandExport {
                                 tag.putByte("bps", bps);
                             }
                             Boolean piLocked = s.get(Items.SHEET_PREV_INSTRUMENT_LOCKED);
-                            if (piLocked != null){
+                            if (piLocked != null) {
                                 tag.putBoolean("piLocked", piLocked);
                             }
                             Byte prevIns = s.get(Items.SHEET_PREV_INSTRUMENT);

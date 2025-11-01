@@ -27,18 +27,18 @@ public class RecipeFillPalette extends CustomRecipe {
         super(craftingBookCategory);
     }
 
-    private boolean isPalette(ItemStack stack){
+    private boolean isPalette(ItemStack stack) {
         return stack.getItem() instanceof ItemPalette;
     }
 
-    private boolean isDye(ItemStack stack){
+    private boolean isDye(ItemStack stack) {
         return stack.getItem() instanceof DyeItem;
     }
 
-    private int findPalette(CraftingInput inv){
-        for(int i = 0; i < inv.size(); ++i) {
+    private int findPalette(CraftingInput inv) {
+        for (int i = 0; i < inv.size(); ++i) {
             ItemStack stack = inv.getItem(i);
-            if(isPalette(stack)){
+            if (isPalette(stack)) {
                 return i;
             }
         }
@@ -46,17 +46,16 @@ public class RecipeFillPalette extends CustomRecipe {
     }
 
     @Nullable
-    private ArrayList<ItemStack> findDyes(CraftingInput inv, int paletteId){
+    private ArrayList<ItemStack> findDyes(CraftingInput inv, int paletteId) {
         ArrayList<ItemStack> dyes = new ArrayList<>();
-        for(int i = 0; i < inv.size(); ++i) {
-            if(i == paletteId){
+        for (int i = 0; i < inv.size(); ++i) {
+            if (i == paletteId) {
                 continue;
             }
             ItemStack stack = inv.getItem(i);
-            if(isDye(stack)){
+            if (isDye(stack)) {
                 dyes.add(stack);
-            }
-            else if(!stack.isEmpty()){
+            } else if (!stack.isEmpty()) {
                 return null;
             }
         }
@@ -70,7 +69,7 @@ public class RecipeFillPalette extends CustomRecipe {
     @Override
     public boolean matches(CraftingInput inv, Level worldIn) {
         int paletteId = findPalette(inv);
-        if(paletteId < 0){
+        if (paletteId < 0) {
             return false;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
@@ -83,21 +82,21 @@ public class RecipeFillPalette extends CustomRecipe {
     @Override
     public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
         int paletteId = findPalette(inv);
-        if(paletteId < 0){
+        if (paletteId < 0) {
             return ItemStack.EMPTY;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
-        if(dyes == null || dyes.isEmpty()){
+        if (dyes == null || dyes.isEmpty()) {
             return ItemStack.EMPTY;
         }
 
         ItemStack inputPalette = inv.getItem(paletteId);
         byte[] basicColors = inputPalette.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[16]).clone();
 
-        for(ItemStack dye : dyes){
-            DyeColor color = ((DyeItem)(dye.getItem())).getDyeColor();
+        for (ItemStack dye : dyes) {
+            DyeColor color = ((DyeItem) (dye.getItem())).getDyeColor();
             int realColorId = 15 - color.getId();
-            if(basicColors[realColorId] > 0){
+            if (basicColors[realColorId] > 0) {
                 Mod.LOGGER.debug("Color already exists in palette.");
                 return ItemStack.EMPTY;
             }

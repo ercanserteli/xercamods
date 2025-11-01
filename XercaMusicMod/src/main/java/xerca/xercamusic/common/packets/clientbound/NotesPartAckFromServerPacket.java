@@ -3,7 +3,6 @@ package xerca.xercamusic.common.packets.clientbound;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 
@@ -13,11 +12,6 @@ public record NotesPartAckFromServerPacket(UUID id) implements CustomPacketPaylo
     public static final CustomPacketPayload.Type<NotesPartAckFromServerPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("notes_part_ack_from_server"));
     public static final StreamCodec<FriendlyByteBuf, NotesPartAckFromServerPacket> PACKET_CODEC = StreamCodec.ofMember(NotesPartAckFromServerPacket::encode, NotesPartAckFromServerPacket::decode);
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
-        buf.writeUUID(id);
-        return buf;
-    }
-
     public static NotesPartAckFromServerPacket decode(FriendlyByteBuf buf) {
         try {
             UUID id = buf.readUUID();
@@ -26,6 +20,11 @@ public record NotesPartAckFromServerPacket(UUID id) implements CustomPacketPaylo
             Mod.LOGGER.error("Exception while reading NotesPartAckFromServerPacket:", ioe);
             return null;
         }
+    }
+
+    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+        buf.writeUUID(id);
+        return buf;
     }
 
     @Override

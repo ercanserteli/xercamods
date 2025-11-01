@@ -3,7 +3,6 @@ package xerca.xercamusic.common.packets.clientbound;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
@@ -21,7 +20,7 @@ public record MusicDataResponsePacket(UUID id, int version, ArrayList<NoteEvent>
             int version = buf.readInt();
             int eventCount = buf.readInt();
             ArrayList<NoteEvent> notes = new ArrayList<>(eventCount);
-            for(int i=0; i<eventCount; i++){
+            for (int i = 0; i < eventCount; i++) {
                 notes.add(NoteEvent.fromBuffer(buf));
             }
             return new MusicDataResponsePacket(id, version, notes);
@@ -35,7 +34,7 @@ public record MusicDataResponsePacket(UUID id, int version, ArrayList<NoteEvent>
         buf.writeUUID(id);
         buf.writeInt(version);
         buf.writeInt(notes.size());
-        for(NoteEvent event : notes){
+        for (NoteEvent event : notes) {
             event.encodeToBuffer(buf);
         }
         return buf;

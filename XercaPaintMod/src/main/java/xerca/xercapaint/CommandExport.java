@@ -29,14 +29,14 @@ public class CommandExport {
         );
     }
 
-    private static int paintExport(CommandSourceStack stack, String name){
+    private static int paintExport(CommandSourceStack stack, String name) {
         Mod.LOGGER.debug("Paint export called. name: {}", name);
-        if(stack.getEntity() == null){
+        if (stack.getEntity() == null) {
             Mod.LOGGER.error("Command entity is not found");
             return 0;
         }
         Entity commander = stack.getEntity();
-        if(!(commander instanceof ServerPlayer player)){
+        if (!(commander instanceof ServerPlayer player)) {
             Mod.LOGGER.error("Command entity is not a player");
             return 0;
         }
@@ -46,20 +46,20 @@ public class CommandExport {
         return 1;
     }
 
-    public static boolean doExport(Player player, String name){
+    public static boolean doExport(Player player, String name) {
         String dir = "paintings";
         String filename = name + ".paint";
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
 
-        for(ItemStack s : player.getHandSlots()){
-            if(s.getItem() instanceof ItemCanvas){
+        for (ItemStack s : player.getHandSlots()) {
+            if (s.getItem() instanceof ItemCanvas) {
                 List<Integer> pixels = s.get(Items.CANVAS_PIXELS);
                 String canvasId = s.get(Items.CANVAS_ID);
-                if(pixels != null && canvasId != null){
+                if (pixels != null && canvasId != null) {
                     try {
                         int version = s.getOrDefault(Items.CANVAS_VERSION, 1);
                         int generation = s.getOrDefault(Items.CANVAS_GENERATION, 0);
@@ -72,7 +72,7 @@ public class CommandExport {
                         tag.putString("name", canvasId);
                         tag.putInt("v", version);
                         tag.putInt("generation", generation);
-                        tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                        tag.putByte("ct", (byte) ((ItemCanvas) s.getItem()).getCanvasType().ordinal());
                         if (title != null && author != null) {
                             tag.putString("title", title);
                             tag.putString("author", author);

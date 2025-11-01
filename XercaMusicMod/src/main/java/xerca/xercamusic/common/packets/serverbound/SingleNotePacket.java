@@ -3,13 +3,13 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
-public record SingleNotePacket(int note, IItemInstrument instrumentItem, boolean isStop, float volume) implements CustomPacketPayload {
+public record SingleNotePacket(int note, IItemInstrument instrumentItem, boolean isStop,
+                               float volume) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SingleNotePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("single_note"));
     public static final StreamCodec<FriendlyByteBuf, SingleNotePacket> PACKET_CODEC = StreamCodec.ofMember(SingleNotePacket::encode, SingleNotePacket::decode);
 
@@ -19,7 +19,7 @@ public record SingleNotePacket(int note, IItemInstrument instrumentItem, boolean
             int instrumentId = buf.readInt();
             boolean isStop = buf.readBoolean();
             float volume = buf.readFloat();
-            if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+            if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
             IItemInstrument instrumentItem = Items.instruments[instrumentId];

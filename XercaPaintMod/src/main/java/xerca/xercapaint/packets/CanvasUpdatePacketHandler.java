@@ -19,36 +19,35 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
         ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.easelId() > -1){
+        if (msg.easelId() > -1) {
             entityEasel = pl.level().getEntity(msg.easelId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.easelId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
             canvas = easel.getItem();
-            if(!(canvas.getItem() instanceof ItemCanvas)){
+            if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Canvas not found inside easel!");
                 return;
             }
             ItemStack mainHandItem = pl.getMainHandItem();
             ItemStack offHandItem = pl.getOffhandItem();
-            if(mainHandItem.getItem() instanceof ItemPalette){
+            if (mainHandItem.getItem() instanceof ItemPalette) {
                 palette = mainHandItem;
-            }else if(offHandItem.getItem() instanceof ItemPalette){
+            } else if (offHandItem.getItem() instanceof ItemPalette) {
                 palette = offHandItem;
-            }else{
+            } else {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Palette not found on player's hands!");
                 return;
             }
-        }
-        else{
+        } else {
             canvas = pl.getMainHandItem();
             palette = pl.getOffhandItem();
-            if(canvas.getItem() instanceof ItemPalette){
+            if (canvas.getItem() instanceof ItemPalette) {
                 ItemStack temp = canvas;
                 canvas = palette;
                 palette = temp;
@@ -70,7 +69,7 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
                 palette.set(Items.PALETTE_CUSTOM_COLORS, new ItemPalette.ComponentCustomColor(msg.paletteColors()));
             }
 
-            if(entityEasel instanceof EntityEasel easel){
+            if (entityEasel instanceof EntityEasel easel) {
                 easel.setItem(canvas, false);
                 easel.setPainter(null);
             }
@@ -81,6 +80,6 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
 
     @Override
     public void receive(CanvasUpdatePacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(()->processMessage(packet, context.player()));
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

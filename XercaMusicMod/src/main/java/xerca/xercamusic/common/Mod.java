@@ -29,11 +29,41 @@ import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 
-public class Mod implements ModInitializer
-{
+public class Mod implements ModInitializer {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
+
+    public static void sendToClient(ServerPlayer player, CustomPacketPayload packet) {
+        ServerPlayNetworking.send(player, packet);
+    }
+
+//    private void enqueueIMC(final InterModEnqueueEvent event) {} todo this later
+
+    public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) {
+        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+            try {
+                return toRun.get().call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    public static void onlyRunOnClient(Supplier<Runnable> toRun) {
+        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+            try {
+                toRun.get().run();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static ResourceLocation id(String location) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, location);
+    }
 
     private void networkRegistry() {
         PayloadTypeRegistry.playS2C().register(ExportMusicPacket.PACKET_ID, ExportMusicPacket.PACKET_CODEC);
@@ -57,8 +87,6 @@ public class Mod implements ModInitializer
         ServerPlayNetworking.registerGlobalReceiver(SingleNotePacket.PACKET_ID, new SingleNotePacketHandler());
         ServerPlayNetworking.registerGlobalReceiver(SendNotesPartToServerPacket.PACKET_ID, new SendNotesPartToServerPacketHandler());
     }
-
-//    private void enqueueIMC(final InterModEnqueueEvent event) {} todo this later
 
     private void registerTriggers() {
         for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++) {
@@ -91,36 +119,5 @@ public class Mod implements ModInitializer
             CommandImport.register(dispatcher);
             CommandExport.register(dispatcher);
         });
-    }
-
-    public static void sendToClient(ServerPlayer player, CustomPacketPayload packet) {
-        ServerPlayNetworking.send(player, packet);
-    }
-
-    public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
-            try {
-                return toRun.get().call();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
-    public static void onlyRunOnClient(Supplier<Runnable> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
-            try {
-                toRun.get().run();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public static ResourceLocation id(String location) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, location);
     }
 }

@@ -30,7 +30,7 @@ public final class Items {
     public static final ItemCanvas ITEM_CANVAS = new ItemCanvas(CanvasType.SMALL, "item_canvas");
     public static final ItemCanvas ITEM_CANVAS_LARGE = new ItemCanvas(CanvasType.LARGE, "item_canvas_large");
     public static final ItemCanvas ITEM_CANVAS_LONG = new ItemCanvas(CanvasType.LONG, "item_canvas_long");
-    public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL,  "item_canvas_tall");
+    public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL, "item_canvas_tall");
     public static final ItemEasel ITEM_EASEL = new ItemEasel("item_easel");
 
     public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = new CustomRecipe.Serializer<>(RecipeCraftPalette::new);
@@ -51,7 +51,7 @@ public final class Items {
             .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
                 byte[] basicColors = new byte[16];
-                Arrays.fill(basicColors, (byte)1);
+                Arrays.fill(basicColors, (byte) 1);
                 fullPalette.set(PALETTE_BASIC_COLORS, basicColors);
 
                 output.accept(ITEM_PALETTE);

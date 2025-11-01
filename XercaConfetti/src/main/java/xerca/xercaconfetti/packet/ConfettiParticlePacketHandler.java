@@ -16,7 +16,7 @@ public class ConfettiParticlePacketHandler implements ClientPlayNetworking.PlayC
     private static void processMessage(ConfettiParticlePacket pkt) {
         Vec3i dir = pkt.getDirection();
         Level world = Minecraft.getInstance().level;
-        if(world != null) {
+        if (world != null) {
             for (int j = 0; j < pkt.getCount(); ++j) {
                 double velX = ((double) world.random.nextFloat() + dir.getX() - 0.5D) * 0.3D;
                 double velY = ((double) world.random.nextFloat() + dir.getY() * 0.5D) * 0.5D;
@@ -29,8 +29,8 @@ public class ConfettiParticlePacketHandler implements ClientPlayNetworking.PlayC
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ConfettiParticlePacket packet = ConfettiParticlePacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 }

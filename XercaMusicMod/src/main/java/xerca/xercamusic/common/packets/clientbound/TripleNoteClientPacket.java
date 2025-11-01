@@ -6,20 +6,20 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 
-public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument instrumentItem, int entityId) implements CustomPacketPayload {
+public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument instrumentItem,
+                                     int entityId) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<TripleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("triple_note_client"));
+    public static final StreamCodec<FriendlyByteBuf, TripleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(TripleNoteClientPacket::encode, TripleNoteClientPacket::decode);
+
     public TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument instrumentItem, Entity entity) {
         this(note1, note2, note3, instrumentItem, entity.getId());
     }
-
-    public static final CustomPacketPayload.Type<TripleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("triple_note_client"));
-    public static final StreamCodec<FriendlyByteBuf, TripleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(TripleNoteClientPacket::encode, TripleNoteClientPacket::decode);
 
     public static TripleNoteClientPacket decode(FriendlyByteBuf buf) {
         int note1 = buf.readInt();
@@ -28,7 +28,7 @@ public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstr
         int instrumentId = buf.readInt();
         int entityId = buf.readInt();
 
-        if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+        if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
             Mod.LOGGER.warn("Invalid instrumentId: {}", instrumentId);
             instrumentId = 0;
         }
@@ -39,13 +39,13 @@ public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstr
 
     public Entity entity() {
         ClientLevel level = Minecraft.getInstance().level;
-        if(level == null) {
+        if (level == null) {
             Mod.LOGGER.warn("Level is null while trying to get entity");
             return null;
         }
 
         Entity entity = level.getEntity(entityId);
-        if(entity == null){
+        if (entity == null) {
             Mod.LOGGER.warn("Invalid entityId: {}", entityId);
             return Minecraft.getInstance().player;
         }

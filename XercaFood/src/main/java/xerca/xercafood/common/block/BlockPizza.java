@@ -42,7 +42,7 @@ public class BlockPizza extends Block {
     protected static final VoxelShape[] SHAPE_BY_BITE = new VoxelShape[]{
             Block.box(1.0D, 0.0D, 1.0D, 15.0D, 2.0D, 15.0D),
             Shapes.or(Block.box(1.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D),
-                      Block.box(1.0D, 0.0D, 1.0D, 8.0D, 2.0D, 8.0D)),
+                    Block.box(1.0D, 0.0D, 1.0D, 8.0D, 2.0D, 8.0D)),
             Block.box(1.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D),
             Block.box(8.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D)
     };
@@ -52,7 +52,7 @@ public class BlockPizza extends Block {
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
-        this.hungerPerBite = 1 + (slot1.equals(Ingredient.EMPTY) ? 0 : 1) +  (slot2.equals(Ingredient.EMPTY) ? 0 : 1) + (slot3.equals(Ingredient.EMPTY) ? 0 : 1);
+        this.hungerPerBite = 1 + (slot1.equals(Ingredient.EMPTY) ? 0 : 1) + (slot2.equals(Ingredient.EMPTY) ? 0 : 1) + (slot3.equals(Ingredient.EMPTY) ? 0 : 1);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class BlockPizza extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(handIn);
         if (worldIn.isClientSide) {
             if (eat(worldIn, pos, state, player, hungerPerBite).consumesAction()) {
@@ -76,7 +76,7 @@ public class BlockPizza extends Block {
         }
 
         InteractionResult ate = eat(worldIn, pos, state, player, hungerPerBite);
-        if(ate.shouldSwing()){
+        if (ate.shouldSwing()) {
             worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
                     1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
         }
@@ -121,7 +121,7 @@ public class BlockPizza extends Block {
         return false;
     }
 
-    public static boolean isAllEmpty(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3){
+    public static boolean isAllEmpty(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
         return slot1.equals(BlockPizza.Ingredient.EMPTY) && slot2.equals(BlockPizza.Ingredient.EMPTY) && slot3.equals(BlockPizza.Ingredient.EMPTY);
     }
 
