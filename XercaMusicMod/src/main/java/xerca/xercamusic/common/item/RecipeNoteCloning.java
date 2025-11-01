@@ -25,7 +25,7 @@ public class RecipeNoteCloning extends CustomRecipe {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.size(); ++j) {
+        for (int j = 0; j < inv.size(); ++j) {
             ItemStack item = inv.getItem(j);
             if (!item.isEmpty()) {
                 if (item.getItem() == Items.MUSIC_SHEET && item.getOrDefault(Items.SHEET_GENERATION, 0) > 0) {
@@ -52,7 +52,7 @@ public class RecipeNoteCloning extends CustomRecipe {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.size(); ++j) {
+        for (int j = 0; j < inv.size(); ++j) {
             ItemStack item = inv.getItem(j);
             if (!item.isEmpty()) {
                 if (item.getItem() == Items.MUSIC_SHEET && item.getOrDefault(Items.SHEET_GENERATION, 0) > 0) {
@@ -93,7 +93,7 @@ public class RecipeNoteCloning extends CustomRecipe {
     public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
         NonNullList<ItemStack> itemStacks = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 
-        for(int i = 0; i < itemStacks.size(); ++i) {
+        for (int i = 0; i < itemStacks.size(); ++i) {
             ItemStack itemStack = inv.getItem(i);
             if (itemStack.getItem() == Items.MUSIC_SHEET && itemStack.getOrDefault(Items.SHEET_GENERATION, 0) > 0) {
                 ItemStack copy = itemStack.copy();

@@ -8,8 +8,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
@@ -33,14 +33,14 @@ class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        if(state.getBlock() == Blocks.FARMLAND && state.getValue(FarmBlock.MOISTURE) > 6){
+        if (state.getBlock() == Blocks.FARMLAND && state.getValue(FarmBlock.MOISTURE) > 6) {
             int water_count = 0;
-            for(Direction direction : Direction.Plane.HORIZONTAL) {
+            for (Direction direction : Direction.Plane.HORIZONTAL) {
                 BlockState blockstate = worldIn.getBlockState(pos.relative(direction));
                 FluidState fluidstate = worldIn.getFluidState(pos.relative(direction));
                 if (fluidstate.is(FluidTags.WATER) || blockstate.getBlock() == net.minecraft.world.level.block.Blocks.FROSTED_ICE) {
                     water_count++;
-                    if(water_count >= 2){
+                    if (water_count >= 2) {
                         return true;
                     }
                 }
@@ -56,7 +56,7 @@ class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     @Override
     public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
-        if(!mayPlaceOn(worldIn.getBlockState(pos.below()), worldIn, pos.below())){
+        if (!mayPlaceOn(worldIn.getBlockState(pos.below()), worldIn, pos.below())) {
             worldIn.destroyBlock(pos, true);
         }
         super.tick(state, worldIn, pos, rand);

@@ -25,51 +25,13 @@ public class NoteEvent {
     public NoteEvent() {
     }
 
-    public short endTime(){
-        return (short)(time + length - 1);
-    }
-
-    public short startTime(){
-        return time;
-    }
-
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.putByte("n", note);
-        tag.putShort("d", time);
-        tag.putByte("v", volume);
-        tag.putByte("l", length);
-        return tag;
-    }
-
-    public void deserializeNBT(CompoundTag tag) {
-        this.note = tag.getByte("n");
-        this.time = tag.getShort("d");
-        this.volume = tag.getByte("v");
-        this.length = tag.getByte("l");
-    }
-
-    public static NoteEvent fromNBT(CompoundTag tag){
+    public static NoteEvent fromNBT(CompoundTag tag) {
         NoteEvent noteEvent = new NoteEvent();
         noteEvent.deserializeNBT(tag);
         return noteEvent;
     }
 
-    public void encodeToBuffer(FriendlyByteBuf buf){
-        buf.writeByte(note);
-        buf.writeShort(time);
-        buf.writeByte(volume);
-        buf.writeByte(length);
-    }
-
-    public void decodeFromBuffer(FriendlyByteBuf buf){
-        this.note = buf.readByte();
-        this.time = buf.readShort();
-        this.volume = buf.readByte();
-        this.length = buf.readByte();
-    }
-
-    public static NoteEvent fromBuffer(FriendlyByteBuf buf){
+    public static NoteEvent fromBuffer(FriendlyByteBuf buf) {
         NoteEvent noteEvent = new NoteEvent();
         noteEvent.decodeFromBuffer(buf);
         return noteEvent;
@@ -77,14 +39,14 @@ public class NoteEvent {
 
     public static void fillArrayFromNBT(ArrayList<NoteEvent> noteEvents, CompoundTag tag) {
         ListTag notesTag = tag.getList("notes", Tag.TAG_COMPOUND);
-        for(int i=0; i<notesTag.size(); i++){
+        for (int i = 0; i < notesTag.size(); i++) {
             noteEvents.add(NoteEvent.fromNBT(notesTag.getCompound(i)));
         }
         sortNotes(noteEvents);
         removeDuplicates(noteEvents);
     }
 
-    public static void sortNotes(ArrayList<NoteEvent> notes){
+    public static void sortNotes(ArrayList<NoteEvent> notes) {
         notes.sort(Comparator.comparingInt(NoteEvent::startTime));
     }
 
@@ -138,14 +100,52 @@ public class NoteEvent {
 
     public static void fillNBTFromArray(ArrayList<NoteEvent> noteEvents, CompoundTag tag) {
         ListTag noteList = new ListTag();
-        for(NoteEvent event : noteEvents){
+        for (NoteEvent event : noteEvents) {
             noteList.add(event.serializeNBT());
         }
         tag.put("notes", noteList);
     }
 
+    public short endTime() {
+        return (short) (time + length - 1);
+    }
+
+    public short startTime() {
+        return time;
+    }
+
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        tag.putByte("n", note);
+        tag.putShort("d", time);
+        tag.putByte("v", volume);
+        tag.putByte("l", length);
+        return tag;
+    }
+
+    public void deserializeNBT(CompoundTag tag) {
+        this.note = tag.getByte("n");
+        this.time = tag.getShort("d");
+        this.volume = tag.getByte("v");
+        this.length = tag.getByte("l");
+    }
+
+    public void encodeToBuffer(FriendlyByteBuf buf) {
+        buf.writeByte(note);
+        buf.writeShort(time);
+        buf.writeByte(volume);
+        buf.writeByte(length);
+    }
+
+    public void decodeFromBuffer(FriendlyByteBuf buf) {
+        this.note = buf.readByte();
+        this.time = buf.readShort();
+        this.volume = buf.readByte();
+        this.length = buf.readByte();
+    }
+
     public float floatVolume() {
-        return ((float)volume)/127.0f;
+        return ((float) volume) / 127.0f;
     }
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")

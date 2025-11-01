@@ -25,17 +25,16 @@ public class ItemStackableContainedFood extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
         super.finishUsingItem(stack, worldIn, entityLiving);
         ItemStack containerStack = new ItemStack(container);
-        if(stack.getCount() == 0){
+        if (stack.getCount() == 0) {
             return containerStack;
-        }
-        else{
-            if(entityLiving instanceof Player){
-                Inventory inv = ((Player)(entityLiving)).getInventory();
-                if(inv.getSlotWithRemainingSpace(containerStack) == -1 && inv.getFreeSlot() == -1){
-                    if(!worldIn.isClientSide) {
+        } else {
+            if (entityLiving instanceof Player) {
+                Inventory inv = ((Player) (entityLiving)).getInventory();
+                if (inv.getSlotWithRemainingSpace(containerStack) == -1 && inv.getFreeSlot() == -1) {
+                    if (!worldIn.isClientSide) {
                         worldIn.addFreshEntity(new ItemEntity(worldIn, entityLiving.getX(), entityLiving.getY(), entityLiving.getZ(), containerStack));
                     }
-                }else{
+                } else {
                     inv.add(containerStack);
                 }
             }

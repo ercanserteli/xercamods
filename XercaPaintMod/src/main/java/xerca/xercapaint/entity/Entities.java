@@ -16,7 +16,7 @@ public class Entities {
             .dimensions(new EntityDimensions(0.5f, 0.5f, 0.5f, EntityAttachments.createDefault(0.5f, 0.5f), true)).trackedUpdateRate(2147483647).build(ResourceKey.create(Registries.ENTITY_TYPE, Mod.id("canvas")));
 
     public static final EntityType<EntityEasel> EASEL = FabricEntityTypeBuilder.<EntityEasel>create(MobCategory.MISC, EntityEasel::new)
-            .dimensions(new EntityDimensions(0.8f, 1.975F, 1.8F, EntityAttachments.createDefault(0.5f, 0.5f),true)).build(ResourceKey.create(Registries.ENTITY_TYPE, Mod.id("easel")));
+            .dimensions(new EntityDimensions(0.8f, 1.975F, 1.8F, EntityAttachments.createDefault(0.5f, 0.5f), true)).build(ResourceKey.create(Registries.ENTITY_TYPE, Mod.id("easel")));
 
     public static void registerEntities() {
         Registry.register(BuiltInRegistries.ENTITY_TYPE, Mod.id("canvas"), CANVAS);

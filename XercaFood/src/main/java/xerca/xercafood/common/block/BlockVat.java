@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class BlockVat extends AbstractCauldronBlock {
     public enum VatContent {EMPTY, MILK, CHEESE}
+
     private static final VoxelShape INSIDE = box(1.0D, 7.0D, 1.0D, 15.0D, 16.0D, 15.0D);
     private static final VoxelShape SHAPE = Shapes.join(Shapes.block(), Shapes.or(
             box(0.0D, 0.0D, 4.0D, 16.0D, 6.0D, 12.0D),
@@ -59,10 +60,10 @@ public class BlockVat extends AbstractCauldronBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         ItemStack itemstack = player.getItemInHand(hand);
-        switch (content){
+        switch (content) {
             case EMPTY -> {
-                if(itemstack.getItem() == Items.MILK_BUCKET) {
-                    if(!player.isCreative()){
+                if (itemstack.getItem() == Items.MILK_BUCKET) {
+                    if (!player.isCreative()) {
                         itemstack.shrink(1);
                         player.addItem(new ItemStack(Items.BUCKET));
                     }
@@ -74,8 +75,8 @@ public class BlockVat extends AbstractCauldronBlock {
                 }
             }
             case MILK -> {
-                if(itemstack.getItem() == Items.BUCKET) {
-                    if(!player.isCreative()) {
+                if (itemstack.getItem() == Items.BUCKET) {
+                    if (!player.isCreative()) {
                         itemstack.shrink(1);
                         player.addItem(new ItemStack(Items.MILK_BUCKET));
                     }
@@ -87,12 +88,12 @@ public class BlockVat extends AbstractCauldronBlock {
                 }
             }
             case CHEESE -> {
-                if(!level.isClientSide){
+                if (!level.isClientSide) {
                     Vec3 playerPos = new Vec3(player.getX(), player.getY(), player.getZ());
-                    Vec3 boost = playerPos.subtract(new Vec3(blockPos.getX(), blockPos.getY()+1.0, blockPos.getZ()));
+                    Vec3 boost = playerPos.subtract(new Vec3(blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ()));
                     boost = boost.normalize().scale(0.15);
 
-                    ItemEntity entity = new ItemEntity(level, blockPos.getX(), blockPos.getY()+1.0, blockPos.getZ(),
+                    ItemEntity entity = new ItemEntity(level, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(),
                             new ItemStack(xerca.xercafood.common.item.Items.CHEESE_WHEEL));
                     entity.setDefaultPickUpDelay();
                     entity.push(boost.x, 0.05, boost.z);
@@ -116,10 +117,10 @@ public class BlockVat extends AbstractCauldronBlock {
 
     @Override
     public void randomTick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource random) {
-        if(content == VatContent.MILK){
+        if (content == VatContent.MILK) {
 //            xercafood.LOGGER.info("MILKY TICK");
             level.setBlockAndUpdate(blockPos, Blocks.VAT_CHEESE.defaultBlockState());
-            level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_STEP, SoundSource.BLOCKS, 0.7F, 0.9F +level.random.nextFloat()*0.2f);
+            level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_STEP, SoundSource.BLOCKS, 0.7F, 0.9F + level.random.nextFloat() * 0.2f);
         }
     }
 }

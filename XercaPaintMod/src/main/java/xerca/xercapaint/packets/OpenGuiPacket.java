@@ -3,12 +3,12 @@ package xerca.xercapaint.packets;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 
-public record OpenGuiPacket(int easelId, boolean allowed, boolean edit, InteractionHand hand) implements CustomPacketPayload {
+public record OpenGuiPacket(int easelId, boolean allowed, boolean edit,
+                            InteractionHand hand) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<OpenGuiPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("open_gui"));
     public static final StreamCodec<FriendlyByteBuf, OpenGuiPacket> PACKET_CODEC = StreamCodec.ofMember(OpenGuiPacket::encode, OpenGuiPacket::decode);
 
@@ -26,10 +26,9 @@ public record OpenGuiPacket(int easelId, boolean allowed, boolean edit, Interact
         boolean edit = buf.readBoolean();
         int handOrdinal = buf.readByte();
         InteractionHand hand;
-        if(InteractionHand.values().length > handOrdinal){
+        if (InteractionHand.values().length > handOrdinal) {
             hand = InteractionHand.values()[handOrdinal];
-        }
-        else{
+        } else {
             hand = InteractionHand.MAIN_HAND;
         }
         return new OpenGuiPacket(easelId, allowed, edit, hand);

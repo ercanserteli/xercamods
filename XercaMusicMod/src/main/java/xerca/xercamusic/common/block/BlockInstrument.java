@@ -32,11 +32,11 @@ public abstract class BlockInstrument extends Block {
 
     @Override
     public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
-        if(new Vec3(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.position()) > 4){
+        if (new Vec3(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5).distanceTo(player.position()) > 4) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
         ItemStack handStack = player.getItemInHand(hand);
-        if(handStack.getItem() instanceof ItemMusicSheet){
+        if (handStack.getItem() instanceof ItemMusicSheet) {
             playMusic(level, player, pos);
             return ItemInteractionResult.SUCCESS;
         }
@@ -44,8 +44,8 @@ public abstract class BlockInstrument extends Block {
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, BlockPos pos, Player player, @NotNull BlockHitResult hitResult)  {
-        if(new Vec3(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.position()) > 4){
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, BlockPos pos, Player player, @NotNull BlockHitResult hitResult) {
+        if (new Vec3(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5).distanceTo(player.position()) > 4) {
             return InteractionResult.PASS;
         }
         if (level.isClientSide) {
@@ -55,12 +55,11 @@ public abstract class BlockInstrument extends Block {
         return InteractionResult.PASS;
     }
 
-    private void playMusic(Level worldIn, Player playerIn, BlockPos pos){
+    private void playMusic(Level worldIn, Player playerIn, BlockPos pos) {
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
-        if(musicSpirits.isEmpty()){
+        if (musicSpirits.isEmpty()) {
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, pos, getItemInstrument()));
-        }
-        else {
+        } else {
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
         }
     }

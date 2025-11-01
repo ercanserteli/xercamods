@@ -23,6 +23,6 @@ public class PaletteUpdatePacketHandler implements ServerPlayNetworking.PlayPayl
 
     @Override
     public void receive(PaletteUpdatePacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(()->processMessage(packet, context.player()));
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

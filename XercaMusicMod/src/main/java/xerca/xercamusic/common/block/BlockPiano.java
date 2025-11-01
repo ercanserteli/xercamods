@@ -66,6 +66,6 @@ public class BlockPiano extends BlockInstrument {
 
     @Override
     public IItemInstrument getItemInstrument() {
-        return (IItemInstrument)Items.PIANO;
+        return (IItemInstrument) Items.PIANO;
     }
 }

@@ -11,14 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class CustomTrigger extends SimpleCriterionTrigger<CustomTrigger.TriggerInstance> {
-    CustomTrigger()
-    {
+    CustomTrigger() {
         super();
     }
 
-    public void trigger(ServerPlayer player)
-    {
-       super.trigger(player, (p)->true);
+    public void trigger(ServerPlayer player) {
+        super.trigger(player, (p) -> true);
     }
 
     @Override
@@ -26,11 +24,12 @@ public class CustomTrigger extends SimpleCriterionTrigger<CustomTrigger.TriggerI
         return TriggerInstance.CODEC;
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player)  implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(
+            Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(Codec.optionalField("player", EntityPredicate.ADVANCEMENT_CODEC, false)
-                                .forGetter(TriggerInstance::player)
-                        ).apply(instance, TriggerInstance::new)
+                        .forGetter(TriggerInstance::player)
+                ).apply(instance, TriggerInstance::new)
         );
     }
 }

@@ -2,7 +2,6 @@ package xerca.xercafood.common.item;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,7 +33,7 @@ public class ItemRawPizza extends Item {
 
     @Override
     public Component getName(ItemStack stack) {
-        if(BlockPizza.isAllEmpty(slot1, slot2, slot3))
+        if (BlockPizza.isAllEmpty(slot1, slot2, slot3))
             return Component.translatable(XercaFood.MODID + ".pizza_raw_plain");
         return Component.translatable(XercaFood.MODID + ".pizza_raw");
     }

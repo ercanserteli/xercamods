@@ -41,7 +41,7 @@ public class EntityTomato extends ThrowableItemProjectile {
         }
 
         if (!this.level.isClientSide) {
-            this.level.broadcastEntityEvent(this, (byte)3);
+            this.level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, SoundEvents.TOMATO_SPLASH, SoundSource.PLAYERS, 1.0f, this.random.nextFloat() * 0.2F + 0.9F);
             this.remove(RemovalReason.DISCARDED);
         }
@@ -52,10 +52,8 @@ public class EntityTomato extends ThrowableItemProjectile {
 
     }
 
-    public void handleEntityEvent(byte id)
-    {
-        if (id == 3)
-        {
+    public void handleEntityEvent(byte id) {
+        if (id == 3) {
             for (int j = 0; j < 8; ++j) {
                 this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO)), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.28D, ((double) this.random.nextFloat() - 0.3D) * 0.28D, ((double) this.random.nextFloat() - 0.5D) * 0.28D);
             }

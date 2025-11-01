@@ -8,14 +8,14 @@ public class PictureRequestPacketHandler implements ServerPlayNetworking.PlayPay
     private static void processMessage(PictureRequestPacket msg, ServerPlayer pl) {
         String canvasId = msg.canvasId();
         EntityCanvas.Picture picture = EntityCanvas.PICTURES.get(canvasId);
-        if(picture != null){
-            PictureSendPacket pack = new PictureSendPacket(canvasId, picture.version, picture.pixels);
+        if (picture != null) {
+            PictureSendPacket pack = new PictureSendPacket(canvasId, picture.version(), picture.pixels());
             ServerPlayNetworking.send(pl, pack);
         }
     }
 
     @Override
     public void receive(PictureRequestPacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(()->processMessage(packet, context.player()));
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

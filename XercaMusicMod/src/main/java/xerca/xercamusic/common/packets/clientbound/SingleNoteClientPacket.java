@@ -13,13 +13,13 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 
-public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, int playerId, boolean isStop, float volume) implements CustomPacketPayload {
+public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, int playerId, boolean isStop,
+                                     float volume) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SingleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("single_note_client"));
+    public static final StreamCodec<FriendlyByteBuf, SingleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(SingleNoteClientPacket::encode, SingleNoteClientPacket::decode);
     public SingleNoteClientPacket(int note, IItemInstrument instrumentItem, Player playerEntity, boolean isStop, float volume) {
         this(note, instrumentItem, playerEntity.getId(), isStop, volume);
     }
-
-    public static final CustomPacketPayload.Type<SingleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("single_note_client"));
-    public static final StreamCodec<FriendlyByteBuf, SingleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(SingleNoteClientPacket::encode, SingleNoteClientPacket::decode);
 
     public static SingleNoteClientPacket decode(FriendlyByteBuf buf) {
         int note = buf.readInt();
@@ -28,7 +28,7 @@ public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, i
         boolean isStop = buf.readBoolean();
         float volume = buf.readFloat();
 
-        if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+        if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
             Mod.LOGGER.warn("Invalid instrumentId: {}", instrumentId);
             instrumentId = 0;
         }
@@ -39,13 +39,13 @@ public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, i
 
     public Player playerEntity() {
         ClientLevel level = Minecraft.getInstance().level;
-        if(level == null) {
+        if (level == null) {
             Mod.LOGGER.warn("Level is null while trying to get entity");
             return null;
         }
 
         Entity entity = level.getEntity(playerId);
-        if(!(entity instanceof Player playerEntity)){
+        if (!(entity instanceof Player playerEntity)) {
             Mod.LOGGER.warn("Invalid playerId: {}", playerId);
             return Minecraft.getInstance().player;
         }
