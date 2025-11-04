@@ -78,12 +78,10 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, RenderEntityE
         int overlay = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
         submitNodeCollector.submitModel(this.model, state, poseStack, renderType, state.lightCoords, overlay, state.outlineColor, null);
 
-        //this.model.renderToBuffer(poseStack, vertexConsumer, state.lightCoords, overlay);
         for (RenderLayer<EaselRenderState, EaselModel> layer : layers) {
             layer.submit(poseStack, submitNodeCollector, state.lightCoords, state, 0, 0);
         }
         poseStack.popPose();
-        //VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
 
 
 
@@ -104,19 +102,6 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, RenderEntityE
 
     @Override
     protected void submitNameTag(EaselRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
-    //protected void renderNameTag(EaselRenderState state, Component displayName, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-//        if (entityRenderState.nameTag != null) {
-//            submitNodeCollector.submitNameTag(
-//                    poseStack,
-//                    entityRenderState.nameTagAttachment,
-//                    0,
-//                    entityRenderState.nameTag,
-//                    !entityRenderState.isDiscrete,
-//                    entityRenderState.lightCoords,
-//                    entityRenderState.distanceToCameraSq,
-//                    cameraRenderState
-//            );
-//        }
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
         submitNodeCollector.submitNameTag(poseStack, state.nameTagAttachment, 0, ItemCanvas.getFullLabel(state.itemStack), !state.isDiscrete, state.lightCoords, state.distanceToCameraSq, cameraRenderState);
