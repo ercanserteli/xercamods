@@ -13,6 +13,7 @@ import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.lwjgl.system.NonnullDefault;
@@ -25,6 +26,7 @@ import xerca.xercapaint.entity.EntityCanvas;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 @NonnullDefault
 public class ItemCanvas extends HangingEntityItem {
@@ -37,7 +39,7 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Override
     public InteractionResult use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
-        if(worldIn.isClientSide){
+        if(worldIn.isClientSide()){
             ModClient.showCanvasGui(playerIn);
         }
         return InteractionResult.SUCCESS.withoutItem();
@@ -52,7 +54,7 @@ public class ItemCanvas extends HangingEntityItem {
         ItemStack itemstack = context.getItemInHand();
         if (player != null) {
             if (!this.mayPlace(player, direction, itemstack, pos)) {
-                if (context.getLevel().isClientSide) {
+                if (context.getLevel().isClientSide()) {
                     ModClient.showCanvasGui(player);
                 }
             } else {
@@ -61,7 +63,7 @@ public class ItemCanvas extends HangingEntityItem {
                 String canvasId = itemstack.get(Items.CANVAS_ID);
                 List<Integer> canvasPixles = itemstack.get(Items.CANVAS_PIXELS);
                 if (canvasId == null || canvasPixles == null) {
-                    if (context.getLevel().isClientSide) {
+                    if (context.getLevel().isClientSide()) {
                         ModClient.showCanvasGui(player);
                     }
                     return InteractionResult.SUCCESS;
@@ -69,7 +71,7 @@ public class ItemCanvas extends HangingEntityItem {
 
                 int rotation = getRotation(direction, blockpos, player);
 
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     EntityCanvas entityCanvas = new EntityCanvas(world, itemstack, pos, direction, canvasType, rotation);
 
                     if (entityCanvas.survives()) {
@@ -154,22 +156,23 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag tooltipFlag) {
+    //public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         List<Integer> pixels = stack.get(Items.CANVAS_PIXELS);
         if (pixels != null) {
             String author = stack.get(Items.CANVAS_AUTHOR);
 
             if (!StringUtil.isNullOrEmpty(author)) {
-                tooltipComponents.add(Component.translatable("canvas.byAuthor", author));
+                consumer.accept(Component.translatable("canvas.byAuthor", author));
             }
 
             int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
             // generation = 0 means empty, 1 means original, more means copy
             if(generation > 0){
-                tooltipComponents.add((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
+                consumer.accept((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
             }
         }else{
-            tooltipComponents.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
+            consumer.accept(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
     }
 

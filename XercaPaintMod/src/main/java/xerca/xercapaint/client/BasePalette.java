@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -178,21 +180,25 @@ public abstract class BasePalette extends Screen {
         }
     }
 
-    protected boolean superMouseClicked(double posX, double posY, int mouseButton){
-        return super.mouseClicked(posX, posY, mouseButton);
-    }
+//    protected boolean superMouseClicked(double posX, double posY, int mouseButton){
+//        return super.mouseClicked(posX, posY, mouseButton);
+//    }
+//
+//    protected boolean superMouseReleased(double posX, double posY, int mouseButton){
+//        return super.mouseReleased(posX, posY, mouseButton);
+//    }
+//
+//    protected boolean superMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY){
+//        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+//    }
 
-    protected boolean superMouseReleased(double posX, double posY, int mouseButton){
-        return super.mouseReleased(posX, posY, mouseButton);
-    }
-
-    protected boolean superMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY){
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
-    }
-
-    // Mouse button 0: left, 1: right
     @Override
-    public boolean mouseClicked(double posX, double posY, int mouseButton) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+        double posX = mouseButtonEvent.x();
+        double posY = mouseButtonEvent.y();
+        int mouseButton = mouseButtonEvent.button();
+    // Mouse button 0: left, 1: right
+    //public boolean mouseClicked(double posX, double posY, int mouseButton) {
         int mouseX = (int)Math.round(posX);
         int mouseY = (int)Math.round(posY);
 
@@ -257,7 +263,7 @@ public abstract class BasePalette extends Screen {
                 isCarryingPalette = true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseButtonEvent, bl);
     }
 
     protected boolean inColorPicker(int x, int y){
@@ -268,10 +274,7 @@ public abstract class BasePalette extends Screen {
         return sqrDist(new Vec2(x, y), waterCenter) <= customColorRadius*customColorRadius;
     }
 
-    @Override
-    public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
-    }
+
 
     protected void setCarryingWater(){
         isCarryingWater = true;
@@ -292,7 +295,11 @@ public abstract class BasePalette extends Screen {
     }
 
     @Override
-    public boolean mouseReleased(double posX, double posY, int mouseButton) {
+    public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
+        double posX = mouseButtonEvent.x();
+        double posY = mouseButtonEvent.y();
+        int mouseButton = mouseButtonEvent.button();
+    //public boolean mouseReleased(double posX, double posY, int mouseButton) {
         int mouseX = (int)Math.round(posX);
         int mouseY = (int)Math.round(posY);
         if(isCarryingColor || isCarryingWater) {
@@ -324,7 +331,7 @@ public abstract class BasePalette extends Screen {
             carriedCustomColorId = -1;
         }
         isCarryingPalette = false;
-        return super.mouseReleased(posX, posY, mouseButton);
+        return super.mouseReleased(mouseButtonEvent);
     }
 
     protected void playSound(SoundInstance sound){

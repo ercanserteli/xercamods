@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
@@ -22,6 +23,7 @@ import xerca.xercapaint.client.ModClient;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class ItemPalette extends Item {
@@ -32,7 +34,7 @@ public class ItemPalette extends Item {
     @Nonnull
     @Override
     public InteractionResult use(Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
-        if(worldIn.isClientSide) {
+        if(worldIn.isClientSide()) {
             ModClient.showCanvasGui(playerIn);
         }
         return InteractionResult.SUCCESS.withoutItem();
@@ -61,11 +63,11 @@ public class ItemPalette extends Item {
 
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag flagIn) {
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
         ComponentCustomColor customColorComp = stack.get(Items.PALETTE_CUSTOM_COLORS);
         if (basicColors == null && customColorComp == null) {
-            tooltip.add(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
+            consumer.accept(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
         }
         else  {
             if (basicColors != null && basicColors.length == 16) {
@@ -73,7 +75,7 @@ public class ItemPalette extends Item {
                 for(byte basicColor : basicColors){
                     basicCount += basicColor;
                 }
-                tooltip.add(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
+                consumer.accept(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
             }
 
             if (customColorComp != null) {
@@ -83,7 +85,7 @@ public class ItemPalette extends Item {
                         fullCount++;
                     }
                 }
-                tooltip.add(Component.translatable("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
+                consumer.accept(Component.translatable("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
             }
         }
     }

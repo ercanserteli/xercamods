@@ -47,44 +47,44 @@ public class CommandExport {
     }
 
     public static boolean doExport(Player player, String name){
-        String dir = "paintings";
-        String filename = name + ".paint";
-        String filepath = dir + "/" + filename;
-        File directory = new File(dir);
-        if (!directory.exists()){
-            directory.mkdir();
-        }
-
-        for(ItemStack s : player.getHandSlots()){
-            if(s.getItem() instanceof ItemCanvas){
-                List<Integer> pixels = s.get(Items.CANVAS_PIXELS);
-                String canvasId = s.get(Items.CANVAS_ID);
-                if(pixels != null && canvasId != null){
-                    try {
-                        int version = s.getOrDefault(Items.CANVAS_VERSION, 1);
-                        int generation = s.getOrDefault(Items.CANVAS_GENERATION, 0);
-                        String title = s.get(Items.CANVAS_TITLE);
-                        String author = s.get(Items.CANVAS_AUTHOR);
-
-                        CompoundTag tag = new CompoundTag();
-
-                        tag.putIntArray("pixels", pixels);
-                        tag.putString("name", canvasId);
-                        tag.putInt("v", version);
-                        tag.putInt("generation", generation);
-                        tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
-                        if (title != null && author != null) {
-                            tag.putString("title", title);
-                            tag.putString("author", author);
-                        }
-                        NbtIo.write(tag, Path.of(filepath));
-                        return true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+//        String dir = "paintings";
+//        String filename = name + ".paint";
+//        String filepath = dir + "/" + filename;
+//        File directory = new File(dir);
+//        if (!directory.exists()){
+//            directory.mkdir();
+//        }
+//
+//        for(ItemStack s : player.getHandSlots()){
+//            if(s.getItem() instanceof ItemCanvas){
+//                List<Integer> pixels = s.get(Items.CANVAS_PIXELS);
+//                String canvasId = s.get(Items.CANVAS_ID);
+//                if(pixels != null && canvasId != null){
+//                    try {
+//                        int version = s.getOrDefault(Items.CANVAS_VERSION, 1);
+//                        int generation = s.getOrDefault(Items.CANVAS_GENERATION, 0);
+//                        String title = s.get(Items.CANVAS_TITLE);
+//                        String author = s.get(Items.CANVAS_AUTHOR);
+//
+//                        CompoundTag tag = new CompoundTag();
+//
+//                        tag.putIntArray("pixels", pixels);
+//                        tag.putString("name", canvasId);
+//                        tag.putInt("v", version);
+//                        tag.putInt("generation", generation);
+//                        tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+//                        if (title != null && author != null) {
+//                            tag.putString("title", title);
+//                            tag.putString("author", author);
+//                        }
+//                        NbtIo.write(tag, Path.of(filepath));
+//                        return true;
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
         return false;
     }
 }
