@@ -19,9 +19,14 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.AxisAngle4d;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.entity.EntityCanvas;
@@ -35,6 +40,7 @@ import java.util.Objects;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntityCanvas.CanvasRenderState> {
+    private static final Logger log = LoggerFactory.getLogger(RenderEntityCanvas.class);
     public static RenderEntityCanvas theInstance;
     private static final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
@@ -206,8 +212,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             }
             ms.mulPose(Axis.XP.rotationDegrees(pitch));
             ms.mulPose(Axis.YP.rotationDegrees(180 - yaw));
+            //log.warn("scale is {} // facing {} {} {} // pitch {} // yaw {} // pose is {} // {}", f, facing.getStepX(), facing.getStepY(), facing.getStepZ(), pitch, yaw, ms.last(), ms.last().pose());
             ms.scale(f, f, f);
-
 
            //  = ms.last().pose();
             //PoseStack.Pose pose = ms.last();
@@ -220,6 +226,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
                 RenderUtil.setShaderTexture(0, location);
                 // Draw the front
                 Matrix4f m = localPose.pose();
+
+                log.warn("we are using matrix {} // normal is {}", localPose.pose(), localPose.normal());
                 addVertex(vb, m, localPose, 0.0F, 32.0F * hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
                 addVertex(vb, m, localPose, 32.0F * wScale, 32.0F * hScale, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
                 addVertex(vb, m, localPose, 32.0F * wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);

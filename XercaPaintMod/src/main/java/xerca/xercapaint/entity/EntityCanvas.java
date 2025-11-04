@@ -142,11 +142,11 @@ public class EntityCanvas extends HangingEntity {
     public void dropItem(ServerLevel serverLevel, @Nullable Entity brokenEntity) {
         if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
-            if (brokenEntity instanceof Player playerentity) {
-                if (playerentity.getAbilities().instabuild) {
-                    return;
-                }
-            }
+//            if (brokenEntity instanceof Player playerentity) {
+//                if (playerentity.getAbilities().instabuild) {
+//                    return;
+//                }
+//            }
             ItemStack canvasItem;
             CanvasType canvasType = getCanvasType();
             if(canvasType == CanvasType.SMALL){
