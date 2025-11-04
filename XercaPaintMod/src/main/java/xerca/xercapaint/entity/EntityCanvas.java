@@ -111,6 +111,7 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+        super.defineSynchedData(builder);
         builder.define(CANVAS_ID, "");
         builder.define(CANVAS_VERSION, 0);
         builder.define(CANVAS_TYPE_KEY, (byte)0);
@@ -198,7 +199,7 @@ public class EntityCanvas extends HangingEntity {
     @Override
     protected void setDirection(@NotNull Direction facingDirectionIn) {
         Validate.notNull(facingDirectionIn);
-        this.setDirection(facingDirectionIn);
+        this.setDirectionRaw(facingDirectionIn);
         if (facingDirectionIn.getAxis().isHorizontal()) {
             this.setXRot(0.0F);
             this.setYRot((float)(this.getDirection().get2DDataValue() * 90));
