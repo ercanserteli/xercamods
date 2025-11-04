@@ -7,11 +7,13 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -59,7 +61,11 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, RenderEntityE
     }
 
     @Override
-    public void render(EaselRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void submit(EaselRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+    //public void render(EaselRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        RenderType renderType = this.model.renderType(woodTexture);
+
+
         poseStack.pushPose();
 
         poseStack.mulPose(Axis.YP.rotationDegrees(-state.entityYaw));
@@ -69,24 +75,26 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, RenderEntityE
         poseStack.mulPose(new Quaternionf().rotationXYZ((float) Math.PI, 0, 0));
         poseStack.translate(0, -1.5, 0);
 
-        RenderType renderType = this.model.renderType(woodTexture);
-        VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
         int overlay = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
-        this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, overlay);
+        submitNodeCollector.submitModel(this.model, state, poseStack, renderType, state.lightCoords, overlay, state.outlineColor, null);
 
+        //this.model.renderToBuffer(poseStack, vertexConsumer, state.lightCoords, overlay);
         for (RenderLayer<EaselRenderState, EaselModel> layer : layers) {
-            layer.render(poseStack, buffer, packedLight, state, 0, 0);
+            layer.submit(poseStack, submitNodeCollector, state.lightCoords, state, 0, 0);
         }
-
         poseStack.popPose();
-        super.render(state, poseStack, buffer, packedLight);
+        //VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
+
+
+
+        super.submit(state, poseStack, submitNodeCollector, cameraRenderState);
     }
 
     @Override
     protected boolean shouldShowName(EntityEasel easel, double distanceSquared) {
         HitResult result = Minecraft.getInstance().hitResult;
         if (result instanceof EntityHitResult entityHitResult) {
-            if (Minecraft.renderNames() && entityHitResult.getEntity() == easel && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
+            if (Minecraft.renderNames() && entityHitResult.getEntity().getUUID().equals(easel.getUUID()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
                 float range = easel.isDiscrete() ? 32.0F : 64.0F;
                 return distanceSquared < (double) (range * range);
             }
@@ -95,10 +103,23 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, RenderEntityE
     }
 
     @Override
-    protected void renderNameTag(EaselRenderState state, Component displayName, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    protected void submitNameTag(EaselRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+    //protected void renderNameTag(EaselRenderState state, Component displayName, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+//        if (entityRenderState.nameTag != null) {
+//            submitNodeCollector.submitNameTag(
+//                    poseStack,
+//                    entityRenderState.nameTagAttachment,
+//                    0,
+//                    entityRenderState.nameTag,
+//                    !entityRenderState.isDiscrete,
+//                    entityRenderState.lightCoords,
+//                    entityRenderState.distanceToCameraSq,
+//                    cameraRenderState
+//            );
+//        }
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.renderNameTag(state, ItemCanvas.getFullLabel(state.itemStack), poseStack, buffer, packedLight);
+        submitNodeCollector.submitNameTag(poseStack, state.nameTagAttachment, 0, ItemCanvas.getFullLabel(state.itemStack), !state.isDiscrete, state.lightCoords, state.distanceToCameraSq, cameraRenderState);
         poseStack.popPose();
     }
 

@@ -5,20 +5,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import xerca.xercapaint.item.ItemCanvas;
-import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.ExportPaintingPacket;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {

@@ -1,12 +1,10 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
@@ -180,17 +178,17 @@ public abstract class BasePalette extends Screen {
         }
     }
 
-//    protected boolean superMouseClicked(double posX, double posY, int mouseButton){
-//        return super.mouseClicked(posX, posY, mouseButton);
-//    }
-//
-//    protected boolean superMouseReleased(double posX, double posY, int mouseButton){
-//        return super.mouseReleased(posX, posY, mouseButton);
-//    }
-//
-//    protected boolean superMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY){
-//        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
-//    }
+    protected boolean superMouseClicked(MouseButtonEvent mouseButton, boolean bl){
+        return super.mouseClicked(mouseButton, bl);
+    }
+
+    protected boolean superMouseReleased(MouseButtonEvent mouseButton){
+        return super.mouseReleased(mouseButton);
+    }
+
+    protected boolean superMouseDragged(MouseButtonEvent mouseButton, double d, double e){
+        return super.mouseDragged(mouseButton, d, e);
+    }
 
     @Override
     public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {

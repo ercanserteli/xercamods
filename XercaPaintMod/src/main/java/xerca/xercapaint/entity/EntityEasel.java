@@ -1,10 +1,8 @@
 package xerca.xercapaint.entity;
 
-import com.mojang.realmsclient.dto.ValueObject;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -192,7 +190,7 @@ public class EntityEasel extends Entity {
     @Override
     public void addAdditionalSaveData(@NotNull ValueOutput tag) {
         if (!this.getItem().isEmpty()) {
-            tag.store("Item", this.getItem().save(this.registryAccess()));
+            tag.storeNullable("Item", ItemStack.CODEC, this.getItem());
         }
     }
 
@@ -200,7 +198,7 @@ public class EntityEasel extends Entity {
     public void readAdditionalSaveData(ValueInput tag) {
         ValueInput itemTag = tag.childOrEmpty("Item");
         if (!itemTag.keys().isEmpty()) {
-            ItemStack itemStack = ItemStack.parseOptional(this.registryAccess(), itemTag);
+            ItemStack itemStack = tag.read("Item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
             if (itemStack.isEmpty()) {
                 Mod.LOGGER.warn("Unable to load item from: {}", itemTag);
             }

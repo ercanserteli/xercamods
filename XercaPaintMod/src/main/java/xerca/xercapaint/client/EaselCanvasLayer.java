@@ -2,13 +2,11 @@ package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.ItemCanvas;
 
 public class EaselCanvasLayer extends RenderLayer<RenderEntityEasel.EaselRenderState, EaselModel> {
@@ -53,7 +51,7 @@ public class EaselCanvasLayer extends RenderLayer<RenderEntityEasel.EaselRenderS
                 }
             }
 
-            ModClient.CANVAS_ITEM_RENDERER.renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, bufferSource, i, 0);
+            ModClient.CANVAS_ITEM_RENDERER.renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, nodeCollector, i, 0);
 
             poseStack.popPose();
         }

@@ -10,13 +10,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import xerca.xercapaint.item.ItemCanvas;
-import xerca.xercapaint.item.ItemPalette;
-import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.ImportPaintingPacket;
-
-import java.util.Arrays;
 
 public class CommandImport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {

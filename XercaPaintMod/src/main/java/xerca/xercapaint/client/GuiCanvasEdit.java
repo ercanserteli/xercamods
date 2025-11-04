@@ -2,20 +2,18 @@ package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -574,10 +572,15 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     // Mouse button 0: left, 1: right
+
     @Override
-    public boolean mouseClicked(double posX, double posY, int mouseButton) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+        double posX = mouseButtonEvent.x();
+        double posY = mouseButtonEvent.y();
+        int mouseButton = mouseButtonEvent.button();
+
         if(gettingSigned){
-            return super.superMouseClicked(posX, posY, mouseButton);
+            return super.superMouseClicked(mouseButtonEvent, bl);
         }
 
         int mouseX = (int)Math.floor(posX);
@@ -605,7 +608,7 @@ public class GuiCanvasEdit extends BasePalette {
                 clickedCanvas(mouseX, mouseY, mouseButton);
                 playBrushSound();
             }
-            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+            return super.superMouseClicked(mouseButtonEvent, bl);
         }
 
         if(inBrushMeter(mouseX, mouseY)){
@@ -613,7 +616,7 @@ public class GuiCanvasEdit extends BasePalette {
             if(selectedSize <= 3 && selectedSize >= 0){
                 brushSize = selectedSize;
             }
-            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+            return super.superMouseClicked(mouseButtonEvent, bl);
         }
         if(inBrushOpacityMeter(mouseX, mouseY)){
             int relativeY = mouseY - brushOpacityMeterY;
@@ -621,12 +624,12 @@ public class GuiCanvasEdit extends BasePalette {
             if(selectedOpacity >= 0 && selectedOpacity <= 3){
                 brushOpacitySetting = selectedOpacity;
             }
-            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+            return super.superMouseClicked(mouseButtonEvent, bl);
         }
         if(inCanvasHolder(mouseX, mouseY)){
             isCarryingCanvas = true;
         }
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseButtonEvent, bl);
     }
 
     private void clickedCanvas(int mouseX, int mouseY, int mouseButton){
@@ -641,10 +644,14 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public boolean mouseReleased(double posX, double posY, int mouseButton) {
+    public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
+        double posX = mouseButtonEvent.x();
+        double posY = mouseButtonEvent.y();
+        int mouseButton = mouseButtonEvent.button();
+
         isCarryingCanvas = false;
         if(gettingSigned){
-            return super.superMouseReleased(posX, posY, mouseButton);
+            return super.superMouseReleased(mouseButtonEvent);
         }
         draggedPoints.clear();
 
@@ -661,13 +668,17 @@ public class GuiCanvasEdit extends BasePalette {
             updateCanvas(false);
         }
 
-        return super.mouseReleased(posX, posY, mouseButton);
+        return super.mouseReleased(mouseButtonEvent);
     }
 
     @Override
-    public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+    public boolean mouseDragged(MouseButtonEvent mouseButtonEvent, double deltaX, double deltaY) {
+        double posX = mouseButtonEvent.x();
+        double posY = mouseButtonEvent.y();
+        int mouseButton = mouseButtonEvent.button();
+
         if(gettingSigned){
-            return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return super.superMouseDragged(mouseButtonEvent, deltaX, deltaY);
         }
         if(!isCarryingColor && !isCarryingWater && !isPickingColor && !isCarryingPalette && !isCarryingCanvas){
             int mouseX = (int)Math.floor(posX);
@@ -682,14 +693,14 @@ public class GuiCanvasEdit extends BasePalette {
         }
         else if(isCarryingCanvas){
             updateCanvasPos(deltaX, deltaY);
-            return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return super.superMouseDragged(mouseButtonEvent, deltaX, deltaY);
         }
         else if(isCarryingPalette){
-            boolean ret = super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            boolean ret = super.mouseDragged(mouseButtonEvent, deltaX, deltaY);
             updatePalettePos(deltaX, deltaY);
             return ret;
         }
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        return super.mouseDragged(mouseButtonEvent, deltaX, deltaY);
     }
 
     private void updateCanvasPos(double deltaX, double deltaY){

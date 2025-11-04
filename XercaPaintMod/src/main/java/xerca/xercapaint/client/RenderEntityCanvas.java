@@ -2,7 +2,6 @@ package xerca.xercapaint.client;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -74,7 +73,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
         EntityCanvas canvas = state.canvas;
         float yaw = canvas.getYRot();
         float pitch = canvas.getXRot();
-        state.instance.render(canvas, yaw, pitch, ms, buffer, canvas.getDirection(), packedLight);
+        state.instance.render(canvas, yaw, pitch, ms, submitNodeCollector, canvas.getDirection(), state.lightCoords);
     }
 
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
@@ -165,15 +164,15 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             this.started = true;
         }
 
-        public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, PoseStack ms, MultiBufferSource buffer, Direction facing, int packedLight) {
+        public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, PoseStack ms, SubmitNodeCollector submitNodeCollector, Direction facing, int packedLight) {
             final float wScale = width / 16.0f;
             final float hScale = height / 16.0f;
 
             ms.pushPose();
 
-            float xOffset = facing.getStepX();
-            float yOffset = facing.getStepY();
-            float zOffset = facing.getStepZ();
+            float txOffset = facing.getStepX();
+            float tyOffset = facing.getStepY();
+            float tzOffset = facing.getStepZ();
 
             boolean canvasIsNull = canvas == null;
             if (!canvasIsNull) {
@@ -190,13 +189,13 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             float f = 1.0f / 32.0f;
             if (!canvasIsNull) {
                 if (facing.getAxis().isHorizontal()) {
-                    ms.translate(zOffset * 0.5d * wScale, -0.5d * hScale, -xOffset * 0.5d * wScale);
+                    ms.translate(tzOffset * 0.5d * wScale, -0.5d * hScale, -txOffset * 0.5d * wScale);
                 } else {
-                    ms.translate(0.5 * wScale, 0 * hScale, (yOffset > 0 ? 0.5 : -0.5) * wScale);
+                    ms.translate(0.5 * wScale, 0 * hScale, (tyOffset > 0 ? 0.5 : -0.5) * wScale);
                 }
-                xOffset = 0;
-                yOffset = 0;
-                zOffset = -1;
+                txOffset = 0;
+                tyOffset = 0;
+                tzOffset = -1;
             } else {
                 ms.translate(0.75, 0.5, 0.5);
                 if (wScale > 1 || hScale > 1) {
@@ -212,45 +211,54 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             RenderUtil.setShaderTexture(0, location);
             Matrix4f m = ms.last().pose();
             PoseStack.Pose pose = ms.last();
-            VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(location));
 
-            // Draw the front
-            addVertex(vb, m, pose, 0.0F, 32.0F * hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0F * wScale, 32.0F * hScale, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0F * wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+            float xOffset = txOffset;
+            float yOffset = tyOffset;
+            float zOffset = tzOffset;
 
-            vb = buffer.getBuffer(RenderType.entitySolid(backLocation));
-            // Draw the back and sides
-            final float sideWidth = 1.0F / 16.0F;
-            RenderUtil.setShaderTexture(0, backLocation);
-            addVertex(vb, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 0.0D, 32.0D * hScale, 1.0D, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+            submitNodeCollector.submitCustomGeometry(ms, RenderType.entitySolid(location), (p, vb) -> {
+                // Draw the front
+                addVertex(vb, m, pose, 0.0F, 32.0F * hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                addVertex(vb, m, pose, 32.0F * wScale, 32.0F * hScale, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                addVertex(vb, m, pose, 32.0F * wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                addVertex(vb, m, pose, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                submitNodeCollector.submitCustomGeometry(ms, RenderType.entitySolid(backLocation), (p2, vb2) -> {
+                    // Draw the back and sides
+                    final float sideWidth = 1.0F / 16.0F;
+                    RenderUtil.setShaderTexture(0, backLocation);
+                    addVertex(vb2, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 0.0D, 32.0D * hScale, 1.0D, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
 
-            // Sides
-            addVertex(vb, m, pose, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 0.0D, 32.0D * hScale, 1.0D, sideWidth, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 0.0D, 32.0D * hScale, -1.0D, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                    // Sides
+                    addVertex(vb2, m, pose, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 0.0D, 32.0D * hScale, 1.0D, sideWidth, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 0.0D, 32.0D * hScale, -1.0D, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
 
-            addVertex(vb, m, pose, 0.0D, 32.0D * hScale, 1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 32.0D * hScale, 1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 32.0D * hScale, -1.0F, 1.0F, sideWidth, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 0.0D, 32.0D * hScale, -1.0F, 0.0F, sideWidth, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 0.0D, 32.0D * hScale, 1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 32.0D * hScale, 1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 32.0D * hScale, -1.0F, 1.0F, sideWidth, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 0.0D, 32.0D * hScale, -1.0F, 0.0F, sideWidth, packedLight, xOffset, yOffset, zOffset);
 
-            addVertex(vb, m, pose, 32.0D * wScale, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 32.0D * hScale, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 32.0D * hScale, 1.0F, sideWidth, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 32.0D * hScale, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 32.0D * hScale, 1.0F, sideWidth, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, xOffset, yOffset, zOffset);
 
-            addVertex(vb, m, pose, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 32.0D * wScale, 0.0D, 1.0F, 1.0F, 1.0F - sideWidth, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 32.0D * wScale, 0.0D, 1.0F, 1.0F, 1.0F - sideWidth, packedLight, xOffset, yOffset, zOffset);
+                    addVertex(vb2, m, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, xOffset, yOffset, zOffset);
+
+                });
+            });
+
 
             ms.popPose();
+
+
         }
 
         private void addVertex(VertexConsumer vb, Matrix4f m, PoseStack.Pose pose, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff) {

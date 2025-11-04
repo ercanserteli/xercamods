@@ -4,9 +4,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.PrimitiveCodec;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +20,6 @@ import xerca.xercapaint.client.ModClient;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
