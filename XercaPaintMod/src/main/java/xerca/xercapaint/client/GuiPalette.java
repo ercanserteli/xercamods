@@ -2,6 +2,7 @@ package xerca.xercapaint.client;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -35,10 +36,10 @@ public class GuiPalette extends BasePalette {
 
     private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY){
         if(isCarryingColor){
-            guiGraphics.blit(RenderType::guiTextured, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize, 256, 256, carriedColor.rgbVal());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize, 256, 256, carriedColor.rgbVal());
 
         }else if(isCarryingWater){
-            guiGraphics.blit(RenderType::guiTextured, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize, 256, 256, waterColor.rgbVal());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize, 256, 256, waterColor.rgbVal());
         }
     }
 

@@ -26,6 +26,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -91,7 +93,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     private void clientPictureInit(Level level) {
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
             return;
         }
 
@@ -180,7 +182,7 @@ public class EntityCanvas extends HangingEntity {
         this.xo = this.getX();
         this.yo = this.getY();
         this.zo = this.getZ();
-        if (this.tickCounter1++ == 50 && !this.level().isClientSide) {
+        if (this.tickCounter1++ == 50 && !this.level().isClientSide()) {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.survives()) {
                 this.remove(RemovalReason.DISCARDED);
@@ -197,10 +199,10 @@ public class EntityCanvas extends HangingEntity {
     @Override
     protected void setDirection(@NotNull Direction facingDirectionIn) {
         Validate.notNull(facingDirectionIn);
-        this.direction = facingDirectionIn;
+        this.setDirection(facingDirectionIn);
         if (facingDirectionIn.getAxis().isHorizontal()) {
             this.setXRot(0.0F);
-            this.setYRot((float)(this.direction.get2DDataValue() * 90));
+            this.setYRot((float)(this.getDirection().get2DDataValue() * 90));
         } else {
             this.setXRot((float)(-90 * facingDirectionIn.getAxisDirection().getStep()));
             this.setYRot(0.0F);
@@ -214,16 +216,17 @@ public class EntityCanvas extends HangingEntity {
     private double offs(int l) {
         return l % 32 == 0 ? 0.5D : 0.0D;
     }
-
-    @Override
-    public void moveTo(double x, double y, double z, float yRot, float xRot) {
-        this.setPos(x, y, z);
-    }
-
-    @Override
-    public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
-        this.setPos(x, y, z);
-    }
+//
+//
+//    @Override
+//    public void moveTo(double x, double y, double z, float yRot, float xRot) {
+//        this.setPos(x, y, z);
+//    }
+//
+//    @Override
+//    public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+//        this.setPos(x, y, z);
+//    }
 
     @Override
     protected @NotNull AABB calculateBoundingBox(@NotNull BlockPos pos, @NotNull Direction direction) {
@@ -258,15 +261,15 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     public boolean survives() {
-        if(direction.getAxis().isHorizontal()){
+        if(this.getDirection().getAxis().isHorizontal()){
             return super.survives();
         }
         if (!this.level().noCollision(this)) {
             return false;
         } else {
-            BlockState blockstate = this.level().getBlockState(this.pos.relative(this.direction.getOpposite()));
+            BlockState blockstate = this.level().getBlockState(this.pos.relative(this.getDirection().getOpposite()));
             return (blockstate.isSolid() ||
-                    this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(blockstate)) && this.level().getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
+                    this.getDirection().getAxis().isHorizontal() && DiodeBlock.isDiode(blockstate)) && this.level().getEntities(this, this.getBoundingBox(), (e) -> e instanceof HangingEntity).isEmpty();
         }
     }
 
@@ -308,7 +311,7 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity entity) {
-        return new ClientboundAddEntityPacket(this, this.direction.get3DDataValue(), this.getPos());
+        return new ClientboundAddEntityPacket(this, this.getDirection().get3DDataValue(), this.getPos());
     }
 
     @Override
@@ -318,30 +321,34 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tagCompound) {
-        this.pos = new BlockPos(tagCompound.getInt("TileX"), tagCompound.getInt("TileY"), tagCompound.getInt("TileZ"));
-        CompoundTag canvasNBT = tagCompound;
+    protected void readAdditionalSaveData(ValueInput tagCompound) {
+        this.pos = new BlockPos(
+                tagCompound.getInt("TileX").orElse(0),
+                tagCompound.getInt("TileY").orElse(0),
+                tagCompound.getInt("TileZ").orElse(0)
+        );
+        ValueInput canvasNBT = tagCompound;
         if(tagCompound.contains("canvas")){
-            canvasNBT = tagCompound.getCompound("canvas");
+            canvasNBT = tagCompound.childOrEmpty("canvas");
         }
         this.canvasSigned = canvasNBT.contains("author") && canvasNBT.contains("title");
-        String canvasId = canvasNBT.getString("name");
+        String canvasId = canvasNBT.getString("name").orElse(null);
         this.setCanvasID(canvasId);
-        int version = canvasNBT.getInt("v");
+        int version = canvasNBT.getInt("v").orElse(0);
         this.setVersion(version);
         if(canvasSigned)
         {
-            this.canvasAuthor = canvasNBT.getString("author");
-            this.canvasTitle = canvasNBT.getString("title");
-            this.canvasGeneration = canvasNBT.getInt("generation");
+            this.canvasAuthor = canvasNBT.getString("author").orElse(null);
+            this.canvasTitle = canvasNBT.getString("title").orElse(null);
+            this.canvasGeneration = canvasNBT.getInt("generation").orElse(0);
         }
 
         Picture picture = PICTURES.get(canvasId);
         if(picture == null || picture.version < version){
-            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels")));
+            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels").orElse(null)));
         }
 
-        CanvasType canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
+        CanvasType canvasType = CanvasType.fromByte(tagCompound.getByteOr("ctype", (byte) 0));
         if (canvasType == null) {
             Mod.LOGGER.error("EntityCanvas invalid ctype in readAdditionalSaveData");
             this.kill((ServerLevel) this.level());
@@ -349,18 +356,19 @@ public class EntityCanvas extends HangingEntity {
         }
         this.setCanvasType(canvasType);
         if(tagCompound.contains("Facing") && !tagCompound.contains("RealFace")){
-            int facing = tagCompound.getByte("Facing");
+            int facing = tagCompound.getByteOr("Facing", (byte)0);
             Direction horizontal = Direction.from2DDataValue(facing);
             this.setDirection(horizontal);
         }
         else{
-            this.setDirection(Direction.from3DDataValue(tagCompound.getByte("RealFace")));
+            this.setDirection(Direction.from3DDataValue(tagCompound.getByteOr("RealFace", (byte)0)));
         }
-        this.setRotation(tagCompound.getByte("Rotation"));
+        this.setRotation(tagCompound.getByteOr("Rotation", (byte)0));
     }
 
+
     @Override
-    public void addAdditionalSaveData(CompoundTag tagCompound) {
+    public void addAdditionalSaveData(ValueOutput tagCompound) {
         BlockPos blockpos = this.getPos();
         tagCompound.putInt("TileX", blockpos.getX());
         tagCompound.putInt("TileY", blockpos.getY());
@@ -373,7 +381,7 @@ public class EntityCanvas extends HangingEntity {
             tagCompound.putInt("generation", canvasGeneration);
         }
         tagCompound.putByte("ctype", getCanvasTypeKey());
-        tagCompound.putByte("RealFace", (byte)this.direction.get3DDataValue());
+        tagCompound.putByte("RealFace", (byte)this.getDirection().get3DDataValue());
         tagCompound.putByte("Rotation", (byte)this.getRotation());
 
         Picture picture = PICTURES.get(getCanvasID());
@@ -385,7 +393,7 @@ public class EntityCanvas extends HangingEntity {
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
         CanvasType canvasType = this.getCanvasType();
         if(canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE){
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 setRotation(getRotation() + 1);
             }
             return InteractionResult.SUCCESS;

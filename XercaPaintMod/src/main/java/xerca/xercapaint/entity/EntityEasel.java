@@ -1,5 +1,6 @@
 package xerca.xercapaint.entity;
 
+import com.mojang.realmsclient.dto.ValueObject;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -23,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
@@ -64,7 +67,7 @@ public class EntityEasel extends Entity {
 
     @Override
     public boolean hurtServer(@NotNull ServerLevel level, @NotNull DamageSource damageSource, float amount) {
-        if (!this.level().isClientSide && !this.isRemoved()) {
+        if (!this.level().isClientSide() && !this.isRemoved()) {
             if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
                 this.dropItem(damageSource.getEntity(), false);
             }
@@ -99,7 +102,7 @@ public class EntityEasel extends Entity {
 
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if(painter != null){
-            if(!this.level().isClientSide){
+            if(!this.level().isClientSide()){
                 if(dropDeferred == null){
                     CloseGuiPacket pack = new CloseGuiPacket();
                     ServerPlayNetworking.send((ServerPlayer) painter, pack);
@@ -187,16 +190,16 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull ValueOutput tag) {
         if (!this.getItem().isEmpty()) {
-            tag.put("Item", this.getItem().save(this.registryAccess()));
+            tag.store("Item", this.getItem().save(this.registryAccess()));
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        CompoundTag itemTag = tag.getCompound("Item");
-        if (!itemTag.isEmpty()) {
+    public void readAdditionalSaveData(ValueInput tag) {
+        ValueInput itemTag = tag.childOrEmpty("Item");
+        if (!itemTag.keys().isEmpty()) {
             ItemStack itemStack = ItemStack.parseOptional(this.registryAccess(), itemTag);
             if (itemStack.isEmpty()) {
                 Mod.LOGGER.warn("Unable to load item from: {}", itemTag);
@@ -211,7 +214,7 @@ public class EntityEasel extends Entity {
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;
         boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
-        if(this.level().isClientSide){
+        if(this.level().isClientSide()){
             return !isEaselFilled && !handHoldsCanvas ? InteractionResult.PASS : InteractionResult.SUCCESS;
         }
         else {
@@ -250,7 +253,7 @@ public class EntityEasel extends Entity {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(dropDeferred != null){
                 dropWaitTicks ++;
                 if(painter == null || dropWaitTicks > 80){

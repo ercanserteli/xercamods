@@ -1,6 +1,5 @@
 package xerca.xercapaint;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
@@ -46,7 +45,7 @@ public class PaletteUtil {
             int averageMaximum = (int)(Math.max(Math.max(a.r, a.g), a.b)*ratio) + (int)(Math.max(Math.max(b.r, b.g), b.b)*(1-ratio));
 
             int maximumOfAverage = Math.max(Math.max(res.r, res.g), res.b);
-            int gainFactor = averageMaximum / maximumOfAverage;
+            int gainFactor = maximumOfAverage == 0 ? 0 : averageMaximum / maximumOfAverage;
 
             res.r *= gainFactor;
             res.g *= gainFactor;

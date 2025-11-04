@@ -157,7 +157,7 @@ public abstract class BasePalette extends Screen {
             if (basicColorFlags[i]) {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, basicColors[i].rgbVal());
 
-                guiGraphics.blit(RenderType::guiTextured, paletteTextures, x - 8, y - 8, dyeSpriteX, i * dyeSpriteSize, dyeSpriteSize, dyeSpriteSize, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, paletteTextures, x - 8, y - 8, dyeSpriteX, i * dyeSpriteSize, dyeSpriteSize, dyeSpriteSize, 256, 256);
             } else {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, emptinessColor.rgbVal());
             }
@@ -170,11 +170,11 @@ public abstract class BasePalette extends Screen {
             guiGraphics.fill(x - 6, y - 7, x + 7, y + 6, customColors[i].getColor().rgbVal());
         }
 
-        guiGraphics.blit(RenderType::guiTextured, paletteTextures, (int) paletteX, (int) paletteY, 0, 0, paletteWidth, paletteHeight, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, paletteTextures, (int) paletteX, (int) paletteY, 0, 0, paletteWidth, paletteHeight, 256, 256);
 
         // Draw color picker
         if (paletteComplete) {
-            guiGraphics.blit(RenderType::guiTextured, paletteTextures, (int) paletteX + colorPickerPosX, (int) paletteY + colorPickerPosY, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, paletteTextures, (int) paletteX + colorPickerPosX, (int) paletteY + colorPickerPosY, colorPickerSpriteX, colorPickerSpriteY, colorPickerSize, colorPickerSize, 256, 256);
         }
     }
 
