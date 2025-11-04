@@ -9,9 +9,11 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -65,8 +67,10 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
         super.extractRenderState(entity, state, partialTick);
     }
 
+
+
     @Override
-    public void render(CanvasRenderState state, PoseStack ms, MultiBufferSource buffer, int packedLight) {
+    public void submit(CanvasRenderState state, PoseStack ms, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
         EntityCanvas canvas = state.canvas;
         float yaw = canvas.getYRot();
         float pitch = canvas.getXRot();
@@ -127,8 +131,9 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             this.loaded = false;
             this.width = width;
             this.height = height;
-            this.canvasTexture = new DynamicTexture(width, height, true);
-            this.location = RenderEntityCanvas.this.textureManager.register("canvas/" + canvasId, this.canvasTexture);
+            this.canvasTexture = new DynamicTexture("canvas/" + canvasId, width, height, true);
+            this.location = Mod.id("canvas/" + canvasId);
+            RenderEntityCanvas.this.textureManager.register(this.location, this.canvasTexture);
 
             updateCanvasTexture(canvasId, version);
         }
@@ -204,7 +209,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             ms.mulPose(Axis.YP.rotationDegrees(180 - yaw));
             ms.scale(f, f, f);
 
-            RenderSystem.setShaderTexture(0, location);
+            RenderUtil.setShaderTexture(0, location);
             Matrix4f m = ms.last().pose();
             PoseStack.Pose pose = ms.last();
             VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(location));
@@ -218,7 +223,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             vb = buffer.getBuffer(RenderType.entitySolid(backLocation));
             // Draw the back and sides
             final float sideWidth = 1.0F / 16.0F;
-            RenderSystem.setShaderTexture(0, backLocation);
+            RenderUtil.setShaderTexture(0, backLocation);
             addVertex(vb, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, pose, 32.0D * wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, pose, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);

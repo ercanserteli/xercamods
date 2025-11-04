@@ -147,7 +147,7 @@ public abstract class BasePalette extends Screen {
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        RenderSystem.setShaderTexture(0, paletteTextures);
+        RenderUtil.setShaderTexture(0, paletteTextures);
 
         // Draw basic colors
         for (int i = 0; i < basicColorFlags.length; i++) {

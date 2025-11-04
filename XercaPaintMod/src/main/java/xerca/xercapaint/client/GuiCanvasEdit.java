@@ -1,13 +1,21 @@
 package xerca.xercapaint.client;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -143,7 +151,7 @@ public class GuiCanvasEdit extends BasePalette {
         Window window = minecraft.getWindow();
 
         // Hide mouse cursor
-        GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        GLFW.glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         int x = window.getGuiScaledWidth() - 120;
         int y = window.getGuiScaledHeight() - 30;
@@ -153,7 +161,7 @@ public class GuiCanvasEdit extends BasePalette {
                 resetPositions();
                 updateButtons();
 
-                GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                GLFW.glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }).bounds(x, y, 98, 20).build());
         this.buttonFinalize = this.addRenderableWidget(Button.builder( Component.translatable("canvas.finalizeButton"), button -> {
@@ -171,7 +179,7 @@ public class GuiCanvasEdit extends BasePalette {
                 gettingSigned = false;
                 updateButtons();
 
-                GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                GLFW.glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
         }).bounds((int)canvasX - 100, 130, 98, 20).build());
 
@@ -303,6 +311,17 @@ public class GuiCanvasEdit extends BasePalette {
         super.tick();
     }
 
+    private void renderTooltip(GuiGraphics guiGraphics, Font font, List<Component> components, int x, int y) {
+        guiGraphics.renderTooltip(
+                font,
+                components.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList(),
+                x,
+                y,
+                DefaultTooltipPositioner.INSTANCE,
+                null
+        );
+    }
+
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         if(!gettingSigned) {
@@ -344,7 +363,7 @@ public class GuiCanvasEdit extends BasePalette {
                 if(inBrushMeter(mouseX, mouseY)){
                     int selectedSize = 3 - (mouseY - brushMeterY)/brushSpriteSize;
                     if(selectedSize <= 3 && selectedSize >= 0){
-                        guiGraphics.renderTooltip(font, Component.literal("Brush size (" + (selectedSize+1) + ")"), mouseX, mouseY);
+                        this.renderTooltip(guiGraphics, font, List.of(Component.literal("Brush size (" + (selectedSize+1) + ")")), mouseX, mouseY);
                     }
                 }
                 else if(inBrushOpacityMeter(mouseX, mouseY)){
@@ -352,18 +371,18 @@ public class GuiCanvasEdit extends BasePalette {
                     int selectedOpacity = relativeY/(brushOpacitySpriteSize+1);
                     if(selectedOpacity >= 0 && selectedOpacity <= 3){
                         int percentage = 100 - 25*selectedOpacity;
-                        guiGraphics.renderTooltip(font, Component.literal("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
+                        this.renderTooltip(guiGraphics, font, List.of(Component.literal("Brush opacity (" + percentage + "%)")), mouseX, mouseY);
                     }
                 }
                 else if(inColorPicker(mouseX-(int)paletteX, mouseY-(int)paletteY)){
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Color picker"),
+                    this.renderTooltip(guiGraphics, font, Arrays.asList(Component.literal("Color picker"),
                             Component.literal("Select the tool, then pick up a color from the canvas and drag-and-drop it to a custom color slot.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }
                 else if(inWater(mouseX-(int)paletteX, mouseY-(int)paletteY)){
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Color remover"),
+                    this.renderTooltip(guiGraphics, font, Arrays.asList(Component.literal("Color remover"),
                             Component.literal("Pick up some water and drag-and-drop it to a custom color slot to clear it.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }else if(inCanvasHolder(mouseX, mouseY)){
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Canvas holder"),
+                    this.renderTooltip(guiGraphics, font, Arrays.asList(Component.literal("Canvas holder"),
                             Component.literal("Pick up the canvas and move it wherever you want. You can move the palette in the same way.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 }
             }
@@ -464,7 +483,10 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers){
+    public boolean keyPressed(KeyEvent keyEvent) {
+        int keyCode = keyEvent.key();
+        int modifiers = keyEvent.modifiers();
+        //public boolean keyPressed(int keyCode, int scanCode, int modifiers){
         if (this.gettingSigned) {
             switch (keyCode) {
                 case GLFW.GLFW_KEY_BACKSPACE -> {
@@ -504,7 +526,7 @@ public class GuiCanvasEdit extends BasePalette {
                         brushOpacitySetting = 0;
                     }
                 }
-                return super.keyPressed(keyCode, scanCode, modifiers);
+                return super.keyPressed(keyEvent);
             }
         }
     }
@@ -514,9 +536,9 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public boolean charTyped(char typedChar, int something) {
-        super.charTyped(typedChar, something);
-
+    public boolean charTyped(CharacterEvent characterEvent) {
+        super.charTyped(characterEvent);
+        char typedChar = characterEvent.codepointAsString().charAt(0);
         if (!this.isSigned) {
             if (this.gettingSigned) {
                 if (this.canvasTitle.length() < 16 && isAllowedChatCharacter(typedChar)) {
@@ -771,7 +793,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         @Override
         public void renderWidget(@NotNull GuiGraphics guiGraphics, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
-            RenderSystem.setShaderTexture(0, this.resourceLocation);
+            //RenderSystem.setShaderTexture(0, this.resourceLocation);
             GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
             if (this.isHovered) {
