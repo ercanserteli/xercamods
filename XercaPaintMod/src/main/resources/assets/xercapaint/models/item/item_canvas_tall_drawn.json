@@ -1,8 +1,7 @@
 
 {
-  "parent": "builtin/entity",
     "textures": {
-        "layer0": "xercapaint:item/item_canvas_tall_drawn"
+        "particle": "xercapaint:item/item_canvas_tall_drawn"
     },
     "display": {
       "gui": {

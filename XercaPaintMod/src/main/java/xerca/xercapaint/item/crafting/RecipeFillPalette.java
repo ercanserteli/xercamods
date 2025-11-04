@@ -3,9 +3,11 @@ package xerca.xercapaint.item.crafting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -19,6 +21,7 @@ import xerca.xercapaint.item.Items;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -106,6 +109,8 @@ public class RecipeFillPalette extends CustomRecipe {
 
         ItemStack result = new ItemStack(Items.ITEM_PALETTE);
         result.set(Items.PALETTE_BASIC_COLORS, basicColors);
+        float colorCount = ItemPalette.basicColorCount(result);
+        result.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(colorCount), List.of(), List.of(),List.of()));
         return result;
     }
 

@@ -1,9 +1,11 @@
 package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
@@ -11,6 +13,7 @@ import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<CanvasUpdatePacket> {
 
@@ -57,6 +60,7 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
 
         if (!canvas.isEmpty() && canvas.getItem() instanceof ItemCanvas) {
             canvas.set(Items.CANVAS_PIXELS, Arrays.stream(msg.pixels()).boxed().toList());
+            canvas.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of("drawn"), List.of()));
             canvas.set(Items.CANVAS_ID, msg.canvasId());
             canvas.set(Items.CANVAS_VERSION, msg.version());
             canvas.set(Items.CANVAS_GENERATION, 0);

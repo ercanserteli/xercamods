@@ -1,0 +1,23 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "index": 0,
+    "cases": [
+      {
+        "when": "drawn",
+        "model": {
+          "type": "minecraft:special",
+          "base": "xercapaint:item/item_canvas_long_drawn",
+          "model": {
+            "type": "xercapaint:canvas_drawn"
+          }
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "xercapaint:item/item_canvas_long"
+    }
+  }
+}
