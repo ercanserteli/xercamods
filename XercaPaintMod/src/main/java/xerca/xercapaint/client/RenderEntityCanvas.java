@@ -40,7 +40,6 @@ import java.util.Objects;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntityCanvas.CanvasRenderState> {
-    private static final Logger log = LoggerFactory.getLogger(RenderEntityCanvas.class);
     public static RenderEntityCanvas theInstance;
     private static final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
@@ -227,7 +226,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
                 // Draw the front
                 Matrix4f m = localPose.pose();
 
-                log.warn("we are using matrix {} // normal is {}", localPose.pose(), localPose.normal());
                 addVertex(vb, m, localPose, 0.0F, 32.0F * hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
                 addVertex(vb, m, localPose, 32.0F * wScale, 32.0F * hScale, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
                 addVertex(vb, m, localPose, 32.0F * wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
