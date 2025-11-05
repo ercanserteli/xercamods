@@ -7,17 +7,17 @@ import java.util.Map;
 import java.util.UUID;
 
 public class NotesPartAckFromServerPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<NotesPartAckFromServerPacket> {
-    static private final Map<UUID, Runnable> map = new HashMap<>();
+    private static final Map<UUID, Runnable> MAP = new HashMap<>();
 
-    static public void addCallback(UUID id, Runnable func) {
-        map.put(id, func);
+    public static void addCallback(UUID id, Runnable func) {
+        MAP.put(id, func);
     }
 
     private static void processMessage(NotesPartAckFromServerPacket msg) {
         UUID id = msg.id();
-        if (map.containsKey(id)) {
-            map.get(id).run();
-            map.remove(id);
+        if (MAP.containsKey(id)) {
+            MAP.get(id).run();
+            MAP.remove(id);
         }
     }
 

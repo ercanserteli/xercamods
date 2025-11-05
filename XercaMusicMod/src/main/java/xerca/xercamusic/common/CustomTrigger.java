@@ -16,7 +16,7 @@ public class CustomTrigger extends SimpleCriterionTrigger<CustomTrigger.TriggerI
     }
 
     public void trigger(ServerPlayer player) {
-        super.trigger(player, (p) -> true);
+        super.trigger(player, p -> true);
     }
 
     @Override

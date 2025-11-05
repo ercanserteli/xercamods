@@ -1,6 +1,8 @@
 plugins {
     id 'fabric-loom' version '1.6-SNAPSHOT'
     id 'maven-publish'
+    id("com.github.spotbugs") version "6.4.4"
+    id("net.ltgt.errorprone") version "4.3.0"
 }
 
 version = project.mod_version
@@ -42,6 +44,9 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
+    // Error Prone
+    errorprone("com.google.errorprone:error_prone_core:2.43.0")
+
     // Uncomment the following line to enable the deprecated Fabric API modules.
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
@@ -67,6 +72,14 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         it.options.release = targetJavaVersion
     }
+    options.errorprone {
+        disableWarningsInGeneratedCode.set(true)
+    }
+}
+
+spotbugs {
+    ignoreFailures = true
+    effort = com.github.spotbugs.snom.Effort.MAX
 }
 
 java {

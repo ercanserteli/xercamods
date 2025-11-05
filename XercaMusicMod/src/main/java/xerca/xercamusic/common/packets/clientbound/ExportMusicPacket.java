@@ -12,18 +12,12 @@ public record ExportMusicPacket(String name) implements CustomPacketPayload {
     public static final StreamCodec<FriendlyByteBuf, ExportMusicPacket> PACKET_CODEC = StreamCodec.ofMember(ExportMusicPacket::encode, ExportMusicPacket::decode);
 
     public static ExportMusicPacket decode(FriendlyByteBuf buf) {
-        try {
-            String name = buf.readUtf(64);
-            return new ExportMusicPacket(name);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ExportMusicPacket: " + ioe);
-            return null;
-        }
+        String name = buf.readUtf(64);
+        return new ExportMusicPacket(name);
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeUtf(name);
-        return buf;
     }
 
     @Override

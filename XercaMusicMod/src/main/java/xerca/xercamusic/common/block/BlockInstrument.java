@@ -23,7 +23,7 @@ import java.util.List;
 import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 
 public abstract class BlockInstrument extends Block {
-    public BlockInstrument(Properties properties) {
+    protected BlockInstrument(Properties properties) {
         super(properties);
     }
 

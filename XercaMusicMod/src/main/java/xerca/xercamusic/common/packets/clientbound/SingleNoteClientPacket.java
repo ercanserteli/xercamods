@@ -17,6 +17,7 @@ public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, i
                                      float volume) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SingleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("single_note_client"));
     public static final StreamCodec<FriendlyByteBuf, SingleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(SingleNoteClientPacket::encode, SingleNoteClientPacket::decode);
+
     public SingleNoteClientPacket(int note, IItemInstrument instrumentItem, Player playerEntity, boolean isStop, float volume) {
         this(note, instrumentItem, playerEntity.getId(), isStop, volume);
     }
@@ -28,12 +29,12 @@ public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, i
         boolean isStop = buf.readBoolean();
         float volume = buf.readFloat();
 
-        if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
+        if (instrumentId < 0 || instrumentId >= Items.INSTRUMENTS.size()) {
             Mod.LOGGER.warn("Invalid instrumentId: {}", instrumentId);
             instrumentId = 0;
         }
 
-        IItemInstrument instrumentItem = Items.instruments[instrumentId];
+        IItemInstrument instrumentItem = Items.INSTRUMENTS.get(instrumentId);
         return new SingleNoteClientPacket(note, instrumentItem, playerId, isStop, volume);
     }
 
@@ -53,7 +54,7 @@ public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, i
         return playerEntity;
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         int instrumentId = instrumentItem.getInstrumentId();
 
         buf.writeInt(note);
@@ -61,7 +62,6 @@ public record SingleNoteClientPacket(int note, IItemInstrument instrumentItem, i
         buf.writeInt(playerId);
         buf.writeBoolean(isStop);
         buf.writeFloat(volume);
-        return buf;
     }
 
     @Override

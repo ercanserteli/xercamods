@@ -39,7 +39,7 @@ public class ItemConfetti extends Item {
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
-    static public void playSound(Level world, @Nullable Player player, double x, double y, double z) {
+    public static void playSound(Level world, @Nullable Player player, double x, double y, double z) {
         world.playSound(player, x, y, z, Mod.SOUND_CONFETTI, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.8F);
     }
 }

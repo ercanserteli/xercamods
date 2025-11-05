@@ -11,6 +11,7 @@ import xerca.xercamusic.common.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("unused")
 public class BlockTags implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
@@ -19,7 +20,7 @@ public class BlockTags implements DataGeneratorEntrypoint {
     }
 
     private static class BlockTagGenerator extends FabricTagProvider<Block> {
-        public BlockTagGenerator(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> future) {
+        BlockTagGenerator(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> future) {
             super(dataOutput, Registries.BLOCK, future);
         }
 

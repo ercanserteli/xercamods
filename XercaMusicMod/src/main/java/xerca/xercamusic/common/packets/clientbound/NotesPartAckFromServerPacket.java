@@ -13,18 +13,12 @@ public record NotesPartAckFromServerPacket(UUID id) implements CustomPacketPaylo
     public static final StreamCodec<FriendlyByteBuf, NotesPartAckFromServerPacket> PACKET_CODEC = StreamCodec.ofMember(NotesPartAckFromServerPacket::encode, NotesPartAckFromServerPacket::decode);
 
     public static NotesPartAckFromServerPacket decode(FriendlyByteBuf buf) {
-        try {
-            UUID id = buf.readUUID();
-            return new NotesPartAckFromServerPacket(id);
-        } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading NotesPartAckFromServerPacket:", ioe);
-            return null;
-        }
+        UUID id = buf.readUUID();
+        return new NotesPartAckFromServerPacket(id);
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeUUID(id);
-        return buf;
     }
 
     @Override

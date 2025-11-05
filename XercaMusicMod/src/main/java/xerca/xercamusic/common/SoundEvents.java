@@ -9,6 +9,7 @@ import xerca.xercamusic.common.item.IItemInstrument.Pair;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SoundEvents {
     public static SoundEvent TICK = null;
@@ -38,6 +39,27 @@ public class SoundEvents {
     public static ArrayList<Pair<Integer, SoundEvent>> french_horns;
     public static ArrayList<Pair<Integer, SoundEvent>> bass_guitars;
 
+    private static final String NAME_GUITAR = "guitar";
+    private static final String NAME_DRUM_KIT = "drum_kit";
+    private static final String NAME_LYRE = "lyre";
+    private static final String NAME_BANJO = "banjo";
+    private static final String NAME_DRUM = "drum";
+    private static final String NAME_CYMBAL = "cymbal";
+    private static final String NAME_XYLOPHONE = "xylophone";
+    private static final String NAME_SANSULA = "sansula";
+    private static final String NAME_TUBULAR_BELL = "tubular_bell";
+    private static final String NAME_CELLO = "cello";
+    private static final String NAME_VOICE_OF_GOD = "god";
+    private static final String NAME_VIOLIN = "violin";
+    private static final String NAME_FLUTE = "flute";
+    private static final String NAME_SAXOPHONE = "saxophone";
+    private static final String NAME_PIANO = "piano";
+    private static final String NAME_OBOE = "oboe";
+    private static final String NAME_REDSTONE_GUITAR = "redstone_guitar";
+    private static final String NAME_FRENCH_HORN = "french_horn";
+    private static final String NAME_BASS_GUITAR = "bass_guitar";
+    private static final String NAME_HARP_MC = "harp_mc";
+
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = Mod.id(soundName);
         final SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundID);
@@ -45,293 +67,106 @@ public class SoundEvents {
         return soundEvent;
     }
 
-    private static void addSound(ArrayList<Pair<Integer, SoundEvent>> array, String insName, int note) {
+    private static void addSound(List<Pair<Integer, SoundEvent>> array, String insName, int note) {
         array.add(Pair.of(note, createSoundEvent(insName + note)));
     }
 
+    private static void addRange(List<Pair<Integer, SoundEvent>> array, String insName, int start, int end) {
+        addRange(array, insName, start, end, 1);
+    }
+
+    private static void addRange(List<Pair<Integer, SoundEvent>> array, String insName, int start, int end, int step) {
+        for (int i = start; i <= end; i += step) {
+            addSound(array, insName, i);
+        }
+    }
+
     public static void registerSoundEvents() {
+        // core sounds
         TICK = createSoundEvent("tick");
         METRONOME_SET = createSoundEvent("metronome_set");
         OPEN_SCROLL = createSoundEvent("open_scroll");
         CLOSE_SCROLL = createSoundEvent("close_scroll");
 
-        // Instrument SoundEvent initialization
+        // init lists
         cymbals = new ArrayList<>(48);
         drum_kits = new ArrayList<>(48);
+        french_horns = new ArrayList<>(11);
         guitars = new ArrayList<>(48);
         drums = new ArrayList<>(48);
+        redstone_guitars = new ArrayList<>(11);
         lyres = new ArrayList<>(48);
         flutes = new ArrayList<>(48);
         banjos = new ArrayList<>(48);
         saxophones = new ArrayList<>(48);
         gods = new ArrayList<>(48);
+        oboes = new ArrayList<>(21);
         harp_mcs = new ArrayList<>(48);
         sansulas = new ArrayList<>(48);
         tubular_bells = new ArrayList<>(48);
         violins = new ArrayList<>(48);
+        bass_guitars = new ArrayList<>(8);
         xylophones = new ArrayList<>(48);
         cellos = new ArrayList<>(48);
         pianos = new ArrayList<>(48);
-        oboes = new ArrayList<>(21);
-        redstone_guitars = new ArrayList<>(11);
-        french_horns = new ArrayList<>(11);
-        bass_guitars = new ArrayList<>(8);
 
-        for (int i = 21; i <= 116; i++) {
-            addSound(drum_kits, "drum_kit", i);
-        }
-        for (int i = 27; i <= 111; i += 6) {
-            addSound(harp_mcs, "harp_mc", i);
-        }
+        // ranges
+        addRange(drum_kits, NAME_DRUM_KIT, 21, 116);
+        addRange(harp_mcs, NAME_HARP_MC, 27, 111, 6);
 
-        addSound(guitars, "guitar", 24);
-        addSound(guitars, "guitar", 28);
-        addSound(guitars, "guitar", 34);
-        addSound(guitars, "guitar", 40);
-        addSound(guitars, "guitar", 48);
-        addSound(guitars, "guitar", 54);
-        addSound(guitars, "guitar", 55);
-        addSound(guitars, "guitar", 59);
-        addSound(guitars, "guitar", 65);
-        addSound(guitars, "guitar", 72);
-        addSound(guitars, "guitar", 78);
-        addSound(guitars, "guitar", 84);
-        addSound(guitars, "guitar", 90);
-        addSound(guitars, "guitar", 96);
-        addSound(guitars, "guitar", 102);
+        addFixed(guitars, NAME_GUITAR,
+                24, 28, 34, 40, 48, 54, 55, 59, 65, 72, 78, 84, 90, 96, 102);
 
-        addSound(lyres, "lyre", 33);
-        addSound(lyres, "lyre", 39);
-        addSound(lyres, "lyre", 45);
-        addSound(lyres, "lyre", 51);
-        addSound(lyres, "lyre", 57);
-        addSound(lyres, "lyre", 63);
-        addSound(lyres, "lyre", 69);
-        addSound(lyres, "lyre", 75);
-        addSound(lyres, "lyre", 81);
-        addSound(lyres, "lyre", 87);
-        addSound(lyres, "lyre", 93);
+        addFixed(lyres, NAME_LYRE,
+                33, 39, 45, 51, 57, 63, 69, 75, 81, 87, 93);
 
-        addSound(gods, "god", 27);
-        addSound(gods, "god", 33);
-        addSound(gods, "god", 39);
-        addSound(gods, "god", 45);
-        addSound(gods, "god", 51);
-        addSound(gods, "god", 57);
-        addSound(gods, "god", 63);
-        addSound(gods, "god", 69);
-        addSound(gods, "god", 75);
-        addSound(gods, "god", 81);
-        addSound(gods, "god", 87);
+        addFixed(gods, NAME_VOICE_OF_GOD,
+                27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 87);
 
-        addSound(banjos, "banjo", 27);
-        addSound(banjos, "banjo", 33);
-        addSound(banjos, "banjo", 39);
-        addSound(banjos, "banjo", 45);
-        addSound(banjos, "banjo", 51);
-        addSound(banjos, "banjo", 57);
-        addSound(banjos, "banjo", 63);
-        addSound(banjos, "banjo", 69);
-        addSound(banjos, "banjo", 75);
-        addSound(banjos, "banjo", 81);
+        addFixed(banjos, NAME_BANJO,
+                27, 33, 39, 45, 51, 57, 63, 69, 75, 81);
 
-        addSound(drums, "drum", 33);
-        addSound(drums, "drum", 39);
-        addSound(drums, "drum", 43);
-        addSound(drums, "drum", 50);
-        addSound(drums, "drum", 55);
-        addSound(drums, "drum", 58);
-        addSound(drums, "drum", 63);
-        addSound(drums, "drum", 69);
-        addSound(drums, "drum", 75);
-        addSound(drums, "drum", 81);
+        addFixed(drums, NAME_DRUM,
+                33, 39, 43, 50, 55, 58, 63, 69, 75, 81);
 
-        addSound(cymbals, "cymbal", 27);
-        addSound(cymbals, "cymbal", 33);
-        addSound(cymbals, "cymbal", 39);
-        addSound(cymbals, "cymbal", 45);
-        addSound(cymbals, "cymbal", 51);
-        addSound(cymbals, "cymbal", 57);
-        addSound(cymbals, "cymbal", 63);
-        addSound(cymbals, "cymbal", 69);
-        addSound(cymbals, "cymbal", 75);
-        addSound(cymbals, "cymbal", 81);
+        addFixed(cymbals, NAME_CYMBAL,
+                27, 33, 39, 45, 51, 57, 63, 69, 75, 81);
 
-        addSound(xylophones, "xylophone", 27);
-        addSound(xylophones, "xylophone", 33);
-        addSound(xylophones, "xylophone", 39);
-        addSound(xylophones, "xylophone", 45);
-        addSound(xylophones, "xylophone", 51);
-        addSound(xylophones, "xylophone", 57);
-        addSound(xylophones, "xylophone", 63);
-        addSound(xylophones, "xylophone", 69);
-        addSound(xylophones, "xylophone", 75);
-        addSound(xylophones, "xylophone", 81);
-        addSound(xylophones, "xylophone", 87);
+        addFixed(xylophones, NAME_XYLOPHONE,
+                27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 87);
 
-        addSound(sansulas, "sansula", 33);
-        addSound(sansulas, "sansula", 39);
-        addSound(sansulas, "sansula", 45);
-        addSound(sansulas, "sansula", 51);
-        addSound(sansulas, "sansula", 57);
-        addSound(sansulas, "sansula", 63);
-        addSound(sansulas, "sansula", 69);
-        addSound(sansulas, "sansula", 75);
-        addSound(sansulas, "sansula", 81);
-        addSound(sansulas, "sansula", 87);
+        addFixed(sansulas, NAME_SANSULA,
+                33, 39, 45, 51, 57, 63, 69, 75, 81, 87);
 
-        addSound(tubular_bells, "tubular_bell", 33);
-        addSound(tubular_bells, "tubular_bell", 39);
-        addSound(tubular_bells, "tubular_bell", 45);
-        addSound(tubular_bells, "tubular_bell", 51);
-        addSound(tubular_bells, "tubular_bell", 57);
-        addSound(tubular_bells, "tubular_bell", 63);
-        addSound(tubular_bells, "tubular_bell", 69);
-        addSound(tubular_bells, "tubular_bell", 75);
-        addSound(tubular_bells, "tubular_bell", 81);
+        addFixed(tubular_bells, NAME_TUBULAR_BELL,
+                33, 39, 45, 51, 57, 63, 69, 75, 81);
 
-        addSound(cellos, "cello", 25);
-        addSound(cellos, "cello", 31);
-        addSound(cellos, "cello", 37);
-        addSound(cellos, "cello", 43);
-        addSound(cellos, "cello", 49);
-        addSound(cellos, "cello", 52);
-        addSound(cellos, "cello", 55);
-        addSound(cellos, "cello", 58);
-        addSound(cellos, "cello", 61);
-        addSound(cellos, "cello", 64);
-        addSound(cellos, "cello", 67);
-        addSound(cellos, "cello", 70);
-        addSound(cellos, "cello", 73);
-        addSound(cellos, "cello", 76);
-        addSound(cellos, "cello", 79);
-        addSound(cellos, "cello", 82);
-        addSound(cellos, "cello", 85);
-        addSound(cellos, "cello", 88);
-        addSound(cellos, "cello", 91);
-        addSound(cellos, "cello", 94);
-        addSound(cellos, "cello", 97);
-        addSound(cellos, "cello", 100);
+        addFixed(cellos, NAME_CELLO,
+                25, 31, 37, 43, 49, 52, 55, 58, 61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 97, 100);
 
-        addSound(violins, "violin", 37);
-        addSound(violins, "violin", 43);
-        addSound(violins, "violin", 49);
-        addSound(violins, "violin", 55);
-        addSound(violins, "violin", 58);
-        addSound(violins, "violin", 61);
-        addSound(violins, "violin", 64);
-        addSound(violins, "violin", 67);
-        addSound(violins, "violin", 70);
-        addSound(violins, "violin", 73);
-        addSound(violins, "violin", 76);
-        addSound(violins, "violin", 79);
-        addSound(violins, "violin", 82);
-        addSound(violins, "violin", 85);
-        addSound(violins, "violin", 88);
-        addSound(violins, "violin", 91);
+        addFixed(violins, NAME_VIOLIN,
+                37, 43, 49, 55, 58, 61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91);
 
-        addSound(flutes, "flute", 35);
-        addSound(flutes, "flute", 41);
-        addSound(flutes, "flute", 51);
-        addSound(flutes, "flute", 61);
-        addSound(flutes, "flute", 63);
-        addSound(flutes, "flute", 65);
-        addSound(flutes, "flute", 68);
-        addSound(flutes, "flute", 73);
-        addSound(flutes, "flute", 76);
-        addSound(flutes, "flute", 78);
-        addSound(flutes, "flute", 80);
-        addSound(flutes, "flute", 85);
-        addSound(flutes, "flute", 88);
-        addSound(flutes, "flute", 90);
-        addSound(flutes, "flute", 100);
+        addFixed(flutes, NAME_FLUTE,
+                35, 41, 51, 61, 63, 65, 68, 73, 76, 78, 80, 85, 88, 90, 100);
 
-        addSound(saxophones, "saxophone", 24);
-        addSound(saxophones, "saxophone", 30);
-        addSound(saxophones, "saxophone", 36);
-        addSound(saxophones, "saxophone", 38);
-        addSound(saxophones, "saxophone", 41);
-        addSound(saxophones, "saxophone", 45);
-        addSound(saxophones, "saxophone", 48);
-        addSound(saxophones, "saxophone", 50);
-        addSound(saxophones, "saxophone", 53);
-        addSound(saxophones, "saxophone", 57);
-        addSound(saxophones, "saxophone", 60);
-        addSound(saxophones, "saxophone", 65);
-        addSound(saxophones, "saxophone", 72);
-        addSound(saxophones, "saxophone", 78);
+        addFixed(saxophones, NAME_SAXOPHONE,
+                24, 30, 36, 38, 41, 45, 48, 50, 53, 57, 60, 65, 72, 78);
 
-        addSound(pianos, "piano", 27);
-        addSound(pianos, "piano", 36);
-        addSound(pianos, "piano", 40);
-        addSound(pianos, "piano", 45);
-        addSound(pianos, "piano", 56);
-        addSound(pianos, "piano", 61);
-        addSound(pianos, "piano", 66);
-        addSound(pianos, "piano", 70);
-        addSound(pianos, "piano", 73);
-        addSound(pianos, "piano", 77);
-        addSound(pianos, "piano", 82);
-        addSound(pianos, "piano", 86);
-        addSound(pianos, "piano", 90);
-        addSound(pianos, "piano", 95);
-        addSound(pianos, "piano", 103);
-        addSound(pianos, "piano", 109);
+        addFixed(pianos, NAME_PIANO,
+                27, 36, 40, 45, 56, 61, 66, 70, 73, 77, 82, 86, 90, 95, 103, 109);
 
-        addSound(oboes, "oboe", 23);
-        addSound(oboes, "oboe", 29);
-        addSound(oboes, "oboe", 35);
-        addSound(oboes, "oboe", 37);
-        addSound(oboes, "oboe", 39);
-        addSound(oboes, "oboe", 40);
-        addSound(oboes, "oboe", 42);
-        addSound(oboes, "oboe", 44);
-        addSound(oboes, "oboe", 46);
-        addSound(oboes, "oboe", 48);
-        addSound(oboes, "oboe", 50);
-        addSound(oboes, "oboe", 52);
-        addSound(oboes, "oboe", 54);
-        addSound(oboes, "oboe", 55);
-        addSound(oboes, "oboe", 57);
-        addSound(oboes, "oboe", 59);
-        addSound(oboes, "oboe", 60);
-        addSound(oboes, "oboe", 62);
-        addSound(oboes, "oboe", 64);
-        addSound(oboes, "oboe", 65);
-        addSound(oboes, "oboe", 71);
+        addFixed(oboes, NAME_OBOE,
+                23, 29, 35, 37, 39, 40, 42, 44, 46, 48, 50, 52, 54, 55, 57, 59, 60, 62, 64, 65, 71);
 
-        addSound(redstone_guitars, "redstone_guitar", 27);
-        addSound(redstone_guitars, "redstone_guitar", 33);
-        addSound(redstone_guitars, "redstone_guitar", 39);
-        addSound(redstone_guitars, "redstone_guitar", 45);
-        addSound(redstone_guitars, "redstone_guitar", 51);
-        addSound(redstone_guitars, "redstone_guitar", 57);
-        addSound(redstone_guitars, "redstone_guitar", 63);
-        addSound(redstone_guitars, "redstone_guitar", 69);
-        addSound(redstone_guitars, "redstone_guitar", 75);
-        addSound(redstone_guitars, "redstone_guitar", 81);
-        addSound(redstone_guitars, "redstone_guitar", 87);
+        addFixed(redstone_guitars, NAME_REDSTONE_GUITAR,
+                27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 87);
 
-        addSound(french_horns, "french_horn", 27);
-        addSound(french_horns, "french_horn", 33);
-        addSound(french_horns, "french_horn", 39);
-        addSound(french_horns, "french_horn", 45);
-        addSound(french_horns, "french_horn", 51);
-        addSound(french_horns, "french_horn", 57);
-        addSound(french_horns, "french_horn", 63);
-        addSound(french_horns, "french_horn", 69);
-        addSound(french_horns, "french_horn", 75);
-        addSound(french_horns, "french_horn", 81);
-        addSound(french_horns, "french_horn", 87);
+        addFixed(french_horns, NAME_FRENCH_HORN,
+                27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 87);
 
-        addSound(bass_guitars, "bass_guitar", 33);
-        addSound(bass_guitars, "bass_guitar", 39);
-        addSound(bass_guitars, "bass_guitar", 45);
-        addSound(bass_guitars, "bass_guitar", 51);
-        addSound(bass_guitars, "bass_guitar", 57);
-        addSound(bass_guitars, "bass_guitar", 63);
-        addSound(bass_guitars, "bass_guitar", 69);
-        addSound(bass_guitars, "bass_guitar", 75);
+        addFixed(bass_guitars, NAME_BASS_GUITAR,
+                33, 39, 45, 51, 57, 63, 69, 75);
 
         // Instrument SoundEvent setting
         ((IItemInstrument) Items.CYMBAL).setSounds(cymbals);
@@ -355,5 +190,11 @@ public class SoundEvents {
         ((IItemInstrument) Items.BASS_GUITAR).setSounds(bass_guitars);
 
         ((IItemInstrument) Items.HARP_MC).setSounds(harp_mcs);
+    }
+
+    private static void addFixed(List<Pair<Integer, SoundEvent>> target, String instrumentName, int... notes) {
+        for (int note : notes) {
+            addSound(target, instrumentName, note);
+        }
     }
 }

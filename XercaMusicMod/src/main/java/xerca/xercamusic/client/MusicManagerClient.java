@@ -11,21 +11,19 @@ import xerca.xercamusic.common.packets.serverbound.MusicDataRequestPacket;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
-public class MusicManagerClient {
-    static final Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
-    static final Map<UUID, Runnable> taskMap = new HashMap<>();
-    static final String cacheDir = "music_sheets/.cache/";
+public final class MusicManagerClient {
+    static final Map<UUID, MusicManager.MusicData> MUSIC_MAP = new HashMap<>();
+    static final Map<UUID, Runnable> TASK_MAP = new HashMap<>();
+    static final String CACHE_DIR = "music_sheets/.cache/";
 
     public static void load() {
         // Load from disk
-        File directory = new File(cacheDir);
+        File directory = new File(CACHE_DIR);
         if (!directory.exists()) {
             directory.mkdirs();
         }
@@ -36,49 +34,55 @@ public class MusicManagerClient {
                 try {
                     UUID id = UUID.fromString(fileName);
                     CompoundTag tag = NbtIo.readCompressed(file.toPath(), NbtAccounter.unlimitedHeap());
-                    if (tag.contains("id") && id.equals(tag.getUUID("id")) && tag.contains("ver") && tag.contains("notes")) {
-                        int version = tag.getInt("ver");
+                    if (tag.contains(KEY_ID) && id.equals(tag.getUUID(KEY_ID)) && tag.contains(KEY_VERSION) && tag.contains(KEY_NOTES)) {
+                        int version = tag.getInt(KEY_VERSION);
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, tag);
-                        musicMap.put(id, new MusicManager.MusicData(version, notes));
+                        MUSIC_MAP.put(id, new MusicManager.MusicData(version, notes));
                     } else {
-                        file.delete();
+                        if (!file.delete()) {
+                            Mod.LOGGER.warn("Could not delete invalid music sheet file: {}", file::getAbsolutePath);
+                        }
                     }
                 } catch (IllegalArgumentException | IOException e) {
-                    file.delete();
+                    if (!file.delete()) {
+                        Mod.LOGGER.warn("Could not delete music sheet file on exception {}: {}", e, file.getAbsolutePath());
+                    }
                 }
             }
         }
     }
 
     public static void checkMusicDataAndRun(UUID id, int ver, Runnable task) {
-        if (musicMap.containsKey(id)) {
-            MusicManager.MusicData data = musicMap.get(id);
-            if (data.version() >= ver) {
+        if (MUSIC_MAP.containsKey(id)) {
+            MusicManager.MusicData data = MUSIC_MAP.get(id);
+            int dataVer = data.version();
+            if (dataVer >= ver) {
                 Mod.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
                 task.run();
                 return;
             } else {
                 Mod.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (checkMusicDataAndRun)",
-                        id, data.version(), ver);
+                        id, dataVer, ver);
             }
         }
         Mod.LOGGER.info("Requesting music data from server (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
-        taskMap.put(id, task);
+        TASK_MAP.put(id, task);
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
         sendToServer(packet);
     }
 
     public static MusicManager.MusicData getMusicData(UUID id, int ver) {
-        if (musicMap.containsKey(id)) {
-            MusicManager.MusicData data = musicMap.get(id);
-            if (data.version() >= ver) {
+        if (MUSIC_MAP.containsKey(id)) {
+            MusicManager.MusicData data = MUSIC_MAP.get(id);
+            int dataVer = data.version();
+            if (dataVer >= ver) {
                 Mod.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (getMusicData)", id, ver);
                 return data;
             } else {
                 Mod.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)",
-                        id, data.version(), ver);
+                        id, dataVer, ver);
             }
         }
         Mod.LOGGER.info("Requesting music data from server (id: {}, requested ver: {}) (getMusicData)", id, ver);
@@ -88,31 +92,30 @@ public class MusicManagerClient {
         return null;
     }
 
-    public static void setMusicData(UUID id, int ver, ArrayList<NoteEvent> notes) {
-        musicMap.put(id, new MusicManager.MusicData(ver, notes));
+    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes) {
+        MUSIC_MAP.put(id, new MusicManager.MusicData(ver, notes));
 
         // Save on disk
         String filename = id.toString();
-        String filepath = cacheDir + "/" + filename;
-        File directory = new File(cacheDir);
+        String filepath = CACHE_DIR + "/" + filename;
+        File directory = new File(CACHE_DIR);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
         CompoundTag tag = new CompoundTag();
-        tag.putUUID("id", id);
-        tag.putInt("ver", ver);
+        tag.putUUID(KEY_ID, id);
+        tag.putInt(KEY_VERSION, ver);
         NoteEvent.fillNBTFromArray(notes, tag);
         try {
             NbtIo.writeCompressed(tag, Path.of(filepath));
         } catch (IOException e) {
-            Mod.LOGGER.warn("Could not write music data to cache file: {}", filepath);
-            e.printStackTrace();
+            Mod.LOGGER.warn("Could not write music data to cache file {}: {}", filepath, e);
         }
 
-        if (taskMap.containsKey(id)) {
-            Runnable task = taskMap.get(id);
-            taskMap.remove(id);
+        if (TASK_MAP.containsKey(id)) {
+            Runnable task = TASK_MAP.get(id);
+            TASK_MAP.remove(id);
             task.run();
         }
     }

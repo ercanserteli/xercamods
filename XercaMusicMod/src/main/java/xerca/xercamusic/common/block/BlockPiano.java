@@ -19,7 +19,7 @@ import xerca.xercamusic.common.item.Items;
 
 public class BlockPiano extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    private static final VoxelShape[] shapes = {
+    private static final VoxelShape[] SHAPES = {
             Shapes.or(
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
                     Block.box(0.0D, 10.0D, 7.0D, 16.0D, 16.0D, 16.0D)),
@@ -46,7 +46,7 @@ public class BlockPiano extends BlockInstrument {
 
     @Override
     public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return shapes[Math.max(0, state.getValue(FACING).get3DDataValue() - 2)];
+        return SHAPES[Math.max(0, state.getValue(FACING).get3DDataValue() - 2)];
     }
 
     @Override

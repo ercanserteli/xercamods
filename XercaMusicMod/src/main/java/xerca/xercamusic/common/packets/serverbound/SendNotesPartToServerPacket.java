@@ -17,26 +17,14 @@ public record SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId,
     public static final StreamCodec<FriendlyByteBuf, SendNotesPartToServerPacket> PACKET_CODEC = StreamCodec.ofMember(SendNotesPartToServerPacket::encode, SendNotesPartToServerPacket::decode);
 
     public static SendNotesPartToServerPacket decode(FriendlyByteBuf buf) {
-        try {
-            UUID uuid = buf.readUUID();
-            int partsCount = buf.readInt();
-            int partId = buf.readInt();
-            int eventCount = buf.readInt();
-            ArrayList<NoteEvent> notes = null;
-            if (eventCount > 0) {
-                notes = new ArrayList<>(eventCount);
-                for (int i = 0; i < eventCount; i++) {
-                    notes.add(NoteEvent.fromBuffer(buf));
-                }
-            }
-            return new SendNotesPartToServerPacket(uuid, partsCount, partId, notes);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading SendNotesPartToServerPacket: " + ioe);
-            return null;
-        }
+        UUID uuid = buf.readUUID();
+        int partsCount = buf.readInt();
+        int partId = buf.readInt();
+        ArrayList<NoteEvent> notes = ImportMusicSendPacket.notesFromBuffer(buf);
+        return new SendNotesPartToServerPacket(uuid, partsCount, partId, notes);
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeUUID(uuid);
         buf.writeInt(partsCount);
         buf.writeInt(partId);
@@ -44,7 +32,6 @@ public record SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId,
         for (NoteEvent event : notes) {
             event.encodeToBuffer(buf);
         }
-        return buf;
     }
 
     @Override

@@ -28,12 +28,12 @@ public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstr
         int instrumentId = buf.readInt();
         int entityId = buf.readInt();
 
-        if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
+        if (instrumentId < 0 || instrumentId >= Items.INSTRUMENTS.size()) {
             Mod.LOGGER.warn("Invalid instrumentId: {}", instrumentId);
             instrumentId = 0;
         }
 
-        IItemInstrument instrumentItem = Items.instruments[instrumentId];
+        IItemInstrument instrumentItem = Items.INSTRUMENTS.get(instrumentId);
         return new TripleNoteClientPacket(note1, note2, note3, instrumentItem, entityId);
     }
 
@@ -52,7 +52,7 @@ public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstr
         return entity;
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         int instrumentId = instrumentItem.getInstrumentId();
 
         buf.writeInt(note1);
@@ -60,7 +60,6 @@ public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstr
         buf.writeInt(note3);
         buf.writeInt(instrumentId);
         buf.writeInt(entityId);
-        return buf;
     }
 
     @Override
