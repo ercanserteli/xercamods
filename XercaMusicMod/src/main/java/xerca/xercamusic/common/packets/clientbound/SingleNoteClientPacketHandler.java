@@ -2,8 +2,10 @@ package xerca.xercamusic.common.packets.clientbound;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
@@ -18,8 +20,20 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
     static final Map<Pair<Player, Integer>, NoteSoundEntry> NOTE_SOUNDS = new HashMap<>();
 
     private static void processMessage(SingleNoteClientPacket msg) {
-        Player playerEntity = msg.playerEntity();
-        if (playerEntity != null && !playerEntity.equals(Minecraft.getInstance().player)) {
+        int playerId = msg.playerId();
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            Mod.LOGGER.warn("Level is null while trying to get entity");
+            return;
+        }
+
+        Entity entity = level.getEntity(playerId);
+        if (!(entity instanceof Player playerEntity)) {
+            Mod.LOGGER.warn("Invalid playerId: {}", playerId);
+            return;
+        }
+
+        if (!playerEntity.equals(Minecraft.getInstance().player)) {
             IItemInstrument.InsSound sound = msg.instrumentItem().getSound(msg.note());
             if (sound == null) {
                 return;

@@ -1,7 +1,5 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -35,21 +33,6 @@ public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstr
 
         IItemInstrument instrumentItem = Items.INSTRUMENTS.get(instrumentId);
         return new TripleNoteClientPacket(note1, note2, note3, instrumentItem, entityId);
-    }
-
-    public Entity entity() {
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) {
-            Mod.LOGGER.warn("Level is null while trying to get entity");
-            return null;
-        }
-
-        Entity entity = level.getEntity(entityId);
-        if (entity == null) {
-            Mod.LOGGER.warn("Invalid entityId: {}", entityId);
-            return Minecraft.getInstance().player;
-        }
-        return entity;
     }
 
     public void encode(FriendlyByteBuf buf) {

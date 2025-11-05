@@ -9,6 +9,7 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SoundController extends Thread {
     private final List<NoteEvent> notes;
@@ -21,6 +22,7 @@ public class SoundController extends Thread {
     private volatile double y;
     private volatile double z;
     private TileEntityMusicBox musicBox;
+    private static final AtomicInteger CONTROLLER_COUNTER = new AtomicInteger();
 
     public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
         this.notes = notes;
@@ -31,6 +33,8 @@ public class SoundController extends Thread {
         this.bps = bps;
         this.volume = volume;
         this.spiritID = spiritID;
+        setDaemon(true);
+        setName("XercaMusic-SoundController-" + CONTROLLER_COUNTER.incrementAndGet());
     }
 
     public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
@@ -116,17 +120,17 @@ public class SoundController extends Thread {
     private void accurateSleep(long millis) {
         if (millis == 0) return;
         long start = System.currentTimeMillis();
-        if (millis > 12) {
+        if (millis > 8) {
             try {
-                sleep(millis - 10);
+                sleep(millis - 8);
             } catch (InterruptedException e) {
                 Mod.LOGGER.warn("Interrupted while sleeping", e);
                 Thread.currentThread().interrupt();
             }
         }
-        //noinspection StatementWithEmptyBody
         while (System.currentTimeMillis() < start + millis) {
             // hot sleep
+            Thread.onSpinWait();
         }
     }
 

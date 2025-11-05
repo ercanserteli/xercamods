@@ -1,6 +1,8 @@
 package xerca.xercamusic.common.packets.clientbound;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import xerca.xercamusic.client.ClientStuff;
@@ -11,11 +13,23 @@ import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
 public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<TripleNoteClientPacket> {
     private static void processMessage(TripleNoteClientPacket msg) {
-        Entity entity = msg.entity();
+        int entityId = msg.entityId();
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            Mod.LOGGER.warn("Level is null while trying to get entity");
+            return;
+        }
+
+        Entity entity = level.getEntity(entityId);
+        if (entity == null) {
+            Mod.LOGGER.warn("Invalid entityId: {}", entityId);
+            return;
+        }
+
         IItemInstrument.InsSound sound1 = msg.instrumentItem().getSound(msg.note1());
         IItemInstrument.InsSound sound2 = msg.instrumentItem().getSound(msg.note2());
         IItemInstrument.InsSound sound3 = msg.instrumentItem().getSound(msg.note3());
-        if (sound1 == null || sound2 == null || sound3 == null || entity == null) {
+        if (sound1 == null || sound2 == null || sound3 == null) {
             return;
         }
 
