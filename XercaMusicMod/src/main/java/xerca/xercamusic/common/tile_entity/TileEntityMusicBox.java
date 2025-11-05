@@ -46,6 +46,8 @@ public class TileEntityMusicBox extends BlockEntity {
     private int playingAge = 0;
     private int length = 0;
     private SoundController soundController = null;
+    private static final String KEY_NOTE = "note";
+    private static final String KEY_INS_ID = "instrument_id";
 
     public TileEntityMusicBox(BlockPos blockPos, BlockState blockState) {
         super(BlockEntities.MUSIC_BOX, blockPos, blockState);
@@ -139,25 +141,24 @@ public class TileEntityMusicBox extends BlockEntity {
         t.isPlaying = false;
         t.isPowering = true;
 
-        if (t.level != null) {
+        Level level = t.level;
+        if (level != null) {
             Direction rightSide = state.getValue(BlockMusicBox.FACING).getClockWise();
-            t.level.setBlockAndUpdate(t.worldPosition, state.setValue(BlockMusicBox.POWERING, true));
+            level.setBlockAndUpdate(t.worldPosition, state.setValue(BlockMusicBox.POWERING, true));
 
             BlockPos neighbor = t.worldPosition.relative(rightSide);
-            t.level.neighborChanged(neighbor, t.getBlockState().getBlock(), t.worldPosition);
-            t.level.updateNeighborsAtExceptFromFacing(neighbor, t.getBlockState().getBlock(), rightSide.getOpposite());
+            level.neighborChanged(neighbor, t.getBlockState().getBlock(), t.worldPosition);
+            level.updateNeighborsAtExceptFromFacing(neighbor, t.getBlockState().getBlock(), rightSide.getOpposite());
         }
     }
 
     public static void musicStart(TileEntityMusicBox t, BlockPos blockPos) {
-        if (t.level != null) {
-            if (t.level.isClientSide) {
-                if (t.soundController != null) {
-                    t.soundController.setStop();
-                }
-                t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
-                t.soundController.start();
+        if (t.level != null && t.level.isClientSide) {
+            if (t.soundController != null) {
+                t.soundController.setStop();
             }
+            t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
+            t.soundController.start();
         }
     }
 
@@ -167,24 +168,24 @@ public class TileEntityMusicBox extends BlockEntity {
 
         if (!this.sheetStack.isEmpty()) {
             CompoundTag sheetTag = new CompoundTag();
-            parent.put("note", sheetStack.save(levelRegistry, sheetTag));
+            parent.put(KEY_NOTE, sheetStack.save(levelRegistry, sheetTag));
         }
         if (this.instrument != null) {
             ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey((Item) this.instrument);
-            parent.putString("instrument_id", resourcelocation.toString());
+            parent.putString(KEY_INS_ID, resourcelocation.toString());
         }
     }
 
     @Override
     public void loadAdditional(@NotNull CompoundTag parent, HolderLookup.@NotNull Provider levelRegistry) {
         super.loadAdditional(parent, levelRegistry);
-        if (parent.contains("note", 10)) {
-            CompoundTag sheetTag = parent.getCompound("note");
+        if (parent.contains(KEY_NOTE, 10)) {
+            CompoundTag sheetTag = parent.getCompound(KEY_NOTE);
             ItemStack sheet = ItemStack.parse(levelRegistry, sheetTag).orElse(ItemStack.EMPTY);
             setSheetStack(sheet, false);
         }
-        if (parent.contains("instrument_id", 8)) {
-            this.setInstrument(BuiltInRegistries.ITEM.get(ResourceLocation.parse(parent.getString("instrument_id"))));
+        if (parent.contains(KEY_INS_ID, 8)) {
+            this.setInstrument(BuiltInRegistries.ITEM.get(ResourceLocation.parse(parent.getString(KEY_INS_ID))));
         }
     }
 
@@ -203,7 +204,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     private int beatsToTicks(int beats) {
-        return Math.round(((float) beats) * 20.0f / ((float) bps));
+        return Math.round(beats * 20.0f / bps);
     }
 
     public ItemStack getSheetStack() {
@@ -245,12 +246,12 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     public void setInstrument(Item instrument) {
-        if (instrument instanceof IItemInstrument) {
+        if (instrument instanceof IItemInstrument itemInstrument) {
             if (level != null && !level.isClientSide) {
                 updateClient(null, instrument);
             }
 
-            this.instrument = (IItemInstrument) instrument;
+            this.instrument = itemInstrument;
             setChanged();
         }
     }
@@ -274,10 +275,10 @@ public class TileEntityMusicBox extends BlockEntity {
         }
     }
 
-    //fix to sync client state after the block was moved
+    // fix to sync client state after the block was moved
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        //send update only on first block update to not send more packets than needed as updateClient() already does most of the functionality
+        // send update only on the first block update to not send more packets than needed as updateClient() already does most of the functionality
         if (firstBlockUpdate) {
             firstBlockUpdate = false;
             if (level != null && getBlockState().getValue(BlockMusicBox.POWERING)) {

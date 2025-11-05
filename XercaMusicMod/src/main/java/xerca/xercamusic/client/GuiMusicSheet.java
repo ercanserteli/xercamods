@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
@@ -21,7 +22,6 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
@@ -43,44 +43,46 @@ import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
 public class GuiMusicSheet extends Screen {
-    public final static int beatsInScreen = 91;
-    private static final String[] octaveNames = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
-    private static final ResourceLocation noteGuiLeftTexture = Mod.id("textures/gui/music_sheet_left.png");
-    private static final ResourceLocation noteGuiTextures = Mod.id("textures/gui/music_sheet.png");
-    private static final ResourceLocation instrumentTextures = Mod.id("textures/gui/instruments.png");
-    private final static int noteImageLeftTexX = 175;
-    private final static int noteImageLeftTexY = 51;
-    private final static int noteImageLeftWidth = 81;
-    private final static int noteImageLeftHeight = 205;
-    private final static int noteImageTexX = 0;
-    private final static int noteImageTexY = 44;
-    private final static int noteImageWidth = 256;
-    private final static int noteImageHeight = 210;
-    private final static int noteRegionLeft = 44;
-    private final static int noteRegionTop = 39;
-    private final static int noteRegionRight = 316;
-    private final static int noteRegionBottom = 182;
-    private final static int bpmButW = 10;
-    private final static int bpmButH = 10;
-    private final static int bpmButX = 245;
-    private final static int bpmButY = 12;
-    private final static int hlButX = 261;
-    private final static int hlButY = 23;
-    private final static int[] octaveColors = {0xFF5B3200, 0xFFFF0000, 0xFF0AEE00, 0xFF0059FF, 0xFF7B00FF, 0xFFEF00B7, 0xFF00E2DF, 0XFFF4E800};
-    private final static int[] octaveColorsTrans = {0x165B3200, 0x16FF0000, 0x160AEE00, 0x160059FF, 0x167B00FF, 0x16EF00B7, 0x1600E2DF, 0X16F4E800};
-    private static final int maxLengthBeats = 32000;
-    private static final byte copyBeginByte = (byte) 50;
-    private static final int maxNoteLength = 60;
-    private static final int maxUndoLength = 16;
-    static private int currentOctave = 1;
+    public static final int BEATS_IN_SCREEN = 91;
+    private static final String[] OCTAVE_NAMES = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
+    private static final ResourceLocation NOTE_GUI_LEFT_TEXTURE = Mod.id("textures/gui/music_sheet_left.png");
+    private static final ResourceLocation NOTE_GUI_TEXTURES = Mod.id("textures/gui/music_sheet.png");
+    private static final ResourceLocation INSTRUMENT_TEXTURES = Mod.id("textures/gui/instruments.png");
+    private static final int NOTE_IMAGE_LEFT_TEX_X = 175;
+    private static final int NOTE_IMAGE_LEFT_TEX_Y = 51;
+    private static final int NOTE_IMAGE_LEFT_WIDTH = 81;
+    private static final int NOTE_IMAGE_LEFT_HEIGHT = 205;
+    private static final int NOTE_IMAGE_TEX_X = 0;
+    private static final int NOTE_IMAGE_TEX_Y = 44;
+    private static final int NOTE_IMAGE_WIDTH = 256;
+    private static final int NOTE_IMAGE_HEIGHT = 210;
+    private static final int NOTE_REGION_LEFT = 44;
+    private static final int NOTE_REGION_TOP = 39;
+    private static final int NOTE_REGION_RIGHT = 316;
+    private static final int NOTE_REGION_BOTTOM = 182;
+    private static final int BPM_BUT_W = 10;
+    private static final int BPM_BUT_H = 10;
+    private static final int BPM_BUT_X = 245;
+    private static final int BPM_BUT_Y = 12;
+    private static final int HL_BUT_X = 261;
+    private static final int HL_BUT_Y = 23;
+    private static final int[] OCTAVE_COLORS = {0xFF5B3200, 0xFFFF0000, 0xFF0AEE00, 0xFF0059FF, 0xFF7B00FF, 0xFFEF00B7, 0xFF00E2DF, 0XFFF4E800};
+    private static final int[] OCTAVE_COLORS_TRANS = {0x165B3200, 0x16FF0000, 0x160AEE00, 0x160059FF, 0x167B00FF, 0x16EF00B7, 0x1600E2DF, 0X16F4E800};
+    private static final int MAX_LENGTH_BEATS = 32000;
+    private static final byte COPY_BEGIN_BYTE = (byte) 50;
+    private static final int MAX_NOTE_LENGTH = 60;
+    private static final int MAX_UNDO_LENGTH = 16;
+    private static final String NOTE_LEFT_STR_KEY = "note.leftButton";
+    private static final String NOTE_RIGHT_STR_KEY = "note.rightButton";
+    private static int currentOctave = 1;
     private static float brushVolume = 0.5f;
     private final Player editingPlayer;
     private final NoteSound[] notePlaySounds;
     private final ArrayList<NoteEvent> recordingNotes = new ArrayList<>();
-    private final boolean[] buttonPushStates = new boolean[IItemInstrument.totalNotes];
+    private final boolean[] buttonPushStates = new boolean[IItemInstrument.TOTAL_NOTES];
     private final UUID id;
     private final MusicUpdatePacket.FieldFlag dirtyFlag = new MusicUpdatePacket.FieldFlag();
-    private final Deque<ArrayList<NoteEvent>> undoStack = new ArrayDeque<>(maxUndoLength);
+    private final Deque<ArrayList<NoteEvent>> undoStack = new ArrayDeque<>(MAX_UNDO_LENGTH);
     private final ArrayList<ArrayList<NoteEvent>> neighborNotes = new ArrayList<>();
     private final ArrayList<Float> neighborVolumes = new ArrayList<>();
     private final ArrayList<Integer> neighborPreviewNextNoteIDs = new ArrayList<>();
@@ -124,24 +126,25 @@ public class GuiMusicSheet extends Screen {
     private ChangeableImageButton buttonRecord;
     private ChangeableImageButton buttonHideNeighbors;
     private LockImageButton buttonLockPrevIns;
-    private boolean neighborsHidden = false;
-    private boolean prevInsLocked = false;
-    private boolean selfSigned = false;
+    private boolean neighborsHidden;
+    private boolean prevInsLocked;
+    private boolean selfSigned;
     private int version;
     private ArrayList<NoteEvent> notes = new ArrayList<>();
-    private short lengthBeats = 0;
+    private short lengthBeats;
     private byte bps = 8;
     private int bpm;
     private int previewInstrument = -1;
-    private long lastMillis = 0;
-    private long cumMillis = 0;
-    private int previewNextNoteID = 0;
+    private long lastMillis;
+    private long cumMillis;
+    private int previewNextNoteID;
     private NoteEvent currentlyAddedNote;
-    private int sliderPosition = 0;
+    private int sliderPosition;
     private int maxSliderPosition = 500;
     private int currentOctavePos = 1;
     private float volume = 1.f;
-    private boolean helpOn = false;
+    private boolean helpOn;
+
     GuiMusicSheet(Player player, ItemStack sheet, Component title) {
         super(title);
         this.editingPlayer = player;
@@ -162,8 +165,9 @@ public class GuiMusicSheet extends Screen {
             this.noteTitle = sheet.getOrDefault(Items.SHEET_TITLE, "");
             String authorName = sheet.getOrDefault(Items.SHEET_AUTHOR, "");
             this.prevInsLocked = sheet.getOrDefault(Items.SHEET_PREV_INSTRUMENT_LOCKED, false);
-            if (sheet.has(Items.SHEET_PREV_INSTRUMENT)) {
-                this.previewInstrument = sheet.get(Items.SHEET_PREV_INSTRUMENT);
+            Byte prevIns = sheet.get(Items.SHEET_PREV_INSTRUMENT);
+            if (prevIns != null) {
+                this.previewInstrument = prevIns;
             }
             this.highlightInterval = sheet.getOrDefault(Items.SHEET_HIGHLIGHT_INTERVAL, (byte) 12);
 
@@ -208,25 +212,24 @@ public class GuiMusicSheet extends Screen {
 
         this.midiHandler = new MidiHandler(this::startSound, this::endSound, this::midiControlCommand);
         midiHandler.currentOctave = currentOctave;
-        this.notePlaySounds = new NoteSound[IItemInstrument.totalNotes];
+        this.notePlaySounds = new NoteSound[IItemInstrument.TOTAL_NOTES];
     }
 
     private static int octaveFromNote(byte note) {
-        return (note - IItemInstrument.minNote) / 12;
+        return (note - IItemInstrument.MIN_NOTE) / 12;
     }
 
     private int getCurrentOffhandInsIndex() {
         Item offhand = editingPlayer.getOffhandItem().getItem();
         if (offhand instanceof IItemInstrument ins) {
-            return ArrayUtils.indexOf(Items.instruments, ins);
+            return Items.INSTRUMENTS.indexOf(ins);
         }
         return -1;
     }
 
     private void startSound(MidiHandler.MidiData data) {
         int noteId = data.noteId();
-        byte volume = (byte) (data.volume() * 128.f);
-        startSound(noteId, volume);
+        startSound(noteId, (byte) (data.volume() * 128.f));
     }
 
     private void startSound(int noteId, byte volume) {
@@ -245,8 +248,8 @@ public class GuiMusicSheet extends Screen {
             }
 
             IItemInstrument.InsSound noteSound;
-            if (previewInstrument >= 0 && previewInstrument < Items.instruments.length) {
-                IItemInstrument ins = Items.instruments[previewInstrument];
+            if (previewInstrument >= 0 && previewInstrument < Items.INSTRUMENTS.size()) {
+                IItemInstrument ins = Items.INSTRUMENTS.get(previewInstrument);
                 noteSound = ins.getSound(note);
             } else {
                 noteSound = ((IItemInstrument) Items.HARP_MC).getSound(note);
@@ -255,9 +258,13 @@ public class GuiMusicSheet extends Screen {
                 Mod.LOGGER.warn("noteSound not found - noteId: {} vol: {}", noteId, volume);
                 return;
             }
-            notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ClientStuff.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), ((float) volume) / 128.f, noteSound.pitch()));
+            try {
+                notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ClientStuff.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), ((float) volume) / 128.f, noteSound.pitch()));
+            } catch (Exception e) {
+                Mod.LOGGER.error("Error playing sound", e);
+            }
             if (recording) {
-                NoteEvent newNote = new NoteEvent((byte) note, (short) (Math.max(0, previewCursor - 1)), volume, (byte) 1);
+                NoteEvent newNote = new NoteEvent((byte) note, (short) Math.max(0, previewCursor - 1), volume, (byte) 1);
                 addRecordingNote(newNote);
                 previewNextNoteID++;
                 dirtyFlag.hasNotes = true;
@@ -294,11 +301,11 @@ public class GuiMusicSheet extends Screen {
         if (!neighbor.isEmpty() && neighbor.getItem() instanceof ItemMusicSheet) {
             byte neighborBPS = ItemMusicSheet.getBPS(neighbor);
             if (neighborBPS == bps) {
-                UUID id = neighbor.get(Items.SHEET_ID);
+                UUID uuid = neighbor.get(Items.SHEET_ID);
                 int ver = neighbor.getOrDefault(Items.SHEET_VERSION, -1);
-                if (id != null && ver >= 0) {
-                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
-                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                if (uuid != null && ver >= 0) {
+                    MusicManagerClient.checkMusicDataAndRun(uuid, ver, () -> {
+                        MusicManager.MusicData data = MusicManagerClient.getMusicData(uuid, ver);
                         if (data != null) {
                             neighborNotes.add(new ArrayList<>(data.notes()));
                             neighborPrevInstruments.add(ItemMusicSheet.getPrevInstrument(neighbor));
@@ -326,8 +333,8 @@ public class GuiMusicSheet extends Screen {
      */
     @Override
     public void init() {
-        noteImageX = ((this.width - (noteImageWidth + noteImageLeftWidth)) / 2) + noteImageLeftWidth;
-        noteImageLeftX = noteImageX - noteImageLeftWidth;
+        noteImageX = ((this.width - (NOTE_IMAGE_WIDTH + NOTE_IMAGE_LEFT_WIDTH)) / 2) + NOTE_IMAGE_LEFT_WIDTH;
+        noteImageLeftX = noteImageX - NOTE_IMAGE_LEFT_WIDTH;
         noteImageY = 2;
         if (!this.isSigned) {
             this.buttonSign = this.addRenderableWidget(Button.builder(Component.translatable("note.signButton"), button -> {
@@ -335,7 +342,7 @@ public class GuiMusicSheet extends Screen {
                     gettingSigned = true;
                     updateButtons();
                 }
-            }).bounds(noteImageLeftX + 112, noteImageY + noteImageHeight, 98, 20).build());
+            }).bounds(noteImageLeftX + 112, noteImageY + NOTE_IMAGE_HEIGHT, 98, 20).build());
             this.buttonFinalize = this.addRenderableWidget(Button.builder(Component.translatable("note.finalizeButton"), button -> {
                 if (!isSigned) {
                     dirtyFlag.hasSigned = true;
@@ -353,11 +360,11 @@ public class GuiMusicSheet extends Screen {
                 }
             }).bounds(noteImageLeftX + 112, 170, 98, 20).build());
         }
-        this.buttonPreview = this.addRenderableWidget(new ChangeableImageButton(noteImageLeftX + 50, 16, 16, 16, 224, 0, 16, noteGuiTextures, button -> previewButton()));
+        this.buttonPreview = this.addRenderableWidget(new ChangeableImageButton(noteImageLeftX + 50, 16, 16, 16, 224, 0, 16, NOTE_GUI_TEXTURES, button -> previewButton()));
 
-        this.buttonRecord = this.addRenderableWidget(new ChangeableImageButton(noteImageLeftX + 70, 16, 16, 16, 176, 0, 16, noteGuiTextures, button -> recordButton()));
+        this.buttonRecord = this.addRenderableWidget(new ChangeableImageButton(noteImageLeftX + 70, 16, 16, 16, 176, 0, 16, NOTE_GUI_TEXTURES, button -> recordButton()));
 
-        this.buttonHideNeighbors = this.addRenderableWidget(new ChangeableImageButton(noteImageLeftX + 90, 16, 16, 16, 192, 0, 16, noteGuiTextures, button -> {
+        this.buttonHideNeighbors = this.addRenderableWidget(new ChangeableImageButton(noteImageLeftX + 90, 16, 16, 16, 192, 0, 16, NOTE_GUI_TEXTURES, button -> {
             neighborsHidden = !neighborsHidden;
             if (neighborsHidden) {
                 this.buttonHideNeighbors.setTexStarts(208, 0);
@@ -366,7 +373,7 @@ public class GuiMusicSheet extends Screen {
             }
         }));
 
-        this.buttonLockPrevIns = this.addRenderableWidget(new LockImageButton(noteImageLeftX + 110, 16, 16, 16, previewInstrument * 16 + 16, 32 * ((previewInstrument + 1) / 16), 16, instrumentTextures, button -> {
+        this.buttonLockPrevIns = this.addRenderableWidget(new LockImageButton(noteImageLeftX + 110, 16, 16, 16, previewInstrument * 16 + 16, 32 * ((previewInstrument + 1) / 16), 16, INSTRUMENT_TEXTURES, button -> {
             if (!isSigned || selfSigned || generation > 1) {
                 prevInsLocked = !prevInsLocked;
                 dirtyFlag.hasPrevInsLocked = true;
@@ -394,7 +401,7 @@ public class GuiMusicSheet extends Screen {
                         previewCursor = previewCursorStart;
                         for (NoteEvent note : notes) {
                             note.time *= (short) mult;
-                            note.length = (byte) Math.min(maxNoteLength, note.length * mult);
+                            note.length = (byte) Math.min(MAX_NOTE_LENGTH, note.length * mult);
                         }
                         updateLength();
                     }
@@ -407,7 +414,7 @@ public class GuiMusicSheet extends Screen {
                 }
                 bpm = 60 * bps;
             }
-        }).bounds(noteImageLeftX + bpmButX, noteImageY + bpmButY, bpmButW, bpmButH).build());
+        }).bounds(noteImageLeftX + BPM_BUT_X, noteImageY + BPM_BUT_Y, BPM_BUT_W, BPM_BUT_H).build());
         this.bpmDown = this.addRenderableWidget(Button.builder(Component.translatable("note.downButton"), button -> {
             if (!isSigned || selfSigned || generation > 1) {
                 if (hasShiftDown()) {
@@ -435,21 +442,21 @@ public class GuiMusicSheet extends Screen {
                 }
                 bpm = 60 * bps;
             }
-        }).bounds(noteImageLeftX + bpmButX, noteImageY + bpmButY + 1 + bpmButH, bpmButW, bpmButH).build());
+        }).bounds(noteImageLeftX + BPM_BUT_X, noteImageY + BPM_BUT_Y + 1 + BPM_BUT_H, BPM_BUT_W, BPM_BUT_H).build());
 
         this.octaveUp = this.addRenderableWidget(Button.builder(Component.translatable("note.upButton"), button -> {
             if (currentOctavePos < 4) {
                 currentOctavePos++;
             }
-        }).bounds(noteImageLeftX + 15, noteImageY + 30, bpmButW, bpmButH).build());
+        }).bounds(noteImageLeftX + 15, noteImageY + 30, BPM_BUT_W, BPM_BUT_H).build());
 
         this.octaveDown = this.addRenderableWidget(Button.builder(Component.translatable("note.downButton"), button -> {
             if (currentOctavePos > 0) {
                 currentOctavePos--;
             }
-        }).bounds(noteImageLeftX + 15, noteImageY + noteRegionBottom, bpmButW, bpmButH).build());
+        }).bounds(noteImageLeftX + 15, noteImageY + NOTE_REGION_BOTTOM, BPM_BUT_W, BPM_BUT_H).build());
 
-        this.sliderTime = this.addRenderableWidget(new BetterSlider(noteImageLeftX + noteRegionLeft, noteImageY + noteRegionBottom + 4, noteRegionRight - noteRegionLeft, 10,
+        this.sliderTime = this.addRenderableWidget(new BetterSlider(noteImageLeftX + NOTE_REGION_LEFT, noteImageY + NOTE_REGION_BOTTOM + 4, NOTE_REGION_RIGHT - NOTE_REGION_LEFT, 10,
                 Component.empty(), Component.empty(), 0, 1, 0, 0.001, false) {
             @Override
             public void applyValue() {
@@ -457,7 +464,7 @@ public class GuiMusicSheet extends Screen {
             }
         });
 
-        this.sliderSheetVolume = this.addRenderableWidget(new BetterSlider(noteImageLeftX + noteRegionRight - 55, noteImageY + 12, 54, 10,
+        this.sliderSheetVolume = this.addRenderableWidget(new BetterSlider(noteImageLeftX + NOTE_REGION_RIGHT - 55, noteImageY + 12, 54, 10,
                 Component.literal("S Vol "), Component.empty(), 0, 100, volume * 100.f, true) {
             @Override
             public void applyValue() {
@@ -478,23 +485,23 @@ public class GuiMusicSheet extends Screen {
             }
         });
 
-        this.hlDown = this.addRenderableWidget(Button.builder(Component.translatable("note.leftButton"), button -> {
+        this.hlDown = this.addRenderableWidget(Button.builder(Component.translatable(NOTE_LEFT_STR_KEY), button -> {
             if ((!isSigned || selfSigned || generation > 1) && highlightInterval > 1) {
                 highlightInterval--;
                 dirtyFlag.hasHlInterval = true;
             }
-        }).bounds(noteImageLeftX + hlButX, noteImageY + hlButY, bpmButW, bpmButH).build());
-        this.hlUp = this.addRenderableWidget(Button.builder(Component.translatable("note.rightButton"), button -> {
+        }).bounds(noteImageLeftX + HL_BUT_X, noteImageY + HL_BUT_Y, BPM_BUT_W, BPM_BUT_H).build());
+        this.hlUp = this.addRenderableWidget(Button.builder(Component.translatable(NOTE_RIGHT_STR_KEY), button -> {
             if ((!isSigned || selfSigned || generation > 1) && highlightInterval < 24) {
                 highlightInterval++;
                 dirtyFlag.hasHlInterval = true;
             }
-        }).bounds(noteImageLeftX + hlButX + 44, noteImageY + hlButY, bpmButW, bpmButH).build());
+        }).bounds(noteImageLeftX + HL_BUT_X + 44, noteImageY + HL_BUT_Y, BPM_BUT_W, BPM_BUT_H).build());
 
         this.noteEditBox = this.addRenderableWidget(new NoteEditBox(0, 0, 70, 55, Component.empty()));
 
         this.buttonHelp = this.addRenderableWidget(Button.builder(Component.literal("?"), button -> toggleHelp()).
-                bounds(noteImageLeftX + noteRegionRight + 30, noteImageY + bpmButY, 20, 20).build());
+                bounds(noteImageLeftX + NOTE_REGION_RIGHT + 30, noteImageY + BPM_BUT_Y, 20, 20).build());
 
         updateButtons();
 
@@ -543,8 +550,10 @@ public class GuiMusicSheet extends Screen {
         this.hlUp.active = (!this.isSigned || this.selfSigned || this.generation > 1) && (!this.recording && !this.preRecording);
         this.hlDown.visible = !this.gettingSigned && (!this.isSigned || this.selfSigned || this.generation > 1);
         this.hlDown.active = (!this.isSigned || this.selfSigned || this.generation > 1) && (!this.recording && !this.preRecording);
-        this.sliderNoteVolume.active = (this.sliderNoteVolume.visible = !this.isSigned && !this.gettingSigned) && (!this.recording && !this.preRecording);
-        this.buttonHelp.active = (this.buttonHelp.visible = !this.isSigned && !this.gettingSigned) && (!this.recording && !this.preRecording);
+        this.sliderNoteVolume.visible = !this.isSigned && !this.gettingSigned;
+        this.sliderNoteVolume.active = this.sliderNoteVolume.visible && (!this.recording && !this.preRecording);
+        this.buttonHelp.visible = !this.isSigned && !this.gettingSigned;
+        this.buttonHelp.active = this.buttonHelp.visible && (!this.recording && !this.preRecording);
         this.buttonHideNeighbors.visible = !this.neighborNotes.isEmpty() && !this.gettingSigned;
         this.buttonHideNeighbors.active = (!this.recording && !this.preRecording);
         this.buttonRecord.visible = !this.gettingSigned && !this.isSigned;
@@ -566,8 +575,12 @@ public class GuiMusicSheet extends Screen {
     }
 
     private void playMetronomeTick() {
-        onlyCallOnClient(() -> () ->
-                ClientStuff.playNote(SoundEvents.TICK, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), SoundSource.PLAYERS, 1.0f, 0.975f + editingPlayer.level().random.nextFloat() * 0.05f, (byte) -1));
+        try {
+            onlyCallOnClient(() -> () ->
+                    ClientStuff.playNote(SoundEvents.TICK, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), SoundSource.PLAYERS, 1.0f, 0.975f + editingPlayer.level().random.nextFloat() * 0.05f, (byte) -1));
+        } catch (Exception e) {
+            Mod.LOGGER.error("Exception in playMetronomeTick", e);
+        }
     }
 
     private NoteSound playSound(NoteEvent event, int previewInstrument) {
@@ -575,14 +588,14 @@ public class GuiMusicSheet extends Screen {
     }
 
     private NoteSound playSound(NoteEvent event, int previewInstrument, float sheetVolume) {
-        if (event.note < IItemInstrument.minNote || event.note > IItemInstrument.maxNote) {
+        if (event.note < IItemInstrument.MIN_NOTE || event.note > IItemInstrument.MAX_NOTE) {
             Mod.LOGGER.warn("Note is invalid: {}", event.note);
             return null;
         }
 
         IItemInstrument.InsSound insSound;
-        if (previewInstrument >= 0 && previewInstrument < Items.instruments.length) {
-            IItemInstrument ins = Items.instruments[previewInstrument];
+        if (previewInstrument >= 0 && previewInstrument < Items.INSTRUMENTS.size()) {
+            IItemInstrument ins = Items.INSTRUMENTS.get(previewInstrument);
             insSound = ins.getSound(event.note);
         } else {
             insSound = ((IItemInstrument) Items.HARP_MC).getSound(event.note);
@@ -591,13 +604,18 @@ public class GuiMusicSheet extends Screen {
             return null;
         }
 
-        return onlyCallOnClient(() -> () ->
-                ClientStuff.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
-                        sheetVolume * event.floatVolume(), insSound.pitch(), (byte) beatsToTicks(event.length)));
+        try {
+            return onlyCallOnClient(() -> () ->
+                    ClientStuff.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
+                            sheetVolume * event.floatVolume(), insSound.pitch(), (byte) beatsToTicks(event.length)));
+        } catch (Exception e) {
+            Mod.LOGGER.error("Exception in playSound", e);
+            return null;
+        }
     }
 
     private int beatsToTicks(int beats) {
-        return Math.round(((float) beats) * 20.0f / ((float) bps));
+        return Math.round(beats * 20.0f / bps);
     }
 
     private void playPreviewSound(int curStart, int curEnd) {
@@ -667,13 +685,13 @@ public class GuiMusicSheet extends Screen {
     }
 
     private int noteToPixelX(int noteX) {
-        return noteImageLeftX + noteRegionLeft + noteX * 3;
+        return noteImageLeftX + NOTE_REGION_LEFT + noteX * 3;
     }
 
     private void drawCursor(GuiGraphics guiGraphics, int cursorX, int color) {
         if (inScreen(cursorX)) {
             int x = noteToPixelX(cursorX - sliderPosition);
-            int y = noteImageY + noteRegionTop;
+            int y = noteImageY + NOTE_REGION_TOP;
 
             guiGraphics.fill(x + 1, y, x + 2, y + 48 * 3, color);
         }
@@ -721,6 +739,7 @@ public class GuiMusicSheet extends Screen {
 
     @Override
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // Rendering is handled in render()
     }
 
     @Override
@@ -753,7 +772,7 @@ public class GuiMusicSheet extends Screen {
                 int oldPreviewCursor = previewCursor;
                 previewCursor = previewCursorStart + currentBeat;
 
-                if (previewCursor > sliderPosition + beatsInScreen - 12 && (lengthBeats > sliderPosition + beatsInScreen || recording)) {
+                if (previewCursor > sliderPosition + BEATS_IN_SCREEN - 12 && (lengthBeats > sliderPosition + BEATS_IN_SCREEN || recording)) {
                     setSliderPos(previewCursor - 24);
                 }
 
@@ -769,8 +788,8 @@ public class GuiMusicSheet extends Screen {
                         for (NoteEvent note : recordingNotes) {
                             if (previewCursor - note.time > 1) {
                                 note.length += (byte) (previewCursor - oldPreviewCursor);
-                                if (note.length > maxNoteLength) {
-                                    note.length = maxNoteLength;
+                                if (note.length > MAX_NOTE_LENGTH) {
+                                    note.length = MAX_NOTE_LENGTH;
                                 }
                             }
                         }
@@ -779,55 +798,55 @@ public class GuiMusicSheet extends Screen {
             }
         }
 
-        guiGraphics.blit(noteGuiLeftTexture, noteImageLeftX, noteImageY + 7, noteImageLeftTexX, noteImageLeftTexY, noteImageLeftWidth, noteImageLeftHeight);
-        guiGraphics.blit(noteGuiTextures, noteImageX, noteImageY, noteImageTexX, noteImageTexY, noteImageWidth, noteImageHeight);
+        guiGraphics.blit(NOTE_GUI_LEFT_TEXTURE, noteImageLeftX, noteImageY + 7, NOTE_IMAGE_LEFT_TEX_X, NOTE_IMAGE_LEFT_TEX_Y, NOTE_IMAGE_LEFT_WIDTH, NOTE_IMAGE_LEFT_HEIGHT);
+        guiGraphics.blit(NOTE_GUI_TEXTURES, noteImageX, noteImageY, NOTE_IMAGE_TEX_X, NOTE_IMAGE_TEX_Y, NOTE_IMAGE_WIDTH, NOTE_IMAGE_HEIGHT);
         if (gettingSigned) {
             drawSigning(guiGraphics);
         } else {
             // Draw octave tints
-            int x1 = noteImageLeftX + noteRegionLeft;
-            int x2 = noteImageLeftX + noteRegionRight;
+            int x1 = noteImageLeftX + NOTE_REGION_LEFT;
+            int x2 = noteImageLeftX + NOTE_REGION_RIGHT;
             for (int i = 0; i < 4; i++) {
-                int y1 = noteImageY + noteRegionTop + (4 - i) * 12 * 3;
-                int y2 = noteImageY + noteRegionTop + (3 - i) * 12 * 3;
-                guiGraphics.fill(x1, y1, x2, y2, octaveColorsTrans[i + currentOctavePos]);
+                int y1 = noteImageY + NOTE_REGION_TOP + (4 - i) * 12 * 3;
+                int y2 = noteImageY + NOTE_REGION_TOP + (3 - i) * 12 * 3;
+                guiGraphics.fill(x1, y1, x2, y2, OCTAVE_COLORS_TRANS[i + currentOctavePos]);
             }
 
             // Draw octave lines
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 6; j++) {
-                    int y = noteImageY + noteRegionBottom - i * 36 - j * 6;
-                    guiGraphics.fill(x1, y - 1, x2 + 1, y, octaveColors[i + currentOctavePos]);
+                    int y = noteImageY + NOTE_REGION_BOTTOM - i * 36 - j * 6;
+                    guiGraphics.fill(x1, y - 1, x2 + 1, y, OCTAVE_COLORS[i + currentOctavePos]);
                 }
             }
 
             // Draw octave names
             for (int i = 0; i < 4; i++) {
                 final int x = x1 - 24;
-                final int y = noteImageY + noteRegionBottom - 18 - i * 36;
+                final int y = noteImageY + NOTE_REGION_BOTTOM - 18 - i * 36;
                 if (currentOctave == i + currentOctavePos) {
                     guiGraphics.fill(x - 10, y - 4, x + 10, y + 12, 0xAAFFFFAA);
                 }
-                guiGraphics.drawCenteredString(font, octaveNames[i + currentOctavePos], x, y, octaveColors[i + currentOctavePos]);
+                guiGraphics.drawCenteredString(font, OCTAVE_NAMES[i + currentOctavePos], x, y, OCTAVE_COLORS[i + currentOctavePos]);
             }
 
             // Draw measure lines
             if (highlightInterval > 1) {
-                for (int i = sliderPosition; i < sliderPosition + beatsInScreen; i++) {
-                    int x = (i - sliderPosition) * 3 + noteImageLeftX + noteRegionLeft + 1;
+                for (int i = sliderPosition; i < sliderPosition + BEATS_IN_SCREEN; i++) {
+                    int x = (i - sliderPosition) * 3 + noteImageLeftX + NOTE_REGION_LEFT + 1;
                     if (i % highlightInterval == 0) {
-                        guiGraphics.fill(x, noteImageY + noteRegionTop - 1, x + 1, noteImageY + noteRegionBottom + 3, 0xFF88796A);
+                        guiGraphics.fill(x, noteImageY + NOTE_REGION_TOP - 1, x + 1, noteImageY + NOTE_REGION_BOTTOM + 3, 0xFF88796A);
                     }
                 }
 
                 // Draw measure numbers
                 stack.pushPose();
                 stack.scale(0.5f, 0.5f, 0.5f);
-                for (int i = sliderPosition; i < sliderPosition + beatsInScreen; i++) {
+                for (int i = sliderPosition; i < sliderPosition + BEATS_IN_SCREEN; i++) {
                     if (i % highlightInterval == 0) {
-                        final int x = (i - sliderPosition) * 3 + noteImageLeftX + noteRegionLeft;
-                        final int y = noteImageY + noteRegionTop - 5;
-                        final String name = "" + ((i / highlightInterval) + 1);
+                        final int x = (i - sliderPosition) * 3 + noteImageLeftX + NOTE_REGION_LEFT;
+                        final int y = noteImageY + NOTE_REGION_TOP - 5;
+                        final String name = Integer.toString((i / highlightInterval) + 1);
                         final int w = font.width(name);
                         guiGraphics.drawString(font, name, (int) ((x - (w - 6.0f) / 4.0f) * 2.f), y * 2, 0xFF444400, false);
                     }
@@ -835,11 +854,11 @@ public class GuiMusicSheet extends Screen {
                 stack.popPose();
             }
 
-            guiGraphics.drawString(font, "M:", noteImageLeftX + hlButX + 14, noteImageY + hlButY + 2, 0xFF000000, false);
-            guiGraphics.drawString(font, "" + (highlightInterval > 1 ? highlightInterval : "-"), noteImageLeftX + hlButX + 22, noteImageY + hlButY + 2, 0xFF000000, false);
+            guiGraphics.drawString(font, "M:", noteImageLeftX + HL_BUT_X + 14, noteImageY + HL_BUT_Y + 2, 0xFF000000, false);
+            guiGraphics.drawString(font, highlightInterval > 1 ? Integer.toString(highlightInterval) : "-", noteImageLeftX + HL_BUT_X + 22, noteImageY + HL_BUT_Y + 2, 0xFF000000, false);
 
-            guiGraphics.drawString(font, "Tempo", noteImageLeftX + bpmButX - 30, noteImageY + bpmButY, 0xFF000000, false);
-            guiGraphics.drawString(font, "" + bpm, noteImageLeftX + bpmButX - 30, noteImageY + bpmButY + 10, 0xFF000000, false);
+            guiGraphics.drawString(font, "Tempo", noteImageLeftX + BPM_BUT_X - 30, noteImageY + BPM_BUT_Y, 0xFF000000, false);
+            guiGraphics.drawString(font, Integer.toString(bpm), noteImageLeftX + BPM_BUT_X - 30, noteImageY + BPM_BUT_Y + 10, 0xFF000000, false);
             drawCursor(guiGraphics, editCursor, 0xFFAA2222);
             if (!this.isSigned) {
                 if (editCursor != editCursorEnd) {
@@ -848,7 +867,7 @@ public class GuiMusicSheet extends Screen {
                 }
             } else {
                 int k = this.font.width(noteTitle);
-                guiGraphics.drawString(font, noteTitle, (int) (noteImageLeftX + (noteImageWidth + noteImageLeftWidth - k) / 2.0f), noteImageY + 14, 0xFF990000, false);
+                guiGraphics.drawString(font, noteTitle, (int) (noteImageLeftX + (NOTE_IMAGE_WIDTH + NOTE_IMAGE_LEFT_WIDTH - k) / 2.0f), noteImageY + 14, 0xFF990000, false);
 
                 if (this.selfSigned) {
                     drawCursor(guiGraphics, editCursor, 0xFFAA2222);
@@ -922,14 +941,14 @@ public class GuiMusicSheet extends Screen {
     }
 
     private void drawSelectionRect(GuiGraphics guiGraphics) {
-        if (inScreen(editCursor) || inScreen(editCursorEnd) || (editCursor < sliderPosition && editCursorEnd >= sliderPosition + beatsInScreen)) {
+        if (inScreen(editCursor) || inScreen(editCursorEnd) || (editCursor < sliderPosition && editCursorEnd >= sliderPosition + BEATS_IN_SCREEN)) {
             final int selectionColor = 0x882222AA;
             int timeDrawBeginning = Math.max(editCursor - sliderPosition, 0);
-            int timeDrawEnd = Math.min(editCursorEnd - sliderPosition, beatsInScreen);
+            int timeDrawEnd = Math.min(editCursorEnd - sliderPosition, BEATS_IN_SCREEN);
 
             int x1 = noteToPixelX(timeDrawBeginning);
             int x2 = noteToPixelX(timeDrawEnd);
-            int y1 = noteImageY + noteRegionTop;
+            int y1 = noteImageY + NOTE_REGION_TOP;
             int y2 = y1 + 36 * 4;
 
             guiGraphics.fill(x1 + 1, y1, x2 + 2, y2, selectionColor);
@@ -937,24 +956,24 @@ public class GuiMusicSheet extends Screen {
     }
 
     private boolean inScreen(int time) {
-        return time >= sliderPosition && time < sliderPosition + beatsInScreen;
+        return time >= sliderPosition && time < sliderPosition + BEATS_IN_SCREEN;
     }
 
     private void drawNote(GuiGraphics guiGraphics, NoteEvent event, boolean isNeighbor) {
         int octave = octaveFromNote(event.note);
         if ((octave >= currentOctavePos && octave < currentOctavePos + 4) && (inScreen(event.time) || inScreen(event.time + event.length))) {
             int timeDrawBeginning = Math.max(event.time - sliderPosition, 0);
-            int timeDrawEnd = Math.min(event.time - sliderPosition + event.length, beatsInScreen);
+            int timeDrawEnd = Math.min(event.time - sliderPosition + event.length, BEATS_IN_SCREEN);
 
-            int xBegin = noteImageLeftX + noteRegionLeft + timeDrawBeginning * 3;
-            int xEnd = noteImageLeftX + noteRegionLeft + timeDrawEnd * 3;
+            int xBegin = noteImageLeftX + NOTE_REGION_LEFT + timeDrawBeginning * 3;
+            int xEnd = noteImageLeftX + NOTE_REGION_LEFT + timeDrawEnd * 3;
             if (xBegin == xEnd) {
                 return;
             }
             int xFillBegin = timeDrawBeginning == event.time - sliderPosition ? xBegin + 1 : xBegin;
             int xFillEnd = timeDrawEnd == event.time - sliderPosition + event.length ? xEnd - 1 : xEnd;
 
-            int y = noteImageY + noteRegionTop + (47 - event.note + IItemInstrument.minNote) * 3 + currentOctavePos * 36;
+            int y = noteImageY + NOTE_REGION_TOP + (47 - event.note + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36;
             final int outlineColor = (event == currentlyAddedNote || isNeighbor) ? 0x77000000 : 0xFF000000;
             int red = event.volume >= 64 ? 255 : event.volume * 4;
             int green = event.volume < 64 ? 255 : 255 - event.volume * 4;
@@ -1056,7 +1075,7 @@ public class GuiMusicSheet extends Screen {
     private void setSliderPos(int time) {
         time = Math.min(Math.max(time, 0), maxSliderPosition);
 
-        sliderTime.setValue((float) (time) / (float) maxSliderPosition);
+        sliderTime.setValue((float) time / (float) maxSliderPosition);
         sliderTime.applyValue();
     }
 
@@ -1081,11 +1100,11 @@ public class GuiMusicSheet extends Screen {
             if (updateSliderPos) {
                 // Update slider
                 int oldMaxSliderPos = maxSliderPosition;
-                maxSliderPosition = Math.min(Math.max(lengthBeats + beatsInScreen, 680), maxLengthBeats);
+                maxSliderPosition = Math.min(Math.max(lengthBeats + BEATS_IN_SCREEN, 680), MAX_LENGTH_BEATS);
                 if (maxSliderPosition > oldMaxSliderPos) {
                     setSliderPos(sliderPosition);
                 } else if (maxSliderPosition < oldMaxSliderPos) {
-                    setSliderPos(maxSliderPosition - beatsInScreen);
+                    setSliderPos(maxSliderPosition - BEATS_IN_SCREEN);
                 }
             }
         }
@@ -1110,30 +1129,28 @@ public class GuiMusicSheet extends Screen {
         boolean viewingSelfSigned = isSigned && selfSigned;
         boolean composing = !isSigned && !gettingSigned;
 
-        if (!gettingSigned) {
-            if (mouseButton == 1) {
-                int mx = mouseX - noteImageLeftX;
-                int my = mouseY - noteImageY;
-                if (validClick(mx, my)) {
-                    selectionStart = editCursorEnd = editCursor = ((mx - noteRegionLeft) / 3) + sliderPosition;
-                }
+        if (!gettingSigned && mouseButton == 1) {
+            int mx = mouseX - noteImageLeftX;
+            int my = mouseY - noteImageY;
+            if (validClick(mx, my)) {
+                selectionStart = editCursorEnd = editCursor = ((mx - NOTE_REGION_LEFT) / 3) + sliderPosition;
             }
         }
 
-        if (viewingSelfSigned) {
-            if (mouseButton == 0) {
-                editCursorEnd = editCursor;
-            }
+
+        if (viewingSelfSigned && mouseButton == 0) {
+            editCursorEnd = editCursor;
         }
+
         if (composing) {
             int mx = mouseX - noteImageLeftX;
             int my = mouseY - noteImageY;
             if (validClick(mx, my)) {
-                int nrx = mx - noteRegionLeft;
-                int nry = my - noteRegionTop;
+                int nrx = mx - NOTE_REGION_LEFT;
+                int nry = my - NOTE_REGION_TOP;
 
                 int time = (nrx / 3) + sliderPosition;
-                int note = 47 - (nry / 3) + IItemInstrument.minNote + currentOctavePos * 12;
+                int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + currentOctavePos * 12;
                 if (mouseButton == 0) {
                     addNote((byte) note, (short) time);
                     dirtyFlag.hasNotes = true;
@@ -1150,8 +1167,8 @@ public class GuiMusicSheet extends Screen {
             } else {
                 // Test current octave clicks
                 for (int i = 0; i < 4; i++) {
-                    final int x = noteRegionLeft - 24;
-                    final int y = noteRegionBottom - 18 - i * 36;
+                    final int x = NOTE_REGION_LEFT - 24;
+                    final int y = NOTE_REGION_BOTTOM - 18 - i * 36;
                     if (mx >= x - 10 && mx <= x + 10 && my >= y - 4 && my <= y + 12) {
                         currentOctave = currentOctavePos + i;
                         midiHandler.currentOctave = currentOctave;
@@ -1167,12 +1184,12 @@ public class GuiMusicSheet extends Screen {
     }
 
     private void pushUndo() {
-        if (undoStack.size() >= maxUndoLength) {
+        if (undoStack.size() >= MAX_UNDO_LENGTH) {
             undoStack.removeLast();
         }
         ArrayList<NoteEvent> stackNotes = new ArrayList<>(notes.size());
         for (NoteEvent note : notes) {
-            stackNotes.add(note.clone());
+            stackNotes.add(new NoteEvent(note));
         }
         undoStack.push(stackNotes);
     }
@@ -1239,8 +1256,9 @@ public class GuiMusicSheet extends Screen {
 
     @Override
     public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        if (this.getFocused() != null && this.isDragging()) {
-            this.getFocused().mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        GuiEventListener focused = getFocused();
+        if (focused != null && this.isDragging()) {
+            focused.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
             return true;
         }
 
@@ -1254,22 +1272,27 @@ public class GuiMusicSheet extends Screen {
         int mx = mouseX - noteImageLeftX;
         int my = mouseY - noteImageY;
 
-        // if right button is pressed
-        if (mouseButton == 1) {
-            if (validClick(mx, my)) {
-                int noteX = ((mx - noteRegionLeft) / 3) + sliderPosition;
-                if (selectionStart > noteX) {
-                    editCursor = noteX;
-                } else {
-                    editCursorEnd = noteX;
+        switch (mouseButton) {
+            case 0 -> {  // Left-click
+                if (currentlyAddedNote != null && validClick(mx, my)) {
+                    int time = ((mx - NOTE_REGION_LEFT) / 3) + sliderPosition;
+                    if (currentlyAddedNote.time < time && time - currentlyAddedNote.time <= MAX_NOTE_LENGTH) {
+                        currentlyAddedNote.length = (byte) (time - currentlyAddedNote.time);
+                    }
                 }
             }
-        } else if (mouseButton == 0) {
-            if (currentlyAddedNote != null && validClick(mx, my)) {
-                int time = ((mx - noteRegionLeft) / 3) + sliderPosition;
-                if (currentlyAddedNote.time < time && time - currentlyAddedNote.time <= maxNoteLength) {
-                    currentlyAddedNote.length = (byte) (time - currentlyAddedNote.time);
+            case 1 -> {  // Right-click
+                if (validClick(mx, my)) {
+                    int noteX = ((mx - NOTE_REGION_LEFT) / 3) + sliderPosition;
+                    if (selectionStart > noteX) {
+                        editCursor = noteX;
+                    } else {
+                        editCursorEnd = noteX;
+                    }
                 }
+            }
+            default -> {
+                // Do nothing
             }
         }
 
@@ -1291,7 +1314,9 @@ public class GuiMusicSheet extends Screen {
     }
 
     private void putSpace(int x) {
-        if (x == maxLengthBeats - 1) return;
+        if (x == MAX_LENGTH_BEATS - 1) {
+            return;
+        }
         addEditCursor(1);
         if (lengthBeats == 0 || lengthBeats <= x) {
             return;
@@ -1300,13 +1325,12 @@ public class GuiMusicSheet extends Screen {
         pushUndo();
         dirtyFlag.hasNotes = true;
         dirtyFlag.hasLength = true;
-        for (int i = 0; i < notes.size(); i++) {
+        for (int i = notes.size() - 1; i >= 0; i--) {
             NoteEvent event = notes.get(i);
             if (event.time > x) {
-                event.time += 1;
-                if (event.time + event.length > maxLengthBeats) {
+                event.time += (short) 1;
+                if (event.time + event.length > MAX_LENGTH_BEATS) {
                     notes.remove(i);
-                    i--;
                 }
             }
         }
@@ -1321,7 +1345,7 @@ public class GuiMusicSheet extends Screen {
                 toBeCopied.add(event);
             }
         }
-        buffer.writeByte(copyBeginByte);
+        buffer.writeByte(COPY_BEGIN_BYTE);
         buffer.writeInt(editCursorEnd - editCursor);
         buffer.writeInt(toBeCopied.size());
         for (NoteEvent event : toBeCopied) {
@@ -1349,9 +1373,9 @@ public class GuiMusicSheet extends Screen {
             }
 
             int length = 0;
-            ArrayList<NoteEvent> toBePasted;
+            List<NoteEvent> toBePasted;
             // Check begin byte
-            if (byteArray[0] != copyBeginByte) {
+            if (byteArray[0] != COPY_BEGIN_BYTE) {
                 // Old version
 
                 // Check if all values are valid
@@ -1414,17 +1438,19 @@ public class GuiMusicSheet extends Screen {
 
     private void delAtCursor(int x) {
         boolean doSort = false;
-        for (int i = 0; i < notes.size(); i++) {
+        for (int i = notes.size() - 1; i >= 0; i--) {
             NoteEvent event = notes.get(i);
-            if (event.time > x) {
-                event.time -= 1;
+            int start = event.time;
+            int end = start + event.length;
+
+            if (start > x) {
+                event.time -= (short) 1;
                 doSort = true;
-            } else if (event.time < x && event.time + event.length > x) {
+            } else if (start < x && end > x) {
                 event.length--;
-            } else if (event.time == x) {
+            } else if (start == x) {
                 if (event.length == 1) {
                     notes.remove(i);
-                    i--;
                 } else {
                     event.length--;
                 }
@@ -1442,12 +1468,8 @@ public class GuiMusicSheet extends Screen {
         super.keyReleased(keyCode, scanCode, modifiers);
         int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
         int lastScanCode = firstScanCode + 11;
-        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
-            if (currentOctave >= 0) {
-                if (recording) {
-                    endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave)));
-                }
-            }
+        if (scanCode >= firstScanCode && scanCode <= lastScanCode && currentOctave >= 0 && recording) {
+            endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * currentOctave)));
         }
         return true;
     }
@@ -1489,6 +1511,7 @@ public class GuiMusicSheet extends Screen {
                         }
                     }
                     default -> {
+                        // do nothing
                     }
                 }
                 return true;
@@ -1535,7 +1558,7 @@ public class GuiMusicSheet extends Screen {
                     case GLFW.GLFW_KEY_SPACE -> putSpace(x - 1);
                     case GLFW.GLFW_KEY_RIGHT -> {
                         addEditCursor(1);
-                        if (editCursor > maxLengthBeats - 1) setEditCursor(maxLengthBeats - 1);
+                        if (editCursor > MAX_LENGTH_BEATS - 1) setEditCursor(MAX_LENGTH_BEATS - 1);
                     }
                     case GLFW.GLFW_KEY_LEFT -> {
                         addEditCursor(-1);
@@ -1550,7 +1573,7 @@ public class GuiMusicSheet extends Screen {
                     }
                     case GLFW.GLFW_KEY_V -> {
                         if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                            decodeFromClipboard(!((modifiers & GLFW.GLFW_MOD_SHIFT) == GLFW.GLFW_MOD_SHIFT));
+                            decodeFromClipboard((modifiers & GLFW.GLFW_MOD_SHIFT) != GLFW.GLFW_MOD_SHIFT);
                         }
                     }
                     case GLFW.GLFW_KEY_H -> toggleHelp();
@@ -1583,17 +1606,15 @@ public class GuiMusicSheet extends Screen {
                             } else {
                                 boolean changed = false;
                                 for (NoteEvent event : notes) {
-                                    if (event.endTime() >= editCursor && event.time <= editCursorEnd) {
-                                        if (IItemInstrument.noteToId(event.note) / 12 > 0) {
-                                            if (!changed) {
-                                                pushUndo();
-                                                dirtyFlag.hasNotes = true;
-                                                dirtyFlag.hasLength = true;
+                                    if (event.endTime() >= editCursor && event.time <= editCursorEnd && IItemInstrument.noteToId(event.note) / 12 > 0) {
+                                        if (!changed) {
+                                            pushUndo();
+                                            dirtyFlag.hasNotes = true;
+                                            dirtyFlag.hasLength = true;
 
-                                                changed = true;
-                                            }
-                                            event.note -= 12;
+                                            changed = true;
                                         }
+                                        event.note -= (byte) 12;
                                     }
                                 }
                                 resetEditCursorEnd = false;
@@ -1613,17 +1634,15 @@ public class GuiMusicSheet extends Screen {
                         } else {
                             boolean changed = false;
                             for (NoteEvent event : notes) {
-                                if (event.endTime() >= editCursor && event.time <= editCursorEnd) {
-                                    if (IItemInstrument.noteToId(event.note) / 12 < 7) {
-                                        if (!changed) {
-                                            pushUndo();
-                                            dirtyFlag.hasNotes = true;
-                                            dirtyFlag.hasLength = true;
+                                if (event.endTime() >= editCursor && event.time <= editCursorEnd && IItemInstrument.noteToId(event.note) / 12 < 7) {
+                                    if (!changed) {
+                                        pushUndo();
+                                        dirtyFlag.hasNotes = true;
+                                        dirtyFlag.hasLength = true;
 
-                                            changed = true;
-                                        }
-                                        event.note += 12;
+                                        changed = true;
                                     }
+                                    event.note += (byte) 12;
                                 }
                             }
                             resetEditCursorEnd = false;
@@ -1633,15 +1652,13 @@ public class GuiMusicSheet extends Screen {
                     default -> {
                         int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
                         int lastScanCode = firstScanCode + 11;
-                        if (scanCode >= firstScanCode && scanCode <= lastScanCode) {
-                            if (currentOctave >= 0) {
-                                if (recording) {
-                                    startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave)), (byte) 100);
-                                } else {
-                                    putSpace(x - 1);
-                                    addNote((byte) ((scanCode - firstScanCode + IItemInstrument.minNote) + 12 * currentOctave), (short) (x), false);
-                                    finishAddingNote();
-                                }
+                        if (scanCode >= firstScanCode && scanCode <= lastScanCode && currentOctave >= 0) {
+                            if (recording) {
+                                startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * currentOctave)), (byte) 100);
+                            } else {
+                                putSpace(x - 1);
+                                addNote((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * currentOctave), (short) x, false);
+                                finishAddingNote();
                             }
                         }
                     }
@@ -1656,21 +1673,30 @@ public class GuiMusicSheet extends Screen {
 
     private void deleteSelected() {
         boolean doSort = false;
-        for (int i = 0; i < notes.size(); i++) {
+        int cutLen = editCursorEnd - editCursor;
+
+        for (int i = notes.size() - 1; i >= 0; i--) {
             NoteEvent event = notes.get(i);
-            if (event.time >= editCursor && event.endTime() <= editCursorEnd) {
+            int start = event.time;
+            int end = event.endTime();
+
+            if (start >= editCursor && end <= editCursorEnd) {
+                // fully inside -> remove
                 notes.remove(i);
-                i--;
-            } else if (event.time < editCursor && event.endTime() >= editCursor && event.endTime() <= editCursorEnd) {
-                event.length = (byte) (editCursor - event.time);
-            } else if (event.time >= editCursor && event.time <= editCursorEnd && event.endTime() > editCursorEnd) {
-                event.length = (byte) (event.endTime() - editCursorEnd);
+            } else if (start < editCursor && end >= editCursor && end <= editCursorEnd) {
+                // overlaps tail -> trim to editCursor
+                event.length = (byte) (editCursor - start);
+            } else if (start >= editCursor && start <= editCursorEnd) {
+                // starts in cut, continues after -> shift the start to after cut, shorten
+                event.length = (byte) (end - editCursorEnd);
                 event.time = (short) (editCursor + 1);
                 doSort = true;
-            } else if (event.time < editCursor && event.endTime() > editCursorEnd) {
-                event.length = (byte) (editCursor - event.time);
-            } else if (event.time > editCursorEnd) {
-                event.time -= (short) (editCursorEnd - editCursor);
+            } else if (start < editCursor && end > editCursorEnd) {
+                // spans across the whole cut -> trim to before cut
+                event.length = (byte) (editCursor - start);
+            } else if (start > editCursorEnd) {
+                // after cut -> shift left
+                event.time -= (short) cutLen;
                 doSort = true;
             }
         }
@@ -1697,11 +1723,9 @@ public class GuiMusicSheet extends Screen {
         super.charTyped(typedChar, something);
 
         if (!this.isSigned) {
-            if (this.gettingSigned) {
-                if (this.noteTitle.length() < 16 && StringUtil.isAllowedChatCharacter(typedChar)) {
-                    this.noteTitle = this.noteTitle + typedChar;
-                    this.updateButtons();
-                }
+            if (this.gettingSigned && this.noteTitle.length() < 16 && StringUtil.isAllowedChatCharacter(typedChar)) {
+                this.noteTitle = this.noteTitle + typedChar;
+                this.updateButtons();
             }
             return true;
         }
@@ -1750,11 +1774,11 @@ public class GuiMusicSheet extends Screen {
                             noteTitle, (byte) previewInstrument, prevInsLocked, id, version, highlightInterval);
                     NotesPartAckFromServerPacketHandler.addCallback(id, () -> sendToServer(pack));
                     for (int i = 0; i < partsCount; i++) {
-                        SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(id, partsCount, i, notes.subList(i * MAX_NOTES_IN_PACKET, Math.min((i + 1) * MAX_NOTES_IN_PACKET, notes.size())));
-                        sendToServer(partPack);
+                        List<NoteEvent> part = notes.subList(i * MAX_NOTES_IN_PACKET, Math.min((i + 1) * MAX_NOTES_IN_PACKET, notes.size()));
+                        sendToServer(new SendNotesPartToServerPacket(id, partsCount, i, part));
                     }
                 } catch (ImportMusicSendPacket.NotesTooLargeException ex) {
-                    throw new RuntimeException(ex);
+                    Mod.LOGGER.error("Could not send partial notes to server:", ex);
                 }
             }
         }
@@ -1764,7 +1788,7 @@ public class GuiMusicSheet extends Screen {
     }
 
     private boolean validClick(int x, int y) {
-        return x <= noteRegionRight && x >= noteRegionLeft && y <= noteRegionBottom && y >= noteRegionTop;
+        return x <= NOTE_REGION_RIGHT && x >= NOTE_REGION_LEFT && y <= NOTE_REGION_BOTTOM && y >= NOTE_REGION_TOP;
     }
 
     public enum MidiControl {
@@ -1817,9 +1841,9 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void renderWidget(@NotNull GuiGraphics guiGraphics, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
-            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), (float) this.xTexStart, (float) yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
         }
     }
@@ -1839,12 +1863,12 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void renderWidget(@NotNull GuiGraphics guiGraphics, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
 
-            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), (float) this.xTexStart, (float) yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             if (prevInsLocked) {
-                guiGraphics.blit(resourceLocation, this.getX(), this.getY(), 0, this.texHeight - this.height, this.width, this.height, this.texWidth, this.texHeight);
+                guiGraphics.blit(resourceLocation, this.getX(), this.getY(), 0, (float) this.texHeight - this.height, this.width, this.height, this.texWidth, this.texHeight);
             }
 
             postRender();
@@ -1859,14 +1883,14 @@ public class GuiMusicSheet extends Screen {
         public final Button buttonExit;
         public final Button buttonPrev;
         public final BetterSlider sliderVelocity;
-        private final int noteY = 18;
-        private final int lengthY = 29;
+        private static final int NOTE_Y = 18;
+        private static final int LENGTH_Y = 29;
         private final AbstractWidget[] children = new AbstractWidget[7];
-        private final String[] noteNames = {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
-        private final String[] noteNamesSolfege = {"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
+        private static final String[] noteNames = {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
+        private static final String[] noteNamesSolfege = {"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
         private NoteEvent event;
         private NoteSound previewSound;
-        private boolean changed = false;
+        private boolean changed;
 
         public NoteEditBox(int x, int y, int w, int h, Component msg) {
             super(x, y, w, h, msg);
@@ -1877,42 +1901,42 @@ public class GuiMusicSheet extends Screen {
                     event.volume = (byte) Math.round(value * 127.0f);
                 }
             };
-            buttonNoteDown = Button.builder(Component.translatable("note.leftButton"), (button) -> {
+            buttonNoteDown = Button.builder(Component.translatable(NOTE_LEFT_STR_KEY), button -> {
                 if (event.note > 0) {
                     setChanged();
                     event.note--;
                     playPrev();
                 }
             }).bounds(0, 0, 10, 8).build();
-            buttonNoteUp = Button.builder(Component.translatable("note.rightButton"), (button) -> {
+            buttonNoteUp = Button.builder(Component.translatable(NOTE_RIGHT_STR_KEY), button -> {
                 if (event.note < 95) {
                     setChanged();
                     event.note++;
                     playPrev();
                 }
             }).bounds(0, 0, 10, 8).build();
-            buttonLengthDown = Button.builder(Component.translatable("note.leftButton"), (button) -> {
+            buttonLengthDown = Button.builder(Component.translatable(NOTE_LEFT_STR_KEY), button -> {
                 if (event.length > 1) {
                     setChanged();
                     event.length--;
                     playPrev();
                 }
             }).bounds(0, 0, 10, 8).build();
-            buttonLengthUp = Button.builder(Component.translatable("note.rightButton"), (button) -> {
-                if (event.length < maxNoteLength) {
+            buttonLengthUp = Button.builder(Component.translatable(NOTE_RIGHT_STR_KEY), button -> {
+                if (event.length < MAX_NOTE_LENGTH) {
                     setChanged();
                     event.length++;
                     playPrev();
                 }
             }).bounds(0, 0, 10, 8).build();
-            buttonExit = Button.builder(Component.translatable("note.exitButton"), (button) -> {
+            buttonExit = Button.builder(Component.translatable("note.exitButton"), button -> {
                 this.visible = false;
                 this.active = false;
                 if (previewSound != null && !previewSound.isStopped()) {
                     previewSound.stopSound();
                 }
             }).bounds(0, 0, 10, 10).build();
-            buttonPrev = Button.builder(Component.translatable("note.startPreviewButton"), (button) -> playPrev()).
+            buttonPrev = Button.builder(Component.translatable("note.startPreviewButton"), button -> playPrev()).
                     bounds(0, 0, 10, 10).build();
 
             children[0] = sliderVelocity;
@@ -1948,9 +1972,9 @@ public class GuiMusicSheet extends Screen {
                 Font font = minecraft.font;
                 int noteId = IItemInstrument.noteToId(event.note);
                 int octave = noteId / 12;
-                guiGraphics.drawString(font, noteNames[noteId % 12] + (noteId % 12 < 3 ? octave : octave + 1), getX() + 15, getY() + noteY, 0xFFD3C200, false);
-                guiGraphics.drawString(font, noteNamesSolfege[noteId % 12], getX() + 35, getY() + noteY, 0xFFD3C200, false);
-                guiGraphics.drawString(font, (String.valueOf(event.length)) + (event.length == 1 ? " Beat" : " Beats"), getX() + 15, getY() + lengthY, 0xFF495EE5, false);
+                guiGraphics.drawString(font, noteNames[noteId % 12] + (noteId % 12 < 3 ? octave : octave + 1), getX() + 15, getY() + NOTE_Y, 0xFFD3C200, false);
+                guiGraphics.drawString(font, noteNamesSolfege[noteId % 12], getX() + 35, getY() + NOTE_Y, 0xFFD3C200, false);
+                guiGraphics.drawString(font, event.length + (event.length == 1 ? " Beat" : " Beats"), getX() + 15, getY() + LENGTH_Y, 0xFF495EE5, false);
 
                 for (AbstractWidget widget : children) {
                     widget.render(guiGraphics, mouseX, mouseY, partialTicks);
@@ -1978,14 +2002,14 @@ public class GuiMusicSheet extends Screen {
             sliderVelocity.applyValue();
 
             buttonNoteDown.setX(x + 3);
-            buttonNoteDown.setY(y + noteY);
+            buttonNoteDown.setY(y + NOTE_Y);
             buttonNoteUp.setX(x + 59);
-            buttonNoteUp.setY(y + noteY);
+            buttonNoteUp.setY(y + NOTE_Y);
 
             buttonLengthDown.setX(x + 3);
-            buttonLengthDown.setY(y + lengthY);
+            buttonLengthDown.setY(y + LENGTH_Y);
             buttonLengthUp.setX(x + 59);
-            buttonLengthUp.setY(y + lengthY);
+            buttonLengthUp.setY(y + LENGTH_Y);
 
             buttonExit.setX(x + 59);
             buttonExit.setY(y + 2);

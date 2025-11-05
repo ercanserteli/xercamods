@@ -6,6 +6,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 
 import static xerca.xercamusic.client.ClientStuff.sendToServer;
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
+import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_NOTES;
 
 public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<ImportMusicPacket> {
     private static void processMessage(ImportMusicPacket msg, LocalPlayer player) {
@@ -24,26 +26,30 @@ public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayPayloa
             if (tag == null) {
                 throw new IOException("File not found!");
             }
-            try {
-                ImportMusicSendPacket pack = ImportMusicSendPacket.create(tag);
-                sendToServer(pack);
-            } catch (ImportMusicSendPacket.NotesTooLargeException e) {
-                if (e.id == null) {
-                    throw new IOException("Music has many notes, but no UUID!");
-                }
-                int partsCount = (int) Math.ceil((double) e.notes.size() / (double) MAX_NOTES_IN_PACKET);
-                tag.remove("notes");
-                ImportMusicSendPacket pack = ImportMusicSendPacket.create(tag);
-                NotesPartAckFromServerPacketHandler.addCallback(e.id, () -> sendToServer(pack));
-                for (int i = 0; i < partsCount; i++) {
-                    SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(e.id, partsCount, i, e.notes.subList(i * MAX_NOTES_IN_PACKET, Math.min((i + 1) * MAX_NOTES_IN_PACKET, e.notes.size())));
-                    sendToServer(partPack);
-                }
-            }
+            sendMusic(tag);
         } catch (IOException | ImportMusicSendPacket.NotesTooLargeException | NullPointerException e) {
-            e.printStackTrace();
+            Mod.LOGGER.error("Exception while reading music sheet: ", e);
             if (player != null) {
                 player.sendSystemMessage(Component.translatable("xercamusic.import.fail.4", filepath).withStyle(ChatFormatting.RED));
+            }
+        }
+    }
+
+    private static void sendMusic(CompoundTag tag) throws IOException, ImportMusicSendPacket.NotesTooLargeException {
+        try {
+            ImportMusicSendPacket pack = ImportMusicSendPacket.create(tag);
+            sendToServer(pack);
+        } catch (ImportMusicSendPacket.NotesTooLargeException e) {
+            if (e.id == null) {
+                throw new IOException("Music has many notes, but no UUID!");
+            }
+            int partsCount = (int) Math.ceil((double) e.notes.size() / (double) MAX_NOTES_IN_PACKET);
+            tag.remove(KEY_NOTES);
+            ImportMusicSendPacket pack = ImportMusicSendPacket.create(tag);
+            NotesPartAckFromServerPacketHandler.addCallback(e.id, () -> sendToServer(pack));
+            for (int i = 0; i < partsCount; i++) {
+                SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(e.id, partsCount, i, e.notes.subList(i * MAX_NOTES_IN_PACKET, Math.min((i + 1) * MAX_NOTES_IN_PACKET, e.notes.size())));
+                sendToServer(partPack);
             }
         }
     }

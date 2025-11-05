@@ -30,8 +30,7 @@ public class MidiHandler {
                 List<Transmitter> transmitters = device.getTransmitters();
 
                 for (Transmitter transmitter : transmitters) {
-                    transmitter.setReceiver(new MidiInputReceiver(device.getDeviceInfo().toString())
-                    );
+                    transmitter.setReceiver(new MidiInputReceiver(device.getDeviceInfo().toString()));
                 }
 
                 Transmitter trans = device.getTransmitter();
@@ -40,10 +39,10 @@ public class MidiHandler {
                 device.open();
                 devices.add(device);
 
-                Mod.LOGGER.debug("{} was opened", device.getDeviceInfo());
+                Mod.LOGGER.debug("{} was opened", device::getDeviceInfo);
 
             } catch (MidiUnavailableException exception) {
-                Mod.LOGGER.debug("Midi unavailable: {}", exception.getMessage());
+                Mod.LOGGER.debug("Midi unavailable: ", exception);
             }
         }
     }
@@ -72,8 +71,8 @@ public class MidiHandler {
         public static final int DATA_STOP = 105;
         public static final int DATA_END = 104;
         public static final int DATA_BEGINNING = 103;
-        static final float ym = 0.7f;
-        static final float b = (1.f / ym - 1) * (1.f / ym - 1);
+        static final float YM = 0.7f;
+        static final float B = (1.f / YM - 1) * (1.f / YM - 1);
         @SuppressWarnings("unused")
         public final String name;
 
@@ -82,48 +81,60 @@ public class MidiHandler {
         }
 
         private static float volumeCurve(float x) {
-            return (float) (Math.pow(b, x) / (b - 1.f) - 1.f / (b - 1.f));
+            return (float) (Math.pow(B, x) / (B - 1.f) - 1.f / (B - 1.f));
+        }
+
+        @SuppressWarnings("FutureReturnValueIgnored")
+        private static void submitAndCheck(Runnable r) {
+            Minecraft.getInstance().submit(r)
+                    .whenComplete((v, t) -> {
+                        if (t != null) {
+                            Mod.LOGGER.error("Midi controller task failed", t);
+                        }
+                    });
         }
 
         @Override
         public void send(MidiMessage msg, long timeStamp) {
             if (msg instanceof ShortMessage sm) {
-                if (sm.getCommand() == CONTROL && midiControlHandler != null) {
+                int command = sm.getCommand();
+                if (command == CONTROL && midiControlHandler != null) {
                     int data = sm.getData1();
                     switch (data) {
                         case DATA_BEGINNING ->
-                                Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.BEGINNING));
-                        case DATA_END ->
-                                Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.END));
+                                submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.BEGINNING));
+                        case DATA_END -> submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.END));
                         case DATA_STOP ->
-                                Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.STOP));
+                                submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.STOP));
                         case DATA_PREVIEW ->
-                                Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.PREVIEW));
+                                submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.PREVIEW));
                         case DATA_RECORD ->
-                                Minecraft.getInstance().submit(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.RECORD));
+                                submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.RECORD));
+                        default -> Mod.LOGGER.info("Unhandled midi control {}", data);
                     }
                     return;
                 }
 
                 int key = sm.getData1() - 21 + 12 * currentOctave;
                 int velocity = sm.getData2();
-                System.out.println("Note message " + (sm.getCommand() == NOTE_ON ? "on" : "off") + " key: " + key + " vel: " + velocity);
+                Mod.LOGGER.debug("Note message {} key: {} vel: {}", command == NOTE_ON ? "on" : "off", key, velocity);
                 if (key < 0 || key > 95) {
                     return;
                 }
 
-                if (sm.getCommand() == NOTE_ON && velocity > 0) {
-                    float vel = ((float) velocity) / 128.0f;
+                if (command == NOTE_ON && velocity > 0) {
+                    float vel = velocity / 128.0f;
                     float vol = volumeCurve(vel);
-                    Minecraft.getInstance().submit(() -> noteOnHandler.accept(new MidiData(key, vol)));
-                } else if (sm.getCommand() == NOTE_OFF || (sm.getCommand() == NOTE_ON && velocity == 0)) {
-                    Minecraft.getInstance().submit(() -> noteOffHandler.accept(key));
+                    submitAndCheck(() -> noteOnHandler.accept(new MidiData(key, vol)));
+                } else if (command == NOTE_OFF || (command == NOTE_ON && velocity == 0)) {
+                    submitAndCheck(() -> noteOffHandler.accept(key));
                 }
             }
         }
 
         @Override
         public void close() {
+            // Do nothing
         }
     }
 }

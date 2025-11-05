@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 
 class RenderNothing<T extends Entity> extends EntityRenderer<T> {
-    static final ResourceLocation texture = Mod.id("textures/dot.png");
+    static final ResourceLocation TEXTURE = Mod.id("textures/dot.png");
 
     RenderNothing(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -16,6 +16,6 @@ class RenderNothing<T extends Entity> extends EntityRenderer<T> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Entity entity) {
-        return texture;
+        return TEXTURE;
     }
 }

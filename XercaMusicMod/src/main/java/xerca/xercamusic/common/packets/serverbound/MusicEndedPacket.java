@@ -12,18 +12,12 @@ public record MusicEndedPacket(int playerId) implements CustomPacketPayload {
     public static final StreamCodec<FriendlyByteBuf, MusicEndedPacket> PACKET_CODEC = StreamCodec.ofMember(MusicEndedPacket::encode, MusicEndedPacket::decode);
 
     public static MusicEndedPacket decode(FriendlyByteBuf buf) {
-        try {
-            int playerId = buf.readInt();
-            return new MusicEndedPacket(playerId);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicEndedPacket: " + ioe);
-            return null;
-        }
+        int playerId = buf.readInt();
+        return new MusicEndedPacket(playerId);
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeInt(playerId);
-        return buf;
     }
 
     @Override

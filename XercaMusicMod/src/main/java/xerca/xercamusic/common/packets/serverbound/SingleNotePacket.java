@@ -14,28 +14,22 @@ public record SingleNotePacket(int note, IItemInstrument instrumentItem, boolean
     public static final StreamCodec<FriendlyByteBuf, SingleNotePacket> PACKET_CODEC = StreamCodec.ofMember(SingleNotePacket::encode, SingleNotePacket::decode);
 
     public static SingleNotePacket decode(FriendlyByteBuf buf) {
-        try {
-            int note = buf.readInt();
-            int instrumentId = buf.readInt();
-            boolean isStop = buf.readBoolean();
-            float volume = buf.readFloat();
-            if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
-                throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
-            }
-            IItemInstrument instrumentItem = Items.instruments[instrumentId];
-            return new SingleNotePacket(note, instrumentItem, isStop, volume);
-        } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading SingleNotePacket:", ioe);
-            return null;
+        int note = buf.readInt();
+        int instrumentId = buf.readInt();
+        boolean isStop = buf.readBoolean();
+        float volume = buf.readFloat();
+        if (instrumentId < 0 || instrumentId >= Items.INSTRUMENTS.size()) {
+            throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
         }
+        IItemInstrument instrumentItem = Items.INSTRUMENTS.get(instrumentId);
+        return new SingleNotePacket(note, instrumentItem, isStop, volume);
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeInt(note);
         buf.writeInt(instrumentItem.getInstrumentId());
         buf.writeBoolean(isStop);
         buf.writeFloat(volume);
-        return buf;
     }
 
     @Override

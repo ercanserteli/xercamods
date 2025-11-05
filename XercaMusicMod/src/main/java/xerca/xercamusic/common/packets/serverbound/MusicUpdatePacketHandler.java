@@ -8,7 +8,7 @@ import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<MusicUpdatePacket> {
@@ -31,7 +31,7 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
                 Triggers.BECOME_MUSICIAN.trigger(pl);
             }
             if (flag.hasNotes) {
-                ArrayList<NoteEvent> notes = msg.notes();
+                List<NoteEvent> notes = msg.notes();
                 UUID id = note.get(Items.SHEET_ID);
                 if (notes == null) {
                     // Get if a large sheet was sent in parts

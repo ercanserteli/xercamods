@@ -20,7 +20,7 @@ import xerca.xercapaint.SoundEvents;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-import static xerca.xercapaint.PaletteUtil.emptinessColor;
+import static xerca.xercapaint.PaletteUtil.EMPTINESS_COLOR;
 
 public abstract class BasePalette extends Screen {
     protected static final ResourceLocation paletteTextures = Mod.id("textures/gui/palette.png");
@@ -158,7 +158,7 @@ public abstract class BasePalette extends Screen {
 
                 guiGraphics.blit(RenderType::guiTextured, paletteTextures, x - 8, y - 8, dyeSpriteX, i * dyeSpriteSize, dyeSpriteSize, dyeSpriteSize, 256, 256);
             } else {
-                guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, emptinessColor.rgbVal());
+                guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, EMPTINESS_COLOR.rgbVal());
             }
         }
 

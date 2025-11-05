@@ -13,9 +13,11 @@ import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 import java.util.*;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
+import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_ID;
+import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_VERSION;
 
-public class MusicManager {
-    public static final Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
+public final class MusicManager {
+    private static final Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
 
     public static MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
@@ -34,7 +36,7 @@ public class MusicManager {
         return null;
     }
 
-    public static void setMusicData(UUID id, int ver, ArrayList<NoteEvent> notes, MinecraftServer server) {
+    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         NoteEvent.sortNotes(notes);
@@ -43,7 +45,7 @@ public class MusicManager {
         savedDataMusic.setDirty();
     }
 
-    public static ArrayList<NoteEvent> getFinishedNotesFromBuffer(UUID id) {
+    public static List<NoteEvent> getFinishedNotesFromBuffer(UUID id) {
         if (MusicManager.TEMP_NOTES_MAP.containsKey(id)) {
             MusicManager.TempNotesBuffer buffer = MusicManager.TEMP_NOTES_MAP.get(id);
             if (buffer.isFinished()) {
@@ -70,7 +72,7 @@ public class MusicManager {
         return buffer.isFinished();
     }
 
-    public record MusicData(int version, ArrayList<NoteEvent> notes) {
+    public record MusicData(int version, List<NoteEvent> notes) {
     }
 
     public static class SavedDataMusic extends SavedData {
@@ -92,7 +94,7 @@ public class MusicManager {
                     if (nbt instanceof CompoundTag musicData) {
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, musicData);
-                        musicDataMap.put(musicData.getUUID("id"), new MusicData(musicData.getInt("ver"), notes));
+                        musicDataMap.put(musicData.getUUID(KEY_ID), new MusicData(musicData.getInt(KEY_VERSION), notes));
                     }
                 }
 
@@ -107,8 +109,8 @@ public class MusicManager {
             ListTag musicDataList = new ListTag();
             for (Map.Entry<UUID, MusicData> entry : musicMap.entrySet()) {
                 CompoundTag nbt = new CompoundTag();
-                nbt.putUUID("id", entry.getKey());
-                nbt.putInt("ver", entry.getValue().version);
+                nbt.putUUID(KEY_ID, entry.getKey());
+                nbt.putInt(KEY_VERSION, entry.getValue().version);
                 NoteEvent.fillNBTFromArray(entry.getValue().notes, nbt);
                 musicDataList.add(nbt);
             }
@@ -150,7 +152,7 @@ public class MusicManager {
             return result;
         }
 
-        public ArrayList<NoteEvent> joinParts() {
+        public List<NoteEvent> joinParts() {
             ArrayList<NoteEvent> notes = new ArrayList<>(partsCount * MAX_NOTES_IN_PACKET);
             for (List<NoteEvent> notesPart : notesParts) {
                 notes.addAll(notesPart);
