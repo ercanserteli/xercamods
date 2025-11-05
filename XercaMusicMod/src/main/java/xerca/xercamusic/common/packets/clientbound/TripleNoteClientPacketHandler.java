@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
 
 import static xerca.xercamusic.common.Mod.onlyCallOnClient;
@@ -14,7 +15,7 @@ public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
         IItemInstrument.InsSound sound1 = msg.instrumentItem().getSound(msg.note1());
         IItemInstrument.InsSound sound2 = msg.instrumentItem().getSound(msg.note2());
         IItemInstrument.InsSound sound3 = msg.instrumentItem().getSound(msg.note3());
-        if (sound1 == null || sound2 == null || sound3 == null) {
+        if (sound1 == null || sound2 == null || sound3 == null || entity == null) {
             return;
         }
 
@@ -22,9 +23,13 @@ public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
         double y = entity.getY();
         double z = entity.getZ();
 
-        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound1.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound1.pitch(), (byte) 10));
-        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound2.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound2.pitch(), (byte) 10));
-        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound3.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound3.pitch(), (byte) 10));
+        try {
+            onlyCallOnClient(() -> () -> ClientStuff.playNote(sound1.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound1.pitch(), (byte) 10));
+            onlyCallOnClient(() -> () -> ClientStuff.playNote(sound2.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound2.pitch(), (byte) 10));
+            onlyCallOnClient(() -> () -> ClientStuff.playNote(sound3.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound3.pitch(), (byte) 10));
+        } catch (Exception e) {
+            Mod.LOGGER.warn("Exception while playing triple note", e);
+        }
     }
 
     @Override

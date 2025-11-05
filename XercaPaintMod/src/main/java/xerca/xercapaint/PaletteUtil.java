@@ -3,12 +3,14 @@ package xerca.xercapaint;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
-    final public static Color emptinessColor = new Color(255, 236, 229);
+    public static final Color EMPTINESS_COLOR = new Color(255, 236, 229);
 
     public static class Color {
         public static final Color WHITE = new Color(0xFFFFFFFF);
 
-        public int r, g, b;
+        public int r;
+        public int g;
+        public int b;
 
         public Color(int r, int g, int b) {
             this.r = r;
@@ -30,7 +32,7 @@ public class PaletteUtil {
             return val;
         }
 
-        static public Color mix(Color a, Color b, float ratio) {
+        public static Color mix(Color a, Color b, float ratio) {
             if (ratio == 1.f) {
                 return a;
             } else if (ratio == 0.f) {
@@ -82,7 +84,7 @@ public class PaletteUtil {
 
         public void calculateResult() {
             if (numberOfColors == 0) {
-                this.result = emptinessColor;
+                this.result = EMPTINESS_COLOR;
                 return;
             }
             int averageRed = totalRed / numberOfColors;

@@ -40,7 +40,7 @@ public class ConfettiParticlePacket extends ParticlePacket implements IPacket {
         try {
             result.read(buf);
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ConfettiParticlePacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading ConfettiParticlePacket: ", ioe);
             return null;
         }
         result.messageIsValid = true;

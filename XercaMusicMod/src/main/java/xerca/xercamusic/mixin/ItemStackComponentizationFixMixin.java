@@ -16,6 +16,9 @@ import xerca.xercamusic.common.Mod;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static xerca.xercamusic.common.item.ItemMusicSheet.*;
+
+@SuppressWarnings("unused")
 @Mixin(ItemStackComponentizationFix.class)
 public class ItemStackComponentizationFixMixin {
     @Inject(at = @At("TAIL"), method = "fixItemStack(Lnet/minecraft/util/datafix/fixes/ItemStackComponentizationFix$ItemStackData;Lcom/mojang/serialization/Dynamic;)V")
@@ -33,7 +36,7 @@ public class ItemStackComponentizationFixMixin {
 
             Mod.LOGGER.debug("Found a music sheet, porting it to the component format");
 
-            OptionalDynamic<?> id = itemStackData.removeTag("id");
+            OptionalDynamic<?> id = itemStackData.removeTag(KEY_ID);
             id.get().ifSuccess((Dynamic<?> dynamic) -> {
                 UUID sheetId = getUuidFromDynamic.apply(dynamic);
                 if (sheetId != null) {
@@ -41,16 +44,16 @@ public class ItemStackComponentizationFixMixin {
                 }
             });
 
-            itemStackData.moveTagToComponent("generation", "xercamusic:sheet_generation");
-            itemStackData.moveTagToComponent("ver", "xercamusic:sheet_version");
-            itemStackData.moveTagToComponent("l", "xercamusic:sheet_length");
-            itemStackData.moveTagToComponent("bps", "xercamusic:sheet_bps");
-            itemStackData.moveTagToComponent("piLocked", "xercamusic:sheet_prev_instrument_locked");
-            itemStackData.moveTagToComponent("prevIns", "xercamusic:sheet_prev_instrument");
-            itemStackData.moveTagToComponent("hl", "xercamusic:sheet_highlight_interval");
-            itemStackData.moveTagToComponent("vol", "xercamusic:sheet_volume");
-            itemStackData.moveTagToComponent("title", "xercamusic:sheet_title");
-            itemStackData.moveTagToComponent("author", "xercamusic:sheet_author");
+            itemStackData.moveTagToComponent(KEY_GENERATION, "xercamusic:sheet_generation");
+            itemStackData.moveTagToComponent(KEY_VERSION, "xercamusic:sheet_version");
+            itemStackData.moveTagToComponent(KEY_LENGTH, "xercamusic:sheet_length");
+            itemStackData.moveTagToComponent(KEY_BPS, "xercamusic:sheet_bps");
+            itemStackData.moveTagToComponent(KEY_PREV_INSTRUMENT_LOCKED, "xercamusic:sheet_prev_instrument_locked");
+            itemStackData.moveTagToComponent(KEY_PREV_INSTRUMENT, "xercamusic:sheet_prev_instrument");
+            itemStackData.moveTagToComponent(KEY_HIGHLIGHT_INTERVAL, "xercamusic:sheet_highlight_interval");
+            itemStackData.moveTagToComponent(KEY_VOLUME, "xercamusic:sheet_volume");
+            itemStackData.moveTagToComponent(KEY_TITLE, "xercamusic:sheet_title");
+            itemStackData.moveTagToComponent(KEY_AUTHOR, "xercamusic:sheet_author");
         }
     }
 }

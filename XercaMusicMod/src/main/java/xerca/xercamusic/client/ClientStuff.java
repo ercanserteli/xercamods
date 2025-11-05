@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.common.Mod;
+import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -27,11 +28,12 @@ import java.util.UUID;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class ClientStuff implements ClientModInitializer {
 
-    static public void showMusicGui() {
+    public static void showMusicGui() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
             if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet) {
+                player.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + player.level().random.nextFloat() * 0.4f);
                 UUID id = heldItem.get(Items.SHEET_ID);
                 int version = heldItem.getOrDefault(Items.SHEET_VERSION, -1);
                 if (id != null && version >= 0) {
@@ -43,7 +45,7 @@ public class ClientStuff implements ClientModInitializer {
         }
     }
 
-    static public void showInstrumentGui() {
+    public static void showInstrumentGui() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
@@ -53,31 +55,32 @@ public class ClientStuff implements ClientModInitializer {
         }
     }
 
-    static public void showInstrumentGui(IItemInstrument instrument, BlockPos blockInsPos) {
+    public static void showInstrumentGui(IItemInstrument instrument, BlockPos blockInsPos) {
         LocalPlayer player = Minecraft.getInstance().player;
         Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), blockInsPos));
     }
 
-    static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
+    public static NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
         return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, lengthTicks);
     }
 
-    static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch) {
+    public static NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch) {
         return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, (byte) -1);
     }
 
-    static public void playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
+    public static void playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
         playNote(event, x, y, z, SoundSource.RECORDS, volume, pitch, lengthTicks);
     }
 
-    static public NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch, byte lengthTicks) {
+    public static NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch, byte lengthTicks) {
         NoteSound sound = new NoteSound(event, category, (float) x, (float) y, (float) z, volume, pitch, lengthTicks);
         Minecraft.getInstance().getSoundManager().play(sound);
         return sound;
     }
 
-    static public void endMusic(int spiritID, int playerID) {
-        if (Minecraft.getInstance().player != null && playerID == Minecraft.getInstance().player.getId()) {
+    public static void endMusic(int spiritID, int playerID) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null && playerID == player.getId()) {
             MusicEndedPacket pack = new MusicEndedPacket(spiritID);
             sendToServer(pack);
         }

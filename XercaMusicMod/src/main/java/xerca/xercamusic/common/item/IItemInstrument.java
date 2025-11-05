@@ -5,20 +5,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IItemInstrument {
-    int minNote = 21;
-    int maxNote = 117;
-    int totalNotes = 96;
+    int MIN_NOTE = 21;
+    int MAX_NOTE = 117;
+    int TOTAL_NOTES = 96;
 
     static int idToNote(int id) {
-        return id + minNote;
+        return id + MIN_NOTE;
     }
 
     static int noteToId(int note) {
-        return note - minNote;
+        return note - MIN_NOTE;
     }
 
     static void playMusic(Level worldIn, Player playerIn, boolean canStop) {
@@ -36,7 +35,7 @@ public interface IItemInstrument {
 
     int getInstrumentId();
 
-    void setSounds(ArrayList<Pair<Integer, SoundEvent>> sounds);
+    void setSounds(List<Pair<Integer, SoundEvent>> sounds);
 
     InsSound getSound(int note);
 

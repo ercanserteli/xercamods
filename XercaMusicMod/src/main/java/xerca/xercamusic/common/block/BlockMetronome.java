@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -33,13 +34,14 @@ public class BlockMetronome extends BaseEntityBlock {
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final MapCodec<BlockMetronome> CODEC = BlockMetronome.simpleCodec(BlockMetronome::new);
+    public static final MapCodec<BlockMetronome> CODEC = BlockBehaviour.simpleCodec(BlockMetronome::new);
 
     public BlockMetronome(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(BPS, 6).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
@@ -47,7 +49,8 @@ public class BlockMetronome extends BaseEntityBlock {
     @Override
     public void neighborChanged(BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
         boolean flag = worldIn.hasNeighborSignal(pos);
-        if (flag != state.getValue(POWERED)) {
+        boolean powered = state.getValue(POWERED);
+        if (flag != powered) {
             worldIn.setBlock(pos, state.setValue(POWERED, flag), 3);
         }
 
@@ -55,12 +58,11 @@ public class BlockMetronome extends BaseEntityBlock {
 
 
     public void setBps(BlockState state, Level worldIn, BlockPos pos, int bps) {
-        if (!worldIn.isClientSide) {
-            if (bps >= 1 && bps <= 50) {
-                state = state.setValue(BPS, bps);
-                worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
-            }
+        if (!worldIn.isClientSide && bps >= 1 && bps <= 50) {
+            state = state.setValue(BPS, bps);
+            worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
         }
+
     }
 
     @Override
@@ -103,11 +105,12 @@ public class BlockMetronome extends BaseEntityBlock {
         return new TileEntityMetronome(pos, state);
     }
 
+    @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
-            if (t instanceof TileEntityMetronome) {
-                TileEntityMetronome.tick(level1, blockPos, blockState1, (TileEntityMetronome) t);
+            if (t instanceof TileEntityMetronome tileEntityMetronome) {
+                TileEntityMetronome.tick(level1, tileEntityMetronome);
             }
         };
     }

@@ -13,7 +13,7 @@ import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPayloadHandler<MusicBoxUpdatePacket> {
     private static void processMessage(MusicBoxUpdatePacket msg) {
         Level world = Minecraft.getInstance().level;
-        if (world == null || !world.hasChunkAt(msg.pos())) {
+        if (world == null || !world.hasChunkAt(msg.pos())) {  // NOSONAR
             return;
         }
 

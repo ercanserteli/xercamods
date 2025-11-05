@@ -19,6 +19,10 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
     public static final Type<MusicUpdatePacket> PACKET_ID = new Type<>(Mod.id("music_update"));
     public static final StreamCodec<FriendlyByteBuf, MusicUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicUpdatePacket::encode, MusicUpdatePacket::decode);
 
+    public static MusicUpdatePacket createEmpty() {
+        return new MusicUpdatePacket(new FieldFlag(), null, (short) 0, (byte) 0, 0.0f, false, null, (byte) 0, false, null, 0, (byte) 0);
+    }
+
     public static MusicUpdatePacket create(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws NotesTooLargeException {
         if (notes != null && notes.size() > MAX_NOTES_IN_PACKET) {
             throw new NotesTooLargeException(notes, id);
@@ -76,17 +80,14 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
                     version,
                     highlightInterval
             );
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
-            return null;
         } catch (NotesTooLargeException e) {
-            System.err.println("NotesTooLargeException while reading MusicUpdatePacket: " + e);
-            return null;
+            Mod.LOGGER.error("NotesTooLargeException while reading MusicUpdatePacket: ", e);
+            return createEmpty();
         }
     }
 
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeInt(availability.toInt());
         if (availability.hasTitle) buf.writeUtf(title);
         if (availability.hasSigned) buf.writeBoolean(signed);
@@ -108,7 +109,6 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
         if (availability.hasId) buf.writeUUID(id);
         if (availability.hasVersion) buf.writeInt(version);
         if (availability.hasHlInterval) buf.writeByte(highlightInterval);
-        return buf;
     }
 
     @Override
@@ -117,17 +117,17 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
     }
 
     public static class FieldFlag {
-        private static final int notesFlag = 1;
-        private static final int lengthFlag = 1 << 1;
-        private static final int bpsFlag = 1 << 2;
-        private static final int volumeFlag = 1 << 3;
-        private static final int signedFlag = 1 << 4;
-        private static final int titleFlag = 1 << 5;
-        private static final int prevInsFlag = 1 << 6;
-        private static final int prevInsLockedFlag = 1 << 7;
-        private static final int idFlag = 1 << 8;
-        private static final int versionFlag = 1 << 9;
-        private static final int hlIntervalFlag = 1 << 10;
+        private static final int NOTES_FLAG = 1;
+        private static final int LENGTH_FLAG = 1 << 1;
+        private static final int BPS_FLAG = 1 << 2;
+        private static final int VOLUME_FLAG = 1 << 3;
+        private static final int SIGNED_FLAG = 1 << 4;
+        private static final int TITLE_FLAG = 1 << 5;
+        private static final int PREV_INS_FLAG = 1 << 6;
+        private static final int PREV_INS_LOCKED_FLAG = 1 << 7;
+        private static final int ID_FLAG = 1 << 8;
+        private static final int VERSION_FLAG = 1 << 9;
+        private static final int HL_INTERVAL_FLAG = 1 << 10;
 
         public boolean hasNotes;
         public boolean hasLength;
@@ -160,34 +160,34 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
         public FieldFlag() {
         }
 
-        static public FieldFlag fromInt(int packed) {
+        public static FieldFlag fromInt(int packed) {
             return new FieldFlag(
-                    (packed & notesFlag) != 0,
-                    (packed & lengthFlag) != 0,
-                    (packed & bpsFlag) != 0,
-                    (packed & volumeFlag) != 0,
-                    (packed & signedFlag) != 0,
-                    (packed & titleFlag) != 0,
-                    (packed & prevInsFlag) != 0,
-                    (packed & prevInsLockedFlag) != 0,
-                    (packed & idFlag) != 0,
-                    (packed & versionFlag) != 0,
-                    (packed & hlIntervalFlag) != 0
+                    (packed & NOTES_FLAG) != 0,
+                    (packed & LENGTH_FLAG) != 0,
+                    (packed & BPS_FLAG) != 0,
+                    (packed & VOLUME_FLAG) != 0,
+                    (packed & SIGNED_FLAG) != 0,
+                    (packed & TITLE_FLAG) != 0,
+                    (packed & PREV_INS_FLAG) != 0,
+                    (packed & PREV_INS_LOCKED_FLAG) != 0,
+                    (packed & ID_FLAG) != 0,
+                    (packed & VERSION_FLAG) != 0,
+                    (packed & HL_INTERVAL_FLAG) != 0
             );
         }
 
         public int toInt() {
-            return (hasNotes ? notesFlag : 0) |
-                    (hasLength ? lengthFlag : 0) |
-                    (hasBps ? bpsFlag : 0) |
-                    (hasVolume ? volumeFlag : 0) |
-                    (hasSigned ? signedFlag : 0) |
-                    (hasTitle ? titleFlag : 0) |
-                    (hasPrevIns ? prevInsFlag : 0) |
-                    (hasPrevInsLocked ? prevInsLockedFlag : 0) |
-                    (hasId ? idFlag : 0) |
-                    (hasVersion ? versionFlag : 0) |
-                    (hasHlInterval ? hlIntervalFlag : 0);
+            return (hasNotes ? NOTES_FLAG : 0) |
+                    (hasLength ? LENGTH_FLAG : 0) |
+                    (hasBps ? BPS_FLAG : 0) |
+                    (hasVolume ? VOLUME_FLAG : 0) |
+                    (hasSigned ? SIGNED_FLAG : 0) |
+                    (hasTitle ? TITLE_FLAG : 0) |
+                    (hasPrevIns ? PREV_INS_FLAG : 0) |
+                    (hasPrevInsLocked ? PREV_INS_LOCKED_FLAG : 0) |
+                    (hasId ? ID_FLAG : 0) |
+                    (hasVersion ? VERSION_FLAG : 0) |
+                    (hasHlInterval ? HL_INTERVAL_FLAG : 0);
         }
 
         public boolean hasAny() {
@@ -195,6 +195,7 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
                     hasPrevInsLocked || hasId || hasVersion || hasHlInterval;
         }
 
+        @Override
         public String toString() {
             return (hasNotes ? "Notes, " : "") + (hasLength ? "Length, " : "") + (hasBps ? "Bps, " : "")
                     + (hasVolume ? "Volume, " : "") + (hasSigned ? "Signed, " : "") + (hasTitle ? "Title, " : "")

@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,13 +22,14 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 import static xerca.xercamusic.common.Mod.sendToClient;
+import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
-public class CommandExport {
+public final class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicexport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> musicExport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> musicExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
@@ -49,67 +51,89 @@ public class CommandExport {
     }
 
     public static boolean doExport(Player player, String name) {
-        String dir = "music_sheets";
-        String filename = name + ".sheet";
-        String filepath = dir + "/" + filename;
-        File directory = new File(dir);
+        File directory = new File("music_sheets");
         if (!directory.exists()) {
-            directory.mkdir();
+            directory.mkdirs();
         }
+        Path filePath = directory.toPath().resolve(name + ".sheet");
 
-        for (ItemStack s : player.getHandSlots()) {
-            if (s.getItem() instanceof ItemMusicSheet) {
-                UUID id = s.get(Items.SHEET_ID);
-                int ver = s.getOrDefault(Items.SHEET_VERSION, -1);
-                int length = s.getOrDefault(Items.SHEET_LENGTH, 0);
-                if (id != null && ver >= 0 && length > 0) {
-                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
-                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
-                        if (data != null) {
-                            CompoundTag tag = new CompoundTag();
-                            tag.putInt("ver", ver);
-                            tag.putUUID("id", id);
-                            tag.putInt("l", length);
-                            tag.putInt("generation", s.getOrDefault(Items.SHEET_GENERATION, 0));
-                            Byte bps = s.get(Items.SHEET_BPS);
-                            if (bps != null) {
-                                tag.putByte("bps", bps);
-                            }
-                            Boolean piLocked = s.get(Items.SHEET_PREV_INSTRUMENT_LOCKED);
-                            if (piLocked != null) {
-                                tag.putBoolean("piLocked", piLocked);
-                            }
-                            Byte prevIns = s.get(Items.SHEET_PREV_INSTRUMENT);
-                            if (prevIns != null) {
-                                tag.putByte("prevIns", prevIns);
-                            }
-                            String title = s.get(Items.SHEET_TITLE);
-                            String author = s.get(Items.SHEET_AUTHOR);
-                            if (title != null && author != null) {
-                                tag.putString("title", title);
-                                tag.putString("author", author);
-                            }
-                            Byte highlightInterval = s.get(Items.SHEET_HIGHLIGHT_INTERVAL);
-                            if (highlightInterval != null) {
-                                tag.putByte("hl", highlightInterval);
-                            }
-                            Float volume = s.get(Items.SHEET_VOLUME);
-                            if (volume != null) {
-                                tag.putFloat("vol", volume);
-                            }
-
-                            NoteEvent.fillNBTFromArray(data.notes(), tag);
-                            try {
-                                NbtIo.write(tag, Path.of(filepath));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
+        for (ItemStack stack : player.getHandSlots()) {
+            if (stack.getItem() instanceof ItemMusicSheet) {
+                exportSheetIfValid(stack, filePath);
                 return true;
             }
         }
+
         return false;
+    }
+
+    private static void exportSheetIfValid(ItemStack stack, Path filePath) {
+        UUID id = stack.get(Items.SHEET_ID);
+        int ver = stack.getOrDefault(Items.SHEET_VERSION, -1);
+        int length = stack.getOrDefault(Items.SHEET_LENGTH, 0);
+
+        if (id == null || ver < 0 || length <= 0) {
+            return;
+        }
+
+        MusicManagerClient.checkMusicDataAndRun(id, ver, () -> writeSheetFile(stack, id, ver, length, filePath));
+    }
+
+    private static void writeSheetFile(ItemStack stack, UUID id, int ver, int length, Path filePath) {
+        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+        if (data == null) {
+            return;
+        }
+
+        CompoundTag tag = new CompoundTag();
+        tag.putInt(KEY_VERSION, ver);
+        tag.putUUID(KEY_ID, id);
+        tag.putInt(KEY_LENGTH, length);
+        tag.putInt(KEY_GENERATION, stack.getOrDefault(Items.SHEET_GENERATION, 0));
+
+        putOptionalByte(stack, Items.SHEET_BPS, tag, KEY_BPS);
+        putOptionalBoolean(stack, Items.SHEET_PREV_INSTRUMENT_LOCKED, tag, KEY_PREV_INSTRUMENT_LOCKED);
+        putOptionalByte(stack, Items.SHEET_PREV_INSTRUMENT, tag, KEY_PREV_INSTRUMENT);
+        putOptionalTitleAuthor(stack, tag);
+        putOptionalByte(stack, Items.SHEET_HIGHLIGHT_INTERVAL, tag, KEY_HIGHLIGHT_INTERVAL);
+        putOptionalFloat(stack, Items.SHEET_VOLUME, tag, KEY_VOLUME);
+
+        NoteEvent.fillNBTFromArray(data.notes(), tag);
+
+        try {
+            NbtIo.write(tag, filePath);
+        } catch (IOException e) {
+            Mod.LOGGER.error("Failed to write music sheet file {}: {}", filePath, e);
+        }
+    }
+
+    private static void putOptionalByte(ItemStack stack, DataComponentType<Byte> key, CompoundTag tag, String tagName) {
+        Byte value = stack.get(key);
+        if (value != null) {
+            tag.putByte(tagName, value);
+        }
+    }
+
+    private static void putOptionalBoolean(ItemStack stack, DataComponentType<Boolean> key, CompoundTag tag, String tagName) {
+        Boolean value = stack.get(key);
+        if (value != null) {
+            tag.putBoolean(tagName, value);
+        }
+    }
+
+    private static void putOptionalFloat(ItemStack stack, DataComponentType<Float> key, CompoundTag tag, String tagName) {
+        Float value = stack.get(key);
+        if (value != null) {
+            tag.putFloat(tagName, value);
+        }
+    }
+
+    private static void putOptionalTitleAuthor(ItemStack stack, CompoundTag tag) {
+        String title = stack.get(Items.SHEET_TITLE);
+        String author = stack.get(Items.SHEET_AUTHOR);
+        if (title != null && author != null) {
+            tag.putString(KEY_TITLE, title);
+            tag.putString(KEY_AUTHOR, author);
+        }
     }
 }

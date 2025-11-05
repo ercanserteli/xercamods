@@ -22,7 +22,7 @@ import java.util.List;
 import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
 public class TileEntityMetronome extends BlockEntity {
-    private final static Vec3i halfRange = new Vec3i(8, 2, 8);
+    private static final Vec3i HALF_RANGE = new Vec3i(8, 2, 8);
 
     private int age = 0;
     private boolean oldPoweredState = false;
@@ -32,8 +32,8 @@ public class TileEntityMetronome extends BlockEntity {
         super(BlockEntities.METRONOME, blockPos, blockState);
     }
 
-    public static void tick(Level level, BlockPos ignoredBlockPos, BlockState ignoredBlockState, TileEntityMetronome metronome) {
-        if (metronome.level != null) {
+    public static void tick(Level level, TileEntityMetronome metronome) {
+        if (level != null) {
             BlockState state = metronome.getBlockState();
             if (state.getValue(BlockMetronome.POWERED)) {
                 if (!metronome.oldPoweredState) {
@@ -44,19 +44,22 @@ public class TileEntityMetronome extends BlockEntity {
                 final int bps = Math.max(state.getValue(BlockMetronome.BPS), 1);
                 int pause = Math.max(40 / bps, 1);
                 if (metronome.age % pause == 0) {
-                    if (metronome.level.isClientSide) {// note: doesn't work if this function is only called in server
-                        // Client side
-                        onlyCallOnClient(() -> () ->
-                                ClientStuff.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat() * 0.1f, (byte) -1));
+                    if (level.isClientSide) {// note: doesn't work if this function is only called in server
+                        try {
+                            onlyCallOnClient(() -> () ->
+                                    ClientStuff.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat() * 0.1f, (byte) -1));
+                        } catch (Exception e) {
+                            Mod.LOGGER.error("Error playing metronome note", e);
+                        }
 
-                        level.addParticle(ParticleTypes.NOTE, (double) metronome.worldPosition.getX() + 0.5D, (double) metronome.worldPosition.getY() + 1.2D, (double) metronome.worldPosition.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
+                        level.addParticle(ParticleTypes.NOTE, metronome.worldPosition.getX() + 0.5D, metronome.worldPosition.getY() + 1.2D, metronome.worldPosition.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
                     } else {
                         // Server side
                         if (metronome.countDown == 3) {
-                            List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(halfRange).getCenter(), metronome.worldPosition.offset(halfRange).getCenter()),
+                            List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(HALF_RANGE).getCenter(), metronome.worldPosition.offset(HALF_RANGE).getCenter()),
                                     player -> player.getMainHandItem().getItem() instanceof IItemInstrument &&
                                             player.getOffhandItem().getItem() instanceof ItemMusicSheet && (int) player.getOffhandItem().getOrDefault(Items.SHEET_BPS, (byte) 0) == bps);
-                            Mod.LOGGER.info("Metronome found {} players", players.size());
+                            Mod.LOGGER.info("Metronome found {} players", players::size);
                             for (Player player : players) {
                                 IItemInstrument.playMusic(level, player, false);
                             }

@@ -13,20 +13,14 @@ public record MusicDataRequestPacket(UUID id, int version) implements CustomPack
     public static final StreamCodec<FriendlyByteBuf, MusicDataRequestPacket> PACKET_CODEC = StreamCodec.ofMember(MusicDataRequestPacket::encode, MusicDataRequestPacket::decode);
 
     public static MusicDataRequestPacket decode(FriendlyByteBuf buf) {
-        try {
-            UUID id = buf.readUUID();
-            int version = buf.readInt();
-            return new MusicDataRequestPacket(id, version);
-        } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading MusicDataRequestPacket:", ioe);
-            return null;
-        }
+        UUID id = buf.readUUID();
+        int version = buf.readInt();
+        return new MusicDataRequestPacket(id, version);
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeUUID(id());
         buf.writeInt(version());
-        return buf;
     }
 
     @Override

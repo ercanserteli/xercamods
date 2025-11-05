@@ -43,32 +43,27 @@ public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sh
     }
 
     public static MusicBoxUpdatePacket decode(FriendlyByteBuf buf) {
-        try {
-            BlockPos pos = buf.readBlockPos();
-            String instrumentId = buf.readUtf(255);
-            boolean noSheet = buf.readBoolean();
-            boolean sheetSent = buf.readBoolean();
-            if (sheetSent) {
-                if (!noSheet) {
-                    UUID sheetId = buf.readUUID();
-                    int version = buf.readInt();
-                    byte bps = buf.readByte();
-                    int length = buf.readInt();
-                    float volume = buf.readFloat();
-                    return new MusicBoxUpdatePacket(pos, instrumentId, true, false, sheetId, version, bps, length, volume);
-                } else {
-                    return new MusicBoxUpdatePacket(pos, instrumentId, true, true, null, 0, (byte) 0, 0, 0);
-                }
+        BlockPos pos = buf.readBlockPos();
+        String instrumentId = buf.readUtf(255);
+        boolean noSheet = buf.readBoolean();
+        boolean sheetSent = buf.readBoolean();
+        if (sheetSent) {
+            if (!noSheet) {
+                UUID sheetId = buf.readUUID();
+                int version = buf.readInt();
+                byte bps = buf.readByte();
+                int length = buf.readInt();
+                float volume = buf.readFloat();
+                return new MusicBoxUpdatePacket(pos, instrumentId, true, false, sheetId, version, bps, length, volume);
             } else {
-                return new MusicBoxUpdatePacket(pos, instrumentId, false, true, null, 0, (byte) 0, 0, 0);
+                return new MusicBoxUpdatePacket(pos, instrumentId, true, true, null, 0, (byte) 0, 0, 0);
             }
-        } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading MusicBoxUpdatePacket:", ioe);
-            return null;
+        } else {
+            return new MusicBoxUpdatePacket(pos, instrumentId, false, true, null, 0, (byte) 0, 0, 0);
         }
     }
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
         buf.writeUtf(instrumentId);
         buf.writeBoolean(noSheet);
@@ -80,7 +75,6 @@ public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sh
             buf.writeInt(length);
             buf.writeFloat(volume);
         }
-        return buf;
     }
 
     @Override
