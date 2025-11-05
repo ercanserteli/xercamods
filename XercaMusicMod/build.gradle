@@ -1,3 +1,5 @@
+import com.github.spotbugs.snom.Effort
+
 plugins {
     id 'fabric-loom' version '1.6-SNAPSHOT'
     id 'maven-publish'
@@ -26,9 +28,9 @@ repositories {
 }
 
 tasks.register('buildCopy', Copy) {
-    dependsOn build
-    from "$buildDir/libs/${archivesBaseName}-${version}.jar"
-    into "$buildDir/../../builds"
+    dependsOn tasks.named('remapJar')
+    from(tasks.named('remapJar').flatMap { it.archiveFile })
+    into(rootProject.layout.projectDirectory.dir("../builds"))
 }
 
 dependencies {
@@ -79,7 +81,7 @@ tasks.withType(JavaCompile).configureEach {
 
 spotbugs {
     ignoreFailures = true
-    effort = com.github.spotbugs.snom.Effort.MAX
+    effort = Effort.MAX
 }
 
 java {
@@ -97,23 +99,6 @@ java {
 jar {
     from("LICENSE") {
         rename { "${it}_${project.base.archivesName.get()}" }
-    }
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
     }
 }
 
