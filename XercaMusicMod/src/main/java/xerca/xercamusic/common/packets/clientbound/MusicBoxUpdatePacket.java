@@ -59,7 +59,7 @@ public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sh
                 return new MusicBoxUpdatePacket(pos, instrumentId, true, true, null, 0, (byte) 0, 0, 0);
             }
         } else {
-            return new MusicBoxUpdatePacket(pos, instrumentId, false, true, null, 0, (byte) 0, 0, 0);
+            return new MusicBoxUpdatePacket(pos, instrumentId, false, noSheet, null, 0, (byte) 0, 0, 0);
         }
     }
 

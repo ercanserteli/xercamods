@@ -49,7 +49,11 @@ public final class MusicManager {
         if (MusicManager.TEMP_NOTES_MAP.containsKey(id)) {
             MusicManager.TempNotesBuffer buffer = MusicManager.TEMP_NOTES_MAP.get(id);
             if (buffer.isFinished()) {
-                return buffer.joinParts();
+                try {
+                    return buffer.joinParts();
+                } finally {
+                    TEMP_NOTES_MAP.remove(id);
+                }
             } else {
                 Mod.LOGGER.warn("Packet did not have notes, and temp buffer was not finished");
             }
