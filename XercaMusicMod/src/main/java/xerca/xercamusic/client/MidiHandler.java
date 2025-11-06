@@ -5,11 +5,11 @@ import xerca.xercamusic.common.Mod;
 
 import javax.sound.midi.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class MidiHandler {
     final ArrayList<MidiDevice> devices = new ArrayList<>();
+    final ArrayList<Transmitter> transmitters = new ArrayList<>();
     final Consumer<MidiData> noteOnHandler;
     final Consumer<Integer> noteOffHandler;
     final Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
@@ -20,23 +20,19 @@ public class MidiHandler {
         this.noteOffHandler = noteOffHandler;
         this.midiControlHandler = midiControlHandler;
 
-        MidiDevice device;
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         for (MidiDevice.Info info : infos) {
             try {
-                device = MidiSystem.getMidiDevice(info);
-
-                Mod.LOGGER.debug(info);
-                List<Transmitter> transmitters = device.getTransmitters();
-
-                for (Transmitter transmitter : transmitters) {
-                    transmitter.setReceiver(new MidiInputReceiver(device.getDeviceInfo().toString()));
+                MidiDevice device = MidiSystem.getMidiDevice(info);
+                if (device.getMaxTransmitters() == 0) {
+                    continue; // not an input device
                 }
 
+                Mod.LOGGER.debug(info);
+                device.open();
                 Transmitter trans = device.getTransmitter();
                 trans.setReceiver(new MidiInputReceiver(device.getDeviceInfo().toString()));
-
-                device.open();
+                transmitters.add(trans);
                 devices.add(device);
 
                 Mod.LOGGER.debug("{} was opened", device::getDeviceInfo);
@@ -52,11 +48,17 @@ public class MidiHandler {
     }
 
     public void closeDevices() {
+        for (Transmitter t : transmitters) {
+            t.close();
+        }
+        transmitters.clear();
+
         for (MidiDevice device : devices) {
             if (device.isOpen()) {
                 device.close();
             }
         }
+        devices.clear();
     }
 
     public record MidiData(int noteId, float volume) {
@@ -100,6 +102,11 @@ public class MidiHandler {
                 int command = sm.getCommand();
                 if (command == CONTROL && midiControlHandler != null) {
                     int data = sm.getData1();
+                    int value = sm.getData2();
+                    if (value == 0) {
+                        // 0 is button release
+                        return;
+                    }
                     switch (data) {
                         case DATA_BEGINNING ->
                                 submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.BEGINNING));
