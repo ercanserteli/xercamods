@@ -1782,6 +1782,11 @@ public class GuiMusicSheet extends Screen {
                 }
             }
         }
+
+        if (midiHandler != null) {
+            midiHandler.closeDevices();
+        }
+
         if (SoundEvents.CLOSE_SCROLL != null) {
             editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.level().random.nextFloat() * 0.4f);
         }
