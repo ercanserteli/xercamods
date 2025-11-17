@@ -232,5 +232,9 @@ public class ItemCanvas extends Item {
         super.initializeClient(consumer);
         consumer.accept(RenderProp.INSTANCE);
     }
+
+    public static String generateName(Player player){
+        return player.getUUID() + "_" + System.currentTimeMillis()/100;
+    }
 }
 

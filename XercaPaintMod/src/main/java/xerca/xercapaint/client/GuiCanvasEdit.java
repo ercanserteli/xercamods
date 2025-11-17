@@ -23,6 +23,7 @@ import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.SoundEvents;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityEasel;
+import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.packets.CanvasMiniUpdatePacket;
 import xerca.xercapaint.common.packets.CanvasUpdatePacket;
 import xerca.xercapaint.common.packets.EaselLeftPacket;
@@ -121,8 +122,7 @@ public class GuiCanvasEdit extends BasePalette {
             this.pixels = new int[canvasPixelArea];
             Arrays.fill(this.pixels, basicColors[15].rgbVal());
 
-            long secs = System.currentTimeMillis()/1000;
-            this.name = player.getUUID() + "_" + secs;
+            this.name = ItemCanvas.generateName(player);
         }
 
         if(paletteComplete){
