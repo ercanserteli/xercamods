@@ -45,13 +45,7 @@ public class CommandImport {
 
     public static void doImport(CompoundTag tag, ServerPlayer player){
         // Sanitizing
-        if (!tag.contains("name", 8)) {
-            player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
-            XercaPaint.LOGGER.warn("Broken paint file");
-            return;
-        }
-        String name = tag.getString("name");
-        if (!name.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_[0-9]+$")) {
+        if (!tag.contains("ct", 1)) {
             player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
             XercaPaint.LOGGER.warn("Broken paint file");
             return;
@@ -68,8 +62,26 @@ public class CommandImport {
         if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
             tag.putString("author", tag.getString("author").substring(0, 16));
         }
-        if (!tag.contains("v", 3)) {
+        if (tag.contains("title")){
+            if (!tag.contains("name", 8)) {
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
+                XercaPaint.LOGGER.warn("Broken paint file");
+                return;
+            }
+            String name = tag.getString("name");
+            if (!name.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_\\d+$")) {
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
+                XercaPaint.LOGGER.warn("Broken paint file");
+                return;
+            }
+            if (!tag.contains("v", 3)) {
+                tag.putInt("v", 1);
+            }
+        }
+        else {
+            tag.putString("name", ItemCanvas.generateName(player));
             tag.putInt("v", 1);
+            tag.remove("generation");
         }
 
         byte canvasType = tag.getByte("ct");
@@ -112,10 +124,12 @@ public class CommandImport {
                 if (type == null) {
                     return;
                 }
-                switch (type){
-                    case LONG -> typeName = Objects.requireNonNull(Items.ITEM_CANVAS_LONG.get()).getName(ItemStack.EMPTY);
-                    case TALL -> typeName = Objects.requireNonNull(Items.ITEM_CANVAS_TALL.get()).getName(ItemStack.EMPTY);
-                    case LARGE -> typeName = Objects.requireNonNull(Items.ITEM_CANVAS_LARGE.get()).getName(ItemStack.EMPTY);
+                if (type == CanvasType.LONG) {
+                    typeName = Objects.requireNonNull(Items.ITEM_CANVAS_LONG.get()).getName(ItemStack.EMPTY);
+                } else if (type == CanvasType.TALL) {
+                    typeName = Objects.requireNonNull(Items.ITEM_CANVAS_TALL.get()).getName(ItemStack.EMPTY);
+                } else if (type == CanvasType.LARGE) {
+                    typeName = Objects.requireNonNull(Items.ITEM_CANVAS_LARGE.get()).getName(ItemStack.EMPTY);
                 }
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", typeName).withStyle(ChatFormatting.RED));
                 return;

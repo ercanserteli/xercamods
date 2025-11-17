@@ -23,7 +23,7 @@ public class CommandExport {
         dispatcher.register(
                 Commands.literal("paintexport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
@@ -59,6 +59,12 @@ public class CommandExport {
                     try {
                         CompoundTag tag = s.getTag().copy();
                         tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                        if (!tag.contains("author")) {
+                            tag.remove("name");
+                            tag.remove("v");
+                            tag.remove("generation");
+                            tag.remove("title");
+                        }
                         NbtIo.write(tag, new File(filepath));
                         return true;
                     } catch (IOException e) {
