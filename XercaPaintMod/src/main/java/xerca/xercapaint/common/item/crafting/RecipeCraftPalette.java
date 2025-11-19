@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class RecipeCraftPalette extends CustomRecipe {
     private static final ResourceLocation plank = new ResourceLocation("minecraft:planks");
 
-    public RecipeCraftPalette(ResourceLocation pId, CraftingBookCategory pCategory) {
-        super(pId, pCategory);
+    public RecipeCraftPalette(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     private boolean isPlank(ItemStack stack){
@@ -120,7 +120,6 @@ public class RecipeCraftPalette extends CustomRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-
         return NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
     }
 
