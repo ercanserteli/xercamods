@@ -112,7 +112,7 @@ public class CommandImport {
         }
         else{
             ItemStack mainHand = player.getMainHandItem();
-            ItemStack offhand = player.getOffhandItem();
+            ItemStack offHand = player.getOffhandItem();
 
             if(!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.hasTag() && mainHand.getTag() != null && !mainHand.getTag().isEmpty())){
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
@@ -134,7 +134,7 @@ public class CommandImport {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", typeName).withStyle(ChatFormatting.RED));
                 return;
             }
-            if(!ItemPalette.isFull(offhand)){
+            if(!ItemPalette.isFull(offHand)){
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.3").withStyle(ChatFormatting.RED));
                 return;
             }

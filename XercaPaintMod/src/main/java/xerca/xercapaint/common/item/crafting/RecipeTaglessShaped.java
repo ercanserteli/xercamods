@@ -34,7 +34,6 @@ public class RecipeTaglessShaped extends ShapedRecipe {
                     return false;
                 }
             }
-
             return true;
         }
         return false;

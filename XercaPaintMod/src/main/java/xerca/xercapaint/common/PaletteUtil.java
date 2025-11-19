@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
-    final public static PaletteUtil.Color emptinessColor = new PaletteUtil.Color(255, 236, 229);
+    final public static Color emptinessColor = new Color(255, 236, 229);
 
     public static class Color {
         public static final Color WHITE = new Color(0xFFFFFFFF);
@@ -67,7 +67,7 @@ public class PaletteUtil {
 
         private int numberOfColors = 0;
 
-        private PaletteUtil.Color result;
+        private Color result;
 
         public CustomColor() {
             calculateResult();
@@ -103,10 +103,10 @@ public class PaletteUtil {
             int resultGreen = averageGreen * gainFactor;
             int resultBlue = averageBlue * gainFactor;
 
-            this.result = new PaletteUtil.Color(resultRed, resultGreen, resultBlue);
+            this.result = new Color(resultRed, resultGreen, resultBlue);
         }
 
-        public void mix(PaletteUtil.Color toBeMixed){
+        public void mix(Color toBeMixed){
             totalRed += toBeMixed.r;
             totalGreen += toBeMixed.g;
             totalBlue += toBeMixed.b;
@@ -124,7 +124,7 @@ public class PaletteUtil {
             calculateResult();
         }
 
-        public PaletteUtil.Color getColor() {
+        public Color getColor() {
             return result;
         }
 
@@ -149,7 +149,7 @@ public class PaletteUtil {
         }
     }
 
-    public static void writeCustomColorArrayToNBT(CompoundTag tag, PaletteUtil.CustomColor[] customColors){
+    public static void writeCustomColorArrayToNBT(CompoundTag tag, CustomColor[] customColors){
         int[] totalReds = new int[12];
         int[] totalGreens = new int[12];
         int[] totalBlues = new int[12];
@@ -170,7 +170,7 @@ public class PaletteUtil {
         tag.putIntArray("n", numbersOfColors);
     }
 
-    public static void readCustomColorArrayFromNBT(CompoundTag tag, PaletteUtil.CustomColor[] customColors){
+    public static void readCustomColorArrayFromNBT(CompoundTag tag, CustomColor[] customColors){
         int[] totalReds = tag.getIntArray("r");
         int[] totalGreens = tag.getIntArray("g");
         int[] totalBlues = tag.getIntArray("b");
@@ -178,7 +178,7 @@ public class PaletteUtil {
         int[] numbersOfColors = tag.getIntArray("n");
 
         for(int i=0; i<customColors.length; i++){
-            customColors[i] = new PaletteUtil.CustomColor(totalReds[i], totalGreens[i], totalBlues[i], totalMaximums[i], numbersOfColors[i]);
+            customColors[i] = new CustomColor(totalReds[i], totalGreens[i], totalBlues[i], totalMaximums[i], numbersOfColors[i]);
         }
     }
 }

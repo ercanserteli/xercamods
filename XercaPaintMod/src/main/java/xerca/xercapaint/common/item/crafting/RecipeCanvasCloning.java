@@ -18,8 +18,8 @@ import xerca.xercapaint.common.item.Items;
 
 @MethodsReturnNonnullByDefault
 public class RecipeCanvasCloning extends CustomRecipe {
-    public RecipeCanvasCloning(ResourceLocation pId, CraftingBookCategory pCategory) {
-        super(pId, pCategory);
+    public RecipeCanvasCloning(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     /**
@@ -109,9 +109,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
 
         for(int i = 0; i < stacks.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
-            if (itemstack.hasCraftingRemainingItem()) {
-                stacks.set(i, itemstack.getCraftingRemainingItem());
-            } else if (itemstack.getItem() instanceof ItemCanvas && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
+            if (itemstack.getItem() instanceof ItemCanvas && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
                 ItemStack stack = itemstack.copy();
                 stack.setCount(1);
                 stacks.set(i, stack);

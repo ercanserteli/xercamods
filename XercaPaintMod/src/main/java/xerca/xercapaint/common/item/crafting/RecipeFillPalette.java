@@ -24,8 +24,8 @@ import java.util.ArrayList;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeFillPalette extends CustomRecipe {
-    public RecipeFillPalette(ResourceLocation pId, CraftingBookCategory pCategory) {
-        super(pId, pCategory);
+    public RecipeFillPalette(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     private boolean isPalette(ItemStack stack){
@@ -97,18 +97,15 @@ public class RecipeFillPalette extends CustomRecipe {
         CompoundTag orgTag = inputPalette.getOrCreateTag().copy();
         if(orgTag.contains("basic")){
             basicColors = orgTag.getByteArray("basic");
-//            XercaPaint.LOGGER.debug("Basic found. Len: " + basicColors.length);
         }
         else{
             basicColors = new byte[16];
-//            XercaPaint.LOGGER.debug("Basic not found. Creating");
         }
 
         for(ItemStack dye : dyes){
             DyeColor color = ((DyeItem)(dye.getItem())).getDyeColor();
             int realColorId = 15 - color.getId();
             if(basicColors[realColorId] > 0){
-//                XercaPaint.LOGGER.debug("Color already exists in palette.");
                 return ItemStack.EMPTY;
             }
             basicColors[realColorId] = 1;
