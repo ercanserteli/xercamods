@@ -6,17 +6,18 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -35,7 +36,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, RenderEntityE
     protected final EaselModel model;
     protected final List<RenderLayer<EaselRenderState, EaselModel>> layers = Lists.newArrayList();
     public static RenderEntityEasel theInstance;
-    private static final ResourceLocation woodTexture = Mod.id("textures/block/birch_long.png");
+    private static final Identifier woodTexture = Mod.id("textures/block/birch_long.png");
 
     public RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);

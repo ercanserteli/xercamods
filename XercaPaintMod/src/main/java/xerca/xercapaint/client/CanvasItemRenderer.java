@@ -5,27 +5,29 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
-    private static final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
-    private static final ResourceLocation emptyCanvasLocation = Mod.id("textures/block/empty.png");
+    private static final Identifier backLocation = Identifier.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
+    private static final Identifier emptyCanvasLocation = Mod.id("textures/block/empty.png");
 
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector, int combinedLight, int combinedOverlay) {
         if (stack.getItem() instanceof ItemCanvas itemCanvas) {
@@ -76,7 +78,7 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
 
 
 
-        submitNodeCollector.submitCustomGeometry(ms, RenderType.entitySolid(emptyCanvasLocation), (pose, vb) -> {
+        submitNodeCollector.submitCustomGeometry(ms, RenderTypes.entitySolid(emptyCanvasLocation), (pose, vb) -> {
             Matrix4f m = pose.pose();
             RenderUtil.setShaderTexture(0, emptyCanvasLocation);
             // Draw the front
@@ -87,7 +89,7 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
 
         });
 
-        submitNodeCollector.submitCustomGeometry(ms, RenderType.entitySolid(backLocation), (pose, vb2) -> {
+        submitNodeCollector.submitCustomGeometry(ms, RenderTypes.entitySolid(backLocation), (pose, vb2) -> {
             // Draw the back and sides
             final float sideWidth = 1.0F/16.0F;
             Matrix4f m = pose.pose();
@@ -129,8 +131,8 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
     }
 
     @Override
-    public void getExtents(Set<Vector3f> set) {
-        set.add(new Vector3f(0, 0, 0));
+    public void getExtents(Consumer<Vector3fc> consumer) {
+        consumer.accept(new Vector3f(0, 0, 0));
     }
 
     @Override

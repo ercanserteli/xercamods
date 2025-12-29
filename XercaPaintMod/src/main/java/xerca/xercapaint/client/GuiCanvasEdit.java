@@ -16,7 +16,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -767,21 +767,21 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     public static class ToggleHelpButton extends Button {
-        protected final ResourceLocation resourceLocation;
+        protected final Identifier Identifier;
         protected final int xTexStart;
         protected final int yTexStart;
         protected final int yDiffText;
         protected final int texWidth;
         protected final int texHeight;
 
-        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Tooltip tooltip) {
+        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, Identifier texture, int texWidth, int texHeight, OnPress onClick, Tooltip tooltip) {
             super(x, y, width, height, Component.empty(), onClick, Button.DEFAULT_NARRATION);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
             this.xTexStart = xTexStart;
             this.yTexStart = yTexStart;
             this.yDiffText = yDiffText;
-            this.resourceLocation = texture;
+            this.Identifier = texture;
             setTooltip(tooltip);
         }
 
@@ -790,16 +790,17 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         @Override
-        public void renderWidget(@NotNull GuiGraphics guiGraphics, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
-            //RenderSystem.setShaderTexture(0, this.resourceLocation);
+        public void renderContents(@NotNull GuiGraphics guiGraphics, int p_230431_2_, int p_230431_3_, float p_230431_4_) {
+            //RenderSystem.setShaderTexture(0, this.Identifier);
             GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
             if (this.isHovered) {
                 yTexStartNew += this.yDiffText;
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Identifier, this.getX(), this.getY(), (float)xTexStartNew, (float)yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
         }
+
     }
 }

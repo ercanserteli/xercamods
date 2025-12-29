@@ -7,17 +7,17 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -41,7 +41,7 @@ import java.util.Objects;
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntityCanvas.CanvasRenderState> {
     public static RenderEntityCanvas theInstance;
-    private static final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
+    private static final Identifier backLocation = Identifier.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
 
     static {
@@ -128,7 +128,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
         boolean loaded;
         boolean started;
         public final DynamicTexture canvasTexture;
-        public final ResourceLocation location;
+        public final Identifier location;
 
         private Instance(String canvasId, int version, int width, int height) {
             this.started = false;
@@ -221,7 +221,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             float yOffset = tyOffset;
             float zOffset = tzOffset;
 
-            submitNodeCollector.submitCustomGeometry(ms, RenderType.entitySolid(location), (localPose, vb) -> {
+            submitNodeCollector.submitCustomGeometry(ms, RenderTypes.entitySolid(location), (localPose, vb) -> {
                 RenderUtil.setShaderTexture(0, location);
                 // Draw the front
                 Matrix4f m = localPose.pose();
@@ -233,7 +233,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
 
             });
 
-            submitNodeCollector.submitCustomGeometry(ms, RenderType.entitySolid(backLocation), (localPose, vb) -> {
+            submitNodeCollector.submitCustomGeometry(ms, RenderTypes.entitySolid(backLocation), (localPose, vb) -> {
                 // Draw the back and sides
                 final float sideWidth = 1.0F / 16.0F;
                 Matrix4f m = localPose.pose();

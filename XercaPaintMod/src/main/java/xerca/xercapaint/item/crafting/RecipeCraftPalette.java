@@ -1,9 +1,9 @@
 package xerca.xercapaint.item.crafting;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeCraftPalette extends CustomRecipe {
-    private static final ResourceLocation plank = ResourceLocation.fromNamespaceAndPath("minecraft", "planks");
+    private static final Identifier plank = Identifier.fromNamespaceAndPath("minecraft", "planks");
 
     public RecipeCraftPalette(CraftingBookCategory craftingBookCategory) {
         super(craftingBookCategory);
