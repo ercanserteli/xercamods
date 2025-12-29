@@ -9,10 +9,10 @@ import xerca.xercapaint.CommandExport;
 public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<ExportPaintingPacket> {
     private static void processMessage(ExportPaintingPacket msg) {
         Minecraft m = Minecraft.getInstance();
-        if(m.player != null) {
-            if (CommandExport.doExport(m.player, msg.canvasId())){
+        if (m.player != null) {
+            if (CommandExport.doExport(m.player, msg.canvasId())) {
                 m.player.displayClientMessage(Component.translatable("xercapaint.export.success", msg.canvasId()).withStyle(ChatFormatting.GREEN), false);
-            }else{
+            } else {
                 m.player.displayClientMessage(Component.translatable("xercapaint.export.fail", msg.canvasId()).withStyle(ChatFormatting.RED), false);
             }
         }
@@ -20,6 +20,6 @@ public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayPay
 
     @Override
     public void receive(ExportPaintingPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(()->processMessage(packet));
+        context.client().execute(() -> processMessage(packet));
     }
 }

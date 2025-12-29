@@ -12,7 +12,7 @@ public record PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) imple
     public static final StreamCodec<FriendlyByteBuf, PaletteUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(PaletteUpdatePacket::encode, PaletteUpdatePacket::decode);
 
     public FriendlyByteBuf encode(FriendlyByteBuf buf) {
-        for(PaletteUtil.CustomColor color : paletteColors){
+        for (PaletteUtil.CustomColor color : paletteColors) {
             color.writeToBuffer(buf);
         }
         return buf;
@@ -20,7 +20,7 @@ public record PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) imple
 
     public static PaletteUpdatePacket decode(FriendlyByteBuf buf) {
         PaletteUtil.CustomColor[] paletteColors = new PaletteUtil.CustomColor[12];
-        for(int i=0; i<paletteColors.length; i++){
+        for (int i = 0; i < paletteColors.length; i++) {
             paletteColors[i] = new PaletteUtil.CustomColor(buf);
         }
         return new PaletteUpdatePacket(paletteColors);

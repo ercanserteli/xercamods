@@ -24,9 +24,9 @@ repositories {
 }
 
 tasks.register('buildCopy', Copy) {
-    dependsOn build
-    from "$buildDir/libs/${archivesBaseName}-${version}.jar"
-    into "$buildDir/../../builds"
+    dependsOn tasks.named('remapJar')
+    from(tasks.named('remapJar').flatMap { it.archiveFile })
+    into(rootProject.layout.projectDirectory.dir("../builds"))
 }
 
 dependencies {

@@ -12,6 +12,6 @@ public class ImportPaintingSendPacketHandler implements ServerPlayNetworking.Pla
 
     @Override
     public void receive(ImportPaintingSendPacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(()->processMessage(packet, context.player()));
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

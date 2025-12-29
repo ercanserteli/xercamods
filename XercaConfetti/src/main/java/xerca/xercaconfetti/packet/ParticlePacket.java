@@ -1,9 +1,8 @@
 package xerca.xercaconfetti.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 
-public class ParticlePacket{
+public class ParticlePacket {
     protected int count;
     protected double posX;
     protected double posY;

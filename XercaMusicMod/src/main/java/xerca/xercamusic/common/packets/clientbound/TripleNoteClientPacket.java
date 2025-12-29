@@ -1,7 +1,5 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -12,43 +10,32 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 
-public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument instrumentItem, int entityId) implements CustomPacketPayload {
+public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument instrumentItem,
+                                     int entityId) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<TripleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("triple_note_client"));
+    public static final StreamCodec<FriendlyByteBuf, TripleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(TripleNoteClientPacket::encode, TripleNoteClientPacket::decode);
+
     public TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument instrumentItem, Entity entity) {
         this(note1, note2, note3, instrumentItem, entity.getId());
     }
 
-    public static final CustomPacketPayload.Type<TripleNoteClientPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("triple_note_client"));
-    public static final StreamCodec<FriendlyByteBuf, TripleNoteClientPacket> PACKET_CODEC = StreamCodec.ofMember(TripleNoteClientPacket::encode, TripleNoteClientPacket::decode);
-
     public static TripleNoteClientPacket decode(FriendlyByteBuf buf) {
-        try {
-            int note1 = buf.readInt();
-            int note2 = buf.readInt();
-            int note3 = buf.readInt();
-            int instrumentId = buf.readInt();
-            int entityId = buf.readInt();
+        int note1 = buf.readInt();
+        int note2 = buf.readInt();
+        int note3 = buf.readInt();
+        int instrumentId = buf.readInt();
+        int entityId = buf.readInt();
 
-            if(instrumentId < 0 || instrumentId >= Items.instruments.length){
-                throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
-            }
-
-            IItemInstrument instrumentItem = Items.instruments[instrumentId];
-            return new TripleNoteClientPacket(note1, note2, note3, instrumentItem, entityId);
-        } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading SingleNotePacket:", ioe);
-            return null;
+        if (instrumentId < 0 || instrumentId >= Items.INSTRUMENTS.size()) {
+            Mod.LOGGER.warn("Invalid instrumentId: {}", instrumentId);
+            instrumentId = 0;
         }
+
+        IItemInstrument instrumentItem = Items.INSTRUMENTS.get(instrumentId);
+        return new TripleNoteClientPacket(note1, note2, note3, instrumentItem, entityId);
     }
 
-    public Entity entity() {
-        ClientLevel level = Minecraft.getInstance().level;
-        if(level == null) {
-            return null;
-        }
-        return level.getEntity(entityId);
-    }
-
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         int instrumentId = instrumentItem.getInstrumentId();
 
         buf.writeInt(note1);
@@ -56,7 +43,6 @@ public record TripleNoteClientPacket(int note1, int note2, int note3, IItemInstr
         buf.writeInt(note3);
         buf.writeInt(instrumentId);
         buf.writeInt(entityId);
-        return buf;
     }
 
     @Override

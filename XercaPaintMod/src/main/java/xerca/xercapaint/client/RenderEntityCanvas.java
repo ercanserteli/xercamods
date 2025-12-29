@@ -96,7 +96,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
     Instance getCanvasRendererInstance(ItemStack canvasStack, int width, int height) {
         String canvasId = canvasStack.get(Items.CANVAS_ID);
         int version = canvasStack.getOrDefault(Items.CANVAS_VERSION, 1);
-        if (!EntityCanvas.PICTURES.containsKey(canvasId) || EntityCanvas.PICTURES.get(canvasId).version < version) {
+        if (!EntityCanvas.PICTURES.containsKey(canvasId) || EntityCanvas.PICTURES.get(canvasId).version() < version) {
             EntityCanvas.PICTURES.put(canvasId, new EntityCanvas.Picture(version, Objects.requireNonNull(canvasStack.get(Items.CANVAS_PIXELS)).stream().mapToInt(i -> i).toArray()));
         }
         return getCanvasRendererInstance(Objects.requireNonNull(canvasId), version, width, height);
@@ -146,7 +146,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             this.version = version;
             int[] pixels = EMPTY_PIXELS;
             if (EntityCanvas.PICTURES.containsKey(canvasId)) {
-                pixels = EntityCanvas.PICTURES.get(canvasId).pixels;
+                pixels = EntityCanvas.PICTURES.get(canvasId).pixels();
                 loaded = true;
             }
             if (loaded || !started) {
@@ -274,7 +274,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
         private void addVertex(VertexConsumer vb, Matrix4f m, PoseStack.Pose pose, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff) {
             Vector3f normal = new Vector3f(xOff, yOff, zOff);
             normal.mul(pose.normal());
-            vb.addVertex(m, (float) x, (float)y, (float)z)
+            vb.addVertex(m, (float) x, (float) y, (float) z)
                     .setColor(255, 255, 255, 255)
                     .setUv(tx, ty)
                     .setOverlay(OverlayTexture.NO_OVERLAY)

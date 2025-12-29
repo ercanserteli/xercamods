@@ -3,7 +3,7 @@ package xerca.xercamusic.common;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -25,15 +25,37 @@ import xerca.xercamusic.common.packets.clientbound.*;
 import xerca.xercamusic.common.packets.serverbound.*;
 import xerca.xercamusic.common.tile_entity.BlockEntities;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 
-public class Mod implements ModInitializer
-{
+public class Mod implements ModInitializer {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
+
+    public static void sendToClient(ServerPlayer player, CustomPacketPayload packet) {
+        ServerPlayNetworking.send(player, packet);
+    }
+
+    @Nullable
+    public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) throws Exception {
+        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+            return toRun.get().call();
+        }
+        return null;
+    }
+
+    public static void onlyRunOnClient(Supplier<Runnable> toRun) {
+        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+            toRun.get().run();
+        }
+    }
+
+    public static ResourceLocation id(String location) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, location);
+    }
 
     private void networkRegistry() {
         PayloadTypeRegistry.playS2C().register(ExportMusicPacket.PACKET_ID, ExportMusicPacket.PACKET_CODEC);
@@ -58,12 +80,8 @@ public class Mod implements ModInitializer
         ServerPlayNetworking.registerGlobalReceiver(SendNotesPartToServerPacket.PACKET_ID, new SendNotesPartToServerPacketHandler());
     }
 
-//    private void enqueueIMC(final InterModEnqueueEvent event) {} todo this later
-
     private void registerTriggers() {
-        for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++) {
-            Registry.register(BuiltInRegistries.TRIGGER_TYPES, "become_musician", Triggers.TRIGGER_ARRAY[i]);
-        }
+        Registry.register(BuiltInRegistries.TRIGGER_TYPES, "become_musician", Triggers.BECOME_MUSICIAN);
     }
 
     @Override
@@ -79,7 +97,7 @@ public class Mod implements ModInitializer
         SoundEvents.registerSoundEvents();
 
         // Registration for loot modifier (used for Voice of God in desert temples)
-        LootTableEvents.MODIFY.register((key, tableBuilder, source) -> {
+        LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
             if (source.isBuiltin() && BuiltInLootTables.DESERT_PYRAMID.equals(key)) {
                 LootPool.Builder poolBuilder = LootPool.lootPool().when(LootItemRandomChanceCondition.randomChance(0.1f))
                         .add(LootItem.lootTableItem(Items.GOD));
@@ -91,36 +109,5 @@ public class Mod implements ModInitializer
             CommandImport.register(dispatcher);
             CommandExport.register(dispatcher);
         });
-    }
-
-    public static void sendToClient(ServerPlayer player, CustomPacketPayload packet) {
-        ServerPlayNetworking.send(player, packet);
-    }
-
-    public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
-            try {
-                return toRun.get().call();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
-    public static void onlyRunOnClient(Supplier<Runnable> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
-            try {
-                toRun.get().run();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public static ResourceLocation id(String location) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, location);
     }
 }

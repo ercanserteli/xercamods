@@ -37,19 +37,19 @@ public class ItemPalette extends Item {
         return InteractionResult.SUCCESS.withoutItem();
     }
 
-    public static boolean isFull(ItemStack stack){
+    public static boolean isFull(ItemStack stack) {
         return basicColorCount(stack) == 16;
     }
 
-    public static int basicColorCount(ItemStack stack){
-        if(stack.getItem() != Items.ITEM_PALETTE){
+    public static int basicColorCount(ItemStack stack) {
+        if (stack.getItem() != Items.ITEM_PALETTE) {
             return 0;
         }
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
-        if(basicColors != null){
+        if (basicColors != null) {
             if (basicColors.length == 16) {
                 int basicCount = 0;
-                for(byte basicColor : basicColors){
+                for (byte basicColor : basicColors) {
                     basicCount += basicColor;
                 }
                 return basicCount;
@@ -69,7 +69,7 @@ public class ItemPalette extends Item {
         else  {
             if (basicColors != null && basicColors.length == 16) {
                 int basicCount = 0;
-                for(byte basicColor : basicColors){
+                for (byte basicColor : basicColors) {
                     basicCount += basicColor;
                 }
                 consumer.accept(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
@@ -77,8 +77,8 @@ public class ItemPalette extends Item {
 
             if (customColorComp != null) {
                 int fullCount = 0;
-                for(PaletteUtil.CustomColor color : customColorComp.colors){
-                    if(color.numberOfColors > 0){
+                for (PaletteUtil.CustomColor color : customColorComp.colors) {
+                    if (color.numberOfColors > 0) {
                         fullCount++;
                     }
                 }

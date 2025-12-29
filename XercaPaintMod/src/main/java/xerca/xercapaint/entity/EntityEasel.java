@@ -54,7 +54,7 @@ public class EntityEasel extends Entity {
         super(entityCanvasEntityType, world);
     }
 
-    public void setPainter(Player painter){
+    public void setPainter(Player painter) {
         this.painter = painter;
     }
 
@@ -68,8 +68,7 @@ public class EntityEasel extends Entity {
         if (!this.level().isClientSide() && !this.isRemoved()) {
             if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
                 this.dropItem(damageSource.getEntity(), false);
-            }
-            else{
+            } else {
                 this.dropItem(damageSource.getEntity());
                 kill((ServerLevel) this.level());
             }
@@ -79,7 +78,7 @@ public class EntityEasel extends Entity {
 
     private void showBreakingParticles() {
         if (this.level() instanceof ServerLevel) {
-            ((ServerLevel)this.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
+            ((ServerLevel) this.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
         }
     }
 
@@ -107,13 +106,12 @@ public class EntityEasel extends Entity {
                     dropDeferred = () -> doDrop(entity, dropSelf);
                 }
             }
-        }
-        else{
+        } else {
             doDrop(entity, dropSelf);
         }
     }
 
-    public void doDrop(@Nullable Entity entity, boolean dropSelf){
+    public void doDrop(@Nullable Entity entity, boolean dropSelf) {
         if (this.level() instanceof ServerLevel serverLevel) {
             ItemStack canvasStack = this.getItem();
             this.setItem(ItemStack.EMPTY);
@@ -151,10 +149,10 @@ public class EntityEasel extends Entity {
         }
 
         this.getEntityData().set(DATA_CANVAS, itemStack);
-        if(makeSound){
+        if (makeSound) {
             if (!itemStack.isEmpty()) {
                 this.playSound(SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
-            }else{
+            } else {
                 this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             }
         }
@@ -214,20 +212,19 @@ public class EntityEasel extends Entity {
         boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
         if(this.level().isClientSide()){
             return !isEaselFilled && !handHoldsCanvas ? InteractionResult.PASS : InteractionResult.SUCCESS;
-        }
-        else {
+        } else {
             if (!isEaselFilled) {
                 if (handHoldsCanvas && !this.isRemoved()) {
                     this.setItem(itemInHand);
                     itemInHand.shrink(1);
                 }
-            }else{
+            } else {
                 boolean unused = this.painter == null;
                 boolean toEdit = handHoldsPalette && !(getItem().getOrDefault(Items.CANVAS_GENERATION, 0) > 0);
                 boolean allowed = unused || !toEdit;
                 OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
                 ServerPlayNetworking.send((ServerPlayer) player, pack);
-                if(toEdit && allowed){
+                if (toEdit && allowed) {
                     this.painter = player;
                 }
             }
@@ -261,11 +258,10 @@ public class EntityEasel extends Entity {
                 }
             }
         }
-        if(painter != null){
-            if(painter.isRemoved() || !painter.isAlive()){
+        if (painter != null) {
+            if (painter.isRemoved() || !painter.isAlive()) {
                 painter = null;
-            }
-            else if(painter.distanceToSqr(this) > 64){
+            } else if (painter.distanceToSqr(this) > 64) {
                 painter = null;
             }
         }

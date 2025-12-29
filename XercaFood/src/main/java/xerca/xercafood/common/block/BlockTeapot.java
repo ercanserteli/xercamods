@@ -33,7 +33,6 @@ import xerca.xercafood.common.item.Items;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class BlockTeapot extends Block {
     public static final IntegerProperty TEA_AMOUNT = IntegerProperty.create("tea", 0, 7);
@@ -52,10 +51,10 @@ public class BlockTeapot extends Block {
     public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource r) {
         int teaAmount = stateIn.getValue(TEA_AMOUNT);
         if (teaAmount > 0) {
-            if (r.nextDouble()*5 < ((double)teaAmount)*0.5) {
-                for(int i = 0; i < r.nextInt(1) + 1; ++i) {
+            if (r.nextDouble() * 5 < ((double) teaAmount) * 0.5) {
+                for (int i = 0; i < r.nextInt(1) + 1; ++i) {
                     worldIn.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                            pos.getX() + 0.5D, pos.getY() + 0.6D + r.nextDouble()*0.5D, pos.getZ() + 0.25D,
+                            pos.getX() + 0.5D, pos.getY() + 0.6D + r.nextDouble() * 0.5D, pos.getZ() + 0.25D,
                             0.0D, 0.025D, 0.0D);
                 }
             }
@@ -67,9 +66,8 @@ public class BlockTeapot extends Block {
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         if (worldIn.isClientSide) return InteractionResult.SUCCESS;
 
-        if (player instanceof ServerPlayer)
-        {
-            if(player.getMainHandItem().getItem() == Items.ITEM_TEACUP && state.getValue(TEA_AMOUNT) > 0){
+        if (player instanceof ServerPlayer) {
+            if (player.getMainHandItem().getItem() == Items.ITEM_TEACUP && state.getValue(TEA_AMOUNT) > 0) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
 
                 player.getMainHandItem().shrink(1);
@@ -85,9 +83,9 @@ public class BlockTeapot extends Block {
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         int teaAmount = state.getValue(TEA_AMOUNT);
         ItemStack teapotStack;
-        if(teaAmount == 0){
+        if (teaAmount == 0) {
             teapotStack = new ItemStack(Items.ITEM_TEAPOT);
-        }else{
+        } else {
             teapotStack = new ItemStack(getItemHotTeapot(teaAmount));
         }
         return Collections.singletonList(teapotStack);
@@ -118,7 +116,7 @@ public class BlockTeapot extends Block {
         return RenderShape.MODEL;
     }
 
-    public ItemTeapot getItemHotTeapot(int teaAmount){
+    public ItemTeapot getItemHotTeapot(int teaAmount) {
         return switch (teaAmount) {
             case 1 -> Items.ITEM_HOT_TEAPOT_1;
             case 2 -> Items.ITEM_HOT_TEAPOT_2;

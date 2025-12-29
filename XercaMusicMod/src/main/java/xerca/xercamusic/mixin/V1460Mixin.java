@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 @Mixin(V1460.class)
 public abstract class V1460Mixin {
     @Inject(method = "registerBlockEntities", at = @At("TAIL"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)

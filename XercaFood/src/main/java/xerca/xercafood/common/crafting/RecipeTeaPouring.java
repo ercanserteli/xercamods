@@ -39,7 +39,7 @@ public class RecipeTeaPouring extends CustomRecipe {
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemTeapot teapot = null;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemTeapot) {
@@ -49,7 +49,7 @@ public class RecipeTeaPouring extends CustomRecipe {
 
                     teapotStack = itemstack;
                     teapot = (ItemTeapot) itemstack.getItem();
-                    if(!teapot.isHot()){
+                    if (!teapot.isHot()) {
                         return false;
                     }
                 } else {
@@ -73,7 +73,7 @@ public class RecipeTeaPouring extends CustomRecipe {
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemTeapot teapot = null;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemTeapot) {
@@ -83,7 +83,7 @@ public class RecipeTeaPouring extends CustomRecipe {
 
                     teapotStack = itemstack;
                     teapot = (ItemTeapot) itemstack.getItem();
-                    if(!teapot.isHot()){
+                    if (!teapot.isHot()) {
                         return ItemStack.EMPTY;
                     }
                 } else {
@@ -107,7 +107,7 @@ public class RecipeTeaPouring extends CustomRecipe {
         NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         int teacupCount = 0;
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.ITEM_TEACUP && teacupCount <= 6) {
@@ -116,18 +116,18 @@ public class RecipeTeaPouring extends CustomRecipe {
             }
         }
 
-        for(int i = 0; i < nonnulllist.size(); ++i) {
+        for (int i = 0; i < nonnulllist.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
             Item item = itemstack.getItem();
             if (item.hasCraftingRemainingItem()) {
                 nonnulllist.set(i, item.getCraftingRemainingItem().getDefaultInstance());
             } else if (itemstack.getItem() instanceof ItemTeapot oldTeapot) {
-                if(oldTeapot.getTeaAmount() > teacupCount){
+                if (oldTeapot.getTeaAmount() > teacupCount) {
                     ItemStack remainingStack = new ItemStack(getHotTeapot(oldTeapot.getTeaAmount() - teacupCount));
-                    if(!remainingStack.isEmpty()){
+                    if (!remainingStack.isEmpty()) {
                         nonnulllist.set(i, remainingStack);
                     }
-                }else{
+                } else {
                     nonnulllist.set(i, new ItemStack(Items.ITEM_TEAPOT));
                 }
                 break;

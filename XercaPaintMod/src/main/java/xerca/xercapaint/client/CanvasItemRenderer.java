@@ -30,7 +30,7 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector, int combinedLight, int combinedOverlay) {
         if (stack.getItem() instanceof ItemCanvas itemCanvas) {
             boolean rendered = false;
-            if(stack.get(Items.CANVAS_PIXELS) != null && RenderEntityCanvas.theInstance != null){
+            if (stack.get(Items.CANVAS_PIXELS) != null && RenderEntityCanvas.theInstance != null) {
                 RenderEntityCanvas.Instance canvasIns = RenderEntityCanvas.theInstance.getCanvasRendererInstance(stack, itemCanvas.getWidth(), itemCanvas.getHeight());
                 if(canvasIns != null){
                     canvasIns.render(null, 0, 0, matrixStack, submitNodeCollector, Direction.UP, combinedLight);
@@ -44,9 +44,8 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
         }
     }
 
-    private void addVertex(VertexConsumer vb, Matrix4f m, PoseStack.Pose pose, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
-    {
-        vb.addVertex(m, (float) x, (float)y, (float)z).setColor(255, 255, 255, 255).setUv(tx, ty).setOverlay(OverlayTexture.NO_OVERLAY).setLight(lightmap).setNormal(pose, xOff, yOff, zOff);
+    private void addVertex(VertexConsumer vb, Matrix4f m, PoseStack.Pose pose, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff) {
+        vb.addVertex(m, (float) x, (float) y, (float) z).setColor(255, 255, 255, 255).setUv(tx, ty).setOverlay(OverlayTexture.NO_OVERLAY).setLight(lightmap).setNormal(pose, xOff, yOff, zOff);
     }
 
     private void renderEmptyCanvas(PoseStack ms, SubmitNodeCollector submitNodeCollector, float width, float height, int packedLight){
@@ -62,11 +61,11 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
 
         ms.last().normal().set(mn);
 
-        float f = 1.0f/32.0f;
+        float f = 1.0f / 32.0f;
         ms.translate(0.75, 0.5, 0.5);
-        if(wScale > 1 || hScale > 1){
+        if (wScale > 1 || hScale > 1) {
             f /= 3.3f;
-        }else{
+        } else {
             f /= 2.0f;
         }
 

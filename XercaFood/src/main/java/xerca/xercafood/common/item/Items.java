@@ -87,20 +87,20 @@ public final class Items {
     public static final Item ITEM_ULTIMATE_BOTTOM = makeFoodItem(Foods.ULTIMATE_BOTTOM);
     public static final Item ITEM_ULTIMATE_TOP = makeFoodItem(Foods.ULTIMATE_TOP);
     public static final Item CHEESEBURGER = makeFoodItem(Foods.CHEESEBURGER);
-    public static final Item ITEM_ROTTEN_BURGER = makeFoodItem( Foods.ROTTEN_BURGER);
+    public static final Item ITEM_ROTTEN_BURGER = makeFoodItem(Foods.ROTTEN_BURGER);
     public static final Item ITEM_RAW_SAUSAGE = makeFoodItem(Foods.RAW_SAUSAGE);
     public static final Item ITEM_COOKED_SAUSAGE = makeFoodItem(Foods.COOKED_SAUSAGE);
     public static final Item ITEM_HOTDOG = makeFoodItem(Foods.HOTDOG);
     public static final Item ITEM_FISH_BREAD = makeFoodItem(Foods.FISH_BREAD);
-    public static final Item ITEM_DAISY_SANDWICH = makeFoodItem( Foods.DAISY_SANDWICH);
+    public static final Item ITEM_DAISY_SANDWICH = makeFoodItem(Foods.DAISY_SANDWICH);
     public static final Item ITEM_CHICKEN_WRAP = makeFoodItem(Foods.CHICKEN_WRAP);
     public static final Item ITEM_RAW_SCHNITZEL = makeFoodItem(Foods.RAW_SCHNITZEL);
     public static final Item ITEM_COOKED_SCHNITZEL = makeFoodItem(Foods.COOKED_SCHNITZEL);
     public static final Item ITEM_FRIED_EGG = makeFoodItem(Foods.FRIED_EGG);
-    public static final Item ITEM_CROISSANT = makeFoodItem( Foods.CROISSANT);
-    public static final Item ITEM_POTATO_SLICES = makeFoodItem( Foods.POTATO_SLICES);
-    public static final Item ITEM_POTATO_FRIES = makeFoodItem( Foods.POTATO_FRIES);
-    public static final Item ITEM_SHISH_KEBAB = makeFoodItem( Foods.SHISH_KEBAB);
+    public static final Item ITEM_CROISSANT = makeFoodItem(Foods.CROISSANT);
+    public static final Item ITEM_POTATO_SLICES = makeFoodItem(Foods.POTATO_SLICES);
+    public static final Item ITEM_POTATO_FRIES = makeFoodItem(Foods.POTATO_FRIES);
+    public static final Item ITEM_SHISH_KEBAB = makeFoodItem(Foods.SHISH_KEBAB);
     public static final Item ITEM_TOMATO_SLICES = makeFoodItem(Foods.TOMATO_SLICES);
     public static final Item ITEM_ICE_TEA = makeDrinkItem(Foods.ICE_TEA, ITEM_GLASS);
     public static final Item ITEM_APPLE_JUICE = makeDrinkItem(Foods.APPLE_JUICE, ITEM_GLASS);
@@ -272,16 +272,16 @@ public final class Items {
     public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeTeaFilling::new);
     public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING = new SimpleCraftingRecipeSerializer<>(RecipeTeaRefilling::new);
 
-    static Item makeFoodItem(FoodProperties food){
+    static Item makeFoodItem(FoodProperties food) {
         return new Item(new Item.Properties().food(food));
     }
 
-    static Item makeContainedFoodItem(FoodProperties food, Item container, int stackSize){
+    static Item makeContainedFoodItem(FoodProperties food, Item container, int stackSize) {
         return new ItemStackableContainedFood(new Item.Properties().food(food).
                 craftRemainder(container), container, stackSize);
     }
 
-    static Item makeDrinkItem(FoodProperties food, Item container){
+    static Item makeDrinkItem(FoodProperties food, Item container) {
         return new ItemDrink(new Item.Properties().food(food), container);
     }
 

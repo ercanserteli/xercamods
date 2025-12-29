@@ -26,9 +26,9 @@ class ItemEnderCupcake extends Item {
             double lvt_7_1_ = entity.getY();
             double lvt_9_1_ = entity.getZ();
 
-            for(int lvt_11_1_ = 0; lvt_11_1_ < 16; ++lvt_11_1_) {
+            for (int lvt_11_1_ = 0; lvt_11_1_ < 16; ++lvt_11_1_) {
                 double x = entity.getX() + (entity.getRandom().nextDouble() - 0.5D) * 8.0D;
-                double y = Mth.clamp(entity.getY() + (double)(entity.getRandom().nextInt(8) - 4), 0.0D, (world.getHeight() - 1));
+                double y = Mth.clamp(entity.getY() + (double) (entity.getRandom().nextInt(8) - 4), 0.0D, (world.getHeight() - 1));
                 double z = entity.getZ() + (entity.getRandom().nextDouble() - 0.5D) * 8.0D;
                 if (entity.isPassenger()) {
                     entity.stopRiding();
@@ -42,7 +42,7 @@ class ItemEnderCupcake extends Item {
             }
 
             if (entity instanceof Player) {
-                ((Player)entity).getCooldowns().addCooldown(this, 20);
+                ((Player) entity).getCooldowns().addCooldown(this, 20);
             }
         }
 

@@ -19,14 +19,14 @@ public class CommandExport {
         );
     }
 
-    private static int paintExport(CommandSourceStack stack, String name){
+    private static int paintExport(CommandSourceStack stack, String name) {
         Mod.LOGGER.debug("Paint export called. name: {}", name);
-        if(stack.getEntity() == null){
+        if (stack.getEntity() == null) {
             Mod.LOGGER.error("Command entity is not found");
             return 0;
         }
         Entity commander = stack.getEntity();
-        if(!(commander instanceof ServerPlayer player)){
+        if (!(commander instanceof ServerPlayer player)) {
             Mod.LOGGER.error("Command entity is not a player");
             return 0;
         }
