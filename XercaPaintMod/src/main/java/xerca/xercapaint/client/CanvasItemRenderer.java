@@ -80,7 +80,7 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
 
         submitNodeCollector.submitCustomGeometry(ms, RenderTypes.entitySolid(emptyCanvasLocation), (pose, vb) -> {
             Matrix4f m = pose.pose();
-            RenderUtil.setShaderTexture(0, emptyCanvasLocation);
+
             // Draw the front
             addVertex(vb, m, pose, 0.0F, 32.0F*hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb, m, pose, 32.0F*wScale, 32.0F*hScale, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
@@ -93,7 +93,7 @@ public class CanvasItemRenderer implements SpecialModelRenderer<ItemStack> {
             // Draw the back and sides
             final float sideWidth = 1.0F/16.0F;
             Matrix4f m = pose.pose();
-            RenderUtil.setShaderTexture(0, backLocation);
+
             addVertex(vb2, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb2, m, pose, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
             addVertex(vb2, m, pose, 32.0D*wScale, 32.0D*hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);

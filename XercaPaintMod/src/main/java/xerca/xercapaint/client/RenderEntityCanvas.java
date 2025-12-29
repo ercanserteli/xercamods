@@ -222,7 +222,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
             float zOffset = tzOffset;
 
             submitNodeCollector.submitCustomGeometry(ms, RenderTypes.entitySolid(location), (localPose, vb) -> {
-                RenderUtil.setShaderTexture(0, location);
                 // Draw the front
                 Matrix4f m = localPose.pose();
 
@@ -237,7 +236,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, RenderEntit
                 // Draw the back and sides
                 final float sideWidth = 1.0F / 16.0F;
                 Matrix4f m = localPose.pose();
-                RenderUtil.setShaderTexture(0, backLocation);
                 addVertex(vb, m, localPose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
                 addVertex(vb, m, localPose, 32.0D * wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
                 addVertex(vb, m, localPose, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
