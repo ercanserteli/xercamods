@@ -35,6 +35,7 @@ public class BlockMetronome extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(BPS, 6).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
@@ -50,11 +51,9 @@ public class BlockMetronome extends BaseEntityBlock {
 
 
     public void setBps(BlockState state, Level worldIn, BlockPos pos, int bps) {
-        if (!worldIn.isClientSide) {
-            if (bps >= 1 && bps <= 50) {
-                state = state.setValue(BPS, bps);
-                worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
-            }
+        if (!worldIn.isClientSide && bps >= 1 && bps <= 50) {
+            state = state.setValue(BPS, bps);
+            worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
         }
     }
 
@@ -91,11 +90,12 @@ public class BlockMetronome extends BaseEntityBlock {
         return new TileEntityMetronome(pos, state);
     }
 
+    @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
-            if (t instanceof TileEntityMetronome) {
-                TileEntityMetronome.tick(level1, blockPos, blockState1, (TileEntityMetronome) t);
+            if (t instanceof TileEntityMetronome tileEntityMetronome) {
+                TileEntityMetronome.tick(level1, blockPos, blockState1, tileEntityMetronome);
             }
         };
     }

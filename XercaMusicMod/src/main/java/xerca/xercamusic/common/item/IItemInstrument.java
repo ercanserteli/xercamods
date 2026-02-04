@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IItemInstrument {
-    int minNote = 21;
-    int maxNote = 117;
-    int totalNotes = 96;
+    int MIN_NOTE = 21;
+    int MAX_NOTE = 117;
+    int TOTAL_NOTES = 96;
 
     int getMinOctave();
     int getMaxOctave();
@@ -21,10 +21,10 @@ public interface IItemInstrument {
 
 
     static int idToNote(int id){
-        return id + minNote;
+        return id + MIN_NOTE;
     }
     static int noteToId(int note){
-        return note - minNote;
+        return note - MIN_NOTE;
     }
     static void playMusic(Level worldIn, Player playerIn, boolean canStop){
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));

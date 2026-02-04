@@ -102,13 +102,13 @@ public class MidiHandler
 
                 int key = sm.getData1() - 21 + 12*currentOctave;
                 int velocity = sm.getData2();
-                System.out.println("Note message " + (sm.getCommand() == NOTE_ON ? "on" : "off") + " key: " + key + " vel: " + velocity);
+                XercaMusic.LOGGER.debug("Note message " + (sm.getCommand() == NOTE_ON ? "on" : "off") + " key: " + key + " vel: " + velocity);
                 if(key < 0 || key > 95){
                     return;
                 }
 
                 if (sm.getCommand() == NOTE_ON && velocity > 0) {
-                    float vel = ((float)velocity)/128.0f;
+                    float vel = velocity / 128.0f;
                     float vol = volumeCurve(vel);
                     Minecraft.getInstance().submit(() -> noteOnHandler.accept(new MidiData(key, vol)));
                 } else if (sm.getCommand() == NOTE_OFF || (sm.getCommand() == NOTE_ON && velocity == 0)) {
@@ -118,7 +118,9 @@ public class MidiHandler
         }
 
         @Override
-        public void close() {}
+        public void close() {
+            // Do nothing
+        }
     }
 
     public record MidiData(int noteId, float volume) {}

@@ -34,7 +34,7 @@ public class PaletteUpdatePacket {
                 result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
             }
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading MusicUpdatePacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

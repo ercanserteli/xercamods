@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +45,14 @@ public class TileEntityMusicBox extends BlockEntity {
     private int playingAge = 0;
     private int mLengthBeats = 0;
     private SoundController soundController = null;
+
+    private static byte sanitizeBps(int bps) {
+        return (byte) Math.max(1, Math.min(50, bps));
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
 
     public TileEntityMusicBox(BlockPos blockPos, BlockState blockState) {
         super(BlockEntities.MUSIC_BOX, blockPos, blockState);
@@ -178,7 +187,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     private int beatsToTicks(int beats){
-        return Math.round(((float)beats) * 20.0f / ((float)mBPS));
+        return Math.max(1, Math.round((beats) * 20.0f / (Math.max(1, mBPS))));
     }
 
     public static void musicOver(TileEntityMusicBox t, BlockState state) {
@@ -187,7 +196,7 @@ public class TileEntityMusicBox extends BlockEntity {
         t.isPowering = true;
 
         if(t.level != null){
-            Direction rightSide = state.getValue(BlockMusicBox.FACING).getClockWise();
+            Direction rightSide = state.getValue(HorizontalDirectionalBlock.FACING).getClockWise();
             t.level.setBlockAndUpdate(t.worldPosition, state.setValue(BlockMusicBox.POWERING, true));
 
             BlockPos neighbor = t.worldPosition.relative(rightSide);
@@ -197,14 +206,12 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     public static void musicStart(TileEntityMusicBox t, BlockPos blockPos) {
-        if(t.level != null){
-            if(t.level.isClientSide){
-                if(t.soundController != null){
-                    t.soundController.setStop();
-                }
-                t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.mBPS, t.mVolume, t);
-                t.soundController.start();
+        if (t.level != null && t.level.isClientSide) {
+            if (t.soundController != null) {
+                t.soundController.setStop();
             }
+            t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.mBPS, t.mVolume, t);
+            t.soundController.start();
         }
     }
 
@@ -213,7 +220,6 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     public void setNoteStack(ItemStack noteStack, boolean updateClient) {
-//        XercaMusic.LOGGER.debug("setNoteStack: " + noteStack.getTag());
         if(noteStack.getItem() instanceof ItemMusicSheet){
             if(updateClient && level != null && !level.isClientSide){
                 updateClient(noteStack, (Item) instrument);
@@ -222,9 +228,9 @@ public class TileEntityMusicBox extends BlockEntity {
             this.noteStack = noteStack;
             if (noteStack.hasTag() && noteStack.getTag() != null && noteStack.getTag().contains("id") && noteStack.getTag().contains("ver") && noteStack.getTag().contains("l")) {
                 CompoundTag comp = noteStack.getTag();
-                mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
-                mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
-                mLengthBeats = comp.getInt("l");
+                mBPS = sanitizeBps(comp.contains("bps") ? comp.getInt("bps") : 8);
+                mVolume = sanitizeVolume(comp.contains("vol") ? comp.getFloat("vol") : 1.f);
+                mLengthBeats = Math.max(0, comp.getInt("l"));
             }
             else {
                 this.notes.clear();
@@ -250,12 +256,12 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     public void setInstrument(Item instrument) {
-        if(instrument instanceof IItemInstrument){
+        if (instrument instanceof IItemInstrument itemInstrument) {
             if(level != null && !level.isClientSide){
                 updateClient(null, instrument);
             }
 
-            this.instrument = (IItemInstrument) instrument;
+            this.instrument = itemInstrument;
             setChanged();
         }
     }

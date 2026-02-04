@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer
 {
     private static final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
-    private static final ResourceLocation emptyCanvasLocation = new ResourceLocation(Mod.modId, "textures/block/empty.png");
+    private static final ResourceLocation emptyCanvasLocation = new ResourceLocation(Mod.MOD_ID, "textures/block/empty.png");
 
     public CanvasItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet entityModelSet) {
         super(dispatcher, entityModelSet);

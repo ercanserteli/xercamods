@@ -16,7 +16,7 @@ import static xerca.xercamusic.common.XercaMusic.sendToClient;
 
 public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     private static void processMessage(MusicDataRequestPacket msg, ServerPlayer pl) {
-        UUID id = msg.getId();
+        UUID id = msg.getMusicId();
         int version = msg.getVersion();
         MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.server);
         MusicDataResponsePacket packet;

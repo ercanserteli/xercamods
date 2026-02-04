@@ -43,6 +43,18 @@ public class EntityMusicSpirit extends Entity {
     private BlockPos blockInsPos = null;
     private SoundController soundController = null;
 
+    private static byte sanitizeBps(int bps) {
+        return (byte) Math.max(1, Math.min(50, bps));
+    }
+
+    private static int sanitizeLengthBeats(int beats) {
+        return Math.max(0, beats);
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
+
     public EntityMusicSpirit(Level worldIn) {
         super(Entities.MUSIC_SPIRIT, worldIn);
     }
@@ -66,11 +78,11 @@ public class EntityMusicSpirit extends Entity {
 
     private void setBlockPosAndInstrument(BlockPos pos, int instrumentId){
         if (instrumentId < Items.instruments.length) {
-            IItemInstrument instrument = Items.instruments[instrumentId];
-            if (instrument instanceof ItemBlockInstrument itemBlockInstrument) {
+            IItemInstrument itemInstrument = Items.instruments[instrumentId];
+            if (itemInstrument instanceof ItemBlockInstrument itemBlockInstrument) {
                 this.blockInstrument = (BlockInstrument) itemBlockInstrument.getBlock();
                 this.blockInsPos = pos;
-                setPos((double)pos.getX()+0.5, (double)pos.getY()-0.5, (double)pos.getZ()+0.5);
+                setPos(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5);
                 return;
             }
         }
@@ -111,10 +123,11 @@ public class EntityMusicSpirit extends Entity {
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+        notes.clear();
         NoteEvent.fillArrayFromNBT(notes, tag);
-        this.mLengthBeats = tag.getInt("l");
-        this.mBPS = tag.getByte("bps");
-        this.mVolume = tag.getFloat("vol");
+        this.mLengthBeats = sanitizeLengthBeats(tag.getInt("l"));
+        this.mBPS = sanitizeBps(tag.getInt("bps"));
+        this.mVolume = sanitizeVolume(tag.getFloat("vol"));
         this.isPlaying = tag.getBoolean("playing");
         if(tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")){
             setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")), tag.getInt("bIns"));
@@ -164,8 +177,8 @@ public class EntityMusicSpirit extends Entity {
     public void readSpawnData(FriendlyByteBuf buffer) {
         int entityId = buffer.readInt();
         Entity ent = level().getEntity(entityId);
-        if (ent instanceof Player) {
-            body = (Player) ent;
+        if (ent instanceof Player player) {
+            body = player;
         }
 
         int bx = buffer.readInt();
@@ -195,9 +208,9 @@ public class EntityMusicSpirit extends Entity {
 
         if (note != null && note.hasTag() && note.getTag() != null && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
             CompoundTag comp = note.getTag();
-            mLengthBeats = comp.getInt("l");
-            mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
-            mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
+            mLengthBeats = sanitizeLengthBeats(comp.getInt("l"));
+            mBPS = sanitizeBps(comp.contains("bps") ? comp.getInt("bps") : 8);
+            mVolume = sanitizeVolume(comp.contains("vol") ? comp.getFloat("vol") : 1.f);
             UUID id = comp.getUUID("id");
             int ver = comp.getInt("ver");
 
@@ -217,7 +230,7 @@ public class EntityMusicSpirit extends Entity {
 
     @Override
     protected void defineSynchedData() {
-
+        // nothing to do
     }
 
     @Override
@@ -252,12 +265,10 @@ public class EntityMusicSpirit extends Entity {
             }
         }
         super.tick();
-        if(blockInsPos == null || blockInstrument == null){
-            if(body != null) {  // this check is added to work around a strange crash
-                this.setPos(body.getX(), body.getY(), body.getZ());
-                if(soundController != null) {
-                    soundController.setPos(getX(), getY(), getZ());
-                }
+        if ((blockInsPos == null || blockInstrument == null) && body != null) {  // body check works around a crash
+            this.setPos(body.getX(), body.getY(), body.getZ());
+            if (soundController != null) {
+                soundController.setPos(getX(), getY(), getZ());
             }
         }
     }

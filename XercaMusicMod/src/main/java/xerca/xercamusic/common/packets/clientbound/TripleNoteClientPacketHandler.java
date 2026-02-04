@@ -15,6 +15,10 @@ import static xerca.xercamusic.common.XercaMusic.onlyCallOnClient;
 public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
     private static void processMessage(TripleNoteClientPacket msg) {
         Entity entity = msg.getEntity();
+        if (entity == null) {
+            return;
+        }
+
         IItemInstrument.InsSound sound1 = msg.getInstrumentItem().getSound(msg.getNote1());
         IItemInstrument.InsSound sound2 = msg.getInstrumentItem().getSound(msg.getNote2());
         IItemInstrument.InsSound sound3 = msg.getInstrumentItem().getSound(msg.getNote3());

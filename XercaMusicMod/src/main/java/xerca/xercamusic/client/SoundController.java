@@ -38,7 +38,7 @@ public class SoundController extends Thread {
     }
 
     private int beatsToTicks(int beats){
-        return Math.max(1, Math.round(((float)beats) * 20.0f / ((float)bps)));
+        return Math.max(1, Math.round(beats * 20.0f / bps));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SoundController extends Thread {
             return;
         }
 
-        int msPerBeat = Math.round(1000.0f/(float)bps);
+        int msPerBeat = Math.round(1000.0f / bps);
         int currentBeat = 0;
 
         Minecraft minecraft = Minecraft.getInstance();
@@ -71,15 +71,13 @@ public class SoundController extends Thread {
         }
 
         // Music over
-        if(spiritID >= 0){
-            if(minecraft.player != null) {
-                minecraft.submit(() -> ClientStuff.endMusic(spiritID, minecraft.player.getId()));
-            }
+        if (spiritID >= 0 && minecraft.player != null) {
+            minecraft.submit(() -> ClientStuff.endMusic(spiritID, minecraft.player.getId()));
         }
     }
 
     private void playNote(NoteEvent event){
-        if (event.note >= IItemInstrument.minNote && event.note <= IItemInstrument.maxNote) {
+        if (event.note >= IItemInstrument.MIN_NOTE && event.note <= IItemInstrument.MAX_NOTE) {
             final byte note = event.note;
             Minecraft.getInstance().submit(() -> {
                 ClientLevel level = Minecraft.getInstance().level;

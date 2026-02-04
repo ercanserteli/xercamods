@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.UUID;
 
 public class NotesPartAckFromServerPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
-    static private final Map<UUID, Runnable> map = new HashMap<>();
+    private static final Map<UUID, Runnable> map = new HashMap<>();
 
-    static public void addCallback(UUID id, Runnable func) {
+    public static void addCallback(UUID id, Runnable func) {
         map.put(id, func);
     }
 
     private static void processMessage(NotesPartAckFromServerPacket msg) {
-        UUID id = msg.getId();
+        UUID id = msg.getMusicId();
         if(map.containsKey(id)) {
             map.get(id).run();
             map.remove(id);

@@ -17,21 +17,32 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
+    private static byte sanitizeBps(byte bps) {
+        return (byte) Math.max(1, Math.min(50, bps & 0xFF));
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
+
+    private static byte sanitizeHighlightInterval(byte interval) {
+        return (byte) Math.max(1, Math.min(24, interval & 0xFF));
+    }
+
     private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {
         ItemStack note = pl.getMainHandItem();
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
             CompoundTag comp = note.getOrCreateTag();
 
             MusicUpdatePacket.FieldFlag flag = msg.getAvailability();
-//            XercaMusic.LOGGER.info(flag);
-            if(flag.hasId) comp.putUUID("id", msg.getId());
+            if (flag.hasId) comp.putUUID("id", msg.getMusicId());
             if(flag.hasVersion) comp.putInt("ver", msg.getVersion());
-            if(flag.hasLength) comp.putInt("l", msg.getLengthBeats());
-            if(flag.hasBps) comp.putByte("bps", msg.getBps());
-            if(flag.hasVolume) comp.putFloat("vol", msg.getVolume());
+            if (flag.hasLength) comp.putInt("l", Math.max(0, msg.getLengthBeats()));
+            if (flag.hasBps) comp.putByte("bps", sanitizeBps(msg.getBps()));
+            if (flag.hasVolume) comp.putFloat("vol", sanitizeVolume(msg.getVolume()));
             if(flag.hasPrevIns) comp.putByte("prevIns", msg.getPrevInstrument());
             if(flag.hasPrevInsLocked) comp.putBoolean("piLocked", msg.getPrevInsLocked());
-            if(flag.hasHlInterval) comp.putByte("hl", msg.getHighlightInterval());
+            if (flag.hasHlInterval) comp.putByte("hl", sanitizeHighlightInterval(msg.getHighlightInterval()));
             if(flag.hasSigned && msg.getSigned()) {
                 if(flag.hasTitle) comp.putString("title", msg.getTitle().trim());
                 comp.putString("author", pl.getName().getString());
@@ -42,6 +53,10 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChanne
                 comp.putInt("generation", 0);
             }
             if(flag.hasNotes){
+                if (!comp.contains("id") || !comp.contains("ver")) {
+                    return;
+                }
+
                 ArrayList<NoteEvent> notes = msg.getNotes();
                 UUID id = comp.getUUID("id");
                 if(notes == null) {

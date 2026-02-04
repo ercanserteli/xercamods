@@ -60,6 +60,9 @@ public class ImportMusicSendPacket implements IPacket {
         ImportMusicSendPacket result = new ImportMusicSendPacket();
         try {
             int eventCount = buf.readInt();
+            if (eventCount < 0 || eventCount > MAX_NOTES_IN_PACKET) {
+                throw new IndexOutOfBoundsException("Invalid eventCount: " + eventCount);
+            }
             if(eventCount > 0) {
                 result.notes = new ArrayList<>(eventCount);
                 for (int i = 0; i < eventCount; i++) {
@@ -69,8 +72,8 @@ public class ImportMusicSendPacket implements IPacket {
 
             result.tag = buf.readNbt();
 
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ImportMusicSendPacket: " + ioe);
+        } catch (RuntimeException ioe) {
+            XercaMusic.LOGGER.error("Exception while reading ImportMusicSendPacket: {}", String.valueOf(ioe));
             return null;
         }
         result.messageIsValid = true;
@@ -103,8 +106,8 @@ public class ImportMusicSendPacket implements IPacket {
     }
 
     public static class NotesTooLargeException extends Exception {
-        public ArrayList<NoteEvent> notes;
-        public UUID id;
+        public final ArrayList<NoteEvent> notes;
+        public final UUID id;
 
         public NotesTooLargeException(ArrayList<NoteEvent> notes, UUID id) {
             this.notes = notes;

@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.Items;
 
 import javax.annotation.Nullable;
@@ -25,12 +24,12 @@ import java.util.ArrayList;
 public class RecipeCraftPalette extends CustomRecipe {
     private static final ResourceLocation plank = new ResourceLocation("minecraft:planks");
 
-    public RecipeCraftPalette(ResourceLocation resourceLocation, CraftingBookCategory craftingBookCategory) {
-        super(resourceLocation, craftingBookCategory);
+    public RecipeCraftPalette(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     private boolean isPlank(ItemStack stack){
-        return stack.getTags().anyMatch((p)-> p.location().equals(plank));
+        return stack.getTags().anyMatch(p -> p.location().equals(plank));
     }
 
     private boolean isDye(ItemStack stack){
@@ -97,7 +96,7 @@ public class RecipeCraftPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
         int plankRow = findPlankRow(inv);
         if(plankRow < 0){
             return ItemStack.EMPTY;

@@ -24,7 +24,7 @@ public class MusicEndedPacket implements IPacket {
         try {
             result.playerId = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicEndedPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading MusicEndedPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

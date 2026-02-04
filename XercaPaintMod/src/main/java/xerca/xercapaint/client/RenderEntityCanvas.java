@@ -31,8 +31,8 @@ import java.util.Map;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
-    static public RenderEntityCanvas theInstance;
-    static private final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
+    public static RenderEntityCanvas theInstance;
+    private static final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
 
     static {
@@ -77,9 +77,12 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     Instance getCanvasRendererInstance(CompoundTag tag, int width, int height) {
         String name = tag.getString("name");
         int version = tag.getInt("v");
-        if(!EntityCanvas.PICTURES.containsKey(name) || EntityCanvas.PICTURES.get(name).version < version){
-            EntityCanvas.PICTURES.put(name, new EntityCanvas.Picture(version, tag.getIntArray("pixels")));
-        }
+        int[] pixels = tag.getIntArray("pixels");
+
+        EntityCanvas.PICTURES.compute(name, (n, existing) ->
+                (existing == null || existing.version() < version) ? new EntityCanvas.Picture(version, pixels) : existing
+        );
+
         return getCanvasRendererInstance(name, version, width, height);
     }
 
@@ -126,127 +129,127 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         }
 
         private void updateCanvasTexture(String name, int version) {
-            this.version = version;
             int[] pixels = EMPTY_PIXELS;
-            if(EntityCanvas.PICTURES.containsKey(name)){
-                pixels = EntityCanvas.PICTURES.get(name).pixels;
+            boolean hasPicture = EntityCanvas.PICTURES.containsKey(name);
+            if (hasPicture) {
+                pixels = EntityCanvas.PICTURES.get(name).pixels();
                 loaded = true;
             }
-            if(loaded || !started){
-                if(pixels.length < height*width){
+            if (loaded || !started) {
+                if (pixels.length < width * height) {
                     Mod.LOGGER.warn("Pixels array length ({}) is smaller than canvas area ({})", pixels.length, height * width);
                     return;
                 }
 
                 NativeImage image = canvasTexture.getPixels();
-                if(image != null) {
-                    for (int i = 0; i < height; ++i) {
-                        for (int j = 0; j < width; ++j) {
-                            int k = j + i * width;
-                            image.setPixelRGBA(j, i, swapColor(pixels[k]));
+                if (image != null) {
+                    for (int y = 0; y < height; ++y) {
+                        for (int x = 0; x < width; ++x) {
+                            int idx = x + y * width;
+                            image.setPixelRGBA(x, y, swapColor(pixels[idx]));
                         }
                     }
+                    canvasTexture.upload();
+                    this.version = version;
+                    this.started = true;
                 }
-
-                canvasTexture.upload();
             }
-            this.started = true;
         }
 
         public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, PoseStack ms, MultiBufferSource buffer, Direction facing, int packedLight) {
-            final float wScale = width/16.0f;
-            final float hScale = height/16.0f;
+            final float wScale = width / 16.0f;
+            final float hScale = height / 16.0f;
 
             ms.pushPose();
-            Matrix3f mn = ms.last().normal();
 
             float xOffset = facing.getStepX();
             float yOffset = facing.getStepY();
             float zOffset = facing.getStepZ();
 
-            if(canvas != null && canvas.getRotation() > 0) {
-                ms.mulPose(Axis.XP.rotationDegrees( pitch));
-                ms.mulPose(Axis.YP.rotationDegrees( 180-yaw));
-                ms.mulPose(Axis.ZP.rotationDegrees(90*canvas.getRotation()));
-                ms.mulPose(Axis.YP.rotationDegrees( -180+yaw));
-                ms.mulPose(Axis.XP.rotationDegrees( -pitch));
+            if (canvas != null && canvas.getRotation() > 0) {
+                ms.mulPose(Axis.XP.rotationDegrees(pitch));
+                ms.mulPose(Axis.YP.rotationDegrees(180.f - yaw));
+                ms.mulPose(Axis.ZP.rotationDegrees(90.f * canvas.getRotation()));
+                ms.mulPose(Axis.YP.rotationDegrees(-180.f + yaw));
+                ms.mulPose(Axis.XP.rotationDegrees(-pitch));
             }
-            ms.last().normal().set(mn);
 
-            float f = 1.0f/32.0f;
-            if(canvas != null) {
+            float f = 1.0f / 32.0f;
+            if (canvas != null) {
                 if (facing.getAxis().isHorizontal()) {
                     ms.translate(zOffset * 0.5d * wScale, -0.5d * hScale, -xOffset * 0.5d * wScale);
                 } else {
-                    ms.translate(0.5 * wScale, 0 * hScale, (yOffset > 0 ? 0.5 : -0.5) * wScale);
+                    ms.translate(0.5 * wScale, 0, (yOffset > 0 ? 0.5 : -0.5) * wScale);
                 }
-            }
-            else{
-                ms.translate(0.75, 0.5, 0.5);
-                if(wScale > 1 || hScale > 1){
+            } else {
+                ms.translate(0.75d, 0.5d, 0.5d);
+                if (wScale > 1 || hScale > 1) {
                     f /= 3.3f;
-                }else{
+                } else {
                     f /= 2.0f;
                 }
             }
-            ms.mulPose(Axis.XP.rotationDegrees( pitch));
-            ms.mulPose(Axis.YP.rotationDegrees( 180-yaw));
 
+            ms.mulPose(Axis.XP.rotationDegrees(pitch));
+            ms.mulPose(Axis.YP.rotationDegrees(180 - yaw));
             ms.scale(f, f, f);
 
-            RenderSystem.setShaderTexture(0, location);
-
             Matrix4f m = ms.last().pose();
-            mn = ms.last().normal();
-            VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(location));
+            Matrix3f mn = ms.last().normal();
 
-            // Draw the front
-            addVertex(vb, m, mn, 0.0F, 32.0F*hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0F*wScale, 32.0F*hScale, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0F*wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+            // FRONT (facing -Z)
+            RenderSystem.setShaderTexture(0, location);
+            VertexConsumer front = buffer.getBuffer(RenderType.entitySolid(location));
+            addVertex(front, m, mn, 0.0F, 32.0F * hScale, -1.0F, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
+            addVertex(front, m, mn, 32.0F * wScale, 32.0F * hScale, -1.0F, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
+            addVertex(front, m, mn, 32.0F * wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
+            addVertex(front, m, mn, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
 
-            vb = buffer.getBuffer(RenderType.entitySolid(backLocation));
-            // Draw the back and sides
-            final float sideWidth = 1.0F/16.0F;
-//            textureManager.bind(backLocation);
+            // BACK (facing +Z)
             RenderSystem.setShaderTexture(0, backLocation);
-            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0D, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
+            VertexConsumer back = buffer.getBuffer(RenderType.entitySolid(backLocation));
+            addVertex(back, m, mn, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
+            addVertex(back, m, mn, 0.0D, 32.0D * hScale, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
 
-            // Sides
-            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0D, sideWidth, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, -1.0D, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
+            final float sideWidth = 1.0F / 16.0F;
 
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, 1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, -1.0F, 1.0F, sideWidth, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 0.0D, 32.0D*hScale, -1.0F, 0.0F, sideWidth, packedLight, xOffset, yOffset, zOffset);
+            // LEFT SIDE (x = 0, normal -X)
+            addVertex(back, m, mn, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
+            addVertex(back, m, mn, 0.0D, 32.0D * hScale, 1.0D, sideWidth, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+            addVertex(back, m, mn, 0.0D, 32.0D * hScale, -1.0D, 0.0F, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+            addVertex(back, m, mn, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
 
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 32.0D*hScale, 1.0F, sideWidth, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, xOffset, yOffset, zOffset);
+            // TOP SIDE (y = 32*hScale, normal +Y)
+            addVertex(back, m, mn, 0.0D, 32.0D * hScale, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 32.0D * hScale, -1.0D, 1.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
+            addVertex(back, m, mn, 0.0D, 32.0D * hScale, -1.0D, 0.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
 
-            addVertex(vb, m, mn, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 32.0D*wScale, 0.0D, 1.0F, 1.0F, 1.0F-sideWidth, packedLight, xOffset, yOffset, zOffset);
-            addVertex(vb, m, mn, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F-sideWidth, packedLight, xOffset, yOffset, zOffset);
+            // RIGHT SIDE (x = 32*wScale, normal +X)
+            addVertex(back, m, mn, 32.0D * wScale, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 32.0D * hScale, -1.0F, 0.0F, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 32.0D * hScale, 1.0F, sideWidth, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+
+            // BOTTOM SIDE (y = 0, normal -Y)
+            addVertex(back, m, mn, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
+            addVertex(back, m, mn, 32.0D * wScale, 0.0D, 1.0F, 1.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
+            addVertex(back, m, mn, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
 
             ms.popPose();
         }
 
-        private void addVertex(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float xOff, float yOff, float zOff)
+        private void addVertex(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float nx, float ny, float nz)
         {
-            vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(mn, xOff, yOff, zOff).endVertex();
+            vb.vertex(m, (float) x, (float) y, (float) z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(mn, nx, ny, nz).endVertex();
         }
 
         public void close() {
             this.canvasTexture.close();
+            textureManager.release(location);
         }
     }
 }

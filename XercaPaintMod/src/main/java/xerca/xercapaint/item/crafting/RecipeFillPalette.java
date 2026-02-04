@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
@@ -24,8 +23,8 @@ import java.util.ArrayList;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeFillPalette extends CustomRecipe {
-    public RecipeFillPalette(ResourceLocation resourceLocation, CraftingBookCategory craftingBookCategory) {
-        super(resourceLocation, craftingBookCategory);
+    public RecipeFillPalette(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     private boolean isPalette(ItemStack stack){
@@ -82,7 +81,8 @@ public class RecipeFillPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
+
         int paletteId = findPalette(inv);
         if(paletteId < 0){
             return ItemStack.EMPTY;
@@ -96,19 +96,18 @@ public class RecipeFillPalette extends CustomRecipe {
         ItemStack inputPalette = inv.getItem(paletteId);
         CompoundTag orgTag = inputPalette.getOrCreateTag().copy();
         if(orgTag.contains("basic")){
-            basicColors = orgTag.getByteArray("basic");
-//            Mod.LOGGER.debug("Basic found. Len: " + basicColors.length);
+            byte[] loadedBasicColors = orgTag.getByteArray("basic");
+            basicColors = new byte[16];
+            System.arraycopy(loadedBasicColors, 0, basicColors, 0, Math.min(loadedBasicColors.length, basicColors.length));
         }
         else{
             basicColors = new byte[16];
-//            Mod.LOGGER.debug("Basic not found. Creating");
         }
 
         for(ItemStack dye : dyes){
             DyeColor color = ((DyeItem)(dye.getItem())).getDyeColor();
             int realColorId = 15 - color.getId();
             if(basicColors[realColorId] > 0){
-//                Mod.LOGGER.debug("Color already exists in palette.");
                 return ItemStack.EMPTY;
             }
             basicColors[realColorId] = 1;

@@ -23,13 +23,13 @@ public class MusicUpdatePacket implements IPacket {
     private String title;
     private byte prevInstrument;
     private boolean prevInsLocked;
-    private UUID id;
+    private UUID musicId;
     private int version;
     private byte highlightInterval;
     private boolean messageIsValid;
 
     public MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed,
-                             String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws ImportMusicSendPacket.NotesTooLargeException {
+                             String title, byte prevInstrument, boolean prevInsLocked, UUID musicId, int version, byte highlightInterval) throws ImportMusicSendPacket.NotesTooLargeException {
         this.availability = availability;
         this.lengthBeats = lengthBeats;
         this.bps = bps;
@@ -38,12 +38,12 @@ public class MusicUpdatePacket implements IPacket {
         this.title = title;
         this.prevInstrument = prevInstrument;
         this.prevInsLocked = prevInsLocked;
-        this.id = id;
+        this.musicId = musicId;
         this.version = version;
         this.highlightInterval = highlightInterval;
         this.notes = notes;
         if(availability.hasNotes && this.notes != null && this.notes.size() > MAX_NOTES_IN_PACKET) {
-            throw new ImportMusicSendPacket.NotesTooLargeException(notes, id);
+            throw new ImportMusicSendPacket.NotesTooLargeException(notes, musicId);
         }
     }
 
@@ -63,7 +63,10 @@ public class MusicUpdatePacket implements IPacket {
             if(flag.hasLength) result.lengthBeats = buf.readShort();
             if(flag.hasNotes){
                 int eventCount = buf.readInt();
-                if(eventCount != 0) {  // if this is false, notes may have been sent in parts beforehand
+                if (eventCount < 0 || eventCount > MAX_NOTES_IN_PACKET) {
+                    throw new IndexOutOfBoundsException("Invalid eventCount: " + eventCount);
+                }
+                if (eventCount > 0) {  // if this is false, notes may have been sent in parts beforehand
                     result.notes = new ArrayList<>(eventCount);
                     for (int i = 0; i < eventCount; i++) {
                         result.notes.add(NoteEvent.fromBuffer(buf));
@@ -72,11 +75,11 @@ public class MusicUpdatePacket implements IPacket {
             }
             if(flag.hasPrevIns) result.prevInstrument = buf.readByte();
             if(flag.hasPrevInsLocked) result.prevInsLocked = buf.readBoolean();
-            if(flag.hasId) result.id = buf.readUUID();
+            if (flag.hasId) result.musicId = buf.readUUID();
             if(flag.hasVersion) result.version = buf.readInt();
             if(flag.hasHlInterval) result.highlightInterval = buf.readByte();
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
+        } catch (RuntimeException ioe) {
+            XercaMusic.LOGGER.error("Exception while reading MusicUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;
@@ -104,7 +107,7 @@ public class MusicUpdatePacket implements IPacket {
         }
         if(availability.hasPrevIns) buf.writeByte(prevInstrument);
         if(availability.hasPrevInsLocked) buf.writeBoolean(prevInsLocked);
-        if(availability.hasId) buf.writeUUID(id);
+        if (availability.hasId) buf.writeUUID(musicId);
         if(availability.hasVersion) buf.writeInt(version);
         if(availability.hasHlInterval) buf.writeByte(highlightInterval);
         return buf;
@@ -147,13 +150,13 @@ public class MusicUpdatePacket implements IPacket {
         return messageIsValid;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getMusicId() {
+        return musicId;
     }
 
     @SuppressWarnings("unused")
-    public void setId(UUID id) {
-        this.id = id;
+    public void setMusicId(UUID musicId) {
+        this.musicId = musicId;
     }
 
     public int getVersion() {
@@ -189,17 +192,17 @@ public class MusicUpdatePacket implements IPacket {
     }
 
     public static class FieldFlag {
-        private static final int notesFlag = 1;
-        private static final int lengthFlag = 1 << 1;
-        private static final int bpsFlag = 1 << 2;
-        private static final int volumeFlag = 1 << 3;
-        private static final int signedFlag = 1 << 4;
-        private static final int titleFlag = 1 << 5;
-        private static final int prevInsFlag = 1 << 6;
-        private static final int prevInsLockedFlag = 1 << 7;
-        private static final int idFlag = 1 << 8;
-        private static final int versionFlag = 1 << 9;
-        private static final int hlIntervalFlag = 1 << 10;
+        private static final int NOTES_FLAG = 1;
+        private static final int LENGTH_FLAG = 1 << 1;
+        private static final int BPS_FLAG = 1 << 2;
+        private static final int VOLUME_FLAG = 1 << 3;
+        private static final int SIGNED_FLAG = 1 << 4;
+        private static final int TITLE_FLAG = 1 << 5;
+        private static final int PREV_INS_FLAG = 1 << 6;
+        private static final int PREV_INS_LOCKED_FLAG = 1 << 7;
+        private static final int ID_FLAG = 1 << 8;
+        private static final int VERSION_FLAG = 1 << 9;
+        private static final int HL_INTERVAL_FLAG = 1 << 10;
 
         public boolean hasNotes;
         public boolean hasLength;
@@ -233,32 +236,32 @@ public class MusicUpdatePacket implements IPacket {
         }
 
         public int toInt(){
-            return (hasNotes ? notesFlag : 0) |
-                   (hasLength ? lengthFlag : 0) |
-                   (hasBps ? bpsFlag : 0) |
-                   (hasVolume ? volumeFlag : 0) |
-                   (hasSigned ? signedFlag : 0) |
-                   (hasTitle ? titleFlag : 0) |
-                   (hasPrevIns ? prevInsFlag : 0) |
-                   (hasPrevInsLocked ? prevInsLockedFlag : 0) |
-                   (hasId ? idFlag : 0) |
-                   (hasVersion ? versionFlag : 0) |
-                   (hasHlInterval ? hlIntervalFlag : 0);
+            return (hasNotes ? NOTES_FLAG : 0) |
+                    (hasLength ? LENGTH_FLAG : 0) |
+                    (hasBps ? BPS_FLAG : 0) |
+                    (hasVolume ? VOLUME_FLAG : 0) |
+                    (hasSigned ? SIGNED_FLAG : 0) |
+                    (hasTitle ? TITLE_FLAG : 0) |
+                    (hasPrevIns ? PREV_INS_FLAG : 0) |
+                    (hasPrevInsLocked ? PREV_INS_LOCKED_FLAG : 0) |
+                    (hasId ? ID_FLAG : 0) |
+                    (hasVersion ? VERSION_FLAG : 0) |
+                    (hasHlInterval ? HL_INTERVAL_FLAG : 0);
         }
 
-        static public FieldFlag fromInt(int packed){
+        public static FieldFlag fromInt(int packed) {
             return new FieldFlag(
-                    (packed & notesFlag) != 0,
-                    (packed & lengthFlag) != 0,
-                    (packed & bpsFlag) != 0,
-                    (packed & volumeFlag) != 0,
-                    (packed & signedFlag) != 0,
-                    (packed & titleFlag) != 0,
-                    (packed & prevInsFlag) != 0,
-                    (packed & prevInsLockedFlag) != 0,
-                    (packed & idFlag) != 0,
-                    (packed & versionFlag) != 0,
-                    (packed & hlIntervalFlag) != 0
+                    (packed & NOTES_FLAG) != 0,
+                    (packed & LENGTH_FLAG) != 0,
+                    (packed & BPS_FLAG) != 0,
+                    (packed & VOLUME_FLAG) != 0,
+                    (packed & SIGNED_FLAG) != 0,
+                    (packed & TITLE_FLAG) != 0,
+                    (packed & PREV_INS_FLAG) != 0,
+                    (packed & PREV_INS_LOCKED_FLAG) != 0,
+                    (packed & ID_FLAG) != 0,
+                    (packed & VERSION_FLAG) != 0,
+                    (packed & HL_INTERVAL_FLAG) != 0
                     );
         }
 

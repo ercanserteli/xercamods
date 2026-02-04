@@ -18,8 +18,8 @@ import xerca.xercapaint.item.Items;
 
 @MethodsReturnNonnullByDefault
 public class RecipeCanvasCloning extends CustomRecipe {
-    public RecipeCanvasCloning(ResourceLocation resourceLocation, CraftingBookCategory craftingBookCategory) {
-        super(resourceLocation, craftingBookCategory);
+    public RecipeCanvasCloning(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     /**
@@ -31,26 +31,26 @@ public class RecipeCanvasCloning extends CustomRecipe {
         ItemStack freshCanvas = ItemStack.EMPTY;
 
         for(int j = 0; j < inv.getContainerSize(); ++j) {
-            ItemStack itemstack1 = inv.getItem(j);
-            if (!itemstack1.isEmpty()) {
-                if (itemstack1.getItem() instanceof ItemCanvas && itemstack1.hasTag() && WrittenBookItem.getGeneration(itemstack1) > 0) {
+            ItemStack stack = inv.getItem(j);
+            if (!stack.isEmpty()) {
+                if (stack.getItem() instanceof ItemCanvas itemCanvas && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
                     if (!orgCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!freshCanvas.isEmpty() && !((ItemCanvas)freshCanvas.getItem()).getCanvasType().equals(((ItemCanvas) itemstack1.getItem()).getCanvasType())){
+                    if (!freshCanvas.isEmpty() && !((ItemCanvas) freshCanvas.getItem()).getCanvasType().equals((itemCanvas).getCanvasType())) {
                         return false;
                     }
 
-                    orgCanvas = itemstack1;
-                } else if (itemstack1.getItem() instanceof ItemCanvas && !itemstack1.hasTag()) {
+                    orgCanvas = stack;
+                } else if (stack.getItem() instanceof ItemCanvas itemCanvas && !stack.hasTag()) {
                     if (!freshCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!orgCanvas.isEmpty() && !((ItemCanvas)orgCanvas.getItem()).getCanvasType().equals(((ItemCanvas) itemstack1.getItem()).getCanvasType())){
+                    if (!orgCanvas.isEmpty() && !((ItemCanvas) orgCanvas.getItem()).getCanvasType().equals((itemCanvas).getCanvasType())) {
                         return false;
                     }
 
-                    freshCanvas = itemstack1;
+                    freshCanvas = stack;
                 }
             }
         }
@@ -67,26 +67,26 @@ public class RecipeCanvasCloning extends CustomRecipe {
         ItemStack freshCanvas = ItemStack.EMPTY;
 
         for(int j = 0; j < inv.getContainerSize(); ++j) {
-            ItemStack itemstack1 = inv.getItem(j);
-            if (!itemstack1.isEmpty()) {
-                if (itemstack1.getItem() instanceof ItemCanvas && itemstack1.hasTag() && WrittenBookItem.getGeneration(itemstack1) > 0) {
+            ItemStack stack = inv.getItem(j);
+            if (!stack.isEmpty()) {
+                if (stack.getItem() instanceof ItemCanvas itemCanvas && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
                     if (!orgCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!freshCanvas.isEmpty() && !((ItemCanvas)freshCanvas.getItem()).getCanvasType().equals(((ItemCanvas) itemstack1.getItem()).getCanvasType())){
+                    if (!freshCanvas.isEmpty() && !((ItemCanvas) freshCanvas.getItem()).getCanvasType().equals((itemCanvas).getCanvasType())) {
                         return ItemStack.EMPTY;
                     }
 
-                    orgCanvas = itemstack1;
-                } else if (itemstack1.getItem() instanceof ItemCanvas && !itemstack1.hasTag()) {
+                    orgCanvas = stack;
+                } else if (stack.getItem() instanceof ItemCanvas itemCanvas && !stack.hasTag()) {
                     if (!freshCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!orgCanvas.isEmpty() && !((ItemCanvas)orgCanvas.getItem()).getCanvasType().equals(((ItemCanvas) itemstack1.getItem()).getCanvasType())){
+                    if (!orgCanvas.isEmpty() && !((ItemCanvas) orgCanvas.getItem()).getCanvasType().equals((itemCanvas).getCanvasType())) {
                         return ItemStack.EMPTY;
                     }
 
-                    freshCanvas = itemstack1;
+                    freshCanvas = stack;
                 }
             }
         }
@@ -105,19 +105,19 @@ public class RecipeCanvasCloning extends CustomRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+        NonNullList<ItemStack> stacks = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
-        for(int i = 0; i < nonnulllist.size(); ++i) {
+        for (int i = 0; i < stacks.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
             if (itemstack.getItem() instanceof ItemCanvas && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
-                ItemStack itemstack1 = itemstack.copy();
-                itemstack1.setCount(1);
-                nonnulllist.set(i, itemstack1);
+                ItemStack stack = itemstack.copy();
+                stack.setCount(1);
+                stacks.set(i, stack);
                 break;
             }
         }
 
-        return nonnulllist;
+        return stacks;
     }
 
     @Override

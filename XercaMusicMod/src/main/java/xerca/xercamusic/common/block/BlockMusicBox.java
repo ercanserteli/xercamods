@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
@@ -116,16 +115,16 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
 
     public static void insertMusic(LevelAccessor worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
         BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-        if (blockEntity instanceof TileEntityMusicBox) {
-            ((TileEntityMusicBox) blockEntity).setNoteStack(noteStack, true);
+        if (blockEntity instanceof TileEntityMusicBox tileEntityMusicBox) {
+            tileEntityMusicBox.setNoteStack(noteStack, true);
             worldIn.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.TRUE), 3);
         }
     }
 
     public static void insertInstrument(LevelAccessor worldIn, BlockPos pos, BlockState state, Item instrument) {
         BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-        if (blockEntity instanceof TileEntityMusicBox) {
-            ((TileEntityMusicBox) blockEntity).setInstrument(instrument);
+        if (blockEntity instanceof TileEntityMusicBox tileEntityMusicBox) {
+            tileEntityMusicBox.setInstrument(instrument);
             worldIn.setBlock(pos, state.setValue(HAS_INSTRUMENT, Boolean.TRUE), 3);
         }
         worldIn.playSound(null, pos, SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 1.0F, worldIn.getRandom().nextFloat() * 0.1F + 0.9F);
@@ -191,11 +190,12 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
         return new TileEntityMusicBox(blockPos, blockState);
     }
 
+    @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
-            if (t instanceof TileEntityMusicBox) {
-                TileEntityMusicBox.tick(level1, blockPos, blockState1, (TileEntityMusicBox) t);
+            if (t instanceof TileEntityMusicBox tileEntityMusicBox) {
+                TileEntityMusicBox.tick(level1, blockPos, blockState1, tileEntityMusicBox);
             }
         };
     }

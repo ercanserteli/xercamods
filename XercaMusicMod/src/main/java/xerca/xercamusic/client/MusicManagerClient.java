@@ -19,11 +19,11 @@ import static xerca.xercamusic.client.ClientStuff.sendToServer;
 public class MusicManagerClient {
     static final Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
     static final Map<UUID, Runnable> taskMap = new HashMap<>();
-    static final String cacheDir = "music_sheets/.cache/";
+    static final String CACHE_DIR = "music_sheets/.cache/";
 
     public static void load() {
         // Load from disk
-        File directory = new File(cacheDir);
+        File directory = new File(CACHE_DIR);
         if (!directory.exists()){
             directory.mkdirs();
         }
@@ -95,8 +95,8 @@ public class MusicManagerClient {
 
         // Save on disk
         String filename = id.toString();
-        String filepath = cacheDir + "/" + filename;
-        File directory = new File(cacheDir);
+        String filepath = CACHE_DIR + "/" + filename;
+        File directory = new File(CACHE_DIR);
         if (!directory.exists()){
             directory.mkdirs();
         }

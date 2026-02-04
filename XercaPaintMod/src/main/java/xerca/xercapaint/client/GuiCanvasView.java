@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiCanvasView extends Screen {
-    private int canvasX; // = 140;
+    private int canvasX;
     private int canvasY = 40;
     private final int canvasWidth;
     private final int canvasPixelScale;
@@ -100,10 +100,8 @@ public class GuiCanvasView extends Screen {
 
     @Override
     public void tick() {
-        if(easel != null){
-            if(easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 64){
-                this.onClose();
-            }
+        if (easel != null && (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 64)) {
+            this.onClose();
         }
         super.tick();
     }

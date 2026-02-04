@@ -12,13 +12,13 @@ import java.util.UUID;
 
 public class MusicDataResponsePacket implements IPacket {
     public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_data_response");
-    private UUID id;
+    private UUID musicId;
     private int version;
     private ArrayList<NoteEvent> notes;
     private boolean messageIsValid;
 
-    public MusicDataResponsePacket(UUID id, int version, ArrayList<NoteEvent> notes) {
-        this.id = id;
+    public MusicDataResponsePacket(UUID musicId, int version, ArrayList<NoteEvent> notes) {
+        this.musicId = musicId;
         this.version = version;
         this.notes = notes;
     }
@@ -30,15 +30,18 @@ public class MusicDataResponsePacket implements IPacket {
     public static MusicDataResponsePacket decode(FriendlyByteBuf buf) {
         MusicDataResponsePacket result = new MusicDataResponsePacket();
         try {
-            result.id = buf.readUUID();
+            result.musicId = buf.readUUID();
             result.version = buf.readInt();
             int eventCount = buf.readInt();
+            if (eventCount < 0) {
+                throw new IndexOutOfBoundsException("Invalid eventCount: " + eventCount);
+            }
             result.notes = new ArrayList<>(eventCount);
             for(int i=0; i<eventCount; i++){
                 result.notes.add(NoteEvent.fromBuffer(buf));
             }
-        } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket: {}", ioe);
+        } catch (RuntimeException ioe) {
+            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket", ioe);
             return null;
         }
         result.messageIsValid = true;
@@ -47,7 +50,7 @@ public class MusicDataResponsePacket implements IPacket {
 
     public FriendlyByteBuf encode() {
         FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeUUID(getId());
+        buf.writeUUID(getMusicId());
         buf.writeInt(getVersion());
         buf.writeInt(notes.size());
         for(NoteEvent event : notes){
@@ -62,13 +65,13 @@ public class MusicDataResponsePacket implements IPacket {
     }
 
 
-    public UUID getId() {
-        return id;
+    public UUID getMusicId() {
+        return musicId;
     }
 
     @SuppressWarnings("unused")
-    public void setId(UUID id) {
-        this.id = id;
+    public void setMusicId(UUID musicId) {
+        this.musicId = musicId;
     }
 
     public int getVersion() {

@@ -5,9 +5,13 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class NoteEvent {
+public class NoteEvent implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     public byte note;
     public short time;
     public byte volume;
@@ -21,6 +25,13 @@ public class NoteEvent {
     }
 
     public NoteEvent() {
+    }
+
+    public NoteEvent(NoteEvent other) {
+        this.note = other.note;
+        this.time = other.time;
+        this.volume = other.volume;
+        this.length = other.length;
     }
 
     public short endTime(){
@@ -89,12 +100,6 @@ public class NoteEvent {
     }
 
     public float floatVolume() {
-        return ((float)volume)/127.0f;
-    }
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public NoteEvent clone() {
-        return new NoteEvent(note, time, volume, length);
+        return (volume) / 127.0f;
     }
 }

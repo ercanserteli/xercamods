@@ -62,7 +62,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
         private static final Serializer shapedSerializer = new Serializer();
 
-        public TaglessSerializer(){}
+        public TaglessSerializer() { /* empty */ }
 
         public @NotNull RecipeTaglessShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);

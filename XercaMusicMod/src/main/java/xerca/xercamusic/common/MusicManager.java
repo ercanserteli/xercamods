@@ -13,6 +13,8 @@ import java.util.*;
 import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
 
 public class MusicManager {
+    public static final int MAX_PARTS_IN_TRANSFER = 1024;
+
     public static MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic::load, SavedDataMusic::new, "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
@@ -43,6 +45,7 @@ public class MusicManager {
         if(MusicManager.TEMP_NOTES_MAP.containsKey(id)){
             MusicManager.TempNotesBuffer buffer = MusicManager.TEMP_NOTES_MAP.get(id);
             if(buffer.isFinished()){
+                TEMP_NOTES_MAP.remove(id);
                 return buffer.joinParts();
             }
             else{
@@ -52,13 +55,37 @@ public class MusicManager {
         else{
             XercaMusic.LOGGER.warn("Packet did not have notes, and temp buffer was not found");
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public static boolean addNotesPart(SendNotesPartToServerPacket pkt) {
+        if (pkt.getPartsCount() <= 0 || pkt.getPartsCount() > MAX_PARTS_IN_TRANSFER) {
+            XercaMusic.LOGGER.warn("Invalid notes part count: {}", pkt.getPartsCount());
+            return false;
+        }
+        if (pkt.getPartId() < 0 || pkt.getPartId() >= pkt.getPartsCount()) {
+            XercaMusic.LOGGER.warn("Invalid notes part id: {} for parts count {}", pkt.getPartId(), pkt.getPartsCount());
+            return false;
+        }
+        if (pkt.getNotes() == null) {
+            XercaMusic.LOGGER.warn("Packet part had null note list");
+            return false;
+        }
+
         TempNotesBuffer buffer;
         if(TEMP_NOTES_MAP.containsKey(pkt.getUuid())){
             buffer = TEMP_NOTES_MAP.get(pkt.getUuid());
+            if (buffer.partsCount != pkt.getPartsCount()) {
+                XercaMusic.LOGGER.warn("Mismatching part count for id {}. Expected {}, got {}. Resetting temp buffer.",
+                        pkt.getUuid(), buffer.partsCount, pkt.getPartsCount());
+                TEMP_NOTES_MAP.remove(pkt.getUuid());
+                buffer = null;
+            }
+        } else {
+            buffer = null;
+        }
+
+        if (buffer != null) {
             buffer.addPart(pkt.getPartId(), pkt.getNotes());
         }
         else{

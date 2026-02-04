@@ -30,7 +30,7 @@ public class ImportMusicPacket implements IPacket {
         try {
             result.name = buf.readUtf(64);
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ImportMusicPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading ImportMusicPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

@@ -34,8 +34,8 @@ import java.util.UUID;
 import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
 
 public class ItemMusicSheet extends Item {
-    static final private HashMap<IItemInstrument.Pair<String, String>, UUID> convertMap = new HashMap<>();
-    static final private int addToOldEnd = 8;
+    private static final HashMap<IItemInstrument.Pair<String, String>, UUID> convertMap = new HashMap<>();
+    private static final int ADD_TO_OLD_END = 8;
 
     ItemMusicSheet() {
         super(new Properties().stacksTo(1));
@@ -57,7 +57,7 @@ public class ItemMusicSheet extends Item {
                     l = nextTime - i;
                 }
                 else if(i == music.length-1){
-                    l = addToOldEnd;
+                    l = ADD_TO_OLD_END;
                 }
 
                 byte note = (byte)(music[i] + 32);
@@ -72,10 +72,11 @@ public class ItemMusicSheet extends Item {
         byte pause = nbt.getByte("pause");
         byte[] music = nbt.getByteArray("music");
 
-        byte bps = (byte)Math.round(20.f/(float)pause);
+        int safePause = Math.max(1, pause);
+        byte bps = (byte) Math.min(50, Math.max(1, Math.round(20.f / safePause)));
         ArrayList<NoteEvent> notes = oldMusicToNotes(music);
 
-        nbt.putInt("l", length + addToOldEnd);
+        nbt.putInt("l", Math.max(0, length) + ADD_TO_OLD_END);
         nbt.putByte("bps", bps);
         UUID id;
         if(nbt.contains("author") && nbt.contains("title")){
@@ -207,13 +208,11 @@ public class ItemMusicSheet extends Item {
         BlockState blockState = world.getBlockState(blockpos);
         if (blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_MUSIC)) {
             ItemStack itemstack = context.getItemInHand();
-            if (itemstack.hasTag()) {
-                if (!world.isClientSide) {
-                    BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());
+            if (itemstack.hasTag() && !world.isClientSide) {
+                BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());
 
-                    if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
-                        itemstack.shrink(1);
-                    }
+                if (context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild) {
+                    itemstack.shrink(1);
                 }
             }
 

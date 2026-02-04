@@ -34,6 +34,14 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
+            if (easel.getPainter() == null || !easel.getPainter().getUUID().equals(pl.getUUID())) {
+                Mod.LOGGER.warn("CanvasUpdatePacketHandler: Unauthorized paint update. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
+                return;
+            }
+            if (pl.distanceToSqr(easel) > 64.0D) {
+                Mod.LOGGER.warn("CanvasUpdatePacketHandler: Player too far from easel. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
+                return;
+            }
             canvas = easel.getItem();
             if(!(canvas.getItem() instanceof ItemCanvas)){
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Canvas not found inside easel!");

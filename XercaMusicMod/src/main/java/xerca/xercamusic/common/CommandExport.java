@@ -25,7 +25,7 @@ public class CommandExport {
         dispatcher.register(
                 Commands.literal("musicexport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> musicExport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> musicExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
@@ -56,26 +56,24 @@ public class CommandExport {
         }
 
         for(ItemStack s : player.getHandSlots()){
-            if(s.getItem() instanceof ItemMusicSheet){
-                if(s.hasTag() && s.getTag() != null){
-                    CompoundTag tag = s.getTag().copy();
-                    if(tag.contains("id") && tag.contains("ver")){
-                        UUID id = tag.getUUID("id");
-                        int ver = tag.getInt("ver");
-                        MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
-                            MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
-                            if(data != null){
-                                NoteEvent.fillNBTFromArray(data.notes, tag);
-                                try {
-                                    NbtIo.write(tag, new File(filepath));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+            if (s.getItem() instanceof ItemMusicSheet && s.hasTag() && s.getTag() != null) {
+                CompoundTag tag = s.getTag().copy();
+                if (tag.contains("id") && tag.contains("ver")) {
+                    UUID id = tag.getUUID("id");
+                    int ver = tag.getInt("ver");
+                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                        if (data != null) {
+                            NoteEvent.fillNBTFromArray(data.notes, tag);
+                            try {
+                                NbtIo.write(tag, new File(filepath));
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        });
-                    }
-                    return true;
+                        }
+                    });
                 }
+                return true;
             }
         }
         return false;

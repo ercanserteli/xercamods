@@ -17,11 +17,17 @@ import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.ImportPaintingPacket;
 
 public class CommandImport {
+    private static final String IMPORT_FAIL_BROKEN_FILE_KEY = "xercapaint.import.fail.5";
+    private static final String BROKEN_PAINT_FILE_LOG = "Broken paint file";
+    private static final String TAG_AUTHOR = "author";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_GENERATION = "generation";
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("paintimport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> paintImport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> paintImport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
@@ -42,48 +48,59 @@ public class CommandImport {
     }
 
     public static void doImport(CompoundTag tag, ServerPlayer player){
+        if (tag == null) {
+            notifyBrokenPaintFile(player);
+            return;
+        }
         // Sanitizing
-        if (!tag.contains("name", 8)) {
-            player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
-            Mod.LOGGER.warn("Broken paint file");
+        if (!tag.contains("ct", 1)) {
+            notifyBrokenPaintFile(player);
             return;
         }
-        String name = tag.getString("name");
-        if (!name.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_[0-9]+$")) {
-            player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
-            Mod.LOGGER.warn("Broken paint file");
+        if ((tag.contains(TAG_AUTHOR, 8) && !tag.contains(TAG_TITLE, 8)) ||
+                (!tag.contains(TAG_AUTHOR, 8) && tag.contains(TAG_TITLE, 8))) {
+            notifyBrokenPaintFile(player);
             return;
         }
-        if ((tag.contains("author", 8) && !tag.contains("title", 8)) ||
-                (!tag.contains("author", 8) && tag.contains("title", 8))) {
-            player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
-            Mod.LOGGER.warn("Broken paint file");
-            return;
+        if (tag.contains(TAG_TITLE, 8) && tag.getString(TAG_TITLE).length() > 16) {
+            tag.putString(TAG_TITLE, tag.getString(TAG_TITLE).substring(0, 16));
         }
-        if (tag.contains("title", 8) && tag.getString("title").length() > 16) {
-            tag.putString("title", tag.getString("title").substring(0, 16));
+        if (tag.contains(TAG_AUTHOR, 8) && tag.getString(TAG_AUTHOR).length() > 16) {
+            tag.putString(TAG_AUTHOR, tag.getString(TAG_AUTHOR).substring(0, 16));
         }
-        if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
-            tag.putString("author", tag.getString("author").substring(0, 16));
-        }
-        if (!tag.contains("v", 3)) {
+        if (tag.contains(TAG_TITLE)) {
+            if (!tag.contains("name", 8)) {
+                notifyBrokenPaintFile(player);
+                return;
+            }
+            String name = tag.getString("name");
+            if (!name.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_\\d+$")) {
+                notifyBrokenPaintFile(player);
+                return;
+            }
+            if (!tag.contains("v", 3)) {
+                tag.putInt("v", 1);
+            }
+        } else {
+            tag.putString("name", ItemCanvas.generateName(player));
             tag.putInt("v", 1);
+            tag.remove(TAG_GENERATION);
         }
 
         byte canvasType = tag.getByte("ct");
+        CanvasType importedCanvasType = CanvasType.fromByte(canvasType);
+        if (importedCanvasType == null) {
+            notifyBrokenPaintFile(player);
+            return;
+        }
         tag.remove("ct");
-        if(tag.getInt("generation") > 0){
-            tag.putInt("generation", tag.getInt("generation") + 1);
+        if (tag.getInt(TAG_GENERATION) > 0) {
+            tag.putInt(TAG_GENERATION, tag.getInt(TAG_GENERATION) + 1);
         }
 
         if(player.isCreative()){
             ItemStack itemStack;
-            CanvasType type = CanvasType.fromByte(canvasType);
-            if (type == null) {
-                Mod.LOGGER.error("Invalid canvas type");
-                return;
-            }
-            switch (type){
+            switch (importedCanvasType) {
                 case SMALL -> itemStack = new ItemStack(Items.ITEM_CANVAS);
                 case LONG -> itemStack = new ItemStack(Items.ITEM_CANVAS_LONG);
                 case TALL -> itemStack = new ItemStack(Items.ITEM_CANVAS_TALL);
@@ -97,33 +114,36 @@ public class CommandImport {
             player.addItem(itemStack);
         }
         else{
-            ItemStack mainhand = player.getMainHandItem();
-            ItemStack offhand = player.getOffhandItem();
+            ItemStack mainHand = player.getMainHandItem();
+            ItemStack offHand = player.getOffhandItem();
 
-            if(!(mainhand.getItem() instanceof ItemCanvas) || (mainhand.hasTag() && mainhand.getTag() != null && !mainhand.getTag().isEmpty())){
+            if (!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.hasTag() && mainHand.getTag() != null && !mainHand.getTag().isEmpty())) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
-            if(((ItemCanvas)mainhand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
+            if (((ItemCanvas) mainHand.getItem()).getCanvasType() != importedCanvasType) {
                 Component typeName = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
-                CanvasType type = CanvasType.fromByte(canvasType);
-                if (type == null) {
-                    return;
-                }
-                switch (type){
-                    case LONG -> typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
-                    case TALL -> typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
-                    case LARGE -> typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
+                if (importedCanvasType == CanvasType.LONG) {
+                    typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
+                } else if (importedCanvasType == CanvasType.TALL) {
+                    typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
+                } else if (importedCanvasType == CanvasType.LARGE) {
+                    typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
                 }
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", typeName).withStyle(ChatFormatting.RED));
                 return;
             }
-            if(!ItemPalette.isFull(offhand)){
+            if (!ItemPalette.isFull(offHand)) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.3").withStyle(ChatFormatting.RED));
                 return;
             }
-            mainhand.setTag(tag);
+            mainHand.setTag(tag);
         }
         player.sendSystemMessage(Component.translatable("xercapaint.import.success").withStyle(ChatFormatting.GREEN));
+    }
+
+    private static void notifyBrokenPaintFile(ServerPlayer player) {
+        player.sendSystemMessage(Component.translatable(IMPORT_FAIL_BROKEN_FILE_KEY).withStyle(ChatFormatting.RED));
+        Mod.LOGGER.warn(BROKEN_PAINT_FILE_LOG);
     }
 }

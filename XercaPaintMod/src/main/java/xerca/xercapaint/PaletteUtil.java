@@ -5,12 +5,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
-    final public static Color emptinessColor = new Color(255, 236, 229);
+    public static final Color emptinessColor = new Color(255, 236, 229);
 
     public static class Color {
         public static final Color WHITE = new Color(0xFFFFFFFF);
 
-        public int r, g, b;
+        public int r;
+        public int g;
+        public int b;
 
         public Color(int r, int g, int b) {
             this.r = r;
@@ -33,10 +35,10 @@ public class PaletteUtil {
         }
 
         public void setGLColor(){
-            RenderSystem.setShaderColor(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
+            RenderSystem.setShaderColor((r) / 255.f, (g) / 255.f, (b) / 255.f, 1.0f);
         }
 
-        static public Color mix(Color a, Color b, float ratio){
+        public static Color mix(Color a, Color b, float ratio) {
             if(ratio == 1.f) {
                 return a;
             }
@@ -51,7 +53,7 @@ public class PaletteUtil {
             int averageMaximum = (int)(Math.max(Math.max(a.r, a.g), a.b)*ratio) + (int)(Math.max(Math.max(b.r, b.g), b.b)*(1-ratio));
 
             int maximumOfAverage = Math.max(Math.max(res.r, res.g), res.b);
-            int gainFactor = averageMaximum / maximumOfAverage;
+            int gainFactor = maximumOfAverage == 0 ? 0 : averageMaximum / maximumOfAverage;
 
             res.r *= gainFactor;
             res.g *= gainFactor;
@@ -88,7 +90,7 @@ public class PaletteUtil {
 
         public void calculateResult(){
             if(numberOfColors == 0){
-                this.result = emptinessColor;//new PaletteUtil.Color(200, 200, 200);
+                this.result = emptinessColor;
                 return;
             }
             int averageRed = totalRed / numberOfColors;
@@ -97,7 +99,7 @@ public class PaletteUtil {
             int averageMaximum = totalMaximum / numberOfColors;
 
             int maximumOfAverage = Math.max(Math.max(averageRed, averageGreen), averageBlue);
-            int gainFactor = averageMaximum / maximumOfAverage;
+            int gainFactor = maximumOfAverage == 0 ? 0 : averageMaximum / maximumOfAverage;
 
             int resultRed = averageRed * gainFactor;
             int resultGreen = averageGreen * gainFactor;
@@ -178,7 +180,12 @@ public class PaletteUtil {
         int[] numbersOfColors = tag.getIntArray("n");
 
         for(int i=0; i<customColors.length; i++){
-            customColors[i] = new CustomColor(totalReds[i], totalGreens[i], totalBlues[i], totalMaximums[i], numbersOfColors[i]);
+            int totalRed = i < totalReds.length ? Math.max(0, totalReds[i]) : 0;
+            int totalGreen = i < totalGreens.length ? Math.max(0, totalGreens[i]) : 0;
+            int totalBlue = i < totalBlues.length ? Math.max(0, totalBlues[i]) : 0;
+            int totalMaximum = i < totalMaximums.length ? Math.max(0, totalMaximums[i]) : 0;
+            int numberOfColors = i < numbersOfColors.length ? Math.max(0, numbersOfColors[i]) : 0;
+            customColors[i] = new CustomColor(totalRed, totalGreen, totalBlue, totalMaximum, numberOfColors);
         }
     }
 }

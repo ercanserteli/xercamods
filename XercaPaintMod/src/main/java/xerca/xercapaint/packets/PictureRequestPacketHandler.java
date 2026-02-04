@@ -14,7 +14,7 @@ public class PictureRequestPacketHandler implements ServerPlayNetworking.PlayCha
         String name = msg.getName();
         EntityCanvas.Picture picture = EntityCanvas.PICTURES.get(name);
         if(picture != null){
-            PictureSendPacket pack = new PictureSendPacket(name, picture.version, picture.pixels);
+            PictureSendPacket pack = new PictureSendPacket(name, picture.version(), picture.pixels());
             ServerPlayNetworking.send(pl, Mod.PICTURE_SEND_PACKET_ID, pack.encode());
         }
     }

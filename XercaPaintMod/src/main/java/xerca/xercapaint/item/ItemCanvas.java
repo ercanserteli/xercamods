@@ -23,7 +23,6 @@ import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityCanvas;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         if(worldIn.isClientSide){
             ModClient.showCanvasGui(playerIn);
         }
@@ -106,7 +105,7 @@ public class ItemCanvas extends HangingEntityItem {
         return rotation;
     }
 
-    public static boolean hasTitle(@Nonnull ItemStack stack){
+    public static boolean hasTitle(ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
             if(tag != null){
@@ -117,7 +116,7 @@ public class ItemCanvas extends HangingEntityItem {
         return false;
     }
 
-    public static Component getFullLabel(@Nonnull ItemStack stack){
+    public static Component getFullLabel(ItemStack stack) {
         String labelString = "";
         int generation = 0;
         Component title = getCustomTitle(stack);
@@ -145,7 +144,7 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     @Nullable
-    public static Component getCustomTitle(@Nonnull ItemStack stack){
+    public static Component getCustomTitle(ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
             if(tag != null){
@@ -158,9 +157,8 @@ public class ItemCanvas extends HangingEntityItem {
         return null;
     }
 
-    @Nonnull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         Component comp = getCustomTitle(stack);
         if(comp != null){
             return comp;
@@ -214,6 +212,7 @@ public class ItemCanvas extends HangingEntityItem {
         return canvasType;
     }
 
+    @Override
     protected boolean mayPlace(Player playerIn, Direction directionIn, ItemStack itemStackIn, BlockPos posIn) {
         if(canvasType == CanvasType.SMALL){
             return Level.isInSpawnableBounds(posIn) && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
@@ -221,5 +220,9 @@ public class ItemCanvas extends HangingEntityItem {
         else{
             return !directionIn.getAxis().isVertical() && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         }
+    }
+
+    public static String generateName(Player player) {
+        return player.getUUID() + "_" + System.currentTimeMillis() / 100;
     }
 }

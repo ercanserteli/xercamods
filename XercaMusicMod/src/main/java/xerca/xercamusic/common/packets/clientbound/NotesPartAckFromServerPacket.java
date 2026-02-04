@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public class NotesPartAckFromServerPacket implements IPacket {
     public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "notes_part_ack_from_server");
-    private UUID id;
+    private UUID musicId;
     private boolean messageIsValid;
 
-    public NotesPartAckFromServerPacket(UUID id) {
-        this.id = id;
+    public NotesPartAckFromServerPacket(UUID musicId) {
+        this.musicId = musicId;
     }
 
     public NotesPartAckFromServerPacket() {
@@ -23,24 +23,24 @@ public class NotesPartAckFromServerPacket implements IPacket {
 
     public FriendlyByteBuf encode() {
         FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeUUID(id);
+        buf.writeUUID(musicId);
         return buf;
     }
 
     public static NotesPartAckFromServerPacket decode(FriendlyByteBuf buf) {
         NotesPartAckFromServerPacket result = new NotesPartAckFromServerPacket();
         try {
-            result.id = buf.readUUID();
+            result.musicId = buf.readUUID();
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading NotesPartAckFromServerPacket: {}", ioe);
+            XercaMusic.LOGGER.error("Exception while reading NotesPartAckFromServerPacket", ioe);
             return null;
         }
         result.messageIsValid = true;
         return result;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getMusicId() {
+        return musicId;
     }
 
     @SuppressWarnings("unused")

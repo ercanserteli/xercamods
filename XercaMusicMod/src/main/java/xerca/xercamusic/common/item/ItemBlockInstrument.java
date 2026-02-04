@@ -106,9 +106,9 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, LivingEntity attacker) {
         Level world = attacker.level();
         if (!world.isClientSide) {
-            int note1 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
-            int note2 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
-            int note3 = minNote + minOctave*12 + world.random.nextInt((maxOctave+1)*12 - minOctave*12);
+            int note1 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note2 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note3 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
 
             Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level(), target.position(), 24.D);
             TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, this, target);
@@ -121,8 +121,8 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
 
     public void setSounds(ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> sounds){
         this.sounds = sounds;
-        insSounds = new IItemInstrument.InsSound[totalNotes];
-        for(int i=0; i<totalNotes; i++){
+        insSounds = new IItemInstrument.InsSound[TOTAL_NOTES];
+        for (int i = 0; i < TOTAL_NOTES; i++) {
             int note = IItemInstrument.idToNote(i);
             int index = getClosest(note);
             if(index < 0 || index >= sounds.size()){
@@ -130,7 +130,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
             }
             int octave = i/12;
             if(octave >= minOctave && octave <= maxOctave){
-                float pitch = (float)Math.pow(1.05946314465679, note - sounds.get(index).first());
+                float pitch = (float) Math.pow(1.05946314465679, (double) note - sounds.get(index).first());
                 insSounds[i] = new IItemInstrument.InsSound(sounds.get(index).second(), pitch);
             }
         }
@@ -152,7 +152,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     @Nullable
     public IItemInstrument.InsSound getSound(int note) {
         int id = IItemInstrument.noteToId(note);
-        if(id >= 0 && id < totalNotes) {
+        if (id >= 0 && id < TOTAL_NOTES) {
             return insSounds[id];
         }
         XercaMusic.LOGGER.warn("Requested invalid note from Instrument getSound: {}", note);

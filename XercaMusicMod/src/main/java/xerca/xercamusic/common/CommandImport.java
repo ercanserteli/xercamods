@@ -26,7 +26,7 @@ public class CommandImport {
         dispatcher.register(
                 Commands.literal("musicimport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 

@@ -41,8 +41,6 @@ public class XercaMusic implements ModInitializer
         ServerPlayNetworking.registerGlobalReceiver(SendNotesPartToServerPacket.ID, new SendNotesPartToServerPacketHandler());
     }
 
-//    private void enqueueIMC(final InterModEnqueueEvent event) {} todo this later
-
     private void registerTriggers() {
         for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++) {
             CriteriaTriggers.register(Triggers.TRIGGER_ARRAY[i]);

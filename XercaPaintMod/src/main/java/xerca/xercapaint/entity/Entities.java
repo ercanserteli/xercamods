@@ -17,7 +17,7 @@ public class Entities {
             .dimensions(new EntityDimensions(0.8f, 1.975F, true)).build();
 
     public static void registerEntities() {
-        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.modId, "canvas"), CANVAS);
-        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.modId, "easel"), EASEL);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.MOD_ID, "canvas"), CANVAS);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.MOD_ID, "easel"), EASEL);
     }
 }

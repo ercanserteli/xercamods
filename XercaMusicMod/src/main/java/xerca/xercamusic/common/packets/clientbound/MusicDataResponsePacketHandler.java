@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class MusicDataResponsePacketHandler implements ClientPlayNetworking.PlayChannelHandler {
     private static void processMessage(MusicDataResponsePacket msg) {
-        UUID id = msg.getId();
+        UUID id = msg.getMusicId();
         int version = msg.getVersion();
         ArrayList<NoteEvent> notes = msg.getNotes();
         MusicManagerClient.setMusicData(id, version, notes);

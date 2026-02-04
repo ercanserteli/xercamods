@@ -17,7 +17,6 @@ import xerca.xercapaint.item.ItemPalette;
 public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     public static void processMessage(CanvasMiniUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
-        ItemStack palette;
         Entity entityEasel = null;
 
         if(msg.getEaselId() > -1){
@@ -30,6 +29,14 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
+            if (easel.getPainter() == null || !easel.getPainter().getUUID().equals(pl.getUUID())) {
+                Mod.LOGGER.warn("CanvasMiniUpdatePacket: Unauthorized paint update. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
+                return;
+            }
+            if (pl.distanceToSqr(easel) > 64.0D) {
+                Mod.LOGGER.warn("CanvasMiniUpdatePacket: Player too far from easel. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
+                return;
+            }
             canvas = easel.getItem();
             if(!(canvas.getItem() instanceof ItemCanvas)){
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Canvas not found inside easel!");
@@ -38,9 +45,9 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
         }
         else{
             canvas = pl.getMainHandItem();
-            palette = pl.getOffhandItem();
+            ItemStack offHandItem = pl.getOffhandItem();
             if(canvas.getItem() instanceof ItemPalette){
-                canvas = palette;
+                canvas = offHandItem;
             }
         }
 

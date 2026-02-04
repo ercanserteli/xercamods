@@ -15,9 +15,9 @@ repositories {
 }
 
 tasks.register('buildCopy', Copy) {
-    dependsOn build
-    from "$buildDir/libs/${archivesBaseName}-${version}.jar"
-    into "$buildDir/../../builds"
+    dependsOn(tasks.named('build'))
+    from(layout.buildDirectory.file("libs/${base.archivesName.get()}-${version}.jar"))
+    into(layout.projectDirectory.dir('../builds'))
 }
 
 dependencies {
@@ -72,7 +72,7 @@ jar {
 // configure the maven publication
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        create('mavenJava', MavenPublication) {
             from components.java
         }
     }

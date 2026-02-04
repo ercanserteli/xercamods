@@ -23,5 +23,7 @@
   "canvas.generation.2": "Korsan",
 
   "xercapaint.export.success": "Resim dışa aktarıldı: %1$s",
-  "xercapaint.import.success": "Resim içe aktarıldı"
+  "xercapaint.import.success": "Resim içe aktarıldı",
+  "entity.xercapaint.canvas": "Tuval",
+  "entity.xercapaint.easel": "Şövale"
 }
