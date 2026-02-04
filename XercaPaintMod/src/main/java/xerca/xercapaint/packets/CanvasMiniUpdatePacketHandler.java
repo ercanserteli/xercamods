@@ -17,30 +17,36 @@ import xerca.xercapaint.item.ItemPalette;
 public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     public static void processMessage(CanvasMiniUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
-        ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.getEaselId() > -1){
+        if (msg.getEaselId() > -1) {
             entityEasel = pl.level().getEntity(msg.getEaselId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
+            if (easel.getPainter() == null || !easel.getPainter().getUUID().equals(pl.getUUID())) {
+                Mod.LOGGER.warn("CanvasMiniUpdatePacket: Unauthorized paint update. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
+                return;
+            }
+            if (pl.distanceToSqr(easel) > 64.0D) {
+                Mod.LOGGER.warn("CanvasMiniUpdatePacket: Player too far from easel. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
+                return;
+            }
             canvas = easel.getItem();
-            if(!(canvas.getItem() instanceof ItemCanvas)){
+            if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Canvas not found inside easel!");
                 return;
             }
-        }
-        else{
+        } else {
             canvas = pl.getMainHandItem();
-            palette = pl.getOffhandItem();
-            if(canvas.getItem() instanceof ItemPalette){
-                canvas = palette;
+            ItemStack offHandItem = pl.getOffhandItem();
+            if (canvas.getItem() instanceof ItemPalette) {
+                canvas = offHandItem;
             }
         }
 
@@ -52,7 +58,7 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
             comp.putInt("v", msg.getVersion());
             comp.putInt("generation", 0);
 
-            if(entityEasel instanceof EntityEasel easel){
+            if (entityEasel instanceof EntityEasel easel) {
                 easel.setItem(canvas, false);
             }
 
@@ -63,8 +69,8 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         CanvasMiniUpdatePacket packet = CanvasMiniUpdatePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

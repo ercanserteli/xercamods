@@ -16,7 +16,9 @@
       "trigger": "consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_ultimate_burger"]
+          "items": [
+            "xercafood:item_ultimate_burger"
+          ]
         }
       }
     }

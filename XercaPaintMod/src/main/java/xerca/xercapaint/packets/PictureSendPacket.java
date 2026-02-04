@@ -36,7 +36,7 @@ public class PictureSendPacket {
             result.version = buf.readInt();
             result.pixels = buf.readVarIntArray(1024);
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading PictureSendPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading PictureSendPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

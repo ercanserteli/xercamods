@@ -1,8 +1,18 @@
-
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "xercafood:carbonated_water"}, {"item": "minecraft:sugar"}, {"item": "minecraft:snowball"}],
-    "result": {"item": "xercafood:soda"}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xercafood:carbonated_water"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:snowball"
+    }
+  ],
+  "result": {
+    "item": "xercafood:soda"
+  }
 }
         

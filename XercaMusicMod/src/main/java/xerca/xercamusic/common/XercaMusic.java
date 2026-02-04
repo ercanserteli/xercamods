@@ -25,8 +25,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 
-public class XercaMusic implements ModInitializer
-{
+public class XercaMusic implements ModInitializer {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
@@ -40,8 +39,6 @@ public class XercaMusic implements ModInitializer
         ServerPlayNetworking.registerGlobalReceiver(SingleNotePacket.ID, new SingleNotePacketHandler());
         ServerPlayNetworking.registerGlobalReceiver(SendNotesPartToServerPacket.ID, new SendNotesPartToServerPacketHandler());
     }
-
-//    private void enqueueIMC(final InterModEnqueueEvent event) {} todo this later
 
     private void registerTriggers() {
         for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++) {
@@ -83,8 +80,7 @@ public class XercaMusic implements ModInitializer
         if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
             try {
                 return toRun.get().call();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -95,8 +91,7 @@ public class XercaMusic implements ModInitializer
         if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
             try {
                 toRun.get().run();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }

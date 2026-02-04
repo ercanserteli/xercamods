@@ -1,12 +1,17 @@
-
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "c c",
-        " c "
-    ],
-    "key": {"c": {"item": "minecraft:glass_pane"}},
-    "result": {"item": "xercafood:item_glass", "count": 3}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "c c",
+    " c "
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:glass_pane"
+    }
+  },
+  "result": {
+    "item": "xercafood:item_glass",
+    "count": 3
+  }
 }
         

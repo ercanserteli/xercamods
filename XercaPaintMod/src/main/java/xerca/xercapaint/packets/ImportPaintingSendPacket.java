@@ -27,7 +27,7 @@ public class ImportPaintingSendPacket {
         try {
             result.tag = buf.readNbt();
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ImportPaintingSendPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading ImportPaintingSendPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

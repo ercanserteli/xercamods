@@ -9,41 +9,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IItemInstrument {
-    int minNote = 21;
-    int maxNote = 117;
-    int totalNotes = 96;
+    int MIN_NOTE = 21;
+    int MAX_NOTE = 117;
+    int TOTAL_NOTES = 96;
 
     int getMinOctave();
+
     int getMaxOctave();
+
     int getInstrumentId();
+
     void setSounds(ArrayList<Pair<Integer, SoundEvent>> sounds);
+
     InsSound getSound(int note);
 
 
-    static int idToNote(int id){
-        return id + minNote;
+    static int idToNote(int id) {
+        return id + MIN_NOTE;
     }
-    static int noteToId(int note){
-        return note - minNote;
+
+    static int noteToId(int note) {
+        return note - MIN_NOTE;
     }
-    static void playMusic(Level worldIn, Player playerIn, boolean canStop){
+
+    static void playMusic(Level worldIn, Player playerIn, boolean canStop) {
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
-        if(musicSpirits.isEmpty()){
+        if (musicSpirits.isEmpty()) {
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, (IItemInstrument) playerIn.getMainHandItem().getItem()));
-        }
-        else if(canStop){
+        } else if (canStop) {
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
         }
     }
 
-    class InsSound {
-        public final SoundEvent sound;
-        public final float pitch;
-
-        public InsSound(SoundEvent sound, float pitch){
-            this.sound = sound;
-            this.pitch = pitch;
-        }
+    record InsSound(SoundEvent sound, float pitch) {
     }
 
     record Pair<F, S>(F first, S second) {

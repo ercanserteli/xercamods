@@ -5,9 +5,13 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class NoteEvent {
+public class NoteEvent implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     public byte note;
     public short time;
     public byte volume;
@@ -23,11 +27,18 @@ public class NoteEvent {
     public NoteEvent() {
     }
 
-    public short endTime(){
-        return (short)(time + length - 1);
+    public NoteEvent(NoteEvent other) {
+        this.note = other.note;
+        this.time = other.time;
+        this.volume = other.volume;
+        this.length = other.length;
     }
 
-    public short startTime(){
+    public short endTime() {
+        return (short) (time + length - 1);
+    }
+
+    public short startTime() {
         return time;
     }
 
@@ -47,27 +58,27 @@ public class NoteEvent {
         this.length = tag.getByte("l");
     }
 
-    public static NoteEvent fromNBT(CompoundTag tag){
+    public static NoteEvent fromNBT(CompoundTag tag) {
         NoteEvent noteEvent = new NoteEvent();
         noteEvent.deserializeNBT(tag);
         return noteEvent;
     }
 
-    public void encodeToBuffer(FriendlyByteBuf buf){
+    public void encodeToBuffer(FriendlyByteBuf buf) {
         buf.writeByte(note);
         buf.writeShort(time);
         buf.writeByte(volume);
         buf.writeByte(length);
     }
 
-    public void decodeFromBuffer(FriendlyByteBuf buf){
+    public void decodeFromBuffer(FriendlyByteBuf buf) {
         this.note = buf.readByte();
         this.time = buf.readShort();
         this.volume = buf.readByte();
         this.length = buf.readByte();
     }
 
-    public static NoteEvent fromBuffer(FriendlyByteBuf buf){
+    public static NoteEvent fromBuffer(FriendlyByteBuf buf) {
         NoteEvent noteEvent = new NoteEvent();
         noteEvent.decodeFromBuffer(buf);
         return noteEvent;
@@ -75,26 +86,20 @@ public class NoteEvent {
 
     public static void fillArrayFromNBT(ArrayList<NoteEvent> noteEvents, CompoundTag tag) {
         ListTag notesTag = tag.getList("notes", Tag.TAG_COMPOUND);
-        for(int i=0; i<notesTag.size(); i++){
+        for (int i = 0; i < notesTag.size(); i++) {
             noteEvents.add(NoteEvent.fromNBT(notesTag.getCompound(i)));
         }
     }
 
     public static void fillNBTFromArray(ArrayList<NoteEvent> noteEvents, CompoundTag tag) {
         ListTag noteList = new ListTag();
-        for(NoteEvent event : noteEvents){
+        for (NoteEvent event : noteEvents) {
             noteList.add(event.serializeNBT());
         }
         tag.put("notes", noteList);
     }
 
     public float floatVolume() {
-        return ((float)volume)/127.0f;
-    }
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public NoteEvent clone() {
-        return new NoteEvent(note, time, volume, length);
+        return (volume) / 127.0f;
     }
 }

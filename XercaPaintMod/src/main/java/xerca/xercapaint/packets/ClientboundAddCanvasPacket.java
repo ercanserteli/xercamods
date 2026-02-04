@@ -19,9 +19,9 @@ public class ClientboundAddCanvasPacket extends ClientboundAddEntityPacket {
         this.canvasName = canvas.getCanvasName();
         this.canvasVersion = canvas.getCanvasVersion();
         this.directionVal = canvas.getDirection().get3DDataValue();
-        this.canvasTypeVal = (byte)canvas.getCanvasType().ordinal();
+        this.canvasTypeVal = (byte) canvas.getCanvasType().ordinal();
         this.pos = canvas.getPos();
-        this.rotation = (byte)canvas.getRotation();
+        this.rotation = (byte) canvas.getRotation();
     }
 
     public ClientboundAddCanvasPacket(FriendlyByteBuf buf) {

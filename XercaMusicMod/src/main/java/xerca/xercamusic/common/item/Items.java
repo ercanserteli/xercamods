@@ -32,10 +32,10 @@ public final class Items {
     public static final Item SAXOPHONE = new ItemInstrument(12, 0, 4);
     public static final Item GOD = new ItemInstrument(13, 0, 5);
     public static final Item PIANO = new ItemBlockInstrument(14, 0, 7, Blocks.PIANO);
-    public static final Item OBOE = new ItemInstrument(15,0, 4);
-    public static final Item REDSTONE_GUITAR = new ItemInstrument(16,0, 5);
-    public static final Item FRENCH_HORN = new ItemInstrument(17,0, 5);
-    public static final Item BASS_GUITAR = new ItemInstrument(18,1, 4);
+    public static final Item OBOE = new ItemInstrument(15, 0, 4);
+    public static final Item REDSTONE_GUITAR = new ItemInstrument(16, 0, 5);
+    public static final Item FRENCH_HORN = new ItemInstrument(17, 0, 5);
+    public static final Item BASS_GUITAR = new ItemInstrument(18, 1, 4);
     public static final Item MUSIC_SHEET = new ItemMusicSheet();
 
     public static final CreativeModeTab musicTab = FabricItemGroup.builder()

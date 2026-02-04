@@ -1,7 +1,6 @@
-
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "xercafood:item/leaf_doner"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercafood:item/leaf_doner"
+  }
 }

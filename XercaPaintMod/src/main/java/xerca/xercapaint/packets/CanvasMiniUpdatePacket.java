@@ -3,6 +3,7 @@ package xerca.xercapaint.packets;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercapaint.CanvasType;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 
 import java.util.Arrays;
@@ -19,11 +20,11 @@ public class CanvasMiniUpdatePacket {
         this.name = name;
         this.version = version;
         this.canvasType = canvasType;
-        int area = CanvasType.getHeight(canvasType)*CanvasType.getWidth(canvasType);
+        int area = CanvasType.getHeight(canvasType) * CanvasType.getWidth(canvasType);
         this.pixels = Arrays.copyOfRange(pixels, 0, area);
-        if(easel == null){
+        if (easel == null) {
             easelId = -1;
-        }else{
+        } else {
             easelId = easel.getId();
         }
     }
@@ -47,12 +48,15 @@ public class CanvasMiniUpdatePacket {
         try {
             result.easelId = buf.readInt();
             result.canvasType = CanvasType.fromByte(buf.readByte());
+            if (result.canvasType == null) {
+                return null;
+            }
             result.version = buf.readInt();
             result.name = buf.readUtf(64);
-            int area = CanvasType.getHeight(result.canvasType)*CanvasType.getWidth(result.canvasType);
+            int area = CanvasType.getHeight(result.canvasType) * CanvasType.getWidth(result.canvasType);
             result.pixels = buf.readVarIntArray(area);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading CanvasUpdatePacket: " + ioe);
+        } catch (RuntimeException ioe) {
+            Mod.LOGGER.error("Exception while reading CanvasUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

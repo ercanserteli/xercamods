@@ -26,26 +26,26 @@ public class ItemPalette extends Item {
     @Nonnull
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
-        if(worldIn.isClientSide) {
+        if (worldIn.isClientSide) {
             ModClient.showCanvasGui(playerIn);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
     }
 
-    public static boolean isFull(ItemStack stack){
+    public static boolean isFull(ItemStack stack) {
         return basicColorCount(stack) == 16;
     }
 
-    public static int basicColorCount(ItemStack stack){
-        if(stack.getItem() != Items.ITEM_PALETTE){
+    public static int basicColorCount(ItemStack stack) {
+        if (stack.getItem() != Items.ITEM_PALETTE) {
             return 0;
         }
         CompoundTag tag = stack.getTag();
-        if(tag != null && tag.contains("basic")){
+        if (tag != null && tag.contains("basic")) {
             byte[] basicColors = tag.getByteArray("basic");
             if (basicColors.length == 16) {
                 int basicCount = 0;
-                for(byte basicColor : basicColors){
+                for (byte basicColor : basicColors) {
                     basicCount += basicColor;
                 }
                 return basicCount;
@@ -59,30 +59,29 @@ public class ItemPalette extends Item {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if(tag != null){
+            if (tag != null) {
                 byte[] basicColors = tag.getByteArray("basic");
                 if (basicColors.length == 16) {
                     int basicCount = 0;
-                    for(byte basicColor : basicColors){
+                    for (byte basicColor : basicColors) {
                         basicCount += basicColor;
                     }
                     tooltip.add(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
                 }
 
                 int[] ns = tag.getIntArray("n");
-                if (ns.length == 12){
+                if (ns.length == 12) {
                     int fullCount = 0;
 
-                    for(int n : ns){
-                        if(n > 0){
+                    for (int n : ns) {
+                        if (n > 0) {
                             fullCount++;
                         }
                     }
                     tooltip.add(Component.translatable("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
                 }
             }
-        }
-        else{
+        } else {
             tooltip.add(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
         }
     }

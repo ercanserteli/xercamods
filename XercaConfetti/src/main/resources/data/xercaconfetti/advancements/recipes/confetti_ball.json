@@ -1,4 +1,3 @@
-
 {
   "parent": "xercaconfetti:recipes/root",
   "rewards": {
@@ -11,7 +10,11 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["xercaconfetti:confetti"]}
+          {
+            "items": [
+              "xercaconfetti:confetti"
+            ]
+          }
         ]
       }
     },

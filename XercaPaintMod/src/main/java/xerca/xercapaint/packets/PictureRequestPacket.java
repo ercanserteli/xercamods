@@ -26,7 +26,7 @@ public class PictureRequestPacket {
         try {
             result.name = buf.readUtf(64);
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading PictureRequestPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading PictureRequestPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

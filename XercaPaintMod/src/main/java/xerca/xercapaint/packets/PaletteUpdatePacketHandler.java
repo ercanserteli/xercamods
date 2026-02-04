@@ -31,8 +31,8 @@ public class PaletteUpdatePacketHandler implements ServerPlayNetworking.PlayChan
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         PaletteUpdatePacket packet = PaletteUpdatePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

@@ -23,6 +23,7 @@ import xerca.xercaconfetti.Mod;
 
 public class EntityConfettiBall extends ThrowableItemProjectile {
     public static final ResourceLocation spawnPacketId = new ResourceLocation(Mod.modId, "spawn_confetti_ball");
+
     public EntityConfettiBall(EntityType<? extends EntityConfettiBall> type, Level world) {
         super(type, world);
     }
@@ -62,11 +63,10 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     @Override
     public void tick() {
         super.tick();
-        if(this.tickCount % 4 == 0){
-            if(!this.level.isClientSide){
+        if (this.tickCount % 4 == 0) {
+            if (!this.level.isClientSide) {
                 this.level.playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
-            }
-            else{
+            } else {
                 spawnConfetti(this.getX(), this.getY(), this.getZ());
             }
         }
@@ -83,8 +83,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket()
-    {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         FriendlyByteBuf buffer = PacketByteBufs.create();
         ClientboundAddEntityPacket pack = new ClientboundAddEntityPacket(this);
         pack.write(buffer);

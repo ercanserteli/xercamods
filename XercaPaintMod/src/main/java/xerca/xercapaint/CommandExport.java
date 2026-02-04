@@ -22,18 +22,18 @@ public class CommandExport {
         dispatcher.register(
                 Commands.literal("paintexport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
-    private static int paintExport(CommandSourceStack stack, String name){
+    private static int paintExport(CommandSourceStack stack, String name) {
         Mod.LOGGER.debug("Paint export called. name: {}", name);
-        if(stack.getEntity() == null){
+        if (stack.getEntity() == null) {
             Mod.LOGGER.error("Command entity is not found");
             return 0;
         }
         Entity commander = stack.getEntity();
-        if(!(commander instanceof ServerPlayer player)){
+        if (!(commander instanceof ServerPlayer player)) {
             Mod.LOGGER.error("Command entity is not a player");
             return 0;
         }
@@ -43,28 +43,33 @@ public class CommandExport {
         return 1;
     }
 
-    public static boolean doExport(Player player, String name){
+    public static boolean doExport(Player player, String name) {
         String dir = "paintings";
         String filename = name + ".paint";
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
 
-        for(ItemStack s : player.getHandSlots()){
-            if(s.getItem() instanceof ItemCanvas){
-                if(s.hasTag() && s.getTag() != null){
-                    try {
-                        CompoundTag tag = s.getTag().copy();
-                        tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
-                        NbtIo.write(tag, new File(filepath));
-                        return true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        for (ItemStack s : player.getHandSlots()) {
+            if (s.getItem() instanceof ItemCanvas && s.hasTag() && s.getTag() != null) {
+                try {
+                    CompoundTag tag = s.getTag().copy();
+                    tag.putByte("ct", (byte) ((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                    if (!tag.contains("author")) {
+                        tag.remove("name");
+                        tag.remove("v");
+                        tag.remove("generation");
+                        tag.remove("title");
                     }
+                    NbtIo.write(tag, new File(filepath));
+                    return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
+
         }
         return false;
     }

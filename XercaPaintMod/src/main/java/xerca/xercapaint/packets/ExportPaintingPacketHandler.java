@@ -12,10 +12,10 @@ import xerca.xercapaint.CommandExport;
 public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
     private static void processMessage(ExportPaintingPacket msg) {
         Minecraft m = Minecraft.getInstance();
-        if(m.player != null) {
-            if (CommandExport.doExport(m.player, msg.getName())){
+        if (m.player != null) {
+            if (CommandExport.doExport(m.player, msg.getName())) {
                 m.player.sendSystemMessage(Component.translatable("xercapaint.export.success", msg.getName()).withStyle(ChatFormatting.GREEN));
-            }else{
+            } else {
                 m.player.sendSystemMessage(Component.translatable("xercapaint.export.fail", msg.getName()).withStyle(ChatFormatting.RED));
             }
         }
@@ -24,8 +24,8 @@ public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayCha
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ExportPaintingPacket packet = ExportPaintingPacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 }

@@ -38,7 +38,7 @@ public class RecipeTeaSugaring extends CustomRecipe {
         ItemStack teacupStack = ItemStack.EMPTY;
         ItemTeacup teacup = null;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemTeacup) {
@@ -69,7 +69,7 @@ public class RecipeTeaSugaring extends CustomRecipe {
         ItemStack teacupStack = ItemStack.EMPTY;
         ItemTeacup teacup = null;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemTeacup) {

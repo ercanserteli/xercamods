@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static xerca.xercamusic.common.MusicManager.MAX_PARTS_IN_TRANSFER;
+import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
+
 public class SendNotesPartToServerPacket implements IPacket {
     public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "send_notes_part_to_server");
     private UUID uuid;
@@ -36,15 +39,22 @@ public class SendNotesPartToServerPacket implements IPacket {
             result.uuid = buf.readUUID();
             result.partsCount = buf.readInt();
             result.partId = buf.readInt();
-            int eventCount = buf.readInt();
-            if(eventCount > 0) {
-                result.notes = new ArrayList<>(eventCount);
-                for (int i = 0; i < eventCount; i++) {
-                    result.notes.add(NoteEvent.fromBuffer(buf));
-                }
+            if (result.partsCount <= 0 || result.partsCount > MAX_PARTS_IN_TRANSFER) {
+                throw new IndexOutOfBoundsException("Invalid partsCount: " + result.partsCount);
             }
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading SendNotesPartToServerPacket: " + ioe);
+            if (result.partId < 0 || result.partId >= result.partsCount) {
+                throw new IndexOutOfBoundsException("Invalid partId: " + result.partId);
+            }
+            int eventCount = buf.readInt();
+            if (eventCount < 0 || eventCount > MAX_NOTES_IN_PACKET) {
+                throw new IndexOutOfBoundsException("Invalid eventCount: " + eventCount);
+            }
+            result.notes = new ArrayList<>(eventCount);
+            for (int i = 0; i < eventCount; i++) {
+                result.notes.add(NoteEvent.fromBuffer(buf));
+            }
+        } catch (RuntimeException ioe) {
+            XercaMusic.LOGGER.error("Exception while reading SendNotesPartToServerPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;
@@ -57,7 +67,7 @@ public class SendNotesPartToServerPacket implements IPacket {
         buf.writeInt(partsCount);
         buf.writeInt(partId);
         buf.writeInt(notes.size());
-        for(NoteEvent event : notes){
+        for (NoteEvent event : notes) {
             event.encodeToBuffer(buf);
         }
         return buf;
@@ -101,4 +111,3 @@ public class SendNotesPartToServerPacket implements IPacket {
         return ID;
     }
 }
-

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
 
 public class RecipeTaglessShaped extends ShapedRecipe {
-    public RecipeTaglessShaped(ShapedRecipe shapedRecipe){
+    public RecipeTaglessShaped(ShapedRecipe shapedRecipe) {
         super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.category(), shapedRecipe.getWidth(), shapedRecipe.getHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem(RegistryAccess.EMPTY));
     }
 
@@ -23,8 +23,8 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      */
     @Override
     public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
-        if(super.matches(inv, worldIn)){
-            for(int j = 0; j < inv.getContainerSize(); ++j) {
+        if (super.matches(inv, worldIn)) {
+            for (int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
                 if (!stackInSlot.isEmpty() && stackInSlot.hasTag()) {
                     return false;
@@ -41,8 +41,8 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     @Override
     public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess access) {
         ItemStack result = super.assemble(inv, access);
-        if(!result.isEmpty()){
-            for(int j = 0; j < inv.getContainerSize(); ++j) {
+        if (!result.isEmpty()) {
+            for (int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
                 if (!stackInSlot.isEmpty() && stackInSlot.hasTag()) {
                     return ItemStack.EMPTY;
@@ -62,7 +62,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
         private static final Serializer shapedSerializer = new Serializer();
 
-        public TaglessSerializer(){}
+        public TaglessSerializer() { /* empty */ }
 
         public @NotNull RecipeTaglessShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);

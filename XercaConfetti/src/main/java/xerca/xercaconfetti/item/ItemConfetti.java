@@ -26,7 +26,7 @@ public class ItemConfetti extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand hand) {
         playSound(worldIn, playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ());
-        if(!worldIn.isClientSide){
+        if (!worldIn.isClientSide) {
             Vec3 pos = playerIn.position().add(playerIn.getLookAngle()).add(0d, 1d, 0d);
             ConfettiParticlePacket pack = new ConfettiParticlePacket(32, pos.x, pos.y, pos.z);
             sendToClientsAround((ServerLevel) worldIn, pos, 64, pack);
@@ -39,7 +39,7 @@ public class ItemConfetti extends Item {
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
-    static public void playSound(Level world, @Nullable Player player, double x, double y, double z){
+    static public void playSound(Level world, @Nullable Player player, double x, double y, double z) {
         world.playSound(player, x, y, z, Mod.SOUND_CONFETTI, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.8F);
     }
 }

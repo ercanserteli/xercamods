@@ -70,10 +70,8 @@ public class Mod implements ModInitializer {
         Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CONFETTI.getLocation(), SOUND_CONFETTI);
 
 
-        DispenserBlock.registerBehavior(ITEM_CONFETTI_BALL, new AbstractProjectileDispenseBehavior()
-        {
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn)
-            {
+        DispenserBlock.registerBehavior(ITEM_CONFETTI_BALL, new AbstractProjectileDispenseBehavior() {
+            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 return new EntityConfettiBall(worldIn, position.x(), position.y(), position.z());
             }
         });
@@ -86,7 +84,7 @@ public class Mod implements ModInitializer {
 
     public static void sendToClientsAround(ServerLevel level, Vec3 pos, double radius, IPacket packet) {
         Collection<ServerPlayer> players = PlayerLookup.around(level, pos, radius);
-        for(ServerPlayer player : players) {
+        for (ServerPlayer player : players) {
             sendToClient(player, packet);
         }
     }

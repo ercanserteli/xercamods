@@ -21,7 +21,7 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
         this.z = z;
         this.looping = false;
         this.attenuation = Attenuation.LINEAR;
-        if(lengthTicks > 0){
+        if (lengthTicks > 0) {
             this.remainingTicks = lengthTicks + 3;
         }
     }
@@ -37,11 +37,11 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
 
     @Override
     public void tick() {
-        if(remainingTicks == 0){
+        if (remainingTicks == 0) {
             donePlaying = true;
             remainingTicks = -1;
         }
-        if(remainingTicks > 0){
+        if (remainingTicks > 0) {
             volume = originalVolume * (remainingTicks >= fadeVolumes.length ? 1 : fadeVolumes[remainingTicks]);
             remainingTicks--;
         }

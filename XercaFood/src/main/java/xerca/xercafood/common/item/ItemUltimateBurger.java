@@ -21,11 +21,10 @@ class ItemUltimateBurger extends Item {
     @Nonnull
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
-        if (entityLiving instanceof Player) {
-            Player entityPlayer = (Player) entityLiving;
+        if (entityLiving instanceof Player entityPlayer) {
             worldIn.playSound(null, entityPlayer.getX(), entityPlayer.getY(), entityPlayer.getZ(), SoundEvents.BIG_BURP, SoundSource.PLAYERS, 5.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
             if (entityPlayer instanceof ServerPlayer) {
-                CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)entityPlayer, stack);
+                CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) entityPlayer, stack);
             }
         }
         return entityLiving.eat(worldIn, stack);

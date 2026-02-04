@@ -1,8 +1,21 @@
-
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "xercafood:cooked_rice"}, {"item": "minecraft:sugar"}, {"item": "minecraft:bowl"}, {"item": "minecraft:milk_bucket"}],
-    "result": {"item": "xercafood:rice_pudding"}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xercafood:cooked_rice"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:bowl"
+    },
+    {
+      "item": "minecraft:milk_bucket"
+    }
+  ],
+  "result": {
+    "item": "xercafood:rice_pudding"
+  }
 }
         

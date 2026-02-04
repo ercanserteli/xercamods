@@ -10,7 +10,7 @@ import xerca.xercapaint.entity.EntityCanvas;
 
 public class ClientboundAddCanvasPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
     private static void processMessage(ClientboundAddCanvasPacket msg, Minecraft client) {
-        if(client.level != null) {
+        if (client.level != null) {
             EntityCanvas entity = Entities.CANVAS.create(client.level);
             if (entity != null) {
                 entity.recreateFromPacket(msg);
@@ -23,6 +23,6 @@ public class ClientboundAddCanvasPacketHandler implements ClientPlayNetworking.P
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ClientboundAddCanvasPacket packet = new ClientboundAddCanvasPacket(buf);
-        client.execute(()->processMessage(packet, client));
+        client.execute(() -> processMessage(packet, client));
     }
 }

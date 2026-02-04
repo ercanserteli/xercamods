@@ -22,7 +22,7 @@ import java.util.List;
 import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
 
 public abstract class BlockInstrument extends Block {
-    public BlockInstrument(Properties properties) {
+    protected BlockInstrument(Properties properties) {
         super(properties);
     }
 
@@ -30,17 +30,16 @@ public abstract class BlockInstrument extends Block {
 
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if(new Vec3(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.position()) > 4){
+        if (new Vec3(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5).distanceTo(player.position()) > 4) {
             return InteractionResult.PASS;
         }
         ItemStack handStack = player.getItemInHand(hand);
-        if(handStack.getItem() instanceof ItemMusicSheet){
+        if (handStack.getItem() instanceof ItemMusicSheet) {
             playMusic(worldIn, player, pos);
             return InteractionResult.SUCCESS;
-        }
-        else{
-            ItemStack offhandStack = player.getItemInHand(InteractionHand.values()[(hand.ordinal() + 1)%2]);
-            if(!(offhandStack.getItem() instanceof ItemMusicSheet)){
+        } else {
+            ItemStack offhandStack = player.getItemInHand(InteractionHand.values()[(hand.ordinal() + 1) % 2]);
+            if (!(offhandStack.getItem() instanceof ItemMusicSheet)) {
                 if (worldIn.isClientSide) {
                     onlyRunOnClient(() -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
                 }
@@ -50,12 +49,11 @@ public abstract class BlockInstrument extends Block {
         return InteractionResult.PASS;
     }
 
-    private void playMusic(Level worldIn, Player playerIn, BlockPos pos){
+    private void playMusic(Level worldIn, Player playerIn, BlockPos pos) {
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
-        if(musicSpirits.isEmpty()){
+        if (musicSpirits.isEmpty()) {
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, pos, getItemInstrument()));
-        }
-        else {
+        } else {
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
         }
     }

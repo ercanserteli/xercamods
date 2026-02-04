@@ -16,12 +16,12 @@ import static xerca.xercamusic.common.XercaMusic.sendToClient;
 
 public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     private static void processMessage(MusicDataRequestPacket msg, ServerPlayer pl) {
-        UUID id = msg.getId();
+        UUID id = msg.getMusicId();
         int version = msg.getVersion();
         MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.server);
         MusicDataResponsePacket packet;
-        if(data != null) {
-            packet = new MusicDataResponsePacket(id, data.version, data.notes);
+        if (data != null) {
+            packet = new MusicDataResponsePacket(id, data.version(), data.notes());
         } else {
             packet = new MusicDataResponsePacket(id, 0, new ArrayList<>());
         }
@@ -31,8 +31,8 @@ public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayC
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         MusicDataRequestPacket packet = MusicDataRequestPacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

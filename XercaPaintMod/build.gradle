@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.13-SNAPSHOT'
+    id 'fabric-loom' version '1.13-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -17,9 +17,9 @@ repositories {
 }
 
 tasks.register('buildCopy', Copy) {
-    dependsOn build
-    from "$buildDir/libs/${archivesBaseName}-${version}.jar"
-    into "$buildDir/../../builds"
+    dependsOn(tasks.named('build'))
+    from(layout.buildDirectory.file("libs/${base.archivesName.get()}-${version}.jar"))
+    into(layout.projectDirectory.dir('../builds'))
 }
 
 dependencies {
@@ -35,7 +35,7 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
-    filteringCharset "UTF-8"
+    filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
@@ -54,12 +54,15 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+base {
+    archivesName = project.archives_base_name
+}
+
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
-    archivesBaseName = project.archives_base_name
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.
@@ -68,14 +71,14 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${base.archivesName.get()}" }
     }
 }
 
 // configure the maven publication
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        create('mavenJava', MavenPublication) {
             from components.java
         }
     }

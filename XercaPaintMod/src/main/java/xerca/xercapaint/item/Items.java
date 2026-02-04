@@ -31,7 +31,7 @@ public final class Items {
             .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
                 byte[] basicColors = new byte[16];
-                Arrays.fill(basicColors, (byte)1);
+                Arrays.fill(basicColors, (byte) 1);
                 fullPalette.getOrCreateTag().putByteArray("basic", basicColors);
 
                 output.accept(ITEM_PALETTE);
@@ -51,21 +51,21 @@ public final class Items {
     public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = new RecipeTaglessShaped.TaglessSerializer();
 
     public static void registerRecipes() {
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.modId, "crafting_special_palette_crafting"), CRAFTING_SPECIAL_PALETTE_CRAFTING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.modId, "crafting_special_palette_filling"), CRAFTING_SPECIAL_PALETTE_FILLING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.modId, "crafting_special_canvas_cloning"), CRAFTING_SPECIAL_CANVAS_CLONING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.modId, "crafting_tagless_shaped"), CRAFTING_TAGLESS_SHAPED);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.MOD_ID, "crafting_special_palette_crafting"), CRAFTING_SPECIAL_PALETTE_CRAFTING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.MOD_ID, "crafting_special_palette_filling"), CRAFTING_SPECIAL_PALETTE_FILLING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.MOD_ID, "crafting_special_canvas_cloning"), CRAFTING_SPECIAL_CANVAS_CLONING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.MOD_ID, "crafting_tagless_shaped"), CRAFTING_TAGLESS_SHAPED);
     }
 
     public static void registerItems() {
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_palette"), ITEM_PALETTE);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_canvas"), ITEM_CANVAS);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_canvas_large"), ITEM_CANVAS_LARGE);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_canvas_long"), ITEM_CANVAS_LONG);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_canvas_tall"), ITEM_CANVAS_TALL);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.modId, "item_easel"), ITEM_EASEL);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MOD_ID, "item_palette"), ITEM_PALETTE);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MOD_ID, "item_canvas"), ITEM_CANVAS);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MOD_ID, "item_canvas_large"), ITEM_CANVAS_LARGE);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MOD_ID, "item_canvas_long"), ITEM_CANVAS_LONG);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MOD_ID, "item_canvas_tall"), ITEM_CANVAS_TALL);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MOD_ID, "item_easel"), ITEM_EASEL);
 
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(Mod.modId, "paint_tab"), paintTab);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(Mod.MOD_ID, "paint_tab"), paintTab);
     }
 
 }

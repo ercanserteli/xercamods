@@ -21,7 +21,7 @@ public class ModClient implements ClientModInitializer {
             ClientboundAddEntityPacket packet = new ClientboundAddEntityPacket(buf);
             confettiBall.recreateFromPacket(packet);
             client.execute(() -> {
-                if(client.level != null) {
+                if (client.level != null) {
                     client.level.putNonPlayerEntity(confettiBall.getId(), confettiBall);
                 }
             });

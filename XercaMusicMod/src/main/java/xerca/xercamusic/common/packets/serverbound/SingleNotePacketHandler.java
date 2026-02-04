@@ -15,10 +15,10 @@ import java.util.Collection;
 import static xerca.xercamusic.common.XercaMusic.sendToClient;
 
 public class SingleNotePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
-     private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
+    private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
         Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) pl.level(), pl.position(), 24.0D);
         SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.getNote(), msg.getInstrumentItem(), pl, msg.isStop(), msg.getVolume());
-        for(ServerPlayer player : players){
+        for (ServerPlayer player : players) {
             sendToClient(player, packet);
         }
     }
@@ -26,8 +26,8 @@ public class SingleNotePacketHandler implements ServerPlayNetworking.PlayChannel
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         SingleNotePacket packet = SingleNotePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

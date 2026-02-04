@@ -43,6 +43,18 @@ public class EntityMusicSpirit extends Entity {
     private BlockPos blockInsPos = null;
     private SoundController soundController = null;
 
+    private static byte sanitizeBps(int bps) {
+        return (byte) Math.max(1, Math.min(50, bps));
+    }
+
+    private static int sanitizeLengthBeats(int beats) {
+        return Math.max(0, beats);
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
+
     public EntityMusicSpirit(Level worldIn) {
         super(Entities.MUSIC_SPIRIT, worldIn);
     }
@@ -64,13 +76,13 @@ public class EntityMusicSpirit extends Entity {
         super(type, world);
     }
 
-    private void setBlockPosAndInstrument(BlockPos pos, int instrumentId){
+    private void setBlockPosAndInstrument(BlockPos pos, int instrumentId) {
         if (instrumentId < Items.instruments.length) {
-            IItemInstrument instrument = Items.instruments[instrumentId];
-            if (instrument instanceof ItemBlockInstrument itemBlockInstrument) {
+            IItemInstrument itemInstrument = Items.instruments[instrumentId];
+            if (itemInstrument instanceof ItemBlockInstrument itemBlockInstrument) {
                 this.blockInstrument = (BlockInstrument) itemBlockInstrument.getBlock();
                 this.blockInsPos = pos;
-                setPos((double)pos.getX()+0.5, (double)pos.getY()-0.5, (double)pos.getZ()+0.5);
+                setPos(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5);
                 return;
             }
         }
@@ -80,43 +92,41 @@ public class EntityMusicSpirit extends Entity {
         blockInsPos = null;
     }
 
-    private boolean isBodyHandLegit(){
+    private boolean isBodyHandLegit() {
         ItemStack mainStack = body.getMainHandItem();
         ItemStack offStack = body.getOffhandItem();
-        if(blockInstrument != null && blockInsPos != null){
+        if (blockInstrument != null && blockInsPos != null) {
             return mainStack.getItem() == Items.MUSIC_SHEET || offStack.getItem() == Items.MUSIC_SHEET;
-        }
-        else{
+        } else {
             return offStack.getItem() == Items.MUSIC_SHEET && mainStack.getItem() == instrument;
         }
     }
 
-    private void setNoteFromBody(){
-        if(body == null) {
+    private void setNoteFromBody() {
+        if (body == null) {
             XercaMusic.LOGGER.warn("Body is null in MusicSpirit setNoteFromBody");
             return;
         }
         ItemStack mainStack = body.getMainHandItem();
         ItemStack offStack = body.getOffhandItem();
-        if(mainStack.getItem() == Items.MUSIC_SHEET){
+        if (mainStack.getItem() == Items.MUSIC_SHEET) {
             this.note = mainStack;
-        }
-        else if(offStack.getItem() == Items.MUSIC_SHEET){
+        } else if (offStack.getItem() == Items.MUSIC_SHEET) {
             this.note = offStack;
-        }
-        else{
+        } else {
             XercaMusic.LOGGER.warn("No music sheet found on body");
         }
     }
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+        notes.clear();
         NoteEvent.fillArrayFromNBT(notes, tag);
-        this.mLengthBeats = tag.getInt("l");
-        this.mBPS = tag.getByte("bps");
-        this.mVolume = tag.getFloat("vol");
+        this.mLengthBeats = sanitizeLengthBeats(tag.getInt("l"));
+        this.mBPS = sanitizeBps(tag.getInt("bps"));
+        this.mVolume = sanitizeVolume(tag.getFloat("vol"));
         this.isPlaying = tag.getBoolean("playing");
-        if(tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")){
+        if (tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")) {
             setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")), tag.getInt("bIns"));
         }
     }
@@ -128,7 +138,7 @@ public class EntityMusicSpirit extends Entity {
         tag.putByte("bps", mBPS);
         tag.putFloat("vol", mVolume);
         tag.putBoolean("playing", isPlaying);
-        if(blockInstrument != null && blockInsPos != null){
+        if (blockInstrument != null && blockInsPos != null) {
             tag.putInt("bX", blockInsPos.getX());
             tag.putInt("bY", blockInsPos.getY());
             tag.putInt("bZ", blockInsPos.getZ());
@@ -147,13 +157,12 @@ public class EntityMusicSpirit extends Entity {
 
     public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt(body != null ? body.getId() : -1);
-        if(blockInstrument != null && blockInsPos != null){
+        if (blockInstrument != null && blockInsPos != null) {
             buffer.writeInt(blockInsPos.getX());
             buffer.writeInt(blockInsPos.getY());
             buffer.writeInt(blockInsPos.getZ());
             buffer.writeInt(blockInstrument.getItemInstrument().getInstrumentId());
-        }
-        else{
+        } else {
             buffer.writeInt(-1);
             buffer.writeInt(-1000);
             buffer.writeInt(-1);
@@ -164,30 +173,28 @@ public class EntityMusicSpirit extends Entity {
     public void readSpawnData(FriendlyByteBuf buffer) {
         int entityId = buffer.readInt();
         Entity ent = level().getEntity(entityId);
-        if (ent instanceof Player) {
-            body = (Player) ent;
+        if (ent instanceof Player player) {
+            body = player;
         }
 
         int bx = buffer.readInt();
         int by = buffer.readInt();
         int bz = buffer.readInt();
         int bIns = buffer.readInt();
-        if(by > -1000){
-            setBlockPosAndInstrument(new BlockPos(bx, by ,bz), bIns);
+        if (by > -1000) {
+            setBlockPosAndInstrument(new BlockPos(bx, by, bz), bIns);
         }
 
-        if(blockInsPos != null) {
+        if (blockInsPos != null) {
             this.instrument = blockInstrument.getItemInstrument();
             this.setNoteFromBody();
-        }
-        else if(body != null) {
+        } else if (body != null) {
             Item item = body.getMainHandItem().getItem();
-            if(item instanceof IItemInstrument ins) {
+            if (item instanceof IItemInstrument ins) {
                 this.instrument = ins;
                 this.note = body.getOffhandItem();
                 this.setPos(body.getX(), body.getY(), body.getZ());
-            }
-            else {
+            } else {
                 XercaMusic.LOGGER.warn("Could not find instrument when spawning music spirit!");
                 return;
             }
@@ -195,17 +202,17 @@ public class EntityMusicSpirit extends Entity {
 
         if (note != null && note.hasTag() && note.getTag() != null && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
             CompoundTag comp = note.getTag();
-            mLengthBeats = comp.getInt("l");
-            mBPS = comp.contains("bps") ? comp.getByte("bps") : 8;
-            mVolume = comp.contains("vol") ? comp.getFloat("vol") : 1.f;
+            mLengthBeats = sanitizeLengthBeats(comp.getInt("l"));
+            mBPS = sanitizeBps(comp.contains("bps") ? comp.getInt("bps") : 8);
+            mVolume = sanitizeVolume(comp.contains("vol") ? comp.getFloat("vol") : 1.f);
             UUID id = comp.getUUID("id");
             int ver = comp.getInt("ver");
 
-            if(level().isClientSide){
+            if (level().isClientSide) {
                 MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
                     MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
-                    if(data != null){
-                        notes.addAll(data.notes);
+                    if (data != null) {
+                        notes.addAll(data.notes());
                     }
 
                     soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, mBPS, mVolume, getId());
@@ -217,12 +224,12 @@ public class EntityMusicSpirit extends Entity {
 
     @Override
     protected void defineSynchedData() {
-
+        // nothing to do
     }
 
     @Override
     public void onClientRemoval() {
-        if(soundController != null){
+        if (soundController != null) {
             soundController.setStop();
         }
     }
@@ -240,24 +247,22 @@ public class EntityMusicSpirit extends Entity {
                 return;
             }
 
-            if(blockInsPos != null && blockInstrument != null){
-                if(level().getBlockState(blockInsPos).getBlock() != blockInstrument){
+            if (blockInsPos != null && blockInstrument != null) {
+                if (level().getBlockState(blockInsPos).getBlock() != blockInstrument) {
                     this.remove(RemovalReason.DISCARDED);
                     return;
                 }
-                if(this.position().distanceToSqr(this.body.position()) > 16){
+                if (this.position().distanceToSqr(this.body.position()) > 16) {
                     this.remove(RemovalReason.DISCARDED);
                     return;
                 }
             }
         }
         super.tick();
-        if(blockInsPos == null || blockInstrument == null){
-            if(body != null) {  // this check is added to work around a strange crash
-                this.setPos(body.getX(), body.getY(), body.getZ());
-                if(soundController != null) {
-                    soundController.setPos(getX(), getY(), getZ());
-                }
+        if ((blockInsPos == null || blockInstrument == null) && body != null) {  // body check works around a crash
+            this.setPos(body.getX(), body.getY(), body.getZ());
+            if (soundController != null) {
+                soundController.setPos(getX(), getY(), getZ());
             }
         }
     }

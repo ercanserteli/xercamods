@@ -27,7 +27,7 @@ public class EaselLeftPacket {
         try {
             result.easelId = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading CanvasUpdatePacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading CanvasUpdatePacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

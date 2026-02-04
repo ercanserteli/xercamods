@@ -20,7 +20,7 @@ public class PaletteUpdatePacket {
 
     public FriendlyByteBuf encode() {
         FriendlyByteBuf buf = PacketByteBufs.create();
-        for(PaletteUtil.CustomColor color : paletteColors){
+        for (PaletteUtil.CustomColor color : paletteColors) {
             color.writeToBuffer(buf);
         }
         return buf;
@@ -30,11 +30,11 @@ public class PaletteUpdatePacket {
         PaletteUpdatePacket result = new PaletteUpdatePacket();
         try {
             result.paletteColors = new PaletteUtil.CustomColor[12];
-            for(int i=0; i<result.paletteColors.length; i++){
+            for (int i = 0; i < result.paletteColors.length; i++) {
                 result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
             }
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading MusicUpdatePacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

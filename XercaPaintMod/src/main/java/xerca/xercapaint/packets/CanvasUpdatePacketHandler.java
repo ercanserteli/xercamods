@@ -24,36 +24,43 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
         ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.getEaselId() > -1){
+        if (msg.getEaselId() > -1) {
             entityEasel = pl.level().getEntity(msg.getEaselId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
+            if (easel.getPainter() == null || !easel.getPainter().getUUID().equals(pl.getUUID())) {
+                Mod.LOGGER.warn("CanvasUpdatePacketHandler: Unauthorized paint update. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
+                return;
+            }
+            if (pl.distanceToSqr(easel) > 64.0D) {
+                Mod.LOGGER.warn("CanvasUpdatePacketHandler: Player too far from easel. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
+                return;
+            }
             canvas = easel.getItem();
-            if(!(canvas.getItem() instanceof ItemCanvas)){
+            if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Canvas not found inside easel!");
                 return;
             }
             ItemStack mainHandItem = pl.getMainHandItem();
             ItemStack offHandItem = pl.getOffhandItem();
-            if(mainHandItem.getItem() instanceof ItemPalette){
+            if (mainHandItem.getItem() instanceof ItemPalette) {
                 palette = mainHandItem;
-            }else if(offHandItem.getItem() instanceof ItemPalette){
+            } else if (offHandItem.getItem() instanceof ItemPalette) {
                 palette = offHandItem;
-            }else{
+            } else {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Palette not found on player's hands!");
                 return;
             }
-        }
-        else{
+        } else {
             canvas = pl.getMainHandItem();
             palette = pl.getOffhandItem();
-            if(canvas.getItem() instanceof ItemPalette){
+            if (canvas.getItem() instanceof ItemPalette) {
                 ItemStack temp = canvas;
                 canvas = palette;
                 palette = temp;
@@ -78,7 +85,7 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
                 writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
             }
 
-            if(entityEasel instanceof EntityEasel easel){
+            if (entityEasel instanceof EntityEasel easel) {
                 easel.setItem(canvas, false);
                 easel.setPainter(null);
             }
@@ -90,8 +97,8 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         CanvasUpdatePacket packet = CanvasUpdatePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

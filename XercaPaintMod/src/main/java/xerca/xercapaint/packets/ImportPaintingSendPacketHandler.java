@@ -17,8 +17,8 @@ public class ImportPaintingSendPacketHandler implements ServerPlayNetworking.Pla
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ImportPaintingSendPacket packet = ImportPaintingSendPacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

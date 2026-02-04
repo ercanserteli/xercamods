@@ -16,8 +16,8 @@ public class ImportMusicSendPacketHandler implements ServerPlayNetworking.PlayCh
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ImportMusicSendPacket packet = ImportMusicSendPacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

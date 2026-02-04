@@ -26,7 +26,7 @@ public class ImportPaintingPacket {
         try {
             result.name = buf.readUtf(64);
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ImportPaintingPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading ImportPaintingPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

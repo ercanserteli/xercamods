@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class MusicDataResponsePacketHandler implements ClientPlayNetworking.PlayChannelHandler {
     private static void processMessage(MusicDataResponsePacket msg) {
-        UUID id = msg.getId();
+        UUID id = msg.getMusicId();
         int version = msg.getVersion();
         ArrayList<NoteEvent> notes = msg.getNotes();
         MusicManagerClient.setMusicData(id, version, notes);
@@ -22,8 +22,8 @@ public class MusicDataResponsePacketHandler implements ClientPlayNetworking.Play
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         MusicDataResponsePacket packet = MusicDataResponsePacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 }

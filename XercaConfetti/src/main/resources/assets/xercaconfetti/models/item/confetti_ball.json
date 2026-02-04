@@ -1,7 +1,6 @@
-
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "xercaconfetti:item/confetti_ball"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercaconfetti:item/confetti_ball"
+  }
 }

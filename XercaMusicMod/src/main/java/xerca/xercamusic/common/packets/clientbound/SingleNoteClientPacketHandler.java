@@ -23,24 +23,23 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayC
 
     private static void processMessage(SingleNoteClientPacket msg) {
         Player playerEntity = msg.getPlayerEntity();
-        if(!playerEntity.equals(Minecraft.getInstance().player)){
+        if (!playerEntity.equals(Minecraft.getInstance().player)) {
             IItemInstrument.InsSound sound = msg.getInstrumentItem().getSound(msg.getNote());
-            if(sound == null){
+            if (sound == null) {
                 return;
             }
-            if(!msg.isStop()){
+            if (!msg.isStop()) {
                 double x = playerEntity.getX();
                 double y = playerEntity.getY();
                 double z = playerEntity.getZ();
 
                 NoteSound noteSound = onlyCallOnClient(() -> () ->
-                        ClientStuff.playNote(sound.sound, x, y, z, SoundSource.PLAYERS, msg.getVolume()*1.5f, sound.pitch, (byte) -1));
+                        ClientStuff.playNote(sound.sound(), x, y, z, SoundSource.PLAYERS, msg.getVolume() * 1.5f, sound.pitch(), (byte) -1));
                 noteSounds.put(Pair.of(playerEntity, msg.getNote()), new NoteSoundEntry(noteSound, playerEntity));
                 playerEntity.level().addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (msg.getNote()) / 24.0D, 0.0D, 0.0D);
-            }
-            else{
+            } else {
                 NoteSoundEntry oldNoteSoundEntry = noteSounds.get(Pair.of(playerEntity, msg.getNote()));
-                if(oldNoteSoundEntry != null && !oldNoteSoundEntry.noteSound.isStopped()){
+                if (oldNoteSoundEntry != null && !oldNoteSoundEntry.noteSound.isStopped()) {
                     oldNoteSoundEntry.noteSound.stopSound();
                 }
             }
@@ -50,13 +49,13 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayC
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         SingleNoteClientPacket packet = SingleNoteClientPacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 
     @SuppressWarnings("unused")
-    private static class NoteSoundEntry{
+    private static class NoteSoundEntry {
         public NoteSound noteSound;
         public Player playerEntity;
 

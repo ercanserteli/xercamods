@@ -1,6 +1,6 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "xercafood:item/beverages/carbonated_water"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercafood:item/beverages/carbonated_water"
+  }
 }

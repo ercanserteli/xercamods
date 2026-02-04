@@ -1,4 +1,3 @@
-
 {
   "parent": "xercafood:recipes/root",
   "rewards": {
@@ -11,7 +10,11 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["xercafood:raw_pizza_fish_mushroom_pepperoni"]}
+          {
+            "items": [
+              "xercafood:raw_pizza_fish_mushroom_pepperoni"
+            ]
+          }
         ]
       }
     },

@@ -21,20 +21,19 @@ public class MusicBoxUpdatePacket implements IPacket {
     public MusicBoxUpdatePacket(BlockPos pos, ItemStack noteStack, Item itemInstrument) {
         this.pos = pos;
 
-        if(noteStack == null){
+        if (noteStack == null) {
             this.noteStackNBT = null;
-        }
-        else{
-            if(noteStack.hasTag()){
+        } else {
+            if (noteStack.hasTag()) {
                 this.noteStackNBT = noteStack.getTag();
-            }else{
+            } else {
                 this.noteStackNBT = new CompoundTag();
             }
         }
-        if(itemInstrument != null){
+        if (itemInstrument != null) {
             ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey(itemInstrument);
             this.instrumentId = resourcelocation.toString();
-        }else{
+        } else {
             this.instrumentId = "";
         }
     }
@@ -50,7 +49,7 @@ public class MusicBoxUpdatePacket implements IPacket {
             result.noteStackNBT = buf.readNbt();
             result.instrumentId = buf.readUtf(255);
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicBoxUpdatePacket: {}", ioe);
+            XercaMusic.LOGGER.error("Exception while reading MusicBoxUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

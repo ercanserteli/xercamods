@@ -45,7 +45,7 @@ public class SoundEvents {
         return soundEvent;
     }
 
-    private static void addSound(ArrayList<Pair<Integer, SoundEvent>> array, String insName, int note){
+    private static void addSound(ArrayList<Pair<Integer, SoundEvent>> array, String insName, int note) {
         array.add(Pair.of(note, createSoundEvent(insName + note)));
     }
 
@@ -80,7 +80,7 @@ public class SoundEvents {
         for (int i = 21; i <= 116; i++) {
             addSound(drum_kits, "drum_kit", i);
         }
-        for (int i = 27; i <= 111; i+=6) {
+        for (int i = 27; i <= 111; i += 6) {
             addSound(harp_mcs, "harp_mc", i);
         }
 
@@ -334,26 +334,26 @@ public class SoundEvents {
         addSound(bass_guitars, "bass_guitar", 75);
 
         // Instrument SoundEvent setting
-        ((IItemInstrument)Items.CYMBAL).setSounds(cymbals);
-        ((IItemInstrument)Items.DRUM_KIT).setSounds(drum_kits);
-        ((IItemInstrument)Items.GUITAR).setSounds(guitars);
-        ((IItemInstrument)Items.LYRE).setSounds(lyres);
-        ((IItemInstrument)Items.DRUM).setSounds(drums);
-        ((IItemInstrument)Items.FLUTE).setSounds(flutes);
-        ((IItemInstrument)Items.BANJO).setSounds(banjos);
-        ((IItemInstrument)Items.SAXOPHONE).setSounds(saxophones);
-        ((IItemInstrument)Items.GOD).setSounds(gods);
-        ((IItemInstrument)Items.SANSULA).setSounds(sansulas);
-        ((IItemInstrument)Items.TUBULAR_BELL).setSounds(tubular_bells);
-        ((IItemInstrument)Items.VIOLIN).setSounds(violins);
-        ((IItemInstrument)Items.XYLOPHONE).setSounds(xylophones);
-        ((IItemInstrument)Items.CELLO).setSounds(cellos);
-        ((IItemInstrument)Items.PIANO).setSounds(pianos);
-        ((IItemInstrument)Items.OBOE).setSounds(oboes);
-        ((IItemInstrument)Items.REDSTONE_GUITAR).setSounds(redstone_guitars);
-        ((IItemInstrument)Items.FRENCH_HORN).setSounds(french_horns);
-        ((IItemInstrument)Items.BASS_GUITAR).setSounds(bass_guitars);
+        ((IItemInstrument) Items.CYMBAL).setSounds(cymbals);
+        ((IItemInstrument) Items.DRUM_KIT).setSounds(drum_kits);
+        ((IItemInstrument) Items.GUITAR).setSounds(guitars);
+        ((IItemInstrument) Items.LYRE).setSounds(lyres);
+        ((IItemInstrument) Items.DRUM).setSounds(drums);
+        ((IItemInstrument) Items.FLUTE).setSounds(flutes);
+        ((IItemInstrument) Items.BANJO).setSounds(banjos);
+        ((IItemInstrument) Items.SAXOPHONE).setSounds(saxophones);
+        ((IItemInstrument) Items.GOD).setSounds(gods);
+        ((IItemInstrument) Items.SANSULA).setSounds(sansulas);
+        ((IItemInstrument) Items.TUBULAR_BELL).setSounds(tubular_bells);
+        ((IItemInstrument) Items.VIOLIN).setSounds(violins);
+        ((IItemInstrument) Items.XYLOPHONE).setSounds(xylophones);
+        ((IItemInstrument) Items.CELLO).setSounds(cellos);
+        ((IItemInstrument) Items.PIANO).setSounds(pianos);
+        ((IItemInstrument) Items.OBOE).setSounds(oboes);
+        ((IItemInstrument) Items.REDSTONE_GUITAR).setSounds(redstone_guitars);
+        ((IItemInstrument) Items.FRENCH_HORN).setSounds(french_horns);
+        ((IItemInstrument) Items.BASS_GUITAR).setSounds(bass_guitars);
 
-        ((IItemInstrument)Items.HARP_MC).setSounds(harp_mcs);
+        ((IItemInstrument) Items.HARP_MC).setSounds(harp_mcs);
     }
 }

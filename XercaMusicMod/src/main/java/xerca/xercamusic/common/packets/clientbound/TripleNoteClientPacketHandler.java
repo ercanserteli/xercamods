@@ -15,10 +15,14 @@ import static xerca.xercamusic.common.XercaMusic.onlyCallOnClient;
 public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
     private static void processMessage(TripleNoteClientPacket msg) {
         Entity entity = msg.getEntity();
+        if (entity == null) {
+            return;
+        }
+
         IItemInstrument.InsSound sound1 = msg.getInstrumentItem().getSound(msg.getNote1());
         IItemInstrument.InsSound sound2 = msg.getInstrumentItem().getSound(msg.getNote2());
         IItemInstrument.InsSound sound3 = msg.getInstrumentItem().getSound(msg.getNote3());
-        if(sound1 == null || sound2 == null || sound3 == null){
+        if (sound1 == null || sound2 == null || sound3 == null) {
             return;
         }
 
@@ -26,16 +30,16 @@ public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayC
         double y = entity.getY();
         double z = entity.getZ();
 
-        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound1.sound, x, y, z, SoundSource.PLAYERS, 1.5f, sound1.pitch, (byte) 10));
-        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound2.sound, x, y, z, SoundSource.PLAYERS, 1.5f, sound2.pitch, (byte) 10));
-        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound3.sound, x, y, z, SoundSource.PLAYERS, 1.5f, sound3.pitch, (byte) 10));
+        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound1.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound1.pitch(), (byte) 10));
+        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound2.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound2.pitch(), (byte) 10));
+        onlyCallOnClient(() -> () -> ClientStuff.playNote(sound3.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound3.pitch(), (byte) 10));
     }
 
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         TripleNoteClientPacket packet = TripleNoteClientPacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 }

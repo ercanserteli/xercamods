@@ -41,18 +41,18 @@ public class TripleNoteClientPacket implements IPacket {
             int instrumentId = buf.readInt();
             int entityId = buf.readInt();
 
-            if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+            if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
             ClientLevel level = Minecraft.getInstance().level;
-            if(level == null) {
+            if (level == null) {
                 return null;
             }
             result.entity = level.getEntity(entityId);
             result.instrumentItem = Items.instruments[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: {}", ioe);
+            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

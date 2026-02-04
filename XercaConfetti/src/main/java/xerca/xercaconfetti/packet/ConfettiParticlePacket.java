@@ -13,6 +13,7 @@ public class ConfettiParticlePacket extends ParticlePacket implements IPacket {
     public ConfettiParticlePacket(int count, double posX, double posY, double posZ) {
         this(count, posX, posY, posZ, Vec3i.ZERO);
     }
+
     public ConfettiParticlePacket(int count, double posX, double posY, double posZ, Vec3i direction) {
         super(count, posX, posY, posZ);
         this.direction = direction;
@@ -39,7 +40,7 @@ public class ConfettiParticlePacket extends ParticlePacket implements IPacket {
         try {
             result.read(buf);
         } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ConfettiParticlePacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading ConfettiParticlePacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

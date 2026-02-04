@@ -1,5 +1,7 @@
 {
-    "variants": {
-        "": { "model": "xercafood:block/teapot" }
+  "variants": {
+    "": {
+      "model": "xercafood:block/teapot"
     }
+  }
 }
