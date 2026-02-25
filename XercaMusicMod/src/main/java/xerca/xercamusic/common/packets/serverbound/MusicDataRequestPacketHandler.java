@@ -17,9 +17,9 @@ public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayP
         MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.server);
         MusicDataResponsePacket packet;
         if (data != null) {
-            packet = new MusicDataResponsePacket(id, data.version(), data.notes());
+            packet = new MusicDataResponsePacket(id, data.version(), data.notes(), data.volumeMarkers());
         } else {
-            packet = new MusicDataResponsePacket(id, 0, new ArrayList<>());
+            packet = new MusicDataResponsePacket(id, 0, new ArrayList<>(), null);
         }
         sendToClient(pl, packet);
     }

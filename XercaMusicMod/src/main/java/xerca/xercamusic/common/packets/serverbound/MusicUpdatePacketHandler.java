@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
@@ -40,7 +41,8 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
                         return;
                     }
                 }
-                MusicManager.setMusicData(id, note.getOrDefault(Items.SHEET_VERSION, 0), notes, pl.server);
+                List<VolumeMarker> volumeMarkers = flag.hasVolumeMarkers ? msg.volumeMarkers() : null;
+                MusicManager.setMusicData(id, note.getOrDefault(Items.SHEET_VERSION, 0), notes, volumeMarkers, pl.server);
                 if (note.get(Items.SHEET_BPS) == null) {
                     note.set(Items.SHEET_BPS, (byte) 8);
                 }

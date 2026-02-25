@@ -5,6 +5,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
@@ -35,6 +36,11 @@ public class SoundController extends Thread {
         this.spiritID = spiritID;
         setDaemon(true);
         setName("XercaMusic-SoundController-" + CONTROLLER_COUNTER.incrementAndGet());
+    }
+
+    public SoundController(List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
+        this(notes, x, y, z, instrument, bps, volume, -1);
+        this.musicBox = musicBox;
     }
 
     public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
