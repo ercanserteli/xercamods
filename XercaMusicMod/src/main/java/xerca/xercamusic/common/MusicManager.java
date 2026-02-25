@@ -36,12 +36,12 @@ public final class MusicManager {
         return null;
     }
 
-    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, MinecraftServer server) {
+    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         NoteEvent.sortNotes(notes);
         NoteEvent.removeDuplicates(notes);
-        musicMap.put(id, new MusicManager.MusicData(ver, notes));
+        musicMap.put(id, new MusicManager.MusicData(ver, notes, volumeMarkers));
         savedDataMusic.setDirty();
     }
 
@@ -76,7 +76,7 @@ public final class MusicManager {
         return buffer.isFinished();
     }
 
-    public record MusicData(int version, List<NoteEvent> notes) {
+    public record MusicData(int version, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers) {
     }
 
     public static class SavedDataMusic extends SavedData {
@@ -98,7 +98,9 @@ public final class MusicManager {
                     if (nbt instanceof CompoundTag musicData) {
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, musicData);
-                        musicDataMap.put(musicData.getUUID(KEY_ID), new MusicData(musicData.getInt(KEY_VERSION), notes));
+                        ArrayList<VolumeMarker> markers = new ArrayList<>();
+                        VolumeMarker.fillArrayFromNBT(markers, musicData);
+                        musicDataMap.put(musicData.getUUID(KEY_ID), new MusicData(musicData.getInt(KEY_VERSION), notes, markers.isEmpty() ? null : markers));
                     }
                 }
 
@@ -116,6 +118,9 @@ public final class MusicManager {
                 nbt.putUUID(KEY_ID, entry.getKey());
                 nbt.putInt(KEY_VERSION, entry.getValue().version);
                 NoteEvent.fillNBTFromArray(entry.getValue().notes, nbt);
+                if (entry.getValue().volumeMarkers != null) {
+                    VolumeMarker.fillNBTFromArray(new ArrayList<>(entry.getValue().volumeMarkers()), nbt);
+                }
                 musicDataList.add(nbt);
             }
             tag.put("MusicDataList", musicDataList);

@@ -113,8 +113,8 @@ public final class CommandImport {
                 }
             }
 
-            MusicManager.setMusicData(id, ver, notes, player.server);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, notes));
+            MusicManager.setMusicData(id, ver, notes, null, player.server);
+            sendToClient(player, new MusicDataResponsePacket(id, ver, notes, null));
             return notes;
         }
 
@@ -124,7 +124,7 @@ public final class CommandImport {
             List<NoteEvent> converted = convertFromOld(tag, player.server);
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, converted));
+            sendToClient(player, new MusicDataResponsePacket(id, ver, converted, null));
             return converted;
         }
 

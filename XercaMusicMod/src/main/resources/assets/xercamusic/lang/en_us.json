@@ -1,6 +1,5 @@
 {
   "itemGroup.xercamusic.music_tab": "Music",
-
   "item.xercamusic.instrument_gui": "Instrument",
   "item.xercamusic.music_sheet": "Music Sheet",
   "item.xercamusic.guitar": "Guitar",
@@ -22,17 +21,17 @@
   "item.xercamusic.redstone_guitar": "Redstone Guitar",
   "item.xercamusic.french_horn": "French Horn",
   "item.xercamusic.bass_guitar": "Bass Guitar",
-
+  "item.xercamusic.trumpet": "Trumpet",
+  "item.xercamusic.electric_piano": "Electric Piano",
+  "item.xercamusic.organ": "Organ",
   "block.xercamusic.block_metronome": "Metronome",
   "block.xercamusic.music_box": "Music Box",
   "block.xercamusic.piano": "Piano",
   "block.xercamusic.drum_kit": "Drum Kit",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Music",
   "advancements.xercamusic.achievements.musician.title": "Musician",
   "advancements.xercamusic.achievements.musician.description": "Compose your first piece",
-
   "note.byAuthor": "by %1$s",
   "note.signButton": "Sign",
   "note.editTitle": "Enter Music Title:",
@@ -102,9 +101,7 @@
   "note.helpText18b": "Halve the tempo and shrink notes",
   "note.helpText19a": "ALT: ",
   "note.helpText19b": "Start/stop recording",
-
   "ins.octaveTooltip": "Change keyboard octave",
-
   "xercamusic.export.success": "Music sheet exported to %1$s",
   "xercamusic.export.fail": "Could not export music sheet",
   "xercamusic.import.success": "Music sheet imported",
