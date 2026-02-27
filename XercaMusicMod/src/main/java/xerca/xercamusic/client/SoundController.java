@@ -9,11 +9,15 @@ import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SoundController extends Thread {
     private final List<NoteEvent> notes;
+    private final List<VolumeMarker> volumeMarkers;
     private final IItemInstrument instrument;
     private final byte bps;
     private final int spiritID;
@@ -25,8 +29,14 @@ public class SoundController extends Thread {
     private TileEntityMusicBox musicBox;
     private static final AtomicInteger CONTROLLER_COUNTER = new AtomicInteger();
 
-    public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
+    // Tracks sustained notes inside volume markers for dynamic volume updates
+    private final List<ActiveSound> activeSounds = new ArrayList<>();
+
+    private record ActiveSound(NoteSound sound, NoteEvent event, VolumeMarker marker, int endBeat) {}
+
+    public SoundController(List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
         this.notes = notes;
+        this.volumeMarkers = volumeMarkers != null ? volumeMarkers : Collections.emptyList();
         this.x = x;
         this.y = y;
         this.z = z;
@@ -39,12 +49,16 @@ public class SoundController extends Thread {
     }
 
     public SoundController(List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
-        this(notes, x, y, z, instrument, bps, volume, -1);
+        this(notes, volumeMarkers, x, y, z, instrument, bps, volume, -1);
         this.musicBox = musicBox;
     }
 
+    public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
+        this(notes, null, x, y, z, instrument, bps, volume, spiritID);
+    }
+
     public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
-        this(notes, x, y, z, instrument, bps, volume, -1);
+        this(notes, null, x, y, z, instrument, bps, volume, -1);
         this.musicBox = musicBox;
     }
 
@@ -71,6 +85,7 @@ public class SoundController extends Thread {
             while (event.time > currentBeat) {
                 accurateSleep(msPerBeat);
                 currentBeat++;
+                updateActiveSounds(currentBeat);
                 while (minecraft.isPaused()) {
                     inaccurateSleep(1);
                 }
@@ -100,17 +115,72 @@ public class SoundController extends Thread {
                     return;
                 }
 
+                // Check if any volume marker fully contains this note
+                float noteVolume = event.floatVolume();
+                VolumeMarker activeMarker = null;
+                for (VolumeMarker marker : volumeMarkers) {
+                    if (marker.fullyContains(event.time, event.length, event.note)) {
+                        noteVolume = marker.getVolumeAt(event.time);
+                        activeMarker = marker;
+                        break;  // First matching marker wins
+                    }
+                }
+
+                NoteSound sound;
                 if (musicBox == null) {
-                    ClientStuff.playNote(insSound.sound(), x, y, z, volume * event.floatVolume(), insSound.pitch(), (byte) beatsToTicks(event.length));
+                    sound = ClientStuff.playNote(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
                     level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, note / 24.0D, 0.0D, 0.0D);
                 } else {
-                    ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume * event.floatVolume(), insSound.pitch(), (byte) beatsToTicks(event.length));
+                    sound = ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
                     level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, note / 24.0D, 0.0D, 0.0D);
+                }
+
+                // Apply glissando (smooth pitch slide)
+                if (event.hasGlissando() && sound != null) {
+                    byte[] wps = event.getEffectiveWaypoints();
+                    if (wps != null && wps.length > 0) {
+                        float[] pitchWaypoints = new float[wps.length];
+                        for (int i = 0; i < wps.length; i++) {
+                            pitchWaypoints[i] = insSound.pitch() * (float) Math.pow(2.0, wps[i] / 12.0);
+                        }
+                        sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
+                    }
+                }
+
+                // Track sustained notes inside volume markers for dynamic volume
+                if (sound != null && activeMarker != null && event.length > 1
+                        && activeMarker.containsTime((short)(event.time + event.length))) {
+                    synchronized (activeSounds) {
+                        activeSounds.add(new ActiveSound(sound, event, activeMarker, event.time + event.length));
+                    }
                 }
             }).whenComplete((v, t) -> {
                 if (t != null) Mod.LOGGER.error("Failed to play note", t);
             });
         }
+    }
+
+    private void updateActiveSounds(int currentBeat) {
+        if (activeSounds.isEmpty()) return;
+        final int beat = currentBeat;
+        Minecraft.getInstance().submit(() -> {
+            synchronized (activeSounds) {
+                Iterator<ActiveSound> it = activeSounds.iterator();
+                while (it.hasNext()) {
+                    ActiveSound as = it.next();
+                    if (beat >= as.endBeat || as.sound.isStopped()) {
+                        it.remove();
+                    } else {
+                        float vol = as.marker.getVolumeAt((short) beat);
+                        if (vol >= 0f) {
+                            as.sound.setDynamicVolume(volume * vol);
+                        }
+                    }
+                }
+            }
+        }).whenComplete((v, t) -> {
+            if (t != null) Mod.LOGGER.error("Failed to update active sounds", t);
+        });
     }
 
     public void setStop() {

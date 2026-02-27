@@ -82,6 +82,15 @@ public class VolumeMarker {
         return containsTime(time) && containsNote(note);
     }
 
+    /**
+     * Checks if a note is fully contained within this marker's range,
+     * meaning both its start time and end time (time + length) fall within the time range
+     * and its pitch is within the note range.
+     */
+    public boolean fullyContains(short time, short length, byte note) {
+        return time >= startTime && (short)(time + length) <= endTime && containsNote(note);
+    }
+
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putShort("st", startTime);

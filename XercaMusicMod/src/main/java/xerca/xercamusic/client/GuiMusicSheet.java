@@ -632,10 +632,10 @@ public class GuiMusicSheet extends Screen {
             return null;
         }
 
-        // Check if any volume marker affects this note
+        // Check if any volume marker fully contains this note
         float noteVolume = event.floatVolume();
         for (VolumeMarker marker : volumeMarkers) {
-            if (marker.affects(event.time, event.note)) {
+            if (marker.fullyContains(event.time, event.length, event.note)) {
                 noteVolume = marker.getVolumeAt(event.time);
                 break;  // First matching marker wins
             }
@@ -680,8 +680,7 @@ public class GuiMusicSheet extends Screen {
                     // Track sustained notes inside volume markers for dynamic volume
                     if (sound != null && event.length > 1) {
                         for (VolumeMarker marker : volumeMarkers) {
-                            if (marker.affects(event.time, event.note) &&
-                                marker.containsTime((short)(event.time + event.length))) {
+                            if (marker.fullyContains(event.time, event.length, event.note)) {
                                 previewActiveSounds.add(new PreviewActiveSound(sound, event, marker));
                                 break;
                             }

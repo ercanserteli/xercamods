@@ -21,6 +21,7 @@ import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -34,6 +35,7 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class TileEntityMusicBox extends BlockEntity {
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
+    private final ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
     private boolean isPlaying = false;
     private boolean oldPoweredState = false;
     private boolean isPowering = false;
@@ -69,6 +71,10 @@ public class TileEntityMusicBox extends BlockEntity {
                         if (data != null) {
                             t.notes.clear();
                             t.notes.addAll(data.notes());
+                            t.volumeMarkers.clear();
+                            if (data.volumeMarkers() != null) {
+                                t.volumeMarkers.addAll(data.volumeMarkers());
+                            }
                         }
                     });
                 } else {
@@ -78,6 +84,10 @@ public class TileEntityMusicBox extends BlockEntity {
                         if (data != null) {
                             t.notes.clear();
                             t.notes.addAll(data.notes());
+                            t.volumeMarkers.clear();
+                            if (data.volumeMarkers() != null) {
+                                t.volumeMarkers.addAll(data.volumeMarkers());
+                            }
                         } else {
                             Mod.LOGGER.warn("Unknown music sheet (id: {})", id);
                         }
@@ -157,7 +167,7 @@ public class TileEntityMusicBox extends BlockEntity {
             if (t.soundController != null) {
                 t.soundController.setStop();
             }
-            t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
+            t.soundController = new SoundController(t.notes, t.volumeMarkers, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
             t.soundController.start();
         }
     }
