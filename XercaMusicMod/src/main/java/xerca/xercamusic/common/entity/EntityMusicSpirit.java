@@ -21,6 +21,7 @@ import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
@@ -32,6 +33,7 @@ import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 public class EntityMusicSpirit extends Entity {
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
+    private final ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
     private Player body;
     private ItemStack note;
     private IItemInstrument instrument;
@@ -205,9 +207,12 @@ public class EntityMusicSpirit extends Entity {
             MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
             if (data != null) {
                 notes.addAll(data.notes());
+                if (data.volumeMarkers() != null) {
+                    volumeMarkers.addAll(data.volumeMarkers());
+                }
             }
 
-            soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, bps, volume, getId());
+            soundController = new SoundController(notes, volumeMarkers, getX(), getY(), getZ(), instrument, bps, volume, getId());
             soundController.start();
         });
     }
