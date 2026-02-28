@@ -6,3 +6,4 @@ run/
 builds/
 desktop.ini
 **/.cache/
+*.log
