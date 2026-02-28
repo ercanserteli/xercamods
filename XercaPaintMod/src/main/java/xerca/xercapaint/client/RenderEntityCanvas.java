@@ -25,6 +25,7 @@ import org.joml.Matrix4f;
 import xerca.xercapaint.common.PaletteUtil;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityCanvas;
+import xerca.xercapaint.common.item.ItemCanvas;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -77,6 +78,10 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     }
 
     RenderEntityCanvas.Instance getCanvasRendererInstance(CompoundTag tag, int width, int height) {
+        if (!ItemCanvas.hasCanvasData(tag, width, height)) {
+            return null;
+        }
+
         String name = tag.getString("name");
         int version = tag.getInt("v");
         int[] pixels = tag.getIntArray("pixels");
@@ -88,11 +93,16 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         return getCanvasRendererInstance(name, version, width, height);
     }
 
+    private static String rendererKey(String name, int width, int height) {
+        return name + "-" + width + "x" + height;
+    }
+
     RenderEntityCanvas.Instance getCanvasRendererInstance(String name, int version, int width, int height) {
-        RenderEntityCanvas.Instance instance = this.loadedCanvases.get(name);
+        String key = rendererKey(name, width, height);
+        RenderEntityCanvas.Instance instance = this.loadedCanvases.get(key);
         if (instance == null) {
-            instance = new Instance(name, version, width, height);
-            this.loadedCanvases.put(name, instance);
+            instance = new Instance(key, name, version, width, height);
+            this.loadedCanvases.put(key, instance);
         }else{
             if(instance.version < version || !instance.loaded){
                 instance.updateCanvasTexture(name, version);
@@ -112,13 +122,13 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         public final DynamicTexture canvasTexture;
         public final ResourceLocation location;
 
-        private Instance(String name, int version, int width, int height) {
+        private Instance(String key, String name, int version, int width, int height) {
             this.started = false;
             this.loaded = false;
             this.width = width;
             this.height = height;
             this.canvasTexture = new DynamicTexture(width, height, true);
-            this.location = RenderEntityCanvas.this.textureManager.register("canvas/" + name, this.canvasTexture);
+            this.location = RenderEntityCanvas.this.textureManager.register("canvas/" + key, this.canvasTexture);
 
             updateCanvasTexture(name, version);
         }
