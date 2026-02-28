@@ -46,6 +46,11 @@ public class NoteEvent {
         this.time = noteEvent.time;
         this.volume = noteEvent.volume;
         this.length = noteEvent.length;
+        this.flags = noteEvent.flags;
+        this.glissandoInterval = noteEvent.glissandoInterval;
+        this.glissandoWaypoints = noteEvent.glissandoWaypoints != null
+                ? noteEvent.glissandoWaypoints.clone()
+                : null;
     }
 
     public static NoteEvent fromNBT(CompoundTag tag) {

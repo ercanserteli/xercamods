@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
 
 public class SoundController extends Thread {
     private final List<NoteEvent> notes;
@@ -73,27 +74,45 @@ public class SoundController extends Thread {
             return;
         }
 
-        int msPerBeat = Math.round(1000.0f / bps);
         int currentBeat = 0;
+        int noteIdx = 0;
+        long nanosPerBeat = Math.round(1_000_000_000.0 / bps);
+        long songStartNanos = System.nanoTime();
+        long pausedNanos = 0; // Total time spent paused (excluded from song clock)
 
         Minecraft minecraft = Minecraft.getInstance();
-        for (NoteEvent event : notes) {
+        while (noteIdx < notes.size()) {
             if (doStop) {
                 return;
             }
 
-            while (event.time > currentBeat) {
-                accurateSleep(msPerBeat);
+            NoteEvent firstEvent = notes.get(noteIdx);
+            while (firstEvent.time > currentBeat) {
+                // Sleep until the absolute target time for the next beat
+                long targetNanos = songStartNanos + (long)(currentBeat + 1) * nanosPerBeat + pausedNanos;
+                sleepUntil(targetNanos);
                 currentBeat++;
                 updateActiveSounds(currentBeat);
-                while (minecraft.isPaused()) {
-                    inaccurateSleep(1);
+                if (minecraft.isPaused()) {
+                    long pauseStart = System.nanoTime();
+                    while (minecraft.isPaused()) {
+                        inaccurateSleep(1);
+                    }
+                    pausedNanos += System.nanoTime() - pauseStart;
                 }
                 if (doStop || minecraft.level == null) {
                     return;
                 }
             }
-            playNote(event);
+
+            // Collect all notes at this beat into a single batch
+            int batchEnd = noteIdx + 1;
+            while (batchEnd < notes.size() && notes.get(batchEnd).time == firstEvent.time) {
+                batchEnd++;
+            }
+
+            playNotes(noteIdx, batchEnd);
+            noteIdx = batchEnd;
         }
 
         // Music over
@@ -105,15 +124,22 @@ public class SoundController extends Thread {
         }
     }
 
-    private void playNote(NoteEvent event) {
-        if (event.note >= IItemInstrument.MIN_NOTE && event.note <= IItemInstrument.MAX_NOTE) {
-            final byte note = event.note;
-            Minecraft.getInstance().submit(() -> {
-                ClientLevel level = Minecraft.getInstance().level;
-                IItemInstrument.InsSound insSound = instrument.getSound(note);
-                if (level == null || insSound == null) {
-                    return;
-                }
+    /**
+     * Play all notes from index fromIdx (inclusive) to toIdx (exclusive) in a single
+     * main-thread submission. Only spawns one particle per batch to reduce overhead.
+     */
+    private void playNotes(int fromIdx, int toIdx) {
+        Minecraft.getInstance().submit(() -> {
+            ClientLevel level = Minecraft.getInstance().level;
+            if (level == null) return;
+
+            boolean particleSpawned = false;
+            for (int i = fromIdx; i < toIdx; i++) {
+                NoteEvent event = notes.get(i);
+                if (event.note < IItemInstrument.MIN_NOTE || event.note > IItemInstrument.MAX_NOTE) continue;
+
+                IItemInstrument.InsSound insSound = instrument.getSound(event.note);
+                if (insSound == null) continue;
 
                 // Check if any volume marker fully contains this note
                 float noteVolume = event.floatVolume();
@@ -129,10 +155,18 @@ public class SoundController extends Thread {
                 NoteSound sound;
                 if (musicBox == null) {
                     sound = ClientStuff.playNote(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
-                    level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, note / 24.0D, 0.0D, 0.0D);
                 } else {
                     sound = ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
-                    level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, note / 24.0D, 0.0D, 0.0D);
+                }
+
+                // Spawn at most one particle per beat per controller
+                if (!particleSpawned) {
+                    if (musicBox == null) {
+                        level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, event.note / 24.0D, 0.0D, 0.0D);
+                    } else {
+                        level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, event.note / 24.0D, 0.0D, 0.0D);
+                    }
+                    particleSpawned = true;
                 }
 
                 // Apply glissando (smooth pitch slide)
@@ -140,8 +174,8 @@ public class SoundController extends Thread {
                     byte[] wps = event.getEffectiveWaypoints();
                     if (wps != null && wps.length > 0) {
                         float[] pitchWaypoints = new float[wps.length];
-                        for (int i = 0; i < wps.length; i++) {
-                            pitchWaypoints[i] = insSound.pitch() * (float) Math.pow(2.0, wps[i] / 12.0);
+                        for (int j = 0; j < wps.length; j++) {
+                            pitchWaypoints[j] = insSound.pitch() * (float) Math.pow(2.0, wps[j] / 12.0);
                         }
                         sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
                     }
@@ -154,10 +188,10 @@ public class SoundController extends Thread {
                         activeSounds.add(new ActiveSound(sound, event, activeMarker, event.time + event.length));
                     }
                 }
-            }).whenComplete((v, t) -> {
-                if (t != null) Mod.LOGGER.error("Failed to play note", t);
-            });
-        }
+            }
+        }).whenComplete((v, t) -> {
+            if (t != null) Mod.LOGGER.error("Failed to play notes", t);
+        });
     }
 
     private void updateActiveSounds(int currentBeat) {
@@ -193,19 +227,33 @@ public class SoundController extends Thread {
         this.z = z;
     }
 
-    private void accurateSleep(long millis) {
-        if (millis == 0) return;
-        long start = System.currentTimeMillis();
-        if (millis > 8) {
+    /**
+     * Sleep until the specified absolute nanoTime. Uses Thread.sleep for the bulk,
+     * LockSupport.parkNanos for the penultimate millisecond, and hot-spin for the
+     * final ~1ms to achieve precise timing without cumulative drift.
+     */
+    private void sleepUntil(long targetNanos) {
+        long remaining = targetNanos - System.nanoTime();
+        if (remaining <= 0) return;
+
+        // Sleep the bulk of the time using Thread.sleep
+        long remainingMs = remaining / 1_000_000L;
+        if (remainingMs > 8) {
             try {
-                sleep(millis - 8);
+                sleep(remainingMs - 8);
             } catch (InterruptedException e) {
                 Mod.LOGGER.warn("Interrupted while sleeping", e);
                 Thread.currentThread().interrupt();
             }
         }
-        while (System.currentTimeMillis() < start + millis) {
-            // hot sleep
+
+        // Park in small increments instead of hot spinning (much lower CPU usage)
+        while (System.nanoTime() < targetNanos - 1_000_000L) {
+            LockSupport.parkNanos(500_000L); // 0.5ms park
+        }
+
+        // Hot spin only the final ~1ms for precise timing
+        while (System.nanoTime() < targetNanos) {
             Thread.onSpinWait();
         }
     }

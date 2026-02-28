@@ -1022,7 +1022,7 @@ public class GuiMusicSheet extends Screen {
             drawHelpLine(guiGraphics, col1X, cy, "Left Click note", "Remove note"); cy += lineH;
             drawHelpLine(guiGraphics, col1X, cy, "Right Click", "Set cursor position"); cy += lineH;
             drawHelpLine(guiGraphics, col1X, cy, "Middle Click note", "Edit note properties"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Middle Click marker", "Edit volume marker"); cy += lineH;
+            //drawHelpLine(guiGraphics, col1X, cy, "Middle Click marker", "Edit volume marker"); cy += lineH;
             cy += sectionGap;
 
             // -- Navigation --
@@ -1032,6 +1032,7 @@ public class GuiMusicSheet extends Screen {
             drawHelpLine(guiGraphics, col1X, cy, "Shift + Scroll", "Scroll sideways"); cy += lineH;
             drawHelpLine(guiGraphics, col1X, cy, "Arrow Left/Right", "Move cursor"); cy += lineH;
             drawHelpLine(guiGraphics, col1X, cy, "A / S", "Shift octave down / up"); cy += lineH;
+            drawHelpLine(guiGraphics, col1X, cy, "D / F", "Shift semitone down / up"); cy += lineH;
             cy += sectionGap;
 
             // -- Playback --
@@ -2132,6 +2133,16 @@ public class GuiMusicSheet extends Screen {
                             if (shiftSelectedOctave(12)) resetEditCursorEnd = false;
                         }
                     }
+                    case GLFW.GLFW_KEY_D -> {
+                        if (editCursor != editCursorEnd) {
+                            if (shiftSelectedOctave(-1)) resetEditCursorEnd = false;
+                        }
+                    }
+                    case GLFW.GLFW_KEY_F -> {
+                        if (editCursor != editCursorEnd) {
+                            if (shiftSelectedOctave(1)) resetEditCursorEnd = false;
+                        }
+                    }
                     case GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT_CONTROL -> resetEditCursorEnd = false;
                     default -> {
                         int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
@@ -2162,20 +2173,30 @@ public class GuiMusicSheet extends Screen {
      */
     private boolean shiftSelectedOctave(int semitones) {
         boolean changed = false;
-        int octaveCheck = semitones > 0 ? 7 : 0;
         for (NoteEvent event : notes) {
             if (event.endTime() >= editCursor && event.time <= editCursorEnd) {
-                int currentOct = IItemInstrument.noteToId(event.note) / 12;
-                if ((semitones > 0 && currentOct < octaveCheck) || (semitones < 0 && currentOct > octaveCheck)) {
+                // If rectangular selection is active, only shift notes within the note range
+                if (rectSelection && (event.note < rectSelectNoteBottom || event.note > rectSelectNoteTop)) {
+                    continue;
+                }
+                byte newNote = (byte) (event.note + semitones);
+                int newId = IItemInstrument.noteToId(newNote);
+                if (newId >= 0 && newId < IItemInstrument.MAX_NOTE - IItemInstrument.MIN_NOTE + 1) {
                     if (!changed) {
                         pushUndo();
                         dirtyFlag.hasNotes = true;
                         dirtyFlag.hasLength = true;
                         changed = true;
                     }
-                    event.note += (byte) semitones;
+                    event.note = newNote;
                 }
             }
+        }
+        // Update rectangular selection bounds to follow the shifted notes
+        if (changed && rectSelection) {
+            rectSelectNoteTop += (byte) semitones;
+            rectSelectNoteBottom += (byte) semitones;
+            rectSelectNoteStart += (byte) semitones;
         }
         return changed;
     }
