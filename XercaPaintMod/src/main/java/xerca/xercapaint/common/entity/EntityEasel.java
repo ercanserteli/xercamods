@@ -23,13 +23,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
+import xerca.xercapaint.common.network.NetworkSender;
 import xerca.xercapaint.common.packets.CloseGuiPacket;
 import xerca.xercapaint.common.packets.OpenGuiPacket;
 
@@ -109,8 +109,10 @@ public class EntityEasel extends Entity {
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if(painter != null){
             if(!level().isClientSide && dropDeferred == null){
-                CloseGuiPacket pack = new CloseGuiPacket();
-                XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) painter), pack);
+                if (painter instanceof ServerPlayer serverPainter) {
+                    CloseGuiPacket pack = new CloseGuiPacket();
+                    NetworkSender.sendToPlayer(serverPainter, pack);
+                }
                 dropDeferred = () -> doDrop(entity, dropSelf);
             }
         }
@@ -233,7 +235,9 @@ public class EntityEasel extends Entity {
                 boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag() != null && getItem().getTag().getInt("generation") > 0);
                 boolean allowed = unused || !toEdit;
                 OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
-                XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), pack);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    NetworkSender.sendToPlayer(serverPlayer, pack);
+                }
                 if(toEdit && allowed){
                     this.painter = player;
                 }

@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +48,7 @@ public class ItemEasel extends Item {
                         return InteractionResult.FAIL;
                     }
 
+                    EntityType.updateCustomEntityTag(level, ctx.getPlayer(), easel, itemstack.getTag());
                     float f = (float) Mth.floor((Mth.wrapDegrees(ctx.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
                     easel.moveTo(easel.getX(), easel.getY(), easel.getZ(), f, 0.0F);
                     serverlevel.addFreshEntityWithPassengers(easel);

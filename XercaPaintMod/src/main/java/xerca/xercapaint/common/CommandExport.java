@@ -10,8 +10,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
 import xerca.xercapaint.common.item.ItemCanvas;
+import xerca.xercapaint.common.network.NetworkSender;
 import xerca.xercapaint.common.packets.ExportPaintingPacket;
 
 import java.io.File;
@@ -40,7 +40,7 @@ public class CommandExport {
         }
 
         ExportPaintingPacket pack = new ExportPaintingPacket(name);
-        XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), pack);
+        NetworkSender.sendToPlayer(player, pack);
         return 1;
     }
 

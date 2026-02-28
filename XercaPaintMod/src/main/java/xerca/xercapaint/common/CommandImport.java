@@ -10,10 +10,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
 import xerca.xercapaint.common.item.ItemCanvas;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
+import xerca.xercapaint.common.network.NetworkSender;
 import xerca.xercapaint.common.packets.ImportPaintingPacket;
 
 import java.util.Objects;
@@ -33,7 +33,7 @@ public class CommandImport {
         ImportPaintingPacket pack = new ImportPaintingPacket(name);
         try {
             ServerPlayer player = stack.getPlayerOrException();
-            XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), pack);
+            NetworkSender.sendToPlayer(player, pack);
         } catch (CommandSyntaxException e) {
             XercaPaint.LOGGER.debug("Command executor is not a player");
             e.printStackTrace();
