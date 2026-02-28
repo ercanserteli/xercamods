@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringUtil;
@@ -64,7 +65,7 @@ public class ItemCanvas extends Item {
                 Level world = context.getLevel();
 
                 CompoundTag tag = itemstack.getTag();
-                if (tag == null || !tag.contains("pixels") || !tag.contains("name")) {
+                if (!hasCanvasData(tag, getWidth(), getHeight())) {
                     if (context.getLevel().isClientSide) {
                         ClientStuff.showCanvasGui(player);
                     }
@@ -236,5 +237,30 @@ public class ItemCanvas extends Item {
     public static String generateName(Player player){
         return player.getUUID() + "_" + System.currentTimeMillis()/100;
     }
-}
 
+    public static boolean hasCanvasData(ItemStack stack) {
+        if (!(stack.getItem() instanceof ItemCanvas itemCanvas)) {
+            return false;
+        }
+        return hasCanvasData(stack.getTag(), itemCanvas.getWidth(), itemCanvas.getHeight());
+    }
+
+    public static boolean hasCanvasData(@Nullable CompoundTag tag, int width, int height) {
+        if (tag == null) {
+            return false;
+        }
+        if (!tag.contains("name", Tag.TAG_STRING) || !hasCanvasPixels(tag, width, height)) {
+            return false;
+        }
+        String name = tag.getString("name");
+        return !name.isEmpty();
+    }
+
+    public static boolean hasCanvasPixels(@Nullable CompoundTag tag, int width, int height) {
+        if (tag == null || !tag.contains("pixels", Tag.TAG_INT_ARRAY)) {
+            return false;
+        }
+        int[] pixels = tag.getIntArray("pixels");
+        return pixels.length == width * height;
+    }
+}

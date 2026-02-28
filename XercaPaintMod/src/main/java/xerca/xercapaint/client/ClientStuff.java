@@ -88,8 +88,10 @@ public class ClientStuff {
         public static void clientSetupHandler(final FMLClientSetupEvent event) {
             event.enqueueWork(() -> {
                 ItemPropertyFunction drawn = (itemStack, level, livingEntity, i) -> {
-                    if(!itemStack.hasTag()) return 0.0f;
-                    else return 1.0F;
+                    if (ItemCanvas.hasCanvasData(itemStack)) {
+                        return 1.0F;
+                    }
+                    return 0.0f;
                 };
                 ItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
                         ((float)ItemPalette.basicColorCount(stack)) / 16.0F;

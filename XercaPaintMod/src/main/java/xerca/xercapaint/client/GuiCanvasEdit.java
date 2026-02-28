@@ -107,21 +107,17 @@ public class GuiCanvasEdit extends BasePalette {
         this.easel = easel;
 
         this.editingPlayer = player;
-        if (canvasTag != null && !canvasTag.isEmpty()) {
+        if (ItemCanvas.hasCanvasData(canvasTag, this.canvasPixelWidth, this.canvasPixelHeight)) {
             int[] nbtPixels = canvasTag.getIntArray("pixels");
             this.canvasTitle = canvasTag.getString("title");
             this.name = canvasTag.getString("name");
             this.version = canvasTag.getInt("v");
-
             this.pixels =  Arrays.copyOfRange(nbtPixels, 0, canvasPixelArea);
-        } else {
-            this.isSigned = false;
         }
 
         if (this.pixels == null) {
             this.pixels = new int[canvasPixelArea];
             Arrays.fill(this.pixels, basicColors[15].rgbVal());
-
             this.name = ItemCanvas.generateName(player);
         }
 
