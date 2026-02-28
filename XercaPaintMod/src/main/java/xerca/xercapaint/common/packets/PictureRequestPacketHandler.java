@@ -2,9 +2,8 @@ package xerca.xercapaint.common.packets;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
-import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityCanvas;
+import xerca.xercapaint.common.network.NetworkSender;
 
 import java.util.function.Supplier;
 
@@ -29,7 +28,7 @@ public class PictureRequestPacketHandler {
         EntityCanvas.Picture picture = EntityCanvas.PICTURES.get(name);
         if(picture != null){
             PictureSendPacket pack = new PictureSendPacket(name, picture.version, picture.pixels);
-            XercaPaint.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> pl), pack);
+            NetworkSender.sendToPlayer(pl, pack);
         }
     }
 }
