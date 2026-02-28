@@ -25,12 +25,9 @@ import xerca.xercapaint.client.ClientStuff;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.entity.EntityCanvas;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
-
-import net.minecraft.world.item.Item.Properties;
 
 @NonnullDefault
 public class ItemCanvas extends Item {
@@ -42,7 +39,7 @@ public class ItemCanvas extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         if(worldIn.isClientSide){
             ClientStuff.showCanvasGui(playerIn);
         }
@@ -111,7 +108,7 @@ public class ItemCanvas extends Item {
         return rotation;
     }
 
-    public static boolean hasTitle(@Nonnull ItemStack stack){
+    public static boolean hasTitle(ItemStack stack){
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
             if(tag != null){
@@ -122,7 +119,7 @@ public class ItemCanvas extends Item {
         return false;
     }
 
-    public static Component getFullLabel(@Nonnull ItemStack stack){
+    public static Component getFullLabel(ItemStack stack){
         String labelString = "";
         int generation = 0;
         Component title = getCustomTitle(stack);
@@ -150,7 +147,7 @@ public class ItemCanvas extends Item {
     }
 
     @Nullable
-    public static Component getCustomTitle(@Nonnull ItemStack stack){
+    public static Component getCustomTitle(ItemStack stack){
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
             if(tag != null){
@@ -163,9 +160,8 @@ public class ItemCanvas extends Item {
         return null;
     }
 
-    @Nonnull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         Component comp = getCustomTitle(stack);
         if(comp != null){
             return comp;

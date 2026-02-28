@@ -55,7 +55,7 @@ public class CommandExport {
 
         for(ItemStack s : player.getHandSlots()){
             if(s.getItem() instanceof ItemCanvas){
-                if(s.hasTag() && s.getTag() != null){
+                if(ItemCanvas.hasCanvasData(s)){
                     try {
                         CompoundTag tag = s.getTag().copy();
                         tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());

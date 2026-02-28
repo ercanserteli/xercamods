@@ -114,11 +114,11 @@ public class CommandImport {
             ItemStack mainHand = player.getMainHandItem();
             ItemStack offHand = player.getOffhandItem();
 
-            if(!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.hasTag() && mainHand.getTag() != null && !mainHand.getTag().isEmpty())){
+            if(!(mainHand.getItem() instanceof ItemCanvas itemCanvas) || ItemCanvas.hasCanvasData(mainHand)){
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
-            if(((ItemCanvas)mainHand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)){
+            if(itemCanvas.getCanvasType() != CanvasType.fromByte(canvasType)){
                 Component typeName = Objects.requireNonNull(Items.ITEM_CANVAS.get()).getName(ItemStack.EMPTY);
                 CanvasType type = CanvasType.fromByte(canvasType);
                 if (type == null) {
