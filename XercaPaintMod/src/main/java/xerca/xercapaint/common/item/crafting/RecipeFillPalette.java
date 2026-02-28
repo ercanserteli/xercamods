@@ -13,13 +13,14 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+
+import static xerca.xercapaint.common.item.crafting.RecipeCraftPalette.isDye;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -30,10 +31,6 @@ public class RecipeFillPalette extends CustomRecipe {
 
     private boolean isPalette(ItemStack stack){
         return stack.getItem() instanceof ItemPalette;
-    }
-
-    private boolean isDye(ItemStack stack){
-        return stack.getItem() instanceof DyeItem;
     }
 
     private int findPalette(CraftingContainer inv){
@@ -82,7 +79,7 @@ public class RecipeFillPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
         int paletteId = findPalette(inv);
         if(paletteId < 0){
             return ItemStack.EMPTY;
