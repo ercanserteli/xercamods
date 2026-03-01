@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityEasel;
+import xerca.xercapaint.item.ItemCanvas;
 
 import java.util.Arrays;
 
@@ -42,7 +43,7 @@ public class GuiCanvasView extends Screen {
         this.easel = easel;
         this.player = Minecraft.getInstance().player;
 
-        if (canvasTag != null && !canvasTag.isEmpty()) {
+        if (ItemCanvas.hasCanvasData(canvasTag, this.canvasPixelWidth, this.canvasPixelHeight)) {
             int[] nbtPixels = canvasTag.getIntArray("pixels");
             this.authorName = canvasTag.getString("author");
             this.canvasTitle = canvasTag.getString("title");

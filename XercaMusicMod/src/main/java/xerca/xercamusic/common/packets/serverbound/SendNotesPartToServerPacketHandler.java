@@ -9,7 +9,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.packets.clientbound.NotesPartAckFromServerPacket;
 
-import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class SendNotesPartToServerPacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     private static void processMessage(SendNotesPartToServerPacket pkt, ServerPlayer sender) {

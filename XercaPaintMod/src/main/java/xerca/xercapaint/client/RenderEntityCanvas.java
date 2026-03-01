@@ -23,6 +23,7 @@ import org.joml.Matrix4f;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.entity.EntityCanvas;
+import xerca.xercapaint.item.ItemCanvas;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,7 +33,7 @@ import java.util.Map;
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     public static RenderEntityCanvas theInstance;
-    private static final ResourceLocation backLocation = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
+    private static final ResourceLocation BACK_LOCATION = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
 
     static {
@@ -61,7 +62,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         getCanvasRendererInstance(entity).render(entity, entityYaw, entity.getXRot(), matrixStackIn, bufferIn, entity.getDirection(), packedLightIn);
     }
 
-
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
         @Override
         public @NotNull EntityRenderer<EntityCanvas> create(Context ctx) {
@@ -75,6 +75,10 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     }
 
     Instance getCanvasRendererInstance(CompoundTag tag, int width, int height) {
+        if (!ItemCanvas.hasCanvasData(tag, width, height)) {
+            return null;
+        }
+
         String name = tag.getString("name");
         int version = tag.getInt("v");
         int[] pixels = tag.getIntArray("pixels");
@@ -86,11 +90,16 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         return getCanvasRendererInstance(name, version, width, height);
     }
 
+    private static String rendererKey(String name, int width, int height) {
+        return name + "-" + width + "x" + height;
+    }
+
     Instance getCanvasRendererInstance(String name, int version, int width, int height) {
-        Instance instance = this.loadedCanvases.get(name);
+        String key = rendererKey(name, width, height);
+        Instance instance = this.loadedCanvases.get(key);
         if (instance == null) {
-            instance = new Instance(name, version, width, height);
-            this.loadedCanvases.put(name, instance);
+            instance = new Instance(key, name, version, width, height);
+            this.loadedCanvases.put(key, instance);
         } else {
             if (instance.version < version || !instance.loaded) {
                 instance.updateCanvasTexture(name, version);
@@ -101,7 +110,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     }
 
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public class Instance implements AutoCloseable {
+    public final class Instance implements AutoCloseable {
         int version = 0;
         final int width;
         final int height;
@@ -110,13 +119,13 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         public final DynamicTexture canvasTexture;
         public final ResourceLocation location;
 
-        private Instance(String name, int version, int width, int height) {
+        private Instance(String key, String name, int version, int width, int height) {
             this.started = false;
             this.loaded = false;
             this.width = width;
             this.height = height;
             this.canvasTexture = new DynamicTexture(width, height, true);
-            this.location = RenderEntityCanvas.this.textureManager.register("canvas/" + name, this.canvasTexture);
+            this.location = RenderEntityCanvas.this.textureManager.register("canvas/" + key, this.canvasTexture);
 
             updateCanvasTexture(name, version);
         }
@@ -130,8 +139,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
         private void updateCanvasTexture(String name, int version) {
             int[] pixels = EMPTY_PIXELS;
-            boolean hasPicture = EntityCanvas.PICTURES.containsKey(name);
-            if (hasPicture) {
+            if (EntityCanvas.PICTURES.containsKey(name)) {
                 pixels = EntityCanvas.PICTURES.get(name).pixels();
                 loaded = true;
             }
@@ -206,14 +214,14 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             addVertex(front, m, mn, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
 
             // BACK (facing +Z)
-            RenderSystem.setShaderTexture(0, backLocation);
-            VertexConsumer back = buffer.getBuffer(RenderType.entitySolid(backLocation));
+            RenderSystem.setShaderTexture(0, BACK_LOCATION);
+            VertexConsumer back = buffer.getBuffer(RenderType.entitySolid(BACK_LOCATION));
+            final float sideWidth = 1.0F / 16.0F;
             addVertex(back, m, mn, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
             addVertex(back, m, mn, 32.0D * wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
             addVertex(back, m, mn, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
             addVertex(back, m, mn, 0.0D, 32.0D * hScale, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
 
-            final float sideWidth = 1.0F / 16.0F;
 
             // LEFT SIDE (x = 0, normal -X)
             addVertex(back, m, mn, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
@@ -246,6 +254,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             vb.vertex(m, (float) x, (float) y, (float) z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(mn, nx, ny, nz).endVertex();
         }
 
+        @Override
         public void close() {
             this.canvasTexture.close();
             textureManager.release(location);

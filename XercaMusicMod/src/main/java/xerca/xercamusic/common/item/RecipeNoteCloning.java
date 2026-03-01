@@ -50,9 +50,6 @@ public class RecipeNoteCloning extends CustomRecipe {
         return !orgNote.isEmpty() && !freshNote.isEmpty();
     }
 
-    /**
-     * Returns an Item that is the result of this recipe
-     */
     @Override
     public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
         ItemStack orgNote = ItemStack.EMPTY;
@@ -94,11 +91,11 @@ public class RecipeNoteCloning extends CustomRecipe {
         NonNullList<ItemStack> itemStacks = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         for (int i = 0; i < itemStacks.size(); ++i) {
-            ItemStack itemstack = inv.getItem(i);
-            if (itemstack.getItem() == Items.MUSIC_SHEET && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
-                ItemStack itemStack = itemstack.copy();
-                itemStack.setCount(1);
-                itemStacks.set(i, itemStack);
+            ItemStack itemStack = inv.getItem(i);
+            if (itemStack.getItem() == Items.MUSIC_SHEET && itemStack.hasTag() && WrittenBookItem.getGeneration(itemStack) > 0) {
+                ItemStack copy = itemStack.copy();
+                copy.setCount(1);
+                itemStacks.set(i, copy);
                 break;
             }
         }

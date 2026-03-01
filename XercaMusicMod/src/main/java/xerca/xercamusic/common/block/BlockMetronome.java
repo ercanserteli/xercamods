@@ -43,7 +43,8 @@ public class BlockMetronome extends BaseEntityBlock {
     @Override
     public void neighborChanged(BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
         boolean flag = worldIn.hasNeighborSignal(pos);
-        if (flag != state.getValue(POWERED)) {
+        boolean powered = state.getValue(POWERED);
+        if (flag != powered) {
             worldIn.setBlock(pos, state.setValue(POWERED, flag), 3);
         }
 
@@ -58,9 +59,9 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if (!worldIn.isClientSide) {
-            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        if (!level.isClientSide) {
+            level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.metronomeSet, SoundSource.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
             if (player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET) {
                 note = player.getItemInHand(hand);
@@ -70,10 +71,10 @@ public class BlockMetronome extends BaseEntityBlock {
 
             if (!note.isEmpty() && note.getTag() != null && note.getTag().contains("bps")) {
                 int bps = note.getTag().getInt("bps");
-                setBps(state, worldIn, pos, bps);
+                setBps(state, level, pos, bps);
             } else {
                 state = state.cycle(BPS); //cycle
-                worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
+                level.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
             }
         }
         return InteractionResult.SUCCESS;

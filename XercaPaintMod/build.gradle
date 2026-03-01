@@ -69,6 +69,25 @@ java {
     withSourcesJar()
 }
 
+loom {
+    runs {
+        gameTest {
+            inherit server
+            name "Game Test Server"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
+            source sourceSets.main
+            source sourceSets.test
+            ideConfigGenerated = true
+            runDir "build/gametest"
+        }
+    }
+}
+
+tasks.named('test') {
+    dependsOn(tasks.named('runGameTest'))
+}
+
 jar {
     from("LICENSE") {
         rename { "${it}_${base.archivesName.get()}" }

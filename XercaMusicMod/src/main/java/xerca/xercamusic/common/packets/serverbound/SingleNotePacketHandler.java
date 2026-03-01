@@ -12,7 +12,7 @@ import xerca.xercamusic.common.packets.clientbound.SingleNoteClientPacket;
 
 import java.util.Collection;
 
-import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class SingleNotePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {

@@ -25,11 +25,11 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayCha
 
             if (msg.getNoteStackNBT() != null) {
                 if (msg.getNoteStackNBT().isEmpty()) {
-                    tileEntityMusicBox.removeNoteStack();
+                    tileEntityMusicBox.removeSheetStack();
                 } else {
                     ItemStack noteStack = new ItemStack(Items.MUSIC_SHEET);
                     noteStack.setTag(msg.getNoteStackNBT());
-                    tileEntityMusicBox.setNoteStack(noteStack, false);
+                    tileEntityMusicBox.setSheetStack(noteStack, false);
                 }
             }
 

@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
-    public static final Color emptinessColor = new Color(255, 236, 229);
+    public static final Color EMPTINESS_COLOR = new Color(255, 236, 229);
 
     public static class Color {
         public static final Color WHITE = new Color(0xFFFFFFFF);
@@ -77,6 +77,7 @@ public class PaletteUtil {
 
         public CustomColor(FriendlyByteBuf buf) {
             readFromBuffer(buf);
+            calculateResult();
         }
 
         public CustomColor(int totalRed, int totalGreen, int totalBlue, int totalMaximum, int numberOfColors) {
@@ -90,7 +91,7 @@ public class PaletteUtil {
 
         public void calculateResult() {
             if (numberOfColors == 0) {
-                this.result = emptinessColor;
+                this.result = EMPTINESS_COLOR;
                 return;
             }
             int averageRed = totalRed / numberOfColors;

@@ -70,7 +70,6 @@ public class EntityCanvas extends HangingEntity {
         }
         this.canvasType = canvasType;
         this.setRotation(rotation);
-
         this.setDirection(facing);
 
         Picture picture = PICTURES.get(canvasName);

@@ -3,19 +3,19 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.packets.IPacket;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 import static xerca.xercamusic.common.MusicManager.MAX_PARTS_IN_TRANSFER;
-import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
 
 public class SendNotesPartToServerPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "send_notes_part_to_server");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "send_notes_part_to_server");
     private UUID uuid;
     private int partsCount;
     private int partId;
@@ -54,7 +54,7 @@ public class SendNotesPartToServerPacket implements IPacket {
                 result.notes.add(NoteEvent.fromBuffer(buf));
             }
         } catch (RuntimeException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading SendNotesPartToServerPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading SendNotesPartToServerPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

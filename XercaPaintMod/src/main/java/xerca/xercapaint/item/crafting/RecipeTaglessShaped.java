@@ -10,6 +10,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.item.ItemCanvas;
 
 import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
 
@@ -26,7 +27,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         if (super.matches(inv, worldIn)) {
             for (int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
-                if (!stackInSlot.isEmpty() && stackInSlot.hasTag()) {
+                if (!stackInSlot.isEmpty() && stackInSlot.getItem() instanceof ItemCanvas && ItemCanvas.hasCanvasData(stackInSlot)) {
                     return false;
                 }
             }
@@ -44,7 +45,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         if (!result.isEmpty()) {
             for (int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
-                if (!stackInSlot.isEmpty() && stackInSlot.hasTag()) {
+                if (!stackInSlot.isEmpty() && stackInSlot.getItem() instanceof ItemCanvas && ItemCanvas.hasCanvasData(stackInSlot)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -60,22 +61,22 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
-        private static final Serializer shapedSerializer = new Serializer();
+        private static final Serializer SHAPED_SERIALIZER = new Serializer();
 
         public TaglessSerializer() { /* empty */ }
 
         public @NotNull RecipeTaglessShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-            ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);
+            ShapedRecipe shapedRecipe = SHAPED_SERIALIZER.fromJson(recipeId, json);
             return new RecipeTaglessShaped(shapedRecipe);
         }
 
         public @NotNull RecipeTaglessShaped fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
-            ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(recipeId, buffer);
+            ShapedRecipe shapedRecipe = SHAPED_SERIALIZER.fromNetwork(recipeId, buffer);
             return new RecipeTaglessShaped(shapedRecipe);
         }
 
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RecipeTaglessShaped recipe) {
-            shapedSerializer.toNetwork(buffer, recipe);
+            SHAPED_SERIALIZER.toNetwork(buffer, recipe);
         }
 
     }

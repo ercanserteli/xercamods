@@ -26,7 +26,7 @@ def slowDragDrop(source_location, target_location, delay=0.01):
     drag(source_location)
 
     # calculate the steps needed for target
-    steps_target = int(calculateDistance(target_location, source_location) / 40)
+    steps_target = int(calculateDistance(target_location, source_location) / 100)
 
     # move the mouse to the target in steps
     for i in range(1, steps_target):
@@ -142,31 +142,32 @@ def testDrawOnCanvas(mc, win, mcLoc):
     testAssert(exists("1689438634012.png"))
     
     # Draw a line with red
+    mcLoc = Location(win.getX(), win.getY())
     win.click(mcLoc.offset(810, 128))
     win.click(mcLoc.offset(115, 405))
-    slowDragDrop(mcLoc.offset(524, 160), mcLoc.offset(762, 360))
+    slowDragDrop(mcLoc.offset(620, 160), mcLoc.offset(620, 360))
     win.click(mcLoc.offset(400, 440))
-    testAssert(exists("1689521777237.png"))
+    testAssert(exists("1772393719058.png"))
     
     # Draw a half-opaque line with mixed color
     win.click(mcLoc.offset(357, 305))
     win.click(mcLoc.offset(810, 185))
     slowDragDrop(mcLoc.offset(745, 160), mcLoc.offset(524, 360))
     win.click(mcLoc.offset(400, 440))
-    testAssert(exists("1689521940375.png"))
+    testAssert(exists("1772393758703.png"))
     
     # Draw with green big brush
     win.click(mcLoc.offset(805, 337))
     win.click(mcLoc.offset(110, 350))
     win.click(mcLoc.offset(625, 260))
     win.click(mcLoc.offset(400, 440))
-    testAssert(exists("1689447745899.png"))
+    testAssert(exists("1772393777164.png"))
     
     # Exit and come back to check if it saved
     win.type(Key.ESC)
     wait(1)
     rclick(win)
-    testAssert(exists("1689447745899.png"))
+    testAssert(exists("1772393777164.png"))
     
     # Signing (and canceling signing)
     win.click("1689438634012.png")
@@ -177,7 +178,7 @@ def testDrawOnCanvas(mc, win, mcLoc):
     win.click("1689442068756.png")
     rclick(win)
     win.mouseMove(mcLoc.offset(100, 100))
-    testAssert(exists("1689442696256.png") and exists("1689447745899.png"))
+    testAssert(exists("1689442696256.png") and exists("1772393777164.png"))
     win.type(Key.ESC)
 
     # Export/import commands
@@ -376,8 +377,6 @@ def testCrafting(mc, win, mcLoc):
     win.click(mcLoc.offset(520, 190))
     keyUp(Key.SHIFT)
     win.type(Key.ESC)
-    
-    
 
 
 mc = switchApp("Minecraft")

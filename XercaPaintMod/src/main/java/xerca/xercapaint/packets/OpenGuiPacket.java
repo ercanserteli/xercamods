@@ -3,6 +3,7 @@ package xerca.xercapaint.packets;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
+import xerca.xercapaint.Mod;
 
 public class OpenGuiPacket {
     private int easelId;
@@ -44,7 +45,7 @@ public class OpenGuiPacket {
                 result.hand = InteractionHand.MAIN_HAND;
             }
         } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading OpenGuiPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading OpenGuiPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

@@ -31,7 +31,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
     public static RenderEntityEasel theInstance;
-    private static final ResourceLocation woodTexture = new ResourceLocation(Mod.MOD_ID, "textures/block/birch_long.png");
+    private static final ResourceLocation WOOD_TEXTURE = new ResourceLocation(Mod.MOD_ID, "textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -46,7 +46,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(EntityEasel entity) {
-        return woodTexture;
+        return WOOD_TEXTURE;
     }
 
     @Override
@@ -76,11 +76,10 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     protected boolean shouldShowName(EntityEasel easel) {
         HitResult result = Minecraft.getInstance().hitResult;
         if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && entityHitResult.getEntity() == easel && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
-            double d0 = this.entityRenderDispatcher.distanceToSqr(easel);
-            float f = easel.isDiscrete() ? 32.0F : 64.0F;
-            return d0 < f * f;
+            double distanceSquared = this.entityRenderDispatcher.distanceToSqr(easel);
+            float range = easel.isDiscrete() ? 32.0F : 64.0F;
+            return distanceSquared < range * range;
         }
-
         return false;
     }
 

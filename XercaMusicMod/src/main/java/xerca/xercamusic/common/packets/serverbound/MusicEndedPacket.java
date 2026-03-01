@@ -3,11 +3,11 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.packets.IPacket;
 
 public class MusicEndedPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_ended");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "music_ended");
     private int playerId;
     private boolean messageIsValid;
 
@@ -24,7 +24,7 @@ public class MusicEndedPacket implements IPacket {
         try {
             result.playerId = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicEndedPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading MusicEndedPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

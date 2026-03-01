@@ -2,6 +2,7 @@ package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.Mod;
 
 public class ExportPaintingPacket {
     private String name;
@@ -26,7 +27,7 @@ public class ExportPaintingPacket {
         try {
             result.name = buf.readUtf(64);
         } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading ExportPaintingPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading ExportPaintingPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

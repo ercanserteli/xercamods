@@ -10,7 +10,7 @@ import net.minecraft.world.entity.Entity;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.item.IItemInstrument;
 
-import static xerca.xercamusic.common.XercaMusic.onlyCallOnClient;
+import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
 public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
     private static void processMessage(TripleNoteClientPacket msg) {

@@ -19,7 +19,7 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 
 import java.util.List;
 
-import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
+import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 
 public abstract class BlockInstrument extends Block {
     protected BlockInstrument(Properties properties) {
@@ -29,18 +29,18 @@ public abstract class BlockInstrument extends Block {
     public abstract IItemInstrument getItemInstrument();
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (new Vec3(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5).distanceTo(player.position()) > 4) {
             return InteractionResult.PASS;
         }
         ItemStack handStack = player.getItemInHand(hand);
         if (handStack.getItem() instanceof ItemMusicSheet) {
-            playMusic(worldIn, player, pos);
+            playMusic(level, player, pos);
             return InteractionResult.SUCCESS;
         } else {
             ItemStack offhandStack = player.getItemInHand(InteractionHand.values()[(hand.ordinal() + 1) % 2]);
             if (!(offhandStack.getItem() instanceof ItemMusicSheet)) {
-                if (worldIn.isClientSide) {
+                if (level.isClientSide) {
                     onlyRunOnClient(() -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
                 }
                 return InteractionResult.SUCCESS;

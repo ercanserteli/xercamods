@@ -18,9 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.Mod.sendToClient;
 
-public class CommandExport {
+public final class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicexport")
@@ -30,14 +30,14 @@ public class CommandExport {
     }
 
     private static int musicExport(CommandSourceStack stack, String name) {
-        XercaMusic.LOGGER.debug("Music export called. name: {}", name);
+        Mod.LOGGER.debug("Music export called. name: {}", name);
         if (stack.getEntity() == null) {
-            XercaMusic.LOGGER.error("Command entity is not found");
+            Mod.LOGGER.error("Command entity is not found");
             return 0;
         }
         Entity commander = stack.getEntity();
         if (!(commander instanceof ServerPlayer player)) {
-            XercaMusic.LOGGER.error("Command entity is not a player");
+            Mod.LOGGER.error("Command entity is not a player");
             return 0;
         }
 
@@ -52,7 +52,7 @@ public class CommandExport {
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
         if (!directory.exists()) {
-            directory.mkdir();
+            directory.mkdirs();
         }
 
         for (ItemStack s : player.getHandSlots()) {

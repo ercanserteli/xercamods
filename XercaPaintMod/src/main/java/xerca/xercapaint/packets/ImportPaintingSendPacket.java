@@ -3,6 +3,7 @@ package xerca.xercapaint.packets;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.Mod;
 
 public class ImportPaintingSendPacket {
     private CompoundTag tag;
@@ -27,7 +28,7 @@ public class ImportPaintingSendPacket {
         try {
             result.tag = buf.readNbt();
         } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading ImportPaintingSendPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading ImportPaintingSendPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

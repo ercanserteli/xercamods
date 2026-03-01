@@ -3,13 +3,13 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.packets.IPacket;
 
 import java.util.UUID;
 
 public class MusicDataRequestPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_data_request");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "music_data_request");
     private UUID musicId;
     private int version;
     private boolean messageIsValid;
@@ -29,7 +29,7 @@ public class MusicDataRequestPacket implements IPacket {
             result.musicId = buf.readUUID();
             result.version = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket", ioe);
+            Mod.LOGGER.error("Exception while reading MusicDataRequestPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

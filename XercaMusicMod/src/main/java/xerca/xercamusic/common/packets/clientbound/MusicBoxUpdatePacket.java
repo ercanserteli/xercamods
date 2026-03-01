@@ -8,11 +8,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.packets.IPacket;
 
 public class MusicBoxUpdatePacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_box_update");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "music_box_update");
     private BlockPos pos;
     private CompoundTag noteStackNBT;
     private String instrumentId;
@@ -49,7 +49,7 @@ public class MusicBoxUpdatePacket implements IPacket {
             result.noteStackNBT = buf.readNbt();
             result.instrumentId = buf.readUtf(255);
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicBoxUpdatePacket", ioe);
+            Mod.LOGGER.error("Exception while reading MusicBoxUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

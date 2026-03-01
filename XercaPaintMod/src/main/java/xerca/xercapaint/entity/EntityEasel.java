@@ -112,9 +112,11 @@ public class EntityEasel extends Entity {
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if (painter != null) {
             if (!level().isClientSide && dropDeferred == null) {
-                CloseGuiPacket pack = new CloseGuiPacket();
-                ServerPlayNetworking.send((ServerPlayer) painter, Mod.CLOSE_GUI_PACKET_ID, pack.encode());
                 dropDeferred = () -> doDrop(entity, dropSelf);
+                if (painter instanceof ServerPlayer serverPainter) {
+                    CloseGuiPacket pack = new CloseGuiPacket();
+                    ServerPlayNetworking.send(serverPainter, Mod.CLOSE_GUI_PACKET_ID, pack.encode());
+                }
             }
         } else {
             doDrop(entity, dropSelf);
@@ -207,11 +209,11 @@ public class EntityEasel extends Entity {
     public void readAdditionalSaveData(CompoundTag tag) {
         CompoundTag itemTag = tag.getCompound("Item");
         if (!itemTag.isEmpty()) {
-            ItemStack var3 = ItemStack.of(itemTag);
-            if (var3.isEmpty()) {
+            ItemStack itemStack = ItemStack.of(itemTag);
+            if (itemStack.isEmpty()) {
                 Mod.LOGGER.warn("Unable to load item from: {}", itemTag);
             }
-            this.setItem(var3, false);
+            this.setItem(itemStack, false);
         }
     }
 
@@ -233,8 +235,10 @@ public class EntityEasel extends Entity {
                 boolean unused = this.painter == null;
                 boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag() != null && getItem().getTag().getInt("generation") > 0);
                 boolean allowed = unused || !toEdit;
-                OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
-                ServerPlayNetworking.send((ServerPlayer) player, Mod.OPEN_GUI_PACKET_ID, pack.encode());
+                if (player instanceof ServerPlayer serverPlayer) {
+                    OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
+                    ServerPlayNetworking.send(serverPlayer, Mod.OPEN_GUI_PACKET_ID, pack.encode());
+                }
                 if (toEdit && allowed) {
                     this.painter = player;
                 }

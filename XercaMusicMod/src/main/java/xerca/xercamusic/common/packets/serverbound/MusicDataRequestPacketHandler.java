@@ -12,7 +12,7 @@ import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     private static void processMessage(MusicDataRequestPacket msg, ServerPlayer pl) {

@@ -3,21 +3,22 @@ package xerca.xercamusic.common.packets.clientbound;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.packets.IPacket;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MusicDataResponsePacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_data_response");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "music_data_response");
     private UUID musicId;
     private int version;
-    private ArrayList<NoteEvent> notes;
+    private List<NoteEvent> notes;
     private boolean messageIsValid;
 
-    public MusicDataResponsePacket(UUID musicId, int version, ArrayList<NoteEvent> notes) {
+    public MusicDataResponsePacket(UUID musicId, int version, List<NoteEvent> notes) {
         this.musicId = musicId;
         this.version = version;
         this.notes = notes;
@@ -41,7 +42,7 @@ public class MusicDataResponsePacket implements IPacket {
                 result.notes.add(NoteEvent.fromBuffer(buf));
             }
         } catch (RuntimeException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicDataRequestPacket", ioe);
+            Mod.LOGGER.error("Exception while reading MusicDataRequestPacket", ioe);
             return null;
         }
         result.messageIsValid = true;
@@ -83,12 +84,12 @@ public class MusicDataResponsePacket implements IPacket {
         this.version = version;
     }
 
-    public ArrayList<NoteEvent> getNotes() {
+    public List<NoteEvent> getNotes() {
         return notes;
     }
 
     @SuppressWarnings("unused")
-    public void setNotes(ArrayList<NoteEvent> notes) {
+    public void setNotes(List<NoteEvent> notes) {
         this.notes = notes;
     }
 

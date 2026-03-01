@@ -3,17 +3,17 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.packets.IPacket;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
+import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
 public class MusicUpdatePacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_update");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "music_update");
     private FieldFlag availability;
     private ArrayList<NoteEvent> notes;
     private short lengthBeats;
@@ -79,7 +79,7 @@ public class MusicUpdatePacket implements IPacket {
             if (flag.hasVersion) result.version = buf.readInt();
             if (flag.hasHlInterval) result.highlightInterval = buf.readByte();
         } catch (RuntimeException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicUpdatePacket", ioe);
+            Mod.LOGGER.error("Exception while reading MusicUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

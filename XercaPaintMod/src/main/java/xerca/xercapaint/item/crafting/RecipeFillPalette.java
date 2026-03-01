@@ -16,9 +16,10 @@ import net.minecraft.world.level.Level;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+
+import static xerca.xercapaint.item.crafting.RecipeCraftPalette.isDye;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -31,10 +32,6 @@ public class RecipeFillPalette extends CustomRecipe {
         return stack.getItem() instanceof ItemPalette;
     }
 
-    private boolean isDye(ItemStack stack) {
-        return stack.getItem() instanceof DyeItem;
-    }
-
     private int findPalette(CraftingContainer inv) {
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             ItemStack stack = inv.getItem(i);
@@ -45,7 +42,6 @@ public class RecipeFillPalette extends CustomRecipe {
         return -1;
     }
 
-    @Nullable
     private ArrayList<ItemStack> findDyes(CraftingContainer inv, int paletteId) {
         ArrayList<ItemStack> dyes = new ArrayList<>();
         for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -56,12 +52,11 @@ public class RecipeFillPalette extends CustomRecipe {
             if (isDye(stack)) {
                 dyes.add(stack);
             } else if (!stack.isEmpty()) {
-                return null;
+                return new ArrayList<>();
             }
         }
         return dyes;
     }
-
 
     /**
      * Used to check if a recipe matches current crafting inventory
@@ -73,7 +68,7 @@ public class RecipeFillPalette extends CustomRecipe {
             return false;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
-        return dyes != null && !dyes.isEmpty();
+        return !dyes.isEmpty();
     }
 
     /**
@@ -87,7 +82,7 @@ public class RecipeFillPalette extends CustomRecipe {
             return ItemStack.EMPTY;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
-        if (dyes == null || dyes.isEmpty()) {
+        if (dyes.isEmpty()) {
             return ItemStack.EMPTY;
         }
 

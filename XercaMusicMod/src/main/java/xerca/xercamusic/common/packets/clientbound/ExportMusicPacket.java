@@ -3,12 +3,12 @@ package xerca.xercamusic.common.packets.clientbound;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.packets.IPacket;
 
 @SuppressWarnings("unused")
 public class ExportMusicPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "export_music");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "export_music");
     private String name;
     private boolean messageIsValid;
 
@@ -31,7 +31,7 @@ public class ExportMusicPacket implements IPacket {
         try {
             result.name = buf.readUtf(64);
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading ExportMusicPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading ExportMusicPacket: " + ioe);
             return null;
         }
         result.messageIsValid = true;

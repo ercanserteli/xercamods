@@ -2,6 +2,7 @@ package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 
 import java.util.Arrays;
@@ -34,7 +35,7 @@ public class PaletteUpdatePacket {
                 result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
             }
         } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading MusicUpdatePacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading MusicUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

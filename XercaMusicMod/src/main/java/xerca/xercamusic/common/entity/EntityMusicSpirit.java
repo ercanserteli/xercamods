@@ -18,9 +18,9 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemBlockInstrument;
@@ -29,19 +29,21 @@ import xerca.xercamusic.common.item.Items;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static xerca.xercamusic.common.item.ItemMusicSheet.*;
+
 public class EntityMusicSpirit extends Entity {
-    public static final ResourceLocation spawnPacketId = new ResourceLocation(XercaMusic.MODID, "spawn_music_spirit");
+    public static final ResourceLocation SPAWN_PACKET_ID = new ResourceLocation(Mod.MODID, "spawn_music_spirit");
+    private final ArrayList<NoteEvent> notes = new ArrayList<>();
     private Player body;
     private ItemStack note;
     private IItemInstrument instrument;
-    private final ArrayList<NoteEvent> notes = new ArrayList<>();
-    private int mLengthBeats;
-    private float mVolume;
-    private byte mBPS;
+    private int length;
+    private float volume;
+    private byte bps;
     private boolean isPlaying = true;
-    private BlockInstrument blockInstrument = null;
-    private BlockPos blockInsPos = null;
-    private SoundController soundController = null;
+    private BlockInstrument blockInstrument;
+    private BlockPos blockInsPos;
+    private SoundController soundController;
 
     private static byte sanitizeBps(int bps) {
         return (byte) Math.max(1, Math.min(50, bps));
@@ -77,8 +79,8 @@ public class EntityMusicSpirit extends Entity {
     }
 
     private void setBlockPosAndInstrument(BlockPos pos, int instrumentId) {
-        if (instrumentId < Items.instruments.length) {
-            IItemInstrument itemInstrument = Items.instruments[instrumentId];
+        if (instrumentId < Items.INSTRUMENTS.length) {
+            IItemInstrument itemInstrument = Items.INSTRUMENTS[instrumentId];
             if (itemInstrument instanceof ItemBlockInstrument itemBlockInstrument) {
                 this.blockInstrument = (BlockInstrument) itemBlockInstrument.getBlock();
                 this.blockInsPos = pos;
@@ -87,7 +89,7 @@ public class EntityMusicSpirit extends Entity {
             }
         }
 
-        XercaMusic.LOGGER.warn("Got invalid block as instrument");
+        Mod.LOGGER.warn("Did not find a block instrument at the set position");
         blockInstrument = null;
         blockInsPos = null;
     }
@@ -104,7 +106,7 @@ public class EntityMusicSpirit extends Entity {
 
     private void setNoteFromBody() {
         if (body == null) {
-            XercaMusic.LOGGER.warn("Body is null in MusicSpirit setNoteFromBody");
+            Mod.LOGGER.warn("Body is null in MusicSpirit setNoteFromBody");
             return;
         }
         ItemStack mainStack = body.getMainHandItem();
@@ -114,7 +116,7 @@ public class EntityMusicSpirit extends Entity {
         } else if (offStack.getItem() == Items.MUSIC_SHEET) {
             this.note = offStack;
         } else {
-            XercaMusic.LOGGER.warn("No music sheet found on body");
+            Mod.LOGGER.warn("No music sheet found on body");
         }
     }
 
@@ -122,9 +124,9 @@ public class EntityMusicSpirit extends Entity {
     protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
         notes.clear();
         NoteEvent.fillArrayFromNBT(notes, tag);
-        this.mLengthBeats = sanitizeLengthBeats(tag.getInt("l"));
-        this.mBPS = sanitizeBps(tag.getInt("bps"));
-        this.mVolume = sanitizeVolume(tag.getFloat("vol"));
+        this.length = sanitizeLengthBeats(tag.getInt(KEY_LENGTH));
+        this.bps = sanitizeBps(tag.getInt(KEY_BPS));
+        this.volume = sanitizeVolume(tag.getFloat(KEY_VOLUME));
         this.isPlaying = tag.getBoolean("playing");
         if (tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")) {
             setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")), tag.getInt("bIns"));
@@ -134,9 +136,9 @@ public class EntityMusicSpirit extends Entity {
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
         NoteEvent.fillNBTFromArray(notes, tag);
-        tag.putInt("l", mLengthBeats);
-        tag.putByte("bps", mBPS);
-        tag.putFloat("vol", mVolume);
+        tag.putInt(KEY_LENGTH, length);
+        tag.putByte(KEY_BPS, bps);
+        tag.putFloat(KEY_VOLUME, volume);
         tag.putBoolean("playing", isPlaying);
         if (blockInstrument != null && blockInsPos != null) {
             tag.putInt("bX", blockInsPos.getX());
@@ -152,7 +154,7 @@ public class EntityMusicSpirit extends Entity {
         ClientboundAddEntityPacket pack = new ClientboundAddEntityPacket(this);
         pack.write(buffer);
         writeSpawnData(buffer);
-        return ServerPlayNetworking.createS2CPacket(spawnPacketId, buffer);
+        return ServerPlayNetworking.createS2CPacket(SPAWN_PACKET_ID, buffer);
     }
 
     public void writeSpawnData(FriendlyByteBuf buffer) {
@@ -195,16 +197,16 @@ public class EntityMusicSpirit extends Entity {
                 this.note = body.getOffhandItem();
                 this.setPos(body.getX(), body.getY(), body.getZ());
             } else {
-                XercaMusic.LOGGER.warn("Could not find instrument when spawning music spirit!");
+                Mod.LOGGER.warn("Could not find instrument when spawning music spirit!");
                 return;
             }
         }
 
         if (note != null && note.hasTag() && note.getTag() != null && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
             CompoundTag comp = note.getTag();
-            mLengthBeats = sanitizeLengthBeats(comp.getInt("l"));
-            mBPS = sanitizeBps(comp.contains("bps") ? comp.getInt("bps") : 8);
-            mVolume = sanitizeVolume(comp.contains("vol") ? comp.getFloat("vol") : 1.f);
+            length = sanitizeLengthBeats(comp.getInt("l"));
+            bps = sanitizeBps(comp.contains("bps") ? comp.getInt("bps") : 8);
+            volume = sanitizeVolume(comp.contains("vol") ? comp.getFloat("vol") : 1.f);
             UUID id = comp.getUUID("id");
             int ver = comp.getInt("ver");
 
@@ -215,7 +217,7 @@ public class EntityMusicSpirit extends Entity {
                         notes.addAll(data.notes());
                     }
 
-                    soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, mBPS, mVolume, getId());
+                    soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, bps, volume, getId());
                     soundController.start();
                 });
             }
@@ -224,7 +226,7 @@ public class EntityMusicSpirit extends Entity {
 
     @Override
     protected void defineSynchedData() {
-        // nothing to do
+        // No need for synching data
     }
 
     @Override
@@ -234,32 +236,39 @@ public class EntityMusicSpirit extends Entity {
         }
     }
 
-    @Override
-    public void tick() {
-        if (!this.level().isClientSide) {
-            if (body == null || !isPlaying) {
+    private boolean checkForRemoval() {
+        if (this.level().isClientSide) {
+            return false;
+        }
+        if (body == null || !isPlaying) {
+            this.remove(RemovalReason.DISCARDED);
+            return true;
+        }
+        if (!isBodyHandLegit()) {
+            isPlaying = false;
+            this.remove(RemovalReason.DISCARDED);
+            return true;
+        }
+        if (blockInsPos != null && blockInstrument != null) {
+            if (level().getBlockState(blockInsPos).getBlock() != blockInstrument) {
                 this.remove(RemovalReason.DISCARDED);
-                return;
+                return true;
             }
-            if (!isBodyHandLegit()) {
-                isPlaying = false;
+            if (this.position().distanceToSqr(this.body.position()) > 16) {
                 this.remove(RemovalReason.DISCARDED);
-                return;
-            }
-
-            if (blockInsPos != null && blockInstrument != null) {
-                if (level().getBlockState(blockInsPos).getBlock() != blockInstrument) {
-                    this.remove(RemovalReason.DISCARDED);
-                    return;
-                }
-                if (this.position().distanceToSqr(this.body.position()) > 16) {
-                    this.remove(RemovalReason.DISCARDED);
-                    return;
-                }
+                return true;
             }
         }
+        return false;
+    }
+
+    @Override
+    public void tick() {
+        if (checkForRemoval()) {
+            return;
+        }
         super.tick();
-        if ((blockInsPos == null || blockInstrument == null) && body != null) {  // body check works around a crash
+        if ((blockInsPos == null || blockInstrument == null) && body != null) {  // body is checked to prevent a crash
             this.setPos(body.getX(), body.getY(), body.getZ());
             if (soundController != null) {
                 soundController.setPos(getX(), getY(), getZ());

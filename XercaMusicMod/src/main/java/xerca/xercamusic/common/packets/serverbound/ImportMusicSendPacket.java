@@ -4,18 +4,20 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.packets.IPacket;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
+import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
+import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_ID;
+import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_NOTES;
 
 @SuppressWarnings("unused")
 public class ImportMusicSendPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "import_music_send");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "import_music_send");
     private UUID uuid;
     private CompoundTag tag;
     private ArrayList<NoteEvent> notes;
@@ -23,13 +25,13 @@ public class ImportMusicSendPacket implements IPacket {
 
     public ImportMusicSendPacket(CompoundTag tag) throws NotesTooLargeException {
         this.tag = tag;
-        if (this.tag.contains("id")) {
-            this.uuid = tag.getUUID("id");
+        if (this.tag.contains(KEY_ID)) {
+            this.uuid = tag.getUUID(KEY_ID);
         }
-        if (this.tag.contains("notes")) {
+        if (this.tag.contains(KEY_NOTES)) {
             this.notes = new ArrayList<>();
             NoteEvent.fillArrayFromNBT(this.notes, this.tag);
-            this.tag.remove("notes");
+            this.tag.remove(KEY_NOTES);
 
             if (this.notes.size() > MAX_NOTES_IN_PACKET) {
                 throw new NotesTooLargeException(notes, uuid);
@@ -72,7 +74,7 @@ public class ImportMusicSendPacket implements IPacket {
             result.tag = buf.readNbt();
 
         } catch (RuntimeException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading ImportMusicSendPacket: {}", String.valueOf(ioe));
+            Mod.LOGGER.error("Exception while reading ImportMusicSendPacket: {}", String.valueOf(ioe));
             return null;
         }
         result.messageIsValid = true;

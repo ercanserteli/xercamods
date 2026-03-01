@@ -116,18 +116,16 @@ public class CommandImport {
             ItemStack mainHand = player.getMainHandItem();
             ItemStack offHand = player.getOffhandItem();
 
-            if (!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.hasTag() && mainHand.getTag() != null && !mainHand.getTag().isEmpty())) {
+            if (!(mainHand.getItem() instanceof ItemCanvas itemCanvas) || ItemCanvas.hasCanvasData(mainHand)) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
-            if (((ItemCanvas) mainHand.getItem()).getCanvasType() != importedCanvasType) {
+            if (itemCanvas.getCanvasType() != importedCanvasType) {
                 Component typeName = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
-                if (importedCanvasType == CanvasType.LONG) {
-                    typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
-                } else if (importedCanvasType == CanvasType.TALL) {
-                    typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
-                } else if (importedCanvasType == CanvasType.LARGE) {
-                    typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
+                switch (importedCanvasType) {
+                    case LONG -> typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
+                    case TALL -> typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
+                    case LARGE -> typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
                 }
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", typeName).withStyle(ChatFormatting.RED));
                 return;

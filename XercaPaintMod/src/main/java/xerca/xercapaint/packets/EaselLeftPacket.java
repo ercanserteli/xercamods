@@ -2,6 +2,7 @@ package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 
 public class EaselLeftPacket {
@@ -27,7 +28,7 @@ public class EaselLeftPacket {
         try {
             result.easelId = buf.readInt();
         } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading CanvasUpdatePacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading CanvasUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

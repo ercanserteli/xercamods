@@ -5,24 +5,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IItemInstrument {
     int MIN_NOTE = 21;
     int MAX_NOTE = 117;
     int TOTAL_NOTES = 96;
-
-    int getMinOctave();
-
-    int getMaxOctave();
-
-    int getInstrumentId();
-
-    void setSounds(ArrayList<Pair<Integer, SoundEvent>> sounds);
-
-    InsSound getSound(int note);
-
 
     static int idToNote(int id) {
         return id + MIN_NOTE;
@@ -40,6 +28,16 @@ public interface IItemInstrument {
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
         }
     }
+
+    int getMinOctave();
+
+    int getMaxOctave();
+
+    int getInstrumentId();
+
+    void setSounds(List<Pair<Integer, SoundEvent>> sounds);
+
+    InsSound getSound(int note);
 
     record InsSound(SoundEvent sound, float pitch) {
     }

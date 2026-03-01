@@ -2,6 +2,7 @@ package xerca.xercapaint.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -47,6 +48,14 @@ public class ItemEasel extends Item {
 
                     float f = Mth.floor((Mth.wrapDegrees(ctx.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
                     easel.moveTo(easel.getX(), easel.getY(), easel.getZ(), f, 0.0F);
+                    CompoundTag stackTag = itemstack.getTag();
+                    if (stackTag != null) {
+                        boolean invulnerable = stackTag.getBoolean("Invulnerable")
+                                || (stackTag.contains("EntityTag") && stackTag.getCompound("EntityTag").getBoolean("Invulnerable"));
+                        if (invulnerable) {
+                            easel.setInvulnerable(true);
+                        }
+                    }
                     serverlevel.addFreshEntityWithPassengers(easel);
                     level.playSound(null, easel.getX(), easel.getY(), easel.getZ(), SoundEvents.ARMOR_STAND_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
                     level.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, easel.getPosition(0));

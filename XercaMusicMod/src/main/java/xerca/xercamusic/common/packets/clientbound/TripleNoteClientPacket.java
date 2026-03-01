@@ -6,13 +6,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.IPacket;
 
 public class TripleNoteClientPacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "triple_note_client");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "triple_note_client");
     private int note1;
     private int note2;
     private int note3;
@@ -41,7 +41,7 @@ public class TripleNoteClientPacket implements IPacket {
             int instrumentId = buf.readInt();
             int entityId = buf.readInt();
 
-            if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
+            if (instrumentId < 0 || instrumentId >= Items.INSTRUMENTS.length) {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
@@ -50,9 +50,9 @@ public class TripleNoteClientPacket implements IPacket {
                 return null;
             }
             result.entity = level.getEntity(entityId);
-            result.instrumentItem = Items.instruments[instrumentId];
+            result.instrumentItem = Items.INSTRUMENTS[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading SingleNotePacket", ioe);
+            Mod.LOGGER.error("Exception while reading SingleNotePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

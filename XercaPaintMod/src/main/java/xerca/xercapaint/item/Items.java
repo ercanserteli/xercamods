@@ -26,7 +26,7 @@ public final class Items {
     public static final ItemCanvas ITEM_CANVAS_LONG = new ItemCanvas(CanvasType.LONG);
     public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL);
     public static final ItemEasel ITEM_EASEL = new ItemEasel(new Item.Properties().stacksTo(1));
-    public static final CreativeModeTab paintTab = FabricItemGroup.builder()
+    public static final CreativeModeTab PAINT_TAB = FabricItemGroup.builder()
             .icon(() -> new ItemStack(Items.ITEM_PALETTE))
             .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
@@ -65,7 +65,7 @@ public final class Items {
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MOD_ID, "item_canvas_tall"), ITEM_CANVAS_TALL);
         Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MOD_ID, "item_easel"), ITEM_EASEL);
 
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(Mod.MOD_ID, "paint_tab"), paintTab);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(Mod.MOD_ID, "paint_tab"), PAINT_TAB);
     }
 
 }

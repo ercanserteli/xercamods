@@ -2,6 +2,7 @@ package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.Mod;
 
 import java.util.Arrays;
 
@@ -36,7 +37,7 @@ public class PictureSendPacket {
             result.version = buf.readInt();
             result.pixels = buf.readVarIntArray(1024);
         } catch (IndexOutOfBoundsException ioe) {
-            Mod.LOGGER.error("Exception while reading PictureSendPacket: " + ioe);
+            Mod.LOGGER.error("Exception while reading PictureSendPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

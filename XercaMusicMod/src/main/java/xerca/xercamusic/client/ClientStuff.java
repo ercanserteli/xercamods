@@ -15,7 +15,8 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
+import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -34,6 +35,7 @@ public class ClientStuff implements ClientModInitializer {
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
             if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet) {
+                player.playSound(SoundEvents.openScroll, 1.0f, 0.8f + player.level().random.nextFloat() * 0.4f);
                 CompoundTag noteTag = heldItem.getTag();
                 if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
                     UUID id = noteTag.getUUID("id");
@@ -80,7 +82,8 @@ public class ClientStuff implements ClientModInitializer {
     }
 
     public static void endMusic(int spiritID, int playerID) {
-        if (Minecraft.getInstance().player != null && playerID == Minecraft.getInstance().player.getId()) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null && playerID == player.getId()) {
             MusicEndedPacket pack = new MusicEndedPacket(spiritID);
             sendToServer(pack);
         }
@@ -103,10 +106,10 @@ public class ClientStuff implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(NotesPartAckFromServerPacket.ID, new NotesPartAckFromServerPacketHandler());
 
         ClientPlayConnectionEvents.JOIN.register((ClientPacketListener handler, PacketSender sender, Minecraft client) -> {
-            XercaMusic.LOGGER.debug("ClientPacketListener Join Event");
+            Mod.LOGGER.debug("ClientPacketListener Join Event");
             MusicManagerClient.load();
         });
-        ClientPlayNetworking.registerGlobalReceiver(EntityMusicSpirit.spawnPacketId, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(EntityMusicSpirit.SPAWN_PACKET_ID, (client, handler, buf, responseSender) -> {
             EntityMusicSpirit newSpirit = new EntityMusicSpirit(client.level);
             ClientboundAddEntityPacket packet = new ClientboundAddEntityPacket(buf);
             newSpirit.recreateFromPacket(packet);
@@ -115,7 +118,7 @@ public class ClientStuff implements ClientModInitializer {
                 if (client.level != null) {
                     client.level.putNonPlayerEntity(newSpirit.getId(), newSpirit);
                 } else {
-                    XercaMusic.LOGGER.warn("Could not add music spirit - Client level is null");
+                    Mod.LOGGER.warn("Could not add music spirit - Client level is null");
                 }
             });
         });
