@@ -460,7 +460,7 @@ public class GuiMusicSheet extends Screen {
                 Component.empty(), Component.empty(), 0, 1, 0, 0.001, false) {
             @Override
             public void applyValue() {
-                sliderPosition = (int) (value * (double) maxSliderPosition);
+                sliderPosition = (int) (value * maxSliderPosition);
             }
         });
 
@@ -1137,7 +1137,6 @@ public class GuiMusicSheet extends Screen {
             }
         }
 
-
         if (viewingSelfSigned && mouseButton == 0) {
             editCursorEnd = editCursor;
         }
@@ -1511,7 +1510,7 @@ public class GuiMusicSheet extends Screen {
                         }
                     }
                     default -> {
-                        // do nothing
+                        // Do nothing
                     }
                 }
                 return true;

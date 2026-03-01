@@ -6,12 +6,14 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import xerca.xercamusic.common.item.IItemInstrument;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_NOTES;
-
-public class NoteEvent {
+public class NoteEvent implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     public byte note;
     public short time;
     public byte volume;

@@ -64,9 +64,33 @@ public final class MusicManager {
     }
 
     public static boolean addNotesPart(SendNotesPartToServerPacket pkt) {
+        if (pkt.partsCount() <= 0 || pkt.partsCount() > MAX_PARTS_IN_TRANSFER) {
+            Mod.LOGGER.warn("Invalid notes part count: {}", pkt.partsCount());
+            return false;
+        }
+        if (pkt.partId() < 0 || pkt.partId() >= pkt.partsCount()) {
+            Mod.LOGGER.warn("Invalid notes part id: {} for parts count {}", pkt.partId(), pkt.partsCount());
+            return false;
+        }
+        if (pkt.notes() == null) {
+            Mod.LOGGER.warn("Packet part had null note list");
+            return false;
+        }
+
         TempNotesBuffer buffer;
         if (TEMP_NOTES_MAP.containsKey(pkt.uuid())) {
             buffer = TEMP_NOTES_MAP.get(pkt.uuid());
+            if (buffer.partsCount != pkt.partsCount()) {
+                Mod.LOGGER.warn("Mismatching part count for id {}. Expected {}, got {}. Resetting temp buffer.",
+                        pkt.uuid(), buffer.partsCount, pkt.partsCount());
+                TEMP_NOTES_MAP.remove(pkt.uuid());
+                buffer = null;
+            }
+        } else {
+            buffer = null;
+        }
+
+        if (buffer != null) {
             buffer.addPart(pkt.partId(), pkt.notes());
         } else {
             buffer = new TempNotesBuffer(pkt.partsCount());
@@ -96,7 +120,7 @@ public final class MusicManager {
                 Map<UUID, MusicData> musicDataMap = new HashMap<>();
                 for (Tag nbt : musicDataList) {
                     if (nbt instanceof CompoundTag musicData) {
-                        ArrayList<NoteEvent> notes = new ArrayList<>();
+                        List<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, musicData);
                         musicDataMap.put(musicData.getUUID(KEY_ID), new MusicData(musicData.getInt(KEY_VERSION), notes));
                     }
@@ -157,7 +181,7 @@ public final class MusicManager {
         }
 
         public List<NoteEvent> joinParts() {
-            ArrayList<NoteEvent> notes = new ArrayList<>(partsCount * MAX_NOTES_IN_PACKET);
+            List<NoteEvent> notes = new ArrayList<>(partsCount * MAX_NOTES_IN_PACKET);
             for (List<NoteEvent> notesPart : notesParts) {
                 notes.addAll(notesPart);
             }

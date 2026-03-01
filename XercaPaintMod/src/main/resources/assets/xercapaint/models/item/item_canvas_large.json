@@ -1,10 +1,9 @@
-
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "xercapaint:item/item_canvas_large"
-    },
-    "overrides": [
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercapaint:item/item_canvas_large"
+  },
+  "overrides": [
     {
       "predicate": {
         "xercapaint:drawn": 1

@@ -5,10 +5,10 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -52,11 +52,11 @@ public class ModClient implements ClientModInitializer {
             return;
         }
 
-        if (heldItem.getItem() instanceof ItemCanvas) {
+        if (heldItem.getItem() instanceof ItemCanvas itemCanvas) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemPalette) || (heldItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0)) {
-                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable("item.xercapaint.item_canvas"), itemCanvas.getCanvasType(), null));
             } else {
-                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable("item.xercapaint.item_canvas"), itemCanvas.getCanvasType(), null));
             }
         } else if (heldItem.getItem() instanceof ItemPalette) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas)) {
@@ -89,12 +89,12 @@ public class ModClient implements ClientModInitializer {
             else return 1.0F;
         };
         ClampedItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
-                ((float) ItemPalette.basicColorCount(stack)) / 16.0F;
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LARGE, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LONG, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_TALL, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_PALETTE, Mod.id("colors"), colors);
+                (ItemPalette.basicColorCount(stack)) / 16.0F;
+        ItemProperties.register(Items.ITEM_CANVAS, Mod.id("drawn"), drawn);
+        ItemProperties.register(Items.ITEM_CANVAS_LARGE, Mod.id("drawn"), drawn);
+        ItemProperties.register(Items.ITEM_CANVAS_LONG, Mod.id("drawn"), drawn);
+        ItemProperties.register(Items.ITEM_CANVAS_TALL, Mod.id("drawn"), drawn);
+        ItemProperties.register(Items.ITEM_PALETTE, Mod.id("colors"), colors);
 
         ClientPlayNetworking.registerGlobalReceiver(CloseGuiPacket.PACKET_ID, new CloseGuiPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(ExportPaintingPacket.PACKET_ID, new ExportPaintingPacketHandler());
