@@ -11,7 +11,6 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
@@ -32,7 +31,11 @@ public class RecipeFillPalette extends CustomRecipe {
     }
 
     private boolean isDye(ItemStack stack) {
-        return stack.getItem() instanceof DyeItem;
+        if (stack.getItem() instanceof DyeItem dyeItem) {
+            int colorId = dyeItem.getDyeColor().getId();
+            return colorId >= 0 && colorId < 16;
+        }
+        return false;
     }
 
     private int findPalette(CraftingInput inv) {
@@ -80,7 +83,7 @@ public class RecipeFillPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         int paletteId = findPalette(inv);
         if (paletteId < 0) {
             return ItemStack.EMPTY;

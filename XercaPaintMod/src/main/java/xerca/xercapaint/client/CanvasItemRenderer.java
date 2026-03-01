@@ -25,8 +25,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
-    private static final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
-    private static final ResourceLocation emptyCanvasLocation = Mod.id("textures/block/empty.png");
+    private static final ResourceLocation BACK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
+    private static final ResourceLocation EMPTY_CANVAS_LOCATION = Mod.id("textures/block/empty.png");
 
     public CanvasItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet entityModelSet) {
         super(dispatcher, entityModelSet);
@@ -79,11 +79,11 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implemen
 
         ms.scale(f, f, f);
 
-        RenderSystem.setShaderTexture(0, emptyCanvasLocation);
+        RenderSystem.setShaderTexture(0, EMPTY_CANVAS_LOCATION);
 
         Matrix4f m = ms.last().pose();
         PoseStack.Pose pose = ms.last();
-        VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(emptyCanvasLocation));
+        VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(EMPTY_CANVAS_LOCATION));
 
         // Draw the front
         addVertex(vb, m, pose, 0.0F, 32.0F * hScale, -1.0F, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
@@ -91,11 +91,11 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implemen
         addVertex(vb, m, pose, 32.0F * wScale, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
         addVertex(vb, m, pose, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);
 
-        vb = buffer.getBuffer(RenderType.entitySolid(backLocation));
+        vb = buffer.getBuffer(RenderType.entitySolid(BACK_LOCATION));
         // Draw the back and sides
         final float sideWidth = 1.0F / 16.0F;
 
-        RenderSystem.setShaderTexture(0, backLocation);
+        RenderSystem.setShaderTexture(0, BACK_LOCATION);
         addVertex(vb, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
         addVertex(vb, m, pose, 32.0D * wScale, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, xOffset, yOffset, zOffset);
         addVertex(vb, m, pose, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 1.0F, packedLight, xOffset, yOffset, zOffset);

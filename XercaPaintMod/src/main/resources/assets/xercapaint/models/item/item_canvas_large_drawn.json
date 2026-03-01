@@ -1,18 +1,37 @@
-
 {
   "parent": "builtin/entity",
-    "textures": {
-        "layer0": "xercapaint:item/item_canvas_large_drawn"
+  "textures": {
+    "layer0": "xercapaint:item/item_canvas_large_drawn"
+  },
+  "display": {
+    "gui": {
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ],
+      "translation": [
+        1,
+        -6,
+        1
+      ]
     },
-    "display": {
-      "gui": {
-        "scale": [1.2, 1.2, 1.2],
-        "translation": [ 1, -6, 1]
-      },
-      "fixed": {
-        "translation": [ 1, 6, -1],
-        "scale": [1.2, 1.2, 1.2],
-        "rotation": [ 180, 0, 0]
-      }
+    "fixed": {
+      "translation": [
+        1,
+        6,
+        -1
+      ],
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ],
+      "rotation": [
+        180,
+        0,
+        0
+      ]
     }
+  }
 }

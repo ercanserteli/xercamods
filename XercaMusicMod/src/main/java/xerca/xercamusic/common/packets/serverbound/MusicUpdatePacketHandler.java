@@ -12,6 +12,18 @@ import java.util.List;
 import java.util.UUID;
 
 public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<MusicUpdatePacket> {
+    private static byte sanitizeBps(byte bps) {
+        return (byte) Math.max(1, Math.min(50, bps & 0xFF));
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
+
+    private static byte sanitizeHighlightInterval(byte interval) {
+        return (byte) Math.max(1, Math.min(24, interval & 0xFF));
+    }
+
     private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {
         ItemStack note = pl.getMainHandItem();
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
@@ -19,11 +31,11 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
             if (flag.hasId) note.set(Items.SHEET_ID, msg.id());
             if (flag.hasVersion) note.set(Items.SHEET_VERSION, msg.version());
             if (flag.hasLength) note.set(Items.SHEET_LENGTH, (int) msg.lengthBeats());
-            if (flag.hasBps) note.set(Items.SHEET_BPS, msg.bps());
-            if (flag.hasVolume) note.set(Items.SHEET_VOLUME, msg.volume());
+            if (flag.hasBps) note.set(Items.SHEET_BPS, sanitizeBps(msg.bps()));
+            if (flag.hasVolume) note.set(Items.SHEET_VOLUME, sanitizeVolume(msg.volume()));
             if (flag.hasPrevIns) note.set(Items.SHEET_PREV_INSTRUMENT, msg.prevInstrument());
             if (flag.hasPrevInsLocked) note.set(Items.SHEET_PREV_INSTRUMENT_LOCKED, msg.prevInsLocked());
-            if (flag.hasHlInterval) note.set(Items.SHEET_HIGHLIGHT_INTERVAL, msg.highlightInterval());
+            if (flag.hasHlInterval) note.set(Items.SHEET_HIGHLIGHT_INTERVAL, sanitizeHighlightInterval(msg.highlightInterval()));
             if (flag.hasSigned && msg.signed()) {
                 if (flag.hasTitle) note.set(Items.SHEET_TITLE, msg.title().trim());
                 note.set(Items.SHEET_AUTHOR, pl.getName().getString());

@@ -27,7 +27,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
@@ -99,11 +98,9 @@ public class EntityCanvas extends HangingEntity {
         int version = getVersion();
         if (!canvasID.isEmpty() && version > 0) {
             Picture picture = PICTURES.get(getCanvasID());
-            if (picture == null || picture.version < getVersion()) {
-                if (!PICTURE_REQUESTS.contains(canvasID)) {
-                    PICTURE_REQUESTS.add(canvasID);
-                    ClientPlayNetworking.send(new PictureRequestPacket(canvasID));
-                }
+            if ((picture == null || picture.version < getVersion()) && !PICTURE_REQUESTS.contains(canvasID)) {
+                PICTURE_REQUESTS.add(canvasID);
+                ClientPlayNetworking.send(new PictureRequestPacket(canvasID));
             }
         }
     }
@@ -137,11 +134,10 @@ public class EntityCanvas extends HangingEntity {
     public void dropItem(ServerLevel serverLevel, @Nullable Entity brokenEntity) {
         if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
-            if (brokenEntity instanceof Player playerentity) {
-                if (playerentity.getAbilities().instabuild) {
-                    return;
-                }
+            if (brokenEntity instanceof Player player && player.getAbilities().instabuild) {
+                return;
             }
+
             ItemStack canvasItem;
             CanvasType canvasType = getCanvasType();
             if (canvasType == CanvasType.SMALL) {
@@ -172,6 +168,7 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
+    @Override
     public void tick() {
         this.xo = this.getX();
         this.yo = this.getY();
@@ -192,13 +189,12 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     protected void setDirection(@NotNull Direction facingDirectionIn) {
-        Validate.notNull(facingDirectionIn);
         this.direction = facingDirectionIn;
         if (facingDirectionIn.getAxis().isHorizontal()) {
             this.setXRot(0.0F);
-            this.setYRot((float) (this.direction.get2DDataValue() * 90));
+            this.setYRot((this.direction.get2DDataValue() * 90));
         } else {
-            this.setXRot((float) (-90 * facingDirectionIn.getAxisDirection().getStep()));
+            this.setXRot((-90 * facingDirectionIn.getAxisDirection().getStep()));
             this.setYRot(0.0F);
         }
 
@@ -223,24 +219,24 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     protected @NotNull AABB calculateBoundingBox(@NotNull BlockPos pos, @NotNull Direction direction) {
-        double d1 = (double) pos.getX() + 0.5D - (double) direction.getStepX() * 0.46875D;
-        double d2 = (double) pos.getY() + 0.5D - (double) direction.getStepY() * 0.46875D;
-        double d3 = (double) pos.getZ() + 0.5D - (double) direction.getStepZ() * 0.46875D;
+        double d1 = pos.getX() + 0.5D - direction.getStepX() * 0.46875D;
+        double d2 = pos.getY() + 0.5D - direction.getStepY() * 0.46875D;
+        double d3 = pos.getZ() + 0.5D - direction.getStepZ() * 0.46875D;
 
         if (direction.getAxis().isHorizontal()) {
             double d4 = this.offs(this.getWidth());
             double d5 = this.offs(this.getHeight());
             d2 = d2 + d5;
             Direction ccwDirection = direction.getCounterClockWise();
-            d1 = d1 + d4 * (double) ccwDirection.getStepX();
-            d3 = d3 + d4 * (double) ccwDirection.getStepZ();
+            d1 = d1 + d4 * ccwDirection.getStepX();
+            d3 = d3 + d4 * ccwDirection.getStepZ();
         }
 
         double d6 = this.getWidth();
         double d7 = this.getHeight();
         double d8 = this.getWidth();
-        Direction.Axis direction$axis = direction.getAxis();
-        switch (direction$axis) {
+        Direction.Axis axis = direction.getAxis();
+        switch (axis) {
             case X -> d6 = 1.0D;
             case Y -> d7 = 1.0D;
             case Z -> d8 = 1.0D;
@@ -257,12 +253,15 @@ public class EntityCanvas extends HangingEntity {
         if (direction.getAxis().isHorizontal()) {
             return super.survives();
         }
-        if (!this.level().noCollision(this)) {
+        Level level = this.level();
+        if (!level.noCollision(this)) {
             return false;
         } else {
-            BlockState blockstate = this.level().getBlockState(this.pos.relative(this.direction.getOpposite()));
-            return (blockstate.isSolid() ||
-                    this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(blockstate)) && this.level().getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
+            BlockPos supportPos = this.pos.relative(this.direction.getOpposite());
+            BlockState state = level.getBlockState(supportPos);
+            return (state.isFaceSturdy(level, supportPos, this.direction) ||
+                    (this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(state)))
+                    && level.getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
         }
     }
 
@@ -376,6 +375,7 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
+    @Override
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
         CanvasType canvasType = this.getCanvasType();
         if (canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE) {
