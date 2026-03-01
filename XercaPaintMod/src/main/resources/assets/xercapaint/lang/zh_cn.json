@@ -8,5 +8,8 @@
   "item.xercapaint.item_easel": "画架",
   "palette.basic_count": "%1$s 基本色",
   "palette.custom_count": "%1$s 自定义颜色",
-  "palette.empty": "空调色板"
+  "palette.empty": "空调色板",
+
+  "entity.xercapaint.canvas": "画布",
+  "entity.xercapaint.easel": "画架"
 }
