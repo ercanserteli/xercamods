@@ -91,16 +91,19 @@ public class RecipeCanvasCloning extends CustomRecipe {
             }
         }
 
+        if (orgCanvas.isEmpty() || orgCanvas.getTag() == null || freshCanvas.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
         int gen = WrittenBookItem.getGeneration(orgCanvas);
-        if (!orgCanvas.isEmpty() && orgCanvas.getTag() != null && !freshCanvas.isEmpty() && gen < 3 && gen > 0) {
+        if (gen < 3 && gen > 0) {
             ItemStack resultStack = new ItemStack(orgCanvas.getItem());
             CompoundTag compoundTag = orgCanvas.getTag().copy();
             compoundTag.putInt("generation", gen + 1);
             resultStack.setTag(compoundTag);
             return resultStack;
-        } else {
-            return ItemStack.EMPTY;
         }
+        return ItemStack.EMPTY;
     }
 
     @Override
