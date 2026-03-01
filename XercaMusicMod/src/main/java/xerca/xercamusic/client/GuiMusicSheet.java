@@ -151,6 +151,7 @@ public class GuiMusicSheet extends Screen {
     private boolean glissandoMode;          // Whether we're in glissando placement mode
     private NoteEvent glissandoSourceNote;  // The source note for glissando (after first click)
     private ArrayList<Byte> glissandoPendingWaypoints; // Accumulated waypoints during multi-point placement
+    private ArrayList<Byte> glissandoPendingPositions; // Beat position (1-100%) for each pending waypoint
     private int sliderPosition = 0;
     private int maxSliderPosition = 500;
     private int currentOctavePos = 1;
@@ -662,7 +663,16 @@ public class GuiMusicSheet extends Screen {
                 for (int i = 0; i < wps.length; i++) {
                     pitchWaypoints[i] = insSound.pitch() * (float)Math.pow(2.0, wps[i] / 12.0);
                 }
-                sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
+                byte[] posBuf = event.getEffectivePositions();
+                if (posBuf != null && posBuf.length == wps.length) {
+                    float[] posFloats = new float[posBuf.length];
+                    for (int i = 0; i < posBuf.length; i++) {
+                        posFloats[i] = (posBuf[i] & 0xFF) / 100.0f;
+                    }
+                    sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
+                } else {
+                    sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
+                }
             }
         }
 
@@ -1191,6 +1201,7 @@ public class GuiMusicSheet extends Screen {
             // Draw glissando indicator (lines showing pitch path through waypoints)
             if (!isNeighbor && event.hasGlissando()) {
                 byte[] wps = event.getEffectiveWaypoints();
+                byte[] positions = event.getEffectivePositions();
                 if (wps != null && wps.length > 0) {
                     int notePixelWidth = xEnd - xBegin;
                     int numSegments = wps.length;
@@ -1202,8 +1213,14 @@ public class GuiMusicSheet extends Screen {
                         if (targetOctave < currentOctavePos || targetOctave >= currentOctavePos + 4) continue;
                         int targetY = noteImageY + NOTE_REGION_TOP + (47 - targetNote + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36 + 1;
                         // Calculate x range for this segment
-                        int segStartX = xBegin + (seg * notePixelWidth) / numSegments;
-                        int segEndX = xBegin + ((seg + 1) * notePixelWidth) / numSegments;
+                        int segStartX, segEndX;
+                        if (positions != null && positions.length == numSegments) {
+                            segStartX = xBegin + (seg == 0 ? 0 : (positions[seg - 1] & 0xFF) * notePixelWidth / 100);
+                            segEndX = xBegin + (positions[seg] & 0xFF) * notePixelWidth / 100;
+                        } else {
+                            segStartX = xBegin + (seg * notePixelWidth) / numSegments;
+                            segEndX = xBegin + ((seg + 1) * notePixelWidth) / numSegments;
+                        }
                         int segWidth = segEndX - segStartX;
                         if (segWidth < 1) segWidth = 1;
                         // Draw line from previous pitch to this waypoint's pitch
@@ -1230,8 +1247,14 @@ public class GuiMusicSheet extends Screen {
                     int targetOctave = octaveFromNote((byte) targetNote);
                     if (targetOctave < currentOctavePos || targetOctave >= currentOctavePos + 4) continue;
                     int targetY = noteImageY + NOTE_REGION_TOP + (47 - targetNote + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36 + 1;
-                    int segStartX = xBegin + (seg * notePixelWidth) / numSegments;
-                    int segEndX = xBegin + ((seg + 1) * notePixelWidth) / numSegments;
+                    int segStartX, segEndX;
+                    if (glissandoPendingPositions != null && glissandoPendingPositions.size() == numSegments) {
+                        segStartX = xBegin + (seg == 0 ? 0 : (glissandoPendingPositions.get(seg - 1) & 0xFF) * notePixelWidth / 100);
+                        segEndX = xBegin + (glissandoPendingPositions.get(seg) & 0xFF) * notePixelWidth / 100;
+                    } else {
+                        segStartX = xBegin + (seg * notePixelWidth) / numSegments;
+                        segEndX = xBegin + ((seg + 1) * notePixelWidth) / numSegments;
+                    }
                     int segWidth = Math.max(segEndX - segStartX, 1);
                     int fromY = seg == 0 ? startYp : prevY;
                     int dy = targetY - fromY;
@@ -1553,12 +1576,24 @@ public class GuiMusicSheet extends Screen {
                                 } else {
                                     glissandoSourceNote = clicked;
                                     glissandoPendingWaypoints = new ArrayList<>();
+                                    glissandoPendingPositions = new ArrayList<>();
                                 }
                             }
                         } else {
-                            // Subsequent click: add waypoint
+                            // Subsequent click: add waypoint with X position
                             byte interval = (byte)(note - glissandoSourceNote.note);
                             glissandoPendingWaypoints.add(interval);
+                            // Compute beat position within note as percentage (1-100)
+                            float exactTime = nrx / 3.0f + sliderPosition;
+                            int posPct = Math.round((exactTime - glissandoSourceNote.time) * 100.0f / glissandoSourceNote.length);
+                            posPct = Math.max(1, Math.min(100, posPct));
+                            // Ensure monotonic increase
+                            if (!glissandoPendingPositions.isEmpty()) {
+                                int lastPos = glissandoPendingPositions.get(glissandoPendingPositions.size() - 1) & 0xFF;
+                                posPct = Math.max(lastPos + 1, posPct);
+                            }
+                            if (posPct > 100) posPct = 100;
+                            glissandoPendingPositions.add((byte) posPct);
                             // Don't exit mode — user can add more points.
                             // Right-click to finish, or press Enter/G to finish/cancel.
                         }
@@ -1686,12 +1721,20 @@ public class GuiMusicSheet extends Screen {
             for (int i = 0; i < waypoints.length; i++) {
                 waypoints[i] = glissandoPendingWaypoints.get(i);
             }
-            glissandoSourceNote.setGlissandoWaypoints(waypoints);
+            byte[] positions = null;
+            if (glissandoPendingPositions != null && glissandoPendingPositions.size() == waypoints.length) {
+                positions = new byte[glissandoPendingPositions.size()];
+                for (int i = 0; i < positions.length; i++) {
+                    positions[i] = glissandoPendingPositions.get(i);
+                }
+            }
+            glissandoSourceNote.setGlissandoWaypoints(waypoints, positions);
             dirtyFlag.hasNotes = true;
         }
         glissandoMode = false;
         glissandoSourceNote = null;
         glissandoPendingWaypoints = null;
+        glissandoPendingPositions = null;
     }
 
     private void finishAddingMarker(int mouseX, int mouseY) {
@@ -1821,6 +1864,16 @@ public class GuiMusicSheet extends Screen {
                 }
             }
         }
+        // Shift/expand volume markers
+        for (VolumeMarker m : volumeMarkers) {
+            if (m.startTime > x) {
+                m.startTime++;
+                m.endTime++;
+            } else if (m.endTime > x) {
+                // Marker spans the insertion point: expand it
+                m.endTime++;
+            }
+        }
         updateLength();
     }
 
@@ -1846,6 +1899,22 @@ public class GuiMusicSheet extends Screen {
             copy.time -= (short) editCursor;
             copy.encodeToBuffer(buffer);
         }
+
+        // Collect volume markers that fall within the selection
+        ArrayList<VolumeMarker> markersToCopy = new ArrayList<>();
+        for (VolumeMarker marker : volumeMarkers) {
+            if (marker.startTime >= editCursor && marker.endTime <= editCursorEnd) {
+                markersToCopy.add(marker);
+            }
+        }
+        buffer.writeInt(markersToCopy.size());
+        for (VolumeMarker marker : markersToCopy) {
+            VolumeMarker copy = marker.clone();
+            copy.startTime -= editCursor;
+            copy.endTime -= editCursor;
+            copy.encodeToBuffer(buffer);
+        }
+
         int index = buffer.writerIndex();
         byte[] bytes = new byte[index];
         buffer.getBytes(0, bytes);
@@ -1867,6 +1936,7 @@ public class GuiMusicSheet extends Screen {
 
             int length = 0;
             List<NoteEvent> toBePasted;
+            List<VolumeMarker> markersToPaste = new ArrayList<>();
             // Check begin byte
             if (byteArray[0] != COPY_BEGIN_BYTE) {
                 // Old version
@@ -1900,6 +1970,14 @@ public class GuiMusicSheet extends Screen {
                 for (int i = 0; i < count; i++) {
                     toBePasted.add(NoteEvent.fromBuffer(buffer));
                 }
+
+                // Read volume markers if present (backward compatible)
+                if (buffer.isReadable() && buffer.readableBytes() >= 4) {
+                    int markerCount = buffer.readInt();
+                    for (int i = 0; i < markerCount; i++) {
+                        markersToPaste.add(VolumeMarker.fromBuffer(buffer));
+                    }
+                }
             }
 
             pushUndo();
@@ -1910,11 +1988,23 @@ public class GuiMusicSheet extends Screen {
                         event.time += (short) length;
                     }
                 }
+                // Push back the existing future volume markers
+                for (VolumeMarker marker : volumeMarkers) {
+                    if (marker.startTime >= editCursor) {
+                        marker.startTime += length;
+                        marker.endTime += length;
+                    }
+                }
             }
 
             for (NoteEvent event : toBePasted) {
                 event.time += (short) editCursor;
                 notes.add(event);
+            }
+            for (VolumeMarker marker : markersToPaste) {
+                marker.startTime += editCursor;
+                marker.endTime += editCursor;
+                volumeMarkers.add(marker);
             }
 
             NoteEvent.sortNotes(notes);
@@ -1949,6 +2039,19 @@ public class GuiMusicSheet extends Screen {
                 }
             }
         }
+        // Shift/shrink volume markers
+        for (int i = volumeMarkers.size() - 1; i >= 0; i--) {
+            VolumeMarker m = volumeMarkers.get(i);
+            if (m.startTime > x) {
+                m.startTime--;
+                m.endTime--;
+            } else if (m.startTime <= x && m.endTime > x) {
+                m.endTime--;
+                if (m.endTime - m.startTime < 2) {
+                    volumeMarkers.remove(i);
+                }
+            }
+        }
         if (doSort) {
             NoteEvent.sortNotes(notes);
         }
@@ -1974,6 +2077,7 @@ public class GuiMusicSheet extends Screen {
             glissandoMode = false;
             glissandoSourceNote = null;
             glissandoPendingWaypoints = null;
+            glissandoPendingPositions = null;
             return true;
         }
 
@@ -2093,6 +2197,7 @@ public class GuiMusicSheet extends Screen {
                             glissandoMode = true;
                             glissandoSourceNote = null;
                             glissandoPendingWaypoints = null;
+                            glissandoPendingPositions = null;
                         }
                     }
                     case GLFW.GLFW_KEY_Z -> {
@@ -2105,6 +2210,7 @@ public class GuiMusicSheet extends Screen {
                                 glissandoMode = false;
                                 glissandoSourceNote = null;
                                 glissandoPendingWaypoints = null;
+                                glissandoPendingPositions = null;
                             }
                             if (!undoStack.isEmpty()) {
                                 UndoState state = undoStack.pop();
@@ -2208,6 +2314,22 @@ public class GuiMusicSheet extends Screen {
                 }
             }
         }
+        // Shift volume marker note ranges to follow the shifted notes
+        if (changed) {
+            for (VolumeMarker m : volumeMarkers) {
+                // Marker overlaps the time selection
+                if (m.startTime <= editCursorEnd && m.endTime >= editCursor) {
+                    if (rectSelection) {
+                        // Only shift if the marker's note range overlaps the rect selection
+                        if (m.highNote < rectSelectNoteBottom - semitones || m.lowNote > rectSelectNoteTop - semitones) {
+                            continue;
+                        }
+                    }
+                    m.lowNote += (byte) semitones;
+                    m.highNote += (byte) semitones;
+                }
+            }
+        }
         // Update rectangular selection bounds to follow the shifted notes
         if (changed && rectSelection) {
             rectSelectNoteTop += (byte) semitones;
@@ -2239,6 +2361,33 @@ public class GuiMusicSheet extends Screen {
                 // after cut -> shift left
                 event.time -= (short) (editCursorEnd - editCursor + 1);
                 doSort = true;
+            }
+        }
+        // Handle volume markers for the deleted selection
+        int selLen = editCursorEnd - editCursor + 1;
+        for (int i = volumeMarkers.size() - 1; i >= 0; i--) {
+            VolumeMarker m = volumeMarkers.get(i);
+            if (m.startTime >= editCursor && m.endTime <= editCursorEnd) {
+                // Fully inside selection: remove
+                volumeMarkers.remove(i);
+            } else if (m.startTime < editCursor && m.endTime > editCursorEnd) {
+                // Spans entire selection: shrink
+                m.endTime -= (short) selLen;
+                if (m.endTime - m.startTime < 2) volumeMarkers.remove(i);
+            } else if (m.startTime < editCursor && m.endTime >= editCursor && m.endTime <= editCursorEnd) {
+                // Starts before, ends inside: trim end
+                m.endTime = (short) editCursor;
+                if (m.endTime - m.startTime < 2) volumeMarkers.remove(i);
+            } else if (m.startTime >= editCursor && m.startTime <= editCursorEnd && m.endTime > editCursorEnd) {
+                // Starts inside selection, ends after: keep the tail, shift to editCursor
+                short origEnd = m.endTime;
+                m.startTime = (short) editCursor;
+                m.endTime = (short) (editCursor + origEnd - editCursorEnd - 1);
+                if (m.endTime - m.startTime < 2) volumeMarkers.remove(i);
+            } else if (m.startTime > editCursorEnd) {
+                // Entirely after selection: shift left
+                m.startTime -= (short) selLen;
+                m.endTime -= (short) selLen;
             }
         }
         if (doSort) {

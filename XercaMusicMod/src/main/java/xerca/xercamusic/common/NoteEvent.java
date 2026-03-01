@@ -22,7 +22,8 @@ public class NoteEvent {
     public byte length;
     public byte flags;              // Articulation flags (see FLAG_* constants)
     public byte glissandoInterval;  // Signed semitones to slide for glissando (+up, -down); used for single-point
-    public byte[] glissandoWaypoints; // Multi-point glissando: array of semitone offsets, evenly spaced. null = use glissandoInterval
+    public byte[] glissandoWaypoints; // Multi-point glissando: array of semitone offsets. null = use glissandoInterval
+    public byte[] glissandoWaypointPositions; // Parallel to glissandoWaypoints: beat position as % of note length (1-100). null = evenly spaced.
 
     public NoteEvent(byte note, short time, byte volume, byte length) {
         this(note, time, volume, length, FLAG_NONE, (byte) 0);
@@ -36,6 +37,7 @@ public class NoteEvent {
         this.flags = flags;
         this.glissandoInterval = glissandoInterval;
         this.glissandoWaypoints = null;
+        this.glissandoWaypointPositions = null;
     }
 
     public NoteEvent() {
@@ -50,6 +52,9 @@ public class NoteEvent {
         this.glissandoInterval = noteEvent.glissandoInterval;
         this.glissandoWaypoints = noteEvent.glissandoWaypoints != null
                 ? noteEvent.glissandoWaypoints.clone()
+                : null;
+        this.glissandoWaypointPositions = noteEvent.glissandoWaypointPositions != null
+                ? noteEvent.glissandoWaypointPositions.clone()
                 : null;
     }
 
@@ -152,10 +157,12 @@ public class NoteEvent {
             flags |= FLAG_GLISSANDO;
             glissandoInterval = interval;
             glissandoWaypoints = null; // Clear multi-point
+            glissandoWaypointPositions = null;
         } else {
             flags &= ~FLAG_GLISSANDO;
             glissandoInterval = 0;
             glissandoWaypoints = null;
+            glissandoWaypointPositions = null;
         }
     }
 
@@ -165,14 +172,25 @@ public class NoteEvent {
      * Segment 0: original pitch → waypoints[0], Segment 1: waypoints[0] → waypoints[1], etc.
      */
     public void setGlissandoWaypoints(byte[] waypoints) {
+        setGlissandoWaypoints(waypoints, null);
+    }
+
+    /**
+     * Set multi-point glissando with optional custom timing positions.
+     * @param waypoints  semitone offsets from the note; null to clear
+     * @param positions  parallel array of beat positions as % of note length (1-100); null = evenly spaced
+     */
+    public void setGlissandoWaypoints(byte[] waypoints, byte[] positions) {
         if (waypoints != null && waypoints.length > 0) {
             flags |= FLAG_GLISSANDO;
             glissandoWaypoints = waypoints;
             glissandoInterval = waypoints[waypoints.length - 1]; // Last waypoint for compat
+            glissandoWaypointPositions = (positions != null && positions.length == waypoints.length) ? positions : null;
         } else {
             flags &= ~FLAG_GLISSANDO;
             glissandoInterval = 0;
             glissandoWaypoints = null;
+            glissandoWaypointPositions = null;
         }
     }
 
@@ -187,6 +205,18 @@ public class NoteEvent {
         }
         if (hasGlissando() && glissandoInterval != 0) {
             return new byte[] { glissandoInterval };
+        }
+        return null;
+    }
+
+    /**
+     * Returns the waypoint position fractions (1-100) if custom positioned, or null for even distribution.
+     * Only meaningful when glissandoWaypoints is non-null.
+     */
+    public byte[] getEffectivePositions() {
+        if (glissandoWaypointPositions != null && glissandoWaypoints != null
+                && glissandoWaypointPositions.length == glissandoWaypoints.length) {
+            return glissandoWaypointPositions;
         }
         return null;
     }
@@ -210,6 +240,9 @@ public class NoteEvent {
         }
         if (glissandoWaypoints != null && glissandoWaypoints.length > 1) {
             tag.putByteArray("gw", glissandoWaypoints);
+            if (glissandoWaypointPositions != null && glissandoWaypointPositions.length == glissandoWaypoints.length) {
+                tag.putByteArray("gp", glissandoWaypointPositions);
+            }
         } else if (glissandoInterval != 0) {
             tag.putByte("ti", glissandoInterval);
         }
@@ -226,9 +259,16 @@ public class NoteEvent {
         if (tag.contains("gw")) {
             this.glissandoWaypoints = tag.getByteArray("gw");
             this.glissandoInterval = this.glissandoWaypoints.length > 0 ? this.glissandoWaypoints[this.glissandoWaypoints.length - 1] : 0;
+            if (tag.contains("gp")) {
+                byte[] gp = tag.getByteArray("gp");
+                this.glissandoWaypointPositions = (gp.length == this.glissandoWaypoints.length) ? gp : null;
+            } else {
+                this.glissandoWaypointPositions = null;
+            }
         } else {
             this.glissandoInterval = tag.contains("ti") ? tag.getByte("ti") : 0;
             this.glissandoWaypoints = null;
+            this.glissandoWaypointPositions = null;
         }
     }
 
@@ -240,10 +280,19 @@ public class NoteEvent {
         buf.writeByte(flags);
         // Write waypoints: count followed by bytes
         byte[] wps = getEffectiveWaypoints();
-        buf.writeByte(wps != null ? wps.length : 0);
+        byte[] pos = getEffectivePositions();
+        boolean hasPositions = pos != null && wps != null && pos.length == wps.length;
+        // Encode count with high bit indicating positions are present
+        int wpCount = wps != null ? wps.length : 0;
+        buf.writeByte(hasPositions ? (wpCount | 0x80) : wpCount);
         if (wps != null) {
             for (byte wp : wps) {
                 buf.writeByte(wp);
+            }
+        }
+        if (hasPositions) {
+            for (byte p : pos) {
+                buf.writeByte(p);
             }
         }
     }
@@ -254,16 +303,27 @@ public class NoteEvent {
         this.volume = buf.readByte();
         this.length = buf.readByte();
         this.flags = buf.readByte();
-        int wpCount = buf.readByte();
+        int rawCount = buf.readByte() & 0xFF;
+        boolean hasPositions = (rawCount & 0x80) != 0;
+        int wpCount = rawCount & 0x7F;
         if (wpCount > 0) {
             this.glissandoWaypoints = new byte[wpCount];
             for (int i = 0; i < wpCount; i++) {
                 this.glissandoWaypoints[i] = buf.readByte();
             }
             this.glissandoInterval = this.glissandoWaypoints[wpCount - 1];
+            if (hasPositions) {
+                this.glissandoWaypointPositions = new byte[wpCount];
+                for (int i = 0; i < wpCount; i++) {
+                    this.glissandoWaypointPositions[i] = buf.readByte();
+                }
+            } else {
+                this.glissandoWaypointPositions = null;
+            }
         } else {
             this.glissandoWaypoints = null;
             this.glissandoInterval = 0;
+            this.glissandoWaypointPositions = null;
         }
     }
 
@@ -277,6 +337,9 @@ public class NoteEvent {
         NoteEvent copy = new NoteEvent(note, time, volume, length, flags, glissandoInterval);
         if (glissandoWaypoints != null) {
             copy.glissandoWaypoints = glissandoWaypoints.clone();
+        }
+        if (glissandoWaypointPositions != null) {
+            copy.glissandoWaypointPositions = glissandoWaypointPositions.clone();
         }
         return copy;
     }

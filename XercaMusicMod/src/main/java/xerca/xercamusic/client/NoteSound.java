@@ -17,6 +17,7 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
 
     // Glissando (pitch slide) - supports multi-point
     private float[] pitchWaypoints;   // null means no glissando; array of target pitches for each segment
+    private float[] waypointPositions; // null = evenly spaced; values 0.0-1.0 indicating when each waypoint is reached
     private int glissandoTotalTicks;
     private int glissandoTicksElapsed;
 
@@ -61,6 +62,20 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
      */
     public void setGlissando(float[] targetPitches, int durationTicks) {
         this.pitchWaypoints = targetPitches;
+        this.waypointPositions = null;
+        this.glissandoTotalTicks = Math.max(1, durationTicks);
+        this.glissandoTicksElapsed = 0;
+    }
+
+    /**
+     * Enable multi-point glissando with custom timing positions.
+     * @param targetPitches array of target pitches for each waypoint
+     * @param positions     parallel array of fractional positions (0.0-1.0) when each waypoint is reached; null = evenly spaced
+     * @param durationTicks total glissando duration
+     */
+    public void setGlissando(float[] targetPitches, float[] positions, int durationTicks) {
+        this.pitchWaypoints = targetPitches;
+        this.waypointPositions = (positions != null && positions.length == targetPitches.length) ? positions : null;
         this.glissandoTotalTicks = Math.max(1, durationTicks);
         this.glissandoTicksElapsed = 0;
     }
@@ -90,12 +105,39 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
             glissandoTicksElapsed++;
             float progress = (float)glissandoTicksElapsed / (float)glissandoTotalTicks;
             int numWaypoints = pitchWaypoints.length;
-            float scaledProgress = progress * numWaypoints;
-            int segIdx = Math.min((int)scaledProgress, numWaypoints - 1);
-            float localProgress = scaledProgress - segIdx;
-            if (segIdx >= numWaypoints - 1) {
-                localProgress = Math.min(localProgress, 1.0f);
+
+            int segIdx;
+            float localProgress;
+
+            if (waypointPositions != null && waypointPositions.length == numWaypoints) {
+                // Custom-positioned waypoints: find segment based on position thresholds
+                segIdx = 0;
+                for (int i = 0; i < numWaypoints; i++) {
+                    if (progress <= waypointPositions[i]) {
+                        segIdx = i;
+                        break;
+                    }
+                    segIdx = i;
+                }
+                float segStart = segIdx == 0 ? 0.0f : waypointPositions[segIdx - 1];
+                float segEnd = waypointPositions[segIdx];
+                float segLen = segEnd - segStart;
+                localProgress = segLen > 0.0001f ? Math.min((progress - segStart) / segLen, 1.0f) : 1.0f;
+                // If past the last waypoint position, hold the final pitch
+                if (progress > waypointPositions[numWaypoints - 1]) {
+                    this.pitch = pitchWaypoints[numWaypoints - 1];
+                    return;
+                }
+            } else {
+                // Even distribution (original behavior)
+                float scaledProgress = progress * numWaypoints;
+                segIdx = Math.min((int)scaledProgress, numWaypoints - 1);
+                localProgress = scaledProgress - segIdx;
+                if (segIdx >= numWaypoints - 1) {
+                    localProgress = Math.min(localProgress, 1.0f);
+                }
             }
+
             float fromPitch = segIdx == 0 ? originalPitch : pitchWaypoints[segIdx - 1];
             float toPitch = pitchWaypoints[segIdx];
             // Exponential interpolation for musical pitch (sounds linear to human ear)

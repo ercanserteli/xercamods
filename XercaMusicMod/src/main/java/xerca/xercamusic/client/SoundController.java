@@ -177,7 +177,16 @@ public class SoundController extends Thread {
                         for (int j = 0; j < wps.length; j++) {
                             pitchWaypoints[j] = insSound.pitch() * (float) Math.pow(2.0, wps[j] / 12.0);
                         }
-                        sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
+                        byte[] posBuf = event.getEffectivePositions();
+                        if (posBuf != null && posBuf.length == wps.length) {
+                            float[] posFloats = new float[posBuf.length];
+                            for (int j = 0; j < posBuf.length; j++) {
+                                posFloats[j] = (posBuf[j] & 0xFF) / 100.0f;
+                            }
+                            sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
+                        } else {
+                            sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
+                        }
                     }
                 }
 
