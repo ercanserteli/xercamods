@@ -83,7 +83,9 @@ public class GuiMusicSheet extends Screen {
     private final boolean[] buttonPushStates = new boolean[IItemInstrument.TOTAL_NOTES];
     private final UUID id;
     private final MusicUpdatePacket.FieldFlag dirtyFlag = new MusicUpdatePacket.FieldFlag();
-    private final Deque<ArrayList<NoteEvent>> undoStack = new ArrayDeque<>(MAX_UNDO_LENGTH);
+    //The previous version of undoState only saved notes, which would not work for things like (De)crescendo
+    private record UndoState(ArrayList<NoteEvent> notes, ArrayList<VolumeMarker> volumeMarkers) {}
+    private final Deque<UndoState> undoStack = new ArrayDeque<>(MAX_UNDO_LENGTH);
     private final ArrayList<ArrayList<NoteEvent>> neighborNotes = new ArrayList<>();
     private final ArrayList<Float> neighborVolumes = new ArrayList<>();
     private final ArrayList<Integer> neighborPreviewNextNoteIDs = new ArrayList<>();
@@ -1609,7 +1611,12 @@ public class GuiMusicSheet extends Screen {
         for (NoteEvent note : notes) {
             stackNotes.add(new NoteEvent(note));
         }
-        undoStack.push(stackNotes);
+        ArrayList<VolumeMarker> stackMarkers = new ArrayList<>(volumeMarkers.size());
+        for (VolumeMarker marker : volumeMarkers) {
+            stackMarkers.add(new VolumeMarker(marker.startTime, marker.endTime,
+                    marker.startVolume, marker.endVolume, marker.lowNote, marker.highNote));
+        }
+        undoStack.push(new UndoState(stackNotes, stackMarkers));
     }
 
     private void addNote(byte note, short time) {
@@ -1693,6 +1700,7 @@ public class GuiMusicSheet extends Screen {
         }
         // Only add if the marker has some meaningful size
         if(currentlyAddedMarker.endTime - currentlyAddedMarker.startTime >= 2) {
+            pushUndo();
             // Add the marker to the list and show the edit box
             volumeMarkers.add(currentlyAddedMarker);
             dirtyFlag.hasNotes = true;  // Volume markers are saved with notes
@@ -2092,8 +2100,16 @@ public class GuiMusicSheet extends Screen {
                             if (noteEditBox.active) {
                                 break;
                             }
+                            // Exit glissando mode on undo so state stays consistent
+                            if (glissandoMode) {
+                                glissandoMode = false;
+                                glissandoSourceNote = null;
+                                glissandoPendingWaypoints = null;
+                            }
                             if (!undoStack.isEmpty()) {
-                                notes = undoStack.pop();
+                                UndoState state = undoStack.pop();
+                                notes = state.notes();
+                                volumeMarkers = state.volumeMarkers();
                                 updateLength(false);
                             }
                         }
@@ -2270,6 +2286,7 @@ public class GuiMusicSheet extends Screen {
             return true;
         }
         // Also handle native horizontal scroll (scrollX) for mice with horizontal scroll wheels
+        // Was not tested (I don't own this type of mouse, but somebody might appreciate this)
         if (scrollX != 0.d) {
             int scrollAmount = 8;
             if (scrollX > 0) {

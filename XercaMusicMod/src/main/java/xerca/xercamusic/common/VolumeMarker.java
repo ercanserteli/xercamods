@@ -31,16 +31,12 @@ public class VolumeMarker {
     public VolumeMarker() {
     }
 
-    /**
-     * Returns true if this is a crescendo (volume increasing)
-     */
+
     public boolean isCrescendo() {
         return endVolume > startVolume;
     }
 
-    /**
-     * Returns true if this is a decrescendo (volume decreasing)
-     */
+
     public boolean isDecrescendo() {
         return endVolume < startVolume;
     }
