@@ -14,14 +14,14 @@ import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_NOTES;
 public class NoteEvent {
     // Articulation flags (bit flags)
     public static final byte FLAG_NONE = 0;
-    public static final byte FLAG_GLISSANDO = 1;    // 0x01 - Smooth pitch slide to target note
+    public static final byte FLAG_GLISSANDO = 1;    // Smooth pitch slide to target note
     
     public byte note;
     public short time;
     public byte volume;
     public byte length;
     public byte flags;              // Articulation flags (see FLAG_* constants)
-    public byte glissandoInterval;  // Signed semitones to slide for glissando (+up, -down) - used for single-point
+    public byte glissandoInterval;  // Signed semitones to slide for glissando (+up, -down); used for single-point
     public byte[] glissandoWaypoints; // Multi-point glissando: array of semitone offsets, evenly spaced. null = use glissandoInterval
 
     public NoteEvent(byte note, short time, byte volume, byte length) {
