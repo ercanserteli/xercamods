@@ -56,7 +56,7 @@ def testItemsInCreative(mc, win, mcLoc):
     emptyInventory()
     
     win.click("1689431127310.png")
-    win.click("1689431143513.png")
+    win.click("1772359269007.png")
     
     # Get items to inventory
     for i in range(7):
@@ -69,18 +69,18 @@ def testItemsInCreative(mc, win, mcLoc):
     # Empty palette
     win.type("1")
     rclick(win)
-    testAssert(exists("1689434333796.png") and exists("1689434326126.png") and exists("1689434315850.png"))
+    testAssert(exists("1772359304968.png") and exists("1772359316323.png") and exists("1772359325160.png"))
     win.type(Key.ESC)
     
     # Full palette
     win.type("2")
     rclick(win)
-    testAssert(exists("1689505674262.png") and exists("1689505686642.png"))
+    testAssert(exists("1772359342126.png") and exists("1772359351331.png"))
     
     # Dark gray to first slot
     win.drag("1689433643444.png")
     win.dropAt(mcLoc.offset(540, 240))
-    testAssert(exists("1689505731885.png"))
+    testAssert(exists("1772359369674.png"))
     
     # Orange to right slot 3
     win.drag("1689433651887.png")
@@ -89,18 +89,18 @@ def testItemsInCreative(mc, win, mcLoc):
     # Mix light blue with orange
     win.drag("1689433689628.png")
     win.dropAt(mcLoc.offset(565, 305))
-    testAssert(exists("1689505764995.png"))
+    testAssert(exists("1772359414797.png"))
     
     # Delete dark gray
-    win.drag("1689433758136.png")
+    win.drag("1772360022381.png")
     win.dropAt(mcLoc.offset(540, 240))
-    testAssert(exists("1689505792474.png")) 
+    testAssert(exists("1772359429919.png"))
     win.type(Key.ESC)
     wait(0.5)
     
     # Check if saved properly
     rclick(win)
-    testAssert(exists("1689434101942.png"))
+    testAssert(exists("1772359429919.png"))
     win.type(Key.ESC)
     
     # Empty canvas
@@ -319,12 +319,12 @@ def testCrafting(mc, win, mcLoc):
     win.dropAt(mcLoc.offset(400, 230))
     win.click("1689509695985.png")
     win.click(mcLoc.offset(365, 195))
-    testAssert("1689509757648.png")
+    testAssert("1772359492268.png")
     win.click("1689509770105.png")
     win.click(mcLoc.offset(400, 195))
     win.click("1689509804017.png")
     win.click(mcLoc.offset(330, 195))
-    res = exists("1689509827187.png")
+    res = exists("1772359509289.png")
     testAssert(res)
 
     # Filling palette
@@ -341,7 +341,7 @@ def testCrafting(mc, win, mcLoc):
     win.click("1689510008810.png")
     keyUp(Key.SHIFT)
     win.click(mcLoc.offset(200, 150))
-    res = exists("1689510083157.png")
+    res = exists("1772359825566.png")
     testAssert(res)
     win.click(res)
     win.click(mcLoc.offset(365, 150))
@@ -352,7 +352,7 @@ def testCrafting(mc, win, mcLoc):
     win.click("1689510031311.png")
     win.click("1689510037022.png")
     keyUp(Key.SHIFT)
-    res = exists("1689510185482.png")
+    res = exists("1772359878496.png")
     testAssert(res)
     keyDown(Key.SHIFT)
     win.click(res)

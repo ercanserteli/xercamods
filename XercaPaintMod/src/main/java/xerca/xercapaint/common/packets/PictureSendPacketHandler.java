@@ -21,7 +21,7 @@ public class PictureSendPacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(PictureSendPacket msg) {
         EntityCanvas.PICTURES.put(msg.getName(), new EntityCanvas.Picture(msg.getVersion(), msg.getPixels()));
-        if(!EntityCanvas.PICTURE_REQUESTS.contains(msg.getName())) {
+        if (!EntityCanvas.PICTURE_REQUESTS.contains(msg.getName())) {
             EntityCanvas.PICTURE_REQUESTS.remove(msg.getName());
         }
     }

@@ -14,14 +14,14 @@ public enum CanvasType {
         };
     }
 
-    public static int getWidth(CanvasType canvasType){
+    public static int getWidth(CanvasType canvasType) {
         return switch (canvasType) {
             case SMALL, TALL -> 16;
             case LARGE, LONG -> 32;
         };
     }
 
-    public static int getHeight(CanvasType canvasType){
+    public static int getHeight(CanvasType canvasType) {
         return switch (canvasType) {
             case SMALL, LONG -> 16;
             case LARGE, TALL -> 32;

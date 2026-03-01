@@ -27,14 +27,14 @@ public class CommandExport {
         );
     }
 
-    private static int paintExport(CommandSourceStack stack, String name){
+    private static int paintExport(CommandSourceStack stack, String name) {
         XercaPaint.LOGGER.debug("Paint export called. name: {}", name);
-        if(stack.getEntity() == null){
+        if (stack.getEntity() == null) {
             XercaPaint.LOGGER.error("Command entity is not found");
             return 0;
         }
         Entity commander = stack.getEntity();
-        if(!(commander instanceof ServerPlayer player)){
+        if (!(commander instanceof ServerPlayer player)) {
             XercaPaint.LOGGER.error("Command entity is not a player");
             return 0;
         }
@@ -44,21 +44,21 @@ public class CommandExport {
         return 1;
     }
 
-    public static boolean doExport(Player player, String name){
+    public static boolean doExport(Player player, String name) {
         String dir = "paintings";
         String filename = name + ".paint";
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
 
-        for(ItemStack s : player.getHandSlots()){
-            if(s.getItem() instanceof ItemCanvas){
-                if(ItemCanvas.hasCanvasData(s)){
+        for (ItemStack s : player.getHandSlots()) {
+            if (s.getItem() instanceof ItemCanvas) {
+                if (ItemCanvas.hasCanvasData(s)) {
                     try {
                         CompoundTag tag = s.getTag().copy();
-                        tag.putByte("ct", (byte)((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                        tag.putByte("ct", (byte) ((ItemCanvas) s.getItem()).getCanvasType().ordinal());
                         if (!tag.contains("author")) {
                             tag.remove("name");
                             tag.remove("v");

@@ -38,7 +38,7 @@ public class ImportPaintingPacketHandler {
         } catch (IOException e) {
             e.printStackTrace();
             LocalPlayer player = Minecraft.getInstance().player;
-            if(player != null) {
+            if (player != null) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.4", filepath).withStyle(ChatFormatting.RED));
             }
         }

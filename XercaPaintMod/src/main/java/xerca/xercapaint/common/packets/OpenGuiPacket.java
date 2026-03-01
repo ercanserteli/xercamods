@@ -35,10 +35,9 @@ public class OpenGuiPacket {
             result.allowed = buf.readBoolean();
             result.edit = buf.readBoolean();
             int handOrdinal = buf.readByte();
-            if(InteractionHand.values().length > handOrdinal){
+            if (InteractionHand.values().length > handOrdinal) {
                 result.hand = InteractionHand.values()[handOrdinal];
-            }
-            else{
+            } else {
                 result.hand = InteractionHand.MAIN_HAND;
             }
         } catch (IndexOutOfBoundsException ioe) {

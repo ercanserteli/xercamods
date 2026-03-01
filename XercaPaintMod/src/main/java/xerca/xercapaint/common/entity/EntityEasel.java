@@ -15,7 +15,10 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
@@ -58,7 +61,7 @@ public class EntityEasel extends Entity {
         super(Entities.EASEL.get(), world);
     }
 
-    public void setPainter(Player painter){
+    public void setPainter(Player painter) {
         this.painter = painter;
     }
 
@@ -107,21 +110,20 @@ public class EntityEasel extends Entity {
     }
 
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
-        if(painter != null){
-            if(!level().isClientSide && dropDeferred == null){
+        if (painter != null) {
+            if (!level().isClientSide && dropDeferred == null) {
                 if (painter instanceof ServerPlayer serverPainter) {
                     CloseGuiPacket pack = new CloseGuiPacket();
                     NetworkSender.sendToPlayer(serverPainter, pack);
                 }
                 dropDeferred = () -> doDrop(entity, dropSelf);
             }
-        }
-        else{
+        } else {
             doDrop(entity, dropSelf);
         }
     }
 
-    public void doDrop(@Nullable Entity entity, boolean dropSelf){
+    public void doDrop(@Nullable Entity entity, boolean dropSelf) {
         ItemStack canvasStack = this.getItem();
         this.setItem(ItemStack.EMPTY);
 
@@ -155,10 +157,10 @@ public class EntityEasel extends Entity {
         }
 
         this.getEntityData().set(DATA_CANVAS, itemStack);
-        if(makeSound){
+        if (makeSound) {
             if (!itemStack.isEmpty()) {
                 this.playSound(SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
-            }else{
+            } else {
                 this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             }
         }
@@ -221,16 +223,15 @@ public class EntityEasel extends Entity {
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;
         boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
-        if(this.level().isClientSide){
+        if (this.level().isClientSide) {
             return !isEaselFilled && !handHoldsCanvas ? InteractionResult.PASS : InteractionResult.SUCCESS;
-        }
-        else {
+        } else {
             if (!isEaselFilled) {
                 if (handHoldsCanvas && !this.isRemoved()) {
                     this.setItem(itemInHand);
                     itemInHand.shrink(1);
                 }
-            }else{
+            } else {
                 boolean unused = this.painter == null;
                 boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag() != null && getItem().getTag().getInt("generation") > 0);
                 boolean allowed = unused || !toEdit;
@@ -238,7 +239,7 @@ public class EntityEasel extends Entity {
                 if (player instanceof ServerPlayer serverPlayer) {
                     NetworkSender.sendToPlayer(serverPlayer, pack);
                 }
-                if(toEdit && allowed){
+                if (toEdit && allowed) {
                     this.painter = player;
                 }
             }
@@ -262,16 +263,16 @@ public class EntityEasel extends Entity {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
-        if(!level().isClientSide && dropDeferred != null){
-            dropWaitTicks ++;
-            if(painter == null || dropWaitTicks > 80){
+        if (!level().isClientSide && dropDeferred != null) {
+            dropWaitTicks++;
+            if (painter == null || dropWaitTicks > 80) {
                 dropDeferred.run();
                 dropDeferred = null;
                 dropWaitTicks = 0;
             }
         }
 
-        if(painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > 64)){
+        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > 64)) {
             painter = null;
         }
     }

@@ -36,36 +36,35 @@ public class CanvasUpdatePacketHandler {
         ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.getEaselId() > -1){
+        if (msg.getEaselId() > -1) {
             entityEasel = pl.level().getEntity(msg.getEaselId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
             canvas = easel.getItem();
-            if(!(canvas.getItem() instanceof ItemCanvas)){
+            if (!(canvas.getItem() instanceof ItemCanvas)) {
                 XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Canvas not found inside easel!");
                 return;
             }
             ItemStack mainHandItem = pl.getMainHandItem();
             ItemStack offHandItem = pl.getOffhandItem();
-            if(mainHandItem.getItem() instanceof ItemPalette){
+            if (mainHandItem.getItem() instanceof ItemPalette) {
                 palette = mainHandItem;
-            }else if(offHandItem.getItem() instanceof ItemPalette){
+            } else if (offHandItem.getItem() instanceof ItemPalette) {
                 palette = offHandItem;
-            }else{
+            } else {
                 XercaPaint.LOGGER.error("CanvasUpdatePacketHandler: Palette not found on player's hands!");
                 return;
             }
-        }
-        else{
+        } else {
             canvas = pl.getMainHandItem();
             palette = pl.getOffhandItem();
-            if(canvas.getItem() instanceof ItemPalette){
+            if (canvas.getItem() instanceof ItemPalette) {
                 ItemStack temp = canvas;
                 canvas = palette;
                 palette = temp;
@@ -90,7 +89,7 @@ public class CanvasUpdatePacketHandler {
                 writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
             }
 
-            if(entityEasel instanceof EntityEasel easel){
+            if (entityEasel instanceof EntityEasel easel) {
                 easel.setItem(canvas, false);
                 easel.setPainter(null);
             }

@@ -40,7 +40,7 @@ public class ItemCanvas extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
-        if(worldIn.isClientSide){
+        if (worldIn.isClientSide) {
             ClientStuff.showCanvasGui(playerIn);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
@@ -108,10 +108,10 @@ public class ItemCanvas extends Item {
         return rotation;
     }
 
-    public static boolean hasTitle(ItemStack stack){
+    public static boolean hasTitle(ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if(tag != null){
+            if (tag != null) {
                 String s = tag.getString("title");
                 return !StringUtil.isNullOrEmpty(s);
             }
@@ -119,11 +119,11 @@ public class ItemCanvas extends Item {
         return false;
     }
 
-    public static Component getFullLabel(ItemStack stack){
+    public static Component getFullLabel(ItemStack stack) {
         String labelString = "";
         int generation = 0;
         Component title = getCustomTitle(stack);
-        if(title != null){
+        if (title != null) {
             labelString += (title.getString() + " ");
         }
         if (stack.hasTag() && stack.getTag() != null) {
@@ -137,20 +137,19 @@ public class ItemCanvas extends Item {
             generation = tag.getInt("generation");
         }
         MutableComponent label = Component.literal(labelString);
-        if(generation == 1){
+        if (generation == 1) {
             label.withStyle(ChatFormatting.YELLOW);
-        }
-        else if(generation >= 3){
+        } else if (generation >= 3) {
             label.withStyle(ChatFormatting.GRAY);
         }
         return label;
     }
 
     @Nullable
-    public static Component getCustomTitle(ItemStack stack){
+    public static Component getCustomTitle(ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if(tag != null){
+            if (tag != null) {
                 String s = tag.getString("title");
                 if (!StringUtil.isNullOrEmpty(s)) {
                     return Component.literal(s);
@@ -163,7 +162,7 @@ public class ItemCanvas extends Item {
     @Override
     public Component getName(ItemStack stack) {
         Component comp = getCustomTitle(stack);
-        if(comp != null){
+        if (comp != null) {
             return comp;
         }
         return super.getName(stack);
@@ -182,10 +181,10 @@ public class ItemCanvas extends Item {
 
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
-            if(generation > 0){
+            if (generation > 0) {
                 tooltip.add((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
             }
-        }else{
+        } else {
             tooltip.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
     }
@@ -193,9 +192,9 @@ public class ItemCanvas extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean isFoil(ItemStack stack) {
-        if(stack.hasTag()){
+        if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if(tag != null) {
+            if (tag != null) {
                 int generation = tag.getInt("generation");
                 return generation > 0;
             }
@@ -216,10 +215,9 @@ public class ItemCanvas extends Item {
     }
 
     protected boolean mayPlace(Player playerIn, Direction directionIn, ItemStack itemStackIn, BlockPos posIn) {
-        if(canvasType == CanvasType.SMALL){
+        if (canvasType == CanvasType.SMALL) {
             return Level.isInSpawnableBounds(posIn) && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
-        }
-        else{
+        } else {
             return !directionIn.getAxis().isVertical() && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         }
     }
@@ -230,8 +228,8 @@ public class ItemCanvas extends Item {
         consumer.accept(RenderProp.INSTANCE);
     }
 
-    public static String generateName(Player player){
-        return player.getUUID() + "_" + System.currentTimeMillis()/100;
+    public static String generateName(Player player) {
+        return player.getUUID() + "_" + System.currentTimeMillis() / 100;
     }
 
     public static boolean hasCanvasData(ItemStack stack) {

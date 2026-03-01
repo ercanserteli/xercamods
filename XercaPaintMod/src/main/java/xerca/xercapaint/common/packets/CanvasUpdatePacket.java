@@ -25,11 +25,11 @@ public class CanvasUpdatePacket {
         this.name = name;
         this.version = version;
         this.canvasType = canvasType;
-        int area = CanvasType.getHeight(canvasType)*CanvasType.getWidth(canvasType);
+        int area = CanvasType.getHeight(canvasType) * CanvasType.getWidth(canvasType);
         this.pixels = Arrays.copyOfRange(pixels, 0, area);
-        if(easel == null){
+        if (easel == null) {
             easelId = -1;
-        }else{
+        } else {
             easelId = easel.getId();
         }
     }
@@ -39,7 +39,7 @@ public class CanvasUpdatePacket {
     }
 
     public static void encode(CanvasUpdatePacket pkt, FriendlyByteBuf buf) {
-        for(PaletteUtil.CustomColor color : pkt.paletteColors){
+        for (PaletteUtil.CustomColor color : pkt.paletteColors) {
             color.writeToBuffer(buf);
         }
         buf.writeInt(pkt.easelId);
@@ -55,7 +55,7 @@ public class CanvasUpdatePacket {
         CanvasUpdatePacket result = new CanvasUpdatePacket();
         try {
             result.paletteColors = new PaletteUtil.CustomColor[12];
-            for(int i=0; i<result.paletteColors.length; i++){
+            for (int i = 0; i < result.paletteColors.length; i++) {
                 result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
             }
             result.easelId = buf.readInt();
@@ -64,7 +64,7 @@ public class CanvasUpdatePacket {
             result.name = buf.readUtf(64);
             result.title = buf.readUtf(32);
             result.signed = buf.readBoolean();
-            int area = CanvasType.getHeight(result.canvasType)*CanvasType.getWidth(result.canvasType);
+            int area = CanvasType.getHeight(result.canvasType) * CanvasType.getWidth(result.canvasType);
             result.pixels = buf.readVarIntArray(area);
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading CanvasUpdatePacket: " + ioe);
