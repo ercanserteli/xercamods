@@ -26,7 +26,7 @@ public class PictureRequestPacketHandler {
     private static void processMessage(PictureRequestPacket msg, ServerPlayer pl) {
         String name = msg.getName();
         EntityCanvas.Picture picture = EntityCanvas.PICTURES.get(name);
-        if(picture != null){
+        if (picture != null) {
             PictureSendPacket pack = new PictureSendPacket(name, picture.version, picture.pixels);
             NetworkSender.sendToPlayer(pl, pack);
         }

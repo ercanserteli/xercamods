@@ -40,7 +40,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
     static {
         EMPTY_PIXELS = new int[1024];
-        for(int i=0; i<1024; i++){
+        for (int i = 0; i < 1024; i++) {
             EMPTY_PIXELS[i] = PaletteUtil.Color.WHITE.rgbVal();
         }
     }
@@ -103,8 +103,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         if (instance == null) {
             instance = new Instance(key, name, version, width, height);
             this.loadedCanvases.put(key, instance);
-        }else{
-            if(instance.version < version || !instance.loaded){
+        } else {
+            if (instance.version < version || !instance.loaded) {
                 instance.updateCanvasTexture(name, version);
             }
         }
@@ -133,7 +133,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             updateCanvasTexture(name, version);
         }
 
-        private int swapColor(int color){
+        private int swapColor(int color) {
             int i = (color & 16711680) >> 16;
             int j = (color & '\uff00') >> 8;
             int k = (color & 255);
@@ -254,9 +254,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             ms.popPose();
         }
 
-        private void addVertex(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float nx, float ny, float nz)
-        {
-            vb.vertex(m, (float) x, (float)y, (float)z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(mn, nx, ny, nz).endVertex();
+        private void addVertex(VertexConsumer vb, Matrix4f m, Matrix3f mn, double x, double y, double z, float tx, float ty, int lightmap, float nx, float ny, float nz) {
+            vb.vertex(m, (float) x, (float) y, (float) z).color(255, 255, 255, 255).uv(tx, ty).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).normal(mn, nx, ny, nz).endVertex();
         }
 
         public void close() {

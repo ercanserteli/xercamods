@@ -61,15 +61,15 @@ public class EaselModel extends EntityModel<EntityEasel> {
 
     @Override
     public void setupAnim(EntityEasel entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if(entity.getItem().getItem() instanceof ItemCanvas itemCanvas){
-            if(itemCanvas.getCanvasType() == CanvasType.LONG){
+        if (entity.getItem().getItem() instanceof ItemCanvas itemCanvas) {
+            if (itemCanvas.getCanvasType() == CanvasType.LONG) {
                 bottomBar.y = 13.5f;
                 bottomBar.z = -3.25f;
                 topBar.y = 16.25f;
                 topBar.z = -4.0f;
                 return;
             }
-            if(itemCanvas.getCanvasType() == CanvasType.LARGE || itemCanvas.getCanvasType() == CanvasType.TALL){
+            if (itemCanvas.getCanvasType() == CanvasType.LARGE || itemCanvas.getCanvasType() == CanvasType.TALL) {
                 bottomBar.y = 16.5f;
                 bottomBar.z = -4.0f;
                 topBar.y = 9.8f;

@@ -6,6 +6,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import xerca.xercapaint.common.XercaPaint;
+
 public class Entities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, XercaPaint.MODID);
     public static final RegistryObject<EntityType<EntityCanvas>> CANVAS = ENTITIES.register("canvas", () -> EntityType.Builder.<EntityCanvas>of(EntityCanvas::new, MobCategory.MISC)

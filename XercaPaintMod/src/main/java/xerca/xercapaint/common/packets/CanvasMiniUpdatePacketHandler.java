@@ -33,26 +33,25 @@ public class CanvasMiniUpdatePacketHandler {
         ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.getEaselId() > -1){
+        if (msg.getEaselId() > -1) {
             entityEasel = pl.level().getEntity(msg.getEaselId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 XercaPaint.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 XercaPaint.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
             canvas = easel.getItem();
-            if(!(canvas.getItem() instanceof ItemCanvas)){
+            if (!(canvas.getItem() instanceof ItemCanvas)) {
                 XercaPaint.LOGGER.error("CanvasMiniUpdatePacket: Canvas not found inside easel!");
                 return;
             }
-        }
-        else{
+        } else {
             canvas = pl.getMainHandItem();
             palette = pl.getOffhandItem();
-            if(canvas.getItem() instanceof ItemPalette){
+            if (canvas.getItem() instanceof ItemPalette) {
                 canvas = palette;
             }
         }
@@ -65,7 +64,7 @@ public class CanvasMiniUpdatePacketHandler {
             comp.putInt("v", msg.getVersion());
             comp.putInt("generation", 0);
 
-            if(entityEasel instanceof EntityEasel easel){
+            if (entityEasel instanceof EntityEasel easel) {
                 easel.setItem(canvas, false);
             }
 

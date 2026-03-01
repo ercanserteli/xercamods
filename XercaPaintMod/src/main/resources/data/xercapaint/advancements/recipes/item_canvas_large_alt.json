@@ -1,4 +1,3 @@
-
 {
   "parent": "xercapaint:recipes/root",
   "rewards": {
@@ -11,7 +10,11 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["xercapaint:item_canvas_tall"]}
+          {
+            "items": [
+              "xercapaint:item_canvas_tall"
+            ]
+          }
         ]
       }
     },

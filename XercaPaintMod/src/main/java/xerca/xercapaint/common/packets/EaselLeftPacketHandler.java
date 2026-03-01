@@ -25,13 +25,13 @@ public class EaselLeftPacketHandler {
     }
 
     private static void processMessage(EaselLeftPacket msg, ServerPlayer pl) {
-        if(msg.getEaselId() > -1){
+        if (msg.getEaselId() > -1) {
             Entity entityEasel = pl.level().getEntity(msg.getEaselId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 XercaPaint.LOGGER.error("EaselLeftPacket: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 XercaPaint.LOGGER.error("EaselLeftPacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }

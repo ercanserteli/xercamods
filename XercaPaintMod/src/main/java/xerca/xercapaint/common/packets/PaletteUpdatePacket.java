@@ -18,7 +18,7 @@ public class PaletteUpdatePacket {
     }
 
     public static void encode(PaletteUpdatePacket pkt, FriendlyByteBuf buf) {
-        for(PaletteUtil.CustomColor color : pkt.paletteColors){
+        for (PaletteUtil.CustomColor color : pkt.paletteColors) {
             color.writeToBuffer(buf);
         }
     }
@@ -27,7 +27,7 @@ public class PaletteUpdatePacket {
         PaletteUpdatePacket result = new PaletteUpdatePacket();
         try {
             result.paletteColors = new PaletteUtil.CustomColor[12];
-            for(int i=0; i<result.paletteColors.length; i++){
+            for (int i = 0; i < result.paletteColors.length; i++) {
                 result.paletteColors[i] = new PaletteUtil.CustomColor(buf);
             }
         } catch (IndexOutOfBoundsException ioe) {

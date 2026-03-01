@@ -26,7 +26,7 @@ public class RecipeCraftPalette extends CustomRecipe {
         super(id, category);
     }
 
-    private boolean isPlank(ItemStack stack){
+    private boolean isPlank(ItemStack stack) {
         return !stack.isEmpty() && stack.is(ItemTags.PLANKS);
     }
 
@@ -56,9 +56,9 @@ public class RecipeCraftPalette extends CustomRecipe {
         int leftmostPlankColumn = inv.getWidth();
         int rightmostPlankColumn = -1;
 
-        for(int i = 0; i < inv.getHeight(); ++i) {
-            for(int j = 0; j < inv.getWidth(); ++j) {
-                int id = i*inv.getWidth() + j;
+        for (int i = 0; i < inv.getHeight(); ++i) {
+            for (int j = 0; j < inv.getWidth(); ++j) {
+                int id = i * inv.getWidth() + j;
                 ItemStack stack = inv.getItem(id);
                 if (stack.isEmpty()) {
                     continue;
@@ -89,7 +89,7 @@ public class RecipeCraftPalette extends CustomRecipe {
             return null;
         }
 
-        for(int j = 0; j < inv.getWidth(); ++j) {
+        for (int j = 0; j < inv.getWidth(); ++j) {
             int id = plankRow * inv.getWidth() + j;
             ItemStack stack = inv.getItem(id);
             if (!stack.isEmpty() && !isPlank(stack)) {
@@ -99,11 +99,11 @@ public class RecipeCraftPalette extends CustomRecipe {
 
         boolean hasDye = false;
         byte[] basicColors = new byte[16];
-        for(int i = 0; i < inv.getHeight(); ++i) {
+        for (int i = 0; i < inv.getHeight(); ++i) {
             if (i == plankRow) {
                 continue;
             }
-            for(int j = 0; j < inv.getWidth(); ++j) {
+            for (int j = 0; j < inv.getWidth(); ++j) {
                 int id = i * inv.getWidth() + j;
                 ItemStack stack = inv.getItem(id);
                 if (stack.isEmpty()) {

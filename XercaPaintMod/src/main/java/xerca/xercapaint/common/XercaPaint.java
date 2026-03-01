@@ -43,7 +43,7 @@ public class XercaPaint {
     }
 
     @SuppressWarnings({"UnusedAssignment"})
-    private void networkRegistry(){
+    private void networkRegistry() {
         int msg_id = 0;
         NETWORK_HANDLER.registerMessage(msg_id++, CanvasUpdatePacket.class, CanvasUpdatePacket::encode, CanvasUpdatePacket::decode, CanvasUpdatePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, PaletteUpdatePacket.class, PaletteUpdatePacket::encode, PaletteUpdatePacket::decode, PaletteUpdatePacketHandler::handle);
@@ -58,17 +58,14 @@ public class XercaPaint {
         NETWORK_HANDLER.registerMessage(msg_id++, EaselLeftPacket.class, EaselLeftPacket::encode, EaselLeftPacket::decode, EaselLeftPacketHandler::handle);
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
+    private void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(this::networkRegistry);
     }
 
 
-    private void enqueueIMC(final InterModEnqueueEvent ignoredEvent)
-    {
+    private void enqueueIMC(final InterModEnqueueEvent ignoredEvent) {
     }
 
-    private void processIMC(final InterModProcessEvent ignoredEvent)
-    {
+    private void processIMC(final InterModProcessEvent ignoredEvent) {
     }
 }

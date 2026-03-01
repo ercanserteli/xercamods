@@ -15,7 +15,7 @@ import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.crafting.RecipeCanvasCloning;
 import xerca.xercapaint.common.item.crafting.RecipeCraftPalette;
 import xerca.xercapaint.common.item.crafting.RecipeFillPalette;
-import xerca.xercapaint.common.item.crafting.RecipeTaglessShaped;
+import xerca.xercapaint.common.item.crafting.RecipeFreshCanvasShaped;
 
 import java.util.Arrays;
 
@@ -39,7 +39,7 @@ public final class Items {
                     .displayItems((params, output) -> {
                         ItemStack fullPalette = new ItemStack(ITEM_PALETTE.get());
                         byte[] basicColors = new byte[16];
-                        Arrays.fill(basicColors, (byte)1);
+                        Arrays.fill(basicColors, (byte) 1);
                         fullPalette.getOrCreateTag().putByteArray("basic", basicColors);
 
                         output.accept(ITEM_PALETTE.get());
@@ -59,6 +59,6 @@ public final class Items {
             "crafting_special_palette_filling", () -> new SimpleCraftingRecipeSerializer<>(RecipeFillPalette::new));
     public static final RegistryObject<RecipeSerializer<RecipeCanvasCloning>> CRAFTING_SPECIAL_CANVAS_CLONING = RECIPE_SERIALIZERS.register(
             "crafting_special_canvas_cloning", () -> new SimpleCraftingRecipeSerializer<>(RecipeCanvasCloning::new));
-    public static final RegistryObject<RecipeSerializer<RecipeTaglessShaped>> CRAFTING_TAGLESS_SHAPED = RECIPE_SERIALIZERS.register(
-            "crafting_tagless_shaped", RecipeTaglessShaped.TaglessSerializer::new);
+    public static final RegistryObject<RecipeSerializer<RecipeFreshCanvasShaped>> CRAFTING_TAGLESS_SHAPED = RECIPE_SERIALIZERS.register(
+            "crafting_fresh_canvas_shaped", RecipeFreshCanvasShaped.TaglessSerializer::new);
 }

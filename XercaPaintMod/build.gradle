@@ -41,22 +41,27 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
-            // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
-
-            args '--username', 'Dev###'
 
             mods {
                 "${mod_id}" {
                     source sourceSets.main
                 }
             }
+        }
+
+        client1 {
+            parent runs.client
+            workingDirectory project.file('run/client1')
+            args "--username", "Dev1"
+        }
+
+        client2 {
+            parent runs.client
+            workingDirectory project.file('run/client2')
+            args "--username", "Dev2"
         }
 
         server {
