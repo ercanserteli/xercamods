@@ -104,7 +104,8 @@ public class RecipeFillPalette extends CustomRecipe {
             basicColors[realColorId] = 1;
         }
 
-        ItemStack result = new ItemStack(Items.ITEM_PALETTE);
+        // Keep all existing palette components and only update basic colors.
+        ItemStack result = inputPalette.copyWithCount(1);
         result.set(Items.PALETTE_BASIC_COLORS, basicColors);
         return result;
     }

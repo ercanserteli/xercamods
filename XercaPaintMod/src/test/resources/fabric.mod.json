@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "xercapaint_tests",
+  "version": "1.0.0",
+  "name": "XercaPaint Tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "xerca.xercapaint.tests.RecipeCraftPaletteGameTests",
+      "xerca.xercapaint.tests.RecipeFillPaletteGameTests",
+      "xerca.xercapaint.tests.RecipeCanvasCloningGameTests",
+      "xerca.xercapaint.tests.CanvasTagCompatibilityGameTests",
+      "xerca.xercapaint.tests.CanvasRecipeGameTests",
+      "xerca.xercapaint.tests.PaletteDropperGameTests",
+      "xerca.xercapaint.tests.EaselTests"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "fabric-api": "*",
+    "minecraft": "1.21.1",
+    "xercapaint": "*"
+  }
+}

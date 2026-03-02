@@ -68,6 +68,10 @@ public class EntityEasel extends Entity {
 
     @Override
     public boolean hurt(@NotNull DamageSource damageSource, float p_31580_) {
+        if (this.isInvulnerableTo(damageSource)) {
+            return false;
+        }
+
         if (!this.level().isClientSide && !this.isRemoved()) {
             if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
                 this.dropItem(damageSource.getEntity(), false);
@@ -75,6 +79,7 @@ public class EntityEasel extends Entity {
             else{
                 this.dropItem(damageSource.getEntity());
                 kill();
+                this.markHurt();
             }
         }
         return false;
@@ -105,8 +110,10 @@ public class EntityEasel extends Entity {
         if(painter != null){
             if(!this.level().isClientSide){
                 if(dropDeferred == null){
-                    CloseGuiPacket pack = new CloseGuiPacket();
-                    ServerPlayNetworking.send((ServerPlayer) painter, pack);
+                    if (painter instanceof ServerPlayer serverPlayer) {
+                        CloseGuiPacket pack = new CloseGuiPacket();
+                        ServerPlayNetworking.send(serverPlayer, pack);
+                    }
                     dropDeferred = () -> doDrop(entity, dropSelf);
                 }
             }
@@ -226,8 +233,10 @@ public class EntityEasel extends Entity {
                 boolean unused = this.painter == null;
                 boolean toEdit = handHoldsPalette && !(getItem().getOrDefault(Items.CANVAS_GENERATION, 0) > 0);
                 boolean allowed = unused || !toEdit;
-                OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
-                ServerPlayNetworking.send((ServerPlayer) player, pack);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
+                    ServerPlayNetworking.send(serverPlayer, pack);
+                }
                 if(toEdit && allowed){
                     this.painter = player;
                 }

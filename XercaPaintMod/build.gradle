@@ -64,7 +64,7 @@ processResources {
     }
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
     // this fixes some edge cases with special characters not displaying correctly
@@ -94,6 +94,25 @@ java {
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
+}
+
+loom {
+    runs {
+        gameTest {
+            inherit server
+            name "Game Test Server"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
+            source sourceSets.main
+            source sourceSets.test
+            ideConfigGenerated = true
+            runDir "build/gametest"
+        }
+    }
+}
+
+tasks.named('test') {
+    dependsOn(tasks.named('runGameTest'))
 }
 
 jar {
