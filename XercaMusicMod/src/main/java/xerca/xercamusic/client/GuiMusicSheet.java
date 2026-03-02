@@ -3,27 +3,22 @@ package xerca.xercamusic.client;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.netty.buffer.Unpooled;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
@@ -57,10 +52,10 @@ public class GuiMusicSheet extends Screen {
     private static final int NOTE_IMAGE_TEX_Y = 44;
     private static final int NOTE_IMAGE_WIDTH = 256;
     private static final int NOTE_IMAGE_HEIGHT = 210;
-    private static final int NOTE_REGION_LEFT = 44;
-    private static final int NOTE_REGION_TOP = 39;
-    private static final int NOTE_REGION_RIGHT = 316;
-    private static final int NOTE_REGION_BOTTOM = 182;
+    static final int NOTE_REGION_LEFT = 44;
+    static final int NOTE_REGION_TOP = 39;
+    static final int NOTE_REGION_RIGHT = 316;
+    static final int NOTE_REGION_BOTTOM = 182;
     private static final int BPM_BUT_W = 10;
     private static final int BPM_BUT_H = 10;
     private static final int BPM_BUT_X = 245;
@@ -69,52 +64,52 @@ public class GuiMusicSheet extends Screen {
     private static final int HL_BUT_Y = 23;
     private static final int[] OCTAVE_COLORS = {0xFF5B3200, 0xFFFF0000, 0xFF0AEE00, 0xFF0059FF, 0xFF7B00FF, 0xFFEF00B7, 0xFF00E2DF, 0XFFF4E800};
     private static final int[] OCTAVE_COLORS_TRANS = {0x165B3200, 0x16FF0000, 0x160AEE00, 0x160059FF, 0x167B00FF, 0x16EF00B7, 0x1600E2DF, 0X16F4E800};
-    private static final int MAX_LENGTH_BEATS = 32000;
-    private static final byte COPY_BEGIN_BYTE = (byte) 50;
+    static final int MAX_LENGTH_BEATS = 32000;
+    static final byte COPY_BEGIN_BYTE = (byte) 50;
     private static final int MAX_NOTE_LENGTH = 60;
-    private static final int MAX_UNDO_LENGTH = 16;
+    static final int MAX_UNDO_LENGTH = 16;
     private static final String NOTE_LEFT_STR_KEY = "note.leftButton";
     private static final String NOTE_RIGHT_STR_KEY = "note.rightButton";
-    private static int currentOctave = 1;
-    private static float brushVolume = 0.5f;
+    static int currentOctave = 1;
+    static float brushVolume = 0.5f;
     private final Player editingPlayer;
     private final NoteSound[] notePlaySounds;
-    private final ArrayList<NoteEvent> recordingNotes = new ArrayList<>();
+    final ArrayList<NoteEvent> recordingNotes = new ArrayList<>();
     private final boolean[] buttonPushStates = new boolean[IItemInstrument.TOTAL_NOTES];
     private final UUID id;
-    private final MusicUpdatePacket.FieldFlag dirtyFlag = new MusicUpdatePacket.FieldFlag();
+    final MusicUpdatePacket.FieldFlag dirtyFlag = new MusicUpdatePacket.FieldFlag();
     //The previous version of undoState only saved notes, which would not work for things like (De)crescendo
-    private record UndoState(ArrayList<NoteEvent> notes, ArrayList<VolumeMarker> volumeMarkers) {}
-    private final Deque<UndoState> undoStack = new ArrayDeque<>(MAX_UNDO_LENGTH);
+    record UndoState(ArrayList<NoteEvent> notes, ArrayList<VolumeMarker> volumeMarkers) {}
+    final Deque<UndoState> undoStack = new ArrayDeque<>(MAX_UNDO_LENGTH);
     private final ArrayList<ArrayList<NoteEvent>> neighborNotes = new ArrayList<>();
     private final ArrayList<Float> neighborVolumes = new ArrayList<>();
     private final ArrayList<Integer> neighborPreviewNextNoteIDs = new ArrayList<>();
     private final ArrayList<Integer> neighborPrevInstruments = new ArrayList<>();
-    private final MidiHandler midiHandler;
+    final MidiHandler midiHandler;
     private int noteImageX;
-    private int noteImageLeftX;
-    private int noteImageY;
+    int noteImageLeftX;
+    int noteImageY;
     private byte highlightInterval = 12;
-    private boolean isSigned;
+    boolean isSigned;
     private int generation;
-    private boolean gettingSigned;
-    private boolean previewing;
+    boolean gettingSigned;
+    boolean previewing;
     private boolean previewStarted;
-    private boolean recording;
-    private boolean preRecording;
+    boolean recording;
+    boolean preRecording;
     private boolean preRecordPlayTick;
     private int previewCursor;
     private int previewCursorStart;
     private int oldPreRecordBeat;
-    private int editCursor;
-    private int editCursorEnd;
-    private int selectionStart; // where the first right click happened when selecting
-    private int tickCount;
-    private String noteTitle = "";
+    int editCursor;
+    int editCursorEnd;
+    int selectionStart; // where the first right click happened when selecting
+    int tickCount;
+    String noteTitle = "";
     private Button bpmUp;
     private Button bpmDown;
-    private Button octaveUp;
-    private Button octaveDown;
+    Button octaveUp;
+    Button octaveDown;
     private Button hlUp;
     private Button hlDown;
     private Button buttonSign;
@@ -124,48 +119,49 @@ public class GuiMusicSheet extends Screen {
     private BetterSlider sliderTime;
     private BetterSlider sliderSheetVolume;
     private BetterSlider sliderNoteVolume;
-    private NoteEditBox noteEditBox;
-    private MarkerEditBox markerEditBox;
+    NoteEditBox noteEditBox;
+    MarkerEditBox markerEditBox;
     private ChangeableImageButton buttonPreview;
     private ChangeableImageButton buttonRecord;
     private ChangeableImageButton buttonHideNeighbors;
     private LockImageButton buttonLockPrevIns;
     private boolean neighborsHidden;
     private boolean prevInsLocked;
-    private boolean selfSigned;
+    boolean selfSigned;
     private int version;
-    private ArrayList<NoteEvent> notes = new ArrayList<>();
-    private ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
-    private short lengthBeats = 0;
+    ArrayList<NoteEvent> notes = new ArrayList<>();
+    ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
+    short lengthBeats = 0;
     private byte bps = 8;
     private int bpm;
-    private int previewInstrument = -1;
+    int previewInstrument = -1;
     private long lastMillis;
     private long cumMillis;
     private int previewNextNoteID;
-    private NoteEvent currentlyAddedNote;
-    private VolumeMarker currentlyAddedMarker;  // For crescendo/decrescendo being placed
-    private short markerStartTime;  // Starting time when creating a volume marker
-    private byte markerStartNote;   // Starting note when creating a volume marker
-    private boolean creatingCrescendo;  // true for crescendo, false for decrescendo
-    private boolean glissandoMode;          // Whether we're in glissando placement mode
-    private NoteEvent glissandoSourceNote;  // The source note for glissando (after first click)
-    private ArrayList<Byte> glissandoPendingWaypoints; // Accumulated waypoints during multi-point placement
-    private ArrayList<Byte> glissandoPendingPositions; // Beat position (1-100%) for each pending waypoint
-    private int sliderPosition = 0;
+    NoteEvent currentlyAddedNote;
+    VolumeMarker currentlyAddedMarker;  // For crescendo/decrescendo being placed
+    short markerStartTime;  // Starting time when creating a volume marker
+    byte markerStartNote;   // Starting note when creating a volume marker
+    boolean creatingCrescendo;  // true for crescendo, false for decrescendo
+    boolean glissandoMode;          // Whether we're in glissando placement mode
+    NoteEvent glissandoSourceNote;  // The source note for glissando (after first click)
+    ArrayList<Byte> glissandoPendingWaypoints; // Accumulated waypoints during multi-point placement
+    ArrayList<Byte> glissandoPendingPositions; // Beat position (1-100%) for each pending waypoint
+    int sliderPosition = 0;
     private int maxSliderPosition = 500;
-    private int currentOctavePos = 1;
+    int currentOctavePos = 1;
     private float volume = 1.f;
-    private static final int maxNoteLength = 120;  // Max note length in beats (byte max is 127)
-    private boolean helpOn = false;
-    private boolean rectSelection = false;  // Whether current selection is rectangular (note-bounded)
-    private byte rectSelectNoteTop;          // Highest note in rectangular selection
-    private byte rectSelectNoteBottom;       // Lowest note in rectangular selection
-    private byte rectSelectNoteStart;        // The note where rect selection started (for drag direction)
+    static final int maxNoteLength = 120;  // Max note length in beats (byte max is 127)
+    boolean helpOn = false;
+    boolean rectSelection = false;  // Whether current selection is rectangular (note-bounded)
+    byte rectSelectNoteTop;          // Highest note in rectangular selection
+    byte rectSelectNoteBottom;       // Lowest note in rectangular selection
+    byte rectSelectNoteStart;        // The note where rect selection started (for drag direction)
 
     // Track currently playing sounds for dynamic volume updates during preview
     private record PreviewActiveSound(NoteSound sound, NoteEvent event, VolumeMarker marker) {}
     private final ArrayList<PreviewActiveSound> previewActiveSounds = new ArrayList<>();
+    private final SheetInputHandler inputHandler;
 
     GuiMusicSheet(Player player, ItemStack sheet, Component title) {
         super(title);
@@ -238,6 +234,33 @@ public class GuiMusicSheet extends Screen {
         this.midiHandler = new MidiHandler(this::startSound, this::endSound, this::midiControlCommand);
         midiHandler.currentOctave = currentOctave;
         this.notePlaySounds = new NoteSound[IItemInstrument.TOTAL_NOTES];
+        this.inputHandler = new SheetInputHandler(this);
+    }
+
+    // ---- Super call wrappers for SheetInputHandler ----
+
+    boolean callSuperMouseClicked(double x, double y, int btn) {
+        return super.mouseClicked(x, y, btn);
+    }
+
+    boolean callSuperMouseDragged(double x, double y, int btn, double dx, double dy) {
+        return super.mouseDragged(x, y, btn, dx, dy);
+    }
+
+    boolean callSuperKeyPressed(int key, int scan, int mods) {
+        return super.keyPressed(key, scan, mods);
+    }
+
+    boolean callSuperKeyReleased(int key, int scan, int mods) {
+        return super.keyReleased(key, scan, mods);
+    }
+
+    boolean callSuperCharTyped(char c, int mods) {
+        return super.charTyped(c, mods);
+    }
+
+    boolean callSuperMouseScrolled(double x, double y, double sx, double sy) {
+        return super.mouseScrolled(x, y, sx, sy);
     }
 
     private static int octaveFromNote(byte note) {
@@ -257,7 +280,7 @@ public class GuiMusicSheet extends Screen {
         startSound(noteId, (byte) (data.volume() * 128.f));
     }
 
-    private void startSound(int noteId, byte volume) {
+    void startSound(int noteId, byte volume) {
         //TEMP
         if (noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
             Mod.LOGGER.warn("Key pushed twice noteId: {} vol: {}", noteId, volume);
@@ -298,7 +321,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void endSound(int noteId) {
+    void endSound(int noteId) {
         if (noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
             buttonPushStates[noteId] = false;
             if (notePlaySounds[noteId] != null) {
@@ -534,7 +557,7 @@ public class GuiMusicSheet extends Screen {
         updateLength();
     }
 
-    private void previewButton() {
+    void previewButton() {
         if (!previewing) {
             startPreview();
         } else {
@@ -542,7 +565,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void recordButton() {
+    void recordButton() {
         if (!recording && !preRecording) {
             startPreRecording();
         } else {
@@ -550,7 +573,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void updateButtons() {
+    void updateButtons() {
         boolean notRecording = !this.recording && !this.preRecording;
         boolean editable = !this.isSigned || this.selfSigned || this.generation > 1;
         boolean hideForHelp = helpOn;
@@ -591,7 +614,7 @@ public class GuiMusicSheet extends Screen {
         this.buttonRecord.active = this.recording || this.preRecording || !this.previewing;
     }
 
-    private void toggleHelp() {
+    void toggleHelp() {
         helpOn = !helpOn;
         updateButtons();
     }
@@ -614,7 +637,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private NoteSound playSound(NoteEvent event, int previewInstrument) {
+    NoteSound playSound(NoteEvent event, int previewInstrument) {
         return playSound(event, previewInstrument, volume);
     }
 
@@ -1355,7 +1378,7 @@ public class GuiMusicSheet extends Screen {
         this.previewStarted = false;
     }
 
-    private void startPreview() {
+    void startPreview() {
         this.previewCursor = editCursor;
         boolean noteFound = false;
         for (int i = 0; i < notes.size(); i++) {
@@ -1380,7 +1403,7 @@ public class GuiMusicSheet extends Screen {
         updateButtons();
     }
 
-    private void startPreRecording() {
+    void startPreRecording() {
         preRecording = true;
         this.previewCursor = editCursor;
         for (int i = 0; i < notes.size(); i++) {
@@ -1415,7 +1438,7 @@ public class GuiMusicSheet extends Screen {
         updateButtons();
     }
 
-    private void stopRecording() {
+    void stopRecording() {
         this.preRecording = false;
         this.previewing = false;
         this.recording = false;
@@ -1426,14 +1449,14 @@ public class GuiMusicSheet extends Screen {
         updateButtons();
     }
 
-    private void setSliderPos(int time) {
+    void setSliderPos(int time) {
         time = Math.min(Math.max(time, 0), maxSliderPosition);
 
         sliderTime.setValue((float) time / (float) maxSliderPosition);
         sliderTime.applyValue();
     }
 
-    private void stopPreview() {
+    void stopPreview() {
         this.previewing = false;
         this.previewStarted = false;
         this.buttonPreview.setTexStarts(224, 0);
@@ -1460,11 +1483,11 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void updateLength() {
+    void updateLength() {
         updateLength(true);
     }
 
-    private void updateLength(boolean updateSliderPos) {
+    void updateLength(boolean updateSliderPos) {
         lengthBeats = 0;
         if(!notes.isEmpty()){
             // Notes are sorted by time, so scan from the end to find max endTime quickly
@@ -1491,154 +1514,10 @@ public class GuiMusicSheet extends Screen {
 
     @Override
     public boolean mouseClicked(double dmouseX, double dmouseY, int mouseButton) {
-        if (helpOn) {
-            helpOn = false;
-            updateButtons();
-            return true;
-        }
-
-        // mouseButton: 0 = left click, 1 = right click, 2 = middle click
-        if (super.mouseClicked(dmouseX, dmouseY, mouseButton)) {
-            this.setDragging(true);
-            return true;
-        }
-
-        int mouseX = (int) Math.round(dmouseX);
-        int mouseY = (int) Math.round(dmouseY);
-
-        boolean viewingSelfSigned = isSigned && selfSigned;
-        boolean composing = !isSigned && !gettingSigned;
-
-        if(!gettingSigned){
-            if (mouseButton == 1) {
-                // Right click: cancel/finish glissando mode, or set cursor
-                if (glissandoMode) {
-                    finishGlissando();
-                    return true;
-                }
-                int mx = mouseX - noteImageLeftX;
-                int my = mouseY - noteImageY;
-                if (validClick(mx, my)) {
-                    selectionStart = editCursorEnd = editCursor = ((mx - NOTE_REGION_LEFT)/3) + sliderPosition;
-                    if (isShiftHeld()) {
-                        byte note = pixelToNote(my);
-                        rectSelection = true;
-                        rectSelectNoteStart = rectSelectNoteTop = rectSelectNoteBottom = note;
-                    } else {
-                        rectSelection = false;
-                    }
-                }
-            }
-        }
-
-
-        if (viewingSelfSigned && mouseButton == 0) {
-            editCursorEnd = editCursor;
-        }
-
-        if (composing) {
-            int mx = mouseX - noteImageLeftX;
-            int my = mouseY - noteImageY;
-            if (validClick(mx, my)) {
-                int nrx = mx - NOTE_REGION_LEFT;
-                int nry = my - NOTE_REGION_TOP;
-
-                int time = (nrx / 3) + sliderPosition;
-                int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + currentOctavePos * 12;
-                if (mouseButton == 0) {
-                    // Check for Shift (crescendo) or Ctrl (decrescendo) modifiers
-                    boolean shiftHeld = isShiftHeld();
-                    boolean ctrlHeld = isCtrlHeld();
-                    
-                    if (shiftHeld || ctrlHeld) {
-                        // Start creating a volume marker
-                        creatingCrescendo = shiftHeld;  // Shift = crescendo, Ctrl = decrescendo
-                        markerStartTime = (short) time;
-                        markerStartNote = (byte) note;
-                        // Create initial marker (will be updated during drag)
-                        byte startVol = creatingCrescendo ? (byte) 32 : (byte) 96;
-                        byte endVol = creatingCrescendo ? (byte) 96 : (byte) 32;
-                        currentlyAddedMarker = new VolumeMarker(markerStartTime, (short)(markerStartTime + 1), 
-                                                                startVol, endVol, markerStartNote, markerStartNote);
-                    } else if (glissandoMode) {
-                        // Glissando placement mode
-                        if (glissandoSourceNote == null) {
-                            // First click: find source note
-                            int idx = findNote((byte) note, (short) time);
-                            if (idx >= 0) {
-                                NoteEvent clicked = notes.get(idx);
-                                if (clicked.hasGlissando()) {
-                                    // Already has glissando: clear it
-                                    pushUndo();
-                                    clicked.setGlissando(false, (byte) 0);
-                                    dirtyFlag.hasNotes = true;
-                                    glissandoMode = false;
-                                } else {
-                                    glissandoSourceNote = clicked;
-                                    glissandoPendingWaypoints = new ArrayList<>();
-                                    glissandoPendingPositions = new ArrayList<>();
-                                }
-                            }
-                        } else {
-                            // Subsequent click: add waypoint with X position
-                            byte interval = (byte)(note - glissandoSourceNote.note);
-                            glissandoPendingWaypoints.add(interval);
-                            // Compute beat position within note as percentage (1-100)
-                            float exactTime = nrx / 3.0f + sliderPosition;
-                            int posPct = Math.round((exactTime - glissandoSourceNote.time) * 100.0f / glissandoSourceNote.length);
-                            posPct = Math.max(1, Math.min(100, posPct));
-                            // Ensure monotonic increase
-                            if (!glissandoPendingPositions.isEmpty()) {
-                                int lastPos = glissandoPendingPositions.get(glissandoPendingPositions.size() - 1) & 0xFF;
-                                posPct = Math.max(lastPos + 1, posPct);
-                            }
-                            if (posPct > 100) posPct = 100;
-                            glissandoPendingPositions.add((byte) posPct);
-                            // Don't exit mode — user can add more points.
-                            // Right-click to finish, or press Enter/G to finish/cancel.
-                        }
-                    } else {
-                        // Normal note adding
-                        addNote((byte) note, (short) time);
-                        dirtyFlag.hasNotes = true;
-                        dirtyFlag.hasLength = true;
-                    }
-
-                    editCursorEnd = editCursor;
-                } else if (mouseButton == 2) {
-                    int i = findNote((byte) note, (short) time);
-                    if (i >= 0) {
-                        NoteEvent event = notes.get(i);
-                        noteEditBox.appear(mouseX, mouseY, event);
-                    } else {
-                        // Check if clicking on a volume marker
-                        VolumeMarker clickedMarker = findVolumeMarker((byte) note, (short) time);
-                        if (clickedMarker != null) {
-                            markerEditBox.appear(mouseX, mouseY, clickedMarker);
-                        }
-                    }
-                }
-            }
-            else {
-                // Test current octave clicks
-                for (int i = 0; i < 4; i++) {
-                    final int x = NOTE_REGION_LEFT - 24;
-                    final int y = NOTE_REGION_BOTTOM - 18 - i * 36;
-                    if (mx >= x - 10 && mx <= x + 10 && my >= y - 4 && my <= y + 12) {
-                        currentOctave = currentOctavePos + i;
-                        midiHandler.currentOctave = currentOctave;
-                        if (recording) {
-                            recordingNotes.clear();
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        return true;
+        return inputHandler.handleMouseClicked(dmouseX, dmouseY, mouseButton);
     }
 
-    private void pushUndo() {
+    void pushUndo() {
         if (undoStack.size() >= MAX_UNDO_LENGTH) {
             undoStack.removeLast();
         }
@@ -1654,24 +1533,7 @@ public class GuiMusicSheet extends Screen {
         undoStack.push(new UndoState(stackNotes, stackMarkers));
     }
 
-    private void addNote(byte note, short time) {
-        addNote(note, time, true);
-    }
-
-    private void addNote(byte note, short time, boolean pushUndo) {
-        if (pushUndo) {
-            pushUndo();
-        }
-        int i = findNote(note, time);
-        if (i < 0) {
-            addNote(note, time, (byte) (127.f * brushVolume));
-        } else {
-            notes.remove(i);
-        }
-        updateLength();
-    }
-
-    private void insertNoteSorted(NoteEvent newEvent) {
+    void insertNoteSorted(NoteEvent newEvent) {
         int lo = 0, hi = notes.size();
         while (lo < hi) {
             int mid = (lo + hi) >>> 1;
@@ -1681,781 +1543,39 @@ public class GuiMusicSheet extends Screen {
         notes.add(lo, newEvent);
     }
 
-    private void addNote(byte note, short time, byte volume) {
-        NoteEvent newEvent = new NoteEvent(note, time, volume, (byte) 1);
-        currentlyAddedNote = newEvent;
-        insertNoteSorted(newEvent);
-    }
-
     private void addRecordingNote(NoteEvent noteEvent) {
         insertNoteSorted(noteEvent);
         recordingNotes.add(noteEvent);
     }
 
-    private void finishAddingNote() {
-        if (currentlyAddedNote == null) {
-            return;
-        }
-        playSound(currentlyAddedNote, previewInstrument);
-        currentlyAddedNote = null;
-        updateLength();
-    }
-
-    private int findNote(byte note, short time) {
-        for (int i = notes.size() - 1; i >= 0; i--) {
-            NoteEvent event = notes.get(i);
-            if ((event.time <= time && event.endTime() >= time) && event.note == note) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Finish and apply pending multi-point glissando waypoints, then reset glissando state.
-     */
-    private void finishGlissando() {
-        if (glissandoPendingWaypoints != null && !glissandoPendingWaypoints.isEmpty() && glissandoSourceNote != null) {
-            pushUndo();
-            byte[] waypoints = new byte[glissandoPendingWaypoints.size()];
-            for (int i = 0; i < waypoints.length; i++) {
-                waypoints[i] = glissandoPendingWaypoints.get(i);
-            }
-            byte[] positions = null;
-            if (glissandoPendingPositions != null && glissandoPendingPositions.size() == waypoints.length) {
-                positions = new byte[glissandoPendingPositions.size()];
-                for (int i = 0; i < positions.length; i++) {
-                    positions[i] = glissandoPendingPositions.get(i);
-                }
-            }
-            glissandoSourceNote.setGlissandoWaypoints(waypoints, positions);
-            dirtyFlag.hasNotes = true;
-        }
-        glissandoMode = false;
-        glissandoSourceNote = null;
-        glissandoPendingWaypoints = null;
-        glissandoPendingPositions = null;
-    }
-
-    private void finishAddingMarker(int mouseX, int mouseY) {
-        if(currentlyAddedMarker == null){
-            return;
-        }
-        // Only add if the marker has some meaningful size
-        if(currentlyAddedMarker.endTime - currentlyAddedMarker.startTime >= 2) {
-            pushUndo();
-            // Add the marker to the list and show the edit box
-            volumeMarkers.add(currentlyAddedMarker);
-            dirtyFlag.hasNotes = true;  // Volume markers are saved with notes
-            markerEditBox.appear(mouseX, mouseY, currentlyAddedMarker);
-        }
-        currentlyAddedMarker = null;
-    }
-
-    private VolumeMarker findVolumeMarker(byte note, short time) {
-        for(VolumeMarker marker : volumeMarkers) {
-            if(marker.affects(time, note)) {
-                return marker;
-            }
-        }
-        return null;
-    }
-
     @Override
     public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        GuiEventListener focused = getFocused();
-        if (focused != null && this.isDragging()) {
-            focused.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
-            return true;
-        }
-
-        if (this.tickCount < 10) {
-            // This check is for preventing the annoying selection at start problem
-            return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
-        }
-        int mouseX = (int) Math.round(posX);
-        int mouseY = (int) Math.round(posY);
-
-        int mx = mouseX - noteImageLeftX;
-        int my = mouseY - noteImageY;
-
-        // if right button is pressed
-        if(mouseButton == 1){
-            if (validClick(mx, my)) {
-                int noteX = ((mx - NOTE_REGION_LEFT)/3) + sliderPosition;
-                if (selectionStart > noteX) {
-                    editCursor = noteX;
-                } else {
-                    editCursorEnd = noteX;
-                }
-                if (rectSelection) {
-                    int nry = my - NOTE_REGION_TOP;
-                    byte note = (byte)(47 - (nry / 3) + IItemInstrument.MIN_NOTE + currentOctavePos * 12);
-                    rectSelectNoteTop = (byte) Math.max(rectSelectNoteStart, note);
-                    rectSelectNoteBottom = (byte) Math.min(rectSelectNoteStart, note);
-                }
-            }
-        }
-        else if(mouseButton == 0) {
-            if (currentlyAddedMarker != null && validClick(mx, my)) {
-                // Update volume marker being created
-                int nrx = mx - NOTE_REGION_LEFT;
-                int nry = my - NOTE_REGION_TOP;
-                int time = (nrx / 3) + sliderPosition;
-                int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + currentOctavePos * 12;
-                
-                // Update marker bounds
-                short newStartTime = (short) Math.min(markerStartTime, time);
-                short newEndTime = (short) Math.max(markerStartTime + 1, time + 1);
-                byte newLowNote = (byte) Math.min(markerStartNote, note);
-                byte newHighNote = (byte) Math.max(markerStartNote, note);
-                
-                currentlyAddedMarker = new VolumeMarker(newStartTime, newEndTime,
-                        currentlyAddedMarker.startVolume, currentlyAddedMarker.endVolume,
-                        newLowNote, newHighNote);
-            } else if (currentlyAddedNote != null && validClick(mx, my)) {
-                int time = ((mx - NOTE_REGION_LEFT)/3) + sliderPosition;
-                if(currentlyAddedNote.time < time && time - currentlyAddedNote.time <= maxNoteLength){
-                    currentlyAddedNote.length = (byte)(time - currentlyAddedNote.time);
-                }
-            }
-        }
-
-        return true;
+        return inputHandler.handleMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }
 
     @Override
     public boolean mouseReleased(double posX, double posY, int mouseButton) {
-        this.setDragging(false);
-        if (noteEditBox.active) {
-            noteEditBox.mouseReleased(posX, posY, mouseButton);
-            return true;
-        }
-        if(markerEditBox.active){
-            markerEditBox.mouseReleased(posX, posY, mouseButton);
-            return true;
-        }
-        if(mouseButton == 0) {
-            finishAddingNote();
-            finishAddingMarker((int)posX, (int)posY);
-        }
-
-        return true;
-    }
-
-    private void putSpace(int x) {
-        if (x == MAX_LENGTH_BEATS - 1) {
-            return;
-        }
-        addEditCursor(1);
-        if (lengthBeats == 0 || lengthBeats <= x) {
-            return;
-        }
-
-        pushUndo();
-        dirtyFlag.hasNotes = true;
-        dirtyFlag.hasLength = true;
-        for (int i = notes.size() - 1; i >= 0; i--) {
-            NoteEvent event = notes.get(i);
-            if (event.time > x) {
-                event.time += (short) 1;
-                if (event.time + event.length > MAX_LENGTH_BEATS) {
-                    notes.remove(i);
-                }
-            }
-        }
-        // Shift/expand volume markers
-        for (VolumeMarker m : volumeMarkers) {
-            if (m.startTime > x) {
-                m.startTime++;
-                m.endTime++;
-            } else if (m.endTime > x) {
-                // Marker spans the insertion point: expand it
-                m.endTime++;
-            }
-        }
-        updateLength();
-    }
-
-    private void encodeToClipboard() {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-        ArrayList<NoteEvent> toBeCopied = new ArrayList<>();
-        for (NoteEvent event : notes) {
-            if (event.time >= editCursor && event.time <= editCursorEnd && event.endTime() >= editCursor && event.endTime() <= editCursorEnd) {
-                if (rectSelection) {
-                    // For rectangular selection, also filter by note pitch
-                    if (event.note < rectSelectNoteBottom || event.note > rectSelectNoteTop) {
-                        continue;
-                    }
-                }
-                toBeCopied.add(event);
-            }
-        }
-        buffer.writeByte(COPY_BEGIN_BYTE);
-        buffer.writeInt(editCursorEnd - editCursor);
-        buffer.writeInt(toBeCopied.size());
-        for(NoteEvent event : toBeCopied){
-            NoteEvent copy = event.clone();
-            copy.time -= (short) editCursor;
-            copy.encodeToBuffer(buffer);
-        }
-
-        // Collect volume markers that fall within the selection
-        ArrayList<VolumeMarker> markersToCopy = new ArrayList<>();
-        for (VolumeMarker marker : volumeMarkers) {
-            if (marker.startTime >= editCursor && marker.endTime <= editCursorEnd) {
-                markersToCopy.add(marker);
-            }
-        }
-        buffer.writeInt(markersToCopy.size());
-        for (VolumeMarker marker : markersToCopy) {
-            VolumeMarker copy = marker.clone();
-            copy.startTime -= editCursor;
-            copy.endTime -= editCursor;
-            copy.encodeToBuffer(buffer);
-        }
-
-        int index = buffer.writerIndex();
-        byte[] bytes = new byte[index];
-        buffer.getBytes(0, bytes);
-        String encodeBytes = Base64.getEncoder().encodeToString(bytes);
-        GLFW.glfwSetClipboardString(Minecraft.getInstance().getWindow().getWindow(), encodeBytes);
-
-        editCursorEnd = editCursor;
-    }
-
-    private void decodeFromClipboard(boolean pushBack) {
-        String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getWindow().getWindow());
-        if (encodedMusic != null && !encodedMusic.isEmpty()) {
-            byte[] byteArray;
-            try { // Try because this can fail with weird clipboard content
-                byteArray = Base64.getDecoder().decode(encodedMusic);
-            } catch (IllegalArgumentException ex) {
-                return;
-            }
-
-            int length = 0;
-            List<NoteEvent> toBePasted;
-            List<VolumeMarker> markersToPaste = new ArrayList<>();
-            // Check begin byte
-            if (byteArray[0] != COPY_BEGIN_BYTE) {
-                // Old version
-
-                // Check if all values are valid
-                for (byte b : byteArray) {
-                    if (b < 0 || b > 48) {
-                        Mod.LOGGER.info("User tried to copy invalid data into music: {}", b);
-                        return;
-                    }
-                }
-
-                // Copy values
-                toBePasted = ItemMusicSheet.oldMusicToNotes(byteArray);
-                if (!toBePasted.isEmpty()) {
-                    for (NoteEvent event : toBePasted) {
-                        length = (short) (event.time + event.length) > length ? (short) (event.time + event.length) : length;
-                    }
-                }
-            } else {
-                // New version
-                FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.copiedBuffer(byteArray));
-                buffer.readByte();
-
-                // Read copied time length and note event count
-                length = buffer.readInt() + 1;
-                int count = buffer.readInt();
-
-                // Read the note events into an array
-                toBePasted = new ArrayList<>(count);
-                for (int i = 0; i < count; i++) {
-                    toBePasted.add(NoteEvent.fromBuffer(buffer));
-                }
-
-                // Read volume markers if present (backward compatible)
-                if (buffer.isReadable() && buffer.readableBytes() >= 4) {
-                    int markerCount = buffer.readInt();
-                    for (int i = 0; i < markerCount; i++) {
-                        markersToPaste.add(VolumeMarker.fromBuffer(buffer));
-                    }
-                }
-            }
-
-            pushUndo();
-            if (pushBack) {
-                // Push back the existing future note events
-                for (NoteEvent event : notes) {
-                    if (event.time >= editCursor) {
-                        event.time += (short) length;
-                    }
-                }
-                // Push back the existing future volume markers
-                for (VolumeMarker marker : volumeMarkers) {
-                    if (marker.startTime >= editCursor) {
-                        marker.startTime += length;
-                        marker.endTime += length;
-                    }
-                }
-            }
-
-            for (NoteEvent event : toBePasted) {
-                event.time += (short) editCursor;
-                notes.add(event);
-            }
-            for (VolumeMarker marker : markersToPaste) {
-                marker.startTime += editCursor;
-                marker.endTime += editCursor;
-                volumeMarkers.add(marker);
-            }
-
-            NoteEvent.sortNotes(notes);
-            NoteEvent.removeDuplicates(notes);
-
-            updateLength();
-            editCursor += length;
-            editCursorEnd = editCursor;
-
-            dirtyFlag.hasNotes = true;
-            dirtyFlag.hasLength = true;
-        }
-    }
-
-    private void delAtCursor(int x) {
-        boolean doSort = false;
-        for (int i = notes.size() - 1; i >= 0; i--) {
-            NoteEvent event = notes.get(i);
-            int start = event.time;
-            int end = start + event.length;
-
-            if (start > x) {
-                event.time -= (short) 1;
-                doSort = true;
-            } else if (start < x && end > x) {
-                event.length--;
-            } else if (start == x) {
-                if (event.length == 1) {
-                    notes.remove(i);
-                } else {
-                    event.length--;
-                }
-            }
-        }
-        // Shift/shrink volume markers
-        for (int i = volumeMarkers.size() - 1; i >= 0; i--) {
-            VolumeMarker m = volumeMarkers.get(i);
-            if (m.startTime > x) {
-                m.startTime--;
-                m.endTime--;
-            } else if (m.startTime <= x && m.endTime > x) {
-                m.endTime--;
-                if (m.endTime - m.startTime < 2) {
-                    volumeMarkers.remove(i);
-                }
-            }
-        }
-        if (doSort) {
-            NoteEvent.sortNotes(notes);
-        }
-        updateLength();
+        return inputHandler.handleMouseReleased(posX, posY, mouseButton);
     }
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        setFocused(null);
-        super.keyReleased(keyCode, scanCode, modifiers);
-        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
-        int lastScanCode = firstScanCode + 11;
-        if (scanCode >= firstScanCode && scanCode <= lastScanCode && currentOctave >= 0 && recording) {
-            endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * currentOctave)));
-        }
-        return true;
+        return inputHandler.handleKeyReleased(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers){
-        // Intercept ESC to cancel glissando mode without closing the screen
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE && glissandoMode) {
-            glissandoMode = false;
-            glissandoSourceNote = null;
-            glissandoPendingWaypoints = null;
-            glissandoPendingPositions = null;
-            return true;
-        }
-
-        setFocused(null);
-        super.keyPressed(keyCode, scanCode, modifiers);
-
-        // Copying when viewing self-signed
-        boolean viewingSelfSigned = isSigned && selfSigned;
-        if (viewingSelfSigned) {
-            if (keyCode == GLFW.GLFW_KEY_C && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                encodeToClipboard();
-            }
-            if (keyCode == GLFW.GLFW_KEY_A && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                editCursor = 0;
-                editCursorEnd = lengthBeats - 1;
-                rectSelection = false;
-            }
-        }
-
-        if (!this.isSigned) {
-            if (this.gettingSigned) {
-                switch (keyCode) {
-                    case GLFW.GLFW_KEY_BACKSPACE -> {
-                        if (!this.noteTitle.isEmpty()) {
-                            this.noteTitle = this.noteTitle.substring(0, this.noteTitle.length() - 1);
-                            this.updateButtons();
-                        }
-                    }
-                    case GLFW.GLFW_KEY_ENTER -> {
-                        if (!this.noteTitle.isEmpty()) {
-                            dirtyFlag.hasSigned = true;
-                            dirtyFlag.hasTitle = true;
-                            this.isSigned = true;
-                            if (this.minecraft != null) {
-                                this.minecraft.setScreen(null);
-                            }
-                        }
-                    }
-                    default -> {
-                        // do nothing
-                    }
-                }
-                return true;
-            } else {
-                int x = editCursor;
-                boolean resetEditCursorEnd = true;
-                switch (keyCode) {
-                    case GLFW.GLFW_KEY_DELETE -> {
-                        if (lengthBeats == 0 || lengthBeats <= x) break;
-                        pushUndo();
-                        dirtyFlag.hasNotes = true;
-                        dirtyFlag.hasLength = true;
-                        if (editCursorEnd == x) {
-                            delAtCursor(x);
-                        } else {
-                            deleteSelected();
-                            updateLength();
-                        }
-                    }
-                    case GLFW.GLFW_KEY_BACKSPACE -> {
-                        if (editCursorEnd == x) {
-                            if (x == 0) {
-                                break;
-                            }
-                            if (lengthBeats == 0 || lengthBeats < x) {
-                                addEditCursor(-1);
-                            } else {
-                                pushUndo();
-
-                                dirtyFlag.hasNotes = true;
-                                dirtyFlag.hasLength = true;
-                                addEditCursor(-1);
-                                delAtCursor(editCursor);
-                            }
-                        } else {
-                            pushUndo();
-
-                            dirtyFlag.hasNotes = true;
-                            dirtyFlag.hasLength = true;
-                            deleteSelected();
-                            updateLength();
-                        }
-                    }
-                    case GLFW.GLFW_KEY_SPACE -> putSpace(x - 1);
-                    case GLFW.GLFW_KEY_RIGHT -> {
-                        addEditCursor(1);
-                        if (editCursor > MAX_LENGTH_BEATS - 1) setEditCursor(MAX_LENGTH_BEATS - 1);
-                    }
-                    case GLFW.GLFW_KEY_LEFT -> {
-                        addEditCursor(-1);
-                        if (editCursor < 0) setEditCursor(0);
-                    }
-                    case GLFW.GLFW_KEY_ENTER -> {
-                        if (glissandoMode && glissandoPendingWaypoints != null && !glissandoPendingWaypoints.isEmpty()) {
-                            finishGlissando();
-                        } else {
-                            previewButton();
-                        }
-                    }
-                    case GLFW.GLFW_KEY_LEFT_ALT, GLFW.GLFW_KEY_RIGHT_ALT -> recordButton();
-                    case GLFW.GLFW_KEY_C -> {
-                        if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                            encodeToClipboard();
-                        }
-                    }
-                    case GLFW.GLFW_KEY_V -> {
-                        if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                            decodeFromClipboard((modifiers & GLFW.GLFW_MOD_SHIFT) != GLFW.GLFW_MOD_SHIFT);
-                        }
-                    }
-                    case GLFW.GLFW_KEY_H -> toggleHelp();
-                    case GLFW.GLFW_KEY_G -> {
-                        if (glissandoMode) {
-                            finishGlissando();
-                        } else {
-                            // Enter glissando placement mode
-                            glissandoMode = true;
-                            glissandoSourceNote = null;
-                            glissandoPendingWaypoints = null;
-                            glissandoPendingPositions = null;
-                        }
-                    }
-                    case GLFW.GLFW_KEY_Z -> {
-                        if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                            if (noteEditBox.active) {
-                                break;
-                            }
-                            // Exit glissando mode on undo so state stays consistent
-                            if (glissandoMode) {
-                                glissandoMode = false;
-                                glissandoSourceNote = null;
-                                glissandoPendingWaypoints = null;
-                                glissandoPendingPositions = null;
-                            }
-                            if (!undoStack.isEmpty()) {
-                                UndoState state = undoStack.pop();
-                                notes = state.notes();
-                                volumeMarkers = state.volumeMarkers();
-                                updateLength(false);
-                            }
-                        }
-                    }
-                    case GLFW.GLFW_KEY_A -> {
-                        if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                            editCursor = 0;
-                            editCursorEnd = lengthBeats - 1;
-                            rectSelection = false;
-                            resetEditCursorEnd = false;
-                        } else {
-                            if (editCursor == editCursorEnd) {
-                                currentOctave--;
-                                if (currentOctave < -2) {
-                                    currentOctave = -2;
-                                }
-                                midiHandler.currentOctave = currentOctave;
-                                if (recording) {
-                                    recordingNotes.clear();
-                                }
-                            } else {
-                                if (shiftSelectedOctave(-12)) resetEditCursorEnd = false;
-                            }
-                        }
-                    }
-                    case GLFW.GLFW_KEY_S -> {
-                        if (editCursor == editCursorEnd) {
-                            currentOctave++;
-                            if (currentOctave > 7) {
-                                currentOctave = 7;
-                            }
-                            midiHandler.currentOctave = currentOctave;
-                            if (recording) {
-                                recordingNotes.clear();
-                            }
-                        } else {
-                            if (shiftSelectedOctave(12)) resetEditCursorEnd = false;
-                        }
-                    }
-                    case GLFW.GLFW_KEY_D -> {
-                        if (editCursor != editCursorEnd) {
-                            if (shiftSelectedOctave(-1)) resetEditCursorEnd = false;
-                        }
-                    }
-                    case GLFW.GLFW_KEY_F -> {
-                        if (editCursor != editCursorEnd) {
-                            if (shiftSelectedOctave(1)) resetEditCursorEnd = false;
-                        }
-                    }
-                    case GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT_CONTROL -> resetEditCursorEnd = false;
-                    default -> {
-                        int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
-                        int lastScanCode = firstScanCode + 11;
-                        if (scanCode >= firstScanCode && scanCode <= lastScanCode && currentOctave >= 0) {
-                            if (recording) {
-                                startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * currentOctave)), (byte) 100);
-                            } else {
-                                putSpace(x - 1);
-                                addNote((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * currentOctave), (short) x, false);
-                                finishAddingNote();
-                            }
-                        }
-                    }
-                }
-                if (resetEditCursorEnd) {
-                    editCursorEnd = editCursor;
-                    rectSelection = false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Shift the octave of all selected notes by the given amount.
-     * @return true if any note was changed
-     */
-    private boolean shiftSelectedOctave(int semitones) {
-        boolean changed = false;
-        for (NoteEvent event : notes) {
-            if (event.endTime() >= editCursor && event.time <= editCursorEnd) {
-                // If rectangular selection is active, only shift notes within the note range
-                if (rectSelection && (event.note < rectSelectNoteBottom || event.note > rectSelectNoteTop)) {
-                    continue;
-                }
-                byte newNote = (byte) (event.note + semitones);
-                int newId = IItemInstrument.noteToId(newNote);
-                if (newId >= 0 && newId < IItemInstrument.MAX_NOTE - IItemInstrument.MIN_NOTE + 1) {
-                    if (!changed) {
-                        pushUndo();
-                        dirtyFlag.hasNotes = true;
-                        dirtyFlag.hasLength = true;
-                        changed = true;
-                    }
-                    event.note = newNote;
-                }
-            }
-        }
-        // Shift volume marker note ranges to follow the shifted notes
-        if (changed) {
-            for (VolumeMarker m : volumeMarkers) {
-                // Marker overlaps the time selection
-                if (m.startTime <= editCursorEnd && m.endTime >= editCursor) {
-                    if (rectSelection) {
-                        // Only shift if the marker's note range overlaps the rect selection
-                        if (m.highNote < rectSelectNoteBottom - semitones || m.lowNote > rectSelectNoteTop - semitones) {
-                            continue;
-                        }
-                    }
-                    m.lowNote += (byte) semitones;
-                    m.highNote += (byte) semitones;
-                }
-            }
-        }
-        // Update rectangular selection bounds to follow the shifted notes
-        if (changed && rectSelection) {
-            rectSelectNoteTop += (byte) semitones;
-            rectSelectNoteBottom += (byte) semitones;
-            rectSelectNoteStart += (byte) semitones;
-        }
-        return changed;
-    }
-
-    private void deleteSelected() {
-        boolean doSort = false;
-        Iterator<NoteEvent> it = notes.iterator();
-        while (it.hasNext()) {
-            NoteEvent event = it.next();
-            if(event.time >= editCursor && event.endTime() <= editCursorEnd) {
-                it.remove();
-            }
-            else if(event.time < editCursor && event.endTime() >= editCursor && event.endTime() <= editCursorEnd) {
-                event.length = (byte)(editCursor - event.time);
-            }
-            else if(event.time >= editCursor && event.time <= editCursorEnd && event.endTime() > editCursorEnd) {
-                event.length = (byte)(event.endTime() - editCursorEnd);
-                event.time = (short)(editCursor + 1);
-                doSort = true;
-            } else if (event.time < editCursor && event.endTime() > editCursorEnd) {
-                // spans across the whole cut -> trim to before cut
-                event.length = (byte) (editCursor - event.time);
-            } else if (event.time > editCursorEnd) {
-                // after cut -> shift left
-                event.time -= (short) (editCursorEnd - editCursor + 1);
-                doSort = true;
-            }
-        }
-        // Handle volume markers for the deleted selection
-        int selLen = editCursorEnd - editCursor + 1;
-        for (int i = volumeMarkers.size() - 1; i >= 0; i--) {
-            VolumeMarker m = volumeMarkers.get(i);
-            if (m.startTime >= editCursor && m.endTime <= editCursorEnd) {
-                // Fully inside selection: remove
-                volumeMarkers.remove(i);
-            } else if (m.startTime < editCursor && m.endTime > editCursorEnd) {
-                // Spans entire selection: shrink
-                m.endTime -= (short) selLen;
-                if (m.endTime - m.startTime < 2) volumeMarkers.remove(i);
-            } else if (m.startTime < editCursor && m.endTime >= editCursor && m.endTime <= editCursorEnd) {
-                // Starts before, ends inside: trim end
-                m.endTime = (short) editCursor;
-                if (m.endTime - m.startTime < 2) volumeMarkers.remove(i);
-            } else if (m.startTime >= editCursor && m.startTime <= editCursorEnd && m.endTime > editCursorEnd) {
-                // Starts inside selection, ends after: keep the tail, shift to editCursor
-                short origEnd = m.endTime;
-                m.startTime = (short) editCursor;
-                m.endTime = (short) (editCursor + origEnd - editCursorEnd - 1);
-                if (m.endTime - m.startTime < 2) volumeMarkers.remove(i);
-            } else if (m.startTime > editCursorEnd) {
-                // Entirely after selection: shift left
-                m.startTime -= (short) selLen;
-                m.endTime -= (short) selLen;
-            }
-        }
-        if (doSort) {
-            NoteEvent.sortNotes(notes);
-        }
-    }
-
-    private void setEditCursor(int x) {
-        if (editCursor != editCursorEnd) {
-            editCursor = x;
-        } else {
-            editCursor = x;
-            editCursorEnd = x;
-        }
-    }
-
-    private void addEditCursor(int x) {
-        setEditCursor(editCursor + x);
+        return inputHandler.handleKeyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char typedChar, int something) {
-        super.charTyped(typedChar, something);
-
-        if (!this.isSigned) {
-            if (this.gettingSigned && this.noteTitle.length() < 16 && StringUtil.isAllowedChatCharacter(typedChar)) {
-                this.noteTitle = this.noteTitle + typedChar;
-                this.updateButtons();
-            }
-            return true;
-        }
-        return false;
+        return inputHandler.handleCharTyped(typedChar, something);
     }
 
     @Override
     public boolean mouseScrolled(double x, double y, double scrollX, double scrollY){
-        if (isShiftHeld() && scrollY != 0.d) {
-            // Shift+Scroll: horizontal scrolling
-            int scrollAmount = 8; // beats per scroll notch
-            if (scrollY > 0) {
-                setSliderPos(sliderPosition - scrollAmount);
-            } else {
-                setSliderPos(sliderPosition + scrollAmount);
-            }
-            return true;
-        }
-        // Also handle native horizontal scroll (scrollX) for mice with horizontal scroll wheels
-        // Was not tested (I don't own this type of mouse, but somebody might appreciate this)
-        if (scrollX != 0.d) {
-            int scrollAmount = 8;
-            if (scrollX > 0) {
-                setSliderPos(sliderPosition + scrollAmount);
-            } else {
-                setSliderPos(sliderPosition - scrollAmount);
-            }
-            return true;
-        }
-        if (scrollY != 0.d) {
-            if (scrollY > 0) {
-                octaveUp.playDownSound(Minecraft.getInstance().getSoundManager());
-                octaveUp.onPress();
-            } else if (scrollY < 0) {
-                octaveDown.playDownSound(Minecraft.getInstance().getSoundManager());
-                octaveDown.onPress();
-            }
-            return true;
-        }
-        return super.mouseScrolled(x, y, scrollX, scrollY);
+        return inputHandler.handleMouseScrolled(x, y, scrollX, scrollY);
     }
 
     /**
@@ -2504,28 +1624,8 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private boolean validClick(int x, int y) {
-        return x <= NOTE_REGION_RIGHT && x >= NOTE_REGION_LEFT && y <= NOTE_REGION_BOTTOM && y >= NOTE_REGION_TOP;
-    }
-
-    private static boolean isShiftHeld() {
-        long wh = Minecraft.getInstance().getWindow().getWindow();
-        return GLFW.glfwGetKey(wh, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS ||
-               GLFW.glfwGetKey(wh, GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS;
-    }
-
-    private static boolean isCtrlHeld() {
-        long wh = Minecraft.getInstance().getWindow().getWindow();
-        return GLFW.glfwGetKey(wh, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS ||
-               GLFW.glfwGetKey(wh, GLFW.GLFW_KEY_RIGHT_CONTROL) == GLFW.GLFW_PRESS;
-    }
-
     private int noteToPixelY(int note) {
         return noteImageY + NOTE_REGION_TOP + (47 - note + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36;
-    }
-
-    private byte pixelToNote(int mouseRelY) {
-        return (byte)(47 - ((mouseRelY - NOTE_REGION_TOP) / 3) + IItemInstrument.MIN_NOTE + currentOctavePos * 12);
     }
 
     public enum MidiControl {
