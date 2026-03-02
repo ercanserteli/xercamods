@@ -15,8 +15,8 @@ import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.*;
 
 public class Mod implements ModInitializer {
-    public static final String MODID = "xercapaint";
-    public static final Logger LOGGER = LogManager.getLogger(MODID);
+    public static final String MOD_ID = "xercapaint";
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {
@@ -52,7 +52,7 @@ public class Mod implements ModInitializer {
     }
 
     public static ResourceLocation id(String location) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, location);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, location);
     }
 
     public static ResourceKey<Item> itemKey(String location) {
