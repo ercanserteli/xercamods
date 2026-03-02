@@ -47,14 +47,12 @@ public class ItemPalette extends Item {
             return 0;
         }
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
-        if (basicColors != null) {
-            if (basicColors.length == BASIC_COLOR_COUNT) {
-                int basicCount = 0;
-                for (byte basicColor : basicColors) {
-                    basicCount += basicColor;
-                }
-                return basicCount;
+        if (basicColors != null && basicColors.length == BASIC_COLOR_COUNT) {
+            int basicCount = 0;
+            for (byte basicColor : basicColors) {
+                basicCount += basicColor;
             }
+            return basicCount;
         }
         return 0;
     }
@@ -87,7 +85,7 @@ public class ItemPalette extends Item {
         }
     }
 
-    public static class ComponentCustomColor {
+    public static final class ComponentCustomColor {
         public static final int CUSTOM_COLOR_COUNT = 12;
         public PaletteUtil.CustomColor[] colors;
 

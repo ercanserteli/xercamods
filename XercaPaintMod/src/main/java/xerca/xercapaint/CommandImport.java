@@ -28,7 +28,7 @@ public class CommandImport {
         dispatcher.register(
                 Commands.literal("paintimport")
                         .then(Commands.argument(TAG_NAME, StringArgumentType.word())
-                                .executes((p) -> paintImport(p.getSource(), StringArgumentType.getString(p, TAG_NAME))))
+                                .executes(p -> paintImport(p.getSource(), StringArgumentType.getString(p, TAG_NAME))))
         );
     }
 
@@ -40,8 +40,7 @@ public class CommandImport {
             ServerPlayer player = stack.getPlayerOrException();
             ServerPlayNetworking.send(player, pack);
         } catch (CommandSyntaxException e) {
-            Mod.LOGGER.debug("Command executor is not a player");
-            e.printStackTrace();
+            Mod.LOGGER.debug("Command executor is not a player", e);
             return 0;
         }
 
@@ -56,7 +55,7 @@ public class CommandImport {
             return;
         }
         String canvasId = tag.getString(TAG_NAME);
-        if (!canvasId.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_[0-9]+$")) {
+        if (!canvasId.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_[\\d]+$")) {
             player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken paint file");
             return;
@@ -103,32 +102,33 @@ public class CommandImport {
             }
             doAddItem = true;
         } else {
-            ItemStack mainhand = player.getMainHandItem();
-            ItemStack offhand = player.getOffhandItem();
+            ItemStack mainHand = player.getMainHandItem();
+            ItemStack offHand = player.getOffhandItem();
 
-            if (!(mainhand.getItem() instanceof ItemCanvas) || (mainhand.get(Items.CANVAS_PIXELS) != null || mainhand.get(Items.CANVAS_ID) != null)) {
+            if (!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.get(Items.CANVAS_PIXELS) != null || mainHand.get(Items.CANVAS_ID) != null)) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
-            if (((ItemCanvas) mainhand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)) {
-                Component typeName = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
+            if (((ItemCanvas) mainHand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)) {
                 CanvasType type = CanvasType.fromByte(canvasType);
                 if (type == null) {
                     return;
                 }
+                Component typeName;
                 switch (type) {
                     case LONG -> typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
                     case TALL -> typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
                     case LARGE -> typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
+                    default -> typeName = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
                 }
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", typeName).withStyle(ChatFormatting.RED));
                 return;
             }
-            if (!ItemPalette.isFull(offhand)) {
+            if (!ItemPalette.isFull(offHand)) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.3").withStyle(ChatFormatting.RED));
                 return;
             }
-            itemStack = mainhand;
+            itemStack = mainHand;
         }
 
         itemStack.set(Items.CANVAS_VERSION, tag.getInt("v"));

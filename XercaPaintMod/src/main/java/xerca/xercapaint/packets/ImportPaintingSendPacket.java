@@ -11,9 +11,8 @@ public record ImportPaintingSendPacket(CompoundTag tag) implements CustomPacketP
     public static final CustomPacketPayload.Type<ImportPaintingSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("import_painting_send"));
     public static final StreamCodec<FriendlyByteBuf, ImportPaintingSendPacket> PACKET_CODEC = StreamCodec.ofMember(ImportPaintingSendPacket::encode, ImportPaintingSendPacket::decode);
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeNbt(tag);
-        return buf;
     }
 
     public static ImportPaintingSendPacket decode(FriendlyByteBuf buf) {
@@ -21,8 +20,23 @@ public record ImportPaintingSendPacket(CompoundTag tag) implements CustomPacketP
         return new ImportPaintingSendPacket(tag);
     }
 
+    public ImportPaintingSendPacket {
+        if (tag != null) {
+            tag = tag.copy();
+        }
+    }
+
+    @Override
+    public CompoundTag tag() {
+        if (tag == null) {
+            return null;
+        }
+        return tag.copy();
+    }
+
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }
+

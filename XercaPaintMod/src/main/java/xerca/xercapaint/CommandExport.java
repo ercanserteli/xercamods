@@ -17,6 +17,7 @@ import xerca.xercapaint.packets.ExportPaintingPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class CommandExport {
         dispatcher.register(
                 Commands.literal("paintexport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
@@ -52,7 +53,12 @@ public class CommandExport {
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
         if (!directory.exists()) {
-            directory.mkdir();
+            try {
+                Files.createDirectories(directory.toPath());
+            } catch (IOException e) {
+                Mod.LOGGER.error("Could not create paintings directory", e);
+                return false;
+            }
         }
 
         for (ItemStack s : player.getHandSlots()) {
@@ -72,7 +78,7 @@ public class CommandExport {
                         tag.putString("name", canvasId);
                         tag.putInt("v", version);
                         tag.putInt("generation", generation);
-                        tag.putByte("ct", (byte) ((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                        tag.putByte("ct", ((ItemCanvas) s.getItem()).getCanvasType().toByte());
                         if (title != null && author != null) {
                             tag.putString("title", title);
                             tag.putString("author", author);
@@ -80,7 +86,7 @@ public class CommandExport {
                         NbtIo.write(tag, Path.of(filepath));
                         return true;
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Mod.LOGGER.error("Error while exporting painting", e);
                     }
                 }
             }

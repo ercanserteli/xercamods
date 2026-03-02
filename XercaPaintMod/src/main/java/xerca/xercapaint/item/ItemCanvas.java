@@ -22,7 +22,6 @@ import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityCanvas;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         if (worldIn.isClientSide) {
             ModClient.showCanvasGui(playerIn);
         }
@@ -59,8 +58,8 @@ public class ItemCanvas extends HangingEntityItem {
                 }
             } else {
                 String canvasId = itemstack.get(Items.CANVAS_ID);
-                List<Integer> canvasPixles = itemstack.get(Items.CANVAS_PIXELS);
-                if (canvasId == null || canvasPixles == null) {
+                List<Integer> canvasPixels = itemstack.get(Items.CANVAS_PIXELS);
+                if (canvasId == null || canvasPixels == null) {
                     if (context.getLevel().isClientSide) {
                         ModClient.showCanvasGui(player);
                     }
@@ -106,20 +105,20 @@ public class ItemCanvas extends HangingEntityItem {
         return rotation;
     }
 
-    public static boolean hasTitle(@Nonnull ItemStack stack) {
+    public static boolean hasTitle(ItemStack stack) {
         return !StringUtil.isNullOrEmpty(stack.get(Items.CANVAS_TITLE));
     }
 
-    public static Component getFullLabel(@Nonnull ItemStack stack) {
+    public static Component getFullLabel(ItemStack stack) {
         String labelString = "";
         Component title = getCustomTitle(stack);
         if (title != null) {
-            labelString += (title.getString() + " ");
+            labelString += title.getString() + " ";
         }
         String author = stack.get(Items.CANVAS_AUTHOR);
 
         if (!StringUtil.isNullOrEmpty(author)) {
-            labelString += (Component.translatable("canvas.byAuthor", author)).getString() + " ";
+            labelString += Component.translatable("canvas.byAuthor", author).getString() + " ";
         }
 
         int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
@@ -133,7 +132,7 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     @Nullable
-    public static Component getCustomTitle(@Nonnull ItemStack stack) {
+    public static Component getCustomTitle(ItemStack stack) {
         String s = stack.get(Items.CANVAS_TITLE);
         if (!StringUtil.isNullOrEmpty(s)) {
             return Component.literal(s);
@@ -141,9 +140,8 @@ public class ItemCanvas extends HangingEntityItem {
         return null;
     }
 
-    @Nonnull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         Component comp = getCustomTitle(stack);
         if (comp != null) {
             return comp;
@@ -165,7 +163,7 @@ public class ItemCanvas extends HangingEntityItem {
             int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
             // generation = 0 means empty, 1 means original, more means copy
             if (generation > 0) {
-                tooltipComponents.add((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
+                tooltipComponents.add(Component.translatable("canvas.generation." + (generation - 1)).withStyle(ChatFormatting.GRAY));
             }
         } else {
             tooltipComponents.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
@@ -190,6 +188,7 @@ public class ItemCanvas extends HangingEntityItem {
         return canvasType;
     }
 
+    @Override
     protected boolean mayPlace(Player playerIn, Direction directionIn, ItemStack itemStackIn, BlockPos posIn) {
         if (canvasType == CanvasType.SMALL) {
             return Level.isInSpawnableBounds(posIn) && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);

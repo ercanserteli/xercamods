@@ -101,7 +101,7 @@ public class RecipeCanvasCloningGameTests {
 
         NonNullList<ItemStack> remainders = RECIPE.getRemainingItems(grid);
         helper.assertTrue(remainders.size() == grid.size(), "Expected remainders size to match grid size");
-        ItemStack remainingOriginal = remainders.get(0);
+        ItemStack remainingOriginal = remainders.getFirst();
         helper.assertTrue(remainingOriginal.is(Items.ITEM_CANVAS), "Expected original canvas to remain in its slot");
         helper.assertTrue(remainingOriginal.getOrDefault(Items.CANVAS_GENERATION, 0) == 1, "Expected remaining original generation to stay 1");
         helper.assertTrue("original".equals(remainingOriginal.get(Items.CANVAS_ID)),

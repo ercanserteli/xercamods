@@ -1,3 +1,4 @@
+import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 
 plugins {
@@ -35,7 +36,7 @@ tasks.register('buildCopy', Copy) {
 }
 
 dependencies {
-    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
@@ -81,8 +82,10 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 spotbugs {
-    ignoreFailures = true
     effort = Effort.MAX
+    ignoreFailures = true
+    excludeFilter = file("config/spotbugs/excludeFilter.xml")
+    reportLevel = Confidence.valueOf("HIGH")
 }
 
 pmd {
@@ -98,7 +101,6 @@ java {
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
-    archivesBaseName = project.archives_base_name
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.
@@ -120,8 +122,27 @@ loom {
     }
 }
 
-tasks.named('test') {
+tasks.named('check') {
     dependsOn(tasks.named('runGameTest'))
+}
+
+tasks.named('test') {
+    enabled = false
+}
+
+tasks.named('runGameTest').configure {
+    doFirst {
+        def gameTestDir = file("build/gametest")
+        gameTestDir.mkdirs()
+        def serverProperties = new File(gameTestDir, "server.properties")
+        if (!serverProperties.exists()) {
+            serverProperties.text = "online-mode=false\nmotd=GameTest\n"
+        }
+        def eulaFile = new File(gameTestDir, "eula.txt")
+        if (!eulaFile.exists()) {
+            eulaFile.text = "eula=true\n"
+        }
+    }
 }
 
 jar {

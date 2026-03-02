@@ -110,9 +110,9 @@ public class RecipeCanvasCloning extends CustomRecipe {
         for (int i = 0; i < nonnulllist.size(); ++i) {
             ItemStack stack = inv.getItem(i);
             if (stack.getItem() instanceof ItemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
-                ItemStack itemstack1 = stack.copy();
-                itemstack1.setCount(1);
-                nonnulllist.set(i, itemstack1);
+                ItemStack copyStack = stack.copy();
+                copyStack.setCount(1);
+                nonnulllist.set(i, copyStack);
                 break;
             }
         }

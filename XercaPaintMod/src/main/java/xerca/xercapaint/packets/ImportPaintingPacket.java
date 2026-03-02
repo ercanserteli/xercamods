@@ -10,9 +10,8 @@ public record ImportPaintingPacket(String canvasId) implements CustomPacketPaylo
     public static final CustomPacketPayload.Type<ImportPaintingPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("import_painting"));
     public static final StreamCodec<FriendlyByteBuf, ImportPaintingPacket> PACKET_CODEC = StreamCodec.ofMember(ImportPaintingPacket::encode, ImportPaintingPacket::decode);
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeUtf(canvasId);
-        return buf;
     }
 
     public static ImportPaintingPacket decode(FriendlyByteBuf buf) {
@@ -25,3 +24,4 @@ public record ImportPaintingPacket(String canvasId) implements CustomPacketPaylo
         return PACKET_ID;
     }
 }
+

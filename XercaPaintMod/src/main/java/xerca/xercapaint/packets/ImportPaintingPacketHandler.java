@@ -7,6 +7,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
+import xerca.xercapaint.Mod;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,10 +21,11 @@ public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayPay
             CompoundTag tag = NbtIo.read(Path.of(filepath));
             ClientPlayNetworking.send(new ImportPaintingSendPacket(tag));
         } catch (IOException e) {
-            e.printStackTrace();
-            LocalPlayer player = Minecraft.getInstance().player;
+            Mod.LOGGER.error("Could not read painting file {}", filepath, e);
+            Minecraft minecraft = Minecraft.getInstance();
+            LocalPlayer player = minecraft.player;
             if (player != null) {
-                Minecraft.getInstance().player.sendSystemMessage(Component.translatable("xercapaint.import.fail.4", filepath).withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.4", filepath).withStyle(ChatFormatting.RED));
             }
         }
     }

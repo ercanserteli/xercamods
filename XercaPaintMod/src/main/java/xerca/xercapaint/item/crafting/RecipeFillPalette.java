@@ -11,13 +11,13 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -44,8 +44,8 @@ public class RecipeFillPalette extends CustomRecipe {
         return -1;
     }
 
-    private ArrayList<ItemStack> findDyes(CraftingInput inv, int paletteId) {
-        ArrayList<ItemStack> dyes = new ArrayList<>();
+    private List<ItemStack> findDyes(CraftingInput inv, int paletteId) {
+        List<ItemStack> dyes = new ArrayList<>();
         for (int i = 0; i < inv.size(); ++i) {
             if (i == paletteId) {
                 continue;
@@ -71,7 +71,7 @@ public class RecipeFillPalette extends CustomRecipe {
         if (paletteId < 0) {
             return false;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
+        List<ItemStack> dyes = findDyes(inv, paletteId);
         return !dyes.isEmpty();
     }
 
@@ -79,12 +79,12 @@ public class RecipeFillPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         int paletteId = findPalette(inv);
         if (paletteId < 0) {
             return ItemStack.EMPTY;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
+        List<ItemStack> dyes = findDyes(inv, paletteId);
         if (dyes.isEmpty()) {
             return ItemStack.EMPTY;
         }
@@ -93,7 +93,7 @@ public class RecipeFillPalette extends CustomRecipe {
         byte[] basicColors = inputPalette.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[16]).clone();
 
         for (ItemStack dye : dyes) {
-            DyeColor color = ((DyeItem) (dye.getItem())).getDyeColor();
+            DyeColor color = ((DyeItem) dye.getItem()).getDyeColor();
             int realColorId = 15 - color.getId();
             if (basicColors[realColorId] > 0) {
                 Mod.LOGGER.debug("Color already exists in palette.");

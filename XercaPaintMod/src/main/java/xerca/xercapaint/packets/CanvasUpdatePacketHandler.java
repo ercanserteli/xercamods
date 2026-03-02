@@ -17,18 +17,19 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
     public static void processMessage(CanvasUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
         ItemStack palette;
-        Entity entityEasel = null;
+        EntityEasel easel = null;
 
         if (msg.easelId() > -1) {
-            entityEasel = pl.level().getEntity(msg.easelId());
+            Entity entityEasel = pl.level().getEntity(msg.easelId());
             if (entityEasel == null) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.easelId());
                 return;
             }
-            if (!(entityEasel instanceof EntityEasel easel)) {
+            if (!(entityEasel instanceof EntityEasel entityEaselCast)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
+            easel = entityEaselCast;
             canvas = easel.getItem();
             if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Canvas not found inside easel!");
@@ -69,7 +70,7 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
                 palette.set(Items.PALETTE_CUSTOM_COLORS, new ItemPalette.ComponentCustomColor(msg.paletteColors()));
             }
 
-            if (entityEasel instanceof EntityEasel easel) {
+            if (easel != null) {
                 easel.setItem(canvas, false);
                 easel.setPainter(null);
             }

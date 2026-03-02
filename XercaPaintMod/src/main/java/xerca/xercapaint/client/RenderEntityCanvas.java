@@ -33,8 +33,8 @@ import java.util.Objects;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
-    static public RenderEntityCanvas theInstance;
-    static private final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
+    static RenderEntityCanvas theInstance;
+    private static final ResourceLocation backLocation = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
 
     static {
@@ -171,9 +171,9 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                 int rotation = canvas.getRotation();
                 if (rotation > 0) {
                     ms.mulPose(Axis.XP.rotationDegrees(pitch));
-                    ms.mulPose(Axis.YP.rotationDegrees(180 - yaw));
-                    ms.mulPose(Axis.ZP.rotationDegrees(90 * rotation));
-                    ms.mulPose(Axis.YP.rotationDegrees(-180 + yaw));
+                    ms.mulPose(Axis.YP.rotationDegrees(180.f - yaw));
+                    ms.mulPose(Axis.ZP.rotationDegrees(90.f * rotation));
+                    ms.mulPose(Axis.YP.rotationDegrees(-180.f + yaw));
                     ms.mulPose(Axis.XP.rotationDegrees(-pitch));
                 }
             }
@@ -258,6 +258,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                     .setNormal(normal.x(), normal.y(), normal.z());
         }
 
+        @Override
         public void close() {
             this.canvasTexture.close();
         }

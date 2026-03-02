@@ -7,29 +7,38 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 
+@SuppressWarnings("ArrayRecordComponent")
 public record CanvasMiniUpdatePacket(int[] pixels, String canvasId, int version, int easelId,
                                      CanvasType canvasType) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<CanvasMiniUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("canvas_mini_update"));
     public static final StreamCodec<FriendlyByteBuf, CanvasMiniUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(CanvasMiniUpdatePacket::encode, CanvasMiniUpdatePacket::decode);
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeInt(easelId);
-        buf.writeByte(canvasType.ordinal());
+        buf.writeByte(canvasType.toByte());
         buf.writeInt(version);
         buf.writeUtf(canvasId);
         buf.writeVarIntArray(pixels);
-        return buf;
     }
 
     public static CanvasMiniUpdatePacket decode(FriendlyByteBuf buf) {
-        int easalId = buf.readInt();
+        int easelId = buf.readInt();
         CanvasType canvasType = CanvasType.fromByte(buf.readByte());
         assert canvasType != null;
         int version = buf.readInt();
         String canvasId = buf.readUtf(64);
         int area = CanvasType.getHeight(canvasType) * CanvasType.getWidth(canvasType);
         int[] pixels = buf.readVarIntArray(area);
-        return new CanvasMiniUpdatePacket(pixels, canvasId, version, easalId, canvasType);
+        return new CanvasMiniUpdatePacket(pixels, canvasId, version, easelId, canvasType);
+    }
+
+    public CanvasMiniUpdatePacket {
+        pixels = pixels.clone();
+    }
+
+    @Override
+    public int[] pixels() {
+        return pixels.clone();
     }
 
     @Override

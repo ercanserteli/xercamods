@@ -8,24 +8,24 @@ import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 
+@SuppressWarnings("ArrayRecordComponent")
 public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, String canvasId, int version, int easelId,
                                  PaletteUtil.CustomColor[] paletteColors,
                                  CanvasType canvasType) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<CanvasUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("canvas_update"));
     public static final StreamCodec<FriendlyByteBuf, CanvasUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(CanvasUpdatePacket::encode, CanvasUpdatePacket::decode);
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         for (PaletteUtil.CustomColor color : paletteColors) {
             color.writeToBuffer(buf);
         }
         buf.writeInt(easelId);
-        buf.writeByte(canvasType.ordinal());
+        buf.writeByte(canvasType.toByte());
         buf.writeInt(version);
         buf.writeUtf(canvasId);
         buf.writeUtf(title);
         buf.writeBoolean(signed);
         buf.writeVarIntArray(pixels);
-        return buf;
     }
 
     public static CanvasUpdatePacket decode(FriendlyByteBuf buf) {
@@ -45,8 +45,24 @@ public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, Str
         return new CanvasUpdatePacket(pixels, signed, title, canvasId, version, easelId, paletteColors, canvasType);
     }
 
+    public CanvasUpdatePacket {
+        pixels = pixels.clone();
+        paletteColors = paletteColors.clone();
+    }
+
+    @Override
+    public int[] pixels() {
+        return pixels.clone();
+    }
+
+    @Override
+    public PaletteUtil.CustomColor[] paletteColors() {
+        return paletteColors.clone();
+    }
+
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }
+

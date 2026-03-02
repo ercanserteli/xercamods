@@ -15,12 +15,12 @@ import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
 public class EaselModel extends EntityModel<EntityEasel> {
-    private final ModelPart bb_main;
+    private final ModelPart bbMain;
     private final ModelPart bottomBar;
     private final ModelPart topBar;
 
     public EaselModel(ModelPart model) {
-        this.bb_main = model;
+        this.bbMain = model;
         this.bottomBar = model.getChild("bottomBar");
         this.topBar = model.getChild("topBar");
     }
@@ -87,6 +87,6 @@ public class EaselModel extends EntityModel<EntityEasel> {
 
     @Override
     public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        bb_main.render(poseStack, buffer, packedLight, packedOverlay);
+        bbMain.render(poseStack, buffer, packedLight, packedOverlay);
     }
 }

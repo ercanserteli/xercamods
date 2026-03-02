@@ -12,11 +12,11 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -28,7 +28,7 @@ public class RecipeCraftPalette extends CustomRecipe {
     }
 
     private boolean isPlank(ItemStack stack) {
-        return stack.getTags().anyMatch((p) -> p.location().equals(plank));
+        return stack.getTags().anyMatch(p -> p.location().equals(plank));
     }
 
     private boolean isDye(ItemStack stack) {
@@ -56,8 +56,8 @@ public class RecipeCraftPalette extends CustomRecipe {
         return -1;
     }
 
-    private ArrayList<ItemStack> findDyes(CraftingInput inv, int plankRow) {
-        ArrayList<ItemStack> dyes = new ArrayList<>();
+    private List<ItemStack> findDyes(CraftingInput inv, int plankRow) {
+        List<ItemStack> dyes = new ArrayList<>();
         for (int i = 0; i < inv.height(); ++i) {
             if (i == plankRow) {
                 continue;
@@ -86,7 +86,7 @@ public class RecipeCraftPalette extends CustomRecipe {
         if (plankRow < 0) {
             return false;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, plankRow);
+        List<ItemStack> dyes = findDyes(inv, plankRow);
         return !dyes.isEmpty();
     }
 
@@ -94,19 +94,19 @@ public class RecipeCraftPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         int plankRow = findPlankRow(inv);
         if (plankRow < 0) {
             return ItemStack.EMPTY;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, plankRow);
+        List<ItemStack> dyes = findDyes(inv, plankRow);
         if (dyes.isEmpty()) {
             return ItemStack.EMPTY;
         }
 
         byte[] basicColors = new byte[16];
         for (ItemStack dye : dyes) {
-            DyeColor color = ((DyeItem) (dye.getItem())).getDyeColor();
+            DyeColor color = ((DyeItem) dye.getItem()).getDyeColor();
             basicColors[15 - color.getId()] = 1;
         }
         ItemStack result = new ItemStack(Items.ITEM_PALETTE);

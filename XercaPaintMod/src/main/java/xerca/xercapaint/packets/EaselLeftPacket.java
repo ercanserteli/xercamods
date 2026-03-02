@@ -10,9 +10,8 @@ public record EaselLeftPacket(int easelId) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<EaselLeftPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("easel_left"));
     public static final StreamCodec<FriendlyByteBuf, EaselLeftPacket> PACKET_CODEC = StreamCodec.ofMember(EaselLeftPacket::encode, EaselLeftPacket::decode);
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeInt(easelId);
-        return buf;
     }
 
     public static EaselLeftPacket decode(FriendlyByteBuf buf) {
@@ -25,3 +24,4 @@ public record EaselLeftPacket(int easelId) implements CustomPacketPayload {
         return PACKET_ID;
     }
 }
+

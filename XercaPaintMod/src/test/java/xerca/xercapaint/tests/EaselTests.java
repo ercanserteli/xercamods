@@ -51,7 +51,7 @@ public class EaselTests {
         AABB searchBox = new AABB(helper.absolutePos(relativePos)).inflate(1.5D, 2.0D, 1.5D);
         List<? extends Entity> list = helper.getLevel().getEntities(Entities.EASEL, searchBox, Entity::isAlive);
         helper.assertTrue(!list.isEmpty(), failureMessage);
-        return (EntityEasel) list.get(0);
+        return (EntityEasel) list.getFirst();
     }
 
     private static long countItemDropsNear(GameTestHelper helper, BlockPos relativePos, Item item) {

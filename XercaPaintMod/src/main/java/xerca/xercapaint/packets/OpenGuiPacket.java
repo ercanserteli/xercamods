@@ -12,25 +12,22 @@ public record OpenGuiPacket(int easelId, boolean allowed, boolean edit,
     public static final CustomPacketPayload.Type<OpenGuiPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("open_gui"));
     public static final StreamCodec<FriendlyByteBuf, OpenGuiPacket> PACKET_CODEC = StreamCodec.ofMember(OpenGuiPacket::encode, OpenGuiPacket::decode);
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         buf.writeInt(easelId);
         buf.writeBoolean(allowed);
         buf.writeBoolean(edit);
-        buf.writeByte(hand.ordinal());
-        return buf;
+        buf.writeByte(switch (hand) {
+            case MAIN_HAND -> 0;
+            case OFF_HAND -> 1;
+        });
     }
 
     public static OpenGuiPacket decode(FriendlyByteBuf buf) {
         int easelId = buf.readInt();
         boolean allowed = buf.readBoolean();
         boolean edit = buf.readBoolean();
-        int handOrdinal = buf.readByte();
-        InteractionHand hand;
-        if (InteractionHand.values().length > handOrdinal) {
-            hand = InteractionHand.values()[handOrdinal];
-        } else {
-            hand = InteractionHand.MAIN_HAND;
-        }
+        byte handOrdinal = buf.readByte();
+        InteractionHand hand = handOrdinal == 1 ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         return new OpenGuiPacket(easelId, allowed, edit, hand);
     }
 
@@ -39,3 +36,4 @@ public record OpenGuiPacket(int easelId, boolean allowed, boolean edit,
         return PACKET_ID;
     }
 }
+

@@ -30,8 +30,8 @@ import java.util.List;
 public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
     protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
-    static public RenderEntityEasel theInstance;
-    static private final ResourceLocation woodTexture = Mod.id("textures/block/birch_long.png");
+    static RenderEntityEasel theInstance;
+    private static final ResourceLocation woodTexture = Mod.id("textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -57,7 +57,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
         this.model.setupAnim(entity, 0, 0, 0, 0, 0);
 
-        matrixStackIn.mulPose((new Quaternionf()).rotationXYZ((float) Math.PI, 0, 0));
+        matrixStackIn.mulPose(new Quaternionf().rotationXYZ((float) Math.PI, 0, 0));
         matrixStackIn.translate(0, -1.5, 0);
 
         RenderType rendertype = this.model.renderType(this.getTextureLocation(entity));
@@ -75,12 +75,10 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     @Override
     protected boolean shouldShowName(EntityEasel easel) {
         HitResult result = Minecraft.getInstance().hitResult;
-        if (result instanceof EntityHitResult entityHitResult) {
-            if (Minecraft.renderNames() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
-                double d0 = this.entityRenderDispatcher.distanceToSqr(easel);
-                float f = easel.isDiscrete() ? 32.0F : 64.0F;
-                return d0 < (double) (f * f);
-            }
+        if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
+            double d0 = this.entityRenderDispatcher.distanceToSqr(easel);
+            float f = easel.isDiscrete() ? 32.0F : 64.0F;
+            return d0 < (f * f);
         }
         return false;
     }
