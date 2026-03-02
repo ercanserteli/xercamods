@@ -127,7 +127,7 @@
   "note.helpTempo2a": "Shift+Tempo \u25bc",
   "note.helpTempo2b": "Halve & shrink",
   "note.glissando.start": "GLISSANDO - Click a note to start",
-  "note.glissando.target": "GLISSANDO - Click target note (Right-click to cancel)",
+  "note.glissando.target": "GLISSANDO - Click target note and beat (Right-click to cancel)",
   "note.glissando.points": "GLISSANDO - %1$s point(s) - Click more or Right-click to finish",
   "ins.octaveTooltip": "Change keyboard octave",
   "xercamusic.export.success": "Music sheet exported to %1$s",

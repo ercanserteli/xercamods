@@ -126,7 +126,7 @@
   "note.helpTempo2a": "Shift+Tempo \u25bc",
   "note.helpTempo2b": "Podziel na pół i skróć",
   "note.glissando.start": "GLISSANDO - Kliknij nutę, aby zacząć",
-  "note.glissando.target": "GLISSANDO - Kliknij nutę docelową (PPM, aby anulować)",
+  "note.glissando.target": "GLISSANDO - Kliknij nutę docelową i uderzenie (PPM, aby anulować)",
   "note.glissando.points": "GLISSANDO - Punkty: %1$s - Kliknij więcej lub PPM, aby zakończyć",
   "ins.octaveTooltip": "Zmień oktawę klawiatury",
   "xercamusic.export.success": "Arkusz nutowy wyeksportowany do %1$s",

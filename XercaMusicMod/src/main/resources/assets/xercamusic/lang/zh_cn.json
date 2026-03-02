@@ -126,7 +126,7 @@
   "note.helpTempo2a": "Shift+速度 \u25bc",
   "note.helpTempo2b": "减半并收缩",
   "note.glissando.start": "滑音 - 点击音符开始",
-  "note.glissando.target": "滑音 - 点击目标音符（右键点击取消）",
+  "note.glissando.target": "滑音 - 点击目标音符与拍子（右键点击取消）",
   "note.glissando.points": "滑音 - %1$s 个点 - 继续点击或右键点击完成",
   "ins.octaveTooltip": "更改键盘八度高度",
   "xercamusic.export.success": "乐谱已导出至 %1$s",

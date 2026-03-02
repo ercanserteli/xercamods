@@ -127,7 +127,7 @@
   "note.helpTempo2a": "Shift+テンポ \u25bc",
   "note.helpTempo2b": "半速 & 縮小",
   "note.glissando.start": "グリッサンド - 開始する音符をクリックしてください",
-  "note.glissando.target": "グリッサンド - 終点の音符をクリックしてください (右クリックでキャンセル)",
+  "note.glissando.target": "グリッサンド - 終点の音符と拍をクリックしてください (右クリックでキャンセル)",
   "note.glissando.points": "グリッサンド - %1$s ポイント - さらにクリックするか、右クリックで完了",
   "ins.octaveTooltip": "キーボードのオクターブを変更",
   "xercamusic.export.success": "楽譜を %1$s にエクスポートしました",
