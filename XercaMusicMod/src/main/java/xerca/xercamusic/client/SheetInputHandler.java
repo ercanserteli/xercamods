@@ -29,6 +29,11 @@ class SheetInputHandler {
 
     boolean handleMouseClicked(double dmouseX, double dmouseY, int mouseButton) {
         if (gui.helpOn) {
+            int mx = (int) Math.round(dmouseX);
+            int my = (int) Math.round(dmouseY);
+            if (gui.handleHelpClick(mx, my)) {
+                return true;
+            }
             gui.helpOn = false;
             gui.updateButtons();
             return true;
@@ -249,6 +254,12 @@ class SheetInputHandler {
     }
 
     boolean handleMouseScrolled(double x, double y, double scrollX, double scrollY) {
+        if (gui.helpOn) {
+            if (scrollY != 0) {
+                gui.helpScrollOffset -= (int)(scrollY * 10);
+            }
+            return true;
+        }
         if (isShiftHeld() && scrollY != 0.d) {
             // Shift+Scroll: horizontal scrolling
             int scrollAmount = 8;

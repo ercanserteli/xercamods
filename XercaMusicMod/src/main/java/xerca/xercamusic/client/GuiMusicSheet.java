@@ -153,6 +153,52 @@ public class GuiMusicSheet extends Screen {
     private float volume = 1.f;
     static final int maxNoteLength = 120;  // Max note length in beats (byte max is 127)
     boolean helpOn = false;
+    int helpScrollOffset = 0;
+    private int helpContentHeight = 0;
+    private final int[] helpSectionContentY = new int[7];
+    private int helpPanelX, helpPanelY, helpPanelW, helpPanelBottom;
+    private int helpContentTop, helpContentBottomY;
+    private int helpTabY;
+    private final int[] helpTabX = new int[7];
+    private final int[] helpTabW = new int[7];
+    private static final int HELP_TAB_H = 12;
+    private static final String[][] HELP_SECTIONS = {
+        {"note.helpSection.mouse",
+         "note.helpMouse1a", "note.helpMouse1b",
+         "note.helpMouse2a", "note.helpMouse2b",
+         "note.helpMouse3a", "note.helpMouse3b",
+         "note.helpMouse4a", "note.helpMouse4b"},
+        {"note.helpSection.navigation",
+         "note.helpNav1a", "note.helpNav1b",
+         "note.helpNav2a", "note.helpNav2b",
+         "note.helpNav3a", "note.helpNav3b",
+         "note.helpNav4a", "note.helpNav4b",
+         "note.helpNav5a", "note.helpNav5b"},
+        {"note.helpSection.playback",
+         "note.helpPlay1a", "note.helpPlay1b",
+         "note.helpPlay2a", "note.helpPlay2b",
+         "note.helpPlay3a", "note.helpPlay3b"},
+        {"note.helpSection.editing",
+         "note.helpEdit1a", "note.helpEdit1b",
+         "note.helpEdit2a", "note.helpEdit2b",
+         "note.helpEdit3a", "note.helpEdit3b",
+         "note.helpEdit4a", "note.helpEdit4b",
+         "note.helpEdit5a", "note.helpEdit5b",
+         "note.helpEdit6a", "note.helpEdit6b",
+         "note.helpEdit7a", "note.helpEdit7b",
+         "note.helpEdit8a", "note.helpEdit8b",
+         "note.helpEdit9a", "note.helpEdit9b"},
+        {"note.helpSection.effects",
+         "note.helpFx1a", "note.helpFx1b",
+         "note.helpFx2a", "note.helpFx2b",
+         "note.helpFx3a", "note.helpFx3b"},
+        {"note.helpSection.tempo",
+         "note.helpTempo1a", "note.helpTempo1b",
+         "note.helpTempo2a", "note.helpTempo2b"},
+        {"note.helpSection.misc",
+         "note.helpMisc1a", "note.helpMisc1b",
+         "note.helpMisc2a", "note.helpMisc2b"}
+    };
     boolean rectSelection = false;  // Whether current selection is rectangular (note-bounded)
     byte rectSelectNoteTop;          // Highest note in rectangular selection
     byte rectSelectNoteBottom;       // Lowest note in rectangular selection
@@ -616,7 +662,26 @@ public class GuiMusicSheet extends Screen {
 
     void toggleHelp() {
         helpOn = !helpOn;
+        helpScrollOffset = 0;
         updateButtons();
+    }
+
+    boolean handleHelpClick(int mouseX, int mouseY) {
+        // Check tab clicks
+        if (mouseY >= helpTabY && mouseY < helpTabY + HELP_TAB_H) {
+            for (int i = 0; i < HELP_SECTIONS.length; i++) {
+                if (mouseX >= helpTabX[i] && mouseX < helpTabX[i] + helpTabW[i]) {
+                    helpScrollOffset = helpSectionContentY[i];
+                    return true;
+                }
+            }
+        }
+        // Click inside panel absorbs the click (keep help open)
+        if (mouseX >= helpPanelX && mouseX < helpPanelX + helpPanelW
+                && mouseY >= helpPanelY && mouseY < helpPanelBottom) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1024,103 +1089,97 @@ public class GuiMusicSheet extends Screen {
         }
 
         if(helpOn) {
-            int panelX = noteImageLeftX - 30;
-            int panelY = noteImageY;
-            int panelW = 385;
-            int panelH = 230;
-            // Dark background
-            guiGraphics.fill(panelX, panelY, panelX + panelW, panelY + panelH, 0xF0222222);
-            // Border
-            guiGraphics.fill(panelX, panelY, panelX + panelW, panelY + 1, 0xFF555555);
-            guiGraphics.fill(panelX, panelY + panelH - 1, panelX + panelW, panelY + panelH, 0xFF555555);
-            guiGraphics.fill(panelX, panelY, panelX + 1, panelY + panelH, 0xFF555555);
-            guiGraphics.fill(panelX + panelW - 1, panelY, panelX + panelW, panelY + panelH, 0xFF555555);
+            // === Scrollable help panel ===
+            int panelW = 380;
+            helpPanelX = (this.width - panelW) / 2;
+            helpPanelY = 5;
+            helpPanelBottom = this.height - 5;
+            helpPanelW = panelW;
 
-            // Title
-            stack.pushPose();
-            stack.scale(1.2f, 1.2f, 1.2f);
-            guiGraphics.drawString(font, "Help & Controls", (int)((panelX + panelW/2 - font.width("Help & Controls")*1.2f/2)/1.2f), (int)((panelY + 4)/1.2f), 0xFFFFCC00, true);
-            stack.popPose();
+            // Panel background + border
+            guiGraphics.fill(helpPanelX, helpPanelY, helpPanelX + panelW, helpPanelBottom, 0xF0222222);
+            guiGraphics.fill(helpPanelX, helpPanelY, helpPanelX + panelW, helpPanelY + 1, 0xFF555555);
+            guiGraphics.fill(helpPanelX, helpPanelBottom - 1, helpPanelX + panelW, helpPanelBottom, 0xFF555555);
+            guiGraphics.fill(helpPanelX, helpPanelY, helpPanelX + 1, helpPanelBottom, 0xFF555555);
+            guiGraphics.fill(helpPanelX + panelW - 1, helpPanelY, helpPanelX + panelW, helpPanelBottom, 0xFF555555);
 
-            int col1X = panelX + 8;
-            int col2X = panelX + 200;
+            // Title (centered, bold)
+            String title = I18n.get("note.helpTitle");
+            guiGraphics.drawCenteredString(font, "\u00a7l" + title, helpPanelX + panelW / 2, helpPanelY + 4, 0xFFFFCC00);
+
+            // Tab bar
+            helpTabY = helpPanelY + 16;
+            guiGraphics.fill(helpPanelX + 1, helpTabY, helpPanelX + panelW - 1, helpTabY + HELP_TAB_H, 0xFF333333);
+
+            int tabX = helpPanelX + 4;
+            for (int i = 0; i < HELP_SECTIONS.length; i++) {
+                String tabLabel = I18n.get(HELP_SECTIONS[i][0]);
+                int tw = font.width(tabLabel);
+                helpTabX[i] = tabX;
+                helpTabW[i] = tw + 6;
+
+                // Highlight active section
+                boolean active;
+                if (i < HELP_SECTIONS.length - 1) {
+                    active = helpScrollOffset >= helpSectionContentY[i]
+                          && helpScrollOffset < helpSectionContentY[i + 1];
+                } else {
+                    active = helpScrollOffset >= helpSectionContentY[i];
+                }
+                if (active) {
+                    guiGraphics.fill(tabX, helpTabY, tabX + helpTabW[i], helpTabY + HELP_TAB_H, 0xFF444477);
+                }
+                guiGraphics.drawString(font, tabLabel, tabX + 3, helpTabY + 2,
+                        active ? 0xFFFFFF55 : 0xFFAAAAAA, false);
+                tabX += helpTabW[i] + 2;
+            }
+
+            // Content area
+            helpContentTop = helpTabY + HELP_TAB_H + 2;
+            helpContentBottomY = helpPanelBottom - 2;
+            int contentX = helpPanelX + 6;
             int lineH = 10;
-            int sectionGap = 6;
+            int sectionGap = 8;
+            int scrollAreaH = helpContentBottomY - helpContentTop;
 
-            // === Column 1 ===
-            int cy = panelY + 18;
+            // Clamp scroll
+            int maxScroll = Math.max(0, helpContentHeight - scrollAreaH);
+            helpScrollOffset = Math.max(0, Math.min(helpScrollOffset, maxScroll));
 
-            // -- Mouse --
-            guiGraphics.drawString(font, "\u00a7n\u00a7eMouse", col1X, cy, 0xFFFFCC00, false);
-            cy += lineH + 2;
-            drawHelpLine(guiGraphics, col1X, cy, "Left Click & Drag", "Place notes"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Left Click note", "Remove note"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Right Click", "Set cursor position"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Middle Click note", "Edit note properties"); cy += lineH;
-            //drawHelpLine(guiGraphics, col1X, cy, "Middle Click marker", "Edit volume marker"); cy += lineH;
-            cy += sectionGap;
+            // Scissored scrollable content
+            guiGraphics.enableScissor(helpPanelX + 1, helpContentTop, helpPanelX + panelW - 6, helpContentBottomY);
 
-            // -- Navigation --
-            guiGraphics.drawString(font, "\u00a7n\u00a7eNavigation", col1X, cy, 0xFFFFCC00, false);
-            cy += lineH + 2;
-            drawHelpLine(guiGraphics, col1X, cy, "Scroll Up/Down", "Change octave view"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Shift + Scroll", "Scroll sideways"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Arrow Left/Right", "Move cursor"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "A / S", "Shift octave down / up"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "D / F", "Shift semitone down / up"); cy += lineH;
-            cy += sectionGap;
+            int cy = helpContentTop - helpScrollOffset;
+            for (int s = 0; s < HELP_SECTIONS.length; s++) {
+                helpSectionContentY[s] = cy - helpContentTop + helpScrollOffset;
+                String[] section = HELP_SECTIONS[s];
 
-            // -- Playback --
-            guiGraphics.drawString(font, "\u00a7n\u00a7ePlayback", col1X, cy, 0xFFFFCC00, false);
-            cy += lineH + 2;
-            drawHelpLine(guiGraphics, col1X, cy, "Enter", "Preview / Stop"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Alt", "Record / Stop"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Letter keys (Q-])", "Play notes at octave"); cy += lineH;
-            cy += sectionGap+2;
+                // Section header
+                guiGraphics.drawString(font, "\u00a7n\u00a7e" + I18n.get(section[0]),
+                        contentX, cy, 0xFFFFCC00, false);
+                cy += lineH + 2;
 
-            // -- Misc --
-            guiGraphics.drawString(font, "\u00a7n\u00a7eMisc", col1X, cy, 0xFFFFCC00, false);
-            cy += lineH + 2;
-            drawHelpLine(guiGraphics, col1X, cy, "H", "Toggle this help"); cy += lineH;
-            drawHelpLine(guiGraphics, col1X, cy, "Esc", "Close"); cy += lineH;
+                // Key-description entries
+                for (int i = 1; i < section.length; i += 2) {
+                    drawHelpLine(guiGraphics, contentX, cy,
+                            I18n.get(section[i]), I18n.get(section[i + 1]));
+                    cy += lineH;
+                }
+                cy += sectionGap;
+            }
+            helpContentHeight = cy - helpContentTop + helpScrollOffset;
 
-            // === Column 2 ===
-            cy = panelY + 18;
+            guiGraphics.disableScissor();
 
-            // -- Editing --
-            guiGraphics.drawString(font, "\u00a7n\u00a7eEditing", col2X, cy, 0xFFFFCC00, false);
-            cy += lineH + 2;
-            drawHelpLine(guiGraphics, col2X, cy, "Space", "Insert space at cursor"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Delete", "Delete at cursor"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Backspace", "Delete before cursor"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Shift+RClick Drag", "Rect select"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Ctrl+A", "Select all"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Ctrl+C", "Copy selection"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Ctrl+V", "Paste (push notes)"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Ctrl+Shift+V", "Paste (overlay)"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Ctrl+Z", "Undo"); cy += lineH;
-            cy += sectionGap;
-
-            // -- Effects --
-            guiGraphics.drawString(font, "\u00a7n\u00a7eEffects", col2X, cy, 0xFFFFCC00, false);
-            cy += lineH + 2;
-            drawHelpLine(guiGraphics, col2X, cy, "Shift + Drag", "Create crescendo"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Ctrl + Drag", "Create decrescendo"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "G", "Glissando mode"); cy += lineH;
-            cy += sectionGap;
-
-            // -- Tempo --
-            guiGraphics.drawString(font, "\u00a7n\u00a7eTempo", col2X, cy, 0xFFFFCC00, false);
-            cy += lineH + 2;
-            drawHelpLine(guiGraphics, col2X, cy, "Shift+Tempo \u25b2", "Double & stretch"); cy += lineH;
-            drawHelpLine(guiGraphics, col2X, cy, "Shift+Tempo \u25bc", "Halve & shrink"); cy += lineH;
-            cy += sectionGap;
-
-            // -- Misc --
-            //guiGraphics.drawString(font, "\u00a7n\u00a7eMisc", col2X, cy, 0xFFFFCC00, false);
-            //cy += lineH + 2;
-            //drawHelpLine(guiGraphics, col2X, cy, "H", "Toggle this help"); cy += lineH;
-            //drawHelpLine(guiGraphics, col2X, cy, "Esc", "Close"); cy += lineH;
+            // Scrollbar
+            if (helpContentHeight > scrollAreaH) {
+                int sbX = helpPanelX + panelW - 5;
+                float frac = (float) helpScrollOffset / Math.max(1, helpContentHeight - scrollAreaH);
+                int thumbH = Math.max(8, scrollAreaH * scrollAreaH / helpContentHeight);
+                int thumbY = helpContentTop + (int) ((scrollAreaH - thumbH) * frac);
+                guiGraphics.fill(sbX, helpContentTop, sbX + 3, helpContentBottomY, 0xFF333333);
+                guiGraphics.fill(sbX, thumbY, sbX + 3, thumbY + thumbH, 0xFF888888);
+            }
         }
         else{
             if(buttonHideNeighbors.isHovered()){
@@ -1145,18 +1204,18 @@ public class GuiMusicSheet extends Screen {
             if (glissandoMode) {
                 String modeText;
                 if (glissandoSourceNote == null) {
-                    modeText = "GLISSANDO - Click a note to start";
+                    modeText = I18n.get("note.glissando.start");
                 } else if (glissandoPendingWaypoints == null || glissandoPendingWaypoints.isEmpty()) {
-                    modeText = "GLISSANDO - Click target note (Right-click to cancel)";
+                    modeText = I18n.get("note.glissando.target");
                 } else {
-                    modeText = "GLISSANDO - " + glissandoPendingWaypoints.size() + " point(s) - Click more or Right-click to finish";
+                    modeText = I18n.get("note.glissando.points", glissandoPendingWaypoints.size());
                 }
                 int textWidth = font.width(modeText);
                 // Draw a prominent bar across the top of the note area
-                int barLeft = noteImageLeftX + NOTE_REGION_LEFT - 2;
+                int barLeft = noteImageLeftX + NOTE_REGION_LEFT - 20;
                 int barRight = barLeft + Math.max(textWidth + 8, NOTE_REGION_RIGHT - NOTE_REGION_LEFT + 4);
-                int barTop = noteImageY + NOTE_REGION_TOP - 14;
-                int barBottom = barTop + 12;
+                int barTop = noteImageY + NOTE_REGION_TOP - 13;
+                int barBottom = barTop + 13;
                 guiGraphics.fill(barLeft, barTop, barRight, barBottom, 0xEE1144AA);
                 guiGraphics.fill(barLeft, barBottom, barRight, barBottom + 1, 0xFF0033AA);
                 guiGraphics.drawString(font, modeText, barLeft + 4, barTop + 2, 0xFFFFFFFF, true);

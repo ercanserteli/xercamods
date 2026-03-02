@@ -23,9 +23,9 @@
     },
     "thirdperson_lefthand": {
       "rotation": [
-        86,
-        -2,
-        83
+        90,
+        -180,
+        0
       ],
       "translation": [
         -3.25,
