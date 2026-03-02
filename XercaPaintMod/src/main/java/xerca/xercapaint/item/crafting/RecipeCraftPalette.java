@@ -15,7 +15,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 
@@ -57,7 +56,6 @@ public class RecipeCraftPalette extends CustomRecipe {
         return -1;
     }
 
-    @Nullable
     private ArrayList<ItemStack> findDyes(CraftingInput inv, int plankRow) {
         ArrayList<ItemStack> dyes = new ArrayList<>();
         for (int i = 0; i < inv.height(); ++i) {
@@ -70,7 +68,8 @@ public class RecipeCraftPalette extends CustomRecipe {
                 if (isDye(stack)) {
                     dyes.add(stack);
                 } else if (!stack.isEmpty()) {
-                    return null;
+                    dyes.clear();
+                    return dyes;
                 }
             }
         }
@@ -88,7 +87,7 @@ public class RecipeCraftPalette extends CustomRecipe {
             return false;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, plankRow);
-        return dyes != null && !dyes.isEmpty();
+        return !dyes.isEmpty();
     }
 
     /**
@@ -101,7 +100,7 @@ public class RecipeCraftPalette extends CustomRecipe {
             return ItemStack.EMPTY;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, plankRow);
-        if (dyes == null || dyes.isEmpty()) {
+        if (dyes.isEmpty()) {
             return ItemStack.EMPTY;
         }
 

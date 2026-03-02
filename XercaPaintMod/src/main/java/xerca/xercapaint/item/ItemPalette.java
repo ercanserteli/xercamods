@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class ItemPalette extends Item {
+    private static final int BASIC_COLOR_COUNT = 16;
+
     ItemPalette() {
         super(new Properties().stacksTo(1));
     }
@@ -37,7 +39,7 @@ public class ItemPalette extends Item {
     }
 
     public static boolean isFull(ItemStack stack) {
-        return basicColorCount(stack) == 16;
+        return basicColorCount(stack) == BASIC_COLOR_COUNT;
     }
 
     public static int basicColorCount(ItemStack stack) {
@@ -46,7 +48,7 @@ public class ItemPalette extends Item {
         }
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
         if (basicColors != null) {
-            if (basicColors.length == 16) {
+            if (basicColors.length == BASIC_COLOR_COUNT) {
                 int basicCount = 0;
                 for (byte basicColor : basicColors) {
                     basicCount += basicColor;
@@ -65,7 +67,7 @@ public class ItemPalette extends Item {
         if (basicColors == null && customColorComp == null) {
             tooltip.add(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
         } else {
-            if (basicColors != null && basicColors.length == 16) {
+            if (basicColors != null && basicColors.length == BASIC_COLOR_COUNT) {
                 int basicCount = 0;
                 for (byte basicColor : basicColors) {
                     basicCount += basicColor;

@@ -32,6 +32,12 @@ import static org.lwjgl.glfw.GLFW.*;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiCanvasEdit extends BasePalette {
+    private static final int BRUSH_LEVEL_COUNT = 4;
+    private static final int SMALL_CANVAS_PIXEL_SCALE = 10;
+    private static final int MAX_TITLE_LENGTH = 16;
+    private static final int MAX_EASEL_DISTANCE_SQR = 64;
+    private static final int MINI_UPDATE_INTERVAL_TICKS = 10;
+
     private double canvasX;
     private double canvasY;
     private static final double[] canvasXs = {-1000, -1000, -1000, -1000};
@@ -123,6 +129,8 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
+    // Window is owned by the Minecraft client and must not be manually closed here.
+    @SuppressWarnings("PMD.CloseResource")
     public void init() {
         if (minecraft == null) {
             return;
@@ -175,8 +183,9 @@ public class GuiCanvasEdit extends BasePalette {
 
         x = (int) (window.getGuiScaledWidth() * 0.95) - 21;
         y = (int) (window.getGuiScaledHeight() * 0.05);
-        this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
-                paletteTextures, 256, 256, button -> showHelp = !showHelp, Tooltip.create(Component.literal("Toggle help tooltips"))));
+        ToggleHelpButton toggleHelpButton = this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
+                paletteTextures, 256, 256, button -> showHelp = !showHelp));
+        toggleHelpButton.setTooltip(Tooltip.create(Component.literal("Toggle help tooltips")));
 
         updateButtons();
     }
@@ -288,7 +297,7 @@ public class GuiCanvasEdit extends BasePalette {
         ++this.timeSinceLastUpdate;
 
         if (easel != null) {
-            if (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(editingPlayer) > 64) {
+            if (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(editingPlayer) > MAX_EASEL_DISTANCE_SQR) {
                 this.onClose();
             }
             if (skippedUpdate && timeSinceLastUpdate > 20 && canvasDirty) {
@@ -397,29 +406,31 @@ public class GuiCanvasEdit extends BasePalette {
             int y = 0;
             int outlineSize = 0;
             int pixelHalf = canvasPixelScale / 2;
-            if (brushSize == 0) {
-                x = ((mouseX - (int) canvasX) / canvasPixelScale) * canvasPixelScale + (int) canvasX - 1;
-                y = ((mouseY - (int) canvasY) / canvasPixelScale) * canvasPixelScale + (int) canvasY - 1;
-                outlineSize = canvasPixelScale + 2;
-            }
-            if (brushSize == 1) {
-                x = (((mouseX - (int) canvasX + pixelHalf) / canvasPixelScale) - 1) * canvasPixelScale + (int) canvasX - 1;
-                y = (((mouseY - (int) canvasY + pixelHalf) / canvasPixelScale) - 1) * canvasPixelScale + (int) canvasY - 1;
-                outlineSize = canvasPixelScale * 2 + 2;
-            }
-            if (brushSize == 2) {
-                x = (((mouseX - (int) canvasX + pixelHalf) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasX - 1;
-                y = (((mouseY - (int) canvasY + pixelHalf) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasY - 1;
-                outlineSize = canvasPixelScale * 4 + 2;
-            }
-            if (brushSize == 3) {
-                x = (((mouseX - (int) canvasX) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasX - 1;
-                y = (((mouseY - (int) canvasY) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasY - 1;
-                outlineSize = canvasPixelScale * 5 + 2;
+            switch (brushSize) {
+                case 0 -> {
+                    x = ((mouseX - (int) canvasX) / canvasPixelScale) * canvasPixelScale + (int) canvasX - 1;
+                    y = ((mouseY - (int) canvasY) / canvasPixelScale) * canvasPixelScale + (int) canvasY - 1;
+                    outlineSize = canvasPixelScale + 2;
+                }
+                case 1 -> {
+                    x = (((mouseX - (int) canvasX + pixelHalf) / canvasPixelScale) - 1) * canvasPixelScale + (int) canvasX - 1;
+                    y = (((mouseY - (int) canvasY + pixelHalf) / canvasPixelScale) - 1) * canvasPixelScale + (int) canvasY - 1;
+                    outlineSize = canvasPixelScale * 2 + 2;
+                }
+                case 2 -> {
+                    x = (((mouseX - (int) canvasX + pixelHalf) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasX - 1;
+                    y = (((mouseY - (int) canvasY + pixelHalf) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasY - 1;
+                    outlineSize = canvasPixelScale * 4 + 2;
+                }
+                case 3 -> {
+                    x = (((mouseX - (int) canvasX) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasX - 1;
+                    y = (((mouseY - (int) canvasY) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasY - 1;
+                    outlineSize = canvasPixelScale * 5 + 2;
+                }
             }
 
             Vec2 textureVec;
-            if (canvasPixelScale == 10) {
+            if (canvasPixelScale == SMALL_CANVAS_PIXEL_SCALE) {
                 textureVec = outlinePoss1[brushSize];
             } else {
                 textureVec = outlinePoss2[brushSize];
@@ -496,7 +507,7 @@ public class GuiCanvasEdit extends BasePalette {
             } else {
                 if (keyCode == GLFW_KEY_O) {
                     brushOpacitySetting += 1;
-                    if (brushOpacitySetting >= 4) {
+                    if (brushOpacitySetting >= BRUSH_LEVEL_COUNT) {
                         brushOpacitySetting = 0;
                     }
                 }
@@ -515,7 +526,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         if (!this.isSigned) {
             if (this.gettingSigned) {
-                if (this.canvasTitle.length() < 16 && isAllowedChatCharacter(typedChar)) {
+                if (this.canvasTitle.length() < MAX_TITLE_LENGTH && isAllowedChatCharacter(typedChar)) {
                     this.canvasTitle = this.canvasTitle + typedChar;
                     this.updateButtons();
                 }
@@ -531,13 +542,13 @@ public class GuiCanvasEdit extends BasePalette {
         int mouseY = (int) Math.floor(posY);
         if (!gettingSigned && scrollY != 0.d) {
             if (inBrushOpacityMeter(mouseX, mouseY)) {
-                final int maxBrushOpacity = 3;
+                final int maxBrushOpacity = BRUSH_LEVEL_COUNT - 1;
                 brushOpacitySetting += scrollY < 0 ? 1 : -1;
                 if (brushOpacitySetting > maxBrushOpacity) brushOpacitySetting = 0;
                 else if (brushOpacitySetting < 0) brushOpacitySetting = maxBrushOpacity;
                 return true;
             } else {
-                final int maxBrushSize = 3;
+                final int maxBrushSize = BRUSH_LEVEL_COUNT - 1;
                 brushSize += scrollY > 0 ? 1 : -1;
                 if (brushSize > maxBrushSize) brushSize = 0;
                 else if (brushSize < 0) brushSize = maxBrushSize;
@@ -723,7 +734,7 @@ public class GuiCanvasEdit extends BasePalette {
             }
         } else {
             if (canvasDirty) {
-                if (timeSinceLastUpdate < 10) {
+                if (timeSinceLastUpdate < MINI_UPDATE_INTERVAL_TICKS) {
                     skippedUpdate = true;
                 } else {
                     version++;
@@ -743,7 +754,7 @@ public class GuiCanvasEdit extends BasePalette {
         protected final int texWidth;
         protected final int texHeight;
 
-        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Tooltip tooltip) {
+        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
             super(x, y, width, height, Component.empty(), onClick, Button.DEFAULT_NARRATION);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
@@ -751,7 +762,6 @@ public class GuiCanvasEdit extends BasePalette {
             this.yTexStart = yTexStart;
             this.yDiffText = yDiffText;
             this.resourceLocation = texture;
-            setTooltip(tooltip);
         }
 
         protected void postRender() {

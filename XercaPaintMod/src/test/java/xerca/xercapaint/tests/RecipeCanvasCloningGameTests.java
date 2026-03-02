@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class RecipeCanvasCloningGameTests {
+    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String CANVAS_CLONE_BATCH = "canvas_clone";
+
     private static final RecipeCanvasCloning RECIPE = new RecipeCanvasCloning(
             CraftingBookCategory.MISC
     );
@@ -37,7 +40,7 @@ public class RecipeCanvasCloningGameTests {
         return canvas;
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_clone")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
     public static void cloningRejectsGenerationZeroOriginalCanvas(GameTestHelper helper) {
         CraftingInput grid = createGrid(
                 2, 2,
@@ -53,7 +56,7 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_clone")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
     public static void cloningStopsAtGenerationThree(GameTestHelper helper) {
         CraftingInput grid = createGrid(
                 2, 2,
@@ -69,7 +72,7 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_clone")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
     public static void cloningRejectsDifferentCanvasTypes(GameTestHelper helper) {
         CraftingInput grid = createGrid(
                 2, 2,
@@ -85,7 +88,7 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_clone")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
     public static void cloningConsumesFreshCanvasAndKeepsOriginalAsRemainder(GameTestHelper helper) {
         ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "original");
         CraftingInput grid = createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS));

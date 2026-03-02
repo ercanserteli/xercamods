@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset
+        name="XercaPaintMod PMD Rules"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/schema/ruleset_2_0_0.xsd">
+    <description>PMD rules for XercaPaintMod.</description>
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="CloseResource"/>
+        <exclude name="ConstructorCallsOverridableMethod"/>
+        <exclude name="TestClassWithoutTestCases"/>
+    </rule>
+</ruleset>

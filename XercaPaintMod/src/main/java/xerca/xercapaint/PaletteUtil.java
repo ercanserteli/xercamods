@@ -5,6 +5,8 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
     final public static Color emptinessColor = new Color(255, 236, 229);
+    private static final float RATIO_FULL = 1.0f;
+    private static final float RATIO_EMPTY = 0.0f;
 
     public static class Color {
         public static final Color WHITE = new Color(0xFFFFFFFF);
@@ -36,9 +38,9 @@ public class PaletteUtil {
         }
 
         static public Color mix(Color a, Color b, float ratio) {
-            if (ratio == 1.f) {
+            if (ratio == RATIO_FULL) {
                 return a;
-            } else if (ratio == 0.f) {
+            } else if (ratio == RATIO_EMPTY) {
                 return b;
             }
             Color res = new Color(
@@ -58,7 +60,7 @@ public class PaletteUtil {
         }
     }
 
-    public static class CustomColor {
+    public static final class CustomColor {
         public int totalRed = 0;
         public int totalGreen = 0;
         public int totalBlue = 0;

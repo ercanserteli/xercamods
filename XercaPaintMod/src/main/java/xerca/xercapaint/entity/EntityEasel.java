@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 
 
 public class EntityEasel extends Entity {
+    private static final int MAX_PAINTER_DISTANCE_SQR = 64;
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
     private Player painter = null;
     private Runnable dropDeferred = null;
@@ -55,6 +56,10 @@ public class EntityEasel extends Entity {
 
     public void setPainter(Player painter) {
         this.painter = painter;
+    }
+
+    private void setDropDeferred(@Nullable Runnable dropAction) {
+        this.dropDeferred = dropAction;
     }
 
     @Override
@@ -109,7 +114,7 @@ public class EntityEasel extends Entity {
                         CloseGuiPacket pack = new CloseGuiPacket();
                         ServerPlayNetworking.send(serverPlayer, pack);
                     }
-                    dropDeferred = () -> doDrop(entity, dropSelf);
+                    setDropDeferred(() -> doDrop(entity, dropSelf));
                 }
             }
         } else {
@@ -183,7 +188,7 @@ public class EntityEasel extends Entity {
         super.onSyncedDataUpdated(accessor);
         if (accessor.equals(DATA_CANVAS)) {
             ItemStack itemStack = this.getItem();
-            if (!itemStack.isEmpty() && itemStack.getEntityRepresentation() != this) {
+            if (!itemStack.isEmpty() && !this.equals(itemStack.getEntityRepresentation())) {
                 itemStack.setEntityRepresentation(this);
             }
         }
@@ -259,16 +264,16 @@ public class EntityEasel extends Entity {
                 dropWaitTicks++;
                 if (painter == null || dropWaitTicks > 80) {
                     dropDeferred.run();
-                    dropDeferred = null;
+                    setDropDeferred(null);
                     dropWaitTicks = 0;
                 }
             }
         }
         if (painter != null) {
             if (painter.isRemoved() || !painter.isAlive()) {
-                painter = null;
-            } else if (painter.distanceToSqr(this) > 64) {
-                painter = null;
+                setPainter(null);
+            } else if (painter.distanceToSqr(this) > MAX_PAINTER_DISTANCE_SQR) {
+                setPainter(null);
             }
         }
     }

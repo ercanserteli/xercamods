@@ -19,11 +19,16 @@ import xerca.xercapaint.packets.ImportPaintingPacket;
 import java.util.Arrays;
 
 public class CommandImport {
+    private static final String TAG_NAME = "name";
+    private static final String TAG_AUTHOR = "author";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_GENERATION = "generation";
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("paintimport")
-                        .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> paintImport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                        .then(Commands.argument(TAG_NAME, StringArgumentType.word())
+                                .executes((p) -> paintImport(p.getSource(), StringArgumentType.getString(p, TAG_NAME))))
         );
     }
 
@@ -45,28 +50,28 @@ public class CommandImport {
 
     public static void doImport(CompoundTag tag, ServerPlayer player) {
         // Sanitizing
-        if (!tag.contains("name", 8)) {
+        if (!tag.contains(TAG_NAME, 8)) {
             player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken paint file");
             return;
         }
-        String canvasId = tag.getString("name");
+        String canvasId = tag.getString(TAG_NAME);
         if (!canvasId.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_[0-9]+$")) {
             player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken paint file");
             return;
         }
-        if ((tag.contains("author", 8) && !tag.contains("title", 8)) ||
-                (!tag.contains("author", 8) && tag.contains("title", 8))) {
+        if ((tag.contains(TAG_AUTHOR, 8) && !tag.contains(TAG_TITLE, 8)) ||
+                (!tag.contains(TAG_AUTHOR, 8) && tag.contains(TAG_TITLE, 8))) {
             player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken paint file");
             return;
         }
-        if (tag.contains("title", 8) && tag.getString("title").length() > 16) {
-            tag.putString("title", tag.getString("title").substring(0, 16));
+        if (tag.contains(TAG_TITLE, 8) && tag.getString(TAG_TITLE).length() > 16) {
+            tag.putString(TAG_TITLE, tag.getString(TAG_TITLE).substring(0, 16));
         }
-        if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
-            tag.putString("author", tag.getString("author").substring(0, 16));
+        if (tag.contains(TAG_AUTHOR, 8) && tag.getString(TAG_AUTHOR).length() > 16) {
+            tag.putString(TAG_AUTHOR, tag.getString(TAG_AUTHOR).substring(0, 16));
         }
         if (!tag.contains("v", 3)) {
             tag.putInt("v", 1);
@@ -74,8 +79,8 @@ public class CommandImport {
 
         byte canvasType = tag.getByte("ct");
         tag.remove("ct");
-        if (tag.getInt("generation") > 0) {
-            tag.putInt("generation", tag.getInt("generation") + 1);
+        if (tag.getInt(TAG_GENERATION) > 0) {
+            tag.putInt(TAG_GENERATION, tag.getInt(TAG_GENERATION) + 1);
         }
 
         ItemStack itemStack;
@@ -129,10 +134,10 @@ public class CommandImport {
         itemStack.set(Items.CANVAS_VERSION, tag.getInt("v"));
         itemStack.set(Items.CANVAS_ID, canvasId);
         itemStack.set(Items.CANVAS_PIXELS, Arrays.stream(tag.getIntArray("pixels")).boxed().toList());
-        itemStack.set(Items.CANVAS_GENERATION, tag.getInt("generation"));
-        if (tag.contains("title", 8) && tag.contains("author", 8)) {
-            itemStack.set(Items.CANVAS_TITLE, tag.getString("title"));
-            itemStack.set(Items.CANVAS_AUTHOR, tag.getString("author"));
+        itemStack.set(Items.CANVAS_GENERATION, tag.getInt(TAG_GENERATION));
+        if (tag.contains(TAG_TITLE, 8) && tag.contains(TAG_AUTHOR, 8)) {
+            itemStack.set(Items.CANVAS_TITLE, tag.getString(TAG_TITLE));
+            itemStack.set(Items.CANVAS_AUTHOR, tag.getString(TAG_AUTHOR));
         }
         if (doAddItem) {
             player.addItem(itemStack);

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class RecipeCraftPaletteGameTests {
+    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
     private static final RecipeCraftPalette RECIPE = new RecipeCraftPalette(
             CraftingBookCategory.MISC
     );
@@ -30,7 +31,7 @@ public class RecipeCraftPaletteGameTests {
         return CraftingInput.of(width, height, items);
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void paletteRecipeAcceptsValidInputs(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(3, 3);
         items.set(slot(3, 1, 0), new ItemStack(net.minecraft.world.item.Items.OAK_PLANKS));
@@ -59,7 +60,7 @@ public class RecipeCraftPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void paletteRecipeRejectsDuplicateDyes(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(3, 3);
         items.set(slot(3, 1, 0), new ItemStack(net.minecraft.world.item.Items.OAK_PLANKS));
@@ -80,7 +81,7 @@ public class RecipeCraftPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void paletteRecipeRejectsUnknownItems(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(3, 3);
         items.set(slot(3, 1, 0), new ItemStack(net.minecraft.world.item.Items.OAK_PLANKS));
@@ -96,7 +97,7 @@ public class RecipeCraftPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void paletteRecipeRejectsExtraItemInPlankRow(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(4, 3);
         items.set(slot(4, 1, 0), new ItemStack(net.minecraft.world.item.Items.OAK_PLANKS));
@@ -119,7 +120,7 @@ public class RecipeCraftPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_high_id")
+    @GameTest(template = BASIC_TEMPLATE, batch = "palette_high_id")
     public static void paletteRecipeRejectsOutOfRangeDyeId(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(3, 3);
         items.set(slot(3, 1, 0), new ItemStack(net.minecraft.world.item.Items.OAK_PLANKS));

@@ -66,7 +66,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
-        public static final MapCodec<RecipeTaglessShaped> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+        public static final MapCodec<RecipeTaglessShaped> MAP_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                         Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
                         CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
                         ShapedRecipePattern.MAP_CODEC.forGetter(RecipeTaglessShaped::pattern),
@@ -77,7 +77,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
 
         @Override
         public @NotNull MapCodec<RecipeTaglessShaped> codec() {
-            return CODEC;
+            return MAP_CODEC;
         }
 
         @Override

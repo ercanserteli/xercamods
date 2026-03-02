@@ -28,6 +28,8 @@ import java.util.List;
 
 @NonnullDefault
 public class ItemCanvas extends HangingEntityItem {
+    private static final int ORIGINAL_GENERATION = 1;
+    private static final int COPY_GENERATION = 3;
     private final CanvasType canvasType;
 
     ItemCanvas(CanvasType canvasType) {
@@ -56,8 +58,6 @@ public class ItemCanvas extends HangingEntityItem {
                     ModClient.showCanvasGui(player);
                 }
             } else {
-                Level world = context.getLevel();
-
                 String canvasId = itemstack.get(Items.CANVAS_ID);
                 List<Integer> canvasPixles = itemstack.get(Items.CANVAS_PIXELS);
                 if (canvasId == null || canvasPixles == null) {
@@ -69,12 +69,12 @@ public class ItemCanvas extends HangingEntityItem {
 
                 int rotation = getRotation(direction, blockpos, player);
 
-                if (!world.isClientSide) {
-                    EntityCanvas entityCanvas = new EntityCanvas(world, itemstack, pos, direction, canvasType, rotation);
+                if (!context.getLevel().isClientSide) {
+                    EntityCanvas entityCanvas = new EntityCanvas(context.getLevel(), itemstack, pos, direction, canvasType, rotation);
 
                     if (entityCanvas.survives()) {
                         entityCanvas.playPlacementSound();
-                        world.addFreshEntity(entityCanvas);
+                        context.getLevel().addFreshEntity(entityCanvas);
                         itemstack.shrink(1);
                     }
                 }
@@ -124,9 +124,9 @@ public class ItemCanvas extends HangingEntityItem {
 
         int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
         MutableComponent label = Component.literal(labelString);
-        if (generation == 1) {
+        if (generation == ORIGINAL_GENERATION) {
             label.withStyle(ChatFormatting.YELLOW);
-        } else if (generation >= 3) {
+        } else if (generation >= COPY_GENERATION) {
             label.withStyle(ChatFormatting.GRAY);
         }
         return label;

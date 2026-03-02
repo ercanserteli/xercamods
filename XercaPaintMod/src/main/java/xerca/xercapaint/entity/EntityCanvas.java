@@ -84,6 +84,8 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
+    // Entity data access in constructors is required by the vanilla entity lifecycle.
+    @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
     public EntityCanvas(EntityType<? extends HangingEntity> entityCanvasEntityType, Level level) {
         super(entityCanvasEntityType, level);
         clientPictureInit(level);
@@ -175,7 +177,9 @@ public class EntityCanvas extends HangingEntity {
         this.xo = this.getX();
         this.yo = this.getY();
         this.zo = this.getZ();
-        if (this.tickCounter1++ == 50 && !this.level().isClientSide) {
+        boolean shouldCheckSurvival = this.tickCounter1 == 50;
+        this.tickCounter1++;
+        if (shouldCheckSurvival && !this.level().isClientSide) {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.survives()) {
                 this.remove(RemovalReason.DISCARDED);

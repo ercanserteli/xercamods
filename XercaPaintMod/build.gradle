@@ -89,7 +89,8 @@ pmd {
     toolVersion = "7.11.0"
     ignoreFailures = true
     consoleOutput = true
-    ruleSets = ["category/java/errorprone.xml"]
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
 java {

@@ -28,8 +28,11 @@ import xerca.xercapaint.item.Items;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 
+@SuppressWarnings({"PMD.AvoidAccessibilityAlteration"})
 public class EaselTests {
+    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
     private static final Field PAINTER_FIELD;
     private static final Field DROP_DEFERRED_FIELD;
 
@@ -74,7 +77,7 @@ public class EaselTests {
         }
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void placingEaselFacesPlayerFromAllEightDirections(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -113,7 +116,7 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void rightClickWithCanvasEmptyHandAndPaletteHasExpectedModes(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -141,12 +144,12 @@ public class EaselTests {
         player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE, 1));
         InteractionResult editResult = player.interactOn(easel, InteractionHand.MAIN_HAND);
         helper.assertTrue(editResult.consumesAction(), "Expected palette interaction to consume interaction");
-        helper.assertTrue(getPainter(helper, easel) == player, "Expected palette interaction to acquire easel editor lock");
+        helper.assertTrue(Objects.equals(getPainter(helper, easel), player), "Expected palette interaction to acquire easel editor lock");
 
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void secondPlayerCannotStealEditLockAndCanBreakAndDropBothItems(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         BlockPos absEaselLand = helper.absolutePos(easelLand);
@@ -169,13 +172,13 @@ public class EaselTests {
 
         firstPlayer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE, 1));
         firstPlayer.interactOn(easel, InteractionHand.MAIN_HAND);
-        helper.assertTrue(getPainter(helper, easel) == firstPlayer, "First player should hold the edit lock");
+        helper.assertTrue(Objects.equals(getPainter(helper, easel), firstPlayer), "First player should hold the edit lock");
 
         secondPlayer.moveTo(target.x - 1.0D, absEaselLand.getY(), target.z, 0.0F, 0.0F);
         secondPlayer.lookAt(EntityAnchorArgument.Anchor.EYES, target);
         secondPlayer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE, 1));
         secondPlayer.interactOn(easel, InteractionHand.MAIN_HAND);
-        helper.assertTrue(getPainter(helper, easel) == firstPlayer, "Second player should not replace first player as editor");
+        helper.assertTrue(Objects.equals(getPainter(helper, easel), firstPlayer), "Second player should not replace first player as editor");
 
         DamageSource secondAttack = helper.getLevel().damageSources().playerAttack(secondPlayer);
         easel.hurt(secondAttack, 1.0F);
@@ -197,7 +200,7 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void easelCanBeBrokenByExplosion(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -227,7 +230,7 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test")
+    @GameTest(template = BASIC_TEMPLATE)
     public static void invulnerableTaggedEaselIgnoresPlayerAndExplosionDamage(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);

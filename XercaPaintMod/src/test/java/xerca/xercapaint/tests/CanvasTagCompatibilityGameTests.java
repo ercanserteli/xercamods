@@ -17,6 +17,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class CanvasTagCompatibilityGameTests {
+    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String CANVAS_COMPAT_BATCH = "canvas_compat";
+
     private static final RecipeCanvasCloning CLONING_RECIPE = new RecipeCanvasCloning(
             CraftingBookCategory.MISC
     );
@@ -29,7 +32,7 @@ public class CanvasTagCompatibilityGameTests {
         return CraftingInput.of(width, height, stacks);
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_compat")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_COMPAT_BATCH)
     public static void foreignTagAloneIsNotCanvasData(GameTestHelper helper) {
         ItemStack stack = new ItemStack(Items.ITEM_CANVAS);
         CompoundTag foreign = new CompoundTag();
@@ -41,7 +44,7 @@ public class CanvasTagCompatibilityGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_compat")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_COMPAT_BATCH)
     public static void pixelsWithoutNameAreNotCanvasData(GameTestHelper helper) {
         ItemStack stack = new ItemStack(Items.ITEM_CANVAS);
         ItemCanvas canvas = (ItemCanvas) stack.getItem();
@@ -55,7 +58,7 @@ public class CanvasTagCompatibilityGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_compat")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_COMPAT_BATCH)
     public static void cloningTreatsForeignTaggedFreshCanvasAsFresh(GameTestHelper helper) {
         ItemStack original = new ItemStack(Items.ITEM_CANVAS);
         ItemCanvas originalItem = (ItemCanvas) original.getItem();

@@ -76,7 +76,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     protected boolean shouldShowName(EntityEasel easel) {
         HitResult result = Minecraft.getInstance().hitResult;
         if (result instanceof EntityHitResult entityHitResult) {
-            if (Minecraft.renderNames() && entityHitResult.getEntity() == easel && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
+            if (Minecraft.renderNames() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
                 double d0 = this.entityRenderDispatcher.distanceToSqr(easel);
                 float f = easel.isDiscrete() ? 32.0F : 64.0F;
                 return d0 < (double) (f * f);

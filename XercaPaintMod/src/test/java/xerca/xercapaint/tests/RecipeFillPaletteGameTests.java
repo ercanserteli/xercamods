@@ -18,6 +18,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class RecipeFillPaletteGameTests {
+    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String PALETTE_FILL_BATCH = "palette_fill";
+
     private static final RecipeFillPalette RECIPE = new RecipeFillPalette(
             CraftingBookCategory.MISC
     );
@@ -48,7 +51,7 @@ public class RecipeFillPaletteGameTests {
         return palette;
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_fill")
+    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_FILL_BATCH)
     public static void fillPaletteAddsNewBasicColorsAndPreservesCustomTag(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(3, 3);
         ItemStack palette = createPaletteWithBasicColors(DyeColor.WHITE);
@@ -78,7 +81,7 @@ public class RecipeFillPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_fill")
+    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_FILL_BATCH)
     public static void fillPaletteRejectsAlreadyPresentDye(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(3, 3);
         ItemStack palette = createPaletteWithBasicColors(DyeColor.RED);
@@ -93,7 +96,7 @@ public class RecipeFillPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_fill")
+    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_FILL_BATCH)
     public static void fillPaletteRejectsUnknownItemsAndNoDye(GameTestHelper helper) {
         List<ItemStack> unknownItems = emptyGrid(3, 3);
         unknownItems.set(slot(3, 1, 1), new ItemStack(Items.ITEM_PALETTE));
@@ -115,7 +118,7 @@ public class RecipeFillPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_fill")
+    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_FILL_BATCH)
     public static void fillPaletteDimensionRulesRequireAtLeastTwoByTwo(GameTestHelper helper) {
         helper.assertTrue(!RECIPE.canCraftInDimensions(1, 2), "Expected 1x2 grid to be too small");
         helper.assertTrue(!RECIPE.canCraftInDimensions(2, 1), "Expected 2x1 grid to be too small");

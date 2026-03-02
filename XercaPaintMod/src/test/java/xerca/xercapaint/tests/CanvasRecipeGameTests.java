@@ -23,6 +23,9 @@ import java.util.Optional;
 import static xerca.xercapaint.Mod.MOD_ID;
 
 public class CanvasRecipeGameTests {
+    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String CANVAS_RECIPES_BATCH = "canvas_recipes";
+
     private record CanvasRecipeSpec(ResourceLocation recipeId, int width, int height, Item expectedResult) {
     }
 
@@ -76,7 +79,7 @@ public class CanvasRecipeGameTests {
         return stack;
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_recipes")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
     public static void smallFreshCanvasesCraftLongTallAndLarge(GameTestHelper helper) {
         for (CanvasRecipeSpec spec : SMALL_CANVAS_RECIPES) {
             CraftingRecipe recipe = requireCraftingRecipe(helper, spec.recipeId());
@@ -90,7 +93,7 @@ public class CanvasRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_recipes")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
     public static void paintedCanvasesCannotBeUsedInFreshCanvasRecipes(GameTestHelper helper) {
         ItemStack paintedSmallCanvas = createPaintedSmallCanvas();
         helper.assertTrue(paintedSmallCanvas.get(Items.CANVAS_PIXELS) != null,
@@ -113,7 +116,7 @@ public class CanvasRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_recipes")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
     public static void foreignTaggedFreshCanvasesCanBeUsedInFreshCanvasRecipes(GameTestHelper helper) {
         ItemStack foreignTaggedSmallCanvas = createForeignTaggedFreshSmallCanvas();
         helper.assertTrue(foreignTaggedSmallCanvas.get(Items.CANVAS_PIXELS) == null,

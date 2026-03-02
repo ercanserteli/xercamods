@@ -24,6 +24,8 @@ import xerca.xercapaint.packets.*;
 public class ModClient implements ClientModInitializer {
     public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(Mod.id("easel"), "main");
     public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(Mod.id("easel"), "canvas");
+    private static final String ITEM_CANVAS_TRANSLATION_KEY = "item.xercapaint.item_canvas";
+    private static final String DRAWN_PREDICATE_ID = "drawn";
     public static CanvasItemRenderer CANVAS_ITEM_RENDERER;
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette) {
@@ -34,11 +36,11 @@ public class ModClient implements ClientModInitializer {
         ItemStack canvasStack = easel.getItem();
         if ((canvasStack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) || paletteStack.isEmpty()) {
             minecraft.setScreen(new GuiCanvasView(canvasStack,
-                    Component.translatable("item.xercapaint.item_canvas"),
+                    Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
                     ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
         } else {
             minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvasStack, paletteStack,
-                    Component.translatable("item.xercapaint.item_canvas"),
+                    Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
                     ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
         }
     }
@@ -54,18 +56,18 @@ public class ModClient implements ClientModInitializer {
 
         if (heldItem.getItem() instanceof ItemCanvas) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemPalette) || (heldItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0)) {
-                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
             } else {
-                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
             }
         } else if (heldItem.getItem() instanceof ItemPalette) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas)) {
                 minecraft.setScreen(new GuiPalette(heldItem, Component.translatable("item.xercapaint.item_palette")));
             } else {
                 if (offhandItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
-                    minecraft.setScreen(new GuiCanvasView(offhandItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) offhandItem.getItem()).getCanvasType(), null));
+                    minecraft.setScreen(new GuiCanvasView(offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), ((ItemCanvas) offhandItem.getItem()).getCanvasType(), null));
                 } else {
-                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player, offhandItem, heldItem, Component.translatable("item.xercapaint.item_canvas"), ((ItemCanvas) offhandItem.getItem()).getCanvasType(), null));
+                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player, offhandItem, heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), ((ItemCanvas) offhandItem.getItem()).getCanvasType(), null));
                 }
             }
         }
@@ -90,10 +92,10 @@ public class ModClient implements ClientModInitializer {
         };
         ClampedItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
                 ((float) ItemPalette.basicColorCount(stack)) / 16.0F;
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LARGE, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LONG, Mod.id("drawn"), drawn);
-        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_TALL, Mod.id("drawn"), drawn);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS, Mod.id(DRAWN_PREDICATE_ID), drawn);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LARGE, Mod.id(DRAWN_PREDICATE_ID), drawn);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_LONG, Mod.id(DRAWN_PREDICATE_ID), drawn);
+        FabricModelPredicateProviderRegistry.register(Items.ITEM_CANVAS_TALL, Mod.id(DRAWN_PREDICATE_ID), drawn);
         FabricModelPredicateProviderRegistry.register(Items.ITEM_PALETTE, Mod.id("colors"), colors);
 
         ClientPlayNetworking.registerGlobalReceiver(CloseGuiPacket.PACKET_ID, new CloseGuiPacketHandler());
