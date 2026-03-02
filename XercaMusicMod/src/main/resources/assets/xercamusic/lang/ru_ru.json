@@ -123,7 +123,7 @@
   "note.helpTempo2a": "Shift + Темп \u25bc",
   "note.helpTempo2b": "Уполовинить и сжать",
   "note.glissando.start": "ГЛИССАНДО — Нажмите на ноту для начала",
-  "note.glissando.target": "ГЛИССАНДО — Нажмите на конечную ноту (ПКМ для отмены)",
+  "note.glissando.target": "ГЛИССАНДО — Нажмите на конечную ноту и долю (ПКМ для отмены)",
   "note.glissando.points": "ГЛИССАНДО — точек: %1$s — Нажмите ещё раз или ПКМ для завершения",
   "ins.octaveTooltip": "Изменить октаву клавиатуры",
   "xercamusic.export.success": "Нотный лист экспортирован в %1$s",

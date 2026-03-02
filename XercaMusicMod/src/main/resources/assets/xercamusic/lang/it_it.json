@@ -123,7 +123,7 @@
   "note.helpTempo2a": "Shift+Tempo \u25bc",
   "note.helpTempo2b": "Dimezza e rimpicciolisci",
   "note.glissando.start": "GLISSANDO - Clicca una nota per iniziare",
-  "note.glissando.target": "GLISSANDO - Clicca la nota di destinazione (Clic destro per annullare)",
+  "note.glissando.target": "GLISSANDO - Clicca sulla nota e sul battito di destinazione (Clic destro per annullare)",
   "note.glissando.points": "GLISSANDO - %1$s punto/i - Clicca ancora o Clic destro per finire",
   "ins.octaveTooltip": "Cambia ottava della tastiera",
   "xercamusic.export.success": "Spartito esportato in %1$s",

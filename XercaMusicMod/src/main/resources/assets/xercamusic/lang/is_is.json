@@ -127,7 +127,7 @@
   "note.helpTempo2a": "Shift+Tempo \u25bc",
   "note.helpTempo2b": "Helminga og minnka",
   "note.glissando.start": "GLISSANDO - Smelltu á nótu til að byrja",
-  "note.glissando.target": "GLISSANDO - Smelltu á áfangahnótuna (Hægri smellur til að hætta við)",
+  "note.glissando.target": "GLISSANDO - Smelltu á áfangahnótuna og slagið (Hægri smellur til að hætta við)",
   "note.glissando.points": "GLISSANDO - %1$s punktur/punktar - Smelltu á fleiri eða hægri smelltu til að ljúka",
   "ins.octaveTooltip": "Breyta áttund lyklaborðs",
   "xercamusic.export.success": "Nótnablað flutt út í %1$s",

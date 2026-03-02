@@ -127,7 +127,7 @@
   "note.helpTempo2a": "Shift+Tempo \u25bc",
   "note.helpTempo2b": "Reduzir à metade e encolher",
   "note.glissando.start": "GLISSANDO - Clique em uma nota para começar",
-  "note.glissando.target": "GLISSANDO - Clique na nota de destino (Botão direito para cancelar)",
+  "note.glissando.target": "GLISSANDO - Clique na nota e na batida de destino (Botão direito para cancelar)",
   "note.glissando.points": "GLISSANDO - %1$s ponto(s) - Clique em mais ou Botão direito para finalizar",
   "ins.octaveTooltip": "Alterar oitava do teclado",
   "xercamusic.export.success": "Partitura exportada para %1$s",

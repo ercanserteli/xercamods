@@ -123,7 +123,7 @@
   "note.helpTempo2a": "Shift+Tempo \u25bc",
   "note.helpTempo2b": "Yarıya indir ve daralt",
   "note.glissando.start": "GLISSANDO - Başlamak için bir notaya tıkla",
-  "note.glissando.target": "GLISSANDO - Hedef notaya tıkla (İptal için sağ tıkla)",
+  "note.glissando.target": "GLISSANDO - Hedef notaya ve vuruşa tıkla (İptal için sağ tıkla)",
   "note.glissando.points": "GLISSANDO - %1$s nokta - Daha fazlası için tıkla veya bitirmek için sağ tıkla",
   "ins.octaveTooltip": "Klavye oktavını değiştir",
   "xercamusic.export.success": "Nota kağıdı %1$s konumuna aktarıldı",

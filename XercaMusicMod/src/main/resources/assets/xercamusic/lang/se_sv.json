@@ -127,7 +127,7 @@
   "note.helpTempo2a": "Shift + Tempo \u25bc",
   "note.helpTempo2b": "Halvera och krymp",
   "note.glissando.start": "GLISSANDO - Klicka på en not för att börja",
-  "note.glissando.target": "GLISSANDO - Klicka på målnote (Högerklicka för att avbryta)",
+  "note.glissando.target": "GLISSANDO - Klicka på målnote och taktslag (Högerklicka för att avbryta)",
   "note.glissando.points": "GLISSANDO - %1$s punkt(er) - Klicka på fler eller högerklicka för att avsluta",
   "ins.octaveTooltip": "Ändra tangentbordets oktav",
   "xercamusic.export.success": "Notblad exporterat till %1$s",

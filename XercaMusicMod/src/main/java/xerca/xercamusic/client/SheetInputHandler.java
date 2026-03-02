@@ -113,6 +113,7 @@ class SheetInputHandler {
                                     clicked.setGlissando(false, (byte) 0);
                                     gui.dirtyFlag.hasNotes = true;
                                     gui.glissandoMode = false;
+                                    gui.updateButtons();
                                 } else {
                                     gui.glissandoSourceNote = clicked;
                                     gui.glissandoPendingWaypoints = new ArrayList<>();
@@ -302,6 +303,7 @@ class SheetInputHandler {
             gui.glissandoSourceNote = null;
             gui.glissandoPendingWaypoints = null;
             gui.glissandoPendingPositions = null;
+            gui.updateButtons();
             return true;
         }
 
@@ -423,6 +425,7 @@ class SheetInputHandler {
                             gui.glissandoSourceNote = null;
                             gui.glissandoPendingWaypoints = null;
                             gui.glissandoPendingPositions = null;
+                            gui.updateButtons();
                         }
                     }
                     case GLFW.GLFW_KEY_Z -> {
@@ -436,6 +439,7 @@ class SheetInputHandler {
                                 gui.glissandoSourceNote = null;
                                 gui.glissandoPendingWaypoints = null;
                                 gui.glissandoPendingPositions = null;
+                                gui.updateButtons();
                             }
                             if (!gui.undoStack.isEmpty()) {
                                 GuiMusicSheet.UndoState state = gui.undoStack.pop();
@@ -940,6 +944,7 @@ class SheetInputHandler {
         gui.glissandoSourceNote = null;
         gui.glissandoPendingWaypoints = null;
         gui.glissandoPendingPositions = null;
+        gui.updateButtons();
     }
 
     private int findNote(byte note, short time) {

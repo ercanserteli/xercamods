@@ -623,7 +623,8 @@ public class GuiMusicSheet extends Screen {
         boolean notRecording = !this.recording && !this.preRecording;
         boolean editable = !this.isSigned || this.selfSigned || this.generation > 1;
         boolean hideForHelp = helpOn;
-        boolean showNormal = !hideForHelp && !this.gettingSigned;
+        boolean hideForGlissando = glissandoMode;
+        boolean showNormal = !hideForHelp && !hideForGlissando && !this.gettingSigned;
 
         if (!this.isSigned) {
             this.buttonSign.visible = !this.gettingSigned;
@@ -652,7 +653,7 @@ public class GuiMusicSheet extends Screen {
         this.hlUp.active = editable && notRecording;
         this.hlDown.visible = showNormal && editable;
         this.hlDown.active = editable && notRecording;
-        this.sliderNoteVolume.active = (this.sliderNoteVolume.visible = !hideForHelp && !this.isSigned && !this.gettingSigned) && notRecording;
+        this.sliderNoteVolume.active = (this.sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned) && notRecording;
         this.buttonHelp.active = (this.buttonHelp.visible = !this.isSigned && !this.gettingSigned) && notRecording;
         this.buttonHideNeighbors.visible = showNormal && !this.neighborNotes.isEmpty();
         this.buttonHideNeighbors.active = notRecording;
@@ -1199,28 +1200,106 @@ public class GuiMusicSheet extends Screen {
             } else if (sliderNoteVolume.isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.noteVolumeTooltip"), mouseX, mouseY);
             }
+        }
 
-            // Show glissando mode indicator
-            if (glissandoMode) {
-                String modeText;
-                if (glissandoSourceNote == null) {
-                    modeText = I18n.get("note.glissando.start");
-                } else if (glissandoPendingWaypoints == null || glissandoPendingWaypoints.isEmpty()) {
-                    modeText = I18n.get("note.glissando.target");
-                } else {
-                    modeText = I18n.get("note.glissando.points", glissandoPendingWaypoints.size());
-                }
-                int textWidth = font.width(modeText);
-                // Draw a prominent bar across the top of the note area
-                int barLeft = noteImageLeftX + NOTE_REGION_LEFT - 20;
-                int barRight = barLeft + Math.max(textWidth + 8, NOTE_REGION_RIGHT - NOTE_REGION_LEFT + 4);
-                int barTop = noteImageY + NOTE_REGION_TOP - 13;
-                int barBottom = barTop + 13;
-                guiGraphics.fill(barLeft, barTop, barRight, barBottom, 0xEE1144AA);
-                guiGraphics.fill(barLeft, barBottom, barRight, barBottom + 1, 0xFF0033AA);
-                guiGraphics.drawString(font, modeText, barLeft + 4, barTop + 2, 0xFFFFFFFF, true);
+        // Glissando mode header swap - replace control bar with glissando indicator
+        if (glissandoMode) {
+            String modeText;
+            if (glissandoSourceNote == null) {
+                modeText = I18n.get("note.glissando.start");
+            } else if (glissandoPendingWaypoints == null || glissandoPendingWaypoints.isEmpty()) {
+                modeText = I18n.get("note.glissando.target");
+            } else {
+                modeText = I18n.get("note.glissando.points", glissandoPendingWaypoints.size());
+            }
+
+            // Draw glissando bar with text wrapping and centering
+            int barLeft = noteImageLeftX + 45;
+            int barRight = noteImageLeftX + NOTE_IMAGE_WIDTH + NOTE_IMAGE_LEFT_WIDTH - 20;
+            int maxBarWidth = barRight - barLeft;
+            int barTop = noteImageY + 7;
+            
+            // Wrap text to two lines if needed
+            String[] textLines = wrapGlissandoText(modeText, maxBarWidth - 8);
+            int barHeight = textLines.length == 1 ? 18 : 28;  // 28px for two lines
+            int barBottom = barTop + barHeight;
+
+            // Background and borders
+            guiGraphics.fill(barLeft, barTop, barRight, barBottom, 0xEE1144AA);
+            guiGraphics.fill(barLeft, barTop, barRight, barTop + 1, 0xFF7733FF);
+            guiGraphics.fill(barLeft, barBottom - 1, barRight, barBottom, 0xFF0033AA);
+            guiGraphics.fill(barLeft, barTop, barLeft + 1, barBottom, 0xFF4433BB);
+            guiGraphics.fill(barRight - 1, barTop, barRight, barBottom, 0xFF4433BB);
+
+            // Centered text - supports single or double line
+            if (textLines.length == 1) {
+                int textWidth = font.width(textLines[0]);
+                int textX = barLeft + (maxBarWidth - textWidth) / 2;
+                int textY = barTop + (barHeight - 8) / 2 + 1;
+                guiGraphics.drawString(font, textLines[0], textX, textY, 0xFFFFFFFF, true);
+            } else {
+                // Two lines: center each vertically with spacing
+                int line1Width = font.width(textLines[0]);
+                int line2Width = font.width(textLines[1]);
+                int textX1 = barLeft + (maxBarWidth - line1Width) / 2;
+                int textX2 = barLeft + (maxBarWidth - line2Width) / 2;
+                int textY1 = barTop + 3;
+                int textY2 = barTop + 12;
+                guiGraphics.drawString(font, textLines[0], textX1, textY1, 0xFFFFFFFF, true);
+                guiGraphics.drawString(font, textLines[1], textX2, textY2, 0xFFFFFFFF, true);
             }
         }
+    }
+
+    private String[] wrapGlissandoText(String text, int maxWidth) {
+        // Check if text fits in one line
+        if (font.width(text) <= maxWidth) {
+            return new String[]{text};
+        }
+        
+        // Split by spaces and find the best break point
+        String[] words = text.split(" ");
+        StringBuilder line1 = new StringBuilder();
+        StringBuilder line2 = new StringBuilder();
+        boolean firstLine = true;
+        
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            String testLine = (firstLine ? line1 : line2).toString();
+            if (!testLine.isEmpty()) {
+                testLine += " ";
+            }
+            testLine += word;
+            
+            if (font.width(testLine) <= maxWidth) {
+                // Word fits on current line
+                if (firstLine) {
+                    if (!line1.isEmpty()) line1.append(" ");
+                    line1.append(word);
+                } else {
+                    if (!line2.isEmpty()) line2.append(" ");
+                    line2.append(word);
+                }
+            } else if (firstLine && !line1.isEmpty()) {
+                // Start second line
+                firstLine = false;
+                line2.append(word);
+            } else {
+                // Word is too long, force it to the current line anyway
+                if (firstLine) {
+                    if (!line1.isEmpty()) line1.append(" ");
+                    line1.append(word);
+                } else {
+                    if (!line2.isEmpty()) line2.append(" ");
+                    line2.append(word);
+                }
+            }
+        }
+        
+        if (line2.length() == 0) {
+            return new String[]{line1.toString()};
+        }
+        return new String[]{line1.toString(), line2.toString()};
     }
 
     private void drawHelpLine(GuiGraphics guiGraphics, int x, int y, String key, String desc) {
