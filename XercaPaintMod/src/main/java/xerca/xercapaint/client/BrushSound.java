@@ -24,7 +24,7 @@ public class BrushSound extends AbstractTickableSoundInstance {
         age += 300;
     }
 
-    public void refreshFade(){
+    public void refreshFade() {
         fadingTicks = 3;
         volume = 1.0f;
     }
@@ -32,21 +32,20 @@ public class BrushSound extends AbstractTickableSoundInstance {
     @Override
     public void tick() {
         age++;
-        if(fadingTicks <= 0 && age > 300){
+        if (fadingTicks <= 0 && age > 300) {
             this.stop();
         }
-        if(fadingTicks >= 0){
-            if(fadingTicks < fadeVolumes.length){
+        if (fadingTicks >= 0) {
+            if (fadingTicks < fadeVolumes.length) {
                 volume = fadeVolumes[fadingTicks];
             }
             fadingTicks--;
         }
 
-        float randomPitchChange = 0.03f - random.nextFloat()*0.06f;
-        if(pitch >= 1.2f && randomPitchChange > 0.f){
+        float randomPitchChange = 0.03f - random.nextFloat() * 0.06f;
+        if (pitch >= 1.2f && randomPitchChange > 0.f) {
             randomPitchChange -= 0.03f;
-        }
-        else if(pitch <= 0.8f && randomPitchChange < 0.f){
+        } else if (pitch <= 0.8f && randomPitchChange < 0.f) {
             randomPitchChange += 0.03f;
         }
         pitch += randomPitchChange;

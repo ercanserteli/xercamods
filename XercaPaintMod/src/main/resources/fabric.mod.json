@@ -4,7 +4,9 @@
   "version": "${version}",
   "name": "Joy of Painting",
   "description": "",
-  "authors": ["xerca"],
+  "authors": [
+    "xerca"
+  ],
   "contact": {},
   "license": "GPL-3.0",
   "icon": "logo.png",

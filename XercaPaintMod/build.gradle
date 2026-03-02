@@ -5,6 +5,7 @@ plugins {
     id 'maven-publish'
     id("com.github.spotbugs") version "6.4.4"
     id("net.ltgt.errorprone") version "4.3.0"
+    id "pmd"
 }
 
 version = project.mod_version
@@ -82,6 +83,13 @@ tasks.withType(JavaCompile).configureEach {
 spotbugs {
     ignoreFailures = true
     effort = Effort.MAX
+}
+
+pmd {
+    toolVersion = "7.11.0"
+    ignoreFailures = true
+    consoleOutput = true
+    ruleSets = ["category/java/errorprone.xml"]
 }
 
 java {

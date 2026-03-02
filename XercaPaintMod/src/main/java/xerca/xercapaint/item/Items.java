@@ -8,7 +8,6 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -52,7 +51,7 @@ public final class Items {
             .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
                 byte[] basicColors = new byte[16];
-                Arrays.fill(basicColors, (byte)1);
+                Arrays.fill(basicColors, (byte) 1);
                 fullPalette.set(PALETTE_BASIC_COLORS, basicColors);
 
                 output.accept(ITEM_PALETTE);

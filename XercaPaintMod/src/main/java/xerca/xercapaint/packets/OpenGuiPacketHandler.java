@@ -15,7 +15,7 @@ import xerca.xercapaint.item.ItemPalette;
 public class OpenGuiPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<OpenGuiPacket> {
     private static void processMessage(OpenGuiPacket msg) {
         Player player = Minecraft.getInstance().player;
-        if(player != null) {
+        if (player != null) {
             if (msg.allowed()) {
                 Entity entity = player.level().getEntity(msg.easelId());
                 if (entity instanceof EntityEasel easel) {
@@ -41,6 +41,6 @@ public class OpenGuiPacketHandler implements ClientPlayNetworking.PlayPayloadHan
 
     @Override
     public void receive(OpenGuiPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(()->processMessage(packet));
+        context.client().execute(() -> processMessage(packet));
     }
 }

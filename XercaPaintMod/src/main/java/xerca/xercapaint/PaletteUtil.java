@@ -31,23 +31,22 @@ public class PaletteUtil {
             return val;
         }
 
-        public void setGLColor(){
-            RenderSystem.setShaderColor(((float)r)/255.f, ((float)g)/255.f, ((float)b)/255.f, 1.0f);
+        public void setGLColor() {
+            RenderSystem.setShaderColor(((float) r) / 255.f, ((float) g) / 255.f, ((float) b) / 255.f, 1.0f);
         }
 
-        static public Color mix(Color a, Color b, float ratio){
-            if(ratio == 1.f) {
+        static public Color mix(Color a, Color b, float ratio) {
+            if (ratio == 1.f) {
                 return a;
-            }
-            else if(ratio == 0.f){
+            } else if (ratio == 0.f) {
                 return b;
             }
             Color res = new Color(
-                    (int)(a.r*ratio) + (int)(b.r*(1-ratio)),
-                    (int)(a.g*ratio) + (int)(b.g*(1-ratio)),
-                    (int)(a.b*ratio) + (int)(b.b*(1-ratio))
+                    (int) (a.r * ratio) + (int) (b.r * (1 - ratio)),
+                    (int) (a.g * ratio) + (int) (b.g * (1 - ratio)),
+                    (int) (a.b * ratio) + (int) (b.b * (1 - ratio))
             );
-            int averageMaximum = (int)(Math.max(Math.max(a.r, a.g), a.b)*ratio) + (int)(Math.max(Math.max(b.r, b.g), b.b)*(1-ratio));
+            int averageMaximum = (int) (Math.max(Math.max(a.r, a.g), a.b) * ratio) + (int) (Math.max(Math.max(b.r, b.g), b.b) * (1 - ratio));
 
             int maximumOfAverage = Math.max(Math.max(res.r, res.g), res.b);
             int gainFactor = maximumOfAverage == 0 ? 0 : averageMaximum / maximumOfAverage;
@@ -58,6 +57,7 @@ public class PaletteUtil {
             return res;
         }
     }
+
     public static class CustomColor {
         public int totalRed = 0;
         public int totalGreen = 0;
@@ -85,8 +85,8 @@ public class PaletteUtil {
             calculateResult();
         }
 
-        public void calculateResult(){
-            if(numberOfColors == 0){
+        public void calculateResult() {
+            if (numberOfColors == 0) {
                 this.result = emptinessColor;
                 return;
             }
@@ -105,7 +105,7 @@ public class PaletteUtil {
             this.result = new Color(resultRed, resultGreen, resultBlue);
         }
 
-        public void mix(Color toBeMixed){
+        public void mix(Color toBeMixed) {
             totalRed += toBeMixed.r;
             totalGreen += toBeMixed.g;
             totalBlue += toBeMixed.b;
@@ -114,7 +114,7 @@ public class PaletteUtil {
             calculateResult();
         }
 
-        public void reset(){
+        public void reset() {
             totalRed = 0;
             totalGreen = 0;
             totalBlue = 0;
@@ -131,7 +131,7 @@ public class PaletteUtil {
             return numberOfColors;
         }
 
-        public void writeToBuffer(FriendlyByteBuf buf){
+        public void writeToBuffer(FriendlyByteBuf buf) {
             buf.writeInt(totalRed);
             buf.writeInt(totalGreen);
             buf.writeInt(totalBlue);
@@ -139,7 +139,7 @@ public class PaletteUtil {
             buf.writeInt(numberOfColors);
         }
 
-        public void readFromBuffer(FriendlyByteBuf buf){
+        public void readFromBuffer(FriendlyByteBuf buf) {
             totalRed = buf.readInt();
             totalGreen = buf.readInt();
             totalBlue = buf.readInt();

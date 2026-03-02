@@ -28,29 +28,29 @@ public class RecipeCraftPalette extends CustomRecipe {
         super(craftingBookCategory);
     }
 
-    private boolean isPlank(ItemStack stack){
-        return stack.getTags().anyMatch((p)-> p.location().equals(plank));
+    private boolean isPlank(ItemStack stack) {
+        return stack.getTags().anyMatch((p) -> p.location().equals(plank));
     }
 
-    private boolean isDye(ItemStack stack){
+    private boolean isDye(ItemStack stack) {
         return stack.getItem() instanceof DyeItem;
     }
 
-    private boolean isPlankRow(CraftingInput inv, int row){
+    private boolean isPlankRow(CraftingInput inv, int row) {
         int plankCount = 0;
-        for(int j = 0; j < inv.width(); ++j) {
-            int id = row*inv.width() + j;
+        for (int j = 0; j < inv.width(); ++j) {
+            int id = row * inv.width() + j;
             ItemStack stack = inv.getItem(id);
-            if(isPlank(stack)){
+            if (isPlank(stack)) {
                 plankCount++;
             }
         }
         return plankCount == 3;
     }
 
-    private int findPlankRow(CraftingInput inv){
-        for(int i = 0; i < inv.height(); ++i) {
-            if(isPlankRow(inv, i)){
+    private int findPlankRow(CraftingInput inv) {
+        for (int i = 0; i < inv.height(); ++i) {
+            if (isPlankRow(inv, i)) {
                 return i;
             }
         }
@@ -58,19 +58,18 @@ public class RecipeCraftPalette extends CustomRecipe {
     }
 
     @Nullable
-    private ArrayList<ItemStack> findDyes(CraftingInput inv, int plankRow){
+    private ArrayList<ItemStack> findDyes(CraftingInput inv, int plankRow) {
         ArrayList<ItemStack> dyes = new ArrayList<>();
-        for(int i = 0; i < inv.height(); ++i) {
-            if(i == plankRow){
+        for (int i = 0; i < inv.height(); ++i) {
+            if (i == plankRow) {
                 continue;
             }
-            for(int j = 0; j < inv.width(); ++j) {
-                int id = i*inv.width() + j;
+            for (int j = 0; j < inv.width(); ++j) {
+                int id = i * inv.width() + j;
                 ItemStack stack = inv.getItem(id);
-                if(isDye(stack)){
+                if (isDye(stack)) {
                     dyes.add(stack);
-                }
-                else if(!stack.isEmpty()){
+                } else if (!stack.isEmpty()) {
                     return null;
                 }
             }
@@ -85,7 +84,7 @@ public class RecipeCraftPalette extends CustomRecipe {
     @Override
     public boolean matches(CraftingInput inv, Level worldIn) {
         int plankRow = findPlankRow(inv);
-        if(plankRow < 0){
+        if (plankRow < 0) {
             return false;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, plankRow);
@@ -98,17 +97,17 @@ public class RecipeCraftPalette extends CustomRecipe {
     @Override
     public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
         int plankRow = findPlankRow(inv);
-        if(plankRow < 0){
+        if (plankRow < 0) {
             return ItemStack.EMPTY;
         }
         ArrayList<ItemStack> dyes = findDyes(inv, plankRow);
-        if(dyes == null || dyes.isEmpty()){
+        if (dyes == null || dyes.isEmpty()) {
             return ItemStack.EMPTY;
         }
 
         byte[] basicColors = new byte[16];
-        for(ItemStack dye : dyes){
-            DyeColor color = ((DyeItem)(dye.getItem())).getDyeColor();
+        for (ItemStack dye : dyes) {
+            DyeColor color = ((DyeItem) (dye.getItem())).getDyeColor();
             basicColors[15 - color.getId()] = 1;
         }
         ItemStack result = new ItemStack(Items.ITEM_PALETTE);

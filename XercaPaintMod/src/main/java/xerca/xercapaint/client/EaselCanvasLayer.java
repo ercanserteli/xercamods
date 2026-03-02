@@ -22,7 +22,7 @@ public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
         if (itemstack.getItem() instanceof ItemCanvas itemCanvas) {
             poseStack.pushPose();
 
-            switch (itemCanvas.getCanvasType()){
+            switch (itemCanvas.getCanvasType()) {
                 case SMALL -> {
                     poseStack.scale(1.5F, 1.5f, 1.5f);
                     poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));

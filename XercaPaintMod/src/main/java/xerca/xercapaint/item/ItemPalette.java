@@ -30,25 +30,25 @@ public class ItemPalette extends Item {
     @Nonnull
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, @NotNull Player playerIn, @Nonnull InteractionHand hand) {
-        if(worldIn.isClientSide) {
+        if (worldIn.isClientSide) {
             ModClient.showCanvasGui(playerIn);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
     }
 
-    public static boolean isFull(ItemStack stack){
+    public static boolean isFull(ItemStack stack) {
         return basicColorCount(stack) == 16;
     }
 
-    public static int basicColorCount(ItemStack stack){
-        if(stack.getItem() != Items.ITEM_PALETTE){
+    public static int basicColorCount(ItemStack stack) {
+        if (stack.getItem() != Items.ITEM_PALETTE) {
             return 0;
         }
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
-        if(basicColors != null){
+        if (basicColors != null) {
             if (basicColors.length == 16) {
                 int basicCount = 0;
-                for(byte basicColor : basicColors){
+                for (byte basicColor : basicColors) {
                     basicCount += basicColor;
                 }
                 return basicCount;
@@ -64,11 +64,10 @@ public class ItemPalette extends Item {
         ComponentCustomColor customColorComp = stack.get(Items.PALETTE_CUSTOM_COLORS);
         if (basicColors == null && customColorComp == null) {
             tooltip.add(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
-        }
-        else  {
+        } else {
             if (basicColors != null && basicColors.length == 16) {
                 int basicCount = 0;
-                for(byte basicColor : basicColors){
+                for (byte basicColor : basicColors) {
                     basicCount += basicColor;
                 }
                 tooltip.add(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
@@ -76,8 +75,8 @@ public class ItemPalette extends Item {
 
             if (customColorComp != null) {
                 int fullCount = 0;
-                for(PaletteUtil.CustomColor color : customColorComp.colors){
-                    if(color.numberOfColors > 0){
+                for (PaletteUtil.CustomColor color : customColorComp.colors) {
+                    if (color.numberOfColors > 0) {
                         fullCount++;
                     }
                 }

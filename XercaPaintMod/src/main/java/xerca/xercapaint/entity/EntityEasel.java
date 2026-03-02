@@ -4,13 +4,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -57,7 +53,7 @@ public class EntityEasel extends Entity {
         super(entityCanvasEntityType, world);
     }
 
-    public void setPainter(Player painter){
+    public void setPainter(Player painter) {
         this.painter = painter;
     }
 
@@ -73,10 +69,9 @@ public class EntityEasel extends Entity {
         }
 
         if (!this.level().isClientSide && !this.isRemoved()) {
-            if(!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)){
+            if (!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)) {
                 this.dropItem(damageSource.getEntity(), false);
-            }
-            else{
+            } else {
                 this.dropItem(damageSource.getEntity());
                 kill();
                 this.markHurt();
@@ -87,7 +82,7 @@ public class EntityEasel extends Entity {
 
     private void showBreakingParticles() {
         if (this.level() instanceof ServerLevel) {
-            ((ServerLevel)this.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
+            ((ServerLevel) this.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
         }
     }
 
@@ -107,9 +102,9 @@ public class EntityEasel extends Entity {
     }
 
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
-        if(painter != null){
-            if(!this.level().isClientSide){
-                if(dropDeferred == null){
+        if (painter != null) {
+            if (!this.level().isClientSide) {
+                if (dropDeferred == null) {
                     if (painter instanceof ServerPlayer serverPlayer) {
                         CloseGuiPacket pack = new CloseGuiPacket();
                         ServerPlayNetworking.send(serverPlayer, pack);
@@ -117,13 +112,12 @@ public class EntityEasel extends Entity {
                     dropDeferred = () -> doDrop(entity, dropSelf);
                 }
             }
-        }
-        else{
+        } else {
             doDrop(entity, dropSelf);
         }
     }
 
-    public void doDrop(@Nullable Entity entity, boolean dropSelf){
+    public void doDrop(@Nullable Entity entity, boolean dropSelf) {
         ItemStack canvasStack = this.getItem();
         this.setItem(ItemStack.EMPTY);
 
@@ -159,10 +153,10 @@ public class EntityEasel extends Entity {
         }
 
         this.getEntityData().set(DATA_CANVAS, itemStack);
-        if(makeSound){
+        if (makeSound) {
             if (!itemStack.isEmpty()) {
                 this.playSound(SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
-            }else{
+            } else {
                 this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             }
         }
@@ -220,16 +214,15 @@ public class EntityEasel extends Entity {
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;
         boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
-        if(this.level().isClientSide){
+        if (this.level().isClientSide) {
             return !isEaselFilled && !handHoldsCanvas ? InteractionResult.PASS : InteractionResult.SUCCESS;
-        }
-        else {
+        } else {
             if (!isEaselFilled) {
                 if (handHoldsCanvas && !this.isRemoved()) {
                     this.setItem(itemInHand);
                     itemInHand.shrink(1);
                 }
-            }else{
+            } else {
                 boolean unused = this.painter == null;
                 boolean toEdit = handHoldsPalette && !(getItem().getOrDefault(Items.CANVAS_GENERATION, 0) > 0);
                 boolean allowed = unused || !toEdit;
@@ -237,7 +230,7 @@ public class EntityEasel extends Entity {
                     OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
                     ServerPlayNetworking.send(serverPlayer, pack);
                 }
-                if(toEdit && allowed){
+                if (toEdit && allowed) {
                     this.painter = player;
                 }
             }
@@ -261,21 +254,20 @@ public class EntityEasel extends Entity {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
-        if(!this.level().isClientSide){
-            if(dropDeferred != null){
-                dropWaitTicks ++;
-                if(painter == null || dropWaitTicks > 80){
+        if (!this.level().isClientSide) {
+            if (dropDeferred != null) {
+                dropWaitTicks++;
+                if (painter == null || dropWaitTicks > 80) {
                     dropDeferred.run();
                     dropDeferred = null;
                     dropWaitTicks = 0;
                 }
             }
         }
-        if(painter != null){
-            if(painter.isRemoved() || !painter.isAlive()){
+        if (painter != null) {
+            if (painter.isRemoved() || !painter.isAlive()) {
                 painter = null;
-            }
-            else if(painter.distanceToSqr(this) > 64){
+            } else if (painter.distanceToSqr(this) > 64) {
                 painter = null;
             }
         }

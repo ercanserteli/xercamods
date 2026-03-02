@@ -18,7 +18,7 @@ public class GuiPalette extends BasePalette {
     public void init() {
         paletteX = paletteXs[paletteXs.length - 1];
         paletteY = paletteYs[paletteYs.length - 1];
-        if(paletteX == -1000 || paletteY == -1000){
+        if (paletteX == -1000 || paletteY == -1000) {
             paletteX = 140;
             paletteY = 40;
         }
@@ -32,20 +32,20 @@ public class GuiPalette extends BasePalette {
         renderCursor(guiGraphics, mouseX, mouseY);
     }
 
-    private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY){
-        if(isCarryingColor){
+    private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (isCarryingColor) {
             carriedColor.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            guiGraphics.blit(paletteTextures, mouseX - brushSpriteSize / 2, mouseY - brushSpriteSize / 2, brushSpriteX + brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
 
-        }else if(isCarryingWater){
+        } else if (isCarryingWater) {
             waterColor.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX-brushSpriteSize/2, mouseY-brushSpriteSize/2, brushSpriteX+brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
+            guiGraphics.blit(paletteTextures, mouseX - brushSpriteSize / 2, mouseY - brushSpriteSize / 2, brushSpriteX + brushSpriteSize, brushSpriteY, dropSpriteWidth, brushSpriteSize);
         }
     }
 
     @Override
     public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        if(isCarryingPalette){
+        if (isCarryingPalette) {
             boolean ret = super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
             updatePalettePos(deltaX, deltaY);
             return ret;
@@ -53,7 +53,7 @@ public class GuiPalette extends BasePalette {
         return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }
 
-    private void updatePalettePos(double deltaX, double deltaY){
+    private void updatePalettePos(double deltaX, double deltaY) {
         paletteX += deltaX;
         paletteY += deltaY;
 

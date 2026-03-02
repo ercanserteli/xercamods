@@ -22,7 +22,7 @@ import xerca.xercapaint.item.Items;
 import static xerca.xercapaint.PaletteUtil.emptinessColor;
 
 public abstract class BasePalette extends Screen {
-    protected static final ResourceLocation paletteTextures =  Mod.id("textures/gui/palette.png");
+    protected static final ResourceLocation paletteTextures = Mod.id("textures/gui/palette.png");
     final static int dyeSpriteX = 240;
     final static int dyeSpriteSize = 16;
     final static int brushSpriteX = 0;
@@ -118,20 +118,19 @@ public abstract class BasePalette extends Screen {
         this.basicColorFlags = new boolean[16];
 
         ItemPalette.ComponentCustomColor componentCustomColor = paletteStack.get(Items.PALETTE_CUSTOM_COLORS);
-        if(componentCustomColor != null) {
+        if (componentCustomColor != null) {
             this.customColors = componentCustomColor.colors;
-        }
-        else {
+        } else {
             this.customColors = new PaletteUtil.CustomColor[12];
-            for(int i=0; i < customColors.length; i++){
+            for (int i = 0; i < customColors.length; i++) {
                 customColors[i] = new PaletteUtil.CustomColor();
             }
         }
 
         byte[] basics = paletteStack.get(Items.PALETTE_BASIC_COLORS);
-        if(basics != null){
+        if (basics != null) {
             paletteComplete = true;
-            for(int i=0; i<basics.length; i++){
+            for (int i = 0; i < basics.length; i++) {
                 basicColorFlags[i] = basics[i] > 0;
                 paletteComplete &= basicColorFlags[i];
             }
@@ -179,35 +178,35 @@ public abstract class BasePalette extends Screen {
         }
     }
 
-    protected boolean superMouseClicked(double posX, double posY, int mouseButton){
+    protected boolean superMouseClicked(double posX, double posY, int mouseButton) {
         return super.mouseClicked(posX, posY, mouseButton);
     }
 
-    protected boolean superMouseReleased(double posX, double posY, int mouseButton){
+    protected boolean superMouseReleased(double posX, double posY, int mouseButton) {
         return super.mouseReleased(posX, posY, mouseButton);
     }
 
-    protected boolean superMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY){
+    protected boolean superMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
         return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }
 
     // Mouse button 0: left, 1: right
     @Override
     public boolean mouseClicked(double posX, double posY, int mouseButton) {
-        int mouseX = (int)Math.round(posX);
-        int mouseY = (int)Math.round(posY);
+        int mouseX = (int) Math.round(posX);
+        int mouseY = (int) Math.round(posY);
 
-        if(paletteClick(mouseX, mouseY)){
-            int x = (mouseX - (int)paletteX);
-            int y = (mouseY - (int)paletteY);
+        if (paletteClick(mouseX, mouseY)) {
+            int x = (mouseX - (int) paletteX);
+            int y = (mouseY - (int) paletteY);
             Vec2 clickVec = new Vec2(x, y);
             float sqrBasicRadius = basicColorRadius * basicColorRadius;
             float sqrCustomRadius = customColorRadius * customColorRadius;
 
             boolean didSomething = false;
-            for(int i=0; i<basicColorCenters.length; i++){
-                if(basicColorFlags[i] && sqrDist(clickVec, basicColorCenters[i]) <= sqrBasicRadius){
-                    if(mouseButton == 0){
+            for (int i = 0; i < basicColorCenters.length; i++) {
+                if (basicColorFlags[i] && sqrDist(clickVec, basicColorCenters[i]) <= sqrBasicRadius) {
+                    if (mouseButton == 0) {
                         carriedColor = currentColor = basicColors[i];
                         setCarryingColor();
                         playSound(SoundEvents.MIX, 0.6f);
@@ -217,11 +216,11 @@ public abstract class BasePalette extends Screen {
                 }
             }
 
-            if(!didSomething){
-                for(int i=0; i<customColorCenters.length; i++){
-                    if(sqrDist(clickVec, customColorCenters[i]) <= sqrCustomRadius){
-                        if(mouseButton == 0) {
-                            if(customColors[i].getNumberOfColors() > 0){
+            if (!didSomething) {
+                for (int i = 0; i < customColorCenters.length; i++) {
+                    if (sqrDist(clickVec, customColorCenters[i]) <= sqrCustomRadius) {
+                        if (mouseButton == 0) {
+                            if (customColors[i].getNumberOfColors() > 0) {
                                 carriedColor = currentColor = customColors[i].getColor();
                                 carriedCustomColorId = i;
                                 setCarryingColor();
@@ -234,9 +233,9 @@ public abstract class BasePalette extends Screen {
                 }
             }
 
-            if(!didSomething) {
-                if(sqrDist(clickVec, waterCenter) <= sqrCustomRadius){
-                    if(mouseButton == 0) {
+            if (!didSomething) {
+                if (sqrDist(clickVec, waterCenter) <= sqrCustomRadius) {
+                    if (mouseButton == 0) {
                         setCarryingWater();
                         playSound(SoundEvents.WATER);
                         didSomething = true;
@@ -244,9 +243,9 @@ public abstract class BasePalette extends Screen {
                 }
             }
 
-            if(!didSomething && paletteComplete && !isCarryingWater && !isCarryingColor){
-                if(inColorPicker(x, y)){
-                    if(mouseButton == 0) {
+            if (!didSomething && paletteComplete && !isCarryingWater && !isCarryingColor) {
+                if (inColorPicker(x, y)) {
+                    if (mouseButton == 0) {
                         setPickingColor();
                         playSound(SoundEvents.COLOR_PICKER);
                         didSomething = true;
@@ -254,19 +253,19 @@ public abstract class BasePalette extends Screen {
                 }
             }
 
-            if(!didSomething){
+            if (!didSomething) {
                 isCarryingPalette = true;
             }
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    protected boolean inColorPicker(int x, int y){
+    protected boolean inColorPicker(int x, int y) {
         return x >= colorPickerPosX && x < colorPickerPosX + colorPickerSize && y >= colorPickerPosY && y < colorPickerPosY + colorPickerSize;
     }
 
-    protected boolean inWater(int x, int y){
-        return sqrDist(new Vec2(x, y), waterCenter) <= customColorRadius*customColorRadius;
+    protected boolean inWater(int x, int y) {
+        return sqrDist(new Vec2(x, y), waterCenter) <= customColorRadius * customColorRadius;
     }
 
     @Override
@@ -274,19 +273,19 @@ public abstract class BasePalette extends Screen {
         return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }
 
-    protected void setCarryingWater(){
+    protected void setCarryingWater() {
         isCarryingWater = true;
         isCarryingColor = false;
         isPickingColor = false;
     }
 
-    protected void setCarryingColor(){
+    protected void setCarryingColor() {
         isCarryingWater = false;
         isCarryingColor = true;
         isPickingColor = false;
     }
 
-    protected void setPickingColor(){
+    protected void setPickingColor() {
         isCarryingWater = false;
         isCarryingColor = false;
         isPickingColor = true;
@@ -294,22 +293,22 @@ public abstract class BasePalette extends Screen {
 
     @Override
     public boolean mouseReleased(double posX, double posY, int mouseButton) {
-        int mouseX = (int)Math.round(posX);
-        int mouseY = (int)Math.round(posY);
-        if(isCarryingColor || isCarryingWater) {
+        int mouseX = (int) Math.round(posX);
+        int mouseY = (int) Math.round(posY);
+        if (isCarryingColor || isCarryingWater) {
             if (paletteClick(mouseX, mouseY)) {
                 float sqrCustomRadius = customColorRadius * customColorRadius;
-                int x = (mouseX - (int)paletteX);
-                int y = (mouseY - (int)paletteY);
+                int x = (mouseX - (int) paletteX);
+                int y = (mouseY - (int) paletteY);
                 Vec2 clickVec = new Vec2(x, y);
                 for (int i = 0; i < customColorCenters.length; i++) {
                     if (sqrDist(clickVec, customColorCenters[i]) <= sqrCustomRadius) {
                         PaletteUtil.CustomColor customColor = customColors[i];
-                        if(isCarryingWater){
+                        if (isCarryingWater) {
                             customColor.reset();
                             playSound(SoundEvents.WATER_DROP);
-                        }else{
-                            if(carriedCustomColorId != i){
+                        } else {
+                            if (carriedCustomColorId != i) {
                                 customColor.mix(carriedColor);
                                 currentColor = customColor.getColor();
                                 playSound(SoundEvents.MIX);
@@ -328,19 +327,19 @@ public abstract class BasePalette extends Screen {
         return super.mouseReleased(posX, posY, mouseButton);
     }
 
-    protected void playSound(SoundInstance sound){
+    protected void playSound(SoundInstance sound) {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
 
-    protected void playSound(SoundEvent soundEvent){
+    protected void playSound(SoundEvent soundEvent) {
         playSound(soundEvent, 1.0f);
     }
 
-    protected void playSound(SoundEvent soundEvent, float volume){
+    protected void playSound(SoundEvent soundEvent, float volume) {
         Minecraft m = Minecraft.getInstance();
-        if(m.level != null && m.player != null){
+        if (m.level != null && m.player != null) {
             m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
-                    0.8f + m.level.random.nextFloat()*0.4f, m.player.getRandom(), m.player.blockPosition()));
+                    0.8f + m.level.random.nextFloat() * 0.4f, m.player.getRandom(), m.player.blockPosition()));
         }
     }
 
@@ -353,7 +352,7 @@ public abstract class BasePalette extends Screen {
         return x <= paletteX + paletteWidth && x >= paletteX && y <= paletteY + paletteHeight && y >= paletteY;
     }
 
-    float sqrDist(Vec2 a, Vec2 b){
-        return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y);
+    float sqrDist(Vec2 a, Vec2 b) {
+        return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
     }
 }

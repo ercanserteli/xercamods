@@ -1,7 +1,6 @@
 package xerca.xercapaint;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
 import static net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT;

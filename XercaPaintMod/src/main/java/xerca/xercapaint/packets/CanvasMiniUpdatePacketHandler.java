@@ -18,26 +18,25 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
         ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.easelId() > -1){
+        if (msg.easelId() > -1) {
             entityEasel = pl.level().getEntity(msg.easelId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.easelId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
             canvas = easel.getItem();
-            if(!(canvas.getItem() instanceof ItemCanvas)){
+            if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Canvas not found inside easel!");
                 return;
             }
-        }
-        else{
+        } else {
             canvas = pl.getMainHandItem();
             palette = pl.getOffhandItem();
-            if(canvas.getItem() instanceof ItemPalette){
+            if (canvas.getItem() instanceof ItemPalette) {
                 canvas = palette;
             }
         }
@@ -48,7 +47,7 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
             canvas.set(Items.CANVAS_VERSION, msg.version());
             canvas.set(Items.CANVAS_GENERATION, 0);
 
-            if(entityEasel instanceof EntityEasel easel){
+            if (entityEasel instanceof EntityEasel easel) {
                 easel.setItem(canvas, false);
             }
 
@@ -58,8 +57,8 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
 
     @Override
     public void receive(CanvasMiniUpdatePacket packet, ServerPlayNetworking.Context context) {
-        if(packet != null){
-            context.server().execute(()->processMessage(packet, context.player()));
+        if (packet != null) {
+            context.server().execute(() -> processMessage(packet, context.player()));
         }
     }
 }
