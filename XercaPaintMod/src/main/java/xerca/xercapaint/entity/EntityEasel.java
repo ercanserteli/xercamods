@@ -54,6 +54,11 @@ public class EntityEasel extends Entity {
         super(entityCanvasEntityType, world);
     }
 
+    @Nullable
+    public Player getPainter() {
+        return painter;
+    }
+
     public void setPainter(Player painter) {
         this.painter = painter;
     }
@@ -78,7 +83,7 @@ public class EntityEasel extends Entity {
                 this.dropItem(damageSource.getEntity(), false);
             } else {
                 this.dropItem(damageSource.getEntity());
-                kill();
+                this.kill();
                 this.markHurt();
             }
         }
@@ -109,9 +114,9 @@ public class EntityEasel extends Entity {
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if (painter != null) {
             if (!this.level().isClientSide && dropDeferred == null) {
-                if (painter instanceof ServerPlayer serverPlayer) {
+                if (painter instanceof ServerPlayer serverPainter) {
                     CloseGuiPacket pack = new CloseGuiPacket();
-                    ServerPlayNetworking.send(serverPlayer, pack);
+                    ServerPlayNetworking.send(serverPainter, pack);
                 }
                 setDropDeferred(() -> doDrop(entity, dropSelf));
             }
@@ -263,7 +268,7 @@ public class EntityEasel extends Entity {
                 dropWaitTicks = 0;
             }
         }
-        if (painter != null && ((painter.isRemoved() || !painter.isAlive()) || painter.distanceToSqr(this) > MAX_PAINTER_DISTANCE_SQR)) {
+        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > MAX_PAINTER_DISTANCE_SQR)) {
             setPainter(null);
         }
     }

@@ -6,7 +6,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 
-@SuppressWarnings("ArrayRecordComponent")
 public record PictureSendPacket(String canvasId, int version, int[] pixels) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<PictureSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("picture_send"));
     public static final StreamCodec<FriendlyByteBuf, PictureSendPacket> PACKET_CODEC = StreamCodec.ofMember(PictureSendPacket::encode, PictureSendPacket::decode);

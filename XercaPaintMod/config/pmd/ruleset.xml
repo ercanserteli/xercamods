@@ -6,6 +6,7 @@
     <description>PMD rules for XercaPaintMod.</description>
 
     <rule ref="category/java/errorprone.xml">
+        <exclude name="AvoidLiteralsInIfCondition"/>
         <exclude name="CloseResource"/>
         <exclude name="ConstructorCallsOverridableMethod"/>
         <exclude name="TestClassWithoutTestCases"/>

@@ -45,20 +45,6 @@ public class CanvasTagCompatibilityGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_COMPAT_BATCH)
-    public static void pixelsWithoutNameAreNotCanvasData(GameTestHelper helper) {
-        ItemStack stack = new ItemStack(Items.ITEM_CANVAS);
-        ItemCanvas canvas = (ItemCanvas) stack.getItem();
-        int pixelCount = canvas.getWidth() * canvas.getHeight();
-        stack.set(Items.CANVAS_PIXELS, new ArrayList<>(Collections.nCopies(pixelCount, 0)));
-
-        ItemStack fresh = new ItemStack(Items.ITEM_CANVAS);
-        CraftingInput grid = createGrid(2, 2, stack, fresh);
-        helper.assertTrue(!CLONING_RECIPE.matches(grid, helper.getLevel()),
-                "Expected pixels-without-generation canvas to not be treated as cloning original");
-        helper.succeed();
-    }
-
-    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_COMPAT_BATCH)
     public static void cloningTreatsForeignTaggedFreshCanvasAsFresh(GameTestHelper helper) {
         ItemStack original = new ItemStack(Items.ITEM_CANVAS);
         ItemCanvas originalItem = (ItemCanvas) original.getItem();

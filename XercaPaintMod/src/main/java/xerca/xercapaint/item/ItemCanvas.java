@@ -196,4 +196,8 @@ public class ItemCanvas extends HangingEntityItem {
             return !directionIn.getAxis().isVertical() && playerIn.mayUseItemAt(posIn, directionIn, itemStackIn);
         }
     }
+
+    public static String generateName(Player player) {
+        return player.getUUID() + "_" + System.currentTimeMillis() / 100;
+    }
 }

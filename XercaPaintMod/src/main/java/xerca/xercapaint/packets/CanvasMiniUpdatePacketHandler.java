@@ -28,6 +28,14 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
+            if (entityEasel.getPainter() == null || !entityEasel.getPainter().getUUID().equals(pl.getUUID())) {
+                Mod.LOGGER.warn("CanvasMiniUpdatePacket: Unauthorized paint update. easelId: {} player: {}", msg.easelId(), pl.getName().getString());
+                return;
+            }
+            if (pl.distanceToSqr(entityEasel) > 64.0D) {
+                Mod.LOGGER.warn("CanvasMiniUpdatePacket: Player too far from easel. easelId: {} player: {}", msg.easelId(), pl.getName().getString());
+                return;
+            }
             easel = entityEasel;
             canvas = easel.getItem();
             if (!(canvas.getItem() instanceof ItemCanvas)) {

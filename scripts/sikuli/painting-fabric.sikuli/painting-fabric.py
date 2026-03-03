@@ -1,7 +1,8 @@
 import math
 import os
-from javax.sound.sampled import AudioSystem
 from java.io import File
+from javax.sound.sampled import AudioSystem
+
 
 def playSound(filename):
     script_path = os.path.dirname(getBundlePath())
@@ -25,7 +26,7 @@ def slowDragDrop(source_location, target_location, delay=0.01):
     drag(source_location)
 
     # calculate the steps needed for target
-    steps_target = int(calculateDistance(target_location, source_location) / 40)
+    steps_target = int(calculateDistance(target_location, source_location) / 100)
 
     # move the mouse to the target in steps
     for i in range(1, steps_target):
@@ -56,7 +57,7 @@ def testItemsInCreative(mc, win, mcLoc):
     emptyInventory()
     
     win.click("1690565858766.png")
-    win.click("1689431143513.png")
+    win.click("1755750270147.png")
     
     # Get items to inventory
     for i in range(7):
@@ -69,18 +70,18 @@ def testItemsInCreative(mc, win, mcLoc):
     # Empty palette
     win.type("1")
     rclick(win)
-    testAssert(exists("1689434333796.png") and exists("1689434326126.png") and exists("1689434315850.png"))
+    testAssert(exists("1755750304476.png") and exists("1755750314988.png") and exists("1755750323634.png"))
     win.type(Key.ESC)
     
     # Full palette
     win.type("2")
     rclick(win)
-    testAssert(exists("1689505674262.png") and exists("1689505686642.png"))
+    testAssert(exists("1755750350256.png") and exists("1755750359145.png"))
     
     # Dark gray to first slot
     win.drag("1689433643444.png")
     win.dropAt(mcLoc.offset(540, 240))
-    testAssert(exists("1689505731885.png"))
+    testAssert(exists("1755750379662.png"))
     
     # Orange to right slot 3
     win.drag("1689433651887.png")
@@ -89,18 +90,18 @@ def testItemsInCreative(mc, win, mcLoc):
     # Mix light blue with orange
     win.drag("1689433689628.png")
     win.dropAt(mcLoc.offset(565, 305))
-    testAssert(exists("1689505764995.png"))
+    testAssert(exists("1755750412733.png"))
     
     # Delete dark gray
-    win.drag("1689433758136.png")
+    win.drag("1755754274234.png")
     win.dropAt(mcLoc.offset(540, 240))
-    testAssert(exists("1689505792474.png")) 
+    testAssert(exists("1755750426755.png")) 
     win.type(Key.ESC)
     wait(0.5)
     
     # Check if saved properly
     rclick(win)
-    testAssert(exists("1689434101942.png"))
+    testAssert(exists("1755750426755.png"))
     win.type(Key.ESC)
     
     # Empty canvas
@@ -141,31 +142,32 @@ def testDrawOnCanvas(mc, win, mcLoc):
     testAssert(exists("1689438634012.png"))
     
     # Draw a line with red
+    mcLoc = Location(win.getX(), win.getY())
     win.click(mcLoc.offset(810, 128))
     win.click(mcLoc.offset(115, 405))
-    slowDragDrop(mcLoc.offset(524, 160), mcLoc.offset(762, 360))
+    slowDragDrop(mcLoc.offset(620, 160), mcLoc.offset(620, 360))
     win.click(mcLoc.offset(400, 440))
-    testAssert(exists("1689521777237.png"))
+    testAssert(exists("1772393719058.png"))
     
     # Draw a half-opaque line with mixed color
     win.click(mcLoc.offset(357, 305))
     win.click(mcLoc.offset(810, 185))
     slowDragDrop(mcLoc.offset(745, 160), mcLoc.offset(524, 360))
     win.click(mcLoc.offset(400, 440))
-    testAssert(exists("1689521940375.png"))
+    testAssert(exists("1772393758703.png"))
     
     # Draw with green big brush
     win.click(mcLoc.offset(805, 337))
     win.click(mcLoc.offset(110, 350))
     win.click(mcLoc.offset(625, 260))
     win.click(mcLoc.offset(400, 440))
-    testAssert(exists("1689447745899.png"))
+    testAssert(exists("1772393777164.png"))
     
     # Exit and come back to check if it saved
     win.type(Key.ESC)
     wait(1)
     rclick(win)
-    testAssert(exists("1689447745899.png"))
+    testAssert(exists("1772393777164.png"))
     
     # Signing (and canceling signing)
     win.click("1689438634012.png")
@@ -176,7 +178,7 @@ def testDrawOnCanvas(mc, win, mcLoc):
     win.click("1689442068756.png")
     rclick(win)
     win.mouseMove(mcLoc.offset(100, 100))
-    testAssert(exists("1689442696256.png") and exists("1689447745899.png"))
+    testAssert(exists("1689442696256.png") and exists("1772393777164.png"))
     win.type(Key.ESC)
 
     # Export/import commands
@@ -207,7 +209,7 @@ def testCrafting(mc, win, mcLoc):
     Settings.MinSimilarity = 0.99
     emptyInventory()
     win.type("e")
-    
+
     getItem(win, "crafting_table")
     getItem(win, "stick", 64)
     getItem(win, "paper", 8)
@@ -233,7 +235,7 @@ def testCrafting(mc, win, mcLoc):
     ]
     for c in dye_colors:
         getItem(win, "{}_dye".format(c))
-        
+
     popup("Place and use the crafting table.")
     testAssert(exists("1689507699969.png"))
     stick = win.find("1689507809001.png")
@@ -319,12 +321,12 @@ def testCrafting(mc, win, mcLoc):
     win.dropAt(mcLoc.offset(400, 230))
     win.click("1689509695985.png")
     win.click(mcLoc.offset(365, 195))
-    testAssert("1689509757648.png")
+    testAssert("1755750517043.png")
     win.click("1689509770105.png")
     win.click(mcLoc.offset(400, 195))
     win.click("1689509804017.png")
     win.click(mcLoc.offset(330, 195))
-    res = exists("1689509827187.png")
+    res = exists("1755750690717.png")
     testAssert(res)
 
     # Filling palette
@@ -341,7 +343,7 @@ def testCrafting(mc, win, mcLoc):
     win.click("1689510008810.png")
     keyUp(Key.SHIFT)
     win.click(mcLoc.offset(200, 150))
-    res = exists("1689510083157.png")
+    res = exists("1755750751614.png")
     testAssert(res)
     win.click(res)
     win.click(mcLoc.offset(365, 150))
@@ -352,7 +354,7 @@ def testCrafting(mc, win, mcLoc):
     win.click("1689510031311.png")
     win.click("1689510037022.png")
     keyUp(Key.SHIFT)
-    res = exists("1689510185482.png")
+    res = exists("1755750984111.png")
     testAssert(res)
     keyDown(Key.SHIFT)
     win.click(res)
@@ -370,13 +372,11 @@ def testCrafting(mc, win, mcLoc):
     win.click("1689522685857.png")
     win.click(mcLoc.offset(400, 185))
     win.click(mcLoc.offset(150, 200))
-    testAssert(exists("1689522791067.png"))
+    testAssert(exists("1772626874669.png"))
     keyDown(Key.SHIFT)
     win.click(mcLoc.offset(520, 190))
     keyUp(Key.SHIFT)
     win.type(Key.ESC)
-    
-    
 
 
 mc = switchApp("Minecraft")
@@ -390,7 +390,6 @@ if button:
 inv = win.exists("1689446179355.png", 0.1)
 if inv:
     win.type("e")
-
 
 testItemsInCreative(mc, win, mcLoc)
 testDrawOnCanvas(mc, win, mcLoc)

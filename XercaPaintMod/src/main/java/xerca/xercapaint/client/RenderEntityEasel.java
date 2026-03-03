@@ -31,7 +31,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
     static RenderEntityEasel theInstance;
-    private static final ResourceLocation woodTexture = Mod.id("textures/block/birch_long.png");
+    private static final ResourceLocation WOOD_TEXTURE = Mod.id("textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -46,7 +46,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(EntityEasel entity) {
-        return woodTexture;
+        return WOOD_TEXTURE;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
         int i = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
         this.model.renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, i);
 
-        this.layers.forEach(renderlayer -> renderlayer.render(matrixStackIn, bufferIn, packedLightIn, entity, 0, 0, 0, 0, 0, 0));
+        this.layers.forEach(renderLayer -> renderLayer.render(matrixStackIn, bufferIn, packedLightIn, entity, 0, 0, 0, 0, 0, 0));
 
         matrixStackIn.popPose();
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
@@ -76,18 +76,18 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     protected boolean shouldShowName(EntityEasel easel) {
         HitResult result = Minecraft.getInstance().hitResult;
         if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
-            double d0 = this.entityRenderDispatcher.distanceToSqr(easel);
-            float f = easel.isDiscrete() ? 32.0F : 64.0F;
-            return d0 < (f * f);
+            double distanceSquared = this.entityRenderDispatcher.distanceToSqr(easel);
+            float range = easel.isDiscrete() ? 32.0F : 64.0F;
+            return distanceSquared < range * range;
         }
         return false;
     }
 
     @Override
-    protected void renderNameTag(EntityEasel easel, Component displayName, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float partialTick) {
+    protected void renderNameTag(EntityEasel easel, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float partialTick) {
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, buffer, packedLight, partialTick);
+        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, packedLight, partialTick);
         poseStack.popPose();
     }
 

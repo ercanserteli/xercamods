@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
-    public static final Color emptinessColor = new Color(255, 236, 229);
+    public static final Color EMPTINESS_COLOR = new Color(255, 236, 229);
     private static final float RATIO_FULL = 1.0f;
     private static final float RATIO_EMPTY = 0.0f;
 
@@ -91,7 +91,7 @@ public class PaletteUtil {
 
         public void calculateResult() {
             if (numberOfColors == 0) {
-                this.result = emptinessColor;
+                this.result = EMPTINESS_COLOR;
                 return;
             }
             int averageRed = totalRed / numberOfColors;

@@ -396,7 +396,6 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
-    @SuppressWarnings("ArrayRecordComponent")
     public record Picture(int version, int[] pixels) {
         public Picture {
             if (pixels == null) {
@@ -409,6 +408,28 @@ public class EntityCanvas extends HangingEntity {
         @Override
         public int[] pixels() {
             return pixels.clone();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Picture(int otherVersion, int[] otherPixels))) return false;
+            return version == otherVersion && java.util.Arrays.equals(pixels, otherPixels);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Integer.hashCode(version);
+            result = 31 * result + java.util.Arrays.hashCode(pixels);
+            return result;
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return "Picture{" +
+                    "version=" + version +
+                    ", pixels=" + java.util.Arrays.toString(pixels) +
+                    '}';
         }
     }
 }

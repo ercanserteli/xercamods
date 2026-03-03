@@ -70,13 +70,9 @@ public class RecipeCraftPaletteGameTests {
         items.set(slot(3, 2, 2), new ItemStack(net.minecraft.world.item.Items.RED_DYE));
         CraftingInput grid = createGrid(3, 3, items);
 
-        helper.assertTrue(RECIPE.matches(grid, helper.getLevel()), "Expected duplicate dyes to still match recipe");
-        ItemStack result = RECIPE.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.ITEM_PALETTE), "Expected duplicate dyes to still craft a palette");
-        byte[] basic = result.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[0]);
-        int redIdx = 15 - DyeColor.RED.getId();
-        helper.assertTrue(basic.length == 16, "Expected palette basic array with 16 entries");
-        helper.assertTrue(basic[redIdx] == 1, "Expected red to be enabled once for duplicate red dyes");
+        helper.assertTrue(!RECIPE.matches(grid, helper.getLevel()), "Expected duplicate dyes to fail matching");
+        helper.assertTrue(RECIPE.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+                "Expected duplicate dyes to assemble empty");
 
         helper.succeed();
     }
@@ -107,15 +103,10 @@ public class RecipeCraftPaletteGameTests {
         items.set(slot(4, 0, 0), new ItemStack(net.minecraft.world.item.Items.RED_DYE));
         CraftingInput grid = createGrid(4, 3, items);
 
-        helper.assertTrue(RECIPE.matches(grid, helper.getLevel()),
-                "Expected recipe to match when plank row has exactly 3 planks");
-        ItemStack result = RECIPE.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.ITEM_PALETTE), "Expected plank-row extra dye scenario to craft a palette");
-        byte[] basic = result.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[0]);
-        int redIdx = 15 - DyeColor.RED.getId();
-        int blueIdx = 15 - DyeColor.BLUE.getId();
-        helper.assertTrue(basic[redIdx] == 1, "Expected red dye outside plank row to be included");
-        helper.assertTrue(basic[blueIdx] == 0, "Expected dye inside plank row to be ignored");
+        helper.assertTrue(!RECIPE.matches(grid, helper.getLevel()),
+                "Expected non-plank item in plank row to fail matching");
+        helper.assertTrue(RECIPE.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+                "Expected non-plank item in plank row to assemble empty");
 
         helper.succeed();
     }

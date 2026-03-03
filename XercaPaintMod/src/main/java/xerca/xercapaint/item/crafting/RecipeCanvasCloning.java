@@ -15,8 +15,8 @@ import xerca.xercapaint.item.Items;
 
 @MethodsReturnNonnullByDefault
 public class RecipeCanvasCloning extends CustomRecipe {
-    public RecipeCanvasCloning(CraftingBookCategory craftingBookCategory) {
-        super(craftingBookCategory);
+    public RecipeCanvasCloning(CraftingBookCategory category) {
+        super(category);
     }
 
     /**
@@ -105,19 +105,19 @@ public class RecipeCanvasCloning extends CustomRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
+        NonNullList<ItemStack> stacks = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 
-        for (int i = 0; i < nonnulllist.size(); ++i) {
-            ItemStack stack = inv.getItem(i);
-            if (stack.getItem() instanceof ItemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
-                ItemStack copyStack = stack.copy();
+        for (int i = 0; i < stacks.size(); ++i) {
+            ItemStack itemStack = inv.getItem(i);
+            if (itemStack.getItem() instanceof ItemCanvas && itemStack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
+                ItemStack copyStack = itemStack.copy();
                 copyStack.setCount(1);
-                nonnulllist.set(i, copyStack);
+                stacks.set(i, copyStack);
                 break;
             }
         }
 
-        return nonnulllist;
+        return stacks;
     }
 
     @Override

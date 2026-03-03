@@ -54,11 +54,11 @@ public class ModClient implements ClientModInitializer {
             return;
         }
 
-        if (heldItem.getItem() instanceof ItemCanvas) {
+        if (heldItem.getItem() instanceof ItemCanvas itemCanvas) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemPalette) || (heldItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0)) {
-                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), null));
             } else {
-                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), ((ItemCanvas) heldItem.getItem()).getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), null));
             }
         } else if (heldItem.getItem() instanceof ItemPalette) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas)) {

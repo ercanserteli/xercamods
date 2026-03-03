@@ -19,10 +19,10 @@ import xerca.xercapaint.SoundEvents;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-import static xerca.xercapaint.PaletteUtil.emptinessColor;
+import static xerca.xercapaint.PaletteUtil.EMPTINESS_COLOR;
 
 public abstract class BasePalette extends Screen {
-    protected static final ResourceLocation paletteTextures = Mod.id("textures/gui/palette.png");
+    protected static final ResourceLocation PALETTE_TEXTURES = Mod.id("textures/gui/palette.png");
     static final int DYE_SPRITE_X = 240;
     static final int DYE_SPRITE_SIZE = 16;
     static final int BRUSH_SPRITE_X = 0;
@@ -40,8 +40,8 @@ public abstract class BasePalette extends Screen {
     static final int COLOR_PICKER_POS_Y = 62;
     static final int COLOR_PICKER_SIZE = 14;
 
-    static final double[] paletteXs = {-1000, -1000, -1000, -1000, -1000};
-    static final double[] paletteYs = {-1000, -1000, -1000, -1000, -1000};
+    static final double[] PALETTE_XS = {-1000, -1000, -1000, -1000, -1000};
+    static final double[] PALETTE_YS = {-1000, -1000, -1000, -1000, -1000};
     double paletteX;
     double paletteY;
     static final PaletteUtil.Color WATER_COLOR = new PaletteUtil.Color(53, 118, 191);
@@ -145,7 +145,7 @@ public abstract class BasePalette extends Screen {
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        RenderSystem.setShaderTexture(0, paletteTextures);
+        RenderSystem.setShaderTexture(0, PALETTE_TEXTURES);
 
         // Draw basic colors
         for (int i = 0; i < basicColorFlags.length; i++) {
@@ -156,9 +156,9 @@ public abstract class BasePalette extends Screen {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, BASIC_COLORS[i].rgbVal());
 
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                guiGraphics.blit(paletteTextures, x - 8, y - 8, DYE_SPRITE_X, i * DYE_SPRITE_SIZE, DYE_SPRITE_SIZE, DYE_SPRITE_SIZE);
+                guiGraphics.blit(PALETTE_TEXTURES, x - 8, y - 8, DYE_SPRITE_X, i * DYE_SPRITE_SIZE, DYE_SPRITE_SIZE, DYE_SPRITE_SIZE);
             } else {
-                guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, emptinessColor.rgbVal());
+                guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, EMPTINESS_COLOR.rgbVal());
             }
         }
 
@@ -170,11 +170,11 @@ public abstract class BasePalette extends Screen {
         }
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(paletteTextures, (int) paletteX, (int) paletteY, 0, 0, PALETTE_WIDTH, PALETTE_HEIGHT);
+        guiGraphics.blit(PALETTE_TEXTURES, (int) paletteX, (int) paletteY, 0, 0, PALETTE_WIDTH, PALETTE_HEIGHT);
 
         // Draw color picker
         if (paletteComplete) {
-            guiGraphics.blit(paletteTextures, (int) paletteX + COLOR_PICKER_POS_X, (int) paletteY + COLOR_PICKER_POS_Y, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, (int) paletteX + COLOR_PICKER_POS_X, (int) paletteY + COLOR_PICKER_POS_Y, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE);
         }
     }
 

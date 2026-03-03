@@ -75,13 +75,13 @@ public class CommandExport {
                         CompoundTag tag = new CompoundTag();
 
                         tag.putIntArray("pixels", pixels);
-                        tag.putString("name", canvasId);
-                        tag.putInt("v", version);
-                        tag.putInt("generation", generation);
                         tag.putByte("ct", ((ItemCanvas) s.getItem()).getCanvasType().toByte());
                         if (title != null && author != null) {
                             tag.putString("title", title);
                             tag.putString("author", author);
+                            tag.putString("name", canvasId);
+                            tag.putInt("v", version);
+                            tag.putInt("generation", generation);
                         }
                         NbtIo.write(tag, Path.of(filepath));
                         return true;

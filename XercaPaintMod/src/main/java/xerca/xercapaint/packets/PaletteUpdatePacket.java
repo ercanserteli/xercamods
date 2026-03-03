@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 
-@SuppressWarnings("ArrayRecordComponent")
 public record PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<PaletteUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("palette_update"));
     public static final StreamCodec<FriendlyByteBuf, PaletteUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(PaletteUpdatePacket::encode, PaletteUpdatePacket::decode);

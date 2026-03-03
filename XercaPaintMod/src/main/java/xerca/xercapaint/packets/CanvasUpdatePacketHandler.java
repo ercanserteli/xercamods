@@ -20,16 +20,24 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
         EntityEasel easel = null;
 
         if (msg.easelId() > -1) {
-            Entity entityEasel = pl.level().getEntity(msg.easelId());
-            if (entityEasel == null) {
+            Entity entity = pl.level().getEntity(msg.easelId());
+            if (entity == null) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.easelId());
                 return;
             }
-            if (!(entityEasel instanceof EntityEasel entityEaselCast)) {
+            if (!(entity instanceof EntityEasel entityEasel)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
-            easel = entityEaselCast;
+            if (entityEasel.getPainter() == null || !entityEasel.getPainter().getUUID().equals(pl.getUUID())) {
+                Mod.LOGGER.warn("CanvasUpdatePacketHandler: Unauthorized paint update. easelId: {} player: {}", msg.easelId(), pl.getName().getString());
+                return;
+            }
+            if (pl.distanceToSqr(entityEasel) > 64.0D) {
+                Mod.LOGGER.warn("CanvasUpdatePacketHandler: Player too far from easel. easelId: {} player: {}", msg.easelId(), pl.getName().getString());
+                return;
+            }
+            easel = entityEasel;
             canvas = easel.getItem();
             if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Canvas not found inside easel!");

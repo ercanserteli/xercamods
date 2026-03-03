@@ -3,15 +3,12 @@ package xerca.xercapaint.item.crafting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
@@ -22,16 +19,12 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeFillPalette extends CustomRecipe {
-    public RecipeFillPalette(CraftingBookCategory craftingBookCategory) {
-        super(craftingBookCategory);
+    public RecipeFillPalette(CraftingBookCategory category) {
+        super(category);
     }
 
     private boolean isPalette(ItemStack stack) {
         return stack.getItem() instanceof ItemPalette;
-    }
-
-    private boolean isDye(ItemStack stack) {
-        return stack.getItem() instanceof DyeItem;
     }
 
     private int findPalette(CraftingInput inv) {
@@ -51,16 +44,21 @@ public class RecipeFillPalette extends CustomRecipe {
                 continue;
             }
             ItemStack stack = inv.getItem(i);
-            if (isDye(stack)) {
+            if (RecipeCraftPalette.isDye(stack)) {
                 dyes.add(stack);
             } else if (!stack.isEmpty()) {
-                dyes.clear();
-                return dyes;
+                return new ArrayList<>();
             }
         }
         return dyes;
     }
 
+    private byte[] loadBasicColors(ItemStack palette) {
+        byte[] source = palette.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[0]);
+        byte[] basicColors = new byte[16];
+        System.arraycopy(source, 0, basicColors, 0, Math.min(source.length, basicColors.length));
+        return basicColors;
+    }
 
     /**
      * Used to check if a recipe matches current crafting inventory
@@ -90,13 +88,11 @@ public class RecipeFillPalette extends CustomRecipe {
         }
 
         ItemStack inputPalette = inv.getItem(paletteId);
-        byte[] basicColors = inputPalette.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[16]).clone();
+        byte[] basicColors = loadBasicColors(inputPalette);
 
         for (ItemStack dye : dyes) {
-            DyeColor color = ((DyeItem) dye.getItem()).getDyeColor();
-            int realColorId = 15 - color.getId();
-            if (basicColors[realColorId] > 0) {
-                Mod.LOGGER.debug("Color already exists in palette.");
+            int realColorId = RecipeCraftPalette.getBasicColorIndex(dye);
+            if (realColorId < 0 || basicColors[realColorId] > 0) {
                 return ItemStack.EMPTY;
             }
             basicColors[realColorId] = 1;

@@ -16,8 +16,8 @@ public class GuiPalette extends BasePalette {
 
     @Override
     public void init() {
-        paletteX = paletteXs[paletteXs.length - 1];
-        paletteY = paletteYs[paletteYs.length - 1];
+        paletteX = PALETTE_XS[PALETTE_XS.length - 1];
+        paletteY = PALETTE_YS[PALETTE_YS.length - 1];
         if (paletteX == -1000 || paletteY == -1000) {
             paletteX = 140;
             paletteY = 40;
@@ -35,11 +35,11 @@ public class GuiPalette extends BasePalette {
     private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isCarryingColor) {
             carriedColor.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
 
         } else if (isCarryingWater) {
             WATER_COLOR.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
         }
     }
 
@@ -57,8 +57,8 @@ public class GuiPalette extends BasePalette {
         paletteX += deltaX;
         paletteY += deltaY;
 
-        paletteXs[paletteXs.length - 1] = paletteX;
-        paletteYs[paletteYs.length - 1] = paletteY;
+        PALETTE_XS[PALETTE_XS.length - 1] = paletteX;
+        PALETTE_YS[PALETTE_YS.length - 1] = paletteY;
     }
 
     @Override

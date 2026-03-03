@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -21,6 +20,7 @@ import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
 import xerca.xercapaint.entity.EntityEasel;
+import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.CanvasMiniUpdatePacket;
 import xerca.xercapaint.packets.CanvasUpdatePacket;
@@ -42,8 +42,8 @@ public class GuiCanvasEdit extends BasePalette {
 
     private double canvasX;
     private double canvasY;
-    private static final double[] canvasXs = {-1000, -1000, -1000, -1000};
-    private static final double[] canvasYs = {-1000, -1000, -1000, -1000};
+    private static final double[] CANVAS_XS = {-1000, -1000, -1000, -1000};
+    private static final double[] CANVAS_YS = {-1000, -1000, -1000, -1000};
     private final int canvasWidth;
     private final int canvasHeight;
     private int brushMeterX;
@@ -65,7 +65,7 @@ public class GuiCanvasEdit extends BasePalette {
     private BrushSound brushSound = null;
     private static final int CANVAS_HOLDER_HEIGHT = 10;
     private int brushOpacitySetting = 0;
-    private static final float[] brushOpacities = {1.f, 0.75f, 0.5f, 0.25f};
+    private static final float[] BRUSH_OPACITIES = {1.f, 0.75f, 0.5f, 0.25f};
     private static boolean showHelp = false;
     private final Set<Integer> draggedPoints = new HashSet<>();
 
@@ -81,14 +81,14 @@ public class GuiCanvasEdit extends BasePalette {
     private int timeSinceLastUpdate = 0;
     private boolean skippedUpdate = false;
 
-    private static final Vec2[] outlinePoss1 = {
+    private static final Vec2[] OUTLINE_POSS_1 = {
             new Vec2(0.f, 199.0f),
             new Vec2(12.f, 199.0f),
             new Vec2(34.f, 199.0f),
             new Vec2(76.f, 199.0f),
     };
 
-    private static final Vec2[] outlinePoss2 = {
+    private static final Vec2[] OUTLINE_POSS_2 = {
             new Vec2(128.f, 199.0f),
             new Vec2(135.f, 199.0f),
             new Vec2(147.f, 199.0f),
@@ -125,31 +125,20 @@ public class GuiCanvasEdit extends BasePalette {
             this.pixels = new int[canvasPixelArea];
             Arrays.fill(this.pixels, BASIC_COLORS[15].rgbVal());
 
-            long secs = System.currentTimeMillis() / 1000;
-            this.canvasId = player.getUUID() + "_" + secs;
+            this.canvasId = ItemCanvas.generateName(player);
         }
-    }
-
-    private static int canvasTypeIndex(CanvasType canvasType) {
-        return switch (canvasType) {
-            case SMALL -> 0;
-            case LARGE -> 1;
-            case LONG -> 2;
-            case TALL -> 3;
-        };
     }
 
     @Override
     public void init() {
-        Minecraft client = minecraft;
-        if (client == null) {
+        if (minecraft == null) {
             return;
         }
-        int typeIndex = canvasTypeIndex(canvasType);
-        canvasX = canvasXs[typeIndex];
-        canvasY = canvasYs[typeIndex];
-        paletteX = paletteXs[typeIndex];
-        paletteY = paletteYs[typeIndex];
+        int typeIndex = canvasType.toByte();
+        canvasX = CANVAS_XS[typeIndex];
+        canvasY = CANVAS_YS[typeIndex];
+        paletteX = PALETTE_XS[typeIndex];
+        paletteY = PALETTE_YS[typeIndex];
         if (canvasX == POSITION_UNSET || canvasY == POSITION_UNSET || paletteX == POSITION_UNSET || paletteY == POSITION_UNSET) {
             resetPositions();
         }
@@ -157,7 +146,7 @@ public class GuiCanvasEdit extends BasePalette {
         updateCanvasPos(0, 0);
         updatePalettePos(0, 0);
 
-        Window window = client.getWindow();
+        Window window = minecraft.getWindow();
 
         // Hide mouse cursor
         GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -177,7 +166,9 @@ public class GuiCanvasEdit extends BasePalette {
             if (!isSigned) {
                 canvasDirty = true;
                 isSigned = true;
-                client.setScreen(null);
+                if (minecraft != null) {
+                    minecraft.setScreen(null);
+                }
             }
 
         }).bounds((int) canvasX - 100, 100, 98, 20).build());
@@ -193,7 +184,7 @@ public class GuiCanvasEdit extends BasePalette {
         x = (int) (window.getGuiScaledWidth() * 0.95) - 21;
         y = (int) (window.getGuiScaledHeight() * 0.05);
         ToggleHelpButton toggleHelpButton = this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
-                paletteTextures, 256, 256, button -> showHelp = !showHelp));
+                PALETTE_TEXTURES, 256, 256, button -> showHelp = !showHelp));
         toggleHelpButton.setTooltip(Tooltip.create(Component.literal("Toggle help tooltips")));
 
         updateButtons();
@@ -347,12 +338,12 @@ public class GuiCanvasEdit extends BasePalette {
                 guiGraphics.fill(brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
             }
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(paletteTextures, brushMeterX, brushMeterY + (3 - brushSize) * BRUSH_SPRITE_SIZE, 15, 246, 10, 10);
-            guiGraphics.blit(paletteTextures, brushMeterX, brushMeterY, BRUSH_SPRITE_X, BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * 3, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE * 4);
+            guiGraphics.blit(PALETTE_TEXTURES, brushMeterX, brushMeterY + (3 - brushSize) * BRUSH_SPRITE_SIZE, 15, 246, 10, 10);
+            guiGraphics.blit(PALETTE_TEXTURES, brushMeterX, brushMeterY, BRUSH_SPRITE_X, BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * 3, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE * 4);
 
             // Draw opacity meter
-            guiGraphics.blit(paletteTextures, brushOpacityMeterX, brushOpacityMeterY, BRUSH_OPACITY_SPRITE_X, BRUSH_OPACITY_SPRITE_Y, BRUSH_OPACITY_SPRITE_SIZE, BRUSH_OPACITY_SPRITE_SIZE * 4 + 3);
-            guiGraphics.blit(paletteTextures, brushOpacityMeterX - 1, brushOpacityMeterY - 1 + brushOpacitySetting * (BRUSH_OPACITY_SPRITE_SIZE + 1), 212, 240, 16, 16);
+            guiGraphics.blit(PALETTE_TEXTURES, brushOpacityMeterX, brushOpacityMeterY, BRUSH_OPACITY_SPRITE_X, BRUSH_OPACITY_SPRITE_Y, BRUSH_OPACITY_SPRITE_SIZE, BRUSH_OPACITY_SPRITE_SIZE * 4 + 3);
+            guiGraphics.blit(PALETTE_TEXTURES, brushOpacityMeterX - 1, brushOpacityMeterY - 1 + brushOpacitySetting * (BRUSH_OPACITY_SPRITE_SIZE + 1), 212, 240, 16, 16);
 
             // Draw brush and outline
             renderCursor(guiGraphics, mouseX, mouseY);
@@ -389,15 +380,15 @@ public class GuiCanvasEdit extends BasePalette {
     private void renderCursor(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isCarryingColor) {
             carriedColor.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
 
         } else if (isCarryingWater) {
             WATER_COLOR.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
         } else if (isPickingColor) {
             drawOutline(guiGraphics, mouseX, mouseY, 0);
             PaletteUtil.Color.WHITE.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX, mouseY - COLOR_PICKER_SIZE, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, mouseX, mouseY - COLOR_PICKER_SIZE, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE);
         } else {
             drawOutline(guiGraphics, mouseX, mouseY, brushSize);
 
@@ -406,7 +397,7 @@ public class GuiCanvasEdit extends BasePalette {
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * brushSize;
-            guiGraphics.blit(paletteTextures, mouseX, mouseY, BRUSH_SPRITE_X, trueBrushY, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, mouseX, mouseY, BRUSH_SPRITE_X, trueBrushY, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE);
         }
     }
 
@@ -445,13 +436,13 @@ public class GuiCanvasEdit extends BasePalette {
 
             Vec2 textureVec;
             if (canvasPixelScale == SMALL_CANVAS_PIXEL_SCALE) {
-                textureVec = outlinePoss1[brushSize];
+                textureVec = OUTLINE_POSS_1[brushSize];
             } else {
-                textureVec = outlinePoss2[brushSize];
+                textureVec = OUTLINE_POSS_2[brushSize];
             }
 
             RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 1.0F);
-            guiGraphics.blit(paletteTextures, x, y, (int) textureVec.x, (int) textureVec.y, outlineSize, outlineSize);
+            guiGraphics.blit(PALETTE_TEXTURES, x, y, (int) textureVec.x, (int) textureVec.y, outlineSize, outlineSize);
         }
     }
 
@@ -625,7 +616,7 @@ public class GuiCanvasEdit extends BasePalette {
     private void clickedCanvas(int mouseX, int mouseY, int mouseButton) {
         touchedCanvas = true;
         if (mouseButton == GLFW_MOUSE_BUTTON_LEFT) {
-            setPixelsAt(mouseX, mouseY, currentColor, brushSize, brushOpacities[brushOpacitySetting]);
+            setPixelsAt(mouseX, mouseY, currentColor, brushSize, BRUSH_OPACITIES[brushOpacitySetting]);
         } else if (mouseButton == GLFW_MOUSE_BUTTON_RIGHT) {
             // "Erase" with right click
             setPixelsAt(mouseX, mouseY, PaletteUtil.Color.WHITE, brushSize, 1.0f);
@@ -693,18 +684,18 @@ public class GuiCanvasEdit extends BasePalette {
         brushOpacityMeterX = (int) canvasX + canvasWidth + 2;
         brushOpacityMeterY = (int) canvasY;
 
-        int typeIndex = canvasTypeIndex(canvasType);
-        canvasXs[typeIndex] = canvasX;
-        canvasYs[typeIndex] = canvasY;
+        int typeIndex = canvasType.toByte();
+        CANVAS_XS[typeIndex] = canvasX;
+        CANVAS_YS[typeIndex] = canvasY;
     }
 
     private void updatePalettePos(double deltaX, double deltaY) {
         paletteX += deltaX;
         paletteY += deltaY;
 
-        int typeIndex = canvasTypeIndex(canvasType);
-        paletteXs[typeIndex] = paletteX;
-        paletteYs[typeIndex] = paletteY;
+        int typeIndex = canvasType.toByte();
+        PALETTE_XS[typeIndex] = paletteX;
+        PALETTE_YS[typeIndex] = paletteY;
     }
 
     private boolean inCanvas(int x, int y) {
@@ -780,7 +771,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         @Override
-        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.setShaderTexture(0, this.resourceLocation);
             GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;

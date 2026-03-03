@@ -12,8 +12,8 @@ import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
 public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
-    public EaselCanvasLayer(RenderLayerParent<EntityEasel, EaselModel> parent) {
-        super(parent);
+    public EaselCanvasLayer(RenderLayerParent<EntityEasel, EaselModel> layerParent) {
+        super(layerParent);
     }
 
     @Override

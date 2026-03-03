@@ -3,7 +3,7 @@ package xerca.xercapaint.item.crafting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
@@ -15,49 +15,88 @@ import net.minecraft.world.level.Level;
 import xerca.xercapaint.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeCraftPalette extends CustomRecipe {
-    private static final ResourceLocation plank = ResourceLocation.fromNamespaceAndPath("minecraft", "planks");
+    private static final byte[] EMPTY_BASIC_COLORS = new byte[0];
 
-    public RecipeCraftPalette(CraftingBookCategory craftingBookCategory) {
-        super(craftingBookCategory);
+    public RecipeCraftPalette(CraftingBookCategory category) {
+        super(category);
     }
 
     private boolean isPlank(ItemStack stack) {
-        return stack.getTags().anyMatch(p -> p.location().equals(plank));
+        return !stack.isEmpty() && stack.is(ItemTags.PLANKS);
     }
 
-    private boolean isDye(ItemStack stack) {
-        return stack.getItem() instanceof DyeItem;
+    static int getBasicColorIndex(ItemStack stack) {
+        if (!(stack.getItem() instanceof DyeItem dyeItem)) {
+            return -1;
+        }
+        DyeColor dyeColor = dyeItem.getDyeColor();
+        if (dyeColor == null || !DyeItem.byColor(dyeColor).equals(stack.getItem())) {
+            return -1;
+        }
+        int colorId = dyeColor.getId();
+        if (colorId < 0 || colorId >= 16) {
+            return -1;
+        }
+        return 15 - colorId;
     }
 
-    private boolean isPlankRow(CraftingInput inv, int row) {
+    static boolean isDye(ItemStack stack) {
+        return getBasicColorIndex(stack) >= 0;
+    }
+
+    private byte[] parseBasicColors(CraftingInput inv) {
+        int plankRow = -1;
         int plankCount = 0;
-        for (int j = 0; j < inv.width(); ++j) {
-            int id = row * inv.width() + j;
-            ItemStack stack = inv.getItem(id);
-            if (isPlank(stack)) {
-                plankCount++;
-            }
-        }
-        return plankCount == 3;
-    }
+        int leftmostPlankColumn = inv.width();
+        int rightmostPlankColumn = -1;
 
-    private int findPlankRow(CraftingInput inv) {
         for (int i = 0; i < inv.height(); ++i) {
-            if (isPlankRow(inv, i)) {
-                return i;
+            for (int j = 0; j < inv.width(); ++j) {
+                int id = i * inv.width() + j;
+                ItemStack stack = inv.getItem(id);
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                if (isPlank(stack)) {
+                    if (plankRow < 0) {
+                        plankRow = i;
+                    } else if (plankRow != i) {
+                        return EMPTY_BASIC_COLORS;
+                    }
+                    plankCount++;
+                    if (j < leftmostPlankColumn) {
+                        leftmostPlankColumn = j;
+                    }
+                    if (j > rightmostPlankColumn) {
+                        rightmostPlankColumn = j;
+                    }
+                } else if (!isDye(stack)) {
+                    return EMPTY_BASIC_COLORS;
+                }
             }
         }
-        return -1;
-    }
 
-    private List<ItemStack> findDyes(CraftingInput inv, int plankRow) {
-        List<ItemStack> dyes = new ArrayList<>();
+        if (plankRow < 0 || plankCount != 3) {
+            return EMPTY_BASIC_COLORS;
+        }
+        if (rightmostPlankColumn - leftmostPlankColumn != 2) {
+            return EMPTY_BASIC_COLORS;
+        }
+
+        for (int j = 0; j < inv.width(); ++j) {
+            int id = plankRow * inv.width() + j;
+            ItemStack stack = inv.getItem(id);
+            if (!stack.isEmpty() && !isPlank(stack)) {
+                return EMPTY_BASIC_COLORS;
+            }
+        }
+
+        boolean hasDye = false;
+        byte[] basicColors = new byte[16];
         for (int i = 0; i < inv.height(); ++i) {
             if (i == plankRow) {
                 continue;
@@ -65,29 +104,26 @@ public class RecipeCraftPalette extends CustomRecipe {
             for (int j = 0; j < inv.width(); ++j) {
                 int id = i * inv.width() + j;
                 ItemStack stack = inv.getItem(id);
-                if (isDye(stack)) {
-                    dyes.add(stack);
-                } else if (!stack.isEmpty()) {
-                    dyes.clear();
-                    return dyes;
+                if (stack.isEmpty()) {
+                    continue;
                 }
+                int colorIndex = getBasicColorIndex(stack);
+                if (colorIndex < 0 || basicColors[colorIndex] != 0) {
+                    return EMPTY_BASIC_COLORS;
+                }
+                basicColors[colorIndex] = 1;
+                hasDye = true;
             }
         }
-        return dyes;
+        return hasDye ? basicColors : EMPTY_BASIC_COLORS;
     }
-
 
     /**
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
     public boolean matches(CraftingInput inv, Level worldIn) {
-        int plankRow = findPlankRow(inv);
-        if (plankRow < 0) {
-            return false;
-        }
-        List<ItemStack> dyes = findDyes(inv, plankRow);
-        return !dyes.isEmpty();
+        return parseBasicColors(inv).length > 0;
     }
 
     /**
@@ -95,20 +131,11 @@ public class RecipeCraftPalette extends CustomRecipe {
      */
     @Override
     public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
-        int plankRow = findPlankRow(inv);
-        if (plankRow < 0) {
-            return ItemStack.EMPTY;
-        }
-        List<ItemStack> dyes = findDyes(inv, plankRow);
-        if (dyes.isEmpty()) {
+        byte[] basicColors = parseBasicColors(inv);
+        if (basicColors.length == 0) {
             return ItemStack.EMPTY;
         }
 
-        byte[] basicColors = new byte[16];
-        for (ItemStack dye : dyes) {
-            DyeColor color = ((DyeItem) dye.getItem()).getDyeColor();
-            basicColors[15 - color.getId()] = 1;
-        }
         ItemStack result = new ItemStack(Items.ITEM_PALETTE);
         result.set(Items.PALETTE_BASIC_COLORS, basicColors);
         return result;

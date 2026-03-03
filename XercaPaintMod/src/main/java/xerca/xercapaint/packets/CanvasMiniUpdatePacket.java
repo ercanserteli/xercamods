@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 
-@SuppressWarnings("ArrayRecordComponent")
 public record CanvasMiniUpdatePacket(int[] pixels, String canvasId, int version, int easelId,
                                      CanvasType canvasType) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<CanvasMiniUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("canvas_mini_update"));

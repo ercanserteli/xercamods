@@ -46,7 +46,7 @@ public final class Items {
     public static final DataComponentType<byte[]> PALETTE_BASIC_COLORS = DataComponentType.<byte[]>builder().persistent(Codec.BYTE_BUFFER.flatXmap(byteBuffer -> DataResult.success(byteBuffer.array()), bytes -> DataResult.success(ByteBuffer.wrap(bytes)))).networkSynchronized(ByteBufCodecs.BYTE_ARRAY).build();
     public static final DataComponentType<ItemPalette.ComponentCustomColor> PALETTE_CUSTOM_COLORS = DataComponentType.<ItemPalette.ComponentCustomColor>builder().persistent(ItemPalette.ComponentCustomColor.CODEC).build();
 
-    public static final CreativeModeTab paintTab = FabricItemGroup.builder()
+    public static final CreativeModeTab PAINT_TAB = FabricItemGroup.builder()
             .icon(() -> new ItemStack(Items.ITEM_PALETTE))
             .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
@@ -80,7 +80,7 @@ public final class Items {
         registerItem("item_canvas_tall", ITEM_CANVAS_TALL);
         registerItem("item_easel", ITEM_EASEL);
 
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Mod.id("paint_tab"), paintTab);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Mod.id("paint_tab"), PAINT_TAB);
     }
 
     public static void registerDataComponents() {

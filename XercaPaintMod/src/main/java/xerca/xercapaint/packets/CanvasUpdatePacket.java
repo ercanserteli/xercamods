@@ -8,7 +8,6 @@ import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 
-@SuppressWarnings("ArrayRecordComponent")
 public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, String canvasId, int version, int easelId,
                                  PaletteUtil.CustomColor[] paletteColors,
                                  CanvasType canvasType) implements CustomPacketPayload {
