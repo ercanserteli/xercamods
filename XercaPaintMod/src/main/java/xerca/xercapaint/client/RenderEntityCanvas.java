@@ -32,7 +32,7 @@ import java.util.Map;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
-    public static RenderEntityCanvas theInstance;
+    static RenderEntityCanvas theInstance;
     private static final ResourceLocation BACK_LOCATION = new ResourceLocation("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
 

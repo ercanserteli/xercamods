@@ -4,6 +4,15 @@ package xerca.xercapaint;
 public enum CanvasType {
     SMALL, LARGE, LONG, TALL;
 
+    public byte toByte() {
+        return switch (this) {
+            case SMALL -> 0;
+            case LARGE -> 1;
+            case LONG -> 2;
+            case TALL -> 3;
+        };
+    }
+
     public static CanvasType fromByte(byte x) {
         return switch (x) {
             case 0 -> SMALL;

@@ -17,8 +17,6 @@ import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.ImportPaintingPacket;
 
 public class CommandImport {
-    private static final String IMPORT_FAIL_BROKEN_FILE_KEY = "xercapaint.import.fail.5";
-    private static final String BROKEN_PAINT_FILE_LOG = "Broken paint file";
     private static final String TAG_AUTHOR = "author";
     private static final String TAG_TITLE = "title";
     private static final String TAG_GENERATION = "generation";
@@ -39,8 +37,7 @@ public class CommandImport {
             ServerPlayer player = stack.getPlayerOrException();
             ServerPlayNetworking.send(player, Mod.IMPORT_PAINTING_PACKET_ID, pack.encode());
         } catch (CommandSyntaxException e) {
-            Mod.LOGGER.debug("Command executor is not a player");
-            e.printStackTrace();
+            Mod.LOGGER.debug("Command executor is not a player", e);
             return 0;
         }
 
@@ -140,7 +137,7 @@ public class CommandImport {
     }
 
     private static void notifyBrokenPaintFile(ServerPlayer player) {
-        player.sendSystemMessage(Component.translatable(IMPORT_FAIL_BROKEN_FILE_KEY).withStyle(ChatFormatting.RED));
-        Mod.LOGGER.warn(BROKEN_PAINT_FILE_LOG);
+        player.sendSystemMessage(Component.translatable("xercapaint.import.fail.5").withStyle(ChatFormatting.RED));
+        Mod.LOGGER.warn("Broken paint file");
     }
 }

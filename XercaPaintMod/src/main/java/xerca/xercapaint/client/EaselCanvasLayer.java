@@ -53,7 +53,7 @@ public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
                 }
             }
 
-            ModClient.CANVAS_ITEM_RENDERER.renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, bufferSource, i, 0);
+            ModClient.getCanvasItemRenderer().renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, bufferSource, i, 0);
 
             poseStack.popPose();
         }

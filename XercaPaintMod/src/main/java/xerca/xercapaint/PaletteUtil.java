@@ -6,6 +6,8 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
     public static final Color EMPTINESS_COLOR = new Color(255, 236, 229);
+    private static final float RATIO_FULL = 1.0f;
+    private static final float RATIO_EMPTY = 0.0f;
 
     public static class Color {
         public static final Color WHITE = new Color(0xFFFFFFFF);
@@ -35,13 +37,13 @@ public class PaletteUtil {
         }
 
         public void setGLColor() {
-            RenderSystem.setShaderColor((r) / 255.f, (g) / 255.f, (b) / 255.f, 1.0f);
+            RenderSystem.setShaderColor(r / 255.f, g / 255.f, b / 255.f, 1.0f);
         }
 
         public static Color mix(Color a, Color b, float ratio) {
-            if (ratio == 1.f) {
+            if (ratio == RATIO_FULL) {
                 return a;
-            } else if (ratio == 0.f) {
+            } else if (ratio == RATIO_EMPTY) {
                 return b;
             }
             Color res = new Color(
@@ -128,7 +130,7 @@ public class PaletteUtil {
         }
 
         public Color getColor() {
-            return result;
+            return new Color(result.rgbVal());
         }
 
         public int getNumberOfColors() {

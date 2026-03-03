@@ -372,7 +372,7 @@ def testCrafting(mc, win, mcLoc):
     win.click("1689522685857.png")
     win.click(mcLoc.offset(400, 185))
     win.click(mcLoc.offset(150, 200))
-    testAssert(exists("1689522791067.png"))
+    testAssert(exists("1772569874138.png"))
     keyDown(Key.SHIFT)
     win.click(mcLoc.offset(520, 190))
     keyUp(Key.SHIFT)
@@ -391,6 +391,6 @@ inv = win.exists("1689446179355.png", 0.1)
 if inv:
     win.type("e")
 
-# testItemsInCreative(mc, win, mcLoc)
-# testDrawOnCanvas(mc, win, mcLoc)
+testItemsInCreative(mc, win, mcLoc)
+testDrawOnCanvas(mc, win, mcLoc)
 testCrafting(mc, win, mcLoc)

@@ -46,7 +46,7 @@ public class CanvasUpdatePacket {
             color.writeToBuffer(buf);
         }
         buf.writeInt(easelId);
-        buf.writeByte(canvasType.ordinal());
+        buf.writeByte(canvasType.toByte());
         buf.writeInt(version);
         buf.writeUtf(name);
         buf.writeUtf(title);

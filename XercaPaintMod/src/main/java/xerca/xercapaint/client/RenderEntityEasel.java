@@ -57,7 +57,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
         this.model.setupAnim(entity, 0, 0, 0, 0, 0);
 
-        matrixStackIn.mulPose((new Quaternionf()).rotationXYZ((float) Math.PI, 0, 0));
+        matrixStackIn.mulPose(new Quaternionf().rotationXYZ((float) Math.PI, 0, 0));
         matrixStackIn.translate(0, -1.5, 0);
 
         RenderType rendertype = this.model.renderType(this.getTextureLocation(entity));
@@ -75,7 +75,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     @Override
     protected boolean shouldShowName(EntityEasel easel) {
         HitResult result = Minecraft.getInstance().hitResult;
-        if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && entityHitResult.getEntity() == easel && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
+        if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
             double distanceSquared = this.entityRenderDispatcher.distanceToSqr(easel);
             float range = easel.isDiscrete() ? 32.0F : 64.0F;
             return distanceSquared < range * range;
@@ -84,10 +84,10 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     }
 
     @Override
-    protected void renderNameTag(EntityEasel easel, Component component, PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight) {
+    protected void renderNameTag(EntityEasel easel, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, pPackedLight);
+        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, packedLight);
         poseStack.popPose();
     }
 

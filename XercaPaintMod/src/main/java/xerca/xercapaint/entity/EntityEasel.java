@@ -39,6 +39,7 @@ import javax.annotation.Nullable;
 
 
 public class EntityEasel extends Entity {
+    private static final int MAX_PAINTER_DISTANCE_SQR = 64;
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
     private Player painter = null;
     private Runnable dropDeferred = null;
@@ -60,6 +61,10 @@ public class EntityEasel extends Entity {
         this.painter = painter;
     }
 
+    private void setDropDeferred(@Nullable Runnable dropAction) {
+        this.dropDeferred = dropAction;
+    }
+
     @Nullable
     public Player getPainter() {
         return painter;
@@ -71,7 +76,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource damageSource, float pAmount) {
+    public boolean hurt(@NotNull DamageSource damageSource, float amount) {
         if (this.isInvulnerableTo(damageSource)) {
             return false;
         }
@@ -111,12 +116,12 @@ public class EntityEasel extends Entity {
 
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if (painter != null) {
-            if (!level().isClientSide && dropDeferred == null) {
-                dropDeferred = () -> doDrop(entity, dropSelf);
+            if (!this.level().isClientSide && dropDeferred == null) {
                 if (painter instanceof ServerPlayer serverPainter) {
                     CloseGuiPacket pack = new CloseGuiPacket();
                     ServerPlayNetworking.send(serverPainter, Mod.CLOSE_GUI_PACKET_ID, pack.encode());
                 }
+                setDropDeferred(() -> doDrop(entity, dropSelf));
             }
         } else {
             doDrop(entity, dropSelf);
@@ -192,7 +197,7 @@ public class EntityEasel extends Entity {
         super.onSyncedDataUpdated(accessor);
         if (accessor.equals(DATA_CANVAS)) {
             ItemStack itemStack = this.getItem();
-            if (!itemStack.isEmpty() && itemStack.getEntityRepresentation() != this) {
+            if (!itemStack.isEmpty() && !this.equals(itemStack.getEntityRepresentation())) {
                 itemStack.setEntityRepresentation(this);
             }
         }
@@ -263,17 +268,16 @@ public class EntityEasel extends Entity {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
-        if (!level().isClientSide && dropDeferred != null) {
+        if (!this.level().isClientSide && dropDeferred != null) {
             dropWaitTicks++;
             if (painter == null || dropWaitTicks > 80) {
                 dropDeferred.run();
-                dropDeferred = null;
+                setDropDeferred(null);
                 dropWaitTicks = 0;
             }
         }
-
-        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > 64)) {
-            painter = null;
+        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > MAX_PAINTER_DISTANCE_SQR)) {
+            setPainter(null);
         }
     }
 

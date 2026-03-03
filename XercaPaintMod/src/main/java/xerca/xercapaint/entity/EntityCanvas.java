@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
@@ -159,7 +158,9 @@ public class EntityCanvas extends HangingEntity {
         this.xo = this.getX();
         this.yo = this.getY();
         this.zo = this.getZ();
-        if (this.tickCounter1++ == 50 && !this.level().isClientSide) {
+        boolean shouldCheckSurvival = this.tickCounter1 == 50;
+        this.tickCounter1++;
+        if (shouldCheckSurvival && !this.level().isClientSide) {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.survives()) {
                 this.remove(RemovalReason.DISCARDED);
@@ -175,7 +176,6 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     protected void setDirection(@NotNull Direction facingDirectionIn) {
-        Validate.notNull(facingDirectionIn);
         this.direction = facingDirectionIn;
         if (facingDirectionIn.getAxis().isHorizontal()) {
             this.setXRot(0.0F);
@@ -308,7 +308,7 @@ public class EntityCanvas extends HangingEntity {
             tagCompound.putString("title", canvasTitle);
             tagCompound.putInt("generation", canvasGeneration);
         }
-        tagCompound.putByte("ctype", (byte) canvasType.ordinal());
+        tagCompound.putByte("ctype", canvasType.toByte());
         tagCompound.putByte("RealFace", (byte) this.direction.get3DDataValue());
         tagCompound.putByte("Rotation", (byte) this.getRotation());
 
@@ -362,6 +362,19 @@ public class EntityCanvas extends HangingEntity {
     }
 
     public record Picture(int version, int[] pixels) {
+        public Picture {
+            if (pixels == null) {
+                pixels = new int[0];
+            } else {
+                pixels = pixels.clone();
+            }
+        }
+
+        @Override
+        public int[] pixels() {
+            return pixels.clone();
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;

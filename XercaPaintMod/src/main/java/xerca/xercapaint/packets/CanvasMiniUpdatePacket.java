@@ -36,7 +36,7 @@ public class CanvasMiniUpdatePacket {
     public FriendlyByteBuf encode() {
         FriendlyByteBuf buf = PacketByteBufs.create();
         buf.writeInt(easelId);
-        buf.writeByte(canvasType.ordinal());
+        buf.writeByte(canvasType.toByte());
         buf.writeInt(version);
         buf.writeUtf(name);
         buf.writeVarIntArray(pixels);

@@ -16,6 +16,7 @@ import xerca.xercapaint.packets.ExportPaintingPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -49,14 +50,20 @@ public class CommandExport {
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
         if (!directory.exists()) {
-            directory.mkdir();
+            try {
+                Files.createDirectories(directory.toPath());
+            } catch (IOException e) {
+                Mod.LOGGER.error("Could not create paintings directory", e);
+                return false;
+            }
         }
 
         for (ItemStack s : player.getHandSlots()) {
-            if (s.getItem() instanceof ItemCanvas && ItemCanvas.hasCanvasData(s)) {
+            CompoundTag stackTag = s.getTag();
+            if (s.getItem() instanceof ItemCanvas itemCanvas && stackTag != null && ItemCanvas.hasCanvasData(s)) {
                 try {
-                    CompoundTag tag = s.getTag().copy();
-                    tag.putByte("ct", (byte) ((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                    CompoundTag tag = stackTag.copy();
+                    tag.putByte("ct", itemCanvas.getCanvasType().toByte());
                     if (!tag.contains("author")) {
                         tag.remove("name");
                         tag.remove("v");
@@ -66,10 +73,9 @@ public class CommandExport {
                     NbtIo.write(tag, new File(filepath));
                     return true;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Mod.LOGGER.error("Error while exporting painting", e);
                 }
             }
-
         }
         return false;
     }

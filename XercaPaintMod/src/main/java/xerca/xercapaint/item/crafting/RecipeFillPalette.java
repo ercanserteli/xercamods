@@ -18,6 +18,7 @@ import xerca.xercapaint.item.Items;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.List;
 
 import static xerca.xercapaint.item.crafting.RecipeCraftPalette.isDye;
 
@@ -42,8 +43,8 @@ public class RecipeFillPalette extends CustomRecipe {
         return -1;
     }
 
-    private ArrayList<ItemStack> findDyes(CraftingContainer inv, int paletteId) {
-        ArrayList<ItemStack> dyes = new ArrayList<>();
+    private List<ItemStack> findDyes(CraftingContainer inv, int paletteId) {
+        List<ItemStack> dyes = new ArrayList<>();
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             if (i == paletteId) {
                 continue;
@@ -67,7 +68,7 @@ public class RecipeFillPalette extends CustomRecipe {
         if (paletteId < 0) {
             return false;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
+        List<ItemStack> dyes = findDyes(inv, paletteId);
         return !dyes.isEmpty();
     }
 
@@ -81,7 +82,7 @@ public class RecipeFillPalette extends CustomRecipe {
         if (paletteId < 0) {
             return ItemStack.EMPTY;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
+        List<ItemStack> dyes = findDyes(inv, paletteId);
         if (dyes.isEmpty()) {
             return ItemStack.EMPTY;
         }

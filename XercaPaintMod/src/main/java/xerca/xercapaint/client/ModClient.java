@@ -26,23 +26,24 @@ import xerca.xercapaint.packets.*;
 public class ModClient implements ClientModInitializer {
     public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(new ResourceLocation(Mod.MOD_ID, "easel"), "main");
     public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(new ResourceLocation(Mod.MOD_ID, "easel"), "canvas");
-    public static CanvasItemRenderer CANVAS_ITEM_RENDERER;
+    private static final String ITEM_CANVAS_TRANSLATION_KEY = "item.xercapaint.item_canvas";
+    private static CanvasItemRenderer canvasItemRenderer;
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette) {
         showCanvasGui(easel, palette, Minecraft.getInstance());
     }
 
-    public static void showCanvasGui(EntityEasel easel, ItemStack palette, Minecraft minecraft) {
-        ItemStack canvas = easel.getItem();
-        CompoundTag tag = canvas.getTag();
-        if ((tag != null && tag.getInt("generation") > 0) || palette.isEmpty()) {
-            minecraft.setScreen(new GuiCanvasView(canvas.getTag(),
-                    Component.translatable("item.xercapaint.item_canvas"),
-                    ((ItemCanvas) canvas.getItem()).getCanvasType(), easel));
+    public static void showCanvasGui(EntityEasel easel, ItemStack paletteStack, Minecraft minecraft) {
+        ItemStack canvasStack = easel.getItem();
+        CompoundTag tag = canvasStack.getTag();
+        if ((tag != null && tag.getInt("generation") > 0) || paletteStack.isEmpty()) {
+            minecraft.setScreen(new GuiCanvasView(canvasStack.getTag(),
+                    Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
+                    ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
         } else {
-            minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvas.getTag(), palette.getTag(),
-                    Component.translatable("item.xercapaint.item_canvas"),
-                    ((ItemCanvas) canvas.getItem()).getCanvasType(), easel));
+            minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvasStack.getTag(), paletteStack.getTag(),
+                    Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
+                    ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
         }
     }
 
@@ -78,13 +79,17 @@ public class ModClient implements ClientModInitializer {
         }
     }
 
+    static CanvasItemRenderer getCanvasItemRenderer() {
+        return canvasItemRenderer;
+    }
+
     @Override
     public void onInitializeClient() {
-        CANVAS_ITEM_RENDERER = new CanvasItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS, CANVAS_ITEM_RENDERER);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LARGE, CANVAS_ITEM_RENDERER);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LONG, CANVAS_ITEM_RENDERER);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_TALL, CANVAS_ITEM_RENDERER);
+        canvasItemRenderer = new CanvasItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS, canvasItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LARGE, canvasItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LONG, canvasItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_TALL, canvasItemRenderer);
 
         EntityRendererRegistry.register(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
         EntityRendererRegistry.register(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());

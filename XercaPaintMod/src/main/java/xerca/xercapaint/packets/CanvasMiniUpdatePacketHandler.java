@@ -17,26 +17,28 @@ import xerca.xercapaint.item.ItemPalette;
 public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     public static void processMessage(CanvasMiniUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
-        Entity entityEasel = null;
+        ItemStack palette;
+        EntityEasel easel = null;
 
         if (msg.getEaselId() > -1) {
-            entityEasel = pl.level().getEntity(msg.getEaselId());
-            if (entityEasel == null) {
+            Entity entity = pl.level().getEntity(msg.getEaselId());
+            if (entity == null) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if (!(entityEasel instanceof EntityEasel easel)) {
+            if (!(entity instanceof EntityEasel entityEasel)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
-            if (easel.getPainter() == null || !easel.getPainter().getUUID().equals(pl.getUUID())) {
+            if (entityEasel.getPainter() == null || !entityEasel.getPainter().getUUID().equals(pl.getUUID())) {
                 Mod.LOGGER.warn("CanvasMiniUpdatePacket: Unauthorized paint update. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
                 return;
             }
-            if (pl.distanceToSqr(easel) > 64.0D) {
+            if (pl.distanceToSqr(entityEasel) > 64.0D) {
                 Mod.LOGGER.warn("CanvasMiniUpdatePacket: Player too far from easel. easelId: {} player: {}", msg.getEaselId(), pl.getName().getString());
                 return;
             }
+            easel = entityEasel;
             canvas = easel.getItem();
             if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Canvas not found inside easel!");
@@ -44,9 +46,9 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
             }
         } else {
             canvas = pl.getMainHandItem();
-            ItemStack offHandItem = pl.getOffhandItem();
+            palette = pl.getOffhandItem();
             if (canvas.getItem() instanceof ItemPalette) {
-                canvas = offHandItem;
+                canvas = palette;
             }
         }
 
@@ -58,7 +60,7 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
             comp.putInt("v", msg.getVersion());
             comp.putInt("generation", 0);
 
-            if (entityEasel instanceof EntityEasel easel) {
+            if (easel != null) {
                 easel.setItem(canvas, false);
             }
 

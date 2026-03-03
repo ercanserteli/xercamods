@@ -128,10 +128,11 @@ public class GuiCanvasEdit extends BasePalette {
         if (minecraft == null) {
             return;
         }
-        canvasX = CANVAS_XS[canvasType.ordinal()];
-        canvasY = CANVAS_YS[canvasType.ordinal()];
-        paletteX = PALETTE_XS[canvasType.ordinal()];
-        paletteY = PALETTE_YS[canvasType.ordinal()];
+        int typeIndex = canvasType.toByte();
+        canvasX = CANVAS_XS[typeIndex];
+        canvasY = CANVAS_YS[typeIndex];
+        paletteX = PALETTE_XS[typeIndex];
+        paletteY = PALETTE_YS[typeIndex];
         if (canvasX == -1000 || canvasY == -1000 || paletteX == -1000 || paletteY == -1000) {
             resetPositions();
         }
@@ -397,25 +398,30 @@ public class GuiCanvasEdit extends BasePalette {
             int y = 0;
             int outlineSize = 0;
             int pixelHalf = canvasPixelScale / 2;
-            if (brushSize == 0) {
-                x = ((mouseX - (int) canvasX) / canvasPixelScale) * canvasPixelScale + (int) canvasX - 1;
-                y = ((mouseY - (int) canvasY) / canvasPixelScale) * canvasPixelScale + (int) canvasY - 1;
-                outlineSize = canvasPixelScale + 2;
-            }
-            if (brushSize == 1) {
-                x = (((mouseX - (int) canvasX + pixelHalf) / canvasPixelScale) - 1) * canvasPixelScale + (int) canvasX - 1;
-                y = (((mouseY - (int) canvasY + pixelHalf) / canvasPixelScale) - 1) * canvasPixelScale + (int) canvasY - 1;
-                outlineSize = canvasPixelScale * 2 + 2;
-            }
-            if (brushSize == 2) {
-                x = (((mouseX - (int) canvasX + pixelHalf) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasX - 1;
-                y = (((mouseY - (int) canvasY + pixelHalf) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasY - 1;
-                outlineSize = canvasPixelScale * 4 + 2;
-            }
-            if (brushSize == 3) {
-                x = (((mouseX - (int) canvasX) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasX - 1;
-                y = (((mouseY - (int) canvasY) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasY - 1;
-                outlineSize = canvasPixelScale * 5 + 2;
+            switch (brushSize) {
+                case 0 -> {
+                    x = ((mouseX - (int) canvasX) / canvasPixelScale) * canvasPixelScale + (int) canvasX - 1;
+                    y = ((mouseY - (int) canvasY) / canvasPixelScale) * canvasPixelScale + (int) canvasY - 1;
+                    outlineSize = canvasPixelScale + 2;
+                }
+                case 1 -> {
+                    x = (((mouseX - (int) canvasX + pixelHalf) / canvasPixelScale) - 1) * canvasPixelScale + (int) canvasX - 1;
+                    y = (((mouseY - (int) canvasY + pixelHalf) / canvasPixelScale) - 1) * canvasPixelScale + (int) canvasY - 1;
+                    outlineSize = canvasPixelScale * 2 + 2;
+                }
+                case 2 -> {
+                    x = (((mouseX - (int) canvasX + pixelHalf) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasX - 1;
+                    y = (((mouseY - (int) canvasY + pixelHalf) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasY - 1;
+                    outlineSize = canvasPixelScale * 4 + 2;
+                }
+                case 3 -> {
+                    x = (((mouseX - (int) canvasX) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasX - 1;
+                    y = (((mouseY - (int) canvasY) / canvasPixelScale) - 2) * canvasPixelScale + (int) canvasY - 1;
+                    outlineSize = canvasPixelScale * 5 + 2;
+                }
+                default -> {
+                    // Ignore unsupported brush sizes.
+                }
             }
 
             Vec2 textureVec;
@@ -660,16 +666,16 @@ public class GuiCanvasEdit extends BasePalette {
         brushOpacityMeterX = (int) canvasX + canvasWidth + 2;
         brushOpacityMeterY = (int) canvasY;
 
-        CANVAS_XS[canvasType.ordinal()] = canvasX;
-        CANVAS_YS[canvasType.ordinal()] = canvasY;
+        CANVAS_XS[canvasType.toByte()] = canvasX;
+        CANVAS_YS[canvasType.toByte()] = canvasY;
     }
 
     private void updatePalettePos(double deltaX, double deltaY) {
         paletteX += deltaX;
         paletteY += deltaY;
 
-        PALETTE_XS[canvasType.ordinal()] = paletteX;
-        PALETTE_YS[canvasType.ordinal()] = paletteY;
+        PALETTE_XS[canvasType.toByte()] = paletteX;
+        PALETTE_YS[canvasType.toByte()] = paletteY;
     }
 
     private boolean inCanvas(int x, int y) {
@@ -677,7 +683,7 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     private boolean inCanvasHolder(int x, int y) {
-        return x < canvasX + canvasWidth * 0.75 && x >= canvasX + (canvasWidth) * 0.25 && y < canvasY && y >= canvasY - CANVAS_HOLDER_HEIGHT;
+        return x < canvasX + canvasWidth * 0.75 && x >= canvasX + canvasWidth * 0.25 && y < canvasY && y >= canvasY - CANVAS_HOLDER_HEIGHT;
     }
 
     private boolean inBrushMeter(int x, int y) {
