@@ -18,6 +18,7 @@ public class SingleNotePacket {
         this.isStop = isStop;
         this.volume = volume;
     }
+
     public SingleNotePacket(int note, IItemInstrument itemInstrument, boolean isStop) {
         this(note, itemInstrument, isStop, 1f);
     }
@@ -33,7 +34,7 @@ public class SingleNotePacket {
             int instrumentId = buf.readInt();
             result.isStop = buf.readBoolean();
             result.volume = buf.readFloat();
-            if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+            if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
             result.instrumentItem = Items.instruments[instrumentId];

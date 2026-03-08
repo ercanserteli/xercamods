@@ -20,8 +20,8 @@ public class SendNotesPartToServerPacketHandler {
     }
 
     private static void processMessage(SendNotesPartToServerPacket pkt, ServerPlayer sender) {
-        if(MusicManager.addNotesPart(pkt)) {
-            PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(()->sender);
+        if (MusicManager.addNotesPart(pkt)) {
+            PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(() -> sender);
             XercaMusic.NETWORK_HANDLER.send(target, new NotesPartAckFromServerPacket(pkt.getUuid()));
         }
     }

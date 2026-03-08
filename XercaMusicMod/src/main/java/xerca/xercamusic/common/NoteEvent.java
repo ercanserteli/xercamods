@@ -24,11 +24,11 @@ public class NoteEvent implements INBTSerializable<CompoundTag> {
     public NoteEvent() {
     }
 
-    public short endTime(){
-        return (short)(time + length - 1);
+    public short endTime() {
+        return (short) (time + length - 1);
     }
 
-    public short startTime(){
+    public short startTime() {
         return time;
     }
 
@@ -50,27 +50,27 @@ public class NoteEvent implements INBTSerializable<CompoundTag> {
         this.length = tag.getByte("l");
     }
 
-    public static NoteEvent fromNBT(CompoundTag tag){
+    public static NoteEvent fromNBT(CompoundTag tag) {
         NoteEvent noteEvent = new NoteEvent();
         noteEvent.deserializeNBT(tag);
         return noteEvent;
     }
 
-    public void encodeToBuffer(FriendlyByteBuf buf){
+    public void encodeToBuffer(FriendlyByteBuf buf) {
         buf.writeByte(note);
         buf.writeShort(time);
         buf.writeByte(volume);
         buf.writeByte(length);
     }
 
-    public void decodeFromBuffer(FriendlyByteBuf buf){
+    public void decodeFromBuffer(FriendlyByteBuf buf) {
         this.note = buf.readByte();
         this.time = buf.readShort();
         this.volume = buf.readByte();
         this.length = buf.readByte();
     }
 
-    public static NoteEvent fromBuffer(FriendlyByteBuf buf){
+    public static NoteEvent fromBuffer(FriendlyByteBuf buf) {
         NoteEvent noteEvent = new NoteEvent();
         noteEvent.decodeFromBuffer(buf);
         return noteEvent;
@@ -78,21 +78,21 @@ public class NoteEvent implements INBTSerializable<CompoundTag> {
 
     public static void fillArrayFromNBT(ArrayList<NoteEvent> noteEvents, CompoundTag tag) {
         ListTag notesTag = tag.getList("notes", Tag.TAG_COMPOUND);
-        for(int i=0; i<notesTag.size(); i++){
+        for (int i = 0; i < notesTag.size(); i++) {
             noteEvents.add(NoteEvent.fromNBT(notesTag.getCompound(i)));
         }
     }
 
     public static void fillNBTFromArray(ArrayList<NoteEvent> noteEvents, CompoundTag tag) {
         ListTag noteList = new ListTag();
-        for(NoteEvent event : noteEvents){
+        for (NoteEvent event : noteEvents) {
             noteList.add(event.serializeNBT());
         }
         tag.put("notes", noteList);
     }
 
     public float floatVolume() {
-        return ((float)volume)/127.0f;
+        return ((float) volume) / 127.0f;
     }
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")

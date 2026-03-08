@@ -28,27 +28,26 @@ public class MusicBoxUpdatePacketHandler {
     @OnlyIn(Dist.CLIENT)
     private static void processMessage(MusicBoxUpdatePacket msg) {
         Level world = Minecraft.getInstance().level;
-        if(world == null || !world.hasChunkAt(msg.getPos())){
+        if (world == null || !world.hasChunkAt(msg.getPos())) {
             return;
         }
 
-        BlockEntity te =  world.getBlockEntity(msg.getPos());
-        if(te instanceof TileEntityMusicBox tileEntityMusicBox){
+        BlockEntity te = world.getBlockEntity(msg.getPos());
+        if (te instanceof TileEntityMusicBox tileEntityMusicBox) {
 
-            if(msg.getNoteStackNBT() != null){
-                if(msg.getNoteStackNBT().isEmpty()){
+            if (msg.getNoteStackNBT() != null) {
+                if (msg.getNoteStackNBT().isEmpty()) {
                     tileEntityMusicBox.removeNoteStack();
-                }
-                else{
+                } else {
                     ItemStack noteStack = new ItemStack(Items.MUSIC_SHEET.get());
                     noteStack.setTag(msg.getNoteStackNBT());
                     tileEntityMusicBox.setNoteStack(noteStack, false);
                 }
             }
 
-            if(!msg.getInstrumentId().isEmpty()){
+            if (!msg.getInstrumentId().isEmpty()) {
                 tileEntityMusicBox.setInstrument(ForgeRegistries.ITEMS.getValue(new ResourceLocation(msg.getInstrumentId())));
-            }else{
+            } else {
                 tileEntityMusicBox.removeInstrument();
             }
         }

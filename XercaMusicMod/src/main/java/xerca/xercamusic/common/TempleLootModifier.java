@@ -18,6 +18,7 @@ public class TempleLootModifier extends LootModifier {
     public static final Supplier<Codec<TempleLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst)
             .apply(inst, TempleLootModifier::new)
     ));
+
     protected TempleLootModifier(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }

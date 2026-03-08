@@ -1,6 +1,5 @@
 {
   "item_group.xercamusic.music_tab": "Müzik",
-
   "item.xercamusic.music_sheet": "Müzik Kağıdı",
   "item.xercamusic.guitar": "Gitar",
   "item.xercamusic.flute": "Flüt",
@@ -21,17 +20,14 @@
   "item.xercamusic.redstone_guitar": "Kızıltaş Gitar",
   "item.xercamusic.french_horn": "Korno",
   "item.xercamusic.bass_guitar": "Bas gitar",
-
   "block.xercamusic.block_metronome": "Metronom",
   "block.xercamusic.music_box": "Müzik Kutusu",
   "block.xercamusic.piano": "Piyano",
   "block.xercamusic.drum_kit": "Bateri Seti",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Müzik",
   "advancements.xercamusic.achievements.musician.title": "Müzisyen",
   "advancements.xercamusic.achievements.musician.description": "İlk parçanı bestele",
-
   "note.byAuthor": "%1$s tarafından",
   "note.signButton": "İmzala",
   "note.editTitle": "Müziğe isim koy:",
@@ -45,7 +41,6 @@
   "note.startPreviewButton": "►",
   "note.stopPreviewButton": "■",
   "note.hideNeighborsButton": "N",
-
   "xercamusic.export.success": "Müzik kağıdı dışa aktarıldı (%1$s)",
   "xercamusic.export.fail": "Müzik kağıdı dışa aktarılamadı",
   "xercamusic.import.success": "Müzik kağıdı içe aktarıldı",

@@ -36,8 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class ItemMusicSheet extends Item {
     static final private HashMap<IItemInstrument.Pair<String, String>, UUID> convertMap = new HashMap<>();
     static final private int addToOldEnd = 8;
@@ -46,57 +44,54 @@ public class ItemMusicSheet extends Item {
         super(new Properties().stacksTo(1));
     }
 
-    public static ArrayList<NoteEvent> oldMusicToNotes(byte[] music){
+    public static ArrayList<NoteEvent> oldMusicToNotes(byte[] music) {
         ArrayList<NoteEvent> notes = new ArrayList<>();
-        for(int i=0; i<music.length; i++){
-            if(music[i] > 0){
+        for (int i = 0; i < music.length; i++) {
+            if (music[i] > 0) {
                 int nextTime = -1;
-                for(int j=i+1; j<music.length; j++){
-                    if(music[j] > 0){
+                for (int j = i + 1; j < music.length; j++) {
+                    if (music[j] > 0) {
                         nextTime = j;
                         break;
                     }
                 }
                 int l = 1;
-                if(nextTime > i && (nextTime - i) < 20){
+                if (nextTime > i && (nextTime - i) < 20) {
                     l = nextTime - i;
-                }
-                else if(i == music.length-1){
+                } else if (i == music.length - 1) {
                     l = addToOldEnd;
                 }
 
-                byte note = (byte)(music[i] + 32);
-                notes.add(new NoteEvent(note, (short)i, (byte)64, (byte)l));
+                byte note = (byte) (music[i] + 32);
+                notes.add(new NoteEvent(note, (short) i, (byte) 64, (byte) l));
             }
         }
         return notes;
     }
 
-    public static ArrayList<NoteEvent> convertFromOld(CompoundTag nbt, MinecraftServer server){
+    public static ArrayList<NoteEvent> convertFromOld(CompoundTag nbt, MinecraftServer server) {
         int length = nbt.getInt("length");
         byte pause = nbt.getByte("pause");
         byte[] music = nbt.getByteArray("music");
 
-        byte bps = (byte)Math.round(20.f/(float)pause);
+        byte bps = (byte) Math.round(20.f / (float) pause);
         ArrayList<NoteEvent> notes = oldMusicToNotes(music);
 
         nbt.putInt("l", length + addToOldEnd);
         nbt.putByte("bps", bps);
         UUID id;
-        if(nbt.contains("author") && nbt.contains("title")){
+        if (nbt.contains("author") && nbt.contains("title")) {
             String author = nbt.getString("author");
             String title = nbt.getString("title");
             IItemInstrument.Pair<String, String> key = new IItemInstrument.Pair<>(author, title);
-            if(convertMap.containsKey(key)){
+            if (convertMap.containsKey(key)) {
                 id = convertMap.get(key);
-            }
-            else{
+            } else {
                 id = UUID.randomUUID();
                 convertMap.put(key, id);
                 MusicManager.setMusicData(id, 1, notes, server);
             }
-        }
-        else {
+        } else {
             id = UUID.randomUUID();
             MusicManager.setMusicData(id, 1, notes, server);
         }
@@ -112,8 +107,8 @@ public class ItemMusicSheet extends Item {
 
     public void verifyTagAfterLoad(@NotNull CompoundTag nbt) {
 //        XercaMusic.LOGGER.info("verifyTagAfterLoad " + nbt);
-        if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER){
-            if(nbt.contains("music")){
+        if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER) {
+            if (nbt.contains("music")) {
                 // Old version
                 MinecraftServer server = LogicalSidedProvider.CLIENTWORLD.get(LogicalSide.SERVER).orElseThrow().getServer();
                 convertFromOld(nbt, server);
@@ -125,9 +120,9 @@ public class ItemMusicSheet extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
-        if(worldIn.isClientSide){
+        if (worldIn.isClientSide) {
             if (SoundEvents.OPEN_SCROLL != null) {
-                playerIn.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + worldIn.random.nextFloat()*0.4f);
+                playerIn.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + worldIn.random.nextFloat() * 0.4f);
             }
             DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientStuff::showMusicGui);
         }
@@ -139,7 +134,7 @@ public class ItemMusicSheet extends Item {
     public Component getName(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if(tag != null){
+            if (tag != null) {
                 String s = tag.getString("title");
                 if (!StringUtil.isNullOrEmpty(s)) {
                     return Component.literal(s);
@@ -152,7 +147,7 @@ public class ItemMusicSheet extends Item {
     public static int getBPS(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if(tag != null && tag.contains("bps")){
+            if (tag != null && tag.contains("bps")) {
                 return tag.getByte("bps");
             }
         }
@@ -162,7 +157,7 @@ public class ItemMusicSheet extends Item {
     public static int getPrevInstrument(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if(tag != null && tag.contains("prevIns")){
+            if (tag != null && tag.contains("prevIns")) {
                 return tag.getByte("prevIns");
             }
         }
@@ -172,7 +167,7 @@ public class ItemMusicSheet extends Item {
     public static float getVolume(@Nonnull ItemStack stack) {
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if(tag != null && tag.contains("vol")){
+            if (tag != null && tag.contains("vol")) {
                 return tag.getFloat("vol");
             }
         }
@@ -194,22 +189,22 @@ public class ItemMusicSheet extends Item {
 
             int generation = tag.getInt("generation");
             // generation = 0 means empty, 1 means original, more means copy
-            if(generation > 0){
+            if (generation > 0) {
                 tooltip.add((Component.translatable("note.generation." + (generation - 1)))
                         .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
             }
 
-            if(tag.contains("l")) {
+            if (tag.contains("l")) {
                 int lengthBeats = tag.getInt("l");
                 tooltip.add((Component.translatable("note.length", lengthBeats)).withStyle(ChatFormatting.GRAY));
             }
-            if(tag.contains("bps")) {
+            if (tag.contains("bps")) {
                 int bps = tag.getInt("bps");
-                tooltip.add((Component.translatable("note.tempo", bps*60)).withStyle(ChatFormatting.GRAY));
+                tooltip.add((Component.translatable("note.tempo", bps * 60)).withStyle(ChatFormatting.GRAY));
             }
-            if(tag.contains("prevIns")){
+            if (tag.contains("prevIns")) {
                 byte ins = tag.getByte("prevIns");
-                if(ins >= 0 && ins < Items.instruments.length && Items.instruments[ins] instanceof Item item){
+                if (ins >= 0 && ins < Items.instruments.length && Items.instruments[ins] instanceof Item item) {
                     Component name = item.getName(new ItemStack(item));
                     tooltip.add((Component.translatable("note.preview_instrument", name)).withStyle(ChatFormatting.GRAY));
                 }
@@ -229,7 +224,7 @@ public class ItemMusicSheet extends Item {
                 if (!world.isClientSide) {
                     BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());
 
-                    if(context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild){
+                    if (context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild) {
                         itemstack.shrink(1);
                     }
                 }
@@ -243,7 +238,7 @@ public class ItemMusicSheet extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        if(stack.hasTag()){
+        if (stack.hasTag()) {
             CompoundTag ntc = stack.getTag();
             if (ntc != null && ntc.contains("generation")) {
                 int generation = ntc.getInt("generation");

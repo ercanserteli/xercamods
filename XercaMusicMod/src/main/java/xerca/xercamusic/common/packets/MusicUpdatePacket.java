@@ -37,7 +37,7 @@ public class MusicUpdatePacket {
         this.version = version;
         this.highlightInterval = highlightInterval;
         this.notes = notes;
-        if(availability.hasNotes && this.notes != null && this.notes.size() > MAX_NOTES_IN_PACKET) {
+        if (availability.hasNotes && this.notes != null && this.notes.size() > MAX_NOTES_IN_PACKET) {
             throw new ImportMusicSendPacket.NotesTooLargeException(notes, id);
         }
     }
@@ -51,25 +51,25 @@ public class MusicUpdatePacket {
         try {
             FieldFlag flag = FieldFlag.fromInt(buf.readInt());
             result.availability = flag;
-            if(flag.hasTitle) result.title = buf.readUtf(255);
-            if(flag.hasSigned) result.signed = buf.readBoolean();
-            if(flag.hasBps) result.bps = buf.readByte();
-            if(flag.hasVolume) result.volume = buf.readFloat();
-            if(flag.hasLength) result.lengthBeats = buf.readShort();
-            if(flag.hasNotes){
+            if (flag.hasTitle) result.title = buf.readUtf(255);
+            if (flag.hasSigned) result.signed = buf.readBoolean();
+            if (flag.hasBps) result.bps = buf.readByte();
+            if (flag.hasVolume) result.volume = buf.readFloat();
+            if (flag.hasLength) result.lengthBeats = buf.readShort();
+            if (flag.hasNotes) {
                 int eventCount = buf.readInt();
-                if(eventCount != 0) {  // if this is false, notes may have been sent in parts beforehand
+                if (eventCount != 0) {  // if this is false, notes may have been sent in parts beforehand
                     result.notes = new ArrayList<>(eventCount);
                     for (int i = 0; i < eventCount; i++) {
                         result.notes.add(NoteEvent.fromBuffer(buf));
                     }
                 }
             }
-            if(flag.hasPrevIns) result.prevInstrument = buf.readByte();
-            if(flag.hasPrevInsLocked) result.prevInsLocked = buf.readBoolean();
-            if(flag.hasId) result.id = buf.readUUID();
-            if(flag.hasVersion) result.version = buf.readInt();
-            if(flag.hasHlInterval) result.highlightInterval = buf.readByte();
+            if (flag.hasPrevIns) result.prevInstrument = buf.readByte();
+            if (flag.hasPrevInsLocked) result.prevInsLocked = buf.readBoolean();
+            if (flag.hasId) result.id = buf.readUUID();
+            if (flag.hasVersion) result.version = buf.readInt();
+            if (flag.hasHlInterval) result.highlightInterval = buf.readByte();
         } catch (IndexOutOfBoundsException ioe) {
             System.err.println("Exception while reading MusicUpdatePacket: " + ioe);
             return null;
@@ -80,27 +80,26 @@ public class MusicUpdatePacket {
 
     public static void encode(MusicUpdatePacket pkt, FriendlyByteBuf buf) {
         buf.writeInt(pkt.availability.toInt());
-        if(pkt.availability.hasTitle) buf.writeUtf(pkt.title);
-        if(pkt.availability.hasSigned) buf.writeBoolean(pkt.signed);
-        if(pkt.availability.hasBps) buf.writeByte(pkt.bps);
-        if(pkt.availability.hasVolume) buf.writeFloat(pkt.volume);
-        if(pkt.availability.hasLength) buf.writeShort(pkt.lengthBeats);
-        if(pkt.availability.hasNotes){
-            if(pkt.notes != null) {
+        if (pkt.availability.hasTitle) buf.writeUtf(pkt.title);
+        if (pkt.availability.hasSigned) buf.writeBoolean(pkt.signed);
+        if (pkt.availability.hasBps) buf.writeByte(pkt.bps);
+        if (pkt.availability.hasVolume) buf.writeFloat(pkt.volume);
+        if (pkt.availability.hasLength) buf.writeShort(pkt.lengthBeats);
+        if (pkt.availability.hasNotes) {
+            if (pkt.notes != null) {
                 buf.writeInt(pkt.notes.size());
                 for (NoteEvent event : pkt.notes) {
                     event.encodeToBuffer(buf);
                 }
-            }
-            else{
+            } else {
                 buf.writeInt(0);
             }
         }
-        if(pkt.availability.hasPrevIns) buf.writeByte(pkt.prevInstrument);
-        if(pkt.availability.hasPrevInsLocked) buf.writeBoolean(pkt.prevInsLocked);
-        if(pkt.availability.hasId) buf.writeUUID(pkt.id);
-        if(pkt.availability.hasVersion) buf.writeInt(pkt.version);
-        if(pkt.availability.hasHlInterval) buf.writeByte(pkt.highlightInterval);
+        if (pkt.availability.hasPrevIns) buf.writeByte(pkt.prevInstrument);
+        if (pkt.availability.hasPrevInsLocked) buf.writeBoolean(pkt.prevInsLocked);
+        if (pkt.availability.hasId) buf.writeUUID(pkt.id);
+        if (pkt.availability.hasVersion) buf.writeInt(pkt.version);
+        if (pkt.availability.hasHlInterval) buf.writeByte(pkt.highlightInterval);
     }
 
     public ArrayList<NoteEvent> getNotes() {
@@ -190,7 +189,7 @@ public class MusicUpdatePacket {
 
         public FieldFlag(boolean hasNotes, boolean hasLength, boolean hasBps, boolean hasVolume, boolean hasSigned,
                          boolean hasTitle, boolean hasPrevIns, boolean hasPrevInsLocked, boolean hasId,
-                         boolean hasVersion, boolean hasHlInterval){
+                         boolean hasVersion, boolean hasHlInterval) {
             this.hasNotes = hasNotes;
             this.hasLength = hasLength;
             this.hasBps = hasBps;
@@ -204,24 +203,24 @@ public class MusicUpdatePacket {
             this.hasHlInterval = hasHlInterval;
         }
 
-        public FieldFlag(){
+        public FieldFlag() {
         }
 
-        public int toInt(){
+        public int toInt() {
             return (hasNotes ? notesFlag : 0) |
-                   (hasLength ? lengthFlag : 0) |
-                   (hasBps ? bpsFlag : 0) |
-                   (hasVolume ? volumeFlag : 0) |
-                   (hasSigned ? signedFlag : 0) |
-                   (hasTitle ? titleFlag : 0) |
-                   (hasPrevIns ? prevInsFlag : 0) |
-                   (hasPrevInsLocked ? prevInsLockedFlag : 0) |
-                   (hasId ? idFlag : 0) |
-                   (hasVersion ? versionFlag : 0) |
-                   (hasHlInterval ? hlIntervalFlag : 0);
+                    (hasLength ? lengthFlag : 0) |
+                    (hasBps ? bpsFlag : 0) |
+                    (hasVolume ? volumeFlag : 0) |
+                    (hasSigned ? signedFlag : 0) |
+                    (hasTitle ? titleFlag : 0) |
+                    (hasPrevIns ? prevInsFlag : 0) |
+                    (hasPrevInsLocked ? prevInsLockedFlag : 0) |
+                    (hasId ? idFlag : 0) |
+                    (hasVersion ? versionFlag : 0) |
+                    (hasHlInterval ? hlIntervalFlag : 0);
         }
 
-        static public FieldFlag fromInt(int packed){
+        static public FieldFlag fromInt(int packed) {
             return new FieldFlag(
                     (packed & notesFlag) != 0,
                     (packed & lengthFlag) != 0,
@@ -234,7 +233,7 @@ public class MusicUpdatePacket {
                     (packed & idFlag) != 0,
                     (packed & versionFlag) != 0,
                     (packed & hlIntervalFlag) != 0
-                    );
+            );
         }
 
         public boolean hasAny() {

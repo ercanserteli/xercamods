@@ -23,25 +23,24 @@ import java.util.UUID;
 
 public class ClientStuff {
 
-    static public void showMusicGui(){
+    static public void showMusicGui() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
-            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet){
+            if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet) {
                 CompoundTag noteTag = heldItem.getTag();
                 if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
                     UUID id = noteTag.getUUID("id");
                     int version = noteTag.getInt("ver");
                     MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet"))));
-                }
-                else{
+                } else {
                     Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet")));
                 }
             }
         }
     }
 
-    static public void showInstrumentGui(){
+    static public void showInstrumentGui() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
@@ -51,7 +50,7 @@ public class ClientStuff {
         }
     }
 
-    static public void showInstrumentGui(IItemInstrument instrument, BlockPos blockInsPos){
+    static public void showInstrumentGui(IItemInstrument instrument, BlockPos blockInsPos) {
         LocalPlayer player = Minecraft.getInstance().player;
         Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), blockInsPos));
     }
@@ -61,7 +60,7 @@ public class ClientStuff {
     }
 
     static public NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch) {
-        return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, (byte)-1);
+        return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, (byte) -1);
     }
 
     static public void playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
@@ -69,7 +68,7 @@ public class ClientStuff {
     }
 
     static public NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch, byte lengthTicks) {
-        NoteSound sound = new NoteSound(event, category, (float)x, (float)y, (float)z, volume, pitch, lengthTicks);
+        NoteSound sound = new NoteSound(event, category, (float) x, (float) y, (float) z, volume, pitch, lengthTicks);
         Minecraft.getInstance().getSoundManager().play(sound);
         return sound;
     }
@@ -81,7 +80,7 @@ public class ClientStuff {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, value= Dist.CLIENT, bus=Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class ClientModEventHandler {
         @SubscribeEvent
         public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
@@ -89,7 +88,7 @@ public class ClientStuff {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, value=Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
     static class ForgeBusSubscriber {
         @SubscribeEvent
         public static void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {

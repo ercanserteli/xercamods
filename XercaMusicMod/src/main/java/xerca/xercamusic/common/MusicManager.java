@@ -16,17 +16,15 @@ public class MusicManager {
     public static MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic::load, SavedDataMusic::new, "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
-        if(musicMap.containsKey(id)){
+        if (musicMap.containsKey(id)) {
             MusicData data = musicMap.get(id);
-            if(data.version >= ver){
+            if (data.version >= ver) {
                 XercaMusic.LOGGER.debug("Music data found in server (id: {}, ver: {}) (getMusicData)", id, ver);
                 return data;
-            }
-            else{
+            } else {
                 XercaMusic.LOGGER.debug("Music data in server is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)", id, data.version, ver);
             }
-        }
-        else{
+        } else {
             XercaMusic.LOGGER.debug("Music data not found in server (id: {}, requested ver: {}) (getMusicData)", id, ver);
         }
         return null;
@@ -40,16 +38,14 @@ public class MusicManager {
     }
 
     public static ArrayList<NoteEvent> getFinishedNotesFromBuffer(UUID id) {
-        if(MusicManager.TEMP_NOTES_MAP.containsKey(id)){
+        if (MusicManager.TEMP_NOTES_MAP.containsKey(id)) {
             MusicManager.TempNotesBuffer buffer = MusicManager.TEMP_NOTES_MAP.get(id);
-            if(buffer.isFinished()){
+            if (buffer.isFinished()) {
                 return buffer.joinParts();
-            }
-            else{
+            } else {
                 XercaMusic.LOGGER.warn("Packet did not have notes, and temp buffer was not finished");
             }
-        }
-        else{
+        } else {
             XercaMusic.LOGGER.warn("Packet did not have notes, and temp buffer was not found");
         }
         return null;
@@ -57,11 +53,10 @@ public class MusicManager {
 
     public static boolean addNotesPart(SendNotesPartToServerPacket pkt) {
         TempNotesBuffer buffer;
-        if(TEMP_NOTES_MAP.containsKey(pkt.getUuid())){
+        if (TEMP_NOTES_MAP.containsKey(pkt.getUuid())) {
             buffer = TEMP_NOTES_MAP.get(pkt.getUuid());
             buffer.addPart(pkt.getPartId(), pkt.getNotes());
-        }
-        else{
+        } else {
             buffer = new TempNotesBuffer(pkt.getPartsCount());
             buffer.addPart(pkt.getPartId(), pkt.getNotes());
             TEMP_NOTES_MAP.put(pkt.getUuid(), buffer);
@@ -83,20 +78,20 @@ public class MusicManager {
     public static class SavedDataMusic extends SavedData {
         private final Map<UUID, MusicData> musicMap;
 
-        private SavedDataMusic(Map<UUID, MusicData> musicMap){
+        private SavedDataMusic(Map<UUID, MusicData> musicMap) {
             this.musicMap = musicMap;
         }
 
-        public SavedDataMusic(){
+        public SavedDataMusic() {
             this(new HashMap<>());
         }
 
         public static SavedDataMusic load(CompoundTag tag) {
             Tag musicTag = tag.get("MusicDataList");
-            if(musicTag instanceof ListTag musicDataList){
+            if (musicTag instanceof ListTag musicDataList) {
                 Map<UUID, MusicData> musicDataMap = new HashMap<>();
-                for(Tag nbt : musicDataList){
-                    if(nbt instanceof CompoundTag musicData){
+                for (Tag nbt : musicDataList) {
+                    if (nbt instanceof CompoundTag musicData) {
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, musicData);
                         musicDataMap.put(musicData.getUUID("id"), new MusicData(musicData.getInt("ver"), notes));
@@ -104,8 +99,7 @@ public class MusicManager {
                 }
 
                 return new SavedDataMusic(musicDataMap);
-            }
-            else{
+            } else {
                 return new SavedDataMusic();
             }
         }
@@ -113,7 +107,7 @@ public class MusicManager {
         @Override
         public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
             ListTag musicDataList = new ListTag();
-            for(Map.Entry<UUID, MusicData> entry : musicMap.entrySet()){
+            for (Map.Entry<UUID, MusicData> entry : musicMap.entrySet()) {
                 CompoundTag nbt = new CompoundTag();
                 nbt.putUUID("id", entry.getKey());
                 nbt.putInt("ver", entry.getValue().version);
@@ -124,7 +118,7 @@ public class MusicManager {
             return tag;
         }
 
-        public Map<UUID, MusicData> getMusicMap(){
+        public Map<UUID, MusicData> getMusicMap() {
             return musicMap;
         }
     }
@@ -144,7 +138,7 @@ public class MusicManager {
         }
 
         public void addPart(int partId, List<NoteEvent> part) {
-            if(partId < partsCount && partId >= 0){
+            if (partId < partsCount && partId >= 0) {
                 notesParts.set(partId, part);
                 finishedParts[partId] = true;
             }
@@ -152,19 +146,20 @@ public class MusicManager {
 
         public boolean isFinished() {
             boolean result = true;
-            for(boolean f : finishedParts) {
+            for (boolean f : finishedParts) {
                 result &= f;
             }
             return result;
         }
 
         public ArrayList<NoteEvent> joinParts() {
-            ArrayList<NoteEvent> notes = new ArrayList<>(partsCount*MAX_NOTES_IN_PACKET);
-            for(List<NoteEvent> notesPart : notesParts) {
+            ArrayList<NoteEvent> notes = new ArrayList<>(partsCount * MAX_NOTES_IN_PACKET);
+            for (List<NoteEvent> notesPart : notesParts) {
                 notes.addAll(notesPart);
             }
             return notes;
         }
     }
+
     public static final Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
 }

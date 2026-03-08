@@ -17,15 +17,15 @@ public class ImportMusicSendPacket {
 
     public ImportMusicSendPacket(CompoundTag tag) throws NotesTooLargeException {
         this.tag = tag;
-        if(this.tag.contains("id")) {
+        if (this.tag.contains("id")) {
             this.uuid = tag.getUUID("id");
         }
-        if(this.tag.contains("notes")) {
+        if (this.tag.contains("notes")) {
             this.notes = new ArrayList<>();
             NoteEvent.fillArrayFromNBT(this.notes, this.tag);
             this.tag.remove("notes");
 
-            if(this.notes.size() > MAX_NOTES_IN_PACKET) {
+            if (this.notes.size() > MAX_NOTES_IN_PACKET) {
                 throw new NotesTooLargeException(notes, uuid);
             }
         }
@@ -36,13 +36,12 @@ public class ImportMusicSendPacket {
     }
 
     public static void encode(ImportMusicSendPacket pkt, FriendlyByteBuf buf) {
-        if(pkt.notes != null) {
+        if (pkt.notes != null) {
             buf.writeInt(pkt.notes.size());
-            for(NoteEvent event : pkt.notes){
+            for (NoteEvent event : pkt.notes) {
                 event.encodeToBuffer(buf);
             }
-        }
-        else{
+        } else {
             buf.writeInt(0);
         }
         buf.writeNbt(pkt.tag);
@@ -52,7 +51,7 @@ public class ImportMusicSendPacket {
         ImportMusicSendPacket result = new ImportMusicSendPacket();
         try {
             int eventCount = buf.readInt();
-            if(eventCount > 0) {
+            if (eventCount > 0) {
                 result.notes = new ArrayList<>(eventCount);
                 for (int i = 0; i < eventCount; i++) {
                     result.notes.add(NoteEvent.fromBuffer(buf));

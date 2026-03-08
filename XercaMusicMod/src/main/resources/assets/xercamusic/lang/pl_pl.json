@@ -1,6 +1,5 @@
 {
   "item_group.xercamusic.music_tab": "Muzyka",
-
   "item.xercamusic.music_sheet": "Nuty",
   "item.xercamusic.guitar": "Gitara",
   "item.xercamusic.flute": "Flet",
@@ -21,17 +20,14 @@
   "item.xercamusic.redstone_guitar": "Redstonowa Gitara",
   "item.xercamusic.french_horn": "Waltornia",
   "item.xercamusic.bass_guitar": "Gitara basowa",
-
   "block.xercamusic.block_metronome": "Metronome",
   "block.xercamusic.music_box": "Pozytywka",
   "block.xercamusic.piano": "Piano",
   "block.xercamusic.drum_kit": "Perkusja",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Muzyka",
   "advancements.xercamusic.achievements.musician.title": "Muzyk",
   "advancements.xercamusic.achievements.musician.description": "Napisz twój pierwszy utwór.",
-
   "note.byAuthor": "Przez %1$s",
   "note.signButton": "Zapisz",
   "note.editTitle": "Nazwa nut:",
@@ -101,9 +97,7 @@
   "note.helpText18b": "Zmniejsz tempo o połowę i zmniejsz nuty",
   "note.helpText19a": "ALT: ",
   "note.helpText19b": "Zacznij/zastopuj nagrywanie nut",
-
   "ins.octaveTooltip": "Zmień oktawy Klawiszowe",
-
   "xercamusic.export.success": "Nuty wyeksportowane do %1$s",
   "xercamusic.export.fail": "Nie można było eksportować nuty",
   "xercamusic.import.success": "Nuty Importowane",

@@ -11,10 +11,8 @@ import xerca.xercamusic.common.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-public class BlockTags extends BlockTagsProvider implements DataProvider
-{
-    public BlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper)
-    {
+public class BlockTags extends BlockTagsProvider implements DataProvider {
+    public BlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, XercaMusic.MODID, existingFileHelper);
     }
 

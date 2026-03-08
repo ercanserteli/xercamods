@@ -21,7 +21,7 @@ public class SoundController extends Thread {
     private final float volume;
     private TileEntityMusicBox musicBox = null;
 
-    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID){
+    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
         this.notes = notes;
         this.x = x;
         this.y = y;
@@ -31,24 +31,25 @@ public class SoundController extends Thread {
         this.volume = volume;
         this.spiritID = spiritID;
     }
-    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox){
+
+    public SoundController(ArrayList<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
         this(notes, x, y, z, instrument, bps, volume, -1);
         this.musicBox = musicBox;
     }
 
-    private int beatsToTicks(int beats){
-        return Math.max(1, Math.round(((float)beats) * 20.0f / ((float)bps)));
+    private int beatsToTicks(int beats) {
+        return Math.max(1, Math.round(((float) beats) * 20.0f / ((float) bps)));
     }
 
     @Override
     public void run() {
-        if(bps == 0){
+        if (bps == 0) {
             XercaMusic.LOGGER.error("BPS is 0! This should not happen!");
             return;
         }
 
 //        long startTime = System.currentTimeMillis();
-        int msPerBeat = Math.round(1000.0f/(float)bps);
+        int msPerBeat = Math.round(1000.0f / (float) bps);
         int currentBeat = 0;
 
         for (NoteEvent event : notes) {
@@ -70,7 +71,7 @@ public class SoundController extends Thread {
         }
 
         // Music over
-        if(spiritID >= 0){
+        if (spiritID >= 0) {
             Minecraft.getInstance().submitAsync(() -> {
                 if (Minecraft.getInstance().player != null) {
                     ClientStuff.endMusic(spiritID, Minecraft.getInstance().player.getId());
@@ -79,45 +80,44 @@ public class SoundController extends Thread {
         }
     }
 
-    private void playNote(NoteEvent event){
+    private void playNote(NoteEvent event) {
         if (event.note >= IItemInstrument.minNote && event.note <= IItemInstrument.maxNote) {
             final byte note = event.note;
             Minecraft.getInstance().submitAsync(() -> {
                 IItemInstrument.InsSound insSound = instrument.getSound(note);
-                if(insSound == null){
+                if (insSound == null) {
                     return;
                 }
 
-                if(musicBox == null){
-                    ClientStuff.playNote(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
+                if (musicBox == null) {
+                    ClientStuff.playNote(insSound.sound, x, y, z, volume * event.floatVolume(), insSound.pitch, (byte) beatsToTicks(event.length));
                     if (Minecraft.getInstance().level != null) {
                         Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note) / 24.0D, 0.0D, 0.0D);
                     }
-                }
-                else{
-                    ClientStuff.playNoteTE(insSound.sound, x, y, z, volume*event.floatVolume(), insSound.pitch, (byte)beatsToTicks(event.length));
+                } else {
+                    ClientStuff.playNoteTE(insSound.sound, x, y, z, volume * event.floatVolume(), insSound.pitch, (byte) beatsToTicks(event.length));
                     if (Minecraft.getInstance().level != null) {
-                        Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x+0.5D, y + 2.2D, z+0.5D, (note) / 24.0D, 0.0D, 0.0D);
+                        Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, (note) / 24.0D, 0.0D, 0.0D);
                     }
                 }
             });
         }
     }
 
-    public void setStop(){
+    public void setStop() {
         doStop = true;
     }
 
-    public void setPos(double x, double y, double z){
+    public void setPos(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
     private void accurateSleep(long millis) {
-        if(millis == 0) return;
+        if (millis == 0) return;
         long start = System.currentTimeMillis();
-        if(millis > 12) {
+        if (millis > 12) {
             try {
                 sleep(millis - 10);
             } catch (InterruptedException e) {
@@ -125,12 +125,13 @@ public class SoundController extends Thread {
             }
         }
         //noinspection StatementWithEmptyBody
-        while (System.currentTimeMillis() < start + millis){}
+        while (System.currentTimeMillis() < start + millis) {
+        }
     }
 
     @SuppressWarnings("SameParameterValue")
     private void inaccurateSleep(long millis) {
-        if(millis == 0) return;
+        if (millis == 0) return;
         try {
             sleep(millis);
         } catch (InterruptedException e) {

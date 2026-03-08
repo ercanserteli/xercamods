@@ -18,20 +18,19 @@ public class MusicBoxUpdatePacket {
     public MusicBoxUpdatePacket(BlockPos pos, ItemStack noteStack, Item itemInstrument) {
         this.pos = pos;
 
-        if(noteStack == null){
+        if (noteStack == null) {
             this.noteStackNBT = null;
-        }
-        else{
-            if(noteStack.hasTag()){
+        } else {
+            if (noteStack.hasTag()) {
                 this.noteStackNBT = noteStack.getTag();
-            }else{
+            } else {
                 this.noteStackNBT = new CompoundTag();
             }
         }
-        if(itemInstrument != null){
+        if (itemInstrument != null) {
             ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(itemInstrument);
-            this.instrumentId =  resourcelocation == null ? "minecraft:air" : resourcelocation.toString();
-        }else{
+            this.instrumentId = resourcelocation == null ? "minecraft:air" : resourcelocation.toString();
+        } else {
             this.instrumentId = "";
         }
     }

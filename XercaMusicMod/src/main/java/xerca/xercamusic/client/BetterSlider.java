@@ -16,7 +16,7 @@ public class BetterSlider extends ForgeSlider {
     }
 
     protected void renderBg(@NotNull GuiGraphics guiGraphics, @NotNull Minecraft minecraft, int _1, int _2) {
-        guiGraphics.blitWithBorder(WIDGETS_LOCATION, this.getX() + (int)(this.value * (float)(this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2);
+        guiGraphics.blitWithBorder(WIDGETS_LOCATION, this.getX() + (int) (this.value * (float) (this.width - 8)), this.getY(), 0, 66, 8, this.height, 200, 20, 2, 3, 2, 2);
     }
 
     @Override
@@ -28,5 +28,6 @@ public class BetterSlider extends ForgeSlider {
     }
 
     @Override
-    public void applyValue() {}
+    public void applyValue() {
+    }
 }

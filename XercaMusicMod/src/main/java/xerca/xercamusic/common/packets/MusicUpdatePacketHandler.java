@@ -36,36 +36,36 @@ public class MusicUpdatePacketHandler {
 
             MusicUpdatePacket.FieldFlag flag = msg.getAvailability();
 //            XercaMusic.LOGGER.info(flag);
-            if(flag.hasId) comp.putUUID("id", msg.getId());
-            if(flag.hasVersion) comp.putInt("ver", msg.getVersion());
-            if(flag.hasLength) comp.putInt("l", msg.getLengthBeats());
-            if(flag.hasBps) comp.putByte("bps", msg.getBps());
-            if(flag.hasVolume) comp.putFloat("vol", msg.getVolume());
-            if(flag.hasPrevIns) comp.putByte("prevIns", msg.getPrevInstrument());
-            if(flag.hasPrevInsLocked) comp.putBoolean("piLocked", msg.getPrevInsLocked());
-            if(flag.hasHlInterval) comp.putByte("hl", msg.getHighlightInterval());
-            if(flag.hasSigned && msg.getSigned()) {
-                if(flag.hasTitle) comp.putString("title", msg.getTitle().trim());
+            if (flag.hasId) comp.putUUID("id", msg.getId());
+            if (flag.hasVersion) comp.putInt("ver", msg.getVersion());
+            if (flag.hasLength) comp.putInt("l", msg.getLengthBeats());
+            if (flag.hasBps) comp.putByte("bps", msg.getBps());
+            if (flag.hasVolume) comp.putFloat("vol", msg.getVolume());
+            if (flag.hasPrevIns) comp.putByte("prevIns", msg.getPrevInstrument());
+            if (flag.hasPrevInsLocked) comp.putBoolean("piLocked", msg.getPrevInsLocked());
+            if (flag.hasHlInterval) comp.putByte("hl", msg.getHighlightInterval());
+            if (flag.hasSigned && msg.getSigned()) {
+                if (flag.hasTitle) comp.putString("title", msg.getTitle().trim());
                 comp.putString("author", pl.getName().getString());
                 comp.putInt("generation", 1);
                 Triggers.BECOME_MUSICIAN.trigger(pl);
             }
-            if(!comp.contains("generation")){
+            if (!comp.contains("generation")) {
                 comp.putInt("generation", 0);
             }
-            if(flag.hasNotes){
+            if (flag.hasNotes) {
                 ArrayList<NoteEvent> notes = msg.getNotes();
                 UUID id = comp.getUUID("id");
-                if(notes == null) {
+                if (notes == null) {
                     // Get if large note was sent in parts
                     notes = MusicManager.getFinishedNotesFromBuffer(id);
-                    if(notes == null){
+                    if (notes == null) {
                         return;
                     }
                 }
                 MusicManager.setMusicData(id, comp.getInt("ver"), notes, pl.server);
-                if(!comp.contains("bps")) {
-                    comp.putByte("bps", (byte)8);
+                if (!comp.contains("bps")) {
+                    comp.putByte("bps", (byte) 8);
                 }
             }
         }

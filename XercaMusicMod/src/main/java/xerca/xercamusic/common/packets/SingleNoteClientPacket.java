@@ -39,12 +39,12 @@ public class SingleNoteClientPacket {
             result.isStop = buf.readBoolean();
             result.volume = buf.readFloat();
 
-            if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+            if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
             Entity entity = Objects.requireNonNull(Minecraft.getInstance().level).getEntity(playerId);
-            if(!(entity instanceof Player)){
+            if (!(entity instanceof Player)) {
                 throw new IndexOutOfBoundsException("Invalid playerId: " + playerId);
             }
 
