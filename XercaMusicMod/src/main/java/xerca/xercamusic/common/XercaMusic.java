@@ -34,8 +34,7 @@ import java.util.stream.Collectors;
 
 
 @Mod(XercaMusic.MODID)
-public class XercaMusic
-{
+public class XercaMusic {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
@@ -55,7 +54,7 @@ public class XercaMusic
 
 
     @SuppressWarnings("UnusedAssignment")
-    private void networkRegistry(){
+    private void networkRegistry() {
         int msg_id = 0;
         NETWORK_HANDLER.registerMessage(msg_id++, MusicUpdatePacket.class, MusicUpdatePacket::encode, MusicUpdatePacket::decode, MusicUpdatePacketHandler::handle);
         NETWORK_HANDLER.registerMessage(msg_id++, MusicEndedPacket.class, MusicEndedPacket::encode, MusicEndedPacket::decode, MusicEndedPacketHandler::handle);
@@ -89,9 +88,8 @@ public class XercaMusic
         GLMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        event.enqueueWork(()->{
+    private void setup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
             networkRegistry();
             registerTriggers();
             Items.setup();
@@ -99,28 +97,25 @@ public class XercaMusic
         });
     }
 
-    private void enqueueIMC(final InterModEnqueueEvent event)
-    {
+    private void enqueueIMC(final InterModEnqueueEvent event) {
         // Send music sheet's resource location to xercamod for the bookcase interaction
-        InterModComms.sendTo("xercamod", "send_note", () ->  new ResourceLocation(MODID, "music_sheet"));
+        InterModComms.sendTo("xercamod", "send_note", () -> new ResourceLocation(MODID, "music_sheet"));
     }
 
-    private void processIMC(final InterModProcessEvent event)
-    {
+    private void processIMC(final InterModProcessEvent event) {
         LOGGER.debug("Got IMC {}", event.getIMCStream().
-                map(m->m.getMessageSupplier().get()).
+                map(m -> m.getMessageSupplier().get()).
                 collect(Collectors.toList()));
     }
 
     private void registerTriggers() {
-        for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++)
-        {
+        for (int i = 0; i < Triggers.TRIGGER_ARRAY.length; i++) {
             CriteriaTriggers.register(Triggers.TRIGGER_ARRAY[i]);
         }
     }
 
     // Registration for loot modifier (used for Voice of God in desert temples)
-    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void registerDataEvent(final GatherDataEvent event) {

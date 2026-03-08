@@ -28,7 +28,7 @@ public class RecipeNoteCloning extends CustomRecipe {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack stack = inv.getItem(j);
             if (!stack.isEmpty()) {
                 if (stack.getItem() == Items.MUSIC_SHEET.get() && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
@@ -58,7 +58,7 @@ public class RecipeNoteCloning extends CustomRecipe {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack stack = inv.getItem(j);
             if (!stack.isEmpty()) {
                 if (stack.getItem() == Items.MUSIC_SHEET.get() && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
@@ -93,7 +93,7 @@ public class RecipeNoteCloning extends CustomRecipe {
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
         NonNullList<ItemStack> stacks = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
-        for(int i = 0; i < stacks.size(); ++i) {
+        for (int i = 0; i < stacks.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
             if (itemstack.hasCraftingRemainingItem()) {
                 stacks.set(i, itemstack.getCraftingRemainingItem());

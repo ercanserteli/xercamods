@@ -30,9 +30,9 @@ public class MusicDataRequestPacketHandler {
         UUID id = msg.getId();
         int version = msg.getVersion();
         MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.server);
-        PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(()->pl);
+        PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(() -> pl);
         MusicDataResponsePacket packet;
-        if(data != null) {
+        if (data != null) {
             packet = new MusicDataResponsePacket(id, data.version, data.notes);
         } else {
             packet = new MusicDataResponsePacket(id, 0, new ArrayList<>());

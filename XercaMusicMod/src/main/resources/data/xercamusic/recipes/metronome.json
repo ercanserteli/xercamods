@@ -1,8 +1,15 @@
-
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "minecraft:note_block"}, {"item": "minecraft:clock"}],
-    "result": {"item": "xercamusic:metronome"}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:note_block"
+    },
+    {
+      "item": "minecraft:clock"
+    }
+  ],
+  "result": {
+    "item": "xercamusic:metronome"
+  }
 }
         

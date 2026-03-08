@@ -26,7 +26,7 @@ public class NotesPartAckFromServerPacketHandler {
 
     private static void processMessage(NotesPartAckFromServerPacket msg) {
         UUID id = msg.getId();
-        if(map.containsKey(id)) {
+        if (map.containsKey(id)) {
             map.get(id).run();
             map.remove(id);
         }

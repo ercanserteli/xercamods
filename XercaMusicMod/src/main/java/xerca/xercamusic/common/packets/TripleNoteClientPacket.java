@@ -38,7 +38,7 @@ public class TripleNoteClientPacket {
             int instrumentId = buf.readInt();
             int entityId = buf.readInt();
 
-            if(instrumentId < 0 || instrumentId >= Items.instruments.length){
+            if (instrumentId < 0 || instrumentId >= Items.instruments.length) {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 

@@ -30,7 +30,7 @@ public class SendNotesPartToServerPacket {
         buf.writeInt(pkt.partsCount);
         buf.writeInt(pkt.partId);
         buf.writeInt(pkt.notes.size());
-        for(NoteEvent event : pkt.notes){
+        for (NoteEvent event : pkt.notes) {
             event.encodeToBuffer(buf);
         }
     }
@@ -42,7 +42,7 @@ public class SendNotesPartToServerPacket {
             result.partsCount = buf.readInt();
             result.partId = buf.readInt();
             int eventCount = buf.readInt();
-            if(eventCount > 0) {
+            if (eventCount > 0) {
                 result.notes = new ArrayList<>(eventCount);
                 for (int i = 0; i < eventCount; i++) {
                     result.notes.add(NoteEvent.fromBuffer(buf));

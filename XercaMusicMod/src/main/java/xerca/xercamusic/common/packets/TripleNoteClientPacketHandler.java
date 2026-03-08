@@ -26,7 +26,7 @@ public class TripleNoteClientPacketHandler {
         IItemInstrument.InsSound sound1 = msg.getInstrumentItem().getSound(msg.getNote1());
         IItemInstrument.InsSound sound2 = msg.getInstrumentItem().getSound(msg.getNote2());
         IItemInstrument.InsSound sound3 = msg.getInstrumentItem().getSound(msg.getNote3());
-        if(sound1 == null || sound2 == null || sound3 == null){
+        if (sound1 == null || sound2 == null || sound3 == null) {
             return;
         }
 

@@ -1,6 +1,5 @@
 {
   "item_group.xercamusic.music_tab": "Tónlist",
-
   "item.xercamusic.instrument_gui": "Hljóðfæri",
   "item.xercamusic.music_sheet": "Nótnablöð",
   "item.xercamusic.guitar": "Gítar",
@@ -22,17 +21,14 @@
   "item.xercamusic.redstone_guitar": "Rauðsteinsgítar",
   "item.xercamusic.french_horn": "Horn",
   "item.xercamusic.bass_guitar": "Bassagítar",
-
   "block.xercamusic.block_metronome": "Taktmælir",
   "block.xercamusic.music_box": "Spiladós",
   "block.xercamusic.piano": "Slagharpa",
   "block.xercamusic.drum_kit": "Trommusett",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Tónlist",
   "advancements.xercamusic.achievements.musician.title": "Tónlistarmaður",
   "advancements.xercamusic.achievements.musician.description": "Semdu fyrsta verkið þitt",
-
   "note.byAuthor": "eftir %1$s",
   "note.signButton": "Kvitta",
   "note.editTitle": "Sláðu inn titil verks:",
@@ -102,9 +98,7 @@
   "note.helpText18b": "helmingar tempóið og minnkar nótur",
   "note.helpText19a": "Alt: ",
   "note.helpText19b": "byrjar/stöðvar hljóðritun",
-
   "ins.octaveTooltip": "Breyt áttund lyklaborðsins",
-
   "xercamusic.export.success": "Nótnablað flutt út til %1$s",
   "xercamusic.export.fail": "Ekki tókst að flytja nótnablað út",
   "xercamusic.import.success": "Nótnablað flutt inn",

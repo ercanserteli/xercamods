@@ -1,6 +1,5 @@
 {
   "item_group.xercamusic.music_tab": "Musik",
-
   "item.xercamusic.instrument_gui": "Instrument",
   "item.xercamusic.music_sheet": "Notblad",
   "item.xercamusic.guitar": "Gitarr",
@@ -22,17 +21,14 @@
   "item.xercamusic.redstone_guitar": "Redstonegitarr",
   "item.xercamusic.french_horn": "Valthorn",
   "item.xercamusic.bass_guitar": "Basgitarr",
-
   "block.xercamusic.block_metronome": "Metronom",
   "block.xercamusic.music_box": "Speldosa",
   "block.xercamusic.piano": "Piano",
   "block.xercamusic.drum_kit": "Trumset",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Musik",
   "advancements.xercamusic.achievements.musician.title": "Musiker",
   "advancements.xercamusic.achievements.musician.description": "Skriv ditt första musikstycke",
-
   "note.byAuthor": "av %1$s",
   "note.signButton": "Signera",
   "note.editTitle": "Ange stycketitel:",
@@ -102,9 +98,7 @@
   "note.helpText18b": "halverar tempot och förkortar noterna",
   "note.helpText19a": "ALT: ",
   "note.helpText19b": "börjar/stannar inspelning",
-
   "ins.octaveTooltip": "Ändra tangentbordets oktav",
-
   "xercamusic.export.success": "Notblad exporterades till %1$s",
   "xercamusic.export.fail": "Kunde inte exportera notblad",
   "xercamusic.import.success": "Notblad importerades",

@@ -9,4 +9,3 @@ for entry in os.scandir("."):
         subprocess.run(["oggenc", middle, "-Q"])
         os.remove(middle)
         os.rename(os.path.splitext(middle)[0] + ".ogg", os.path.splitext(entry.path)[0] + ".ogg")
-

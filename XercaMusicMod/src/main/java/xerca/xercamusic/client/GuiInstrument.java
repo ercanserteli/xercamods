@@ -60,10 +60,9 @@ public class GuiInstrument extends Screen {
         this.noteSounds = new NoteSound[IItemInstrument.totalNotes];
         this.midiHandler = new MidiHandler(this::playSound, this::stopSound);
         this.blockInsPos = blockInsPos;
-        if(currentKeyboardOctave < instrument.getMinOctave()) {
+        if (currentKeyboardOctave < instrument.getMinOctave()) {
             currentKeyboardOctave = instrument.getMinOctave();
-        }
-        else if(currentKeyboardOctave > instrument.getMaxOctave()) {
+        } else if (currentKeyboardOctave > instrument.getMaxOctave()) {
             currentKeyboardOctave = instrument.getMaxOctave();
         }
         midiHandler.currentOctave = currentKeyboardOctave;
@@ -92,13 +91,12 @@ public class GuiInstrument extends Screen {
     @Override
     public void tick() {
         super.tick();
-        if(blockInsPos != null && minecraft != null ){
-            if(player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns){
-                if(blockIns.getItemInstrument() != instrument){
+        if (blockInsPos != null && minecraft != null) {
+            if (player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns) {
+                if (blockIns.getItemInstrument() != instrument) {
                     minecraft.setScreen(null);
                 }
-            }
-            else{
+            } else {
                 minecraft.setScreen(null);
             }
         }
@@ -111,13 +109,13 @@ public class GuiInstrument extends Screen {
 
         guiGraphics.blit(insGuiTextures, guiBaseX, guiBaseY, 0, 0, 0, guiWidth, guiHeight, 512, 512);
 
-        for(int i=0; i<buttonPushStates.length; i++){
-            if(buttonPushStates[i]){
+        for (int i = 0; i < buttonPushStates.length; i++) {
+            if (buttonPushStates[i]) {
                 int pushedOctave = i / 12;
-                int x = guiBaseX + guiMarginWidth + i*guiNoteWidth + pushedOctave;
+                int x = guiBaseX + guiMarginWidth + i * guiNoteWidth + pushedOctave;
                 int y = guiBaseY + 11;
-                if(pushedOctave > 3){
-                    x -= 4 + 48*guiNoteWidth;
+                if (pushedOctave > 3) {
+                    x -= 4 + 48 * guiNoteWidth;
                     y = guiBaseY + guiBottomKeyboardTop + 2;
                 }
                 guiGraphics.blit(insGuiTextures, x, y, 0, 402, 11, 7, 82, 512, 512);
@@ -127,17 +125,17 @@ public class GuiInstrument extends Screen {
         int currentKeyboardOctaveDraw = Math.max(0, currentKeyboardOctave);
         int octaveHighlightX = guiBaseX + guiMarginWidth + currentKeyboardOctaveDraw * guiOctaveWidth - 1;
         int octaveHighlightY = guiBaseY + 3;
-        if(currentKeyboardOctave > 3){
+        if (currentKeyboardOctave > 3) {
             octaveHighlightX -= 4 * guiOctaveWidth;
             octaveHighlightY = guiBaseY + guiBottomKeyboardTop - 6;
         }
         guiGraphics.blit(insGuiTextures, octaveHighlightX, octaveHighlightY, 0, 0, 0, guiOctaveHighlightY, guiOctaveHighlightWidth, guiOctaveHighlightHeight, 512, 512);
 
-        for(int i=0; i<8; i++){
-            if(i < instrument.getMinOctave() || i > instrument.getMaxOctave()){
-                int x = guiBaseX + guiMarginWidth + i*guiOctaveWidth;
+        for (int i = 0; i < 8; i++) {
+            if (i < instrument.getMinOctave() || i > instrument.getMaxOctave()) {
+                int x = guiBaseX + guiMarginWidth + i * guiOctaveWidth;
                 int y = guiBaseY + 11;
-                if(i > 3){
+                if (i > 3) {
                     x -= 4 * guiOctaveWidth;
                     y = guiBaseY + guiBottomKeyboardTop + 2;
                 }
@@ -151,7 +149,7 @@ public class GuiInstrument extends Screen {
 
     private int noteIdFromPos(int mouseX, int mouseY) {
         int buttonBaseX = guiBaseX + guiMarginWidth;
-        if(mouseX >= buttonBaseX && mouseX <= buttonBaseX + guiWidth - 14
+        if (mouseX >= buttonBaseX && mouseX <= buttonBaseX + guiWidth - 14
                 && mouseY >= guiBaseY + 9 && mouseY <= guiBaseY + guiHeight - 10
                 && (mouseY < guiBaseY + guiTopKeyboardBottom || mouseY > guiBaseY + guiBottomKeyboardTop)) {
             int octavePlus = (mouseY < guiBaseY + guiTopKeyboardBottom) ? 0 : 4;
@@ -164,14 +162,14 @@ public class GuiInstrument extends Screen {
         return -1;
     }
 
-    private void playSound(int noteId){
+    private void playSound(int noteId) {
         playSound(new MidiHandler.MidiData(noteId, 0.8f));
     }
 
-    private void playSound(MidiHandler.MidiData data){
+    private void playSound(MidiHandler.MidiData data) {
         int noteId = data.noteId();
 
-        if(noteId >= 0 && noteId < buttonPushStates.length && !buttonPushStates[noteId]) {
+        if (noteId >= 0 && noteId < buttonPushStates.length && !buttonPushStates[noteId]) {
             int note = IItemInstrument.idToNote(noteId);
 
             IItemInstrument.InsSound noteSound = instrument.getSound(note);
@@ -187,8 +185,8 @@ public class GuiInstrument extends Screen {
         }
     }
 
-    private void stopSound(int noteId){
-        if(noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
+    private void stopSound(int noteId) {
+        if (noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
             if (noteSounds[noteId] != null) {
                 noteSounds[noteId].stopSound();
                 noteSounds[noteId] = null;
@@ -201,8 +199,8 @@ public class GuiInstrument extends Screen {
         }
     }
 
-    private void stopAllSounds(){
-        for(int noteId=0; noteId<buttonPushStates.length; noteId++) {
+    private void stopAllSounds() {
+        for (int noteId = 0; noteId < buttonPushStates.length; noteId++) {
             stopSound(noteId);
         }
     }
@@ -210,8 +208,8 @@ public class GuiInstrument extends Screen {
     @Override
     public boolean mouseClicked(double dmouseX, double dmouseY, int mouseButton) {
 //        XercaMusic.LOGGER.info("Click pos: " + dmouseX);
-        int mouseX = (int)Math.round(dmouseX);
-        int mouseY = (int)Math.round(dmouseY);
+        int mouseX = (int) Math.round(dmouseX);
+        int mouseY = (int) Math.round(dmouseY);
 
         int noteId = noteIdFromPos(mouseX, mouseY);
         playSound(noteId);
@@ -220,8 +218,8 @@ public class GuiInstrument extends Screen {
 
     @Override
     public boolean mouseReleased(double dmouseX, double dmouseY, int mouseButton) {
-        int mouseX = (int)Math.round(dmouseX);
-        int mouseY = (int)Math.round(dmouseY);
+        int mouseX = (int) Math.round(dmouseX);
+        int mouseY = (int) Math.round(dmouseY);
 
         int noteId = noteIdFromPos(mouseX, mouseY);
         stopSound(noteId);
@@ -232,14 +230,14 @@ public class GuiInstrument extends Screen {
     @Override
     public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
 //        XercaMusic.LOGGER.info("Drag pos: " + posX + " del: " + deltaX);
-        int mouseX = (int)Math.round(posX);
-        int mouseY = (int)Math.round(posY);
-        int prevMouseX = (int)Math.round(posX - deltaX);
-        int prevMouseY = (int)Math.round(posY - deltaY);
+        int mouseX = (int) Math.round(posX);
+        int mouseY = (int) Math.round(posY);
+        int prevMouseX = (int) Math.round(posX - deltaX);
+        int prevMouseY = (int) Math.round(posY - deltaY);
 
         int prevNoteId = noteIdFromPos(prevMouseX, prevMouseY);
         int currentNoteId = noteIdFromPos(mouseX, mouseY);
-        if(prevNoteId != currentNoteId){
+        if (prevNoteId != currentNoteId) {
             stopSound(prevNoteId);
             playSound(currentNoteId);
         }
@@ -248,7 +246,7 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers){
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         setFocused(null);
         super.keyPressed(keyCode, scanCode, modifiers);
 
@@ -259,33 +257,32 @@ public class GuiInstrument extends Screen {
             playSound(noteId);
         }
 
-        if(keyCode == GLFW.GLFW_KEY_A){
+        if (keyCode == GLFW.GLFW_KEY_A) {
             decreaseOctave();
-        }
-        else if(keyCode == GLFW.GLFW_KEY_S){
+        } else if (keyCode == GLFW.GLFW_KEY_S) {
             increaseOctave();
         }
         return true;
     }
 
     private void decreaseOctave() {
-        if(currentKeyboardOctave > -3) { // instrument.minOctave){
-            currentKeyboardOctave --;
+        if (currentKeyboardOctave > -3) { // instrument.minOctave){
+            currentKeyboardOctave--;
             midiHandler.currentOctave = currentKeyboardOctave;
             stopAllSounds();
         }
     }
 
     private void increaseOctave() {
-        if(currentKeyboardOctave < instrument.getMaxOctave()){
-            currentKeyboardOctave ++;
+        if (currentKeyboardOctave < instrument.getMaxOctave()) {
+            currentKeyboardOctave++;
             midiHandler.currentOctave = currentKeyboardOctave;
             stopAllSounds();
         }
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers){
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
         int lastScanCode = firstScanCode + 11;
         if (scanCode >= firstScanCode && scanCode <= lastScanCode) {

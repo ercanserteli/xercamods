@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import static xerca.xercamusic.common.XercaMusic.Null;
 
 public class SoundEvents {
-    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID+":tick")
+    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID + ":tick")
     public static final SoundEvent TICK = Null();
-    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID+":metronome_set")
+    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID + ":metronome_set")
     public static final SoundEvent METRONOME_SET = Null();
-    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID+":open_scroll")
+    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID + ":open_scroll")
     public static final SoundEvent OPEN_SCROLL = Null();
-    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID+":close_scroll")
+    @ObjectHolder(registryName = "minecraft:sound_event", value = XercaMusic.MODID + ":close_scroll")
     public static final SoundEvent CLOSE_SCROLL = Null();
 
     // Instrument SoPair<Integer, SoundEvent>on
@@ -49,15 +49,15 @@ public class SoundEvents {
     private static SoundEvent createSoundEvent(String soundName, final RegisterEvent event) {
         final ResourceLocation soundID = new ResourceLocation(XercaMusic.MODID, soundName);
         final SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundID);
-        event.register(ForgeRegistries.Keys.SOUND_EVENTS, soundID, ()->soundEvent);
+        event.register(ForgeRegistries.Keys.SOUND_EVENTS, soundID, () -> soundEvent);
         return soundEvent;
     }
 
-    private static void addSound(ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> array, String insName, int note, final RegisterEvent event){
+    private static void addSound(ArrayList<IItemInstrument.Pair<Integer, SoundEvent>> array, String insName, int note, final RegisterEvent event) {
         array.add(IItemInstrument.Pair.of(note, createSoundEvent(insName + note, event)));
     }
 
-    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus=Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = XercaMusic.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistrationHandler {
         @SubscribeEvent
         public static void registerSoundEvents(final RegisterEvent event) {
@@ -91,7 +91,7 @@ public class SoundEvents {
             for (int i = 21; i <= 116; i++) {
                 addSound(drum_kits, "drum_kit", i, event);
             }
-            for (int i = 27; i <= 111; i+=6) {
+            for (int i = 27; i <= 111; i += 6) {
                 addSound(harp_mcs, "harp_mc", i, event);
             }
 
@@ -348,25 +348,25 @@ public class SoundEvents {
 
     public static void setup() {
         // Instrument SoundEvent setting
-        ((IItemInstrument)Items.CYMBAL.get()).setSounds(cymbals);
-        ((IItemInstrument)Items.DRUM_KIT.get()).setSounds(drum_kits);
-        ((IItemInstrument)Items.GUITAR.get()).setSounds(guitars);
-        ((IItemInstrument)Items.LYRE.get()).setSounds(lyres);
-        ((IItemInstrument)Items.DRUM.get()).setSounds(drums);
-        ((IItemInstrument)Items.FLUTE.get()).setSounds(flutes);
-        ((IItemInstrument)Items.BANJO.get()).setSounds(banjos);
-        ((IItemInstrument)Items.SAXOPHONE.get()).setSounds(saxophones);
-        ((IItemInstrument)Items.GOD.get()).setSounds(gods);
-        ((IItemInstrument)Items.SANSULA.get()).setSounds(sansulas);
-        ((IItemInstrument)Items.TUBULAR_BELL.get()).setSounds(tubular_bells);
-        ((IItemInstrument)Items.VIOLIN.get()).setSounds(violins);
-        ((IItemInstrument)Items.XYLOPHONE.get()).setSounds(xylophones);
-        ((IItemInstrument)Items.CELLO.get()).setSounds(cellos);
-        ((IItemInstrument)Items.PIANO.get()).setSounds(pianos);
-        ((IItemInstrument)Items.OBOE.get()).setSounds(oboes);
-        ((IItemInstrument)Items.REDSTONE_GUITAR.get()).setSounds(redstone_guitars);
-        ((IItemInstrument)Items.FRENCH_HORN.get()).setSounds(french_horns);
-        ((IItemInstrument)Items.BASS_GUITAR.get()).setSounds(bass_guitars);
+        ((IItemInstrument) Items.CYMBAL.get()).setSounds(cymbals);
+        ((IItemInstrument) Items.DRUM_KIT.get()).setSounds(drum_kits);
+        ((IItemInstrument) Items.GUITAR.get()).setSounds(guitars);
+        ((IItemInstrument) Items.LYRE.get()).setSounds(lyres);
+        ((IItemInstrument) Items.DRUM.get()).setSounds(drums);
+        ((IItemInstrument) Items.FLUTE.get()).setSounds(flutes);
+        ((IItemInstrument) Items.BANJO.get()).setSounds(banjos);
+        ((IItemInstrument) Items.SAXOPHONE.get()).setSounds(saxophones);
+        ((IItemInstrument) Items.GOD.get()).setSounds(gods);
+        ((IItemInstrument) Items.SANSULA.get()).setSounds(sansulas);
+        ((IItemInstrument) Items.TUBULAR_BELL.get()).setSounds(tubular_bells);
+        ((IItemInstrument) Items.VIOLIN.get()).setSounds(violins);
+        ((IItemInstrument) Items.XYLOPHONE.get()).setSounds(xylophones);
+        ((IItemInstrument) Items.CELLO.get()).setSounds(cellos);
+        ((IItemInstrument) Items.PIANO.get()).setSounds(pianos);
+        ((IItemInstrument) Items.OBOE.get()).setSounds(oboes);
+        ((IItemInstrument) Items.REDSTONE_GUITAR.get()).setSounds(redstone_guitars);
+        ((IItemInstrument) Items.FRENCH_HORN.get()).setSounds(french_horns);
+        ((IItemInstrument) Items.BASS_GUITAR.get()).setSounds(bass_guitars);
 
         Items.HARP_MC.get().setSounds(harp_mcs);
     }

@@ -27,7 +27,7 @@ public class MusicDataResponsePacket {
         buf.writeUUID(pkt.getId());
         buf.writeInt(pkt.getVersion());
         buf.writeInt(pkt.notes.size());
-        for(NoteEvent event : pkt.notes){
+        for (NoteEvent event : pkt.notes) {
             event.encodeToBuffer(buf);
         }
     }
@@ -39,7 +39,7 @@ public class MusicDataResponsePacket {
             result.version = buf.readInt();
             int eventCount = buf.readInt();
             result.notes = new ArrayList<>(eventCount);
-            for(int i=0; i<eventCount; i++){
+            for (int i = 0; i < eventCount; i++) {
                 result.notes.add(NoteEvent.fromBuffer(buf));
             }
         } catch (IndexOutOfBoundsException ioe) {

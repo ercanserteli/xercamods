@@ -56,9 +56,9 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if(!worldIn.isClientSide){
+        if (!worldIn.isClientSide) {
             boolean powered = worldIn.hasNeighborSignal(pos);
-            if(powered && state.getValue(POWERING)){
+            if (powered && state.getValue(POWERING)) {
                 return;
             }
             if (powered != state.getValue(POWERED)) {
@@ -83,25 +83,23 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
                         if (isMusic) {
                             te.removeNoteStack();
                             world.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.FALSE), 3);
-                        }
-                        else {
+                        } else {
                             te.removeInstrument();
                             world.setBlock(pos, state.setValue(HAS_INSTRUMENT, Boolean.FALSE), 3);
                         }
                     }
 
                     ItemEntity entity;
-                    if(isMusic){
+                    if (isMusic) {
                         entity = new ItemEntity(world, pos.getX(), pos.getY() + 1.0, pos.getZ(), itemstack);
 
                         entity.setDeltaMovement(world.random.nextDouble() * 0.2 - 0.1, 0.1, world.random.nextDouble() * 0.2 - 0.1);
-                    }
-                    else{
+                    } else {
                         Direction backFace = state.getValue(FACING).getOpposite();
                         int xOffset = backFace.getStepX();
                         int zOffset = backFace.getStepZ();
 
-                        entity = new ItemEntity(world, pos.getX() + xOffset*0.625, pos.getY() + 0.5D, pos.getZ() + zOffset*0.625, itemstack);
+                        entity = new ItemEntity(world, pos.getX() + xOffset * 0.625, pos.getY() + 0.5D, pos.getZ() + zOffset * 0.625, itemstack);
                         double speed = world.random.nextDouble() * 0.1 + 0.2;
                         entity.setDeltaMovement(xOffset * speed, 0.1, zOffset * speed);
                     }
@@ -134,13 +132,13 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(hand);
         if (hit.getDirection() == Direction.UP && state.getValue(HAS_MUSIC)) {
-            if(heldItem.getItem() instanceof IItemInstrument && !state.getValue(HAS_INSTRUMENT)){
+            if (heldItem.getItem() instanceof IItemInstrument && !state.getValue(HAS_INSTRUMENT)) {
                 return InteractionResult.PASS;
             }
             ejectItem(worldIn, pos, state, true, false);
             return InteractionResult.SUCCESS;
         } else if (hit.getDirection() == state.getValue(FACING).getOpposite() && state.getValue(HAS_INSTRUMENT)) {
-            if(heldItem.getItem() == Items.MUSIC_SHEET.get() && !state.getValue(HAS_MUSIC)){
+            if (heldItem.getItem() == Items.MUSIC_SHEET.get() && !state.getValue(HAS_MUSIC)) {
                 return InteractionResult.PASS;
             }
             worldIn.playSound(null, pos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS);
@@ -186,8 +184,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
 
     // This block should NOT check for weak power, otherwise it transmits input to output and also gets powered by itself
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side)
-    {
+    public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
         return false;
     }
 

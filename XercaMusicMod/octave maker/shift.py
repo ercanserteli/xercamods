@@ -11,10 +11,11 @@ def get_fname():
         fname = input("Enter file path:")
     return fname
 
+
 def get_trailing_number(s):
     m = re.search(r'\d+$', s)
     return int(m.group()) if m else None
-    
+
 
 def shift(fname, delta):
     if fname[0] == '"':
@@ -35,6 +36,6 @@ def shift(fname, delta):
     subprocess.run(["soundstretch_x64", fname, middle, "-pitch=" + str(delta)])
     subprocess.run(["oggenc", middle, "-Q"])
     os.remove(middle)
-        
+
     if remove_wav:
         os.remove(fname)
