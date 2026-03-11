@@ -90,12 +90,12 @@ public class SoundController extends Thread {
                 }
 
                 if (musicBox == null) {
-                    ClientStuff.playNote(insSound.sound, x, y, z, volume * event.floatVolume(), insSound.pitch, (byte) beatsToTicks(event.length));
+                    ClientStuff.playNote(insSound.sound(), x, y, z, volume * event.floatVolume(), insSound.pitch(), (byte) beatsToTicks(event.length));
                     if (Minecraft.getInstance().level != null) {
                         Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (note) / 24.0D, 0.0D, 0.0D);
                     }
                 } else {
-                    ClientStuff.playNoteTE(insSound.sound, x, y, z, volume * event.floatVolume(), insSound.pitch, (byte) beatsToTicks(event.length));
+                    ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume * event.floatVolume(), insSound.pitch(), (byte) beatsToTicks(event.length));
                     if (Minecraft.getInstance().level != null) {
                         Minecraft.getInstance().level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, (note) / 24.0D, 0.0D, 0.0D);
                     }

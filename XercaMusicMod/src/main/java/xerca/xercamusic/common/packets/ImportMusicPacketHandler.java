@@ -16,7 +16,7 @@ import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
 
 public class ImportMusicPacketHandler {
     public static void handle(final ImportMusicPacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }
@@ -57,3 +57,4 @@ public class ImportMusicPacketHandler {
         }
     }
 }
+

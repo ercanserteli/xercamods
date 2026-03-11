@@ -1,14 +1,17 @@
 package xerca.xercamusic.common.packets;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
+import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.IItemInstrument;
 
 import java.util.HashMap;
@@ -19,7 +22,7 @@ public class SingleNoteClientPacketHandler {
     static final Map<IItemInstrument.Pair<Player, Integer>, NoteSoundEntry> noteSounds = new HashMap<>();
 
     public static void handle(final SingleNoteClientPacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }
@@ -29,7 +32,19 @@ public class SingleNoteClientPacketHandler {
     }
 
     private static void processMessage(SingleNoteClientPacket msg) {
-        Player playerEntity = msg.getPlayerEntity();
+        int playerId = msg.getPlayerId();
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            XercaMusic.LOGGER.warn("Level is null while trying to get entity");
+            return;
+        }
+
+        Entity entity = level.getEntity(playerId);
+        if (!(entity instanceof Player playerEntity)) {
+            XercaMusic.LOGGER.warn("Invalid playerId: {}", playerId);
+            return;
+        }
+
         if (!playerEntity.equals(Minecraft.getInstance().player)) {
             IItemInstrument.InsSound sound = msg.getInstrumentItem().getSound(msg.getNote());
             if (sound == null) {
@@ -41,7 +56,7 @@ public class SingleNoteClientPacketHandler {
                 double z = playerEntity.getZ();
 
                 NoteSound noteSound = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
-                        ClientStuff.playNote(sound.sound, x, y, z, SoundSource.PLAYERS, msg.getVolume() * 1.5f, sound.pitch, (byte) -1));
+                        ClientStuff.playNote(sound.sound(), x, y, z, SoundSource.PLAYERS, msg.getVolume() * 1.5f, sound.pitch(), (byte) -1));
                 noteSounds.put(IItemInstrument.Pair.of(playerEntity, msg.getNote()), new NoteSoundEntry(noteSound, playerEntity));
                 playerEntity.level().addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, (msg.getNote()) / 24.0D, 0.0D, 0.0D);
             } else {
@@ -53,13 +68,6 @@ public class SingleNoteClientPacketHandler {
         }
     }
 
-    private static class NoteSoundEntry {
-        public final NoteSound noteSound;
-        public final Player playerEntity;
-
-        public NoteSoundEntry(NoteSound noteSound, Player playerEntity) {
-            this.noteSound = noteSound;
-            this.playerEntity = playerEntity;
-        }
+    private record NoteSoundEntry(NoteSound noteSound, Player playerEntity) {
     }
 }

@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public class SingleNotePacketHandler {
     public static void handle(final SingleNotePacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }

@@ -283,14 +283,14 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("c", KeyModifier.CTRL)
     win.type(Key.RIGHT)
     win.type("v", KeyModifier.CTRL)
-    testAssert(exists("1701618742438.png"))
+    testAssert(exists("1773243839919.png"))
 
     # Select all, delete with backspace (delete button does not work for some reason)
     win.type("a", KeyModifier.CTRL)
     win.type(Key.BACKSPACE)
     testAssert(exists("1689796061344.png"))
     win.type("z", KeyModifier.CTRL)
-    testAssert(exists("1701618763367.png"))
+    testAssert(exists("1773243869679.png"))
 
     # Record
     rclickw(398, 264)

@@ -33,6 +33,8 @@ public class MusicManager {
     public static void setMusicData(UUID id, int ver, ArrayList<NoteEvent> notes, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic::load, SavedDataMusic::new, "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
+        NoteEvent.sortNotes(notes);
+        NoteEvent.removeDuplicates(notes);
         musicMap.put(id, new MusicManager.MusicData(ver, notes));
         savedDataMusic.setDirty();
     }
@@ -41,7 +43,11 @@ public class MusicManager {
         if (MusicManager.TEMP_NOTES_MAP.containsKey(id)) {
             MusicManager.TempNotesBuffer buffer = MusicManager.TEMP_NOTES_MAP.get(id);
             if (buffer.isFinished()) {
-                return buffer.joinParts();
+                try {
+                    return buffer.joinParts();
+                } finally {
+                    TEMP_NOTES_MAP.remove(id);
+                }
             } else {
                 XercaMusic.LOGGER.warn("Packet did not have notes, and temp buffer was not finished");
             }
@@ -65,14 +71,8 @@ public class MusicManager {
     }
 
 
-    public static class MusicData {
-        public MusicData(int version, ArrayList<NoteEvent> notes) {
-            this.version = version;
-            this.notes = notes;
-        }
+    public record MusicData(int version, ArrayList<NoteEvent> notes) {
 
-        public final int version;
-        public final ArrayList<NoteEvent> notes;
     }
 
     public static class SavedDataMusic extends SavedData {

@@ -41,14 +41,7 @@ public interface IItemInstrument {
         }
     }
 
-    class InsSound {
-        public final SoundEvent sound;
-        public final float pitch;
-
-        public InsSound(SoundEvent sound, float pitch) {
-            this.sound = sound;
-            this.pitch = pitch;
-        }
+    record InsSound(SoundEvent sound, float pitch) {
     }
 
     record Pair<F, S>(F first, S second) {

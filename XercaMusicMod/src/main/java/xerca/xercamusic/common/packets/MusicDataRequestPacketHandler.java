@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class MusicDataRequestPacketHandler {
     public static void handle(final MusicDataRequestPacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }
@@ -33,10 +33,11 @@ public class MusicDataRequestPacketHandler {
         PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with(() -> pl);
         MusicDataResponsePacket packet;
         if (data != null) {
-            packet = new MusicDataResponsePacket(id, data.version, data.notes);
+            packet = new MusicDataResponsePacket(id, data.version(), data.notes());
         } else {
             packet = new MusicDataResponsePacket(id, 0, new ArrayList<>());
         }
         XercaMusic.NETWORK_HANDLER.send(target, packet);
     }
 }
+

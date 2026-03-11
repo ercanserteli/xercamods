@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public class MusicBoxUpdatePacketHandler {
     public static void handle(final MusicBoxUpdatePacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }
@@ -53,3 +53,4 @@ public class MusicBoxUpdatePacketHandler {
         }
     }
 }
+

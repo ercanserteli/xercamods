@@ -65,7 +65,7 @@ public class CommandExport {
                         MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
                             MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
                             if (data != null) {
-                                NoteEvent.fillNBTFromArray(data.notes, tag);
+                                NoteEvent.fillNBTFromArray(data.notes(), tag);
                                 try {
                                     NbtIo.write(tag, new File(filepath));
                                 } catch (IOException e) {

@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public class MusicDataResponsePacketHandler {
     public static void handle(final MusicDataResponsePacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }
@@ -26,3 +26,4 @@ public class MusicDataResponsePacketHandler {
         MusicManagerClient.setMusicData(id, version, notes);
     }
 }
+

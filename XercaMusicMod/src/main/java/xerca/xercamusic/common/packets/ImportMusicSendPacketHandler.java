@@ -8,12 +8,18 @@ import java.util.function.Supplier;
 
 public class ImportMusicSendPacketHandler {
     public static void handle(final ImportMusicSendPacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }
 
-        ctx.get().enqueueWork(() -> processMessage(message, ctx.get().getSender()));
+        ServerPlayer sender = ctx.get().getSender();
+        if (sender == null) {
+            System.err.println("ServerPlayer was null when ImportMusicSendPacket was received");
+            return;
+        }
+
+        ctx.get().enqueueWork(() -> processMessage(message, sender));
         ctx.get().setPacketHandled(true);
     }
 
@@ -21,3 +27,4 @@ public class ImportMusicSendPacketHandler {
         CommandImport.doImport(msg.getTag(), msg.getNotes(), sender);
     }
 }
+
