@@ -15,7 +15,7 @@ public class NotesPartAckFromServerPacketHandler {
     }
 
     public static void handle(final NotesPartAckFromServerPacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }

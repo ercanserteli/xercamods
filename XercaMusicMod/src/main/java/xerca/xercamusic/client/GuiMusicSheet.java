@@ -168,7 +168,7 @@ public class GuiMusicSheet extends Screen {
             // Read notes from cache or server using id
             MusicManager.MusicData data = MusicManagerClient.getMusicData(id, version);
             if (data != null) {
-                notes.addAll(data.notes);
+                notes.addAll(data.notes());
             }
 
             this.lengthBeats = noteTag.getShort("l");
@@ -266,7 +266,7 @@ public class GuiMusicSheet extends Screen {
                 XercaMusic.LOGGER.warn("noteSound not found - noteId: {} vol: {}", noteId, volume);
                 return;
             }
-            notePlaySounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), ((float) volume) / 128.f, noteSound.pitch));
+            notePlaySounds[noteId] = DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> ClientStuff.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), ((float) volume) / 128.f, noteSound.pitch()));
             if (recording) {
                 NoteEvent newNote = new NoteEvent((byte) note, (short) (Math.max(0, previewCursor - 1)), volume, (byte) 1);
                 addRecordingNote(newNote);
@@ -312,7 +312,7 @@ public class GuiMusicSheet extends Screen {
                     MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
                         MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
                         if (data != null) {
-                            neighborNotes.add(new ArrayList<>(data.notes));
+                            neighborNotes.add(new ArrayList<>(data.notes()));
                             neighborPrevInstruments.add(ItemMusicSheet.getPrevInstrument(neighbor));
                             neighborPreviewNextNoteIDs.add(-1);
                             neighborVolumes.add(ItemMusicSheet.getVolume(neighbor));
@@ -436,7 +436,7 @@ public class GuiMusicSheet extends Screen {
                             note.length = (byte) Math.max(Math.round(note.length * mult), 1);
                         }
                         updateLength();
-                        removeDuplicates();
+                        NoteEvent.removeDuplicates(notes);
                     }
                 } else {
                     if (bps > 1) {
@@ -604,7 +604,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () ->
-                ClientStuff.playNote(insSound.sound, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), sheetVolume * event.floatVolume(), insSound.pitch, (byte) beatsToTicks(event.length)));
+                ClientStuff.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), sheetVolume * event.floatVolume(), insSound.pitch(), (byte) beatsToTicks(event.length)));
     }
 
     private int beatsToTicks(int beats) {
@@ -1386,7 +1386,7 @@ public class GuiMusicSheet extends Screen {
                 buffer.readByte();
 
                 // Read copied time length and note event count
-                length = buffer.readInt();
+                length = buffer.readInt() + 1;
                 int count = buffer.readInt();
 
                 // Read the note events into an array
@@ -1411,28 +1411,15 @@ public class GuiMusicSheet extends Screen {
                 notes.add(event);
             }
 
-            sortNotes();
-            if (!pushBack) {
-                removeDuplicates();
-            }
+            NoteEvent.sortNotes(notes);
+            NoteEvent.removeDuplicates(notes);
 
             updateLength();
-            editCursor += length + 1;
+            editCursor += length;
             editCursorEnd = editCursor;
 
             dirtyFlag.hasNotes = true;
             dirtyFlag.hasLength = true;
-        }
-    }
-
-    private void removeDuplicates() {
-        for (int i = 0; i < notes.size() - 1; i++) {
-            NoteEvent event1 = notes.get(i);
-            NoteEvent event2 = notes.get(i + 1);
-            if (event1.time == event2.time && event1.note == event2.note && event1.length == event2.length) {
-                notes.remove(i);
-                i--;
-            }
         }
     }
 
@@ -1704,7 +1691,7 @@ public class GuiMusicSheet extends Screen {
     }
 
     private void sortNotes() {
-        notes.sort(Comparator.comparingInt(NoteEvent::startTime));
+        NoteEvent.sortNotes(notes);
     }
 
     private void setEditCursor(int x) {

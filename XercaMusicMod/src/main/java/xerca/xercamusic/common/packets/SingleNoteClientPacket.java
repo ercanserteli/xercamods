@@ -1,19 +1,15 @@
 package xerca.xercamusic.common.packets;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
-import java.util.Objects;
-
 public class SingleNoteClientPacket {
     private int note;
     private IItemInstrument instrumentItem;
-    private Player playerEntity;
+    private int playerId;
     private boolean isStop;
     private float volume;
     private boolean messageIsValid;
@@ -21,7 +17,7 @@ public class SingleNoteClientPacket {
     public SingleNoteClientPacket(int note, IItemInstrument itemInstrument, Player playerEntity, boolean isStop, float volume) {
         this.note = note;
         this.instrumentItem = itemInstrument;
-        this.playerEntity = playerEntity;
+        this.playerId = playerEntity.getId();
         this.isStop = isStop;
         this.volume = volume;
     }
@@ -43,12 +39,7 @@ public class SingleNoteClientPacket {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
-            Entity entity = Objects.requireNonNull(Minecraft.getInstance().level).getEntity(playerId);
-            if (!(entity instanceof Player)) {
-                throw new IndexOutOfBoundsException("Invalid playerId: " + playerId);
-            }
-
-            result.playerEntity = (Player) entity;
+            result.playerId = playerId;
             result.instrumentItem = Items.instruments[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
             XercaMusic.LOGGER.error("Exception while reading SingleNotePacket: {}", ioe.toString());
@@ -59,13 +50,11 @@ public class SingleNoteClientPacket {
     }
 
     public static void encode(SingleNoteClientPacket pkt, FriendlyByteBuf buf) {
-
         int instrumentId = pkt.getInstrumentItem().getInstrumentId();
-        int playerId = pkt.getPlayerEntity().getId();
 
         buf.writeInt(pkt.getNote());
         buf.writeInt(instrumentId);
-        buf.writeInt(playerId);
+        buf.writeInt(pkt.getPlayerId());
         buf.writeBoolean(pkt.isStop());
         buf.writeFloat(pkt.getVolume());
     }
@@ -87,8 +76,8 @@ public class SingleNoteClientPacket {
         return instrumentItem;
     }
 
-    public Player getPlayerEntity() {
-        return playerEntity;
+    public int getPlayerId() {
+        return playerId;
     }
 
     public boolean isStop() {

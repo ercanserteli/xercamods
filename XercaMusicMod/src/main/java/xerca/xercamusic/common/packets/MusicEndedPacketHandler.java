@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public class MusicEndedPacketHandler {
     public static void handle(final MusicEndedPacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }

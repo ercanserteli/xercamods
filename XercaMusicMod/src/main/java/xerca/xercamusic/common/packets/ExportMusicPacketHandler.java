@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class ExportMusicPacketHandler {
     public static void handle(final ExportMusicPacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }
@@ -34,3 +34,4 @@ public class ExportMusicPacketHandler {
         }
     }
 }
+

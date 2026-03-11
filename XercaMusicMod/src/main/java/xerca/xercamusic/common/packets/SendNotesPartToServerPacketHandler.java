@@ -10,12 +10,18 @@ import java.util.function.Supplier;
 
 public class SendNotesPartToServerPacketHandler {
     public static void handle(final SendNotesPartToServerPacket message, Supplier<NetworkEvent.Context> ctx) {
-        if (!message.isMessageValid()) {
+        if (message == null || !message.isMessageValid()) {
             System.err.println("Packet was invalid");
             return;
         }
 
-        ctx.get().enqueueWork(() -> processMessage(message, ctx.get().getSender()));
+        ServerPlayer sender = ctx.get().getSender();
+        if (sender == null) {
+            System.err.println("ServerPlayer was null when SendNotesPartToServerPacket was received");
+            return;
+        }
+
+        ctx.get().enqueueWork(() -> processMessage(message, sender));
         ctx.get().setPacketHandled(true);
     }
 

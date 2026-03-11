@@ -26,7 +26,6 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.packets.MusicBoxUpdatePacket;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
 public class TileEntityMusicBox extends BlockEntity {
@@ -110,14 +109,16 @@ public class TileEntityMusicBox extends BlockEntity {
                         MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
                         if (data != null) {
                             t.notes.clear();
-                            t.notes.addAll(data.notes);
+                            t.notes.addAll(data.notes());
                         }
                     });
                 } else {
-                    MusicManager.MusicData data = MusicManager.getMusicData(id, ver, Objects.requireNonNull(level.getServer()));
-                    if (data != null) {
-                        t.notes.clear();
-                        t.notes.addAll(data.notes);
+                    if (level.getServer() != null) {
+                        MusicManager.MusicData data = MusicManager.getMusicData(id, ver, level.getServer());
+                        if (data != null) {
+                            t.notes.clear();
+                            t.notes.addAll(data.notes());
+                        }
                     }
                 }
             }

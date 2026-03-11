@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
@@ -69,7 +70,7 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     private void setBlockPosAndInstrument(BlockPos pos, int instrumentId) {
-        if (instrumentId < Items.instruments.length) {
+        if (instrumentId >= 0 && instrumentId < Items.instruments.length) {
             IItemInstrument instrument = Items.instruments[instrumentId];
             if (instrument instanceof ItemBlockInstrument itemBlockInstrument) {
                 this.blockInstrument = (BlockInstrument) itemBlockInstrument.getBlock();
@@ -95,6 +96,10 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     }
 
     private void setNoteFromBody() {
+        if (body == null) {
+            XercaMusic.LOGGER.warn("Body is null in MusicSpirit setNoteFromBody");
+            return;
+        }
         ItemStack mainStack = body.getMainHandItem();
         ItemStack offStack = body.getOffhandItem();
         if (mainStack.getItem() == Items.MUSIC_SHEET.get()) {
@@ -173,10 +178,23 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
         if (blockInsPos != null) {
             this.instrument = blockInstrument.getItemInstrument();
             this.setNoteFromBody();
+        } else if (body != null) {
+            Item item = body.getMainHandItem().getItem();
+            if (item instanceof IItemInstrument ins) {
+                this.instrument = ins;
+                this.note = body.getOffhandItem();
+                this.setPos(body.getX(), body.getY(), body.getZ());
+            } else {
+                XercaMusic.LOGGER.warn("Could not find instrument when spawning music spirit");
+                return;
+            }
         } else {
-            this.instrument = (IItemInstrument) body.getMainHandItem().getItem();
-            this.note = body.getOffhandItem();
-            this.setPos(body.getX(), body.getY(), body.getZ());
+            XercaMusic.LOGGER.warn("Could not find body when spawning music spirit");
+            return;
+        }
+
+        if (note == null || !level().isClientSide) {
+            return;
         }
 
         if (note.hasTag() && note.getTag() != null && note.getTag().contains("id") && note.getTag().contains("ver") && note.getTag().contains("l")) {
@@ -187,17 +205,15 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             UUID id = comp.getUUID("id");
             int ver = comp.getInt("ver");
 
-            if (level().isClientSide) {
-                MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
-                    MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
-                    if (data != null) {
-                        notes.addAll(data.notes);
-                    }
+            MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                if (data != null) {
+                    notes.addAll(data.notes());
+                }
 
-                    soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, mBPS, mVolume, getId());
-                    soundController.start();
-                });
-            }
+                soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, mBPS, mVolume, getId());
+                soundController.start();
+            });
         }
     }
 
@@ -223,7 +239,8 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
     @Override
     public void tick() {
         if (!this.level().isClientSide) {
-            if (body == null || !isPlaying) {
+            if (body == null || !isPlaying || body.isRemoved()) {
+                isPlaying = false;
                 this.remove(RemovalReason.DISCARDED);
                 return;
             }
@@ -245,12 +262,10 @@ public class EntityMusicSpirit extends Entity implements IEntityAdditionalSpawnD
             }
         }
         super.tick();
-        if (blockInsPos == null || blockInstrument == null) {
-            if (body != null) {  // this check is added to work around a strange crash
-                this.setPos(body.getX(), body.getY(), body.getZ());
-                if (soundController != null) {
-                    soundController.setPos(getX(), getY(), getZ());
-                }
+        if ((blockInsPos == null || blockInstrument == null) && body != null) {
+            this.setPos(body.getX(), body.getY(), body.getZ());
+            if (soundController != null) {
+                soundController.setPos(getX(), getY(), getZ());
             }
         }
     }
