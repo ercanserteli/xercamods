@@ -18,6 +18,7 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.packets.serverbound.SingleNotePacket;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 import static xerca.xercamusic.client.ClientStuff.sendToServer;
 
@@ -92,7 +93,7 @@ public class GuiInstrument extends Screen {
         super.tick();
         if (blockInsPos != null && minecraft != null) {
             if (player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns) {
-                if (blockIns.getItemInstrument() != instrument) {
+                if (!Objects.equals(blockIns.getItemInstrument(), instrument)) {
                     minecraft.setScreen(null);
                 }
             } else {

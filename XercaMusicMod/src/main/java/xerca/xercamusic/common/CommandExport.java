@@ -25,6 +25,21 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 public final class CommandExport {
+    private static boolean ensureDirectoryExists(File directory) {
+        if (directory.exists()) {
+            if (!directory.isDirectory()) {
+                Mod.LOGGER.warn("Music export path exists but is not a directory: {}", directory.getAbsolutePath());
+                return false;
+            }
+            return true;
+        }
+        if (!directory.mkdirs()) {
+            Mod.LOGGER.warn("Could not create music export directory: {}", directory.getAbsolutePath());
+            return false;
+        }
+        return true;
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicexport")
@@ -52,8 +67,8 @@ public final class CommandExport {
 
     public static boolean doExport(Player player, String name) {
         File directory = new File("music_sheets");
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!ensureDirectoryExists(directory)) {
+            return false;
         }
         Path filePath = directory.toPath().resolve(name + ".sheet");
 

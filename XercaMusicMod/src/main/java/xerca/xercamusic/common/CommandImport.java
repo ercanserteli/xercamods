@@ -51,8 +51,7 @@ public final class CommandImport {
             return;
         }
 
-        notes = loadAndSendMusicData(tag, notes, player);
-        if (notes == null) {
+        if (!loadAndSendMusicData(tag, notes, player)) {
             // load failed / broken / partial
             return;
         }
@@ -100,7 +99,7 @@ public final class CommandImport {
         return true;
     }
 
-    private static List<NoteEvent> loadAndSendMusicData(CompoundTag tag, List<NoteEvent> notes, ServerPlayer player) {
+    private static boolean loadAndSendMusicData(CompoundTag tag, List<NoteEvent> notes, ServerPlayer player) {
         if (tag.contains(KEY_ID) && tag.contains(KEY_VERSION)) {
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
@@ -108,14 +107,14 @@ public final class CommandImport {
             if (notes == null) {
                 // maybe it was sent in parts
                 notes = MusicManager.getFinishedNotesFromBuffer(id);
-                if (notes == null) {
-                    return null;
+                if (notes.isEmpty()) {
+                    return false;
                 }
             }
 
             MusicManager.setMusicData(id, ver, notes, player.server);
             sendToClient(player, new MusicDataResponsePacket(id, ver, notes));
-            return notes;
+            return true;
         }
 
         if (tag.contains(KEY_MUSIC_OLD)) {
@@ -125,11 +124,11 @@ public final class CommandImport {
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
             sendToClient(player, new MusicDataResponsePacket(id, ver, converted));
-            return converted;
+            return true;
         }
 
         Mod.LOGGER.warn("Broken music file");
-        return null;
+        return false;
     }
 
     private static boolean giveImportedSheetToPlayer(CompoundTag tag, ServerPlayer player) {

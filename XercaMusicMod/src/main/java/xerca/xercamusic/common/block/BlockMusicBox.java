@@ -40,7 +40,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     public static final BooleanProperty POWERING = BooleanProperty.create("powering");
     public static final BooleanProperty HAS_MUSIC = BooleanProperty.create("has_music");
     public static final BooleanProperty HAS_INSTRUMENT = BooleanProperty.create("has_instrument");
-    public static final MapCodec<BlockMusicBox> CODEC = BlockBehaviour.simpleCodec(BlockMusicBox::new);
+    public static final MapCodec<BlockMusicBox> MUSIC_BOX_CODEC = BlockBehaviour.simpleCodec(BlockMusicBox::new);
 
     public BlockMusicBox(Properties properties) {
         super(properties);
@@ -67,7 +67,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
+        return MUSIC_BOX_CODEC;
     }
 
     @Override

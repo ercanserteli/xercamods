@@ -77,7 +77,7 @@ public class SoundController extends Thread {
 
         // Music over
         if (spiritID >= 0 && minecraft.player != null) {
-            minecraft.submit(() -> ClientStuff.endMusic(spiritID, minecraft.player.getId()))
+            var unused = minecraft.submit(() -> ClientStuff.endMusic(spiritID, minecraft.player.getId()))
                     .whenComplete((v, t) -> {
                         if (t != null) Mod.LOGGER.error("Failed to end music", t);
                     });
@@ -87,7 +87,7 @@ public class SoundController extends Thread {
     private void playNote(NoteEvent event) {
         if (event.note >= IItemInstrument.MIN_NOTE && event.note <= IItemInstrument.MAX_NOTE) {
             final byte note = event.note;
-            Minecraft.getInstance().submit(() -> {
+            var unused = Minecraft.getInstance().submit(() -> {
                 ClientLevel level = Minecraft.getInstance().level;
                 IItemInstrument.InsSound insSound = instrument.getSound(note);
                 if (level == null || insSound == null) {

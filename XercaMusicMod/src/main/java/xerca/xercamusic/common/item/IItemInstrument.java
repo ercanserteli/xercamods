@@ -49,11 +49,6 @@ public interface IItemInstrument {
             }
             return new Pair<>(first, second);
         }
-
-        @Override
-        public int hashCode() {
-            return first.hashCode() * 37 + second.hashCode();
-        }
     }
 
 }

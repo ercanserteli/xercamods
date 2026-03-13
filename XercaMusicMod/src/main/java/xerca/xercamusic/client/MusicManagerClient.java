@@ -21,11 +21,26 @@ public final class MusicManagerClient {
     static final Map<UUID, Runnable> TASK_MAP = new HashMap<>();
     static final String CACHE_DIR = "music_sheets/.cache/";
 
+    private static boolean ensureDirectoryExists(File directory, String purpose) {
+        if (directory.exists()) {
+            if (!directory.isDirectory()) {
+                Mod.LOGGER.warn("{} path exists but is not a directory: {}", purpose, directory.getAbsolutePath());
+                return false;
+            }
+            return true;
+        }
+        if (!directory.mkdirs()) {
+            Mod.LOGGER.warn("Could not create {} directory: {}", purpose, directory.getAbsolutePath());
+            return false;
+        }
+        return true;
+    }
+
     public static void load() {
         // Load from disk
         File directory = new File(CACHE_DIR);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!ensureDirectoryExists(directory, "music cache")) {
+            return;
         }
         File[] directoryListing = directory.listFiles();
         if (directoryListing != null) {
@@ -99,8 +114,8 @@ public final class MusicManagerClient {
         String filename = id.toString();
         String filepath = CACHE_DIR + "/" + filename;
         File directory = new File(CACHE_DIR);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!ensureDirectoryExists(directory, "music cache")) {
+            return;
         }
 
         CompoundTag tag = new CompoundTag();

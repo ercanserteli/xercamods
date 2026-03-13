@@ -26,6 +26,7 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
@@ -87,7 +88,7 @@ public class EntityMusicSpirit extends Entity {
         if (blockInstrument != null && blockInsPos != null) {
             return mainStack.getItem() == Items.MUSIC_SHEET || offStack.getItem() == Items.MUSIC_SHEET;
         } else {
-            return offStack.getItem() == Items.MUSIC_SHEET && mainStack.getItem() == instrument;
+            return offStack.getItem() == Items.MUSIC_SHEET && Objects.equals(mainStack.getItem(), instrument);
         }
     }
 
@@ -238,7 +239,7 @@ public class EntityMusicSpirit extends Entity {
             return true;
         }
         if (blockInsPos != null && blockInstrument != null) {
-            if (level().getBlockState(blockInsPos).getBlock() != blockInstrument) {
+            if (!Objects.equals(level().getBlockState(blockInsPos).getBlock(), blockInstrument)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
             }

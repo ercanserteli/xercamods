@@ -60,7 +60,7 @@ public final class MusicManager {
         } else {
             Mod.LOGGER.warn("Packet did not have notes, and temp buffer was not found");
         }
-        return null;
+        return List.of();
     }
 
     public static boolean addNotesPart(SendNotesPartToServerPacket pkt) {

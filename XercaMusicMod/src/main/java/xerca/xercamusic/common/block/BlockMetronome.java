@@ -34,7 +34,7 @@ public class BlockMetronome extends BaseEntityBlock {
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final MapCodec<BlockMetronome> CODEC = BlockBehaviour.simpleCodec(BlockMetronome::new);
+    public static final MapCodec<BlockMetronome> METRONOME_CODEC = BlockBehaviour.simpleCodec(BlockMetronome::new);
 
     public BlockMetronome(Properties properties) {
         super(properties);
@@ -117,7 +117,7 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Override
     protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
+        return METRONOME_CODEC;
     }
 
     @Override

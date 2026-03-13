@@ -36,7 +36,7 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
                 if (notes == null) {
                     // Get if a large sheet was sent in parts
                     notes = MusicManager.getFinishedNotesFromBuffer(id);
-                    if (notes == null) {
+                    if (notes.isEmpty()) {
                         return;
                     }
                 }
