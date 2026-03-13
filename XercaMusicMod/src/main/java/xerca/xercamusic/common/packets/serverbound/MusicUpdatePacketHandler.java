@@ -13,7 +13,7 @@ import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
@@ -57,7 +57,7 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChanne
                     return;
                 }
 
-                ArrayList<NoteEvent> notes = msg.getNotes();
+                List<NoteEvent> notes = msg.getNotes();
                 UUID id = comp.getUUID("id");
                 if (notes == null) {
                     // Get if large note was sent in parts

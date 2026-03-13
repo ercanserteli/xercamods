@@ -55,7 +55,7 @@ public class TileEntityMetronome extends BlockEntity {
                     } else {
                         // Server side
                         if (metronome.countDown == 3) {
-                            List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(HALF_RANGE), metronome.worldPosition.offset(HALF_RANGE)),
+                            List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(HALF_RANGE).getCenter(), metronome.worldPosition.offset(HALF_RANGE).getCenter()),
                                     player -> player.getMainHandItem().getItem() instanceof IItemInstrument && player.getOffhandItem().getItem() instanceof ItemMusicSheet
                                             && player.getOffhandItem().hasTag() && player.getOffhandItem().getTag() != null && player.getOffhandItem().getTag().getInt("bps") == bps);
                             Mod.LOGGER.info("Metronome found {} players", players.size());

@@ -79,7 +79,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     private void setBlockPosAndInstrument(BlockPos pos, int instrumentId) {
-        if (instrumentId < Items.INSTRUMENTS.length) {
+        if (instrumentId >= 0 && instrumentId < Items.INSTRUMENTS.length) {
             IItemInstrument itemInstrument = Items.INSTRUMENTS[instrumentId];
             if (itemInstrument instanceof ItemBlockInstrument itemBlockInstrument) {
                 this.blockInstrument = (BlockInstrument) itemBlockInstrument.getBlock();
@@ -240,7 +240,8 @@ public class EntityMusicSpirit extends Entity {
         if (this.level().isClientSide) {
             return false;
         }
-        if (body == null || !isPlaying) {
+        if (body == null || !isPlaying || body.isRemoved()) {
+            isPlaying = false;
             this.remove(RemovalReason.DISCARDED);
             return true;
         }

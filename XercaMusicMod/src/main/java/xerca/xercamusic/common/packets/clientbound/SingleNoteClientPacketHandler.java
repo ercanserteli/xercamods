@@ -3,10 +3,12 @@ package xerca.xercamusic.common.packets.clientbound;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.client.NoteSound;
@@ -23,7 +25,18 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayC
     static final Map<Pair<Player, Integer>, NoteSoundEntry> NOTE_SOUNDS = new HashMap<>();
 
     private static void processMessage(SingleNoteClientPacket msg) {
-        Player playerEntity = msg.getPlayerEntity();
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) {
+            Mod.LOGGER.warn("Level is null while trying to play a note packet");
+            return;
+        }
+
+        Entity entity = level.getEntity(msg.getPlayerId());
+        if (!(entity instanceof Player playerEntity)) {
+            Mod.LOGGER.warn("Invalid playerId in SingleNoteClientPacket: {}", msg.getPlayerId());
+            return;
+        }
+
         if (!playerEntity.equals(Minecraft.getInstance().player)) {
             IItemInstrument.InsSound sound = msg.getInstrumentItem().getSound(msg.getNote());
             if (sound == null) {

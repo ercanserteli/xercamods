@@ -16,7 +16,7 @@
       "xerca.xercamusic.client.ClientStuff"
     ],
     "main": [
-      "xerca.xercamusic.common.XercaMusic"
+      "xerca.xercamusic.common.Mod"
     ],
     "fabric-datagen": [
       "xerca.xercamusic.common.data.BlockTags"

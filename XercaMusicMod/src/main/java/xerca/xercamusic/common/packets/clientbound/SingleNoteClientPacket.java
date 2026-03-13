@@ -1,11 +1,8 @@
 package xerca.xercamusic.common.packets.clientbound;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -16,7 +13,7 @@ public class SingleNoteClientPacket implements IPacket {
     public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "single_note_client");
     private int note;
     private IItemInstrument instrumentItem;
-    private Player playerEntity;
+    private int playerId;
     private boolean isStop;
     private float volume;
     private boolean messageIsValid;
@@ -24,7 +21,7 @@ public class SingleNoteClientPacket implements IPacket {
     public SingleNoteClientPacket(int note, IItemInstrument itemInstrument, Player playerEntity, boolean isStop, float volume) {
         this.note = note;
         this.instrumentItem = itemInstrument;
-        this.playerEntity = playerEntity;
+        this.playerId = playerEntity.getId();
         this.isStop = isStop;
         this.volume = volume;
     }
@@ -46,16 +43,7 @@ public class SingleNoteClientPacket implements IPacket {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
-            ClientLevel level = Minecraft.getInstance().level;
-            if (level == null) {
-                return null;
-            }
-            Entity entity = level.getEntity(playerId);
-            if (!(entity instanceof Player)) {
-                throw new IndexOutOfBoundsException("Invalid playerId: " + playerId);
-            }
-
-            result.playerEntity = (Player) entity;
+            result.playerId = playerId;
             result.instrumentItem = Items.INSTRUMENTS[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
             Mod.LOGGER.error("Exception while reading SingleNotePacket", ioe);
@@ -69,11 +57,10 @@ public class SingleNoteClientPacket implements IPacket {
         FriendlyByteBuf buf = PacketByteBufs.create();
 
         int instrumentId = getInstrumentItem().getInstrumentId();
-        int playerId = getPlayerEntity().getId();
 
         buf.writeInt(getNote());
         buf.writeInt(instrumentId);
-        buf.writeInt(playerId);
+        buf.writeInt(getPlayerId());
         buf.writeBoolean(isStop());
         buf.writeFloat(getVolume());
         return buf;
@@ -103,13 +90,8 @@ public class SingleNoteClientPacket implements IPacket {
         this.instrumentItem = instrumentItem;
     }
 
-    public Player getPlayerEntity() {
-        return playerEntity;
-    }
-
-    @SuppressWarnings("unused")
-    public void setPlayerEntity(Player playerEntity) {
-        this.playerEntity = playerEntity;
+    public int getPlayerId() {
+        return playerId;
     }
 
     public boolean isStop() {

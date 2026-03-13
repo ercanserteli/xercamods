@@ -1,8 +1,6 @@
 package xerca.xercamusic.common.packets.clientbound;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +15,7 @@ public class TripleNoteClientPacket implements IPacket {
     private int note2;
     private int note3;
     private IItemInstrument instrumentItem;
-    private Entity entity;
+    private int entityId;
     private boolean messageIsValid;
 
     public TripleNoteClientPacket(int note1, int note2, int note3, IItemInstrument itemInstrument, Entity entity) {
@@ -25,7 +23,7 @@ public class TripleNoteClientPacket implements IPacket {
         this.note2 = note2;
         this.note3 = note3;
         this.instrumentItem = itemInstrument;
-        this.entity = entity;
+        this.entityId = entity.getId();
     }
 
     public TripleNoteClientPacket() {
@@ -45,11 +43,7 @@ public class TripleNoteClientPacket implements IPacket {
                 throw new IndexOutOfBoundsException("Invalid instrumentId: " + instrumentId);
             }
 
-            ClientLevel level = Minecraft.getInstance().level;
-            if (level == null) {
-                return null;
-            }
-            result.entity = level.getEntity(entityId);
+            result.entityId = entityId;
             result.instrumentItem = Items.INSTRUMENTS[instrumentId];
         } catch (IndexOutOfBoundsException ioe) {
             Mod.LOGGER.error("Exception while reading SingleNotePacket", ioe);
@@ -63,13 +57,12 @@ public class TripleNoteClientPacket implements IPacket {
         FriendlyByteBuf buf = PacketByteBufs.create();
 
         int instrumentId = getInstrumentItem().getInstrumentId();
-        int entityId = getEntity().getId();
 
         buf.writeInt(getNote1());
         buf.writeInt(getNote2());
         buf.writeInt(getNote3());
         buf.writeInt(instrumentId);
-        buf.writeInt(entityId);
+        buf.writeInt(getEntityId());
         return buf;
     }
 
@@ -115,13 +108,8 @@ public class TripleNoteClientPacket implements IPacket {
         this.instrumentItem = instrumentItem;
     }
 
-    public Entity getEntity() {
-        return entity;
-    }
-
-    @SuppressWarnings("unused")
-    public void setEntity(Entity entity) {
-        this.entity = entity;
+    public int getEntityId() {
+        return entityId;
     }
 
     @Override
