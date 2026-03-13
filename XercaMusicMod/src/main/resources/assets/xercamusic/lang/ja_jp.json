@@ -1,6 +1,5 @@
 {
   "itemGroup.xercamusic.music_tab": "音楽",
-
   "item.xercamusic.instrument_gui": "楽器",
   "item.xercamusic.music_sheet": "楽譜",
   "item.xercamusic.guitar": "ギター",
@@ -22,17 +21,14 @@
   "item.xercamusic.redstone_guitar": "レッドストーン・ギター",
   "item.xercamusic.french_horn": "ホルン",
   "item.xercamusic.bass_guitar": "ベースギター",
-
   "block.xercamusic.block_metronome": "メトロノーム",
   "block.xercamusic.music_box": "オルゴール",
   "block.xercamusic.piano": "ピアノ",
   "block.xercamusic.drum_kit": "ドラムセット",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "音楽",
   "advancements.xercamusic.achievements.musician.title": "音楽家",
   "advancements.xercamusic.achievements.musician.description": "最初の作品を作曲する",
-
   "note.byAuthor": "著者：%1$s",
   "note.signButton": "署名",
   "note.editTitle": "作曲のタイトルを入力してください：",
@@ -102,9 +98,7 @@
   "note.helpText18b": "テンポを半分にし、音符を縮める",
   "note.helpText19a": "ALTで",
   "note.helpText19b": "収録を開始/停止する",
-
   "ins.octaveTooltip": "キーボードのオクターブを変更する",
-
   "xercamusic.export.success": "楽譜が%1$sに書き出されました",
   "xercamusic.export.fail": "楽譜を書き出すことができませんでした",
   "xercamusic.import.success": "楽譜を読み込みました",

@@ -1,12 +1,19 @@
-
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "iii",
-        "ppp"
-    ],
-    "key": {"i": {"item": "minecraft:iron_nugget"}, "p": {"tag": "minecraft:planks"}},
-    "result": {"item": "xercamusic:sansula"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "ppp"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_nugget"
+    },
+    "p": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "item": "xercamusic:sansula"
+  }
 }
         

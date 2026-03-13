@@ -1,6 +1,6 @@
 {
   "parent": "xercamusic:item/instrument_string",
-    "textures": {
-        "layer0": "xercamusic:item/instruments/violin"
-    }
+  "textures": {
+    "layer0": "xercamusic:item/instruments/violin"
+  }
 }

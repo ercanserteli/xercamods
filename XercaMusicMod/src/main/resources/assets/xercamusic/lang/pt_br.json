@@ -1,6 +1,5 @@
 {
   "itemGroup.xercamusic.music_tab": "Música",
-
   "item.xercamusic.instrument_gui": "Instrumento",
   "item.xercamusic.music_sheet": "Partitura",
   "item.xercamusic.guitar": "Vioão",
@@ -22,17 +21,14 @@
   "item.xercamusic.redstone_guitar": "Guitarra de Redstone",
   "item.xercamusic.french_horn": "Trompa Francesa",
   "item.xercamusic.bass_guitar": "Baixo",
-
   "block.xercamusic.block_metronome": "Metrônomo",
   "block.xercamusic.music_box": "Caixa de música",
   "block.xercamusic.piano": "Piano",
   "block.xercamusic.drum_kit": "Bateria",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Música",
   "advancements.xercamusic.achievements.musician.title": "Músico",
   "advancements.xercamusic.achievements.musician.description": "Faça sua primeira peça",
-
   "note.byAuthor": "Por %1$s",
   "note.signButton": "Assinar",
   "note.editTitle": "Título da música:",
@@ -71,7 +67,7 @@
   "note.helpText3a": "Botão Direito: ",
   "note.helpText3b": "Setar o cursor",
   "note.helpText4a": "Botão do Meio em uma nota: ",
-  "note.helpText4b": "Ver e editar a nota", 
+  "note.helpText4b": "Ver e editar a nota",
   "note.helpText5a": "Rolar para cima/baixo: ",
   "note.helpText5b": "Olhar Oitavas maiores/menores",
   "note.helpText6a": "H: ",
@@ -102,9 +98,7 @@
   "note.helpText18b": "Dividir o ritmo e encolher as notas",
   "note.helpText19a": "ALT: ",
   "note.helpText19b": "Iniciar/Parar gravação",
-
   "ins.octaveTooltip": "Mudar a Oitava do teclado",
-
   "xercamusic.export.success": "Partitura exportado para %1$s",
   "xercamusic.export.fail": "A partitura não pode ser exportada.",
   "xercamusic.import.success": "Partitura importada",
