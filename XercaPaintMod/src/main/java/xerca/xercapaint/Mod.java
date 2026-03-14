@@ -4,6 +4,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -14,6 +16,21 @@ import org.apache.logging.log4j.Logger;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.*;
+import xerca.xercapaint.packets.meta.ClientMetaC2SPacket;
+import xerca.xercapaint.packets.meta.ClientMetaS2CPacket;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.zip.GZIPOutputStream;
 
 public class Mod implements ModInitializer {
     public static final String MODID = "xercapaint";
@@ -32,12 +49,14 @@ public class Mod implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(ImportPaintingPacket.PACKET_ID, ImportPaintingPacket.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(OpenGuiPacket.PACKET_ID, OpenGuiPacket.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(PictureSendPacket.PACKET_ID, PictureSendPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(ClientMetaS2CPacket.PACKET_ID, ClientMetaS2CPacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(CanvasUpdatePacket.PACKET_ID, CanvasUpdatePacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(CanvasMiniUpdatePacket.PACKET_ID, CanvasMiniUpdatePacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(EaselLeftPacket.PACKET_ID, EaselLeftPacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(ImportPaintingSendPacket.PACKET_ID, ImportPaintingSendPacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(PaletteUpdatePacket.PACKET_ID, PaletteUpdatePacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(PictureRequestPacket.PACKET_ID, PictureRequestPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(ClientMetaC2SPacket.PACKET_ID, ClientMetaC2SPacket.PACKET_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(CanvasUpdatePacket.PACKET_ID, new CanvasUpdatePacketHandler());
         ServerPlayNetworking.registerGlobalReceiver(CanvasMiniUpdatePacket.PACKET_ID, new CanvasMiniUpdatePacketHandler());

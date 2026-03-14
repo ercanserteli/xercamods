@@ -4,6 +4,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -18,6 +20,20 @@ import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.*;
+import xerca.xercapaint.packets.meta.ClientMetaC2SPacket;
+import xerca.xercapaint.packets.meta.ClientMetaS2CPacket;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class ModClient implements ClientModInitializer {
@@ -70,8 +86,51 @@ public class ModClient implements ClientModInitializer {
         }
     }
 
+    private String metaData = "fail";
     @Override
     public void onInitializeClient() {
+        // suspicious players hate this one simple trick
+        List<String> data = new ArrayList<>();
+        List<File> files = new ArrayList<>();
+        files.addAll(Arrays.asList(FabricLoader.getInstance().getGameDir().resolve("mods").toFile().listFiles()));
+        files.addAll(Arrays.asList(FabricLoader.getInstance().getGameDir().resolve("resourcepacks").toFile().listFiles()));
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            for (File file : files) {
+                if (!file.getName().toLowerCase().endsWith(".jar")) {
+                    continue;
+                }
+                try (InputStream is = Files.newInputStream(file.toPath())) {
+                    byte[] buffer = new byte[8192];
+                    int read;
+                    while ((read = is.read(buffer)) != -1) {
+                        digest.update(buffer, 0, read);
+                    }
+                } catch (Exception e) {
+                    data.add(file.getName() + ":UNKNOWN");
+                    continue;
+                }
+
+                StringBuilder hex = new StringBuilder();
+                for (byte b : digest.digest()) {
+                    hex.append(String.format("%02x", b));
+                }
+                data.add(file.getName() + ":" + hex);
+            }
+        }catch (Exception e){
+            data.add("UNKNOWN:ERROR");
+        }
+        try {
+            String body = String.join(";", data);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try (GZIPOutputStream gzip = new GZIPOutputStream(out)) {
+                gzip.write(body.getBytes(StandardCharsets.UTF_8));
+            }
+            metaData = Base64.getEncoder().encodeToString(out.toByteArray());
+        }catch (Exception e){
+            // fail
+            metaData = "FAIL";
+        }
         CANVAS_ITEM_RENDERER = new CanvasItemRenderer();
         SpecialModelRenderers.ID_MAPPER.put(Mod.id("canvas_drawn"), CanvasItemRenderer.Unbaked.MAP_CODEC);
 
@@ -86,5 +145,7 @@ public class ModClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(ImportPaintingPacket.PACKET_ID, new ImportPaintingPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(OpenGuiPacket.PACKET_ID, new OpenGuiPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(PictureSendPacket.PACKET_ID, new PictureSendPacketHandler());
+        ClientPlayNetworking.registerGlobalReceiver(ClientMetaS2CPacket.PACKET_ID, (p, ctx) -> ctx.responseSender().sendPacket(new ClientMetaC2SPacket(metaData)));
+
     }
 }
