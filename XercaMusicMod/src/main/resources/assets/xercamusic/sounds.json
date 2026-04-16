@@ -3181,119 +3181,119 @@
       }
     ]
   },
-  "electric_piano24": {
+  "redstone_piano24": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano24",
+        "name": "xercamusic:redstone_piano/epiano24",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano30": {
+  "redstone_piano30": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano30",
+        "name": "xercamusic:redstone_piano/epiano30",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano36": {
+  "redstone_piano36": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano36",
+        "name": "xercamusic:redstone_piano/epiano36",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano42": {
+  "redstone_piano42": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano42",
+        "name": "xercamusic:redstone_piano/epiano42",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano48": {
+  "redstone_piano48": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano48",
+        "name": "xercamusic:redstone_piano/epiano48",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano54": {
+  "redstone_piano54": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano54",
+        "name": "xercamusic:redstone_piano/epiano54",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano60": {
+  "redstone_piano60": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano60",
+        "name": "xercamusic:redstone_piano/epiano60",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano66": {
+  "redstone_piano66": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano66",
+        "name": "xercamusic:redstone_piano/epiano66",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano72": {
+  "redstone_piano72": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano72",
+        "name": "xercamusic:redstone_piano/epiano72",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano78": {
+  "redstone_piano78": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano78",
+        "name": "xercamusic:redstone_piano/epiano78",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano84": {
+  "redstone_piano84": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano84",
+        "name": "xercamusic:redstone_piano/epiano84",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano90": {
+  "redstone_piano90": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano90",
+        "name": "xercamusic:redstone_piano/epiano90",
         "attenuation_distance": 48
       }
     ]
   },
-  "electric_piano96": {
+  "redstone_piano96": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:electric_piano/epiano96",
+        "name": "xercamusic:redstone_piano/epiano96",
         "attenuation_distance": 48
       }
     ]
