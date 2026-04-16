@@ -43,6 +43,10 @@ public class VolumeMarker {
         return endVolume < startVolume;
     }
 
+    public boolean isValid() {
+        return endTime - startTime >= 2 && lowNote <= highNote;
+    }
+
     /**
      * Calculates the interpolated volume at a given beat start.
      * Returns -1 if the time is outside this marker's range.
@@ -88,6 +92,12 @@ public class VolumeMarker {
      */
     public boolean fullyContains(short time, short length, byte note) {
         return time >= startTime && (short)(time + length) <= endTime && containsNote(note);
+    }
+
+    public boolean overlaps(VolumeMarker other) {
+        boolean timeOverlap = startTime < other.endTime && endTime > other.startTime;
+        boolean noteOverlap = lowNote <= other.highNote && highNote >= other.lowNote;
+        return timeOverlap && noteOverlap;
     }
 
     public CompoundTag serializeNBT() {
