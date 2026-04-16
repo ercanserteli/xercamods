@@ -1,7 +1,7 @@
 {
   "parent": "xercamusic:item/instrument_string",
   "textures": {
-    "layer0": "xercamusic:item/instruments/electric_piano"
+    "layer0": "xercamusic:item/instruments/redstone_piano"
   },
   "display": {
     "thirdperson_righthand": {

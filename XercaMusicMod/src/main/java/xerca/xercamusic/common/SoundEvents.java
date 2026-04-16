@@ -39,7 +39,7 @@ public class SoundEvents {
     public static ArrayList<Pair<Integer, SoundEvent>> french_horns;
     public static ArrayList<Pair<Integer, SoundEvent>> bass_guitars;
     public static ArrayList<Pair<Integer, SoundEvent>> trumpets;
-    public static ArrayList<Pair<Integer, SoundEvent>> electric_pianos;
+    public static ArrayList<Pair<Integer, SoundEvent>> redstone_pianos;
     public static ArrayList<Pair<Integer, SoundEvent>> organs;
 
     private static final String NAME_GUITAR = "guitar";
@@ -117,7 +117,7 @@ public class SoundEvents {
         french_horns = new ArrayList<>(11);
         bass_guitars = new ArrayList<>(8);
         trumpets = new ArrayList<>(7);
-        electric_pianos = new ArrayList<>(13);
+        redstone_pianos = new ArrayList<>(13);
         organs = new ArrayList<>(10);
 
         // ranges
@@ -187,20 +187,20 @@ public class SoundEvents {
         addSound(trumpets, "trumpet", 78);
         addSound(trumpets, "trumpet", 84);
 
-        // Electric Piano samples (MIDI 24-96, step 6)
-        addSound(electric_pianos, "electric_piano", 24);
-        addSound(electric_pianos, "electric_piano", 30);
-        addSound(electric_pianos, "electric_piano", 36);
-        addSound(electric_pianos, "electric_piano", 42);
-        addSound(electric_pianos, "electric_piano", 48);
-        addSound(electric_pianos, "electric_piano", 54);
-        addSound(electric_pianos, "electric_piano", 60);
-        addSound(electric_pianos, "electric_piano", 66);
-        addSound(electric_pianos, "electric_piano", 72);
-        addSound(electric_pianos, "electric_piano", 78);
-        addSound(electric_pianos, "electric_piano", 84);
-        addSound(electric_pianos, "electric_piano", 90);
-        addSound(electric_pianos, "electric_piano", 96);
+        // Eredstone Piano samples (MIDI 24-96, step 6)
+        addSound(redstone_pianos, "redstone_piano", 24);
+        addSound(redstone_pianos, "redstone_piano", 30);
+        addSound(redstone_pianos, "redstone_piano", 36);
+        addSound(redstone_pianos, "redstone_piano", 42);
+        addSound(redstone_pianos, "redstone_piano", 48);
+        addSound(redstone_pianos, "redstone_piano", 54);
+        addSound(redstone_pianos, "redstone_piano", 60);
+        addSound(redstone_pianos, "redstone_piano", 66);
+        addSound(redstone_pianos, "redstone_piano", 72);
+        addSound(redstone_pianos, "redstone_piano", 78);
+        addSound(redstone_pianos, "redstone_piano", 84);
+        addSound(redstone_pianos, "redstone_piano", 90);
+        addSound(redstone_pianos, "redstone_piano", 96);
 
         // Organ samples (MIDI 36-96, step 6)
         addSound(organs, "organ", 36);
@@ -236,7 +236,7 @@ public class SoundEvents {
         ((IItemInstrument) Items.FRENCH_HORN).setSounds(french_horns);
         ((IItemInstrument) Items.BASS_GUITAR).setSounds(bass_guitars);
         ((IItemInstrument) Items.TRUMPET).setSounds(trumpets);
-        ((IItemInstrument) Items.ELECTRIC_PIANO).setSounds(electric_pianos);
+        ((IItemInstrument) Items.REDSTONE_PIANO).setSounds(redstone_pianos);
         ((IItemInstrument) Items.ORGAN).setSounds(organs);
 
         ((IItemInstrument) Items.HARP_MC).setSounds(harp_mcs);
