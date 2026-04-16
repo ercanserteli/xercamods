@@ -238,7 +238,7 @@ public class NoteEvent {
         if (flags != FLAG_NONE) {
             tag.putByte("f", flags);
         }
-        if (glissandoWaypoints != null && glissandoWaypoints.length > 1) {
+        if (glissandoWaypoints != null && glissandoWaypoints.length > 0) {
             tag.putByteArray("gw", glissandoWaypoints);
             if (glissandoWaypointPositions != null && glissandoWaypointPositions.length == glissandoWaypoints.length) {
                 tag.putByteArray("gp", glissandoWaypointPositions);

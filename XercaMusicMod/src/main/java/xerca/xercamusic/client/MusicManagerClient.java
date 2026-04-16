@@ -111,7 +111,7 @@ public final class MusicManagerClient {
         tag.putInt(KEY_VERSION, ver);
         NoteEvent.fillNBTFromArray(notes, tag);
         if (volumeMarkers != null) {
-            VolumeMarker.fillNBTFromArray(new ArrayList<>(volumeMarkers), tag);
+            VolumeMarker.fillNBTFromArray(volumeMarkers, tag);
         }
         try {
             NbtIo.writeCompressed(tag, Path.of(filepath));

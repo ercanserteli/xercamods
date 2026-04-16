@@ -55,6 +55,9 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
             if (flag.hasLength) lengthBeats = buf.readShort();
             if (flag.hasNotes) {
                 int eventCount = buf.readInt();
+                if (eventCount < 0 || eventCount > MAX_NOTES_IN_PACKET) {
+                    throw new IllegalArgumentException("eventCount=" + eventCount);
+                }
                 if (eventCount != 0) {  // Notes may have been sent in parts beforehand
                     notes = new ArrayList<>(eventCount);
                     for (int i = 0; i < eventCount; i++) {
@@ -68,13 +71,7 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
             if (flag.hasVersion) version = buf.readInt();
             if (flag.hasHlInterval) highlightInterval = buf.readByte();
             if (flag.hasVolumeMarkers) {
-                int markerCount = buf.readInt();
-                if (markerCount > 0) {
-                    volumeMarkers = new ArrayList<>(markerCount);
-                    for (int i = 0; i < markerCount; i++) {
-                        volumeMarkers.add(VolumeMarker.fromBuffer(buf));
-                    }
-                }
+                volumeMarkers = readVolumeMarkers(buf);
             }
 
             return MusicUpdatePacket.create(
@@ -92,10 +89,25 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
                     version,
                     highlightInterval
             );
-        } catch (NotesTooLargeException e) {
-            Mod.LOGGER.error("NotesTooLargeException while reading MusicUpdatePacket: ", e);
+        } catch (IllegalArgumentException | NotesTooLargeException e) {
+            Mod.LOGGER.error("Invalid MusicUpdatePacket", e);
             return createEmpty();
         }
+    }
+
+    private static ArrayList<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
+        int markerCount = buf.readInt();
+        if (markerCount < 0 || markerCount > Mod.MAX_VOLUME_MARKERS_IN_PACKET) {
+            throw new IllegalArgumentException("markerCount=" + markerCount);
+        }
+        if (markerCount == 0) {
+            return null;
+        }
+        ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>(markerCount);
+        for (int i = 0; i < markerCount; i++) {
+            volumeMarkers.add(VolumeMarker.fromBuffer(buf));
+        }
+        return volumeMarkers;
     }
 
 

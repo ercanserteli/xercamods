@@ -15,6 +15,7 @@ import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.clientbound.ImportMusicPacket;
 import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -104,6 +105,7 @@ public final class CommandImport {
         if (tag.contains(KEY_ID) && tag.contains(KEY_VERSION)) {
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
+            List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
 
             if (notes == null) {
                 // maybe it was sent in parts
@@ -113,8 +115,8 @@ public final class CommandImport {
                 }
             }
 
-            MusicManager.setMusicData(id, ver, notes, null, player.server);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, notes, null));
+            MusicManager.setMusicData(id, ver, notes, volumeMarkers, player.server);
+            sendToClient(player, new MusicDataResponsePacket(id, ver, notes, volumeMarkers));
             return notes;
         }
 
@@ -130,6 +132,12 @@ public final class CommandImport {
 
         Mod.LOGGER.warn("Broken music file");
         return null;
+    }
+
+    private static List<VolumeMarker> readVolumeMarkers(CompoundTag tag) {
+        ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
+        VolumeMarker.fillArrayFromNBT(volumeMarkers, tag);
+        return volumeMarkers.isEmpty() ? null : volumeMarkers;
     }
 
     private static boolean giveImportedSheetToPlayer(CompoundTag tag, ServerPlayer player) {
