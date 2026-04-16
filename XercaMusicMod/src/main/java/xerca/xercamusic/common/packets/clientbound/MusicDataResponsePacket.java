@@ -20,20 +20,35 @@ public record MusicDataResponsePacket(UUID id, int version, List<NoteEvent> note
         UUID id = buf.readUUID();
         int version = buf.readInt();
         int eventCount = buf.readInt();
+        if (eventCount < 0) {
+            Mod.LOGGER.error("Invalid note count in MusicDataResponsePacket: {}", eventCount);
+            return new MusicDataResponsePacket(id, version, List.of(), null);
+        }
         List<NoteEvent> notes = new ArrayList<>(eventCount);
         for (int i = 0; i < eventCount; i++) {
             notes.add(NoteEvent.fromBuffer(buf));
         }
-        boolean hasVolumeMarkers = buf.readBoolean();
-        List<VolumeMarker> volumeMarkers = null;
-        if (hasVolumeMarkers) {
-            int markerCount = buf.readInt();
-            volumeMarkers = new ArrayList<>(markerCount);
-            for (int i = 0; i < markerCount; i++) {
-                volumeMarkers.add(VolumeMarker.fromBuffer(buf));
-            }
+        try {
+            return new MusicDataResponsePacket(id, version, notes, readVolumeMarkers(buf));
+        } catch (IllegalArgumentException e) {
+            Mod.LOGGER.error("Invalid MusicDataResponsePacket volume markers", e);
+            return new MusicDataResponsePacket(id, version, notes, null);
         }
-        return new MusicDataResponsePacket(id, version, notes, volumeMarkers);
+    }
+
+    private static List<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
+        if (!buf.readBoolean()) {
+            return null;
+        }
+        int markerCount = buf.readInt();
+        if (markerCount < 0 || markerCount > Mod.MAX_VOLUME_MARKERS_IN_PACKET) {
+            throw new IllegalArgumentException("markerCount=" + markerCount);
+        }
+        List<VolumeMarker> volumeMarkers = new ArrayList<>(markerCount);
+        for (int i = 0; i < markerCount; i++) {
+            volumeMarkers.add(VolumeMarker.fromBuffer(buf));
+        }
+        return volumeMarkers;
     }
 
     public void encode(FriendlyByteBuf buf) {

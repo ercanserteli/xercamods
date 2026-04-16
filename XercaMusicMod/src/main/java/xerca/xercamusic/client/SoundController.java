@@ -191,8 +191,7 @@ public class SoundController extends Thread {
                 }
 
                 // Track sustained notes inside volume markers for dynamic volume
-                if (sound != null && activeMarker != null && event.length > 1
-                        && activeMarker.containsTime((short)(event.time + event.length))) {
+                if (sound != null && activeMarker != null && event.length > 1) {
                     synchronized (activeSounds) {
                         activeSounds.add(new ActiveSound(sound, event, activeMarker, event.time + event.length));
                     }

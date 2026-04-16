@@ -5,15 +5,17 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a volume change region (crescendo or decrescendo) on a music sheet.
  * The volume interpolates linearly from startVolume to endVolume over the time range.
  */
 public class VolumeMarker {
+    public static final String KEY_VOLUME_MARKERS = "volumeMarkers";
+
     public short startTime;    // Beat position where the marker begins
-    public short endTime;      // Beat position where the marker ends
+    public short endTime;      // Exclusive beat position where the marker ends
     public byte startVolume;   // Starting volume (0-127)
     public byte endVolume;     // Ending volume (0-127)
     public byte lowNote;       // Lowest note affected (for visual display height)
@@ -42,26 +44,27 @@ public class VolumeMarker {
     }
 
     /**
-     * Calculates the interpolated volume at a given time position.
+     * Calculates the interpolated volume at a given beat start.
      * Returns -1 if the time is outside this marker's range.
      */
     public float getVolumeAt(short time) {
-        if (time < startTime || time > endTime) {
+        if (!containsTime(time)) {
             return -1f;
         }
-        if (startTime == endTime) {
+        int duration = endTime - startTime;
+        if (duration <= 1) {
             return startVolume / 127f;
         }
-        float progress = (float)(time - startTime) / (float)(endTime - startTime);
+        float progress = (float) (time - startTime) / (float) (duration - 1);
         float volume = startVolume + progress * (endVolume - startVolume);
         return volume / 127f;
     }
 
     /**
-     * Checks if a given time falls within this marker's range.
+     * Checks if a given beat start falls within this marker's half-open range.
      */
     public boolean containsTime(short time) {
-        return time >= startTime && time <= endTime;
+        return time >= startTime && time < endTime;
     }
 
     /**
@@ -80,7 +83,7 @@ public class VolumeMarker {
 
     /**
      * Checks if a note is fully contained within this marker's range,
-     * meaning both its start time and end time (time + length) fall within the time range
+     * meaning its full half-open interval [time, time + length) falls within the marker
      * and its pitch is within the note range.
      */
     public boolean fullyContains(short time, short length, byte note) {
@@ -137,21 +140,21 @@ public class VolumeMarker {
         return marker;
     }
 
-    public static void fillArrayFromNBT(ArrayList<VolumeMarker> markers, CompoundTag tag) {
-        if (tag.contains("volumeMarkers")) {
-            ListTag markerList = tag.getList("volumeMarkers", Tag.TAG_COMPOUND);
+    public static void fillArrayFromNBT(List<VolumeMarker> markers, CompoundTag tag) {
+        if (tag.contains(KEY_VOLUME_MARKERS)) {
+            ListTag markerList = tag.getList(KEY_VOLUME_MARKERS, Tag.TAG_COMPOUND);
             for (int i = 0; i < markerList.size(); i++) {
                 markers.add(VolumeMarker.fromNBT(markerList.getCompound(i)));
             }
         }
     }
 
-    public static void fillNBTFromArray(ArrayList<VolumeMarker> markers, CompoundTag tag) {
+    public static void fillNBTFromArray(List<VolumeMarker> markers, CompoundTag tag) {
         ListTag markerList = new ListTag();
         for (VolumeMarker marker : markers) {
             markerList.add(marker.serializeNBT());
         }
-        tag.put("volumeMarkers", markerList);
+        tag.put(KEY_VOLUME_MARKERS, markerList);
     }
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")

@@ -619,6 +619,7 @@ class SheetInputHandler {
 
     private void deleteSelected() {
         boolean doSort = false;
+        int selectionEndExclusive = gui.editCursorEnd + 1;
         Iterator<NoteEvent> it = gui.notes.iterator();
         while (it.hasNext()) {
             NoteEvent event = it.next();
@@ -643,24 +644,24 @@ class SheetInputHandler {
         int selLen = gui.editCursorEnd - gui.editCursor + 1;
         for (int i = gui.volumeMarkers.size() - 1; i >= 0; i--) {
             VolumeMarker m = gui.volumeMarkers.get(i);
-            if (m.startTime >= gui.editCursor && m.endTime <= gui.editCursorEnd) {
+            if (m.startTime >= gui.editCursor && m.endTime <= selectionEndExclusive) {
                 // Fully inside selection: remove
                 gui.volumeMarkers.remove(i);
-            } else if (m.startTime < gui.editCursor && m.endTime > gui.editCursorEnd) {
+            } else if (m.startTime < gui.editCursor && m.endTime > selectionEndExclusive) {
                 // Spans entire selection: shrink
                 m.endTime -= (short) selLen;
                 if (m.endTime - m.startTime < 2) gui.volumeMarkers.remove(i);
-            } else if (m.startTime < gui.editCursor && m.endTime >= gui.editCursor && m.endTime <= gui.editCursorEnd) {
+            } else if (m.startTime < gui.editCursor && m.endTime > gui.editCursor && m.endTime <= selectionEndExclusive) {
                 // Starts before, ends inside: trim end
                 m.endTime = (short) gui.editCursor;
                 if (m.endTime - m.startTime < 2) gui.volumeMarkers.remove(i);
-            } else if (m.startTime >= gui.editCursor && m.startTime <= gui.editCursorEnd && m.endTime > gui.editCursorEnd) {
+            } else if (m.startTime >= gui.editCursor && m.startTime < selectionEndExclusive && m.endTime > selectionEndExclusive) {
                 // Starts inside selection, ends after: keep the tail, shift to editCursor
                 short origEnd = m.endTime;
                 m.startTime = (short) gui.editCursor;
-                m.endTime = (short) (gui.editCursor + origEnd - gui.editCursorEnd - 1);
+                m.endTime = (short) (gui.editCursor + origEnd - selectionEndExclusive);
                 if (m.endTime - m.startTime < 2) gui.volumeMarkers.remove(i);
-            } else if (m.startTime > gui.editCursorEnd) {
+            } else if (m.startTime >= selectionEndExclusive) {
                 // Entirely after selection: shift left
                 m.startTime -= (short) selLen;
                 m.endTime -= (short) selLen;
@@ -700,7 +701,7 @@ class SheetInputHandler {
         if (changed) {
             for (VolumeMarker m : gui.volumeMarkers) {
                 // Marker overlaps the time selection
-                if (m.startTime <= gui.editCursorEnd && m.endTime >= gui.editCursor) {
+                if (m.startTime <= gui.editCursorEnd && m.endTime > gui.editCursor) {
                     if (gui.rectSelection) {
                         // Only shift if the marker's note range overlaps the rect selection
                         if (m.highNote < gui.rectSelectNoteBottom - semitones || m.lowNote > gui.rectSelectNoteTop - semitones) {
@@ -749,7 +750,7 @@ class SheetInputHandler {
         // Collect volume markers that fall within the selection
         ArrayList<VolumeMarker> markersToCopy = new ArrayList<>();
         for (VolumeMarker marker : gui.volumeMarkers) {
-            if (marker.startTime >= gui.editCursor && marker.endTime <= gui.editCursorEnd) {
+            if (marker.startTime >= gui.editCursor && marker.endTime <= gui.editCursorEnd + 1) {
                 markersToCopy.add(marker);
             }
         }

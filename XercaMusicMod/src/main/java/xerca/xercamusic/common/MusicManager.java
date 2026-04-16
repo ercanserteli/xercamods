@@ -119,7 +119,7 @@ public final class MusicManager {
                 nbt.putInt(KEY_VERSION, entry.getValue().version);
                 NoteEvent.fillNBTFromArray(entry.getValue().notes, nbt);
                 if (entry.getValue().volumeMarkers != null) {
-                    VolumeMarker.fillNBTFromArray(new ArrayList<>(entry.getValue().volumeMarkers()), nbt);
+                    VolumeMarker.fillNBTFromArray(entry.getValue().volumeMarkers(), nbt);
                 }
                 musicDataList.add(nbt);
             }

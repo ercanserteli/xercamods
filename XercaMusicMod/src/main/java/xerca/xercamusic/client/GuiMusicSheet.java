@@ -78,7 +78,6 @@ public class GuiMusicSheet extends Screen {
     private final boolean[] buttonPushStates = new boolean[IItemInstrument.TOTAL_NOTES];
     private final UUID id;
     final MusicUpdatePacket.FieldFlag dirtyFlag = new MusicUpdatePacket.FieldFlag();
-    //The previous version of undoState only saved notes, which would not work for things like (De)crescendo
     record UndoState(ArrayList<NoteEvent> notes, ArrayList<VolumeMarker> volumeMarkers) {}
     final Deque<UndoState> undoStack = new ArrayDeque<>(MAX_UNDO_LENGTH);
     private final ArrayList<ArrayList<NoteEvent>> neighborNotes = new ArrayList<>();
@@ -1443,9 +1442,9 @@ public class GuiMusicSheet extends Screen {
         
         // Check if marker is visible horizontally and vertically
         boolean verticallyVisible = (highOctave >= currentOctavePos && lowOctave < currentOctavePos + 4);
-        boolean horizontallyVisible = inScreen(marker.startTime) || inScreen(marker.endTime) || 
-                                       (marker.startTime < sliderPosition && marker.endTime > sliderPosition + BEATS_IN_SCREEN);
-        
+        boolean horizontallyVisible = marker.startTime < sliderPosition + BEATS_IN_SCREEN
+                && marker.endTime > sliderPosition;
+
         if (!verticallyVisible || !horizontallyVisible) {
             return;
         }
@@ -1609,8 +1608,8 @@ public class GuiMusicSheet extends Screen {
         Iterator<PreviewActiveSound> it = previewActiveSounds.iterator();
         while (it.hasNext()) {
             PreviewActiveSound active = it.next();
-            int noteEndBeat = active.event.time + active.event.length;
-            if (currentBeat > noteEndBeat || active.sound.isStopped()) {
+            int noteEndBeatExclusive = active.event.time + active.event.length;
+            if (currentBeat >= noteEndBeatExclusive || active.sound.isStopped()) {
                 it.remove();
                 continue;
             }
