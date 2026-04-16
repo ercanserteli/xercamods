@@ -98,8 +98,9 @@ class SheetInputHandler {
                         gui.markerStartNote = (byte) note;
                         byte startVol = gui.creatingCrescendo ? (byte) 32 : (byte) 96;
                         byte endVol = gui.creatingCrescendo ? (byte) 96 : (byte) 32;
-                        gui.currentlyAddedMarker = new VolumeMarker(gui.markerStartTime, (short) (gui.markerStartTime + 1),
+                        VolumeMarker marker = new VolumeMarker(gui.markerStartTime, (short) (gui.markerStartTime + 1),
                                 startVol, endVol, gui.markerStartNote, gui.markerStartNote);
+                        gui.currentlyAddedMarker = isMarkerPlacementAvailable(marker) ? marker : null;
                     } else if (gui.glissandoMode) {
                         // Glissando placement mode
                         if (gui.glissandoSourceNote == null) {
@@ -121,20 +122,25 @@ class SheetInputHandler {
                                 }
                             }
                         } else {
-                            // Subsequent click: add waypoint with X position
+                            // Subsequent click: add or replace a waypoint snapped to a beat within the note
                             byte interval = (byte) (note - gui.glissandoSourceNote.note);
-                            gui.glissandoPendingWaypoints.add(interval);
-                            // Compute beat position within note as percentage (1-100)
-                            float exactTime = nrx / 3.0f + gui.sliderPosition;
-                            int posPct = Math.round((exactTime - gui.glissandoSourceNote.time) * 100.0f / gui.glissandoSourceNote.length);
-                            posPct = Math.max(1, Math.min(100, posPct));
-                            // Ensure monotonic increase
-                            if (!gui.glissandoPendingPositions.isEmpty()) {
-                                int lastPos = gui.glissandoPendingPositions.get(gui.glissandoPendingPositions.size() - 1) & 0xFF;
-                                posPct = Math.max(lastPos + 1, posPct);
+                            int beatIndex = getGlissandoBeatIndex(nrx);
+                            int existingIndex = gui.glissandoPendingPositions.indexOf((byte) beatIndex);
+                            if (existingIndex >= 0) {
+                                gui.glissandoPendingWaypoints.set(existingIndex, interval);
+                            } else {
+                                int insertIndex = 0;
+                                while (insertIndex < gui.glissandoPendingPositions.size()
+                                        && (gui.glissandoPendingPositions.get(insertIndex) & 0xFF) < beatIndex) {
+                                    insertIndex++;
+                                }
+                                gui.glissandoPendingPositions.add(insertIndex, (byte) beatIndex);
+                                gui.glissandoPendingWaypoints.add(insertIndex, interval);
                             }
-                            if (posPct > 100) posPct = 100;
-                            gui.glissandoPendingPositions.add((byte) posPct);
+                            if (gui.glissandoSourceNote.length > 0
+                                    && beatIndex >= (gui.glissandoSourceNote.length & 0xFF)) {
+                                finishGlissando();
+                            }
                         }
                     } else {
                         // Normal note adding
@@ -222,9 +228,12 @@ class SheetInputHandler {
                 byte newLowNote = (byte) Math.min(gui.markerStartNote, note);
                 byte newHighNote = (byte) Math.max(gui.markerStartNote, note);
 
-                gui.currentlyAddedMarker = new VolumeMarker(newStartTime, newEndTime,
+                VolumeMarker marker = new VolumeMarker(newStartTime, newEndTime,
                         gui.currentlyAddedMarker.startVolume, gui.currentlyAddedMarker.endVolume,
                         newLowNote, newHighNote);
+                if (isMarkerPlacementAvailable(marker)) {
+                    gui.currentlyAddedMarker = marker;
+                }
             } else if (gui.currentlyAddedNote != null && validClick(mx, my)) {
                 int time = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
                 if (gui.currentlyAddedNote.time < time && time - gui.currentlyAddedNote.time <= GuiMusicSheet.maxNoteLength) {
@@ -911,7 +920,7 @@ class SheetInputHandler {
             return;
         }
         // Only add if the marker has some meaningful size
-        if (gui.currentlyAddedMarker.endTime - gui.currentlyAddedMarker.startTime >= 2) {
+        if (gui.currentlyAddedMarker.isValid() && isMarkerPlacementAvailable(gui.currentlyAddedMarker)) {
             pushUndo();
             // Add the marker to the list and show the edit box
             gui.volumeMarkers.add(gui.currentlyAddedMarker);
@@ -934,8 +943,11 @@ class SheetInputHandler {
             byte[] positions = null;
             if (gui.glissandoPendingPositions != null && gui.glissandoPendingPositions.size() == waypoints.length) {
                 positions = new byte[gui.glissandoPendingPositions.size()];
+                int noteLength = gui.glissandoSourceNote.length & 0xFF;
                 for (int i = 0; i < positions.length; i++) {
-                    positions[i] = gui.glissandoPendingPositions.get(i);
+                    int beatIndex = gui.glissandoPendingPositions.get(i) & 0xFF;
+                    int posPct = Math.max(1, Math.min(100, Math.round(beatIndex * 100.0f / noteLength)));
+                    positions[i] = (byte) posPct;
                 }
             }
             gui.glissandoSourceNote.setGlissandoWaypoints(waypoints, positions);
@@ -965,6 +977,25 @@ class SheetInputHandler {
             }
         }
         return null;
+    }
+
+    private boolean isMarkerPlacementAvailable(VolumeMarker candidate) {
+        for (VolumeMarker marker : gui.volumeMarkers) {
+            if (candidate.overlaps(marker)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int getGlissandoBeatIndex(int noteRegionX) {
+        if (gui.glissandoSourceNote == null || gui.glissandoSourceNote.length <= 0) {
+            return 1;
+        }
+        float exactTime = noteRegionX / 3.0f + gui.sliderPosition;
+        int relativeBeat = (int) Math.floor(exactTime - gui.glissandoSourceNote.time);
+        int noteLength = gui.glissandoSourceNote.length & 0xFF;
+        return Math.max(1, Math.min(noteLength, relativeBeat + 1));
     }
 
     // ------------ Cursor & Selection ---------------

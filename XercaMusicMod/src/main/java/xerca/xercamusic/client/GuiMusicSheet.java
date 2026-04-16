@@ -145,7 +145,9 @@ public class GuiMusicSheet extends Screen {
     boolean glissandoMode;          // Whether we're in glissando placement mode
     NoteEvent glissandoSourceNote;  // The source note for glissando (after first click)
     ArrayList<Byte> glissandoPendingWaypoints; // Accumulated waypoints during multi-point placement
-    ArrayList<Byte> glissandoPendingPositions; // Beat position (1-100%) for each pending waypoint
+    ArrayList<Byte> glissandoPendingPositions; // Beat index (1..note length) for each pending waypoint while editing
+    private int renderMouseX = -1;
+    private int renderMouseY = -1;
     int sliderPosition = 0;
     private int maxSliderPosition = 500;
     int currentOctavePos = 1;
@@ -907,6 +909,8 @@ public class GuiMusicSheet extends Screen {
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         PoseStack stack = guiGraphics.pose();
+        renderMouseX = mouseX;
+        renderMouseY = mouseY;
         if (previewing || recording || preRecording) {
             long currentMillis = System.currentTimeMillis();
 
@@ -1396,36 +1400,9 @@ public class GuiMusicSheet extends Screen {
                 }
             }
 
-            // Draw pending waypoints preview during glissando placement
-            if (glissandoMode && event == glissandoSourceNote && glissandoPendingWaypoints != null && !glissandoPendingWaypoints.isEmpty()) {
-                int notePixelWidth = xEnd - xBegin;
-                int numSegments = glissandoPendingWaypoints.size();
-                int startYp = y + 1;
-                int prevY = startYp;
-                for (int seg = 0; seg < numSegments; seg++) {
-                    int targetNote = event.note + glissandoPendingWaypoints.get(seg);
-                    int targetOctave = octaveFromNote((byte) targetNote);
-                    if (targetOctave < currentOctavePos || targetOctave >= currentOctavePos + 4) continue;
-                    int targetY = noteImageY + NOTE_REGION_TOP + (47 - targetNote + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36 + 1;
-                    int segStartX, segEndX;
-                    if (glissandoPendingPositions != null && glissandoPendingPositions.size() == numSegments) {
-                        segStartX = xBegin + (seg == 0 ? 0 : (glissandoPendingPositions.get(seg - 1) & 0xFF) * notePixelWidth / 100);
-                        segEndX = xBegin + (glissandoPendingPositions.get(seg) & 0xFF) * notePixelWidth / 100;
-                    } else {
-                        segStartX = xBegin + (seg * notePixelWidth) / numSegments;
-                        segEndX = xBegin + ((seg + 1) * notePixelWidth) / numSegments;
-                    }
-                    int segWidth = Math.max(segEndX - segStartX, 1);
-                    int fromY = seg == 0 ? startYp : prevY;
-                    int dy = targetY - fromY;
-                    for (int step = 0; step < segWidth; step++) {
-                        int px = segStartX + step;
-                        int py = fromY + (step * dy) / Math.max(segWidth, 1);
-                        // Semi-transparent preview
-                        guiGraphics.fill(px, py, px + 1, py + 1, 0x994488FF);
-                    }
-                    prevY = targetY;
-                }
+            // Draw pending waypoints preview during glissando placement, including the live cursor waypoint.
+            if (glissandoMode && event == glissandoSourceNote) {
+                drawPendingGlissandoPreview(guiGraphics, event, xBegin, xEnd, y);
             }
 
             // Highlight source note in glissando mode
@@ -1496,6 +1473,103 @@ public class GuiMusicSheet extends Screen {
         if (timeDrawEnd == marker.endTime - sliderPosition) {
             guiGraphics.fill(xEnd - 1, yTop, xEnd, yBottom, borderColor);
         }
+    }
+
+    private void drawPendingGlissandoPreview(GuiGraphics guiGraphics, NoteEvent event, int xBegin, int xEnd, int y) {
+        int noteLength = event.length & 0xFF;
+        if (noteLength <= 0) {
+            return;
+        }
+
+        ArrayList<Byte> previewWaypoints = glissandoPendingWaypoints == null
+                ? new ArrayList<>()
+                : new ArrayList<>(glissandoPendingWaypoints);
+        ArrayList<Byte> previewPositions = glissandoPendingPositions == null
+                ? new ArrayList<>()
+                : new ArrayList<>(glissandoPendingPositions);
+        if (previewPositions.size() != previewWaypoints.size()) {
+            previewWaypoints.clear();
+            previewPositions.clear();
+        }
+
+        int hoverIndex = -1;
+        GlissandoPreviewPoint hoverPoint = getHoveredGlissandoPreviewPoint(event);
+        if (hoverPoint != null) {
+            hoverIndex = upsertPreviewWaypoint(previewWaypoints, previewPositions, hoverPoint.interval(), hoverPoint.beatIndex());
+        }
+
+        if (previewWaypoints.isEmpty()) {
+            return;
+        }
+
+        int notePixelWidth = xEnd - xBegin;
+        int startY = y + 1;
+        int prevY = startY;
+        for (int seg = 0; seg < previewWaypoints.size(); seg++) {
+            int targetNote = event.note + previewWaypoints.get(seg);
+            int targetOctave = octaveFromNote((byte) targetNote);
+            if (targetOctave < currentOctavePos || targetOctave >= currentOctavePos + 4) {
+                continue;
+            }
+
+            int beatIndex = previewPositions.get(seg) & 0xFF;
+            int prevBeatIndex = seg == 0 ? 0 : (previewPositions.get(seg - 1) & 0xFF);
+            int targetY = noteToPixelY(targetNote) + 1;
+            int segStartX = xBegin + prevBeatIndex * notePixelWidth / noteLength;
+            int segEndX = xBegin + beatIndex * notePixelWidth / noteLength;
+            int segWidth = Math.max(segEndX - segStartX, 1);
+            int fromY = seg == 0 ? startY : prevY;
+            int dy = targetY - fromY;
+            int lineColor = seg == hoverIndex ? 0xCC66BBFF : 0x994488FF;
+
+            for (int step = 0; step < segWidth; step++) {
+                int px = segStartX + step;
+                int py = fromY + (step * dy) / Math.max(segWidth, 1);
+                guiGraphics.fill(px, py, px + 1, py + 1, lineColor);
+            }
+
+            int dotX = Math.max(xBegin, Math.min(xEnd - 1, segEndX - 1));
+            int dotColor = seg == hoverIndex ? 0xFF99D6FF : 0xCC66BBFF;
+            guiGraphics.fill(dotX - 1, targetY - 1, dotX + 2, targetY + 2, dotColor);
+            prevY = targetY;
+        }
+    }
+
+    private GlissandoPreviewPoint getHoveredGlissandoPreviewPoint(NoteEvent event) {
+        int mouseRelX = renderMouseX - noteImageLeftX;
+        int mouseRelY = renderMouseY - noteImageY;
+        if (mouseRelX < NOTE_REGION_LEFT || mouseRelX > NOTE_REGION_RIGHT
+                || mouseRelY < NOTE_REGION_TOP || mouseRelY > NOTE_REGION_BOTTOM) {
+            return null;
+        }
+
+        int noteLength = event.length & 0xFF;
+        if (noteLength <= 0) {
+            return null;
+        }
+
+        int noteRegionX = mouseRelX - NOTE_REGION_LEFT;
+        float exactTime = noteRegionX / 3.0f + sliderPosition;
+        int relativeBeat = (int) Math.floor(exactTime - event.time);
+        int beatIndex = Math.max(1, Math.min(noteLength, relativeBeat + 1));
+        byte hoveredNote = (byte) (47 - ((mouseRelY - NOTE_REGION_TOP) / 3) + IItemInstrument.MIN_NOTE + currentOctavePos * 12);
+        return new GlissandoPreviewPoint(beatIndex, (byte) (hoveredNote - event.note));
+    }
+
+    private int upsertPreviewWaypoint(List<Byte> previewWaypoints, List<Byte> previewPositions, byte interval, int beatIndex) {
+        int existingIndex = previewPositions.indexOf((byte) beatIndex);
+        if (existingIndex >= 0) {
+            previewWaypoints.set(existingIndex, interval);
+            return existingIndex;
+        }
+
+        int insertIndex = 0;
+        while (insertIndex < previewPositions.size() && (previewPositions.get(insertIndex) & 0xFF) < beatIndex) {
+            insertIndex++;
+        }
+        previewPositions.add(insertIndex, (byte) beatIndex);
+        previewWaypoints.add(insertIndex, interval);
+        return insertIndex;
     }
 
     private void setNeighborNextNodeIDs() {
@@ -1764,6 +1838,8 @@ public class GuiMusicSheet extends Screen {
     private int noteToPixelY(int note) {
         return noteImageY + NOTE_REGION_TOP + (47 - note + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36;
     }
+
+    private record GlissandoPreviewPoint(int beatIndex, byte interval) {}
 
     public enum MidiControl {
         BEGINNING, END, STOP, PREVIEW, RECORD
