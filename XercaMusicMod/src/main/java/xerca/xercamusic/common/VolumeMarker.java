@@ -30,6 +30,10 @@ public class VolumeMarker {
         this.highNote = highNote;
     }
 
+    public VolumeMarker(VolumeMarker marker) {
+        this(marker.startTime, marker.endTime, marker.startVolume, marker.endVolume, marker.lowNote, marker.highNote);
+    }
+
     public VolumeMarker() {
     }
 
@@ -165,11 +169,5 @@ public class VolumeMarker {
             markerList.add(marker.serializeNBT());
         }
         tag.put(KEY_VOLUME_MARKERS, markerList);
-    }
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public VolumeMarker clone() {
-        return new VolumeMarker(startTime, endTime, startVolume, endVolume, lowNote, highNote);
     }
 }

@@ -103,6 +103,9 @@ public final class Items {
     public static final DataComponentType<String> SHEET_AUTHOR = DataComponentType.<String>builder().persistent(Codec.STRING).build();
     public static final DataComponentType<Integer> SHEET_GENERATION = DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).build();
 
+    private Items() {
+    }
+
     public static void registerDataComponents() {
         registerComponentType("sheet_bps", SHEET_BPS);
         registerComponentType("sheet_length", SHEET_LENGTH);

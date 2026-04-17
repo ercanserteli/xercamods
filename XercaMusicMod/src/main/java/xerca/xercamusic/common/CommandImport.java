@@ -24,6 +24,9 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 public final class CommandImport {
+    private CommandImport() {
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicimport")

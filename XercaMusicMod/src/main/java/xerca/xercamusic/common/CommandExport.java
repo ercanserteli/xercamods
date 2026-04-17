@@ -25,6 +25,9 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 public final class CommandExport {
+    private CommandExport() {
+    }
+
     private static boolean ensureDirectoryExists(File directory) {
         if (directory.exists()) {
             if (!directory.isDirectory()) {

@@ -1,6 +1,7 @@
 package xerca.xercamusic.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -91,13 +92,14 @@ public class GuiInstrument extends Screen {
     @Override
     public void tick() {
         super.tick();
-        if (blockInsPos != null && minecraft != null) {
+        Minecraft client = minecraft;
+        if (blockInsPos != null && client != null) {
             if (player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns) {
                 if (!Objects.equals(blockIns.getItemInstrument(), instrument)) {
-                    minecraft.setScreen(null);
+                    client.setScreen(null);
                 }
             } else {
-                minecraft.setScreen(null);
+                client.setScreen(null);
             }
         }
     }

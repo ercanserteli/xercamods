@@ -10,6 +10,9 @@ public class BlockEntities {
     public static BlockEntityType<?> METRONOME;
     public static BlockEntityType<?> MUSIC_BOX;
 
+    private BlockEntities() {
+    }
+
     public static void registerBlockEntities() {
         Mod.LOGGER.info("XercaMusic: Registering tile entities");
         METRONOME = BlockEntityType.Builder.of(TileEntityMetronome::new, Blocks.BLOCK_METRONOME).build();

@@ -222,7 +222,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     private int beatsToTicks(int beats) {
-        return Math.max(1, Math.round((beats) * 20.0f / (Math.max(1, bps))));
+        return Math.max(1, Math.round(beats * 20.0f / Math.max(1, bps)));
     }
 
     public ItemStack getSheetStack() {

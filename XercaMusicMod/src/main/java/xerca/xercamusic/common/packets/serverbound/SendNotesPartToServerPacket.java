@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ public record SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId,
         UUID uuid = buf.readUUID();
         int partsCount = buf.readInt();
         int partId = buf.readInt();
-        ArrayList<NoteEvent> notes = ImportMusicSendPacket.notesFromBuffer(buf);
+        List<NoteEvent> notes = ImportMusicSendPacket.notesFromBuffer(buf);
         return new SendNotesPartToServerPacket(uuid, partsCount, partId, notes);
     }
 
@@ -39,4 +38,3 @@ public record SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId,
         return PACKET_ID;
     }
 }
-

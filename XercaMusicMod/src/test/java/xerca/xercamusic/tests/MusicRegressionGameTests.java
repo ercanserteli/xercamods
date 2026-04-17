@@ -361,8 +361,8 @@ public final class MusicRegressionGameTests {
 
         try {
             spirit.buildFromSpawnData(0, -1, 0, -1, -1);
-        } catch (Throwable t) {
-            helper.assertTrue(false, "Expected invalid spawn data to be ignored without crash, but got: " + t);
+        } catch (Exception e) {
+            helper.assertTrue(false, "Expected invalid spawn data to be ignored without crash, but got: " + e);
             return;
         }
 

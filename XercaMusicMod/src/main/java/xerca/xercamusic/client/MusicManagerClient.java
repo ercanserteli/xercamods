@@ -22,6 +22,9 @@ public final class MusicManagerClient {
     static final Map<UUID, Runnable> TASK_MAP = new HashMap<>();
     static final String CACHE_DIR = "music_sheets/.cache/";
 
+    private MusicManagerClient() {
+    }
+
     private static boolean ensureDirectoryExists(File directory, String purpose) {
         if (directory.exists()) {
             if (!directory.isDirectory()) {

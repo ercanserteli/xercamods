@@ -751,7 +751,7 @@ class SheetInputHandler {
         buffer.writeInt(gui.editCursorEnd - gui.editCursor);
         buffer.writeInt(toBeCopied.size());
         for (NoteEvent event : toBeCopied) {
-            NoteEvent copy = event.clone();
+            NoteEvent copy = new NoteEvent(event);
             copy.time -= (short) gui.editCursor;
             copy.encodeToBuffer(buffer);
         }
@@ -765,7 +765,7 @@ class SheetInputHandler {
         }
         buffer.writeInt(markersToCopy.size());
         for (VolumeMarker marker : markersToCopy) {
-            VolumeMarker copy = marker.clone();
+            VolumeMarker copy = new VolumeMarker(marker);
             copy.startTime -= gui.editCursor;
             copy.endTime -= gui.editCursor;
             copy.encodeToBuffer(buffer);

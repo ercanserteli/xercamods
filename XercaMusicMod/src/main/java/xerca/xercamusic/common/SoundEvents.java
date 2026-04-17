@@ -17,30 +17,30 @@ public class SoundEvents {
     public static SoundEvent OPEN_SCROLL = null;
     public static SoundEvent CLOSE_SCROLL = null;
 
-    // Instrument SoPair<Integer, SoundEvent>on
-    public static ArrayList<Pair<Integer, SoundEvent>> cymbals;
-    public static ArrayList<Pair<Integer, SoundEvent>> drum_kits;
-    public static ArrayList<Pair<Integer, SoundEvent>> guitars;
-    public static ArrayList<Pair<Integer, SoundEvent>> lyres;
-    public static ArrayList<Pair<Integer, SoundEvent>> drums;
-    public static ArrayList<Pair<Integer, SoundEvent>> flutes;
-    public static ArrayList<Pair<Integer, SoundEvent>> banjos;
-    public static ArrayList<Pair<Integer, SoundEvent>> saxophones;
-    public static ArrayList<Pair<Integer, SoundEvent>> gods;
-    public static ArrayList<Pair<Integer, SoundEvent>> harp_mcs;
-    public static ArrayList<Pair<Integer, SoundEvent>> sansulas;
-    public static ArrayList<Pair<Integer, SoundEvent>> tubular_bells;
-    public static ArrayList<Pair<Integer, SoundEvent>> violins;
-    public static ArrayList<Pair<Integer, SoundEvent>> xylophones;
-    public static ArrayList<Pair<Integer, SoundEvent>> cellos;
-    public static ArrayList<Pair<Integer, SoundEvent>> pianos;
-    public static ArrayList<Pair<Integer, SoundEvent>> oboes;
-    public static ArrayList<Pair<Integer, SoundEvent>> redstone_guitars;
-    public static ArrayList<Pair<Integer, SoundEvent>> french_horns;
-    public static ArrayList<Pair<Integer, SoundEvent>> bass_guitars;
-    public static ArrayList<Pair<Integer, SoundEvent>> trumpets;
-    public static ArrayList<Pair<Integer, SoundEvent>> redstone_pianos;
-    public static ArrayList<Pair<Integer, SoundEvent>> organs;
+    // Instrument sounds
+    public static List<Pair<Integer, SoundEvent>> cymbals;
+    public static List<Pair<Integer, SoundEvent>> drum_kits;
+    public static List<Pair<Integer, SoundEvent>> guitars;
+    public static List<Pair<Integer, SoundEvent>> lyres;
+    public static List<Pair<Integer, SoundEvent>> drums;
+    public static List<Pair<Integer, SoundEvent>> flutes;
+    public static List<Pair<Integer, SoundEvent>> banjos;
+    public static List<Pair<Integer, SoundEvent>> saxophones;
+    public static List<Pair<Integer, SoundEvent>> gods;
+    public static List<Pair<Integer, SoundEvent>> harp_mcs;
+    public static List<Pair<Integer, SoundEvent>> sansulas;
+    public static List<Pair<Integer, SoundEvent>> tubular_bells;
+    public static List<Pair<Integer, SoundEvent>> violins;
+    public static List<Pair<Integer, SoundEvent>> xylophones;
+    public static List<Pair<Integer, SoundEvent>> cellos;
+    public static List<Pair<Integer, SoundEvent>> pianos;
+    public static List<Pair<Integer, SoundEvent>> oboes;
+    public static List<Pair<Integer, SoundEvent>> redstone_guitars;
+    public static List<Pair<Integer, SoundEvent>> french_horns;
+    public static List<Pair<Integer, SoundEvent>> bass_guitars;
+    public static List<Pair<Integer, SoundEvent>> trumpets;
+    public static List<Pair<Integer, SoundEvent>> redstone_pianos;
+    public static List<Pair<Integer, SoundEvent>> organs;
 
     private static final String NAME_GUITAR = "guitar";
     private static final String NAME_DRUM_KIT = "drum_kit";
@@ -62,6 +62,9 @@ public class SoundEvents {
     private static final String NAME_FRENCH_HORN = "french_horn";
     private static final String NAME_BASS_GUITAR = "bass_guitar";
     private static final String NAME_HARP_MC = "harp_mc";
+
+    private SoundEvents() {
+    }
 
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = Mod.id(soundName);
@@ -112,13 +115,9 @@ public class SoundEvents {
         xylophones = new ArrayList<>(48);
         cellos = new ArrayList<>(48);
         pianos = new ArrayList<>(48);
-        oboes = new ArrayList<>(21);
-        redstone_guitars = new ArrayList<>(11);
-        french_horns = new ArrayList<>(11);
-        bass_guitars = new ArrayList<>(8);
         trumpets = new ArrayList<>(7);
         redstone_pianos = new ArrayList<>(13);
-        organs = new ArrayList<>(10);
+        organs = new ArrayList<>(11);
 
         // ranges
         addRange(drum_kits, NAME_DRUM_KIT, 21, 116);

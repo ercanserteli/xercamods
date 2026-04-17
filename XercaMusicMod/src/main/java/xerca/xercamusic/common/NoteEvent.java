@@ -332,19 +332,7 @@ public class NoteEvent implements Serializable {
     }
 
     public float floatVolume() {
-        return ((float)volume)/127.0f;
+        return volume/127.0f;
     }
 
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public NoteEvent clone() {
-        NoteEvent copy = new NoteEvent(note, time, volume, length, flags, glissandoInterval);
-        if (glissandoWaypoints != null) {
-            copy.glissandoWaypoints = glissandoWaypoints.clone();
-        }
-        if (glissandoWaypointPositions != null) {
-            copy.glissandoWaypointPositions = glissandoWaypointPositions.clone();
-        }
-        return copy;
-    }
 }

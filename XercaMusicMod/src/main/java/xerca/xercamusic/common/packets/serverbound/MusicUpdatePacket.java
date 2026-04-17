@@ -10,11 +10,12 @@ import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket.NotesTooLargeException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
-public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, ArrayList<VolumeMarker> volumeMarkers, short lengthBeats, byte bps,
+public record MusicUpdatePacket(FieldFlag availability, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, short lengthBeats, byte bps,
                                 float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked,
                                 UUID id, int version, byte highlightInterval) implements CustomPacketPayload {
     public static final Type<MusicUpdatePacket> PACKET_ID = new Type<>(Mod.id("music_update"));
@@ -24,7 +25,7 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
         return new MusicUpdatePacket(new FieldFlag(), null, null, (short) 0, (byte) 0, 0.0f, false, null, (byte) 0, false, null, 0, (byte) 0);
     }
 
-    public static MusicUpdatePacket create(FieldFlag availability, ArrayList<NoteEvent> notes, ArrayList<VolumeMarker> volumeMarkers, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws NotesTooLargeException {
+    public static MusicUpdatePacket create(FieldFlag availability, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws NotesTooLargeException {
         if (notes != null && notes.size() > MAX_NOTES_IN_PACKET) {
             throw new NotesTooLargeException(notes, id);
         }
@@ -35,8 +36,8 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
         try {
             FieldFlag flag = FieldFlag.fromInt(buf.readInt());
 
-            ArrayList<NoteEvent> notes = null;
-            ArrayList<VolumeMarker> volumeMarkers = null;
+            List<NoteEvent> notes = null;
+            List<VolumeMarker> volumeMarkers = null;
             short lengthBeats = 0;
             byte bps = 0;
             float volume = 0.0f;
@@ -95,7 +96,7 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
         }
     }
 
-    private static ArrayList<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
+    private static List<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
         int markerCount = buf.readInt();
         if (markerCount < 0 || markerCount > Mod.MAX_VOLUME_MARKERS_IN_PACKET) {
             throw new IllegalArgumentException("markerCount=" + markerCount);
