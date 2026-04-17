@@ -100,10 +100,8 @@ public class GuiCanvasView extends Screen {
 
     @Override
     public void tick() {
-        if (easel != null) {
-            if (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 64) {
-                this.onClose();
-            }
+        if (easel != null && (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 64)) {
+            this.onClose();
         }
         super.tick();
     }

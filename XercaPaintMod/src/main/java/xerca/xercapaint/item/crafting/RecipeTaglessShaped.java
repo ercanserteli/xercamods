@@ -44,8 +44,8 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      */
     @Override
     public @NotNull ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider provider) {
-        ItemStack result = super.assemble(inv, provider);
-        if (!result.isEmpty()) {
+        ItemStack superResult = super.assemble(inv, provider);
+        if (!superResult.isEmpty()) {
             for (int j = 0; j < inv.size(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
                 if (!stackInSlot.isEmpty() && stackInSlot.get(Items.CANVAS_PIXELS) != null) {
@@ -53,7 +53,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
                 }
             }
 
-            return result;
+            return superResult;
         }
         return ItemStack.EMPTY;
     }
@@ -68,7 +68,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
-        public static final MapCodec<RecipeTaglessShaped> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+        public static final MapCodec<RecipeTaglessShaped> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                         Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::group),
                         CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
                         ShapedRecipePattern.MAP_CODEC.forGetter(RecipeTaglessShaped::pattern),

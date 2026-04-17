@@ -24,6 +24,7 @@ import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
+import xerca.xercamusic.common.item.ItemBlockInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
@@ -45,6 +46,18 @@ public class EntityMusicSpirit extends Entity {
     private BlockPos blockInsPos = null;
     private SoundController soundController = null;
 
+    private static byte sanitizeBps(int bps) {
+        return (byte) Math.max(1, Math.min(50, bps));
+    }
+
+    private static int sanitizeLengthBeats(int beats) {
+        return Math.max(0, beats);
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
+
     public EntityMusicSpirit(Level worldIn) {
         super(Entities.MUSIC_SPIRIT, worldIn);
     }
@@ -59,19 +72,29 @@ public class EntityMusicSpirit extends Entity {
 
     public EntityMusicSpirit(Level worldIn, Player body, BlockPos blockInsPos, IItemInstrument instrument) {
         this(worldIn, body, instrument);
-        setBlockPosAndInstrument(blockInsPos);
+        setBlockPosAndInstrument(blockInsPos, instrument.getInstrumentId());
     }
 
     public EntityMusicSpirit(EntityType<EntityMusicSpirit> type, Level world) {
         super(type, world);
     }
 
-    private void setBlockPosAndInstrument(BlockPos pos) {
+    private void setBlockPosAndInstrument(BlockPos pos, int instrumentId) {
+        if (instrumentId >= 0 && instrumentId < Items.INSTRUMENTS.size()) {
+            IItemInstrument itemInstrument = Items.INSTRUMENTS.get(instrumentId);
+            if (itemInstrument instanceof ItemBlockInstrument itemBlockInstrument) {
+                this.blockInstrument = (BlockInstrument) itemBlockInstrument.getBlock();
+                this.blockInsPos = pos;
+                setPos(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5);
+                return;
+            }
+        }
+
         Level level = this.level();
         if (level.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()))) {
-            Block b = level.getBlockState(pos).getBlock();
-            if (b instanceof BlockInstrument blockIns) {
-                this.blockInstrument = blockIns;
+            Block block = level.getBlockState(pos).getBlock();
+            if (block instanceof BlockInstrument foundInstrument) {
+                this.blockInstrument = foundInstrument;
                 this.blockInsPos = pos;
                 setPos(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5);
                 return;
@@ -111,13 +134,14 @@ public class EntityMusicSpirit extends Entity {
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+        notes.clear();
         NoteEvent.fillArrayFromNBT(notes, tag);
-        this.length = tag.getInt(KEY_LENGTH);
-        this.bps = tag.getByte(KEY_BPS);
-        this.volume = tag.getFloat(KEY_VOLUME);
+        this.length = sanitizeLengthBeats(tag.getInt(KEY_LENGTH));
+        this.bps = sanitizeBps(tag.getInt(KEY_BPS));
+        this.volume = sanitizeVolume(tag.getFloat(KEY_VOLUME));
         this.isPlaying = tag.getBoolean("playing");
-        if (tag.contains("bX") && tag.contains("bY") && tag.contains("bZ")) {
-            setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")));
+        if (tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")) {
+            setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")), tag.getInt("bIns"));
         }
     }
 
@@ -128,10 +152,11 @@ public class EntityMusicSpirit extends Entity {
         tag.putByte(KEY_BPS, bps);
         tag.putFloat(KEY_VOLUME, volume);
         tag.putBoolean("playing", isPlaying);
-        if (blockInsPos != null) {
+        if (blockInstrument != null && blockInsPos != null) {
             tag.putInt("bX", blockInsPos.getX());
             tag.putInt("bY", blockInsPos.getY());
             tag.putInt("bZ", blockInsPos.getZ());
+            tag.putInt("bIns", blockInstrument.getItemInstrument().getInstrumentId());
         }
     }
 
@@ -159,21 +184,22 @@ public class EntityMusicSpirit extends Entity {
         int biX = -1;
         int biY = -10000;
         int biZ = -1;
+        int bIns = -1;
         if (data < 0) {
             biX = (int) Math.round(packet.getX() - 0.5);
             biY = (int) Math.round(packet.getY() + 0.5);
             biZ = (int) Math.round(packet.getZ() - 0.5);
         }
-        this.buildFromSpawnData(bodyId, biX, biY, biZ);
+        this.buildFromSpawnData(bodyId, biX, biY, biZ, bIns);
     }
 
-    public void buildFromSpawnData(int bodyId, int bx, int by, int bz) {
+    public void buildFromSpawnData(int bodyId, int bx, int by, int bz, int bIns) {
         Entity ent = level().getEntity(bodyId);
         if (ent instanceof Player player) {
             body = player;
         }
         if (by > -10000) {
-            setBlockPosAndInstrument(new BlockPos(bx, by, bz));
+            setBlockPosAndInstrument(new BlockPos(bx, by, bz), bIns);
         }
 
         if (blockInsPos != null) {

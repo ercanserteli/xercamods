@@ -25,7 +25,7 @@ public class CommandExport {
         dispatcher.register(
                 Commands.literal("paintexport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> paintExport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
@@ -69,13 +69,13 @@ public class CommandExport {
                         CompoundTag tag = new CompoundTag();
 
                         tag.putIntArray("pixels", pixels);
-                        tag.putString("name", canvasId);
-                        tag.putInt("v", version);
-                        tag.putInt("generation", generation);
                         tag.putByte("ct", (byte) ((ItemCanvas) s.getItem()).getCanvasType().ordinal());
                         if (title != null && author != null) {
                             tag.putString("title", title);
                             tag.putString("author", author);
+                            tag.putString("name", canvasId);
+                            tag.putInt("v", version);
+                            tag.putInt("generation", generation);
                         }
                         NbtIo.write(tag, Path.of(filepath));
                         return true;

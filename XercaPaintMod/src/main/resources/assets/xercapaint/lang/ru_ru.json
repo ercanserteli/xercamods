@@ -1,17 +1,14 @@
 {
   "itemGroup.xercapaint.paint_tab": "Картина",
-
   "item.xercapaint.item_palette": "Палитра",
   "item.xercapaint.item_canvas": "Холст",
   "item.xercapaint.item_canvas_large": "Большой холст",
   "item.xercapaint.item_canvas_long": "Широкий холст",
   "item.xercapaint.item_canvas_tall": "Высокий холст",
   "item.xercapaint.item_easel": "Мольберт",
-
   "palette.basic_count": "%1$s основных цветов",
   "palette.custom_count": "%1$s особых цветов",
   "palette.empty": "Пустая палитра",
-
   "canvas.empty": "Пустой холст",
   "canvas.byAuthor": "от %1$s",
   "canvas.signButton": "Подписать",
@@ -21,7 +18,6 @@
   "canvas.generation.1": "Копия оригинала",
   "canvas.generation.2": "Копия копии",
   "canvas.editTitle": "Введите название картины:",
-
   "xercapaint.export.success": "Картина экспортирована в %1$s",
   "xercapaint.export.fail": "Не удалось экспортировать картину",
   "xercapaint.import.success": "Картина импортирована",
@@ -30,9 +26,7 @@
   "xercapaint.import.fail.3": "Чтобы импортировать картину, в дополнительной руке у вас должна быть палитра со всеми основными цветами",
   "xercapaint.import.fail.4": "Не удалось проанализировать команду или прочитать файл картины (%1$s)",
   "xercapaint.import.fail.5": "Файл с картинкой сломан",
-
   "easel.deny": "Кто-то уже работает над этой картиной",
-
   "entity.xercapaint.canvas": "Холст",
   "entity.xercapaint.easel": "Мольберт"
 }
