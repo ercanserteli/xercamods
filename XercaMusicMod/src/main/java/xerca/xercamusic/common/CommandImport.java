@@ -50,12 +50,18 @@ public final class CommandImport {
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, List<NoteEvent> notes, ServerPlayer player) {
+    public static void doImport(CompoundTag tag, List<NoteEvent> notes, UUID importBufferId, ServerPlayer player) {
+        if (tag == null) {
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+            Mod.LOGGER.warn("Broken sheet file: missing tag");
+            return;
+        }
+
         if (!sanitizeTag(tag, player)) {
             return;
         }
 
-        if (!loadAndSendMusicData(tag, notes, player)) {
+        if (!loadAndSendMusicData(tag, notes, importBufferId, player)) {
             // load failed / broken / partial
             return;
         }
@@ -70,6 +76,7 @@ public final class CommandImport {
     private static boolean sanitizeTag(CompoundTag tag, ServerPlayer player) {
         boolean hasAuthor = tag.contains(KEY_AUTHOR, 8);
         boolean hasTitle = tag.contains(KEY_TITLE, 8);
+        boolean hasLegacyMusic = tag.contains(KEY_MUSIC_OLD);
 
         // only one of them is present -> broken
         if (hasAuthor ^ hasTitle) {
@@ -92,8 +99,16 @@ public final class CommandImport {
             }
         }
 
-        if (!tag.contains(KEY_VERSION, 3)) {
-            tag.putInt(KEY_VERSION, 1);
+        if (!hasLegacyMusic) {
+            if (hasTitle) {
+                if (!tag.contains(KEY_VERSION, Tag.TAG_INT)) {
+                    tag.putInt(KEY_VERSION, 1);
+                }
+            } else {
+                tag.putUUID(KEY_ID, UUID.randomUUID());
+                tag.putInt(KEY_VERSION, 1);
+                tag.putInt(KEY_GENERATION, 0);
+            }
         }
 
         if (tag.getInt(KEY_GENERATION) > 0) {
@@ -110,7 +125,7 @@ public final class CommandImport {
         return true;
     }
 
-    private static boolean loadAndSendMusicData(CompoundTag tag, List<NoteEvent> notes, ServerPlayer player) {
+    private static boolean loadAndSendMusicData(CompoundTag tag, List<NoteEvent> notes, UUID importBufferId, ServerPlayer player) {
         if (tag.contains(KEY_ID) && tag.contains(KEY_VERSION)) {
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
@@ -118,7 +133,8 @@ public final class CommandImport {
 
             if (notes == null) {
                 // maybe it was sent in parts
-                notes = MusicManager.getFinishedNotesFromBuffer(id);
+                UUID bufferId = importBufferId != null ? importBufferId : id;
+                notes = MusicManager.getFinishedNotesFromBuffer(bufferId);
                 if (notes.isEmpty()) {
                     return false;
                 }
