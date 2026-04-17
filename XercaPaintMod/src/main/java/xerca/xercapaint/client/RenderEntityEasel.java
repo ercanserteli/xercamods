@@ -71,6 +71,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, RenderEntityE
 
         RenderType renderType = this.model.renderType(woodTexture);
         VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
+
         int overlay = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
         this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, overlay);
 
@@ -85,11 +86,9 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, RenderEntityE
     @Override
     protected boolean shouldShowName(EntityEasel easel, double distanceSquared) {
         HitResult result = Minecraft.getInstance().hitResult;
-        if (result instanceof EntityHitResult entityHitResult) {
-            if (Minecraft.renderNames() && entityHitResult.getEntity() == easel && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
-                float range = easel.isDiscrete() ? 32.0F : 64.0F;
-                return distanceSquared < (double) (range * range);
-            }
+        if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && entityHitResult.getEntity() == easel && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
+            float range = easel.isDiscrete() ? 32.0F : 64.0F;
+            return distanceSquared < range * range;
         }
         return false;
     }

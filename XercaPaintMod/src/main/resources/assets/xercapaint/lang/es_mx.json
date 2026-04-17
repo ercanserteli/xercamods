@@ -1,17 +1,14 @@
 {
   "itemGroup.xercapaint.paint_tab": "Pintura",
-
   "item.xercapaint.item_palette": "Paleta",
   "item.xercapaint.item_canvas": "Lienzo",
   "item.xercapaint.item_canvas_large": "Lienzo grande",
   "item.xercapaint.item_canvas_long": "Lienzo largo",
   "item.xercapaint.item_canvas_tall": "Lienzo alto",
   "item.xercapaint.item_easel": "Caballete",
-
   "palette.basic_count": "%1$s colores básicos",
   "palette.custom_count": "%1$s colores personalizados",
   "palette.empty": "Paleta vacía",
-
   "canvas.empty": "Lienzo vacío",
   "canvas.byAuthor": "por %1$s",
   "canvas.signButton": "Firmar",
@@ -21,7 +18,6 @@
   "canvas.generation.1": "Copia del original",
   "canvas.generation.2": "Copia de la copia",
   "canvas.editTitle": "Ingresa el título de la pintura:",
-
   "xercapaint.export.success": "Pintura exportada a %1$s",
   "xercapaint.export.fail": "No se pudo exportar la pintura",
   "xercapaint.import.success": "Pintura importada",
@@ -30,9 +26,7 @@
   "xercapaint.import.fail.3": "Debes tener una paleta con todos los colores básicos en tu mano secundaria para importar una pintura en modo supervivencia",
   "xercapaint.import.fail.4": "No se pudo analizar el comando o leer el archivo de la pintura (%1$s)",
   "xercapaint.import.fail.5": "El archivo de la pintura está dañado",
-
   "easel.deny": "Alguien más está trabajando en esta pintura en este momento",
-
   "entity.xercapaint.canvas": "Lienzo",
   "entity.xercapaint.easel": "Caballete"
 }

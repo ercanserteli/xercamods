@@ -64,26 +64,29 @@ public class EntityEasel extends Entity {
 
     @Override
     public boolean hurtServer(@NotNull ServerLevel level, @NotNull DamageSource damageSource, float amount) {
-        if (!this.level().isClientSide && !this.isRemoved()) {
+        if (this.isInvulnerableToBase(damageSource)) {
+            return false;
+        }
+
+        if (!level.isClientSide && !this.isRemoved()) {
             if (!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)) {
-                this.dropItem(damageSource.getEntity(), false);
+                this.dropItem(level, damageSource.getEntity(), false);
             } else {
-                this.dropItem(damageSource.getEntity());
-                kill((ServerLevel) this.level());
+                this.dropItem(level, damageSource.getEntity());
+                kill(level);
+                this.markHurt();
             }
         }
         return false;
     }
 
-    private void showBreakingParticles() {
-        if (this.level() instanceof ServerLevel) {
-            ((ServerLevel) this.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
-        }
+    private void showBreakingParticles(ServerLevel level) {
+        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
     }
 
     @Override
     public void kill(@NotNull ServerLevel level) {
-        showBreakingParticles();
+        showBreakingParticles(level);
         super.kill(level);
     }
 
@@ -92,43 +95,37 @@ public class EntityEasel extends Entity {
         builder.define(DATA_CANVAS, ItemStack.EMPTY);
     }
 
-    public void dropItem(@Nullable Entity entity) {
-        this.dropItem(entity, true);
+    public void dropItem(ServerLevel level, @Nullable Entity entity) {
+        this.dropItem(level, entity, true);
     }
 
-    private void dropItem(@Nullable Entity entity, boolean dropSelf) {
+    private void dropItem(ServerLevel level, @Nullable Entity entity, boolean dropSelf) {
         if (painter != null) {
-            if (!this.level().isClientSide) {
-                if (dropDeferred == null) {
-                    CloseGuiPacket pack = new CloseGuiPacket();
-                    ServerPlayNetworking.send((ServerPlayer) painter, pack);
-                    dropDeferred = () -> doDrop(entity, dropSelf);
-                }
+            if (dropDeferred == null) {
+                CloseGuiPacket pack = new CloseGuiPacket();
+                ServerPlayNetworking.send((ServerPlayer) painter, pack);
+                dropDeferred = () -> doDrop(level, entity, dropSelf);
             }
         } else {
-            doDrop(entity, dropSelf);
+            doDrop(level, entity, dropSelf);
         }
     }
 
-    public void doDrop(@Nullable Entity entity, boolean dropSelf) {
-        if (this.level() instanceof ServerLevel serverLevel) {
-            ItemStack canvasStack = this.getItem();
-            this.setItem(ItemStack.EMPTY);
+    public void doDrop(ServerLevel level, @Nullable Entity entity, boolean dropSelf) {
+        ItemStack canvasStack = this.getItem();
+        this.setItem(ItemStack.EMPTY);
 
-            if (!canvasStack.isEmpty()) {
-                canvasStack = canvasStack.copy();
-                this.spawnAtLocation(serverLevel, canvasStack);
-            }
+        if (!canvasStack.isEmpty()) {
+            canvasStack = canvasStack.copy();
+            this.spawnAtLocation(level, canvasStack);
+        }
 
-            if (entity instanceof Player player) {
-                if (player.getAbilities().instabuild) {
-                    return;
-                }
-            }
+        if (entity instanceof Player player && player.getAbilities().instabuild) {
+            return;
+        }
 
-            if (dropSelf && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-                this.spawnAtLocation(serverLevel, this.getEaselItemStack());
-            }
+        if (dropSelf && level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.spawnAtLocation(level, this.getEaselItemStack());
         }
     }
 
@@ -219,7 +216,7 @@ public class EntityEasel extends Entity {
                 }
             } else {
                 boolean unused = this.painter == null;
-                boolean toEdit = handHoldsPalette && !(getItem().getOrDefault(Items.CANVAS_GENERATION, 0) > 0);
+                boolean toEdit = handHoldsPalette && getItem().getOrDefault(Items.CANVAS_GENERATION, 0) <= 0;
                 boolean allowed = unused || !toEdit;
                 OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
                 ServerPlayNetworking.send((ServerPlayer) player, pack);
@@ -247,22 +244,17 @@ public class EntityEasel extends Entity {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
-        if (!this.level().isClientSide) {
-            if (dropDeferred != null) {
-                dropWaitTicks++;
-                if (painter == null || dropWaitTicks > 80) {
-                    dropDeferred.run();
-                    dropDeferred = null;
-                    dropWaitTicks = 0;
-                }
+        if (!level().isClientSide && dropDeferred != null) {
+            dropWaitTicks++;
+            if (painter == null || dropWaitTicks > 80) {
+                dropDeferred.run();
+                dropDeferred = null;
+                dropWaitTicks = 0;
             }
         }
-        if (painter != null) {
-            if (painter.isRemoved() || !painter.isAlive()) {
-                painter = null;
-            } else if (painter.distanceToSqr(this) > 64) {
-                painter = null;
-            }
+
+        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > 64)) {
+            painter = null;
         }
     }
 

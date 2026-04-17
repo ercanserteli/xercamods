@@ -1,6 +1,7 @@
 */out
 */build
 */bin
+/.metadata/
 .gradle/
 run/
 .idea/

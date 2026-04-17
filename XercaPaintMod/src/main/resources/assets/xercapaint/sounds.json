@@ -73,8 +73,8 @@
       }
     ]
   },
-    "water_drop": {
-      "sounds": [
+  "water_drop": {
+    "sounds": [
       {
         "name": "xercapaint:water_drop1"
       },
