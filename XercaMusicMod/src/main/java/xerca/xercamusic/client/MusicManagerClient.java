@@ -6,6 +6,7 @@ import net.minecraft.nbt.NbtIo;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.packets.serverbound.MusicDataRequestPacket;
 
 import java.io.File;
@@ -53,7 +54,9 @@ public final class MusicManagerClient {
                         int version = tag.getInt(KEY_VERSION);
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, tag);
-                        MUSIC_MAP.put(id, new MusicManager.MusicData(version, notes));
+                        ArrayList<VolumeMarker> markers = new ArrayList<>();
+                        VolumeMarker.fillArrayFromNBT(markers, tag);
+                        MUSIC_MAP.put(id, new MusicManager.MusicData(version, notes, markers.isEmpty() ? null : markers));
                     } else {
                         if (!file.delete()) {
                             Mod.LOGGER.warn("Could not delete invalid music sheet file: {}", file::getAbsolutePath);
@@ -107,8 +110,8 @@ public final class MusicManagerClient {
         return null;
     }
 
-    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes) {
-        MUSIC_MAP.put(id, new MusicManager.MusicData(ver, notes));
+    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers) {
+        MUSIC_MAP.put(id, new MusicManager.MusicData(ver, notes, volumeMarkers));
 
         // Save on disk
         String filename = id.toString();
@@ -122,6 +125,9 @@ public final class MusicManagerClient {
         tag.putUUID(KEY_ID, id);
         tag.putInt(KEY_VERSION, ver);
         NoteEvent.fillNBTFromArray(notes, tag);
+        if (volumeMarkers != null) {
+            VolumeMarker.fillNBTFromArray(volumeMarkers, tag);
+        }
         try {
             NbtIo.writeCompressed(tag, Path.of(filepath));
         } catch (IOException e) {

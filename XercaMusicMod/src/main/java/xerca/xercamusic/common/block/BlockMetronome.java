@@ -62,7 +62,6 @@ public class BlockMetronome extends BaseEntityBlock {
             state = state.setValue(BPS, bps);
             worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
         }
-
     }
 
     @Override

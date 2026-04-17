@@ -15,6 +15,7 @@ import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.clientbound.ImportMusicPacket;
 import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,6 +97,13 @@ public final class CommandImport {
             tag.putInt(KEY_GENERATION, tag.getInt(KEY_GENERATION) + 1);
         }
 
+        List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
+        if (volumeMarkers != null && !validateVolumeMarkers(volumeMarkers)) {
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+            Mod.LOGGER.warn("Broken sheet file: overlapping or invalid volume markers");
+            return false;
+        }
+
         return true;
     }
 
@@ -103,6 +111,7 @@ public final class CommandImport {
         if (tag.contains(KEY_ID) && tag.contains(KEY_VERSION)) {
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
+            List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
 
             if (notes == null) {
                 // maybe it was sent in parts
@@ -112,8 +121,12 @@ public final class CommandImport {
                 }
             }
 
-            MusicManager.setMusicData(id, ver, notes, player.server);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, notes));
+            if (!validateNotes(notes, player)) {
+                return false;
+            }
+
+            MusicManager.setMusicData(id, ver, notes, volumeMarkers, player.server);
+            sendToClient(player, new MusicDataResponsePacket(id, ver, notes, volumeMarkers));
             return true;
         }
 
@@ -121,14 +134,52 @@ public final class CommandImport {
             // old version
             Mod.LOGGER.info("Old music file version");
             List<NoteEvent> converted = convertFromOld(tag, player.server);
+            if (!validateNotes(converted, player)) {
+                return false;
+            }
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, converted));
+            sendToClient(player, new MusicDataResponsePacket(id, ver, converted, null));
             return true;
         }
 
         Mod.LOGGER.warn("Broken music file");
         return false;
+    }
+
+    private static List<VolumeMarker> readVolumeMarkers(CompoundTag tag) {
+        ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
+        VolumeMarker.fillArrayFromNBT(volumeMarkers, tag);
+        return volumeMarkers.isEmpty() ? null : volumeMarkers;
+    }
+
+    private static boolean validateNotes(List<NoteEvent> notes, ServerPlayer player) {
+        for (NoteEvent note : notes) {
+            int noteLength = note.length & 0xFF;
+            byte[] glissandoWaypoints = note.getEffectiveWaypoints();
+            if (glissandoWaypoints != null && glissandoWaypoints.length > noteLength) {
+                player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+                Mod.LOGGER.warn("Broken sheet file: note at time {} has {} glissando points for note length {}",
+                        note.time, glissandoWaypoints.length, noteLength);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean validateVolumeMarkers(List<VolumeMarker> volumeMarkers) {
+        for (int i = 0; i < volumeMarkers.size(); i++) {
+            VolumeMarker marker = volumeMarkers.get(i);
+            if (!marker.isValid()) {
+                return false;
+            }
+            for (int j = i + 1; j < volumeMarkers.size(); j++) {
+                if (marker.overlaps(volumeMarkers.get(j))) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private static boolean giveImportedSheetToPlayer(CompoundTag tag, ServerPlayer player) {

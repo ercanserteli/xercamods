@@ -114,6 +114,9 @@ public final class CommandExport {
         putOptionalFloat(stack, Items.SHEET_VOLUME, tag, KEY_VOLUME);
 
         NoteEvent.fillNBTFromArray(data.notes(), tag);
+        if (data.volumeMarkers() != null && !data.volumeMarkers().isEmpty()) {
+            VolumeMarker.fillNBTFromArray(data.volumeMarkers(), tag);
+        }
 
         try {
             NbtIo.write(tag, filePath);

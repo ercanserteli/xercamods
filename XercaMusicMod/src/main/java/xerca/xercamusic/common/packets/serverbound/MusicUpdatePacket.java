@@ -6,6 +6,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket.NotesTooLargeException;
 
 import java.util.ArrayList;
@@ -13,21 +14,21 @@ import java.util.UUID;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
-public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps,
+public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> notes, ArrayList<VolumeMarker> volumeMarkers, short lengthBeats, byte bps,
                                 float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked,
                                 UUID id, int version, byte highlightInterval) implements CustomPacketPayload {
     public static final Type<MusicUpdatePacket> PACKET_ID = new Type<>(Mod.id("music_update"));
     public static final StreamCodec<FriendlyByteBuf, MusicUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicUpdatePacket::encode, MusicUpdatePacket::decode);
 
     public static MusicUpdatePacket createEmpty() {
-        return new MusicUpdatePacket(new FieldFlag(), null, (short) 0, (byte) 0, 0.0f, false, null, (byte) 0, false, null, 0, (byte) 0);
+        return new MusicUpdatePacket(new FieldFlag(), null, null, (short) 0, (byte) 0, 0.0f, false, null, (byte) 0, false, null, 0, (byte) 0);
     }
 
-    public static MusicUpdatePacket create(FieldFlag availability, ArrayList<NoteEvent> notes, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws NotesTooLargeException {
+    public static MusicUpdatePacket create(FieldFlag availability, ArrayList<NoteEvent> notes, ArrayList<VolumeMarker> volumeMarkers, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws NotesTooLargeException {
         if (notes != null && notes.size() > MAX_NOTES_IN_PACKET) {
             throw new NotesTooLargeException(notes, id);
         }
-        return new MusicUpdatePacket(availability, notes, lengthBeats, bps, volume, signed, title, prevInstrument, prevInsLocked, id, version, highlightInterval);
+        return new MusicUpdatePacket(availability, notes, volumeMarkers, lengthBeats, bps, volume, signed, title, prevInstrument, prevInsLocked, id, version, highlightInterval);
     }
 
     public static MusicUpdatePacket decode(FriendlyByteBuf buf) {
@@ -35,6 +36,7 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
             FieldFlag flag = FieldFlag.fromInt(buf.readInt());
 
             ArrayList<NoteEvent> notes = null;
+            ArrayList<VolumeMarker> volumeMarkers = null;
             short lengthBeats = 0;
             byte bps = 0;
             float volume = 0.0f;
@@ -53,6 +55,9 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
             if (flag.hasLength) lengthBeats = buf.readShort();
             if (flag.hasNotes) {
                 int eventCount = buf.readInt();
+                if (eventCount < 0 || eventCount > MAX_NOTES_IN_PACKET) {
+                    throw new IllegalArgumentException("eventCount=" + eventCount);
+                }
                 if (eventCount != 0) {  // Notes may have been sent in parts beforehand
                     notes = new ArrayList<>(eventCount);
                     for (int i = 0; i < eventCount; i++) {
@@ -65,10 +70,14 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
             if (flag.hasId) id = buf.readUUID();
             if (flag.hasVersion) version = buf.readInt();
             if (flag.hasHlInterval) highlightInterval = buf.readByte();
+            if (flag.hasVolumeMarkers) {
+                volumeMarkers = readVolumeMarkers(buf);
+            }
 
             return MusicUpdatePacket.create(
                     flag,
                     notes,
+                    volumeMarkers,
                     lengthBeats,
                     bps,
                     volume,
@@ -80,10 +89,25 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
                     version,
                     highlightInterval
             );
-        } catch (NotesTooLargeException e) {
-            Mod.LOGGER.error("NotesTooLargeException while reading MusicUpdatePacket: ", e);
+        } catch (IllegalArgumentException | NotesTooLargeException e) {
+            Mod.LOGGER.error("Invalid MusicUpdatePacket", e);
             return createEmpty();
         }
+    }
+
+    private static ArrayList<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
+        int markerCount = buf.readInt();
+        if (markerCount < 0 || markerCount > Mod.MAX_VOLUME_MARKERS_IN_PACKET) {
+            throw new IllegalArgumentException("markerCount=" + markerCount);
+        }
+        if (markerCount == 0) {
+            return null;
+        }
+        ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>(markerCount);
+        for (int i = 0; i < markerCount; i++) {
+            volumeMarkers.add(VolumeMarker.fromBuffer(buf));
+        }
+        return volumeMarkers;
     }
 
 
@@ -109,6 +133,16 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
         if (availability.hasId) buf.writeUUID(id);
         if (availability.hasVersion) buf.writeInt(version);
         if (availability.hasHlInterval) buf.writeByte(highlightInterval);
+        if (availability.hasVolumeMarkers) {
+            if (volumeMarkers != null) {
+                buf.writeInt(volumeMarkers.size());
+                for (VolumeMarker marker : volumeMarkers) {
+                    marker.encodeToBuffer(buf);
+                }
+            } else {
+                buf.writeInt(0);
+            }
+        }
     }
 
     @Override
@@ -128,6 +162,7 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
         private static final int ID_FLAG = 1 << 8;
         private static final int VERSION_FLAG = 1 << 9;
         private static final int HL_INTERVAL_FLAG = 1 << 10;
+        private static final int VOLUME_MARKERS_FLAG = 1 << 11;
 
         public boolean hasNotes;
         public boolean hasLength;
@@ -140,10 +175,11 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
         public boolean hasId;
         public boolean hasVersion;
         public boolean hasHlInterval;
+        public boolean hasVolumeMarkers;
 
         public FieldFlag(boolean hasNotes, boolean hasLength, boolean hasBps, boolean hasVolume, boolean hasSigned,
                          boolean hasTitle, boolean hasPrevIns, boolean hasPrevInsLocked, boolean hasId,
-                         boolean hasVersion, boolean hasHlInterval) {
+                         boolean hasVersion, boolean hasHlInterval, boolean hasVolumeMarkers) {
             this.hasNotes = hasNotes;
             this.hasLength = hasLength;
             this.hasBps = hasBps;
@@ -155,6 +191,7 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
             this.hasId = hasId;
             this.hasVersion = hasVersion;
             this.hasHlInterval = hasHlInterval;
+            this.hasVolumeMarkers = hasVolumeMarkers;
         }
 
         public FieldFlag() {
@@ -172,7 +209,8 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
                     (packed & PREV_INS_LOCKED_FLAG) != 0,
                     (packed & ID_FLAG) != 0,
                     (packed & VERSION_FLAG) != 0,
-                    (packed & HL_INTERVAL_FLAG) != 0
+                    (packed & HL_INTERVAL_FLAG) != 0,
+                    (packed & VOLUME_MARKERS_FLAG) != 0
             );
         }
 
@@ -187,12 +225,13 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
                     (hasPrevInsLocked ? PREV_INS_LOCKED_FLAG : 0) |
                     (hasId ? ID_FLAG : 0) |
                     (hasVersion ? VERSION_FLAG : 0) |
-                    (hasHlInterval ? HL_INTERVAL_FLAG : 0);
+                    (hasHlInterval ? HL_INTERVAL_FLAG : 0) |
+                    (hasVolumeMarkers ? VOLUME_MARKERS_FLAG : 0);
         }
 
         public boolean hasAny() {
             return hasNotes || hasLength || hasBps || hasVolume || hasSigned || hasTitle || hasPrevIns ||
-                    hasPrevInsLocked || hasId || hasVersion || hasHlInterval;
+                    hasPrevInsLocked || hasId || hasVersion || hasHlInterval || hasVolumeMarkers;
         }
 
         @Override
@@ -200,7 +239,8 @@ public record MusicUpdatePacket(FieldFlag availability, ArrayList<NoteEvent> not
             return (hasNotes ? "Notes, " : "") + (hasLength ? "Length, " : "") + (hasBps ? "Bps, " : "")
                     + (hasVolume ? "Volume, " : "") + (hasSigned ? "Signed, " : "") + (hasTitle ? "Title, " : "")
                     + (hasPrevIns ? "PrevIns, " : "") + (hasPrevInsLocked ? "PrevInsLocked, " : "")
-                    + (hasId ? "Id, " : "") + (hasVersion ? "Version, " : "") + (hasHlInterval ? "HL Interval" : "");
+                    + (hasId ? "Id, " : "") + (hasVersion ? "Version, " : "") + (hasHlInterval ? "HL Interval, " : "")
+                    + (hasVolumeMarkers ? "VolumeMarkers" : "");
         }
     }
 }

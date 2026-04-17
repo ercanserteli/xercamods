@@ -21,6 +21,7 @@ import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -34,6 +35,7 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class TileEntityMusicBox extends BlockEntity {
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
+    private final ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
     private boolean isPlaying = false;
     private boolean oldPoweredState = false;
     private boolean isPowering = false;
@@ -48,6 +50,14 @@ public class TileEntityMusicBox extends BlockEntity {
     private SoundController soundController = null;
     private static final String KEY_NOTE = "note";
     private static final String KEY_INS_ID = "instrument_id";
+
+    private static byte sanitizeBps(int bps) {
+        return (byte) Math.max(1, Math.min(50, bps));
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
 
     public TileEntityMusicBox(BlockPos blockPos, BlockState blockState) {
         super(BlockEntities.MUSIC_BOX, blockPos, blockState);
@@ -69,6 +79,10 @@ public class TileEntityMusicBox extends BlockEntity {
                         if (data != null) {
                             t.notes.clear();
                             t.notes.addAll(data.notes());
+                            t.volumeMarkers.clear();
+                            if (data.volumeMarkers() != null) {
+                                t.volumeMarkers.addAll(data.volumeMarkers());
+                            }
                         }
                     });
                 } else {
@@ -78,6 +92,10 @@ public class TileEntityMusicBox extends BlockEntity {
                         if (data != null) {
                             t.notes.clear();
                             t.notes.addAll(data.notes());
+                            t.volumeMarkers.clear();
+                            if (data.volumeMarkers() != null) {
+                                t.volumeMarkers.addAll(data.volumeMarkers());
+                            }
                         } else {
                             Mod.LOGGER.warn("Unknown music sheet (id: {})", id);
                         }
@@ -157,7 +175,7 @@ public class TileEntityMusicBox extends BlockEntity {
             if (t.soundController != null) {
                 t.soundController.setStop();
             }
-            t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
+            t.soundController = new SoundController(t.notes, t.volumeMarkers, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
             t.soundController.start();
         }
     }
@@ -204,7 +222,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     private int beatsToTicks(int beats) {
-        return Math.round(beats * 20.0f / bps);
+        return Math.max(1, Math.round((beats) * 20.0f / (Math.max(1, bps))));
     }
 
     public ItemStack getSheetStack() {
@@ -219,8 +237,8 @@ public class TileEntityMusicBox extends BlockEntity {
 
             this.sheetStack = sheetStack;
             if (!ItemMusicSheet.isEmptySheet(sheetStack)) {
-                bps = sheetStack.getOrDefault(Items.SHEET_BPS, (byte) 8);
-                volume = sheetStack.getOrDefault(Items.SHEET_VOLUME, 1.f);
+                bps = sanitizeBps(sheetStack.getOrDefault(Items.SHEET_BPS, (byte) 8));
+                volume = sanitizeVolume(sheetStack.getOrDefault(Items.SHEET_VOLUME, 1.f));
                 length = sheetStack.getOrDefault(Items.SHEET_LENGTH, 0);
             } else {
                 this.notes.clear();

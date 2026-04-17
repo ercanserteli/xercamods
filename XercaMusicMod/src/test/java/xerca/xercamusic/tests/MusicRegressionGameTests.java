@@ -47,6 +47,8 @@ import java.util.UUID;
 public final class MusicRegressionGameTests {
     private static final String BASIC_TEMPLATE = Mod.MODID + ":basic_test";
     private static final Field MUSIC_BOX_IS_PLAYING_FIELD;
+    private static final Field MUSIC_BOX_BPS_FIELD;
+    private static final Field MUSIC_BOX_VOLUME_FIELD;
     private static final Field METRONOME_AGE_FIELD;
     private static final Field METRONOME_OLD_POWERED_STATE_FIELD;
     private static final Field METRONOME_COUNTDOWN_FIELD;
@@ -55,6 +57,10 @@ public final class MusicRegressionGameTests {
         try {
             MUSIC_BOX_IS_PLAYING_FIELD = TileEntityMusicBox.class.getDeclaredField("isPlaying");
             MUSIC_BOX_IS_PLAYING_FIELD.setAccessible(true);
+            MUSIC_BOX_BPS_FIELD = TileEntityMusicBox.class.getDeclaredField("bps");
+            MUSIC_BOX_BPS_FIELD.setAccessible(true);
+            MUSIC_BOX_VOLUME_FIELD = TileEntityMusicBox.class.getDeclaredField("volume");
+            MUSIC_BOX_VOLUME_FIELD.setAccessible(true);
             METRONOME_AGE_FIELD = TileEntityMetronome.class.getDeclaredField("age");
             METRONOME_AGE_FIELD.setAccessible(true);
             METRONOME_OLD_POWERED_STATE_FIELD = TileEntityMetronome.class.getDeclaredField("oldPoweredState");
@@ -199,7 +205,7 @@ public final class MusicRegressionGameTests {
         UUID id = UUID.randomUUID();
         ArrayList<NoteEvent> notes = new ArrayList<>();
         notes.add(new NoteEvent((byte) 64, (short) 0, (byte) 100, (byte) 1));
-        MusicManager.setMusicData(id, 1, notes, helper.getLevel().getServer());
+        MusicManager.setMusicData(id, 1, notes, null, helper.getLevel().getServer());
 
         ItemStack stack = new ItemStack(Items.MUSIC_SHEET);
         stack.set(Items.SHEET_ID, id);
@@ -217,6 +223,24 @@ public final class MusicRegressionGameTests {
         } catch (IllegalAccessException e) {
             helper.assertTrue(false, "Failed to read music box isPlaying field: " + e);
             return false;
+        }
+    }
+
+    private static byte getMusicBoxBps(GameTestHelper helper, TileEntityMusicBox musicBox) {
+        try {
+            return MUSIC_BOX_BPS_FIELD.getByte(musicBox);
+        } catch (IllegalAccessException e) {
+            helper.assertTrue(false, "Failed to read music box bps field: " + e);
+            return 0;
+        }
+    }
+
+    private static float getMusicBoxVolume(GameTestHelper helper, TileEntityMusicBox musicBox) {
+        try {
+            return MUSIC_BOX_VOLUME_FIELD.getFloat(musicBox);
+        } catch (IllegalAccessException e) {
+            helper.assertTrue(false, "Failed to read music box volume field: " + e);
+            return 0.0f;
         }
     }
 
@@ -316,11 +340,27 @@ public final class MusicRegressionGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = "music_regressions")
+    public static void musicBoxSheetValuesAreSanitizedOnInsert(GameTestHelper helper) {
+        BlockPos boxPos = new BlockPos(1, 2, 1);
+        placeMusicBox(helper, boxPos, Direction.NORTH);
+        TileEntityMusicBox musicBox = requireMusicBox(helper, boxPos);
+
+        ItemStack sheet = createSheetStack(helper, 8, 8);
+        sheet.set(Items.SHEET_BPS, (byte) 0);
+        sheet.set(Items.SHEET_VOLUME, 2.5f);
+        musicBox.setSheetStack(sheet, false);
+
+        helper.assertTrue(getMusicBoxBps(helper, musicBox) == 1, "Expected music box bps to clamp to minimum of 1");
+        helper.assertTrue(getMusicBoxVolume(helper, musicBox) == 1.0f, "Expected music box volume to clamp to maximum of 1.0");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "music_regressions")
     public static void musicSpiritSpawnDataHandlesInvalidBlockInstrument(GameTestHelper helper) {
         EntityMusicSpirit spirit = new EntityMusicSpirit(helper.getLevel());
 
         try {
-            spirit.buildFromSpawnData(0, -1, 0, -1);
+            spirit.buildFromSpawnData(0, -1, 0, -1, -1);
         } catch (Throwable t) {
             helper.assertTrue(false, "Expected invalid spawn data to be ignored without crash, but got: " + t);
             return;

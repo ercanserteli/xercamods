@@ -68,8 +68,8 @@ public class ClientStuff implements ClientModInitializer {
         return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, (byte) -1);
     }
 
-    public static void playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
-        playNote(event, x, y, z, SoundSource.RECORDS, volume, pitch, lengthTicks);
+    public static NoteSound playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
+        return playNote(event, x, y, z, SoundSource.RECORDS, volume, pitch, lengthTicks);
     }
 
     public static NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch, byte lengthTicks) {
