@@ -10,7 +10,11 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["minecraft:stick"]}
+          {
+            "items": [
+              "minecraft:stick"
+            ]
+          }
         ]
       }
     },

@@ -45,14 +45,12 @@ public class ItemPalette extends Item {
             return 0;
         }
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
-        if (basicColors != null) {
-            if (basicColors.length == 16) {
-                int basicCount = 0;
-                for (byte basicColor : basicColors) {
-                    basicCount += basicColor;
-                }
-                return basicCount;
+        if (basicColors != null && basicColors.length == 16) {
+            int basicCount = 0;
+            for (byte basicColor : basicColors) {
+                basicCount += basicColor;
             }
+            return basicCount;
         }
         return 0;
     }

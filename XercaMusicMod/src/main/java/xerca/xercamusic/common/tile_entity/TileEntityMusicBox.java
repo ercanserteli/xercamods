@@ -51,6 +51,14 @@ public class TileEntityMusicBox extends BlockEntity {
     private static final String KEY_NOTE = "note";
     private static final String KEY_INS_ID = "instrument_id";
 
+    private static byte sanitizeBps(int bps) {
+        return (byte) Math.max(1, Math.min(50, bps));
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
+
     public TileEntityMusicBox(BlockPos blockPos, BlockState blockState) {
         super(BlockEntities.MUSIC_BOX, blockPos, blockState);
         if (blockState.getValue(BlockMusicBox.POWERED)) {
@@ -214,7 +222,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     private int beatsToTicks(int beats) {
-        return Math.round(beats * 20.0f / bps);
+        return Math.max(1, Math.round((beats) * 20.0f / (Math.max(1, bps))));
     }
 
     public ItemStack getSheetStack() {
