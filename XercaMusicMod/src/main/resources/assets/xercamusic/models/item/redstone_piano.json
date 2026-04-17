@@ -1,0 +1,42 @@
+{
+  "parent": "xercamusic:item/instrument_string",
+  "textures": {
+    "layer0": "xercamusic:item/instruments/redstone_piano"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        86,
+        2,
+        -12
+      ],
+      "translation": [
+        -4.75,
+        0.5,
+        4.75
+      ],
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        90,
+        -180,
+        0
+      ],
+      "translation": [
+        -3.25,
+        0.25,
+        5
+      ],
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ]
+    }
+  }
+}

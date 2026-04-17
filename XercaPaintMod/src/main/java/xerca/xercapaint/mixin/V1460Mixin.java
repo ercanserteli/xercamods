@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public abstract class V1460Mixin {
     @Inject(method = "registerEntities", at = @At("TAIL"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     private void registerEntitiesMixin(Schema schema, CallbackInfoReturnable<Map<String, Supplier<TypeTemplate>>> cir, Map<String, Supplier<TypeTemplate>> map) {
-        schema.register(map, "xercapaint:easel", (string) -> DSL.optionalFields("Item", References.ITEM_STACK.in(schema)));
-        schema.register(map, "xercapaint:canvas", (string) -> DSL.optionalFields("_", References.ITEM_STACK.in(schema)));
+        schema.register(map, "xercapaint:easel", string -> DSL.optionalFields("Item", References.ITEM_STACK.in(schema)));
+        schema.register(map, "xercapaint:canvas", string -> DSL.optionalFields("_", References.ITEM_STACK.in(schema)));
     }
 }

@@ -34,6 +34,7 @@ public class Mod implements ModInitializer {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
+    public static final int MAX_VOLUME_MARKERS_IN_PACKET = 2000;
 
     public static void sendToClient(ServerPlayer player, CustomPacketPayload packet) {
         ServerPlayNetworking.send(player, packet);

@@ -83,7 +83,8 @@ public class ItemMusicSheet extends Item {
         byte pause = nbt.getByte(KEY_PAUSE_OLD);
         byte[] music = nbt.getByteArray(KEY_MUSIC_OLD);
 
-        byte bps = (byte) Math.round(20.f / pause);
+        int safePause = Math.max(1, pause);
+        byte bps = (byte) Math.min(50, Math.max(1, Math.round(20.f / safePause)));
         List<NoteEvent> notes = oldMusicToNotes(music);
 
         nbt.putInt(KEY_LENGTH, length + ADD_TO_OLD_END);
@@ -98,11 +99,11 @@ public class ItemMusicSheet extends Item {
             } else {
                 id = UUID.randomUUID();
                 CONVERT_MAP.put(key, id);
-                MusicManager.setMusicData(id, 1, notes, server);
+                MusicManager.setMusicData(id, 1, notes, null, server);
             }
         } else {
             id = UUID.randomUUID();
-            MusicManager.setMusicData(id, 1, notes, server);
+            MusicManager.setMusicData(id, 1, notes, null, server);
         }
 
         nbt.putUUID(KEY_ID, id);
