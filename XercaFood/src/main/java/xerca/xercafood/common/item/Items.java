@@ -286,7 +286,7 @@ public final class Items {
     }
 
     private static void registerItem(String name, Item item) {
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaFood.MODID, name), item);
+        Registry.register(BuiltInRegistries.ITEM, XercaFood.id(name), item);
     }
 
     static void registerCompostable(float chance, ItemLike itemIn) {
@@ -303,10 +303,10 @@ public final class Items {
     }
 
     public static void registerRecipes() {
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaFood.MODID, "crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, XercaFood.id("crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, XercaFood.id("crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, XercaFood.id("crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, XercaFood.id("crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
     }
 
     public static void registerItems() {

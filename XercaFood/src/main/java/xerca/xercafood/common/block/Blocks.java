@@ -80,7 +80,7 @@ public class Blocks {
     // PIZZA END
 
     private static void registerBlock(String name, Block block) {
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(XercaFood.MODID, name), block);
+        Registry.register(BuiltInRegistries.BLOCK, XercaFood.id(name), block);
     }
 
     public static void registerBlocks() {

@@ -1,8 +1,0 @@
-
-{
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "xercafood:item_glass"}, {"item": "minecraft:carrot"}],
-    "result": {"item": "xercafood:item_carrot_juice"}
-}
-        

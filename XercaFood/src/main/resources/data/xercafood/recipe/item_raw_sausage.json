@@ -1,0 +1,6 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "minecraft:porkchop"}, {"item": "xercafood:item_knife", "data": 32767}],
+    "result": {"count": 2, "id": "xercafood:item_raw_sausage"}
+}

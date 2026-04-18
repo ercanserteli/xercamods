@@ -1,0 +1,6 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercafood:item_knife", "data": 32767}, {"item": "minecraft:oak_log"}],
+    "result": {"id": "minecraft:stripped_oak_log"}
+}

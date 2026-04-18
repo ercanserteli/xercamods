@@ -1,0 +1,8 @@
+{
+    "type": "minecraft:smoking",
+    
+    "ingredient": {"item": "xercafood:raw_shish_kebab"},
+    "result": {"id": "xercafood:item_shish_kebab"},
+    "experience": 0.2,
+    "cookingtime": 100
+}

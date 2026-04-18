@@ -11,9 +11,9 @@ import xerca.xercafood.common.XercaFood;
 
 public final class Entities {
     public static final EntityType<EntityTomato> TOMATO = FabricEntityTypeBuilder.<EntityTomato>create(MobCategory.MISC, EntityTomato::new)
-            .dimensions(new EntityDimensions(0.25f, 0.25f, true)).trackedUpdateRate(10).build();
+            .dimensions(EntityDimensions.fixed(0.25f, 0.25f)).trackedUpdateRate(10).build();
 
     public static void registerEntities() {
-        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(XercaFood.MODID, "tomato"), TOMATO);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, XercaFood.id("tomato"), TOMATO);
     }
 }

@@ -1,0 +1,10 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "i",
+        "s"
+    ],
+    "key": {"s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:iron_ingot"}},
+    "result": {"id": "xercafood:item_knife"}
+}

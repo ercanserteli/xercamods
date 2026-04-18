@@ -79,6 +79,9 @@
 
   "item.xercafood.cola_powder": "Gizli Kola Formülü",
   "item.xercafood.cola_extract": "Kola Özütü",
+  "item.minecraft.potion.effect.cola_extract": "Kola Özütü",
+  "item.minecraft.splash_potion.effect.cola_extract": "Sıçrayan Kola Özütü",
+  "item.minecraft.lingering_potion.effect.cola_extract": "Kalıcı Kola Özütü",
   "item.xercafood.cola": "Kola",
   "item.xercafood.soda": "Gazoz",
   "item.xercafood.carbonated_water": "Maden Suyu",

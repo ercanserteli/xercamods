@@ -2,10 +2,13 @@ package xerca.xercafood.common;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -15,6 +18,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
@@ -36,26 +40,33 @@ public class XercaFood implements ModInitializer {
     private static final String PROTOCOL_VERSION = Integer.toString(1);
 
     public static final Logger LOGGER = LogManager.getLogger();
-    private static final ResourceLocation GRASS_LOOT_TABLE_ID = net.minecraft.world.level.block.Blocks.GRASS.getLootTable();
+    private static final ResourceKey<LootTable> GRASS_LOOT_TABLE_ID = net.minecraft.world.level.block.Blocks.SHORT_GRASS.getLootTable();
 
     public XercaFood() {
 
     }
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    }
 
-//    public static final Potion COLA_EXTRACT = new Potion();
-//    todo solved this using normal crafting. find a way to do it properly with brewing
-//    private void registerPotions() {
-//        Registry.register(Registry.POTION, new ResourceLocation(XercaFood.MODID, "cola_extract"), COLA_EXTRACT);
-//        PotionBrewing.addMix(Potions.WATER, Items.COLA_POWDER, COLA_EXTRACT);
-//    }
+    public static boolean isColaExtract(ItemStack stack) {
+        return stack.is(Items.COLA_EXTRACT);
+    }
 
     @Override
     public void onInitialize() {
         // Making tomato dispensable by dispenser
-        DispenserBlock.registerBehavior(Items.ITEM_TOMATO, new AbstractProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(Items.ITEM_TOMATO, new DefaultDispenseItemBehavior() {
             @Nonnull
-            protected Projectile getProjectile(@Nonnull Level worldIn, @Nonnull Position position, @Nonnull ItemStack stackIn) {
-                return new EntityTomato(worldIn, position.x(), position.y(), position.z());
+            @Override
+            protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stackIn) {
+                Direction direction = source.state().getValue(DispenserBlock.FACING);
+                Position position = DispenserBlock.getDispensePosition(source);
+                Projectile projectile = new EntityTomato(source.level(), position.x(), position.y(), position.z());
+                projectile.shoot(direction.getStepX(), direction.getStepY() + 0.1F, direction.getStepZ(), 1.1F, 6.0F);
+                source.level().addFreshEntity(projectile);
+                stackIn.shrink(1);
+                return stackIn;
             }
         });
         Items.registerCompostables();
@@ -65,7 +76,6 @@ public class XercaFood implements ModInitializer {
         Items.registerRecipes();
         SoundEvents.registerSoundEvents();
         Entities.registerEntities();
-//        registerPotions();
         registerSeedDrops();
         registerDonerEvent();
         registerTradeOffers();
@@ -94,7 +104,7 @@ public class XercaFood implements ModInitializer {
     }
 
     private void registerSeedDrops() {
-        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+        LootTableEvents.MODIFY.register((id, tableBuilder, source, registries) -> {
             if (source.isBuiltin() && GRASS_LOOT_TABLE_ID.equals(id)) {
                 LootPool.Builder poolRice = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))

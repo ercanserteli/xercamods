@@ -3,8 +3,9 @@ package xerca.xercafood.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,11 +21,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
 import javax.annotation.Nullable;
@@ -40,7 +41,7 @@ public class BlockDoner extends Block implements EntityBlock {
     private RenderShape renderType = RenderShape.ENTITYBLOCK_ANIMATED;
 
     public BlockDoner() {
-        super(Block.Properties.of(Material.CAKE).sound(SoundType.METAL).strength(1).noOcclusion());
+        super(Block.Properties.of().sound(SoundType.METAL).strength(1).noOcclusion());
         registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(IS_RAW, true));
     }
 
@@ -55,8 +56,7 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack heldItem = player.getItemInHand(hand);
+    public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem, @NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (heldItem.getItem() == Items.MUTTON) {
             if (state.getValue(IS_RAW) && state.getValue(MEAT_AMOUNT) < 4) {
                 if (!worldIn.isClientSide) {
@@ -64,7 +64,7 @@ public class BlockDoner extends Block implements EntityBlock {
                     heldItem.shrink(1);
                 }
                 worldIn.playSound(null, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8f, 0.9f + worldIn.random.nextFloat() * 0.1f);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         } else if (heldItem.getItem() == xerca.xercafood.common.item.Items.ITEM_KNIFE) {
             if (!state.getValue(IS_RAW)) {
@@ -84,15 +84,13 @@ public class BlockDoner extends Block implements EntityBlock {
                     donerEntity.hurtMarked = true;
                     worldIn.addFreshEntity(donerEntity);
 
-                    heldItem.hurtAndBreak(1, player, (playerEntity) -> {
-                        playerEntity.broadcastBreakEvent(hand);
-                    });
+                    heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                 }
                 worldIn.playSound(player, pos, xerca.xercafood.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat() * 0.1f);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

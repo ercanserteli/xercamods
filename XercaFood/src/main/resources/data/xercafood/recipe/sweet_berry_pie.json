@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "ADA",
+        "BEB",
+        "CCC"
+    ],
+    "key": {"A": {"item": "minecraft:sweet_berries"}, "B": {"item": "minecraft:sugar"}, "C": {"item": "minecraft:wheat"}, "D": {"item": "minecraft:milk_bucket"}, "E": {"item": "minecraft:egg"}},
+    "result": {"id": "xercafood:sweet_berry_pie"}
+}

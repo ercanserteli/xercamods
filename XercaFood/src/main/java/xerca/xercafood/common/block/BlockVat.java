@@ -7,28 +7,25 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
-public class BlockVat extends AbstractCauldronBlock {
+public class BlockVat extends Block {
     public enum VatContent {EMPTY, MILK, CHEESE}
 
     private static final VoxelShape INSIDE = box(1.0D, 7.0D, 1.0D, 15.0D, 16.0D, 15.0D);
@@ -42,7 +39,7 @@ public class BlockVat extends AbstractCauldronBlock {
     private final VatContent content;
 
     public BlockVat(VatContent content) {
-        super(Block.Properties.of(Material.METAL, MaterialColor.COLOR_ORANGE).strength(1.5F).noOcclusion().randomTicks(), Map.of());
+        super(Block.Properties.of().strength(1.5F).noOcclusion().randomTicks());
         this.content = content;
     }
 
@@ -58,8 +55,7 @@ public class BlockVat extends AbstractCauldronBlock {
 
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        ItemStack itemstack = player.getItemInHand(hand);
+    public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack itemstack, @NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult blockHitResult) {
         switch (content) {
             case EMPTY -> {
                 if (itemstack.getItem() == Items.MILK_BUCKET) {
@@ -71,7 +67,7 @@ public class BlockVat extends AbstractCauldronBlock {
                     level.setBlockAndUpdate(blockPos, Blocks.VAT_MILK.defaultBlockState());
                     level.playSound(null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos);
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
             case MILK -> {
@@ -84,35 +80,39 @@ public class BlockVat extends AbstractCauldronBlock {
                     level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
                     level.playSound(null, blockPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
             case CHEESE -> {
-                if (!level.isClientSide) {
-                    Vec3 playerPos = new Vec3(player.getX(), player.getY(), player.getZ());
-                    Vec3 boost = playerPos.subtract(new Vec3(blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ()));
-                    boost = boost.normalize().scale(0.15);
-
-                    ItemEntity entity = new ItemEntity(level, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(),
-                            new ItemStack(xerca.xercafood.common.item.Items.CHEESE_WHEEL));
-                    entity.setDefaultPickUpDelay();
-                    entity.push(boost.x, 0.05, boost.z);
-                    entity.hurtMarked = true;
-                    level.addFreshEntity(entity);
-                    level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
-                    level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
-                }
-                return InteractionResult.SUCCESS;
+                InteractionResult used = useWithoutItem(blockState, level, blockPos, player, blockHitResult);
+                return used.consumesAction() ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
-    public boolean isFull(BlockState blockState) {
-        return content != VatContent.EMPTY;
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull BlockHitResult blockHitResult) {
+        if (content != VatContent.CHEESE) {
+            return InteractionResult.PASS;
+        }
+        if (!level.isClientSide) {
+            Vec3 playerPos = new Vec3(player.getX(), player.getY(), player.getZ());
+            Vec3 boost = playerPos.subtract(new Vec3(blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ()));
+            boost = boost.normalize().scale(0.15);
+
+            ItemEntity entity = new ItemEntity(level, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(),
+                    new ItemStack(xerca.xercafood.common.item.Items.CHEESE_WHEEL));
+            entity.setDefaultPickUpDelay();
+            entity.push(boost.x, 0.05, boost.z);
+            entity.hurtMarked = true;
+            level.addFreshEntity(entity);
+            level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
+            level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override

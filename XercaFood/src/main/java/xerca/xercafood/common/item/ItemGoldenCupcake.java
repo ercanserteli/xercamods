@@ -1,10 +1,7 @@
 package xerca.xercafood.common.item;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -19,6 +16,7 @@ import net.minecraft.world.level.Level;
 import xerca.xercafood.common.SoundEvents;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,19 +32,6 @@ public class ItemGoldenCupcake extends Item {
     @Override
     public boolean isFoil(ItemStack stack) {
         return true;
-    }
-
-    public static CompoundTag getSkullNBT(List<Integer> id, String texture) {
-        CompoundTag skullNBT = new CompoundTag();
-        CompoundTag propertiesNBT = new CompoundTag();
-        ListTag texturesNBT = new ListTag();
-        CompoundTag tNBT = new CompoundTag();
-        tNBT.putString("Value", texture);
-        texturesNBT.add(tNBT);
-        propertiesNBT.put("textures", texturesNBT);
-        skullNBT.put("Properties", propertiesNBT);
-        skullNBT.putIntArray("Id", id);
-        return skullNBT;
     }
 
     @Override
@@ -96,7 +81,7 @@ public class ItemGoldenCupcake extends Item {
                     player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 150, 3));
                     break;
                 case 2:
-                    List<Player> targets = player.level.getNearbyPlayers(yahooPredicate, player, player.getBoundingBox().inflate(16.0D, 8.0D, 16.0D));
+                    List<Player> targets = player.level().getNearbyPlayers(yahooPredicate, player, player.getBoundingBox().inflate(16.0D, 8.0D, 16.0D));
                     targets.add(player);
                     for (Player p : targets) {
                         worldIn.playSound(null, p.getX(), p.getY() + 3, p.getZ(), SoundEvents.YAHOO, SoundSource.PLAYERS, 1.0f, worldIn.random.nextFloat() * 0.2F + 0.9F);
@@ -111,9 +96,9 @@ public class ItemGoldenCupcake extends Item {
                 case 3:
                     worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SPARKLES, SoundSource.PLAYERS, 1.0f, worldIn.random.nextFloat() * 0.4F + 0.8F);
 
-                    List<MobEffect> effects = Arrays.asList(MobEffects.HEALTH_BOOST, MobEffects.REGENERATION, MobEffects.SATURATION,
+                    List<Holder<net.minecraft.world.effect.MobEffect>> effects = new ArrayList<>(Arrays.asList(MobEffects.HEALTH_BOOST, MobEffects.REGENERATION, MobEffects.SATURATION,
                             MobEffects.SLOW_FALLING, MobEffects.CONFUSION, MobEffects.MOVEMENT_SPEED, MobEffects.HUNGER, MobEffects.WEAKNESS,
-                            MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SPEED, MobEffects.DAMAGE_BOOST);
+                            MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SPEED, MobEffects.DAMAGE_BOOST));
                     Collections.shuffle(effects);
                     for (int i = 0; i < 3; i++) {
                         player.addEffect(new MobEffectInstance(effects.get(i), 200 + worldIn.random.nextInt(400), 2 + worldIn.random.nextInt(5)));
@@ -126,29 +111,24 @@ public class ItemGoldenCupcake extends Item {
                     player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 2));
                     player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 1));
 
-                    ItemStack herobrineHead = new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD, 1);
-                    herobrineHead.getOrCreateTag().put("SkullOwner", getSkullNBT(Arrays.asList(1002043797, -372031054, -1422417350, -1998966556), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmM2NWVkMjgyOWM4M2UxMTlhODBkZmIyMjIxNjQ0M2U4NzhlZjEwNjQ5YzRhMzU0Zjc0YmY0NWFkMDZiYzFhNyJ9fX0="));
-
                     Item[] weapons = {Items.ITEM_RAW_SAUSAGE, Items.ITEM_KNIFE, Items.ITEM_HOT_TEAPOT_1, Items.ITEM_ROTTEN_BURGER};
 
-                    Entity e1 = new Skeleton(EntityType.SKELETON, worldIn);
-                    e1.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
-                    e1.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
-
-                    e1.setItemSlot(EquipmentSlot.HEAD, herobrineHead);
-                    e1.moveTo(player.getX() + (double) worldIn.random.nextInt(3), player.getY() + (double) worldIn.random.nextInt(5), player.getZ() + (double) worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
-
-                    ItemStack playerHead = new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD, 1);
-                    playerHead.getOrCreateTag().put("SkullOwner", NbtUtils.writeGameProfile(new CompoundTag(), player.getGameProfile()));
-
-                    Entity e2 = new Zombie(worldIn);
-                    e2.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_KNIFE));
-                    e2.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.ITEM_KNIFE));
-                    e2.setItemSlot(EquipmentSlot.HEAD, playerHead);
-                    e2.moveTo(player.getX() + (double) worldIn.random.nextInt(3), player.getY() + (double) worldIn.random.nextInt(5), player.getZ() + (double) worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
-
-                    worldIn.addFreshEntity(e1);
-                    worldIn.addFreshEntity(e2);
+                    Skeleton skeleton = EntityType.SKELETON.create(worldIn);
+                    Zombie zombie = EntityType.ZOMBIE.create(worldIn);
+                    if (skeleton != null) {
+                        skeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
+                        skeleton.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
+                        skeleton.setItemSlot(EquipmentSlot.HEAD, new ItemStack(net.minecraft.world.item.Items.WITHER_SKELETON_SKULL));
+                        skeleton.moveTo(player.getX() + (double) worldIn.random.nextInt(3), player.getY() + (double) worldIn.random.nextInt(5), player.getZ() + (double) worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
+                        worldIn.addFreshEntity(skeleton);
+                    }
+                    if (zombie != null) {
+                        zombie.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_KNIFE));
+                        zombie.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.ITEM_KNIFE));
+                        zombie.setItemSlot(EquipmentSlot.HEAD, new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD));
+                        zombie.moveTo(player.getX() + (double) worldIn.random.nextInt(3), player.getY() + (double) worldIn.random.nextInt(5), player.getZ() + (double) worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
+                        worldIn.addFreshEntity(zombie);
+                    }
                     break;
             }
         }

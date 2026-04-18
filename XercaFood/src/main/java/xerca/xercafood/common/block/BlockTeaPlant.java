@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import xerca.xercafood.common.item.Items;
@@ -28,7 +27,7 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
 
 
     BlockTeaPlant() {
-        super(Block.Properties.of(Material.PLANT).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
+        super(Block.Properties.of().sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
     }
 
     @Override

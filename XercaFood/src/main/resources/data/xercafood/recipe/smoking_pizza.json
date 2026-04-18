@@ -1,0 +1,8 @@
+{
+    "type": "minecraft:smoking",
+    
+    "ingredient": {"item": "xercafood:raw_pizza"},
+    "result": {"id": "xercafood:pizza"},
+    "experience": 0.2,
+    "cookingtime": 150
+}

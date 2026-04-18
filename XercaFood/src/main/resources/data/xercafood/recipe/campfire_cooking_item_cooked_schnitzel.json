@@ -1,0 +1,8 @@
+{
+    "type": "minecraft:campfire_cooking",
+    
+    "ingredient": {"item": "xercafood:item_raw_schnitzel"},
+    "result": {"id": "xercafood:item_cooked_schnitzel"},
+    "experience": 0.2,
+    "cookingtime": 600
+}

@@ -15,6 +15,39 @@ conditions = ["grab_hook", "warhammer", "cushion", "tea", "food", "confetti", "e
               "leather_straw", "bookcase", "coins", "scythe", "rope", "terracotta_tile", "omni_chest"]
 
 
+def normalize_itemstack(result):
+    if isinstance(result, str):
+        return {"id": result}
+
+    normalized = dict(result)
+    if "item" in normalized:
+        normalized["id"] = normalized.pop("item")
+    return normalized
+
+
+def result_id(result):
+    normalized = normalize_itemstack(result)
+    return normalized["id"]
+
+
+def normalize_advancement_item_predicate(discover_item):
+    if discover_item is None:
+        return None
+
+    if isinstance(discover_item, str):
+        return {"items": discover_item}
+
+    normalized = dict(discover_item)
+    if "item" in normalized:
+        return {"items": normalized["item"]}
+    if "tag" in normalized:
+        tag = normalized["tag"]
+        if not tag.startswith("#"):
+            tag = "#" + tag
+        return {"items": tag}
+    return normalized
+
+
 class Type(Enum):
     crafting_shaped, crafting_shapeless, smelting, campfire_cooking, blasting, smoking, stone_cutting = range(7)
 
@@ -23,9 +56,7 @@ class Recipe:
     def __init__(self, type, group, discover_item, folder):
         self.type = type
         self.group = group
-        if discover_item is not None and "item" in discover_item.keys():
-            discover_item = "{'items': ['" + discover_item["item"] + "']}"
-        self.discover_item = discover_item
+        self.discover_item = normalize_advancement_item_predicate(discover_item)
         self.folder = folder
 
         self.cond = None
@@ -46,9 +77,9 @@ class Recipe:
         if self.cond is None:
             template = """
 {{
-  "parent": "{mod_id}:recipe/root",
+  "parent": "{mod_id}:recipes/root",
   "rewards": {{
-    "recipe": [
+    "recipes": [
       "{mod_id}:{recipe_path}"
     ]
   }},
@@ -76,13 +107,17 @@ class Recipe:
   ]
 }}
         """
-            return template.format(mod_id=mod_id, recipe_path=recipe_path, discover_item=self.discover_item).replace("'", '"')
+            return template.format(
+                mod_id=mod_id,
+                recipe_path=recipe_path,
+                discover_item=json.dumps(self.discover_item)
+            )
         else:
             template = """
 {{
-  "parent": "{mod_id}:recipe/root",
+  "parent": "{mod_id}:recipes/root",
   "rewards": {{
-    "recipe": [
+    "recipes": [
       "{mod_id}:{recipe_path}"
     ]
   }},
@@ -117,7 +152,12 @@ class Recipe:
   ]
 }}
             """
-            return template.format(mod_id=mod_id, recipe_path=recipe_path, discover_item=self.discover_item, cond=self.cond).replace("'", '"')
+            return template.format(
+                mod_id=mod_id,
+                recipe_path=recipe_path,
+                discover_item=json.dumps(self.discover_item),
+                cond=self.cond
+            )
 
 
 class ShapedRecipe(Recipe):
@@ -141,10 +181,10 @@ class ShapedRecipe(Recipe):
     "result": {result}
 }}
         """
-        return template.format(type=self.type, group=group_line, pattern=pattern_line, key=self.key, result=self.result).replace("'", '"')
+        return template.format(type=self.type, group=group_line, pattern=pattern_line, key=self.key, result=normalize_itemstack(self.result)).replace("'", '"')
 
     def get_name(self):
-        return self.result["id"].split(":", 1)[1]
+        return result_id(self.result).split(":", 1)[1]
 
 
 class ShapelessRecipe(Recipe):
@@ -163,10 +203,10 @@ class ShapelessRecipe(Recipe):
     "result": {result}
 }}
         """
-        return template.format(type=self.type, group=group_line, ingredients=self.ingredients, result=self.result).replace("'", '"')
+        return template.format(type=self.type, group=group_line, ingredients=self.ingredients, result=normalize_itemstack(self.result)).replace("'", '"')
 
     def get_name(self):
-        return self.result["id"].split(":", 1)[1]
+        return result_id(self.result).split(":", 1)[1]
 
 
 class CookingRecipe(Recipe):
@@ -183,18 +223,16 @@ class CookingRecipe(Recipe):
 {{
     "type": "{type}",
     {group}
-    "ingredient": [
-        {ingredient}
-    ],
-    "result": "{result}",
+    "ingredient": {ingredient},
+    "result": {result},
     "experience": {experience},
     "cookingtime": {cooking_time}
 }}
         """
-        return template.format(type=self.type, group=group_line, ingredient=self.ingredient, experience=self.experience, cooking_time=self.cooking_time, result=self.result).replace("'", '"')
+        return template.format(type=self.type, group=group_line, ingredient=self.ingredient, experience=self.experience, cooking_time=self.cooking_time, result=normalize_itemstack(self.result)).replace("'", '"')
 
     def get_name(self):
-        item_name = self.result.split(":", 1)[1]
+        item_name = result_id(self.result).split(":", 1)[1]
         if "smelting" in self.type:
             return "smelting_" + item_name
         if "campfire" in self.type:
@@ -313,7 +351,7 @@ def write_recipe_adv_root_json():
     ]
   ]
 }"""
-    file_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipe/root.json"
+    file_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipes/root.json"
     with open(file_dir, "w") as f:
         f.write(content)
 
@@ -341,7 +379,7 @@ def clean_recipe_jsons(mod_id_input):
     global mod_id
     mod_id = mod_id_input
     recipe_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipe"
-    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipe"
+    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipes"
 
     try:
         shutil.rmtree(recipe_main_dir)
@@ -360,7 +398,7 @@ def generate_recipe_jsons(recipes, mod_id_input):
     global mod_id
     mod_id = mod_id_input
     recipe_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/recipe"
-    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipe"
+    adv_main_dir = f"../{mod_id_to_folder[mod_id]}/src/main/resources/data/{mod_id}/advancement/recipes"
 
     write_recipe_adv_root_json()
     for r in recipes:
@@ -404,7 +442,7 @@ def generate_recipe_code_from_files(mod_id_input):
             shapelesses.append(code_template.format(recipe_class, j.get("ingredients"), j.get("result"), "DISCOVER", group))
         elif recipe_class == "CookingRecipe":
             code_template = '{}("{}", {}, "{}", {}, {}, {}, "{}"),'
-            cookings.append(code_template.format(recipe_class, j.get("type"), j.get("ingredient"), j.get("result"), j.get("experience"), j.get("cookingtime"), "DISCOVER", group))
+            cookings.append(code_template.format(recipe_class, j.get("type"), j.get("ingredient"), j.get("result", {}).get("id"), j.get("experience"), j.get("cookingtime"), "DISCOVER", group))
         else:
             code_template = '{}("{}", {}, "{}"),'
             specials.append(code_template.format(recipe_class, j.get("type"), "DISCOVER", group))

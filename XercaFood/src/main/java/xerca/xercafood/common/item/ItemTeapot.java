@@ -19,7 +19,7 @@ public class ItemTeapot extends BlockItem {
     private final boolean isHot;
 
     public ItemTeapot(BlockTeapot blockTeapot, int teaAmount, boolean isHot) {
-        super(blockTeapot, new Item.Properties().defaultDurability(maxTea));
+        super(blockTeapot, new Item.Properties());
         this.teaAmount = teaAmount;
         this.isHot = isHot;
     }
@@ -33,7 +33,7 @@ public class ItemTeapot extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.literal(isHot ? "Hot" : "Cold"));
         tooltip.add(Component.literal("Tea amount: " + teaAmount));
     }

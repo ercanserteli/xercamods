@@ -1,11 +1,11 @@
 package xerca.xercafood.common.crafting;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -27,19 +27,19 @@ public class RecipeTeaPouring extends CustomRecipe {
         return res;
     }
 
-    public RecipeTeaPouring(ResourceLocation location, CraftingBookCategory category) {
-        super(location, category);
+    public RecipeTeaPouring(CraftingBookCategory category) {
+        super(category);
     }
 
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         int i = 0;
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemTeapot teapot = null;
 
-        for (int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.size(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemTeapot) {
@@ -68,12 +68,12 @@ public class RecipeTeaPouring extends CustomRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         int i = 0;
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemTeapot teapot = null;
 
-        for (int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.size(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemTeapot) {
@@ -103,11 +103,12 @@ public class RecipeTeaPouring extends CustomRecipe {
         }
     }
 
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
+        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 
         int teacupCount = 0;
-        for (int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.size(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() == Items.ITEM_TEACUP && teacupCount <= 6) {
@@ -137,6 +138,7 @@ public class RecipeTeaPouring extends CustomRecipe {
         return nonnulllist;
     }
 
+    @Override
     public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_TEA_POURING;
     }
@@ -144,6 +146,7 @@ public class RecipeTeaPouring extends CustomRecipe {
     /**
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
+    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return width >= 3 && height >= 3;
     }

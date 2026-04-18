@@ -74,6 +74,9 @@
 
   "item.xercafood.cola_powder": "Secret Cola Formula",
   "item.xercafood.cola_extract": "Cola Extract",
+  "item.minecraft.potion.effect.cola_extract": "Cola Extract",
+  "item.minecraft.splash_potion.effect.cola_extract": "Splash Cola Extract",
+  "item.minecraft.lingering_potion.effect.cola_extract": "Lingering Cola Extract",
   "item.xercafood.cola": "Cola",
   "item.xercafood.soda": "Soda",
   "item.xercafood.carbonated_water": "Sparkling Water",

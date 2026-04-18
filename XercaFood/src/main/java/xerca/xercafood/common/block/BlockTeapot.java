@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -21,8 +22,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -43,7 +43,7 @@ public class BlockTeapot extends Block {
     private static final VoxelShape shape = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape), handleShape), tipShape);
 
     public BlockTeapot() {
-        super(Properties.of(Material.CLAY).strength(0.0F, 1.0F).sound(SoundType.STONE));
+        super(Properties.of().strength(0.0F, 1.0F).sound(SoundType.STONE));
         this.registerDefaultState(this.stateDefinition.any().setValue(TEA_AMOUNT, 0));
     }
 
@@ -61,26 +61,22 @@ public class BlockTeapot extends Block {
         }
     }
 
-    // Called when the block is right-clicked
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
-        if (worldIn.isClientSide) return InteractionResult.SUCCESS;
-
-        if (player instanceof ServerPlayer) {
-            if (player.getMainHandItem().getItem() == Items.ITEM_TEACUP && state.getValue(TEA_AMOUNT) > 0) {
+    public ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (heldItem.getItem() == Items.ITEM_TEACUP && state.getValue(TEA_AMOUNT) > 0) {
+            if (player instanceof ServerPlayer) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
-
-                player.getMainHandItem().shrink(1);
+                heldItem.shrink(1);
                 player.addItem(new ItemStack(Items.ITEM_FULL_TEACUP_0));
-
                 worldIn.setBlockAndUpdate(pos, state.setValue(TEA_AMOUNT, state.getValue(TEA_AMOUNT) - 1));
             }
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         int teaAmount = state.getValue(TEA_AMOUNT);
         ItemStack teapotStack;
         if (teaAmount == 0) {
@@ -93,7 +89,8 @@ public class BlockTeapot extends Block {
 
     @Override
     public boolean canSurvive(BlockState blockState, LevelReader worldReader, BlockPos blockPos) {
-        return worldReader.getBlockState(blockPos.below()).getMaterial().isSolid();
+        BlockPos supportPos = blockPos.below();
+        return worldReader.getBlockState(supportPos).isFaceSturdy(worldReader, supportPos, Direction.UP);
     }
 
     @Override
@@ -129,4 +126,3 @@ public class BlockTeapot extends Block {
         };
     }
 }
-

@@ -4,10 +4,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,12 +20,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockPizza extends Block {
     public enum Ingredient {
@@ -48,7 +48,7 @@ public class BlockPizza extends Block {
     };
 
     public BlockPizza(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
-        super(Properties.of(Material.CAKE, DyeColor.YELLOW).sound(SoundType.WOOL).strength(0.5F));
+        super(Properties.of().sound(SoundType.WOOL).strength(0.5F));
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
@@ -61,18 +61,20 @@ public class BlockPizza extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        ItemStack heldItem = player.getItemInHand(handIn);
+    public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem, @NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit) {
+        InteractionResult ate = useWithoutItem(state, worldIn, pos, player, hit);
+        return ate.consumesAction() ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
         if (worldIn.isClientSide) {
             if (eat(worldIn, pos, state, player, hungerPerBite).consumesAction()) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
                         1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
                 return InteractionResult.SUCCESS;
             }
-
-            if (heldItem.isEmpty()) {
-                return InteractionResult.CONSUME;
-            }
+            return InteractionResult.CONSUME;
         }
 
         InteractionResult ate = eat(worldIn, pos, state, player, hungerPerBite);
@@ -108,7 +110,8 @@ public class BlockPizza extends Block {
 
     @Override
     public boolean canSurvive(BlockState blockState, LevelReader levelReader, BlockPos blockPos) {
-        return levelReader.getBlockState(blockPos.below()).getMaterial().isSolid();
+        BlockPos supportPos = blockPos.below();
+        return levelReader.getBlockState(supportPos).isFaceSturdy(levelReader, supportPos, Direction.UP);
     }
 
     @Override
@@ -117,7 +120,7 @@ public class BlockPizza extends Block {
     }
 
     @Override
-    public boolean isPathfindable(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, PathComputationType computationType) {
+    protected boolean isPathfindable(BlockState blockState, PathComputationType computationType) {
         return false;
     }
 

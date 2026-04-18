@@ -13,6 +13,6 @@ public class BlockEntities {
 
     public static void registerBlockEntities() {
         DONER = FabricBlockEntityTypeBuilder.create(BlockEntityDoner::new, Blocks.BLOCK_DONER).build();
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation(XercaFood.MODID, "doner"), DONER);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, XercaFood.id("doner"), DONER);
     }
 }

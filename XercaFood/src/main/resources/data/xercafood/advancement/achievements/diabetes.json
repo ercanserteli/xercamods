@@ -1,0 +1,24 @@
+{
+  "parent": "xercafood:achievements/root",
+  "display": {
+    "icon": {
+      "id": "minecraft:sugar"
+    },
+    "title": {
+      "translate": "advancements.xercafood.achievements.diabetes.title"
+    },
+    "description": {
+      "translate": "advancements.xercafood.achievements.diabetes.description"
+    }
+  },
+  "criteria": {
+    "tea_madness": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:item_full_teacup_6"]
+        }
+      }
+    }
+  }
+}

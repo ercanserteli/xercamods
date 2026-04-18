@@ -6,12 +6,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import xerca.xercafood.common.XercaFood;
 import xerca.xercafood.common.block.BlockPizza;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemPizza extends BlockItem {
@@ -27,7 +25,7 @@ public class ItemPizza extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         addPizzaIngredientToTooltip(tooltip, slot1);
         addPizzaIngredientToTooltip(tooltip, slot2);
         addPizzaIngredientToTooltip(tooltip, slot3);

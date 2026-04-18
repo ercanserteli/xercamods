@@ -1,14 +1,13 @@
 package xerca.xercafood.common.item;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.level.Level;
 import org.lwjgl.system.NonnullDefault;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 @NonnullDefault
@@ -36,7 +35,7 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.sugarAmount == 0) {
             tooltip.add(Component.literal("No sugar"));
         } else if (this.sugarAmount == 1) {
@@ -52,7 +51,7 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 64;
     }
 }

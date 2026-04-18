@@ -1,0 +1,6 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercafood:item_glass"}, {"item": "xercafood:item_yoghurt"}],
+    "result": {"id": "xercafood:item_ayran"}
+}
