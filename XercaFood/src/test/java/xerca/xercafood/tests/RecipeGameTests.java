@@ -12,15 +12,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.inventory.ResultSlot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -99,22 +96,6 @@ public class RecipeGameTests {
             list.add(stack);
         }
         return CraftingInput.of(width, height, list);
-    }
-
-    private static final class DummyMenu extends AbstractContainerMenu {
-        private DummyMenu() {
-            super(null, 0);
-        }
-
-        @Override
-        public ItemStack quickMoveStack(net.minecraft.world.entity.player.Player player, int slot) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public boolean stillValid(net.minecraft.world.entity.player.Player player) {
-            return true;
-        }
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
@@ -221,28 +202,21 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-//    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-//    public static void repairingKnivesConsumesInputsInsteadOfDuplicating(GameTestHelper helper) {
-//        DummyMenu menu = new DummyMenu();
-//        TransientCraftingContainer craftSlots = new TransientCraftingContainer(menu, 2, 1);
-//        ResultContainer resultSlots = new ResultContainer();
-//        ServerPlayer player = helper.makeMockServerPlayerInLevel();
-//
-//        ItemStack firstKnife = new ItemStack(Items.ITEM_KNIFE);
-//        ItemStack secondKnife = new ItemStack(Items.ITEM_KNIFE);
-//        firstKnife.setDamageValue(30);
-//        secondKnife.setDamageValue(70);
-//        craftSlots.setItem(0, firstKnife);
-//        craftSlots.setItem(1, secondKnife);
-//        resultSlots.setItem(0, new ItemStack(Items.ITEM_KNIFE));
-//
-//        ResultSlot resultSlot = new ResultSlot(player, craftSlots, resultSlots, 0, 0, 0);
-//        resultSlot.onTake(player, new ItemStack(Items.ITEM_KNIFE));
-//
-//        helper.assertTrue(craftSlots.getItem(0).isEmpty(), "Expected first repair input knife to be consumed");
-//        helper.assertTrue(craftSlots.getItem(1).isEmpty(), "Expected second repair input knife to be consumed");
-//        helper.succeed();
-//    }
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void repairingKnivesHasNoCraftingRecipe(GameTestHelper helper) {
+        ItemStack firstKnife = new ItemStack(Items.ITEM_KNIFE);
+        ItemStack secondKnife = new ItemStack(Items.ITEM_KNIFE);
+        firstKnife.setDamageValue(30);
+        secondKnife.setDamageValue(70);
+
+        CraftingInput grid = craftingGrid(2, 1, firstKnife, secondKnife);
+        Optional<RecipeHolder<CraftingRecipe>> recipe = helper.getLevel()
+                .getRecipeManager()
+                .getRecipeFor(RecipeType.CRAFTING, grid, helper.getLevel());
+
+        helper.assertTrue(recipe.isEmpty(), "Expected damaged knives to have no crafting repair recipe");
+        helper.succeed();
+    }
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void smeltingRecipeCooksRawPatty(GameTestHelper helper) {
