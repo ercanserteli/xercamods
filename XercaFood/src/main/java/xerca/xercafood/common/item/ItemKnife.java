@@ -5,10 +5,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
 
 public class ItemKnife extends Item {
-    private static final int maxDamage = 240;
+    private static final int MAX_DAMAGE = 240;
 
     ItemKnife() {
-        super(new Item.Properties().stacksTo(1).durability(maxDamage));
+        super(new Item.Properties().stacksTo(1).durability(MAX_DAMAGE));
     }
 
     @Override
@@ -18,12 +18,14 @@ public class ItemKnife extends Item {
 
     @Override
     public ItemStack getRecipeRemainder(ItemStack stack) {
-        ItemStack ret = stack.copy();
-        ret.setCount(1);
-        ret.setDamageValue(stack.getDamageValue() + 1);
-        if (ret.getDamageValue() >= ret.getMaxDamage()) {
+        ItemStack remainder = stack.copy();
+        remainder.setCount(1);
+        remainder.setDamageValue(stack.getDamageValue() + 1);
+
+        if (remainder.getDamageValue() >= remainder.getMaxDamage()) {
             return ItemStack.EMPTY;
         }
-        return ret;
+
+        return remainder;
     }
 }

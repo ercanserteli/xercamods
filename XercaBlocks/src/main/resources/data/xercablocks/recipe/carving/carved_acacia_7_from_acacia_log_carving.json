@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:acacia_log"
+  },
+  "result": {
+    "id": "xercablocks:carved_acacia_7"
+  }
+}

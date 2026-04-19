@@ -14,7 +14,7 @@
       "xerca.xercafood.client.ClientStuff"
     ],
     "main": [
-      "xerca.xercafood.common.XercaFood"
+      "xerca.xercafood.common.Mod"
     ],
     "fabric-datagen": [
       "xerca.xercafood.common.data.XercaFoodDatagen"

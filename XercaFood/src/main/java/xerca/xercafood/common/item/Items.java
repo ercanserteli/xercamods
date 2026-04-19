@@ -254,18 +254,6 @@ public final class Items {
     public static final Item PIZZA_CHICKEN = new ItemPizza(Blocks.PIZZA_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
     public static final Item PIZZA = new ItemPizza(Blocks.PIZZA, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
 
-//    public static final CreativeModeTab teaTab = FabricItemGroup.builder(new ResourceLocation(XercaFood.MODID, "tea_tab"))
-//            .icon(() -> new ItemStack(Items.ITEM_FULL_TEAPOT_1))
-//            .displayItems((enabledFeatures, entries, operatorEnabled) -> {
-//                entries.accept(ITEM_TEACUP);
-//                entries.accept(ITEM_TEA_LEAF);
-//                entries.accept(ITEM_TEA_DRIED);
-//                entries.accept(ITEM_TEAPOT);
-//                entries.accept(ITEM_FULL_TEACUP_0);
-//                entries.accept(ITEM_HOT_TEAPOT_7);
-//            })
-//            .build();
-
     public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING = new SimpleCraftingRecipeSerializer<>(RecipeTeaSugaring::new);
     public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING = new SimpleCraftingRecipeSerializer<>(RecipeTeaPouring::new);
     public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeTeaFilling::new);

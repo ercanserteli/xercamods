@@ -12,6 +12,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.ResultSlot;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -96,6 +100,22 @@ public class RecipeGameTests {
         return CraftingInput.of(width, height, list);
     }
 
+    private static final class DummyMenu extends AbstractContainerMenu {
+        private DummyMenu() {
+            super(null, 0);
+        }
+
+        @Override
+        public ItemStack quickMoveStack(net.minecraft.world.entity.player.Player player, int slot) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public boolean stillValid(net.minecraft.world.entity.player.Player player) {
+            return true;
+        }
+    }
+
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void shapedRecipeCraftsAppleCupcake(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("item_apple_cupcake"));
@@ -145,6 +165,49 @@ public class RecipeGameTests {
         NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
         helper.assertTrue(remainingItems.get(1).is(Items.ITEM_KNIFE), "Expected knife to remain after slicing tomato");
         helper.assertTrue(remainingItems.get(1).getDamageValue() == 8, "Expected knife durability to decrease by 1");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void strippingOakLogDamagesKnife(GameTestHelper helper) {
+        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("stripped_oak_log"));
+        ItemStack knife = new ItemStack(Items.ITEM_KNIFE);
+        knife.setDamageValue(11);
+        CraftingInput grid = craftingGrid(3, 3,
+                knife, new ItemStack(net.minecraft.world.item.Items.OAK_LOG),
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
+        );
+
+        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected oak log stripping recipe to match");
+        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        helper.assertTrue(result.is(net.minecraft.world.item.Items.STRIPPED_OAK_LOG), "Expected oak log stripping to produce a stripped oak log");
+
+        NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
+        helper.assertTrue(remainingItems.get(0).is(Items.ITEM_KNIFE), "Expected knife to remain after stripping oak log");
+        helper.assertTrue(remainingItems.get(0).getDamageValue() == 12, "Expected stripping oak log to damage the knife by 1");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void repairingKnivesConsumesInputsInsteadOfDuplicating(GameTestHelper helper) {
+        DummyMenu menu = new DummyMenu();
+        TransientCraftingContainer craftSlots = new TransientCraftingContainer(menu, 2, 1);
+        ResultContainer resultSlots = new ResultContainer();
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+
+        ItemStack firstKnife = new ItemStack(Items.ITEM_KNIFE);
+        ItemStack secondKnife = new ItemStack(Items.ITEM_KNIFE);
+        firstKnife.setDamageValue(30);
+        secondKnife.setDamageValue(70);
+        craftSlots.setItem(0, firstKnife);
+        craftSlots.setItem(1, secondKnife);
+        resultSlots.setItem(0, new ItemStack(Items.ITEM_KNIFE));
+
+        ResultSlot resultSlot = new ResultSlot(player, craftSlots, resultSlots, 0, 0, 0);
+        resultSlot.onTake(player, new ItemStack(Items.ITEM_KNIFE));
+
+        helper.assertTrue(craftSlots.getItem(0).isEmpty(), "Expected first repair input knife to be consumed");
+        helper.assertTrue(craftSlots.getItem(1).isEmpty(), "Expected second repair input knife to be consumed");
         helper.succeed();
     }
 

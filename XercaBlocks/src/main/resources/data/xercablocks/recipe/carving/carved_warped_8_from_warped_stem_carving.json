@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:warped_stem"
+  },
+  "result": {
+    "id": "xercablocks:carved_warped_8"
+  }
+}

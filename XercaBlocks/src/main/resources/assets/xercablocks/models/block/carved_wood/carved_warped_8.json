@@ -1,0 +1,11 @@
+{
+  "parent": "xercablocks:block/carved_wood/carved_warped",
+  "textures": {
+    "up": "xercablocks:block/carved_wood/carved_warped_8_top",
+    "down": "xercablocks:block/carved_wood/carved_warped_8_top",
+    "north": "xercablocks:block/carved_wood/carved_warped_8_side_abcd",
+    "south": "xercablocks:block/carved_wood/carved_warped_8_side_abcd",
+    "west":  "xercablocks:block/carved_wood/carved_warped_8_side_abcd",
+    "east":  "xercablocks:block/carved_wood/carved_warped_8_side_abcd"
+  }
+}

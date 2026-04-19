@@ -1,0 +1,13 @@
+{
+  "values": [
+    {
+      "id": "xercablocks:item_knife",
+      "required": false
+    },
+    {
+      "id": "xercafood:item_knife",
+      "required": false
+    }
+  ],
+  "replace": false
+}

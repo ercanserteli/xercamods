@@ -285,7 +285,7 @@ class StonecuttingRecipe(Recipe):
 
 
 class CarvingRecipe(Recipe):
-    def __init__(self, ingredient, result, count, group="", folder="", type="xercafood:carving"):
+    def __init__(self, ingredient, result, count, group="", folder="", type="xercablocks:carving"):
         super().__init__(type, group, None, folder)
         self.ingredient = ingredient
         self.count = count

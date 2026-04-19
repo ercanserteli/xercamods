@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:crimson_stem"
+  },
+  "result": {
+    "id": "xercablocks:carved_crimson_7"
+  }
+}

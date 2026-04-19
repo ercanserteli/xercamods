@@ -10,7 +10,9 @@ import xerca.xercablocks.menu.Menus;
 public final class ModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        CarvedCrimsonModels.register();
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.ROPE, RenderType.cutoutMipped());
+        Blocks.CARVED_WOODS.values().forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutoutMipped()));
         MenuScreens.register(Menus.BOOKCASE, BookcaseScreen::new);
     }
 }

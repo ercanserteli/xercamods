@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "north": "xercablocks:block/carving_station_back",
+    "south": "xercablocks:block/carving_station_front",
+    "west":  "xercablocks:block/carving_station_side",
+    "east":  "xercablocks:block/carving_station_side",
+    "up": "xercablocks:block/carving_station_top",
+    "down": "xercablocks:block/carving_station_back",
+    "particle": "block/spruce_planks"
+  }
+}
