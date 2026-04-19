@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "www",
+    "   ",
+    "www"
+  ],
+  "key": {
+    "w": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "id": "xercablocks:item_bookcase"
+  }
+}

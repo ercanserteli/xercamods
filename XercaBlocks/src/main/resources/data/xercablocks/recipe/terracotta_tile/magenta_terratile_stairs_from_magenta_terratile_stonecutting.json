@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "xercablocks:magenta_terratile"
+  },
+  "result": {
+    "id": "xercablocks:magenta_terratile_stairs"
+  }
+}

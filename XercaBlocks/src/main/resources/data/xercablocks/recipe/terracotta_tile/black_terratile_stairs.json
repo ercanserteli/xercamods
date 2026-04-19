@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "t  ",
+    "tt ",
+    "ttt"
+  ],
+  "key": {
+    "t": {
+      "item": "xercablocks:black_terratile"
+    }
+  },
+  "result": {
+    "id": "xercablocks:black_terratile_stairs",
+    "count": 4
+  }
+}

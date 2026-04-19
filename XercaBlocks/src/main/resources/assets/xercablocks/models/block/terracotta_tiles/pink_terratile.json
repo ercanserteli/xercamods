@@ -1,0 +1,9 @@
+
+{
+  "parent": "xercablocks:block/terracotta_tiles/terratile",
+  "textures": {
+    "top": "xercablocks:block/terracotta_tiles/pink_terra_cotta_tiles_top",
+    "front": "xercablocks:block/terracotta_tiles/pink_terra_cotta_tiles_front",
+    "side": "xercablocks:block/terracotta_tiles/pink_terra_cotta_tiles_side"
+  }
+}

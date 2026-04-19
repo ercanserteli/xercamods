@@ -1,0 +1,32 @@
+{
+  "parent": "xercablocks:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercablocks:leather_straw/item_block_straw"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:sugar_cane"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercablocks:leather_straw/item_block_straw"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}

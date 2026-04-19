@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xercablocks:item_block_leather"
+    }
+  ],
+  "result": {
+    "id": "minecraft:leather",
+    "count": 9
+  }
+}

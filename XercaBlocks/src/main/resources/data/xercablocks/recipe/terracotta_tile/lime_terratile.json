@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "terratile",
+  "pattern": [
+    "tt",
+    "tt"
+  ],
+  "key": {
+    "t": {
+      "item": "minecraft:lime_terracotta"
+    }
+  },
+  "result": {
+    "id": "xercablocks:lime_terratile",
+    "count": 4
+  }
+}

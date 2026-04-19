@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:magenta_terracotta"
+  },
+  "result": {
+    "id": "xercablocks:magenta_terratile"
+  }
+}

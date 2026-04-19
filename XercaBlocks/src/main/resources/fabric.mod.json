@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "xercablocks",
+  "version": "${version}",
+  "name": "xercablocks",
+  "description": "",
+  "authors": ["xerca"],
+  "contact": {},
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "xerca.xercablocks.client.ModClient"
+    ],
+    "main": [
+      "xerca.xercablocks.Mod"
+    ]
+  },
+  "mixins": [
+    "xercablocks.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric-api": "*",
+    "minecraft": "1.21.1"
+  }
+}
