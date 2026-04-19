@@ -1,19 +1,8 @@
 {
-  "fabric:load_conditions": [
-    {
-      "condition": "fabric:not",
-      "value": {
-        "condition": "fabric:all_mods_loaded",
-        "values": [
-          "xercafood"
-        ]
-      }
-    }
-  ],
   "parent": "xercablocks:recipes/root",
   "rewards": {
     "recipes": [
-      "xercablocks:item_knife"
+      "xercablocks:carving_station"
     ]
   },
   "criteria": {
@@ -22,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": "minecraft:iron_ingot"
+            "items": "minecraft:shears"
           }
         ]
       }
@@ -30,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercablocks:item_knife"
+        "recipe": "xercablocks:carving_station"
       }
     }
   },

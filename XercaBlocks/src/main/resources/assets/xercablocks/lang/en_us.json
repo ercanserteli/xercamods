@@ -1,6 +1,5 @@
 {
   "itemGroup.xercablocks.blocks_tab": "Xerca Blocks",
-  "item.xercablocks.item_knife": "Knife",
   "container.xercablocks.bookcase": "Bookcase",
   "xercablocks.rope_tooltip": "Can be climbed",
   "item.xercablocks.item_block_leather": "Leather Block",
@@ -126,6 +125,5 @@
   "block.xercablocks.carved_warped_5": "Carved Warped Stem",
   "block.xercablocks.carved_warped_6": "Carved Warped Stem",
   "block.xercablocks.carved_warped_7": "Carved Warped Stem",
-  "block.xercablocks.carved_warped_8": "Carved Warped Stem",
-  "tag.item.c.tools.knife": "Knife"
+  "block.xercablocks.carved_warped_8": "Carved Warped Stem"
 }

@@ -8,7 +8,7 @@
       "tag": "minecraft:planks"
     },
     "k": {
-      "tag": "c:tools/knife"
+      "item": "minecraft:shears"
     }
   },
   "pattern": [
