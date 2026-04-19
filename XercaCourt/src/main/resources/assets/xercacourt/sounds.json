@@ -1,0 +1,16 @@
+{
+  "gavel": {
+    "sounds": [
+      {
+        "name": "xercacourt:gavel"
+      }
+    ]
+  },
+  "objection": {
+    "sounds": [
+      {
+        "name": "xercacourt:objection"
+      }
+    ]
+  }
+}

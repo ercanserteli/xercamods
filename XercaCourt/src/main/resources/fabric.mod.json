@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "xercacourt",
+  "version": "${version}",
+  "name": "xercacourt",
+  "description": "",
+  "authors": ["xerca"],
+  "contact": {},
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "xerca.xercacourt.Mod"
+    ]
+  },
+  "depends": {
+    "fabricloader": "*",
+    "fabric-api": "*",
+    "minecraft": "1.21.1"
+  }
+}
