@@ -22,7 +22,7 @@ import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
-import xerca.xercafood.common.XercaFood;
+import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.item.Items;
 
 import java.util.ArrayList;
@@ -34,11 +34,11 @@ public class RecipeGameTests {
     private static final String RECIPE_BATCH = "xercafood_recipes";
 
     private static ResourceLocation recipeId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(XercaFood.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(Mod.MODID, path);
     }
 
     private static ResourceLocation advancementId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(XercaFood.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(Mod.MODID, path);
     }
 
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {

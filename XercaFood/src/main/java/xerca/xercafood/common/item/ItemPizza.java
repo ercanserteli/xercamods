@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
-import xerca.xercafood.common.XercaFood;
+import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.BlockPizza;
 
 import java.util.List;
@@ -33,14 +33,14 @@ public class ItemPizza extends BlockItem {
 
     static void addPizzaIngredientToTooltip(List<Component> tooltip, BlockPizza.Ingredient ingredient) {
         if (!ingredient.equals(BlockPizza.Ingredient.EMPTY)) {
-            tooltip.add(Component.translatable(XercaFood.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable(Mod.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
         }
     }
 
     @Override
     public Component getName(ItemStack stack) {
         if (slot1.equals(BlockPizza.Ingredient.EMPTY) && slot2.equals(BlockPizza.Ingredient.EMPTY) && slot3.equals(BlockPizza.Ingredient.EMPTY))
-            return Component.translatable(XercaFood.MODID + ".pizza_plain");
-        return Component.translatable(XercaFood.MODID + ".pizza");
+            return Component.translatable(Mod.MODID + ".pizza_plain");
+        return Component.translatable(Mod.MODID + ".pizza");
     }
 }

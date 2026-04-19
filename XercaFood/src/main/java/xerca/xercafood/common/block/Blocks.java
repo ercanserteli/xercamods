@@ -2,9 +2,8 @@ package xerca.xercafood.common.block;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import xerca.xercafood.common.XercaFood;
+import xerca.xercafood.common.Mod;
 
 public class Blocks {
     public static final BlockDoner BLOCK_DONER = new BlockDoner();
@@ -80,7 +79,7 @@ public class Blocks {
     // PIZZA END
 
     private static void registerBlock(String name, Block block) {
-        Registry.register(BuiltInRegistries.BLOCK, XercaFood.id(name), block);
+        Registry.register(BuiltInRegistries.BLOCK, Mod.id(name), block);
     }
 
     public static void registerBlocks() {

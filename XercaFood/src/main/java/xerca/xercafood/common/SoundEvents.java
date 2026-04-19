@@ -2,21 +2,20 @@ package xerca.xercafood.common;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
 public class SoundEvents {
-    public final static SoundEvent TOMATO_SPLASH = SoundEvent.createVariableRangeEvent(XercaFood.id("tomato_splash"));
-    public final static SoundEvent BIG_BURP = SoundEvent.createVariableRangeEvent(XercaFood.id("big_burp"));
-    public final static SoundEvent YAHOO = SoundEvent.createVariableRangeEvent(XercaFood.id("yahoo"));
-    public final static SoundEvent SCARY = SoundEvent.createVariableRangeEvent(XercaFood.id("scary"));
-    public final static SoundEvent TEA_POUR = SoundEvent.createVariableRangeEvent(XercaFood.id("tea_pour"));
-    public final static SoundEvent SIZZLE = SoundEvent.createVariableRangeEvent(XercaFood.id("sizzle"));
-    public final static SoundEvent BIG_SIZZLE = SoundEvent.createVariableRangeEvent(XercaFood.id("big_sizzle"));
-    public final static SoundEvent HOLY = SoundEvent.createVariableRangeEvent(XercaFood.id("holy"));
-    public final static SoundEvent SPARKLES = SoundEvent.createVariableRangeEvent(XercaFood.id("sparkles"));
-    public final static SoundEvent FIZZY = SoundEvent.createVariableRangeEvent(XercaFood.id("fizzy"));
-    public final static SoundEvent SNEAK_HIT = SoundEvent.createVariableRangeEvent(XercaFood.id("sneak_hit"));
+    public final static SoundEvent TOMATO_SPLASH = SoundEvent.createVariableRangeEvent(Mod.id("tomato_splash"));
+    public final static SoundEvent BIG_BURP = SoundEvent.createVariableRangeEvent(Mod.id("big_burp"));
+    public final static SoundEvent YAHOO = SoundEvent.createVariableRangeEvent(Mod.id("yahoo"));
+    public final static SoundEvent SCARY = SoundEvent.createVariableRangeEvent(Mod.id("scary"));
+    public final static SoundEvent TEA_POUR = SoundEvent.createVariableRangeEvent(Mod.id("tea_pour"));
+    public final static SoundEvent SIZZLE = SoundEvent.createVariableRangeEvent(Mod.id("sizzle"));
+    public final static SoundEvent BIG_SIZZLE = SoundEvent.createVariableRangeEvent(Mod.id("big_sizzle"));
+    public final static SoundEvent HOLY = SoundEvent.createVariableRangeEvent(Mod.id("holy"));
+    public final static SoundEvent SPARKLES = SoundEvent.createVariableRangeEvent(Mod.id("sparkles"));
+    public final static SoundEvent FIZZY = SoundEvent.createVariableRangeEvent(Mod.id("fizzy"));
+    public final static SoundEvent SNEAK_HIT = SoundEvent.createVariableRangeEvent(Mod.id("sneak_hit"));
 
     public static void registerSoundEvents() {
         Registry.register(BuiltInRegistries.SOUND_EVENT, TOMATO_SPLASH.getLocation(), TOMATO_SPLASH);

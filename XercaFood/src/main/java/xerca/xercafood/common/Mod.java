@@ -16,7 +16,6 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -33,7 +32,7 @@ import xerca.xercafood.common.item.Items;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class XercaFood implements ModInitializer {
+public class Mod implements ModInitializer {
     public static final String MODID = "xercafood";
     public static final String NAME = "Xerca Food";
 
@@ -42,7 +41,7 @@ public class XercaFood implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
     private static final ResourceKey<LootTable> GRASS_LOOT_TABLE_ID = net.minecraft.world.level.block.Blocks.SHORT_GRASS.getLootTable();
 
-    public XercaFood() {
+    public Mod() {
 
     }
     public static ResourceLocation id(String path) {

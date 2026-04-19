@@ -3,7 +3,6 @@ package xerca.xercafood.common.item;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -12,7 +11,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
-import xerca.xercafood.common.XercaFood;
+import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.BlockPizza;
 import xerca.xercafood.common.block.Blocks;
 import xerca.xercafood.common.crafting.RecipeTeaFilling;
@@ -286,7 +285,7 @@ public final class Items {
     }
 
     private static void registerItem(String name, Item item) {
-        Registry.register(BuiltInRegistries.ITEM, XercaFood.id(name), item);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id(name), item);
     }
 
     static void registerCompostable(float chance, ItemLike itemIn) {
@@ -303,10 +302,10 @@ public final class Items {
     }
 
     public static void registerRecipes() {
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, XercaFood.id("crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, XercaFood.id("crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, XercaFood.id("crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, XercaFood.id("crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
     }
 
     public static void registerItems() {
