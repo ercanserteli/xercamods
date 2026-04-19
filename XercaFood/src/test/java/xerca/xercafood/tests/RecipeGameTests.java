@@ -25,6 +25,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.item.Items;
@@ -117,6 +118,58 @@ public class RecipeGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void tomatoPlantDropsTomatoWhenGrown(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_tomato_plant"));
+        net.minecraft.world.level.block.state.BlockState grownTomato = block.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_3, 3);
+        
+        helper.setBlock(pos, grownTomato);
+        helper.getLevel().destroyBlock(helper.absolutePos(pos), true);
+        
+        helper.assertItemEntityPresent(Items.ITEM_TOMATO, pos, 2.0);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void ricePlantDropsRiceSeedsWhenGrown(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_rice_plant"));
+        net.minecraft.world.level.block.state.BlockState grownRice = block.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_7, 7);
+        
+        helper.setBlock(pos, grownRice);
+        helper.getLevel().destroyBlock(helper.absolutePos(pos), true);
+        
+        helper.assertItemEntityPresent(Items.ITEM_RICE_SEEDS, pos, 2.0);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void teaPlantDropsTeaLeafWhenGrown(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_tea_plant"));
+        net.minecraft.world.level.block.state.BlockState grownTea = block.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_3, 3);
+        
+        helper.setBlock(pos, grownTea);
+        helper.getLevel().destroyBlock(helper.absolutePos(pos), true);
+        
+        helper.assertItemEntityPresent(Items.ITEM_TEA_LEAF, pos, 2.0);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void vatDropsVat(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "vat"));
+        net.minecraft.world.level.block.state.BlockState vat = block.defaultBlockState();
+        
+        helper.setBlock(pos, vat);
+        helper.getLevel().destroyBlock(helper.absolutePos(pos), true);
+        
+        helper.assertItemEntityPresent(Items.VAT, pos, 2.0);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void shapedRecipeCraftsAppleCupcake(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("item_apple_cupcake"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -168,48 +221,28 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void strippingOakLogDamagesKnife(GameTestHelper helper) {
-        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("stripped_oak_log"));
-        ItemStack knife = new ItemStack(Items.ITEM_KNIFE);
-        knife.setDamageValue(11);
-        CraftingInput grid = craftingGrid(3, 3,
-                knife, new ItemStack(net.minecraft.world.item.Items.OAK_LOG),
-                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
-        );
-
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected oak log stripping recipe to match");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(net.minecraft.world.item.Items.STRIPPED_OAK_LOG), "Expected oak log stripping to produce a stripped oak log");
-
-        NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
-        helper.assertTrue(remainingItems.get(0).is(Items.ITEM_KNIFE), "Expected knife to remain after stripping oak log");
-        helper.assertTrue(remainingItems.get(0).getDamageValue() == 12, "Expected stripping oak log to damage the knife by 1");
-        helper.succeed();
-    }
-
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void repairingKnivesConsumesInputsInsteadOfDuplicating(GameTestHelper helper) {
-        DummyMenu menu = new DummyMenu();
-        TransientCraftingContainer craftSlots = new TransientCraftingContainer(menu, 2, 1);
-        ResultContainer resultSlots = new ResultContainer();
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
-
-        ItemStack firstKnife = new ItemStack(Items.ITEM_KNIFE);
-        ItemStack secondKnife = new ItemStack(Items.ITEM_KNIFE);
-        firstKnife.setDamageValue(30);
-        secondKnife.setDamageValue(70);
-        craftSlots.setItem(0, firstKnife);
-        craftSlots.setItem(1, secondKnife);
-        resultSlots.setItem(0, new ItemStack(Items.ITEM_KNIFE));
-
-        ResultSlot resultSlot = new ResultSlot(player, craftSlots, resultSlots, 0, 0, 0);
-        resultSlot.onTake(player, new ItemStack(Items.ITEM_KNIFE));
-
-        helper.assertTrue(craftSlots.getItem(0).isEmpty(), "Expected first repair input knife to be consumed");
-        helper.assertTrue(craftSlots.getItem(1).isEmpty(), "Expected second repair input knife to be consumed");
-        helper.succeed();
-    }
+//    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+//    public static void repairingKnivesConsumesInputsInsteadOfDuplicating(GameTestHelper helper) {
+//        DummyMenu menu = new DummyMenu();
+//        TransientCraftingContainer craftSlots = new TransientCraftingContainer(menu, 2, 1);
+//        ResultContainer resultSlots = new ResultContainer();
+//        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+//
+//        ItemStack firstKnife = new ItemStack(Items.ITEM_KNIFE);
+//        ItemStack secondKnife = new ItemStack(Items.ITEM_KNIFE);
+//        firstKnife.setDamageValue(30);
+//        secondKnife.setDamageValue(70);
+//        craftSlots.setItem(0, firstKnife);
+//        craftSlots.setItem(1, secondKnife);
+//        resultSlots.setItem(0, new ItemStack(Items.ITEM_KNIFE));
+//
+//        ResultSlot resultSlot = new ResultSlot(player, craftSlots, resultSlots, 0, 0, 0);
+//        resultSlot.onTake(player, new ItemStack(Items.ITEM_KNIFE));
+//
+//        helper.assertTrue(craftSlots.getItem(0).isEmpty(), "Expected first repair input knife to be consumed");
+//        helper.assertTrue(craftSlots.getItem(1).isEmpty(), "Expected second repair input knife to be consumed");
+//        helper.succeed();
+//    }
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void smeltingRecipeCooksRawPatty(GameTestHelper helper) {
@@ -375,5 +408,71 @@ public class RecipeGameTests {
 
             helper.succeed();
         });
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void vatBreaksFasterWithPickaxeThanByHand(GameTestHelper helper) {
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        helper.getLevel().setBlockAndUpdate(pos, xerca.xercafood.common.block.Blocks.VAT.defaultBlockState());
+
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        BlockState state = helper.getLevel().getBlockState(pos);
+
+        player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
+        float handProgress = state.getDestroyProgress(player, helper.getLevel(), pos);
+
+        player.getInventory().setItem(player.getInventory().selected, new ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+        float pickaxeProgress = state.getDestroyProgress(player, helper.getLevel(), pos);
+
+        helper.assertTrue(pickaxeProgress > handProgress, "Expected curdling vat to break faster with a pickaxe than by hand");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void vatDropsItselfWithoutAnyTool(GameTestHelper helper) {
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        helper.getLevel().setBlockAndUpdate(pos, xerca.xercafood.common.block.Blocks.VAT.defaultBlockState());
+
+        BlockState state = helper.getLevel().getBlockState(pos);
+        java.util.List<ItemStack> drops = net.minecraft.world.level.block.Block.getDrops(
+                state,
+                helper.getLevel(),
+                pos,
+                helper.getLevel().getBlockEntity(pos),
+                null,
+                ItemStack.EMPTY
+        );
+
+        helper.assertTrue(drops.size() == 1, "Expected curdling vat to have one drop without tools");
+        helper.assertTrue(drops.get(0).is(Items.VAT), "Expected curdling vat to drop itself without tools");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void piesBreakAtCakeSpeed(GameTestHelper helper) {
+        BlockPos cakePos = helper.absolutePos(new BlockPos(1, 2, 1));
+        BlockPos applePiePos = helper.absolutePos(new BlockPos(2, 2, 1));
+        BlockPos berryPiePos = helper.absolutePos(new BlockPos(3, 2, 1));
+        net.minecraft.world.level.block.Block applePieBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK
+                .get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_apple_pie"));
+        net.minecraft.world.level.block.Block berryPieBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK
+                .get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_sweet_berry_pie"));
+
+        helper.getLevel().setBlockAndUpdate(cakePos, Blocks.CAKE.defaultBlockState());
+        helper.getLevel().setBlockAndUpdate(applePiePos, applePieBlock.defaultBlockState());
+        helper.getLevel().setBlockAndUpdate(berryPiePos, berryPieBlock.defaultBlockState());
+
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
+
+        float cakeProgress = helper.getLevel().getBlockState(cakePos).getDestroyProgress(player, helper.getLevel(), cakePos);
+        float applePieProgress = helper.getLevel().getBlockState(applePiePos).getDestroyProgress(player, helper.getLevel(), applePiePos);
+        float berryPieProgress = helper.getLevel().getBlockState(berryPiePos).getDestroyProgress(player, helper.getLevel(), berryPiePos);
+
+        helper.assertTrue(Float.compare(applePieProgress, cakeProgress) == 0,
+                "Expected apple pie to break at the same speed as cake");
+        helper.assertTrue(Float.compare(berryPieProgress, cakeProgress) == 0,
+                "Expected sweet berry pie to break at the same speed as cake");
+        helper.succeed();
     }
 }

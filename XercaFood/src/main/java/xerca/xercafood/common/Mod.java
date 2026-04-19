@@ -110,10 +110,10 @@ public class Mod implements ModInitializer {
                         .with(LootItem.lootTableItem(Items.ITEM_RICE_SEEDS).build());
                 LootPool.Builder poolTomato = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))
-                        .with(LootItem.lootTableItem(Items.ITEM_TEA_SEEDS).build());
+                        .with(LootItem.lootTableItem(Items.ITEM_TOMATO_SEEDS).build());
                 LootPool.Builder poolTea = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))
-                        .with(LootItem.lootTableItem(Items.ITEM_TOMATO_SEEDS).build());
+                        .with(LootItem.lootTableItem(Items.ITEM_TEA_SEEDS).build());
 
                 tableBuilder.withPool(poolRice).withPool(poolTomato).withPool(poolTea);
             }

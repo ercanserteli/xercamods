@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 class BlockSweetBerryPie extends CakeBlock {
     public BlockSweetBerryPie() {
-        super(Properties.of());
+        super(Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.CAKE));
     }
 
     @Override

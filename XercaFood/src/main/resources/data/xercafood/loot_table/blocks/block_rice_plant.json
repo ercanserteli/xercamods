@@ -2,34 +2,16 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1.0,
+      "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:alternatives",
-          "children": [
-            {
-              "type": "minecraft:item",
-              "conditions": [
-                {
-                  "condition": "minecraft:block_state_property",
-                  "block": "xercafood:block_tomato_plant",
-                  "properties": {
-                    "age": "3"
-                  }
-                }
-              ],
-              "name": "xercafood:item_tomato"
-            },
-            {
-              "type": "minecraft:item",
-              "name": "xercafood:item_tomato_seeds"
-            }
-          ]
+          "type": "minecraft:item",
+          "name": "xercafood:item_rice_seeds"
         }
       ]
     },
     {
-      "rolls": 1.0,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
@@ -44,15 +26,15 @@
               }
             }
           ],
-          "name": "xercafood:item_tomato_seeds"
+          "name": "xercafood:item_rice_seeds"
         }
       ],
       "conditions": [
         {
           "condition": "minecraft:block_state_property",
-          "block": "xercafood:block_tomato_plant",
+          "block": "xercafood:block_rice_plant",
           "properties": {
-            "age": "3"
+            "age": "7"
           }
         }
       ]

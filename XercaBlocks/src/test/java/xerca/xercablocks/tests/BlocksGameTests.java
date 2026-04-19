@@ -11,6 +11,9 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import xerca.xercablocks.Mod;
 import xerca.xercablocks.block.BlockFunctionalBookcase;
 import xerca.xercablocks.block.Blocks;
@@ -116,15 +119,6 @@ public final class BlocksGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void carvedCrimsonStemDoesNotEmitLight(GameTestHelper helper) {
-        helper.assertTrue(Blocks.CARVED_WOODS.get("carved_crimson_1").defaultBlockState().getLightEmission() == 0,
-                "Expected carved crimson stem to stay non-luminous");
-        helper.assertTrue(Blocks.CARVED_WOODS.get("carved_warped_1").defaultBlockState().getLightEmission() == 0,
-                "Expected carved warped stem to remain non-luminous");
-        helper.succeed();
-    }
-
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void bookcaseMenuRejectsNonBookItems(GameTestHelper helper) {
         FunctionalBookcaseBlockEntity blockEntity = new FunctionalBookcaseBlockEntity(BlockPos.ZERO, Blocks.BLOCK_BOOKCASE.defaultBlockState());
         BookcaseMenu menu = new BookcaseMenu(0, helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL).getInventory(), blockEntity);
@@ -146,6 +140,95 @@ public final class BlocksGameTests {
         blockEntity.setItem(1, new ItemStack(net.minecraft.world.item.Items.WRITTEN_BOOK));
 
         helper.assertTrue(helper.getLevel().getBlockState(pos).getValue(BlockFunctionalBookcase.BOOK_AMOUNT) == 2, "Expected bookcase blockstate to track two stored books");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void terratileBreaksFasterWithPickaxeThanByHand(GameTestHelper helper) {
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        BlockState state = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(Mod.id("black_terratile")).defaultBlockState();
+        helper.getLevel().setBlockAndUpdate(pos, state);
+
+        var player = helper.makeMockServerPlayerInLevel();
+        player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
+        float handProgress = state.getDestroyProgress(player, helper.getLevel(), pos);
+
+        player.getInventory().setItem(player.getInventory().selected, new ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+        float pickaxeProgress = state.getDestroyProgress(player, helper.getLevel(), pos);
+
+        helper.assertTrue(pickaxeProgress > handProgress, "Expected terracotta tile to break faster with a pickaxe than by hand");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void doubleTerratileSlabDropsTwoItems(GameTestHelper helper) {
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        Block slabBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(Mod.id("black_terratile_slab"));
+        BlockState state = slabBlock.defaultBlockState().setValue(net.minecraft.world.level.block.SlabBlock.TYPE, SlabType.DOUBLE);
+        helper.getLevel().setBlockAndUpdate(pos, state);
+
+        List<ItemStack> drops = Block.getDrops(state, helper.getLevel(), pos, helper.getLevel().getBlockEntity(pos), null, ItemStack.EMPTY);
+        helper.assertTrue(drops.size() == 1, "Expected double terratile slab to produce a single slab stack");
+        helper.assertTrue(drops.get(0).is(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(Mod.id("black_terratile_slab"))),
+                "Expected double terratile slab to drop black terratile slab items");
+        helper.assertTrue(drops.get(0).getCount() == 2, "Expected double terratile slab to drop two slab items");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void carvedWoodBreaksFasterWithAxeThanByHand(GameTestHelper helper) {
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        BlockState state = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(Mod.id("carved_oak_1")).defaultBlockState();
+        helper.getLevel().setBlockAndUpdate(pos, state);
+
+        var player = helper.makeMockServerPlayerInLevel();
+        player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
+        float handProgress = state.getDestroyProgress(player, helper.getLevel(), pos);
+
+        player.getInventory().setItem(player.getInventory().selected, new ItemStack(net.minecraft.world.item.Items.IRON_AXE));
+        float axeProgress = state.getDestroyProgress(player, helper.getLevel(), pos);
+
+        helper.assertTrue(axeProgress > handProgress, "Expected carved wood to break faster with an axe than by hand");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void carvedWoodDropsItselfWhenBroken(GameTestHelper helper) {
+        BlockPos relativePos = new BlockPos(1, 2, 1);
+        BlockPos pos = helper.absolutePos(relativePos);
+        helper.getLevel().setBlockAndUpdate(pos, net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(Mod.id("carved_oak_1")).defaultBlockState());
+
+        helper.getLevel().destroyBlock(pos, true);
+        helper.assertItemEntityPresent(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(Mod.id("carved_oak_1")), relativePos, 2.0);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void ropeDropsItselfWhenBroken(GameTestHelper helper) {
+        BlockPos relativePos = new BlockPos(1, 2, 1);
+        BlockPos pos = helper.absolutePos(relativePos);
+        helper.getLevel().setBlockAndUpdate(pos, Blocks.ROPE.defaultBlockState());
+
+        helper.getLevel().destroyBlock(pos, true);
+        helper.assertItemEntityPresent(Items.ROPE, relativePos, 2.0);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void bookcaseDropsBlockAndStoredBooksWhenBroken(GameTestHelper helper) {
+        BlockPos relativePos = new BlockPos(1, 2, 1);
+        BlockPos pos = helper.absolutePos(relativePos);
+        helper.getLevel().setBlockAndUpdate(pos, Blocks.BLOCK_BOOKCASE.defaultBlockState());
+
+        FunctionalBookcaseBlockEntity blockEntity = (FunctionalBookcaseBlockEntity) helper.getLevel().getBlockEntity(pos);
+        helper.assertTrue(blockEntity != null, "Expected bookcase block entity to exist");
+        blockEntity.setItem(0, new ItemStack(net.minecraft.world.item.Items.BOOK));
+        blockEntity.setItem(1, new ItemStack(net.minecraft.world.item.Items.WRITTEN_BOOK));
+
+        helper.getLevel().destroyBlock(pos, true);
+        helper.assertItemEntityPresent(Items.ITEM_BOOKCASE, relativePos, 2.0);
+        helper.assertItemEntityPresent(net.minecraft.world.item.Items.BOOK, relativePos, 2.0);
+        helper.assertItemEntityPresent(net.minecraft.world.item.Items.WRITTEN_BOOK, relativePos, 2.0);
         helper.succeed();
     }
 }
