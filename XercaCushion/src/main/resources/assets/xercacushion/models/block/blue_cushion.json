@@ -1,0 +1,9 @@
+{
+  "parent": "xercacushion:block/cushion",
+  "textures": {
+    "0": "xercacushion:block/cushion_blue",
+    "particle": "xercacushion:block/cushion_blue",
+    "wool": "block/blue_wool"
+  }
+}
+

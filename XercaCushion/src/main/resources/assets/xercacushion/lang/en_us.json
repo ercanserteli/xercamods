@@ -1,0 +1,20 @@
+{
+  "item.xercacushion.black_cushion": "Black Cushion",
+  "item.xercacushion.blue_cushion": "Blue Cushion",
+  "item.xercacushion.brown_cushion": "Brown Cushion",
+  "item.xercacushion.cyan_cushion": "Cyan Cushion",
+  "item.xercacushion.gray_cushion": "Gray Cushion",
+  "item.xercacushion.green_cushion": "Green Cushion",
+  "item.xercacushion.light_blue_cushion": "Light Blue Cushion",
+  "item.xercacushion.light_gray_cushion": "Light Gray Cushion",
+  "item.xercacushion.lime_cushion": "Lime Cushion",
+  "item.xercacushion.magenta_cushion": "Magenta Cushion",
+  "item.xercacushion.orange_cushion": "Orange Cushion",
+  "item.xercacushion.pink_cushion": "Pink Cushion",
+  "item.xercacushion.purple_cushion": "Purple Cushion",
+  "item.xercacushion.red_cushion": "Red Cushion",
+  "item.xercacushion.white_cushion": "White Cushion",
+  "item.xercacushion.yellow_cushion": "Yellow Cushion",
+  "entity.xercacushion.cushion": "Cushion",
+  "xercacushion.cushion_tooltip": "You can sit on it"
+}

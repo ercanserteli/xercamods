@@ -1,0 +1,191 @@
+package xerca.xercacushion.entity;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import xerca.xercacushion.Mod;
+import xerca.xercacushion.block.BlockCushion;
+import xerca.xercacushion.block.Blocks;
+import xerca.xercacushion.item.Items;
+
+public class EntityCushion extends Entity {
+    private static final EntityDataAccessor<Integer> DATA_VARIANT = SynchedEntityData.defineId(EntityCushion.class, EntityDataSerializers.INT);
+
+    public EntityCushion(EntityType<? extends EntityCushion> type, Level level) {
+        super(type, level);
+        this.setNoGravity(false);
+    }
+
+    public EntityCushion(Level level) {
+        this(Mod.CUSHION, level);
+    }
+
+    public EntityCushion(Level level, double x, double y, double z, int variant) {
+        this(level);
+        this.setVariant(variant);
+        this.setPos(x, y, z);
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+        builder.define(DATA_VARIANT, 0);
+    }
+
+    public int getVariant() {
+        return this.entityData.get(DATA_VARIANT);
+    }
+
+    public void setVariant(int variant) {
+        this.entityData.set(DATA_VARIANT, variant);
+    }
+
+    public BlockCushion getVariantBlock() {
+        return Blocks.ALL[getVariant()];
+    }
+
+    private boolean hasSupportBelow() {
+        AABB supportBox = this.getBoundingBox().deflate(1.0E-3D, 0.0D, 1.0E-3D).move(0.0D, -0.05D, 0.0D);
+        return this.level().getBlockCollisions(this, supportBox).iterator().hasNext();
+    }
+
+    private double getSupportTopY() {
+        double entityBottom = this.getBoundingBox().minY;
+        double supportTop = Double.NEGATIVE_INFINITY;
+        AABB supportBox = this.getBoundingBox().deflate(1.0E-3D, 0.0D, 1.0E-3D).move(0.0D, -0.05D, 0.0D);
+        for (VoxelShape shape : this.level().getBlockCollisions(this, supportBox)) {
+            supportTop = Math.max(supportTop, shape.bounds().maxY);
+        }
+        return supportTop > Double.NEGATIVE_INFINITY ? supportTop : entityBottom;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        double verticalSpeed = this.getDeltaMovement().y - 0.08D;
+        this.move(MoverType.SELF, new Vec3(0.0D, verticalSpeed, 0.0D));
+
+        boolean supported = this.verticalCollisionBelow || this.hasSupportBelow();
+        this.setOnGround(supported);
+
+        if (supported) {
+            double supportTop = this.getSupportTopY();
+            if (this.getY() > supportTop + 1.0E-3D) {
+                this.setPos(this.getX(), supportTop, this.getZ());
+            }
+            verticalSpeed = 0.0D;
+        } else {
+            verticalSpeed = this.getDeltaMovement().y * 0.98D;
+        }
+        this.setDeltaMovement(0.0D, verticalSpeed, 0.0D);
+    }
+
+    @Override
+    public boolean skipAttackInteraction(@NotNull Entity entity) {
+        return entity instanceof Player player && this.hurt(this.damageSources().playerAttack(player), 0.0F);
+    }
+
+    @Override
+    public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        }
+
+        if (!this.isRemoved() && !this.level().isClientSide) {
+            this.discard();
+            this.markHurt();
+            this.onBroken(source.getEntity());
+        }
+
+        return true;
+    }
+
+    private void onBroken(@Nullable Entity breaker) {
+        if (!this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            return;
+        }
+
+        this.playSound(SoundEvents.WOOL_BREAK, 1.0F, 1.0F);
+        if (breaker instanceof Player player && player.getAbilities().instabuild) {
+            return;
+        }
+
+        this.spawnAtLocation(new ItemStack(Items.byVariant(getVariant())));
+    }
+
+    @Override
+    public boolean isPushable() {
+        return true;
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        this.setVariant(tag.getInt("cushion"));
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        tag.putInt("cushion", this.getVariant());
+    }
+
+    @Override
+    protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
+        return new Vec3(0.0D, 0.125D, 0.0D);
+    }
+
+    @Override
+    public boolean isPickable() {
+        return true;
+    }
+
+    @Override
+    public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 hitPos, @NotNull InteractionHand hand) {
+        if (!this.level().isClientSide) {
+            player.startRiding(this);
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
+        if (player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
+        }
+
+        if (!this.level().isClientSide && !this.isVehicle()) {
+            player.startRiding(this);
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public ItemStack getPickResult() {
+        return new ItemStack(Items.byVariant(getVariant()));
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity entity) {
+        return new ClientboundAddEntityPacket(this, entity);
+    }
+}

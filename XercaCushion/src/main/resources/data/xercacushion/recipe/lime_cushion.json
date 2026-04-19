@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "cushion",
+  "pattern": [
+    "#",
+    "f",
+    "#"
+  ],
+  "key": {
+    "#": { "item": "minecraft:lime_wool" },
+    "f": { "item": "minecraft:feather" }
+  },
+  "result": {
+    "id": "xercacushion:lime_cushion"
+  }
+}
+

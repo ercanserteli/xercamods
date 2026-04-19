@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "xercacushion",
+  "version": "${version}",
+  "name": "xercacushion",
+  "description": "",
+  "authors": ["xerca"],
+  "contact": {},
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "xerca.xercacushion.client.ClientStuff"
+    ],
+    "main": [
+      "xerca.xercacushion.Mod"
+    ]
+  },
+  "depends": {
+    "fabricloader": "*",
+    "fabric-api": "*",
+    "minecraft": "1.21.1"
+  }
+}
