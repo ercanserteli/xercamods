@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "xercaomnichest_test",
+  "version": "1.0.0",
+  "name": "xercaomnichest Test",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "xerca.xercaomnichest.tests.OmniChestGameTests"
+    ]
+  },
+  "depends": {
+    "fabricloader": "*",
+    "fabric-api": "*",
+    "minecraft": "1.21.1",
+    "xercaomnichest": "*"
+  }
+}

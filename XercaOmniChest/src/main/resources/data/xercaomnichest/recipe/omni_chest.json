@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aea",
+    "ece",
+    "aea"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:amethyst_block"
+    },
+    "c": {
+      "item": "minecraft:ender_chest"
+    },
+    "e": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result": {
+    "id": "xercaomnichest:omni_chest"
+  }
+}
