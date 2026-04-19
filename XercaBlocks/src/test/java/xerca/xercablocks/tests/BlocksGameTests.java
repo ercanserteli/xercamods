@@ -9,8 +9,11 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -20,6 +23,9 @@ import xerca.xercablocks.block.Blocks;
 import xerca.xercablocks.block_entity.FunctionalBookcaseBlockEntity;
 import xerca.xercablocks.item.Items;
 import xerca.xercablocks.menu.BookcaseMenu;
+import xerca.xercablocks.menu.CarvingStationMenu;
+import xerca.xercablocks.recipe.CarvingRecipe;
+import xerca.xercablocks.recipe.Recipes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +47,12 @@ public final class BlocksGameTests {
         return (CraftingRecipe) recipe;
     }
 
-    private static StonecutterRecipe requireStonecuttingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
+    private static CarvingRecipe requireCarvingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().getRecipeManager().byKey(recipeId);
         helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
-        helper.assertTrue(recipe instanceof StonecutterRecipe, "Expected stonecutting recipe for " + recipeId);
-        return (StonecutterRecipe) recipe;
+        helper.assertTrue(recipe instanceof CarvingRecipe, "Expected carving recipe for " + recipeId);
+        return (CarvingRecipe) recipe;
     }
 
     private static CraftingInput craftingGrid(int width, int height, ItemStack... stacks) {
@@ -87,7 +93,7 @@ public final class BlocksGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void carvingStationRecipeCutsOakLogIntoCarvedOak(GameTestHelper helper) {
-        StonecutterRecipe recipe = requireStonecuttingRecipe(helper, recipeId("carving/carved_oak_1_from_oak_log_carving"));
+        CarvingRecipe recipe = requireCarvingRecipe(helper, recipeId("carving/carved_oak_1_from_oak_log_carving"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG));
 
         helper.assertTrue(recipe.matches(input, helper.getLevel()), "Expected carving station recipe to accept oak logs");
@@ -229,6 +235,77 @@ public final class BlocksGameTests {
         helper.assertItemEntityPresent(Items.ITEM_BOOKCASE, relativePos, 2.0);
         helper.assertItemEntityPresent(net.minecraft.world.item.Items.BOOK, relativePos, 2.0);
         helper.assertItemEntityPresent(net.minecraft.world.item.Items.WRITTEN_BOOK, relativePos, 2.0);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void carvingRecipesDoNotLoadAsStonecuttingRecipes(GameTestHelper helper) {
+        Optional<RecipeHolder<StonecutterRecipe>> stonecutterRecipe = helper.getLevel().getRecipeManager().getRecipeFor(
+                RecipeType.STONECUTTING,
+                new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG)),
+                helper.getLevel()
+        );
+
+        Optional<RecipeHolder<CarvingRecipe>> carvingRecipe = helper.getLevel().getRecipeManager().getRecipeFor(
+                Recipes.CARVING_TYPE,
+                new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG)),
+                helper.getLevel()
+        );
+
+        helper.assertTrue(stonecutterRecipe.isEmpty(), "Expected carving recipes to be absent from vanilla stonecutting");
+        helper.assertTrue(carvingRecipe.isPresent(), "Expected carving recipes to load under xercablocks:carving");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void carvingStationMenuShowsCarvingRecipesButStonecutterDoesNot(GameTestHelper helper) {
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        CarvingStationMenu carvingMenu = new CarvingStationMenu(0, player.getInventory(), ContainerLevelAccess.create(helper.getLevel(), helper.absolutePos(new BlockPos(1, 2, 1))));
+        StonecutterMenu stonecutterMenu = new StonecutterMenu(1, player.getInventory(), ContainerLevelAccess.create(helper.getLevel(), helper.absolutePos(new BlockPos(2, 2, 1))));
+
+        ItemStack oakLog = new ItemStack(net.minecraft.world.item.Items.OAK_LOG);
+        carvingMenu.getSlot(0).container.setItem(0, oakLog.copy());
+        carvingMenu.slotsChanged(carvingMenu.getSlot(0).container);
+        stonecutterMenu.getSlot(0).container.setItem(0, oakLog.copy());
+        stonecutterMenu.slotsChanged(stonecutterMenu.getSlot(0).container);
+
+        helper.assertTrue(carvingMenu.getNumRecipes() > 0, "Expected carving station menu to expose carving recipes");
+        helper.assertTrue(stonecutterMenu.getNumRecipes() == 0, "Expected vanilla stonecutter to reject carving recipes");
+
+        helper.assertTrue(carvingMenu.clickMenuButton(player, 0), "Expected carving station menu to accept the first carving recipe selection");
+        helper.assertTrue(!carvingMenu.getSlot(1).getItem().isEmpty(),
+                "Expected carving station result slot to contain a carving output after selecting a recipe");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void carvingStationUsesCustomMenuType(GameTestHelper helper) {
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        CarvingStationMenu carvingMenu = new CarvingStationMenu(0, player.getInventory());
+
+        helper.assertTrue(carvingMenu.getType() == xerca.xercablocks.menu.Menus.CARVING_STATION,
+                "Expected carving station menu to use the custom xercablocks carving menu type");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void carvingStationRejectsStonecutterInputsWhileStonecutterAcceptsThem(GameTestHelper helper) {
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        CarvingStationMenu carvingMenu = new CarvingStationMenu(0, player.getInventory(), ContainerLevelAccess.create(helper.getLevel(), helper.absolutePos(new BlockPos(1, 2, 1))));
+        StonecutterMenu stonecutterMenu = new StonecutterMenu(1, player.getInventory(), ContainerLevelAccess.create(helper.getLevel(), helper.absolutePos(new BlockPos(2, 2, 1))));
+
+        ItemStack stone = new ItemStack(net.minecraft.world.item.Items.STONE);
+        carvingMenu.getSlot(0).container.setItem(0, stone.copy());
+        carvingMenu.slotsChanged(carvingMenu.getSlot(0).container);
+        stonecutterMenu.getSlot(0).container.setItem(0, stone.copy());
+        stonecutterMenu.slotsChanged(stonecutterMenu.getSlot(0).container);
+
+        helper.assertTrue(carvingMenu.getNumRecipes() == 0, "Expected carving station to reject vanilla stonecutter inputs like stone");
+        helper.assertTrue(stonecutterMenu.getNumRecipes() > 0, "Expected vanilla stonecutter to still show stonecutting recipes for stone");
+
+        helper.assertTrue(stonecutterMenu.clickMenuButton(player, 0), "Expected stonecutter to accept its first stonecutting recipe selection");
+        helper.assertTrue(!stonecutterMenu.getSlot(1).getItem().isEmpty(),
+                "Expected stonecutter result slot to contain a vanilla stonecutting output after selecting a recipe");
         helper.succeed();
     }
 }

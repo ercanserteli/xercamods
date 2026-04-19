@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:stonecutting",
+  "type": "xercablocks:carving",
   "ingredient": {
     "item": "minecraft:dark_oak_log"
   },
@@ -7,3 +7,4 @@
     "id": "xercablocks:carved_dark_oak_2"
   }
 }
+

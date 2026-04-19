@@ -8,6 +8,7 @@ import xerca.xercablocks.block.Blocks;
 import xerca.xercablocks.block_entity.BlockEntities;
 import xerca.xercablocks.item.Items;
 import xerca.xercablocks.menu.Menus;
+import xerca.xercablocks.recipe.Recipes;
 
 public final class Mod implements ModInitializer {
     public static final String MOD_ID = "xercablocks";
@@ -23,5 +24,6 @@ public final class Mod implements ModInitializer {
         BlockEntities.registerBlockEntities();
         Menus.register();
         Items.registerItems();
+        Recipes.register();
     }
 }

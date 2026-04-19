@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:stonecutting",
+  "type": "xercablocks:carving",
   "ingredient": {
     "item": "minecraft:spruce_log"
   },
@@ -7,3 +7,4 @@
     "id": "minecraft:stripped_spruce_log"
   }
 }
+

@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:stonecutting",
+  "type": "xercablocks:carving",
   "ingredient": {
     "item": "minecraft:stripped_jungle_log"
   },
@@ -7,3 +7,4 @@
     "id": "xercablocks:carved_jungle_2"
   }
 }
+
