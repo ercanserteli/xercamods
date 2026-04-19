@@ -1,14 +1,12 @@
 package xerca.xercaconfetti.entity;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,8 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercaconfetti.Mod;
 
 public class EntityConfettiBall extends ThrowableItemProjectile {
-    public static final ResourceLocation spawnPacketId = new ResourceLocation(Mod.modId, "spawn_confetti_ball");
-
     public EntityConfettiBall(EntityType<? extends EntityConfettiBall> type, Level world) {
         super(type, world);
     }
@@ -38,7 +34,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
 
     private void spawnConfetti(double x, double y, double z) {
         for (int j = 0; j < 12; ++j) {
-            this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.ITEM_CONFETTI)), x, y, z, ((double) this.random.nextFloat() - 0.5D) * 0.3D, ((double) this.random.nextFloat()) * 0.5D, ((double) this.random.nextFloat() - 0.5D) * 0.3D);
+            this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.ITEM_CONFETTI)), x, y, z, ((double) this.random.nextFloat() - 0.5D) * 0.3D, ((double) this.random.nextFloat()) * 0.5D, ((double) this.random.nextFloat() - 0.5D) * 0.3D);
         }
     }
 
@@ -49,23 +45,23 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     @Override
     protected void onHit(HitResult result) {
         spawnConfetti(result.getLocation());
-        if (!this.level.isClientSide) {
-            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
+        if (!this.level().isClientSide) {
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             this.remove(RemovalReason.DISCARDED);
         }
     }
 
     @Override
-    protected void defineSynchedData() {
-
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+        super.defineSynchedData(builder);
     }
 
     @Override
     public void tick() {
         super.tick();
         if (this.tickCount % 4 == 0) {
-            if (!this.level.isClientSide) {
-                this.level.playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
+            if (!this.level().isClientSide) {
+                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             } else {
                 spawnConfetti(this.getX(), this.getY(), this.getZ());
             }
@@ -83,10 +79,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        FriendlyByteBuf buffer = PacketByteBufs.create();
-        ClientboundAddEntityPacket pack = new ClientboundAddEntityPacket(this);
-        pack.write(buffer);
-        return ServerPlayNetworking.createS2CPacket(spawnPacketId, buffer);
+    public Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity serverEntity) {
+        return new ClientboundAddEntityPacket(this, serverEntity);
     }
 }
