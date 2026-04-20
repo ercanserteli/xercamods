@@ -9,3 +9,4 @@
     "key": {"a": {"item": "minecraft:carrot"}, "s": {"item": "minecraft:sugar"}, "e": {"item": "minecraft:egg"}, "w": {"item": "minecraft:wheat"}, "m": {"item": "minecraft:milk_bucket"}},
     "result": {"count": 6, "id": "xercafood:item_carrot_cupcake"}
 }
+

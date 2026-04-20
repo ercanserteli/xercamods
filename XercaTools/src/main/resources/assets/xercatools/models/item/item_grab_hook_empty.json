@@ -1,0 +1,7 @@
+{
+    "parent": "xercatools:item/item_grab_hook",
+    "textures": {
+        "layer0": "xercatools:item/grab_hook_empty"
+    }
+}
+

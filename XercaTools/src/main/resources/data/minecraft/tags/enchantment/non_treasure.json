@@ -1,11 +1,16 @@
 {
   "values": [
+    "xercatools:enchantment_gentle_grab",
+    "xercatools:enchantment_grappling",
     "xercatools:enchantment_devour",
     "xercatools:enchantment_guillotine",
     "xercatools:enchantment_heavy",
     "xercatools:enchantment_maim",
+    "xercatools:enchantment_poison",
     "xercatools:enchantment_quick",
     "xercatools:enchantment_quake",
+    "xercatools:enchantment_stealth",
+    "xercatools:enchantment_turbo_grab",
     "xercatools:enchantment_uppercut"
   ]
 }

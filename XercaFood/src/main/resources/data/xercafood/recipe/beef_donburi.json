@@ -4,3 +4,4 @@
     "ingredients": [{"item": "xercafood:cooked_rice"}, {"item": "minecraft:cooked_beef"}, {"item": "minecraft:bowl"}],
     "result": {"id": "xercafood:beef_donburi"}
 }
+

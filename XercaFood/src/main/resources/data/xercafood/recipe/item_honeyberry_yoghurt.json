@@ -4,3 +4,4 @@
     "ingredients": [{"item": "minecraft:sweet_berries"}, {"item": "xercafood:item_yoghurt"}, {"item": "minecraft:honey_bottle"}, {"item": "minecraft:bowl"}],
     "result": {"id": "xercafood:item_honeyberry_yoghurt"}
 }
+

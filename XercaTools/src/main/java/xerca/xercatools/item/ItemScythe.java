@@ -345,13 +345,17 @@ public class ItemScythe extends Item {
             } else if (target.getType() == EntityType.SQUID) {
                 head = createCustomMobHead("squid", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU4OTEwMWQ1Y2M3NGFhNDU4MDIxYTA2MGY2Mjg5YTUxYTM1YTdkMzRkOGNhZGRmYzNjZGYzYjJjOWEwNzFhIn19fQ==");
             } else {
-                head = new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD);
+                head = null;
             }
-            if (head.is(net.minecraft.world.item.Items.PLAYER_HEAD)) {
+
+            if (head != null && head.is(net.minecraft.world.item.Items.PLAYER_HEAD)) {
                 head.set(DataComponents.CUSTOM_NAME, Component.literal(target.getType().getDescription().getString() + " Head"));
             }
         }
-        Containers.dropItemStack(target.level(), target.getX(), target.getY(), target.getZ(), head);
+
+        if (head != null) {
+            Containers.dropItemStack(target.level(), target.getX(), target.getY(), target.getZ(), head);
+        }
     }
 
     private static ItemStack createCustomMobHead(String key, String texture) {

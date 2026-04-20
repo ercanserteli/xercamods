@@ -7,6 +7,8 @@ import net.minecraft.world.item.Tiers;
 import xerca.xercatools.Mod;
 
 public final class Items {
+    public static final Item ITEM_KNIFE = new ItemKnife();
+    public static final Item ITEM_GRAB_HOOK = new ItemGrabHook();
     public static final Item WOODEN_SCYTHE = new ItemScythe(Tiers.WOOD);
     public static final Item STONE_SCYTHE = new ItemScythe(Tiers.STONE);
     public static final Item IRON_SCYTHE = new ItemScythe(Tiers.IRON);
@@ -23,6 +25,8 @@ public final class Items {
     }
 
     public static void register() {
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("item_knife"), ITEM_KNIFE);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("item_grab_hook"), ITEM_GRAB_HOOK);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("wooden_scythe"), WOODEN_SCYTHE);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("stone_scythe"), STONE_SCYTHE);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("iron_scythe"), IRON_SCYTHE);

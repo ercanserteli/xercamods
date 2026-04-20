@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.SoundEvents;
 
 import java.util.Arrays;
@@ -111,7 +112,8 @@ public class ItemGoldenCupcake extends Item {
                     player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 2));
                     player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 1));
 
-                    Item[] weapons = {Items.ITEM_RAW_SAUSAGE, Items.ITEM_KNIFE, Items.ITEM_HOT_TEAPOT_1, Items.ITEM_ROTTEN_BURGER};
+                    Item knife = KnifeCompat.getKnifeItem();
+                    Item[] weapons = {Items.ITEM_RAW_SAUSAGE, Items.ITEM_COOKED_SAUSAGE, knife, Items.ITEM_HOT_TEAPOT_1, Items.ITEM_ROTTEN_BURGER};
 
                     Skeleton skeleton = EntityType.SKELETON.create(worldIn);
                     Zombie zombie = EntityType.ZOMBIE.create(worldIn);
@@ -119,14 +121,14 @@ public class ItemGoldenCupcake extends Item {
                         skeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
                         skeleton.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
                         skeleton.setItemSlot(EquipmentSlot.HEAD, new ItemStack(net.minecraft.world.item.Items.WITHER_SKELETON_SKULL));
-                        skeleton.moveTo(player.getX() + (double) worldIn.random.nextInt(3), player.getY() + (double) worldIn.random.nextInt(5), player.getZ() + (double) worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
+                        skeleton.moveTo(player.getX() + worldIn.random.nextInt(3), player.getY() + worldIn.random.nextInt(5), player.getZ() + worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
                         worldIn.addFreshEntity(skeleton);
                     }
                     if (zombie != null) {
-                        zombie.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_KNIFE));
-                        zombie.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.ITEM_KNIFE));
+                        zombie.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
+                        zombie.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(weapons[worldIn.random.nextInt(weapons.length)]));
                         zombie.setItemSlot(EquipmentSlot.HEAD, new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD));
-                        zombie.moveTo(player.getX() + (double) worldIn.random.nextInt(3), player.getY() + (double) worldIn.random.nextInt(5), player.getZ() + (double) worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
+                        zombie.moveTo(player.getX() + worldIn.random.nextInt(3), player.getY() + worldIn.random.nextInt(5), player.getZ() + worldIn.random.nextInt(3), worldIn.random.nextFloat() * 360.0F, 0.0F);
                         worldIn.addFreshEntity(zombie);
                     }
                     break;

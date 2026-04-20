@@ -1,0 +1,22 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.xercatools.enchantment_gentle_grab"
+  },
+  "effects": {},
+  "max_cost": {
+    "base": 50,
+    "per_level_above_first": 0
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 18,
+    "per_level_above_first": 0
+  },
+  "primary_items": "#xercatools:grab_hook",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#xercatools:grab_hook",
+  "weight": 5
+}

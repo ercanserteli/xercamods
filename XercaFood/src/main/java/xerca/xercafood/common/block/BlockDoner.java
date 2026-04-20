@@ -26,6 +26,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
 import javax.annotation.Nullable;
@@ -66,7 +67,7 @@ public class BlockDoner extends Block implements EntityBlock {
                 worldIn.playSound(null, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8f, 0.9f + worldIn.random.nextFloat() * 0.1f);
                 return ItemInteractionResult.SUCCESS;
             }
-        } else if (heldItem.getItem() == xerca.xercafood.common.item.Items.ITEM_KNIFE) {
+        } else if (KnifeCompat.isKnife(heldItem)) {
             if (!state.getValue(IS_RAW)) {
                 if (!worldIn.isClientSide) {
                     if (state.getValue(MEAT_AMOUNT) > 1) {

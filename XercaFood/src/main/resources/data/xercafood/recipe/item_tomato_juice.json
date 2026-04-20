@@ -4,3 +4,4 @@
     "ingredients": [{"item": "xercafood:item_glass"}, {"item": "xercafood:item_tomato"}],
     "result": {"id": "xercafood:item_tomato_juice"}
 }
+

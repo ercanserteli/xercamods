@@ -29,6 +29,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.item.Items;
 
 class BlockCheese extends Block {
@@ -53,7 +54,7 @@ class BlockCheese extends Block {
 
     @Override
     public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem, @NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit) {
-        if (heldItem.getItem() == Items.ITEM_KNIFE) {
+        if (KnifeCompat.isKnife(heldItem)) {
             if (!worldIn.isClientSide) {
                 slice(worldIn, pos, state, player, handIn, heldItem);
             }

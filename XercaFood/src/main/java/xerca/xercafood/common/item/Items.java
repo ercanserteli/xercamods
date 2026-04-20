@@ -1,6 +1,7 @@
 package xerca.xercafood.common.item;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.food.FoodProperties;
@@ -20,6 +21,7 @@ import xerca.xercafood.common.crafting.RecipeTeaRefilling;
 import xerca.xercafood.common.crafting.RecipeTeaSugaring;
 
 public final class Items {
+    private static final boolean REGISTER_LOCAL_KNIFE = !FabricLoader.getInstance().isModLoaded("xercatools");
     public static final Item ITEM_KNIFE = new ItemKnife();
     public static final Item ITEM_GLASS = new ItemGlass();
     public static final Item ENDER_CUPCAKE = new ItemEnderCupcake();
@@ -392,7 +394,9 @@ public final class Items {
             entries.accept(Items.ITEM_HOT_TEAPOT_7);
         });
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
-            entries.accept(Items.ITEM_KNIFE);
+            if (REGISTER_LOCAL_KNIFE) {
+                entries.accept(Items.ITEM_KNIFE);
+            }
         });
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
             entries.accept(Items.ITEM_GLASS);
@@ -408,7 +412,9 @@ public final class Items {
             entries.accept(Items.VAT);
         });
 
-        registerItem("item_knife", ITEM_KNIFE);
+        if (REGISTER_LOCAL_KNIFE) {
+            registerItem("item_knife", ITEM_KNIFE);
+        }
         registerItem("item_glass", ITEM_GLASS);
         registerItem("ender_cupcake", ENDER_CUPCAKE);
         registerItem("cola_extract", COLA_EXTRACT);

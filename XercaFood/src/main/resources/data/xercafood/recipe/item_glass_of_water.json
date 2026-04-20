@@ -4,3 +4,4 @@
     "ingredients": [{"item": "xercafood:item_glass"}, {"item": "minecraft:water_bucket"}],
     "result": {"id": "xercafood:item_glass_of_water"}
 }
+

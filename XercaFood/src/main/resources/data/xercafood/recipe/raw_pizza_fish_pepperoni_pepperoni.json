@@ -4,3 +4,4 @@
     "ingredients": [{"item": "xercafood:raw_pizza"}, {"item": "minecraft:cod"}, {"item": "xercafood:item_raw_sausage"}, {"item": "xercafood:item_raw_sausage"}],
     "result": {"id": "xercafood:raw_pizza_fish_pepperoni_pepperoni"}
 }
+

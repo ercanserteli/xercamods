@@ -1,6 +1,9 @@
 package xerca.xercatools.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -8,6 +11,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import xerca.xercatools.Mod;
+import xerca.xercatools.entity.EntityGrabHook;
+import xerca.xercatools.item.ItemGrabHook;
 import xerca.xercatools.item.ItemScythe;
 import xerca.xercatools.item.ItemWarhammer;
 import xerca.xercatools.item.Items;
@@ -17,9 +23,17 @@ import java.lang.reflect.Method;
 public final class XercaToolsClient implements ClientModInitializer {
     private static final ResourceLocation PULLING = ResourceLocation.fromNamespaceAndPath("minecraft", "pulling");
     private static final ResourceLocation PULL = ResourceLocation.fromNamespaceAndPath("minecraft", "pull");
+    private static final ResourceLocation CAST = Mod.id("cast");
 
     @Override
     public void onInitializeClient() {
+        EntityRendererRegistry.register(Mod.HOOK, RenderGrabHook::new);
+        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            if (entity instanceof EntityGrabHook hook) {
+                Minecraft.getInstance().getSoundManager().play(new HookSound(hook));
+            }
+        });
+        registerGrabHookProperties(Items.ITEM_GRAB_HOOK);
         registerBowLikeProperties(Items.WOODEN_SCYTHE);
         registerBowLikeProperties(Items.STONE_SCYTHE);
         registerBowLikeProperties(Items.IRON_SCYTHE);
@@ -47,6 +61,11 @@ public final class XercaToolsClient implements ClientModInitializer {
                     : ItemScythe.getFullUseSeconds(stack) * 20.0F;
             return Mth.clamp(useTime / fullUseTime, 0.0F, 1.0F);
         });
+    }
+
+    private static void registerGrabHookProperties(Item item) {
+        registerBowLikeProperties(item);
+        registerProperty(item, CAST, (stack, level, entity, seed) -> ItemGrabHook.isCast(stack) ? 1.0F : 0.0F);
     }
 
     private static boolean isUsingThisStack(LivingEntity entity, ItemStack stack) {

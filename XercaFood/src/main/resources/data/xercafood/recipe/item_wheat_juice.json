@@ -4,3 +4,4 @@
     "ingredients": [{"item": "xercafood:item_glass"}, {"item": "minecraft:wheat"}, {"item": "minecraft:wheat"}],
     "result": {"id": "xercafood:item_wheat_juice"}
 }
+

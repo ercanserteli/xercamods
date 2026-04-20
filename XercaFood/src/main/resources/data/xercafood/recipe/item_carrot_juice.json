@@ -4,3 +4,4 @@
     "ingredients": [{"item": "xercafood:item_glass"}, {"item": "minecraft:carrot"}],
     "result": {"id": "xercafood:item_carrot_juice"}
 }
+

@@ -10,7 +10,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_knife"}
+          {"tag": "c:tools/knife"}
         ]
       }
     },
@@ -28,3 +28,4 @@
     ]
   ]
 }
+
