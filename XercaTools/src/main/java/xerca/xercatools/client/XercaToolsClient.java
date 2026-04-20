@@ -14,13 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityGrabHook;
-import xerca.xercatools.item.ItemGrabHook;
-import xerca.xercatools.item.ItemFlask;
-import xerca.xercatools.item.ItemScythe;
-import xerca.xercatools.item.ItemWarhammer;
-import xerca.xercatools.item.Items;
-
-import java.lang.reflect.Method;
+import xerca.xercatools.item.*;
 
 public final class XercaToolsClient implements ClientModInitializer {
     private static final ResourceLocation PULLING = ResourceLocation.fromNamespaceAndPath("minecraft", "pulling");
@@ -76,12 +70,6 @@ public final class XercaToolsClient implements ClientModInitializer {
     }
 
     private static void registerProperty(Item item, ResourceLocation id, ClampedItemPropertyFunction function) {
-        try {
-            Method method = ItemProperties.class.getDeclaredMethod("register", Item.class, ResourceLocation.class, ClampedItemPropertyFunction.class);
-            method.setAccessible(true);
-            method.invoke(null, item, id, function);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException("Failed to register item property " + id + " for " + item, e);
-        }
+        ItemProperties.register(item, id, function);
     }
 }

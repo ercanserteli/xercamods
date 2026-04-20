@@ -3,7 +3,6 @@ package xerca.xercatools.client;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercatools.SoundEvents;
 import xerca.xercatools.entity.EntityGrabHook;
 

@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercaomnichest.block.Blocks;
 import xerca.xercaomnichest.data.OmniChestInventory;
 

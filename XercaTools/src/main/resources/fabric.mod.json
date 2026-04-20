@@ -16,11 +16,10 @@
       "xerca.xercatools.client.XercaToolsClient"
     ]
   },
+  "accessWidener": "xercatools.accesswidener",
   "depends": {
     "fabricloader": "*",
     "fabric-api": "*",
     "minecraft": "1.21.1"
   }
 }
-
-

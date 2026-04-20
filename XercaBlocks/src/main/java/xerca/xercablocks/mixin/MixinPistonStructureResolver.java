@@ -1,7 +1,7 @@
 package xerca.xercablocks.mixin;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.piston.PistonStructureResolver;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

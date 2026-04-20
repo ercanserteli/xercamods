@@ -1,4 +1,6 @@
-import subprocess, sys, os
+import os
+import subprocess
+import sys
 
 fname = sys.argv[1]
 

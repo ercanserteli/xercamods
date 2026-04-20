@@ -11,7 +11,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import xerca.xercablocks.block.Blocks;
 import xerca.xercablocks.block_entity.FunctionalBookcaseBlockEntity;
 
 public class BookcaseMenu extends AbstractContainerMenu {
