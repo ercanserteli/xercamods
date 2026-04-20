@@ -1,8 +1,10 @@
 package xerca.xercacushion.tests;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -105,6 +107,30 @@ public final class CushionGameTests {
                 .thenWaitUntil(() -> helper.assertTrue(cushion.getY() < 3.5D, "Expected cushion to fall after a few ticks"))
                 .thenWaitUntil(() -> helper.assertTrue(cushion.onGround(), "Expected cushion to land on the ground"))
                 .thenExecute(() -> helper.assertTrue(Math.abs(cushion.getY() - 2.0D) < 0.01D, "Expected cushion to sit flush on top of the supporting block, got y=" + cushion.getY()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CUSHION_BATCH)
+    public static void cushionIsPushedByExtendingPiston(GameTestHelper helper) {
+        helper.setBlock(new BlockPos(1, 1, 1), Blocks.STONE.defaultBlockState());
+        helper.setBlock(new BlockPos(2, 1, 1), Blocks.STONE.defaultBlockState());
+        helper.setBlock(new BlockPos(1, 2, 1), Blocks.PISTON.defaultBlockState()
+                .setValue(PistonBaseBlock.FACING, Direction.EAST));
+
+        BlockPos cushionBlock = helper.absolutePos(new BlockPos(2, 2, 1));
+        EntityCushion cushion = new EntityCushion(helper.getLevel(),
+                cushionBlock.getX() + 0.5, cushionBlock.getY(), cushionBlock.getZ() + 0.5, 0);
+        helper.getLevel().addFreshEntity(cushion);
+        double startX = cushion.getX();
+
+        helper.startSequence()
+                .thenExecute(() -> helper.setBlock(new BlockPos(0, 2, 1), Blocks.REDSTONE_BLOCK.defaultBlockState()))
+                .thenExecuteAfter(5, () -> {
+                    System.out.println("PISTON_DEBUG: startX=" + startX + " currentX=" + cushion.getX() + " removed=" + cushion.isRemoved());
+                    helper.assertFalse(cushion.isRemoved(), "Cushion removed; startX=" + startX);
+                    helper.assertTrue(cushion.getX() > startX + 0.5,
+                            "Expected push east; startX=" + startX + " currentX=" + cushion.getX());
+                })
                 .thenSucceed();
     }
 
