@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "id": "xercafood:item_tomato"
+      "id": "xercafood:tomato"
     },
     "title": {
       "translate": "advancements.xercafood.achievements.hooligan.title"

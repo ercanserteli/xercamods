@@ -1,7 +1,7 @@
 {
     "type": "minecraft:crafting_shapeless",
     
-    "ingredients": [{"item": "xercafood:cooked_rice"}, {"item": "xercafood:item_fried_egg"}],
+    "ingredients": [{"item": "xercafood:cooked_rice"}, {"item": "xercafood:fried_egg"}],
     "result": {"id": "xercafood:omurice"}
 }
 

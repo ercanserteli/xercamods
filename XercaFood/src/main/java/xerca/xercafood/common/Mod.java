@@ -55,7 +55,7 @@ public class Mod implements ModInitializer {
     @Override
     public void onInitialize() {
         // Making tomato dispensable by dispenser
-        DispenserBlock.registerBehavior(Items.ITEM_TOMATO, new DefaultDispenseItemBehavior() {
+        DispenserBlock.registerBehavior(Items.TOMATO, new DefaultDispenseItemBehavior() {
             @Nonnull
             @Override
             protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stackIn) {
@@ -82,9 +82,9 @@ public class Mod implements ModInitializer {
 
     private void registerTradeOffers() {
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.FARMER, 1, (a) -> a.addAll(List.of(
-                new VillagerTrades.EmeraldForItems(Items.ITEM_RICE_SEEDS, 24, 16, 2),
-                new VillagerTrades.EmeraldForItems(Items.ITEM_TOMATO, 22, 16, 2),
-                new VillagerTrades.EmeraldForItems(Items.ITEM_TEA_SEEDS, 18, 16, 2))
+                new VillagerTrades.EmeraldForItems(Items.RICE_SEEDS, 24, 16, 2),
+                new VillagerTrades.EmeraldForItems(Items.TOMATO, 22, 16, 2),
+                new VillagerTrades.EmeraldForItems(Items.TEA_SEEDS, 18, 16, 2))
         ));
     }
 
@@ -107,13 +107,13 @@ public class Mod implements ModInitializer {
             if (source.isBuiltin() && GRASS_LOOT_TABLE_ID.equals(id)) {
                 LootPool.Builder poolRice = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))
-                        .with(LootItem.lootTableItem(Items.ITEM_RICE_SEEDS).build());
+                        .with(LootItem.lootTableItem(Items.RICE_SEEDS).build());
                 LootPool.Builder poolTomato = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))
-                        .with(LootItem.lootTableItem(Items.ITEM_TOMATO_SEEDS).build());
+                        .with(LootItem.lootTableItem(Items.TOMATO_SEEDS).build());
                 LootPool.Builder poolTea = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))
-                        .with(LootItem.lootTableItem(Items.ITEM_TEA_SEEDS).build());
+                        .with(LootItem.lootTableItem(Items.TEA_SEEDS).build());
 
                 tableBuilder.withPool(poolRice).withPool(poolTomato).withPool(poolTea);
             }

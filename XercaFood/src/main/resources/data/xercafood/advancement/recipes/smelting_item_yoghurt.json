@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smelting_item_yoghurt"
+      "xercafood:smelting_yoghurt"
     ]
   },
   "criteria": {
@@ -17,7 +17,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smelting_item_yoghurt"
+        "recipe": "xercafood:smelting_yoghurt"
       }
     }
   },

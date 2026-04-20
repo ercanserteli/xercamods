@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smoking_item_hot_teapot_4"
+      "xercafood:smoking_hot_teapot_4"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_full_teapot_4"}
+          {"items": "xercafood:full_teapot_4"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smoking_item_hot_teapot_4"
+        "recipe": "xercafood:smoking_hot_teapot_4"
       }
     }
   },

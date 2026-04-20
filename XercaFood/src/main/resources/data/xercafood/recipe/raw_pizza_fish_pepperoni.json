@@ -1,7 +1,7 @@
 {
     "type": "minecraft:crafting_shapeless",
     "group": "pizza",
-    "ingredients": [{"item": "xercafood:raw_pizza"}, {"item": "minecraft:cod"}, {"item": "xercafood:item_raw_sausage"}],
+    "ingredients": [{"item": "xercafood:raw_pizza"}, {"item": "minecraft:cod"}, {"item": "xercafood:raw_sausage"}],
     "result": {"id": "xercafood:raw_pizza_fish_pepperoni"}
 }
 

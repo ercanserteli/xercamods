@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "xercafood:item_rice_seeds"
+          "name": "xercafood:rice_seeds"
         }
       ]
     },
@@ -26,7 +26,7 @@
               }
             }
           ],
-          "name": "xercafood:item_rice_seeds"
+          "name": "xercafood:rice_seeds"
         }
       ],
       "conditions": [

@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smelting_item_shish_kebab"
+      "xercafood:smelting_shish_kebab"
     ]
   },
   "criteria": {
@@ -17,7 +17,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smelting_item_shish_kebab"
+        "recipe": "xercafood:smelting_shish_kebab"
       }
     }
   },

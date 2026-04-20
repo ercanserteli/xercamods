@@ -16,13 +16,13 @@ public class RecipeTeaSugaring extends CustomRecipe {
     public static Item getTeacup(int sugarAmount) {
         Item res = net.minecraft.world.item.Items.AIR;
         switch (sugarAmount) {
-            case 0 -> res = Items.ITEM_FULL_TEACUP_0;
-            case 1 -> res = Items.ITEM_FULL_TEACUP_1;
-            case 2 -> res = Items.ITEM_FULL_TEACUP_2;
-            case 3 -> res = Items.ITEM_FULL_TEACUP_3;
-            case 4 -> res = Items.ITEM_FULL_TEACUP_4;
-            case 5 -> res = Items.ITEM_FULL_TEACUP_5;
-            case 6 -> res = Items.ITEM_FULL_TEACUP_6;
+            case 0 -> res = Items.FULL_TEACUP_0;
+            case 1 -> res = Items.FULL_TEACUP_1;
+            case 2 -> res = Items.FULL_TEACUP_2;
+            case 3 -> res = Items.FULL_TEACUP_3;
+            case 4 -> res = Items.FULL_TEACUP_4;
+            case 5 -> res = Items.FULL_TEACUP_5;
+            case 6 -> res = Items.FULL_TEACUP_6;
         }
         return res;
     }

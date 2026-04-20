@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smoking_item_potato_fries"
+      "xercafood:smoking_potato_fries"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_potato_slices"}
+          {"items": "xercafood:potato_slices"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smoking_item_potato_fries"
+        "recipe": "xercafood:smoking_potato_fries"
       }
     }
   },

@@ -270,7 +270,7 @@ public class ItemScythe extends Item {
 
         player.heal(amount);
         level.playSound(null, player, SoundEvents.ABSORB, SoundSource.PLAYERS, 1.0F, 0.8F + player.getRandom().nextFloat() * 0.4F);
-        for (int i = 0; i < amount * 6; i++) {
+        for (int i = 0; i < amount * 3; i++) {
             double velX = (level.random.nextDouble() - 0.5D) * 0.2D;
             double velY = level.random.nextDouble() * 0.2D + 0.02D;
             double velZ = (level.random.nextDouble() - 0.5D) * 0.2D;

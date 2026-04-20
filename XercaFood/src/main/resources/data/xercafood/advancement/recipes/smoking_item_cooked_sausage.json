@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smoking_item_cooked_sausage"
+      "xercafood:smoking_cooked_sausage"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_raw_sausage"}
+          {"items": "xercafood:raw_sausage"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smoking_item_cooked_sausage"
+        "recipe": "xercafood:smoking_cooked_sausage"
       }
     }
   },

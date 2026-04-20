@@ -16,13 +16,13 @@ public class RecipeTeaPouring extends CustomRecipe {
     public static Item getHotTeapot(int teaAmount) {
         Item res = net.minecraft.world.item.Items.AIR;
         switch (teaAmount) {
-            case 1 -> res = Items.ITEM_HOT_TEAPOT_1;
-            case 2 -> res = Items.ITEM_HOT_TEAPOT_2;
-            case 3 -> res = Items.ITEM_HOT_TEAPOT_3;
-            case 4 -> res = Items.ITEM_HOT_TEAPOT_4;
-            case 5 -> res = Items.ITEM_HOT_TEAPOT_5;
-            case 6 -> res = Items.ITEM_HOT_TEAPOT_6;
-            case 7 -> res = Items.ITEM_HOT_TEAPOT_7;
+            case 1 -> res = Items.HOT_TEAPOT_1;
+            case 2 -> res = Items.HOT_TEAPOT_2;
+            case 3 -> res = Items.HOT_TEAPOT_3;
+            case 4 -> res = Items.HOT_TEAPOT_4;
+            case 5 -> res = Items.HOT_TEAPOT_5;
+            case 6 -> res = Items.HOT_TEAPOT_6;
+            case 7 -> res = Items.HOT_TEAPOT_7;
         }
         return res;
     }
@@ -53,7 +53,7 @@ public class RecipeTeaPouring extends CustomRecipe {
                         return false;
                     }
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEACUP || i > 6) {
+                    if (itemstack.getItem() != Items.TEACUP || i > 6) {
                         return false;
                     }
 
@@ -87,7 +87,7 @@ public class RecipeTeaPouring extends CustomRecipe {
                         return ItemStack.EMPTY;
                     }
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEACUP || i > 6) {
+                    if (itemstack.getItem() != Items.TEACUP || i > 6) {
                         return ItemStack.EMPTY;
                     }
 
@@ -97,7 +97,7 @@ public class RecipeTeaPouring extends CustomRecipe {
         }
 
         if (!teapotStack.isEmpty() && i >= 1 && teapot != null && (teapot.getTeaAmount() - i) >= 0) {
-            return new ItemStack(Items.ITEM_FULL_TEACUP_0, i);
+            return new ItemStack(Items.FULL_TEACUP_0, i);
         } else {
             return ItemStack.EMPTY;
         }
@@ -111,7 +111,7 @@ public class RecipeTeaPouring extends CustomRecipe {
         for (int j = 0; j < inv.size(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ITEM_TEACUP && teacupCount <= 6) {
+                if (itemstack.getItem() == Items.TEACUP && teacupCount <= 6) {
                     ++teacupCount;
                 }
             }
@@ -129,7 +129,7 @@ public class RecipeTeaPouring extends CustomRecipe {
                         nonnulllist.set(i, remainingStack);
                     }
                 } else {
-                    nonnulllist.set(i, new ItemStack(Items.ITEM_TEAPOT));
+                    nonnulllist.set(i, new ItemStack(Items.TEAPOT));
                 }
                 break;
             }

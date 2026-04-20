@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "id": "xercafood:item_golden_cupcake"
+      "id": "xercafood:golden_cupcake"
     },
     "title": {
       "translate": "advancements.xercafood.achievements.cupcake.title",
@@ -19,7 +19,7 @@
       "conditions": {
         "items": [
           {
-            "items": ["xercafood:item_golden_cupcake"]
+            "items": ["xercafood:golden_cupcake"]
           }
         ]
       }

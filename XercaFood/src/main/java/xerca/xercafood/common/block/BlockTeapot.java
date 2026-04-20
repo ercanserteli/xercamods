@@ -63,11 +63,11 @@ public class BlockTeapot extends Block {
 
     @Override
     public ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (heldItem.getItem() == Items.ITEM_TEACUP && state.getValue(TEA_AMOUNT) > 0) {
+        if (heldItem.getItem() == Items.TEACUP && state.getValue(TEA_AMOUNT) > 0) {
             if (player instanceof ServerPlayer) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
                 heldItem.shrink(1);
-                player.addItem(new ItemStack(Items.ITEM_FULL_TEACUP_0));
+                player.addItem(new ItemStack(Items.FULL_TEACUP_0));
                 worldIn.setBlockAndUpdate(pos, state.setValue(TEA_AMOUNT, state.getValue(TEA_AMOUNT) - 1));
             }
             return ItemInteractionResult.SUCCESS;
@@ -80,7 +80,7 @@ public class BlockTeapot extends Block {
         int teaAmount = state.getValue(TEA_AMOUNT);
         ItemStack teapotStack;
         if (teaAmount == 0) {
-            teapotStack = new ItemStack(Items.ITEM_TEAPOT);
+            teapotStack = new ItemStack(Items.TEAPOT);
         } else {
             teapotStack = new ItemStack(getItemHotTeapot(teaAmount));
         }
@@ -115,14 +115,14 @@ public class BlockTeapot extends Block {
 
     public ItemTeapot getItemHotTeapot(int teaAmount) {
         return switch (teaAmount) {
-            case 1 -> Items.ITEM_HOT_TEAPOT_1;
-            case 2 -> Items.ITEM_HOT_TEAPOT_2;
-            case 3 -> Items.ITEM_HOT_TEAPOT_3;
-            case 4 -> Items.ITEM_HOT_TEAPOT_4;
-            case 5 -> Items.ITEM_HOT_TEAPOT_5;
-            case 6 -> Items.ITEM_HOT_TEAPOT_6;
-            case 7 -> Items.ITEM_HOT_TEAPOT_7;
-            default -> Items.ITEM_HOT_TEAPOT_1;
+            case 1 -> Items.HOT_TEAPOT_1;
+            case 2 -> Items.HOT_TEAPOT_2;
+            case 3 -> Items.HOT_TEAPOT_3;
+            case 4 -> Items.HOT_TEAPOT_4;
+            case 5 -> Items.HOT_TEAPOT_5;
+            case 6 -> Items.HOT_TEAPOT_6;
+            case 7 -> Items.HOT_TEAPOT_7;
+            default -> Items.HOT_TEAPOT_1;
         };
     }
 }

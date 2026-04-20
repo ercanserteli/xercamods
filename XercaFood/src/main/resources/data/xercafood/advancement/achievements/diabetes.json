@@ -16,7 +16,7 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_full_teacup_6"]
+          "items": ["xercafood:full_teacup_6"]
         }
       }
     }

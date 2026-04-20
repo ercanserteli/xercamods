@@ -1,0 +1,31 @@
+{
+  "parent": "xercafood:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercafood:rotten_burger"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": "xercafood:bun"}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercafood:rotten_burger"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}
+

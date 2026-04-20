@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:campfire_cooking_item_potato_fries"
+      "xercafood:campfire_cooking_potato_fries"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_potato_slices"}
+          {"items": "xercafood:potato_slices"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:campfire_cooking_item_potato_fries"
+        "recipe": "xercafood:campfire_cooking_potato_fries"
       }
     }
   },

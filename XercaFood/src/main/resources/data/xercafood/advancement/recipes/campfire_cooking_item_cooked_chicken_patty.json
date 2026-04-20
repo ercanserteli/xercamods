@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:campfire_cooking_item_cooked_chicken_patty"
+      "xercafood:campfire_cooking_cooked_chicken_patty"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_raw_chicken_patty"}
+          {"items": "xercafood:raw_chicken_patty"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:campfire_cooking_item_cooked_chicken_patty"
+        "recipe": "xercafood:campfire_cooking_cooked_chicken_patty"
       }
     }
   },

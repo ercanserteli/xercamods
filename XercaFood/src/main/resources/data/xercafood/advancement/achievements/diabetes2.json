@@ -2,7 +2,7 @@
   "parent": "xercafood:achievements/diabetes",
   "display": {
     "icon": {
-      "id": "xercafood:item_fancy_apple_cupcake"
+      "id": "xercafood:fancy_apple_cupcake"
     },
     "title": {
       "translate": "advancements.xercafood.achievements.diabetes2.title"
@@ -35,131 +35,131 @@
         }
       }
     },
-    "item_apple_cupcake": {
+    "apple_cupcake": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_apple_cupcake"]
+          "items": ["xercafood:apple_cupcake"]
         }
       }
     },
-    "item_pumpkin_cupcake": {
+    "pumpkin_cupcake": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_pumpkin_cupcake"]
+          "items": ["xercafood:pumpkin_cupcake"]
         }
       }
     },
-    "item_cocoa_cupcake": {
+    "cocoa_cupcake": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_cocoa_cupcake"]
+          "items": ["xercafood:cocoa_cupcake"]
         }
       }
     },
-    "item_melon_cupcake": {
+    "melon_cupcake": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_melon_cupcake"]
+          "items": ["xercafood:melon_cupcake"]
         }
       }
     },
-    "item_carrot_cupcake": {
+    "carrot_cupcake": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_carrot_cupcake"]
+          "items": ["xercafood:carrot_cupcake"]
         }
       }
     },
-    "item_fancy_apple_cupcake": {
+    "fancy_apple_cupcake": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_fancy_apple_cupcake"]
+          "items": ["xercafood:fancy_apple_cupcake"]
         }
       }
     },
-    "item_fancy_pumpkin_cupcake": {
+    "fancy_pumpkin_cupcake": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_fancy_pumpkin_cupcake"]
+          "items": ["xercafood:fancy_pumpkin_cupcake"]
         }
       }
     },
-    "item_donut": {
+    "donut": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_donut"]
+          "items": ["xercafood:donut"]
         }
       }
     },
-    "item_fancy_donut": {
+    "fancy_donut": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_fancy_donut"]
+          "items": ["xercafood:fancy_donut"]
         }
       }
     },
-    "item_chocolate": {
+    "chocolate": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_chocolate"]
+          "items": ["xercafood:chocolate"]
         }
       }
     },
-    "item_croissant": {
+    "croissant": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_croissant"]
+          "items": ["xercafood:croissant"]
         }
       }
     },
-    "item_ice_tea": {
+    "ice_tea": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_ice_tea"]
+          "items": ["xercafood:ice_tea"]
         }
       }
     },
-    "item_apple_juice": {
+    "apple_juice": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_apple_juice"]
+          "items": ["xercafood:apple_juice"]
         }
       }
     },
-    "item_carrot_juice": {
+    "carrot_juice": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_carrot_juice"]
+          "items": ["xercafood:carrot_juice"]
         }
       }
     },
-    "item_melon_juice": {
+    "melon_juice": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_melon_juice"]
+          "items": ["xercafood:melon_juice"]
         }
       }
     },
-    "item_pumpkin_juice": {
+    "pumpkin_juice": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_pumpkin_juice"]
+          "items": ["xercafood:pumpkin_juice"]
         }
       }
     }
@@ -172,52 +172,52 @@
       "pumpkin_pie"
     ],
     [
-      "item_apple_cupcake"
+      "apple_cupcake"
     ],
     [
-      "item_pumpkin_cupcake"
+      "pumpkin_cupcake"
     ],
     [
-      "item_cocoa_cupcake"
+      "cocoa_cupcake"
     ],
     [
-      "item_melon_cupcake"
+      "melon_cupcake"
     ],
     [
-      "item_carrot_cupcake"
+      "carrot_cupcake"
     ],
     [
-      "item_fancy_apple_cupcake"
+      "fancy_apple_cupcake"
     ],
     [
-      "item_fancy_pumpkin_cupcake"
+      "fancy_pumpkin_cupcake"
     ],
     [
-      "item_donut"
+      "donut"
     ],
     [
-      "item_fancy_donut"
+      "fancy_donut"
     ],
     [
-      "item_chocolate"
+      "chocolate"
     ],
     [
-      "item_croissant"
+      "croissant"
     ],
     [
-      "item_ice_tea"
+      "ice_tea"
     ],
     [
-      "item_apple_juice"
+      "apple_juice"
     ],
     [
-      "item_carrot_juice"
+      "carrot_juice"
     ],
     [
-      "item_melon_juice"
+      "melon_juice"
     ],
     [
-      "item_pumpkin_juice"
+      "pumpkin_juice"
     ]
   ]
 }

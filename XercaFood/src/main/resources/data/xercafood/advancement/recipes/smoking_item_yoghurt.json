@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smoking_item_yoghurt"
+      "xercafood:smoking_yoghurt"
     ]
   },
   "criteria": {
@@ -17,7 +17,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smoking_item_yoghurt"
+        "recipe": "xercafood:smoking_yoghurt"
       }
     }
   },

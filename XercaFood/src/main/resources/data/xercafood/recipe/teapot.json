@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " c ",
+        "c c",
+        "ccc"
+    ],
+    "key": {"c": {"item": "minecraft:clay_ball"}},
+    "result": {"id": "xercafood:teapot"}
+}
+

@@ -21,10 +21,10 @@ public class AdvancementGameTests {
 
         helper.assertFalse(advancementProgress(player, advancement).isDone(), "Expected brew tea advancement to start locked");
 
-        triggerInventoryChanged(player, new ItemStack(Items.ITEM_TOMATO));
+        triggerInventoryChanged(player, new ItemStack(Items.TOMATO));
         helper.assertFalse(advancementProgress(player, advancement).isDone(), "Tomato should not trigger the brew tea advancement");
 
-        triggerInventoryChanged(player, new ItemStack(Items.ITEM_HOT_TEAPOT_0));
+        triggerInventoryChanged(player, new ItemStack(Items.HOT_TEAPOT_0));
         helper.assertTrue(advancementProgress(player, advancement).isDone(), "Hot teapot should trigger the brew tea advancement");
         helper.succeed();
     }
@@ -32,13 +32,13 @@ public class AdvancementGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void recipeAdvancementUnlocksTomatoSlicingRecipe(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        ResourceLocation tomatoSlicesRecipeId = recipeId("item_tomato_slices");
-        AdvancementHolder advancement = requireAdvancement(helper, advancementId("recipes/item_tomato_slices"));
+        ResourceLocation tomatoSlicesRecipeId = recipeId("tomato_slices");
+        AdvancementHolder advancement = requireAdvancement(helper, advancementId("recipes/tomato_slices"));
 
         helper.assertFalse(advancementProgress(player, advancement).isDone(), "Expected tomato slices recipe advancement to start locked");
         helper.assertFalse(player.getRecipeBook().contains(tomatoSlicesRecipeId), "Expected tomato slices recipe to start locked in the recipe book");
 
-        triggerInventoryChanged(player, new ItemStack(Items.ITEM_TOMATO));
+        triggerInventoryChanged(player, new ItemStack(Items.TOMATO));
 
         helper.assertTrue(advancementProgress(player, advancement).isDone(), "Expected tomato item pickup to complete the tomato slices recipe advancement");
         helper.assertTrue(player.getRecipeBook().contains(tomatoSlicesRecipeId), "Expected tomato item pickup to unlock the tomato slices recipe");
@@ -56,10 +56,10 @@ public class AdvancementGameTests {
         helper.assertFalse(advancementProgress(player, tomatoShotAdv).isDone(), "Expected tomato-hit advancement to start locked");
         helper.assertFalse(advancementProgress(player, cupcakeAdv).isDone(), "Expected cupcake possession advancement to start locked");
 
-        Items.ITEM_ULTIMATE_BURGER.finishUsingItem(new ItemStack(Items.ITEM_ULTIMATE_BURGER), helper.getLevel(), player);
+        Items.ULTIMATE_BURGER.finishUsingItem(new ItemStack(Items.ULTIMATE_BURGER), helper.getLevel(), player);
         helper.assertTrue(advancementProgress(player, ultimateBurgerAdv).isDone(), "Expected ultimate burger consumption to unlock advancement");
 
-        triggerInventoryChanged(player, new ItemStack(Items.ITEM_GOLDEN_CUPCAKE));
+        triggerInventoryChanged(player, new ItemStack(Items.GOLDEN_CUPCAKE));
         helper.assertTrue(advancementProgress(player, cupcakeAdv).isDone(), "Expected golden cupcake possession to unlock advancement");
 
         Zombie zombie = new Zombie(helper.getLevel());

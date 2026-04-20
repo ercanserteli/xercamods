@@ -1,7 +1,7 @@
 {
     "type": "minecraft:crafting_shapeless",
     
-    "ingredients": [{"item": "xercafood:item_glass"}, {"item": "minecraft:sweet_berries"}],
+    "ingredients": [{"item": "xercafood:glass"}, {"item": "minecraft:sweet_berries"}],
     "result": {"id": "xercafood:sweet_berry_juice"}
 }
 

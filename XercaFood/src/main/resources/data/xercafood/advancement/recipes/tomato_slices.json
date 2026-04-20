@@ -1,0 +1,31 @@
+{
+  "parent": "xercafood:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercafood:tomato_slices"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": "xercafood:tomato"}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercafood:tomato_slices"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}
+

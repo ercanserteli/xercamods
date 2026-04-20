@@ -1,7 +1,7 @@
 {
     "display": {
         "icon": {
-            "id": "xercafood:item_hot_teapot_0"
+            "id": "xercafood:hot_teapot_0"
         },
         "title": {
             "translate": "advancements.xercafood.achievements.teatime.title"

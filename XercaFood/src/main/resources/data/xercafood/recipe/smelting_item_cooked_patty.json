@@ -1,8 +1,8 @@
 {
     "type": "minecraft:smelting",
     
-    "ingredient": {"item": "xercafood:item_raw_patty"},
-    "result": {"id": "xercafood:item_cooked_patty"},
+    "ingredient": {"item": "xercafood:raw_patty"},
+    "result": {"id": "xercafood:cooked_patty"},
     "experience": 0.2,
     "cookingtime": 200
 }

@@ -22,7 +22,7 @@ class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     @Override
     protected ItemLike getBaseSeedId() {
-        return Items.ITEM_RICE_SEEDS;
+        return Items.RICE_SEEDS;
     }
 
     @Override

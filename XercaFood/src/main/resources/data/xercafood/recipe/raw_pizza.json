@@ -5,7 +5,7 @@
         "ct ",
         "www"
     ],
-    "key": {"w": {"item": "minecraft:wheat"}, "c": {"item": "xercafood:cheese_slice"}, "t": {"item": "xercafood:item_tomato_slices"}},
+    "key": {"w": {"item": "minecraft:wheat"}, "c": {"item": "xercafood:cheese_slice"}, "t": {"item": "xercafood:tomato_slices"}},
     "result": {"id": "xercafood:raw_pizza"}
 }
 

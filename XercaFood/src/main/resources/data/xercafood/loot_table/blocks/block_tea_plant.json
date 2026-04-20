@@ -18,11 +18,11 @@
                   }
                 }
               ],
-              "name": "xercafood:item_tea_leaf"
+              "name": "xercafood:tea_leaf"
             },
             {
               "type": "minecraft:item",
-              "name": "xercafood:item_tea_seeds"
+              "name": "xercafood:tea_seeds"
             }
           ]
         }
@@ -44,7 +44,7 @@
               }
             }
           ],
-          "name": "xercafood:item_tea_seeds"
+          "name": "xercafood:tea_seeds"
         }
       ],
       "conditions": [

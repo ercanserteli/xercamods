@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "id": "xercafood:item_ultimate_burger"
+      "id": "xercafood:ultimate_burger"
     },
     "title": {
       "translate": "advancements.xercafood.achievements.saturated.title"
@@ -16,7 +16,7 @@
       "trigger": "consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_ultimate_burger"]
+          "items": ["xercafood:ultimate_burger"]
         }
       }
     }

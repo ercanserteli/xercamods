@@ -1,0 +1,7 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "xercafood:tomato"}],
+    "result": {"id": "xercafood:tomato_seeds"}
+}
+

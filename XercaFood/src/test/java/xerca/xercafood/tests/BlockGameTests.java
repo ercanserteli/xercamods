@@ -29,7 +29,7 @@ public class BlockGameTests {
         helper.setBlock(pos, grownTomato);
         helper.getLevel().destroyBlock(helper.absolutePos(pos), true);
 
-        helper.assertItemEntityPresent(Items.ITEM_TOMATO, pos, 2.0);
+        helper.assertItemEntityPresent(Items.TOMATO, pos, 2.0);
         helper.succeed();
     }
 
@@ -42,7 +42,7 @@ public class BlockGameTests {
         helper.setBlock(pos, grownRice);
         helper.getLevel().destroyBlock(helper.absolutePos(pos), true);
 
-        helper.assertItemEntityPresent(Items.ITEM_RICE_SEEDS, pos, 2.0);
+        helper.assertItemEntityPresent(Items.RICE_SEEDS, pos, 2.0);
         helper.succeed();
     }
 
@@ -55,7 +55,7 @@ public class BlockGameTests {
         helper.setBlock(pos, grownTea);
         helper.getLevel().destroyBlock(helper.absolutePos(pos), true);
 
-        helper.assertItemEntityPresent(Items.ITEM_TEA_LEAF, pos, 2.0);
+        helper.assertItemEntityPresent(Items.TEA_LEAF, pos, 2.0);
         helper.succeed();
     }
 
@@ -193,7 +193,7 @@ public class BlockGameTests {
         net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "cheese_wheel"));
         helper.getLevel().setBlockAndUpdate(cheesePos, cheeseBlock.defaultBlockState());
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        ItemStack knife = new ItemStack(Items.ITEM_KNIFE);
+        ItemStack knife = new ItemStack(Items.KNIFE);
         useBlockWithItem(helper, cheesePos, player, knife);
 
         helper.assertTrue(hasNearbyItem(helper, new BlockPos(1, 2, 1), Items.CHEESE_SLICE, 3.0), "Expected slicing cheese to drop a cheese slice");
@@ -243,7 +243,7 @@ public class BlockGameTests {
         }
         helper.assertFalse(helper.getLevel().getBlockState(donerPos).getValue(xerca.xercafood.common.block.BlockDoner.IS_RAW), "Expected doner to cook when heated and powered");
 
-        ItemStack knife = new ItemStack(Items.ITEM_KNIFE);
+        ItemStack knife = new ItemStack(Items.KNIFE);
         useBlockWithItem(helper, donerPos, player, knife);
         helper.assertTrue(hasNearbyItem(helper, new BlockPos(1, 2, 1), Items.DONER_SLICE, 3.0), "Expected slicing cooked doner to drop doner slice");
         helper.succeed();
@@ -286,8 +286,8 @@ public class BlockGameTests {
             helper.getLevel().setBlockAndUpdate(grassPos, Blocks.SHORT_GRASS.defaultBlockState());
             helper.getLevel().destroyBlock(grassPos, true);
         }
-        helper.assertTrue(hasNearbyItem(helper, new BlockPos(1, 2, 1), Items.ITEM_TEA_SEEDS, 8.0), "Expected short grass to drop tea seeds");
-        helper.assertTrue(hasNearbyItem(helper, new BlockPos(1, 2, 1), Items.ITEM_TOMATO_SEEDS, 8.0), "Expected short grass to drop tomato seeds");
+        helper.assertTrue(hasNearbyItem(helper, new BlockPos(1, 2, 1), Items.TEA_SEEDS, 8.0), "Expected short grass to drop tea seeds");
+        helper.assertTrue(hasNearbyItem(helper, new BlockPos(1, 2, 1), Items.TOMATO_SEEDS, 8.0), "Expected short grass to drop tomato seeds");
         helper.succeed();
     }
 
@@ -296,11 +296,11 @@ public class BlockGameTests {
         BlockPos teapotPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(teapotPos, xerca.xercafood.common.block.Blocks.BLOCK_TEAPOT.defaultBlockState().setValue(xerca.xercafood.common.block.BlockTeapot.TEA_AMOUNT, 2));
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        ItemStack cup = new ItemStack(Items.ITEM_TEACUP);
+        ItemStack cup = new ItemStack(Items.TEACUP);
         player.getInventory().setItem(player.getInventory().selected, cup);
 
         useBlockWithItem(helper, teapotPos, player, cup);
-        helper.assertTrue(player.getInventory().contains(new ItemStack(Items.ITEM_FULL_TEACUP_0)), "Expected teapot block interaction to fill a cup");
+        helper.assertTrue(player.getInventory().contains(new ItemStack(Items.FULL_TEACUP_0)), "Expected teapot block interaction to fill a cup");
         helper.assertTrue(helper.getLevel().getBlockState(teapotPos).getValue(xerca.xercafood.common.block.BlockTeapot.TEA_AMOUNT) == 1, "Expected teapot block tea amount to decrease");
         helper.succeed();
     }

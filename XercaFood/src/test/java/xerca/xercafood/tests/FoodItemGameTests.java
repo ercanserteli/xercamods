@@ -20,7 +20,7 @@ public class FoodItemGameTests {
         player.getFoodData().setFoodLevel(20);
         player.getFoodData().setSaturation(0.0f);
 
-        new ItemStack(Items.ITEM_ROTTEN_BURGER).getItem().finishUsingItem(new ItemStack(Items.ITEM_ROTTEN_BURGER), helper.getLevel(), player);
+        new ItemStack(Items.ROTTEN_BURGER).getItem().finishUsingItem(new ItemStack(Items.ROTTEN_BURGER), helper.getLevel(), player);
 
         helper.assertTrue(player.getFoodData().getFoodLevel() <= 15, "Expected rotten burger to lower hunger by at least 5");
         helper.succeed();
@@ -30,7 +30,7 @@ public class FoodItemGameTests {
     public static void ultimateBurgerAppliesSaturationEffect(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         player.getFoodData().setFoodLevel(10);
-        new ItemStack(Items.ITEM_ULTIMATE_BURGER).getItem().finishUsingItem(new ItemStack(Items.ITEM_ULTIMATE_BURGER), helper.getLevel(), player);
+        new ItemStack(Items.ULTIMATE_BURGER).getItem().finishUsingItem(new ItemStack(Items.ULTIMATE_BURGER), helper.getLevel(), player);
         helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.SATURATION), "Expected ultimate burger to apply saturation");
         helper.succeed();
     }
@@ -54,11 +54,11 @@ public class FoodItemGameTests {
         boolean sawDroppedCupcake = false;
 
         for (int i = 0; i < 40; i++) {
-            Items.ITEM_GOLDEN_CUPCAKE.finishUsingItem(new ItemStack(Items.ITEM_GOLDEN_CUPCAKE), helper.getLevel(), player);
+            Items.GOLDEN_CUPCAKE.finishUsingItem(new ItemStack(Items.GOLDEN_CUPCAKE), helper.getLevel(), player);
             sawLevitation |= player.hasEffect(net.minecraft.world.effect.MobEffects.LEVITATION);
             sawJump |= player.hasEffect(net.minecraft.world.effect.MobEffects.JUMP);
             sawBlindness |= player.hasEffect(net.minecraft.world.effect.MobEffects.BLINDNESS);
-            sawDroppedCupcake |= hasNearbyItem(helper, new BlockPos(0, 2, 0), Items.ITEM_GOLDEN_CUPCAKE, 32.0);
+            sawDroppedCupcake |= hasNearbyItem(helper, new BlockPos(0, 2, 0), Items.GOLDEN_CUPCAKE, 32.0);
         }
 
         int seen = (sawLevitation ? 1 : 0) + (sawJump ? 1 : 0) + (sawBlindness ? 1 : 0) + (sawDroppedCupcake ? 1 : 0);
@@ -68,8 +68,8 @@ public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void teacupSugarLevelsChangeNutritionAndEffects(GameTestHelper helper) {
-        net.minecraft.world.food.FoodProperties sugar0 = Items.ITEM_FULL_TEACUP_0.components().get(net.minecraft.core.component.DataComponents.FOOD);
-        net.minecraft.world.food.FoodProperties sugar6 = Items.ITEM_FULL_TEACUP_6.components().get(net.minecraft.core.component.DataComponents.FOOD);
+        net.minecraft.world.food.FoodProperties sugar0 = Items.FULL_TEACUP_0.components().get(net.minecraft.core.component.DataComponents.FOOD);
+        net.minecraft.world.food.FoodProperties sugar6 = Items.FULL_TEACUP_6.components().get(net.minecraft.core.component.DataComponents.FOOD);
         helper.assertTrue(sugar0.nutrition() < sugar6.nutrition(), "Expected more sugar to increase teacup nutrition");
         helper.succeed();
     }
@@ -77,8 +77,8 @@ public class FoodItemGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void teaUseDurationAndDrinkEffectsAreCorrect(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        helper.assertTrue(Items.ITEM_FULL_TEACUP_0.getUseDuration(new ItemStack(Items.ITEM_FULL_TEACUP_0), player) == 64, "Expected teacup drink time to be 64 ticks");
-        Items.ITEM_FULL_TEACUP_0.finishUsingItem(new ItemStack(Items.ITEM_FULL_TEACUP_0), helper.getLevel(), player);
+        helper.assertTrue(Items.FULL_TEACUP_0.getUseDuration(new ItemStack(Items.FULL_TEACUP_0), player) == 64, "Expected teacup drink time to be 64 ticks");
+        Items.FULL_TEACUP_0.finishUsingItem(new ItemStack(Items.FULL_TEACUP_0), helper.getLevel(), player);
         helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.DIG_SPEED), "Expected tea drinking to grant haste");
         helper.succeed();
     }

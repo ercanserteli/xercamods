@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "id": "xercafood:item_apple_cupcake"
+      "id": "xercafood:apple_cupcake"
     },
     "title": {
       "translate": "advancements.xercafood.achievements.root.title"

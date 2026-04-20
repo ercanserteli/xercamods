@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smoking_item_cooked_patty"
+      "xercafood:smoking_cooked_patty"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_raw_patty"}
+          {"items": "xercafood:raw_patty"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smoking_item_cooked_patty"
+        "recipe": "xercafood:smoking_cooked_patty"
       }
     }
   },

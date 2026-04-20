@@ -63,7 +63,7 @@ public class ItemGoldenCupcake extends Item {
 
                     ItemEntity newCupcake = new ItemEntity(worldIn,
                             player.getX() + motionX, player.getY() + 1 + motionY, player.getZ() + motionZ,
-                            new ItemStack(Items.ITEM_GOLDEN_CUPCAKE, 2));
+                            new ItemStack(Items.GOLDEN_CUPCAKE, 2));
 
                     newCupcake.setDeltaMovement(motionX * multiplier, motionY * multiplier, motionZ * multiplier);
 
@@ -113,7 +113,7 @@ public class ItemGoldenCupcake extends Item {
                     player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 1));
 
                     Item knife = KnifeCompat.getKnifeItem();
-                    Item[] weapons = {Items.ITEM_RAW_SAUSAGE, Items.ITEM_COOKED_SAUSAGE, knife, Items.ITEM_HOT_TEAPOT_1, Items.ITEM_ROTTEN_BURGER};
+                    Item[] weapons = {Items.RAW_SAUSAGE, Items.COOKED_SAUSAGE, knife, Items.HOT_TEAPOT_1, Items.ROTTEN_BURGER};
 
                     Skeleton skeleton = EntityType.SKELETON.create(worldIn);
                     Zombie zombie = EntityType.ZOMBIE.create(worldIn);

@@ -1,0 +1,21 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:not",
+      "value": {
+        "condition": "fabric:all_mods_loaded",
+        "values": [
+          "xercatools"
+        ]
+      }
+    }
+  ],
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "i",
+        "s"
+    ],
+    "key": {"s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:iron_ingot"}},
+    "result": {"id": "xercafood:knife"}
+}

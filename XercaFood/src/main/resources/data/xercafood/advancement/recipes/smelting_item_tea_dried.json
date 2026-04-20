@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smelting_item_tea_dried"
+      "xercafood:smelting_tea_dried"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_tea_leaf"}
+          {"items": "xercafood:tea_leaf"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smelting_item_tea_dried"
+        "recipe": "xercafood:smelting_tea_dried"
       }
     }
   },

@@ -1,14 +1,14 @@
 {
   "replace": false,
   "values": [
-    "xercafood:item_hot_teapot_0",
-    "xercafood:item_hot_teapot_1",
-    "xercafood:item_hot_teapot_2",
-    "xercafood:item_hot_teapot_3",
-    "xercafood:item_hot_teapot_4",
-    "xercafood:item_hot_teapot_5",
-    "xercafood:item_hot_teapot_6",
-    "xercafood:item_hot_teapot_7"
+    "xercafood:hot_teapot_0",
+    "xercafood:hot_teapot_1",
+    "xercafood:hot_teapot_2",
+    "xercafood:hot_teapot_3",
+    "xercafood:hot_teapot_4",
+    "xercafood:hot_teapot_5",
+    "xercafood:hot_teapot_6",
+    "xercafood:hot_teapot_7"
   ]
 }
 

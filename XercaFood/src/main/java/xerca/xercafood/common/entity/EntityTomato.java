@@ -55,18 +55,18 @@ public class EntityTomato extends ThrowableItemProjectile {
     public void handleEntityEvent(byte id) {
         if (id == 3) {
             for (int j = 0; j < 8; ++j) {
-                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ITEM_TOMATO)), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.28D, ((double) this.random.nextFloat() - 0.3D) * 0.28D, ((double) this.random.nextFloat() - 0.5D) * 0.28D);
+                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.TOMATO)), this.getX(), this.getY(), this.getZ(), ((double) this.random.nextFloat() - 0.5D) * 0.28D, ((double) this.random.nextFloat() - 0.3D) * 0.28D, ((double) this.random.nextFloat() - 0.5D) * 0.28D);
             }
         }
     }
 
     @Override
     protected Item getDefaultItem() {
-        return Items.ITEM_TOMATO;
+        return Items.TOMATO;
     }
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Items.ITEM_TOMATO);
+        return new ItemStack(Items.TOMATO);
     }
 }

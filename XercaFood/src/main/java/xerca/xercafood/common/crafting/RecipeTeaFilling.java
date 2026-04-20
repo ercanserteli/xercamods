@@ -15,13 +15,13 @@ public class RecipeTeaFilling extends CustomRecipe {
     public static Item getFullTeapot(int teaAmount) {
         Item res = net.minecraft.world.item.Items.AIR;
         switch (teaAmount) {
-            case 1 -> res = Items.ITEM_FULL_TEAPOT_1;
-            case 2 -> res = Items.ITEM_FULL_TEAPOT_2;
-            case 3 -> res = Items.ITEM_FULL_TEAPOT_3;
-            case 4 -> res = Items.ITEM_FULL_TEAPOT_4;
-            case 5 -> res = Items.ITEM_FULL_TEAPOT_5;
-            case 6 -> res = Items.ITEM_FULL_TEAPOT_6;
-            case 7 -> res = Items.ITEM_FULL_TEAPOT_7;
+            case 1 -> res = Items.FULL_TEAPOT_1;
+            case 2 -> res = Items.FULL_TEAPOT_2;
+            case 3 -> res = Items.FULL_TEAPOT_3;
+            case 4 -> res = Items.FULL_TEAPOT_4;
+            case 5 -> res = Items.FULL_TEAPOT_5;
+            case 6 -> res = Items.FULL_TEAPOT_6;
+            case 7 -> res = Items.FULL_TEAPOT_7;
         }
         return res;
     }
@@ -41,7 +41,7 @@ public class RecipeTeaFilling extends CustomRecipe {
         for (int j = 0; j < inv.size(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ITEM_TEAPOT) {
+                if (itemstack.getItem() == Items.TEAPOT) {
                     if (!teapotStack.isEmpty()) {
                         return false;
                     }
@@ -52,7 +52,7 @@ public class RecipeTeaFilling extends CustomRecipe {
                     }
                     bucketStack = itemstack;
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
+                    if (itemstack.getItem() != Items.TEA_DRIED) {
                         return false;
                     }
 
@@ -75,7 +75,7 @@ public class RecipeTeaFilling extends CustomRecipe {
         for (int j = 0; j < inv.size(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.ITEM_TEAPOT) {
+                if (itemstack.getItem() == Items.TEAPOT) {
                     if (!teapotStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
@@ -86,7 +86,7 @@ public class RecipeTeaFilling extends CustomRecipe {
                     }
                     bucketStack = itemstack;
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
+                    if (itemstack.getItem() != Items.TEA_DRIED) {
                         return ItemStack.EMPTY;
                     }
 

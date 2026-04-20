@@ -1,8 +1,8 @@
 {
     "type": "minecraft:smelting",
     
-    "ingredient": {"item": "xercafood:item_raw_sausage"},
-    "result": {"id": "xercafood:item_cooked_sausage"},
+    "ingredient": {"item": "xercafood:raw_sausage"},
+    "result": {"id": "xercafood:cooked_sausage"},
     "experience": 0.2,
     "cookingtime": 200
 }

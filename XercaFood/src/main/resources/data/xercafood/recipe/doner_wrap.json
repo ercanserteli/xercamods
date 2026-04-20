@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " wd",
+        "wdw",
+        "dw "
+    ],
+    "key": {"d": {"item": "xercafood:doner_slice"}, "w": {"item": "minecraft:wheat"}},
+    "result": {"count": 4, "id": "xercafood:doner_wrap"}
+}
+

@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:campfire_cooking_item_fried_egg"
+      "xercafood:campfire_cooking_fried_egg"
     ]
   },
   "criteria": {
@@ -17,7 +17,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:campfire_cooking_item_fried_egg"
+        "recipe": "xercafood:campfire_cooking_fried_egg"
       }
     }
   },

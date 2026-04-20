@@ -32,7 +32,7 @@ class BlockTomatoPlant extends CropBlock implements BonemealableBlock {
 
     @Override
     protected ItemLike getBaseSeedId() {
-        return Items.ITEM_TOMATO_SEEDS;
+        return Items.TOMATO_SEEDS;
     }
 
     @Override

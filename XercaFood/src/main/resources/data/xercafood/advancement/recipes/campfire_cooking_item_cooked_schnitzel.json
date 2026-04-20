@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:campfire_cooking_item_cooked_schnitzel"
+      "xercafood:campfire_cooking_cooked_schnitzel"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_raw_schnitzel"}
+          {"items": "xercafood:raw_schnitzel"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:campfire_cooking_item_cooked_schnitzel"
+        "recipe": "xercafood:campfire_cooking_cooked_schnitzel"
       }
     }
   },

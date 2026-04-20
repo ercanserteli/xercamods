@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        "s",
+        "d"
+    ],
+    "key": {"s": {"item": "xercafood:sprinkles"}, "d": {"item": "xercafood:donut"}},
+    "result": {"id": "xercafood:fancy_donut"}
+}
+

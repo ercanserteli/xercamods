@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " b ",
+        "dmn",
+        " b "
+    ],
+    "key": {"b": {"item": "xercafood:bun"}, "d": {"item": "xercafood:tomato_slices"}, "m": {"item": "minecraft:brown_mushroom"}, "n": {"item": "minecraft:red_mushroom"}},
+    "result": {"id": "xercafood:mushroom_burger"}
+}
+

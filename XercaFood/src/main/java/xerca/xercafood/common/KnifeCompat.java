@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercafood.common.item.Items;
 
 public final class KnifeCompat {
-    private static final ResourceLocation XERCATOOLS_KNIFE_ID = ResourceLocation.fromNamespaceAndPath("xercatools", "item_knife");
+    private static final ResourceLocation XERCATOOLS_KNIFE_ID = ResourceLocation.fromNamespaceAndPath("xercatools", "knife");
 
     private KnifeCompat() {
     }
@@ -21,7 +21,7 @@ public final class KnifeCompat {
         if (useToolsKnife()) {
             return BuiltInRegistries.ITEM.get(XERCATOOLS_KNIFE_ID);
         }
-        return Items.ITEM_KNIFE;
+        return Items.KNIFE;
     }
 
     public static boolean isKnife(ItemStack stack) {

@@ -2,7 +2,7 @@
   "parent": "xercafood:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:smelting_item_hot_teapot_2"
+      "xercafood:smelting_hot_teapot_2"
     ]
   },
   "criteria": {
@@ -10,14 +10,14 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_full_teapot_2"}
+          {"items": "xercafood:full_teapot_2"}
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:smelting_item_hot_teapot_2"
+        "recipe": "xercafood:smelting_hot_teapot_2"
       }
     }
   },

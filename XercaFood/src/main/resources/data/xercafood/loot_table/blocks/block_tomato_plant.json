@@ -18,11 +18,11 @@
                   }
                 }
               ],
-              "name": "xercafood:item_tomato"
+              "name": "xercafood:tomato"
             },
             {
               "type": "minecraft:item",
-              "name": "xercafood:item_tomato_seeds"
+              "name": "xercafood:tomato_seeds"
             }
           ]
         }
@@ -44,7 +44,7 @@
               }
             }
           ],
-          "name": "xercafood:item_tomato_seeds"
+          "name": "xercafood:tomato_seeds"
         }
       ],
       "conditions": [

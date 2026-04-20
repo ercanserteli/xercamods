@@ -32,7 +32,7 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
 
     @Override
     protected ItemLike getBaseSeedId() {
-        return Items.ITEM_TEA_SEEDS;
+        return Items.TEA_SEEDS;
     }
 
     @Override

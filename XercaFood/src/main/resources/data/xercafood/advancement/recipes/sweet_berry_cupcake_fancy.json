@@ -10,7 +10,7 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:item_sprinkles"}
+          {"items": "xercafood:sprinkles"}
         ]
       }
     },

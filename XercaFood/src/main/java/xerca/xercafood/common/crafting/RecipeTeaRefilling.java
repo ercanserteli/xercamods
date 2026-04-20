@@ -37,7 +37,7 @@ public class RecipeTeaRefilling extends CustomRecipe {
                         return false;
                     }
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
+                    if (itemstack.getItem() != Items.TEA_DRIED) {
                         return false;
                     }
 
@@ -71,7 +71,7 @@ public class RecipeTeaRefilling extends CustomRecipe {
                         return ItemStack.EMPTY;
                     }
                 } else {
-                    if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
+                    if (itemstack.getItem() != Items.TEA_DRIED) {
                         return ItemStack.EMPTY;
                     }
 

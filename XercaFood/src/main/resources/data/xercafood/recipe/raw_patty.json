@@ -1,0 +1,7 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    
+    "ingredients": [{"item": "minecraft:beef"}, {"tag": "c:tools/knife"}],
+    "result": {"count": 2, "id": "xercafood:raw_patty"}
+}
+

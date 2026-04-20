@@ -2,11 +2,11 @@
   "replace": false,
   "values": [
     {
-      "id": "xercatools:item_knife",
+      "id": "xercatools:knife",
       "required": false
     },
     {
-      "id": "xercafood:item_knife",
+      "id": "xercafood:knife",
       "required": false
     }
   ]

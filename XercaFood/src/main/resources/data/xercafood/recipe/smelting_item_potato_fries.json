@@ -1,8 +1,8 @@
 {
     "type": "minecraft:smelting",
     
-    "ingredient": {"item": "xercafood:item_potato_slices"},
-    "result": {"id": "xercafood:item_potato_fries"},
+    "ingredient": {"item": "xercafood:potato_slices"},
+    "result": {"id": "xercafood:potato_fries"},
     "experience": 0.2,
     "cookingtime": 200
 }
