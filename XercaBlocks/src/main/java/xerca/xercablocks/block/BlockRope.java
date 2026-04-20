@@ -6,7 +6,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -14,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public class BlockRope extends PipeBlock {
     public static final MapCodec<BlockRope> CODEC = BlockBehaviour.simpleCodec(properties -> new BlockRope());
 
     public BlockRope() {
-        super(0.125F, Properties.of().mapColor(MapColor.WOOL).noOcclusion().sound(SoundType.WOOL));
+        super(0.125F, Properties.of().mapColor(MapColor.WOOL).noOcclusion().sound(SoundType.WOOL).pushReaction(PushReaction.NORMAL));
         registerDefaultState(stateDefinition.any()
                 .setValue(NORTH, false)
                 .setValue(EAST, false)
@@ -44,7 +44,7 @@ public class BlockRope extends PipeBlock {
     private boolean isConnectable(BlockGetter level, BlockPos pos, Direction direction) {
         BlockPos neighborPos = pos.relative(direction);
         BlockState neighborState = level.getBlockState(neighborPos);
-        return neighborState.is(this) || Block.canSupportCenter((LevelReader) level, neighborPos, direction.getOpposite());
+        return neighborState.is(this) || Block.isFaceFull(neighborState.getCollisionShape(level, neighborPos), direction.getOpposite());
     }
 
     private BlockState makeConnections(BlockGetter level, BlockPos pos) {

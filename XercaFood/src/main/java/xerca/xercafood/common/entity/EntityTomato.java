@@ -48,7 +48,9 @@ public class EntityTomato extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {}
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+    }
 
     public void handleEntityEvent(byte id) {
         if (id == 3) {

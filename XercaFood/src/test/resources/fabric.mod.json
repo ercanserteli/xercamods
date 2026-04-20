@@ -6,7 +6,10 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "xerca.xercafood.tests.RecipeGameTests"
+      "xerca.xercafood.tests.RecipeGameTests",
+      "xerca.xercafood.tests.BlockGameTests",
+      "xerca.xercafood.tests.FoodItemGameTests",
+      "xerca.xercafood.tests.AdvancementGameTests"
     ]
   },
   "depends": {
