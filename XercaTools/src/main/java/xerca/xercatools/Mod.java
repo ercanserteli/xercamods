@@ -58,8 +58,8 @@ public class Mod implements ModInitializer {
             entries.accept(Items.GOLDEN_SCYTHE);
             entries.accept(Items.DIAMOND_SCYTHE);
             entries.accept(Items.NETHERITE_SCYTHE);
-            entries.accept(Items.ITEM_KNIFE);
-            entries.accept(Items.ITEM_GRAB_HOOK);
+            entries.accept(Items.KNIFE);
+            entries.accept(Items.GRAB_HOOK);
         });
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
             entries.accept(Items.FLASK);
@@ -72,13 +72,13 @@ public class Mod implements ModInitializer {
             entries.accept(Items.GOLDEN_SCYTHE);
             entries.accept(Items.DIAMOND_SCYTHE);
             entries.accept(Items.NETHERITE_SCYTHE);
-            entries.accept(Items.ITEM_STONE_WARHAMMER);
-            entries.accept(Items.ITEM_IRON_WARHAMMER);
-            entries.accept(Items.ITEM_GOLD_WARHAMMER);
-            entries.accept(Items.ITEM_DIAMOND_WARHAMMER);
-            entries.accept(Items.ITEM_NETHERITE_WARHAMMER);
-            entries.accept(Items.ITEM_KNIFE);
-            entries.accept(Items.ITEM_GRAB_HOOK);
+            entries.accept(Items.STONE_WARHAMMER);
+            entries.accept(Items.IRON_WARHAMMER);
+            entries.accept(Items.GOLD_WARHAMMER);
+            entries.accept(Items.DIAMOND_WARHAMMER);
+            entries.accept(Items.NETHERITE_WARHAMMER);
+            entries.accept(Items.KNIFE);
+            entries.accept(Items.GRAB_HOOK);
             entries.accept(Items.ENDER_BOW);
         });
     }
@@ -203,11 +203,11 @@ public class Mod implements ModInitializer {
     }
 
     private static boolean isWarhammer(ItemStack stack) {
-        return stack.is(Items.ITEM_STONE_WARHAMMER)
-                || stack.is(Items.ITEM_IRON_WARHAMMER)
-                || stack.is(Items.ITEM_GOLD_WARHAMMER)
-                || stack.is(Items.ITEM_DIAMOND_WARHAMMER)
-                || stack.is(Items.ITEM_NETHERITE_WARHAMMER);
+        return stack.is(Items.STONE_WARHAMMER)
+                || stack.is(Items.IRON_WARHAMMER)
+                || stack.is(Items.GOLD_WARHAMMER)
+                || stack.is(Items.DIAMOND_WARHAMMER)
+                || stack.is(Items.NETHERITE_WARHAMMER);
     }
 
     private static boolean isScythe(ItemStack stack) {
@@ -220,11 +220,11 @@ public class Mod implements ModInitializer {
     }
 
     private static boolean isGrabHook(ItemStack stack) {
-        return stack.is(Items.ITEM_GRAB_HOOK);
+        return stack.is(Items.GRAB_HOOK);
     }
 
     private static boolean isKnife(ItemStack stack) {
-        return stack.is(Items.ITEM_KNIFE);
+        return stack.is(Items.KNIFE);
     }
 
     private static boolean isFlask(ItemStack stack) {

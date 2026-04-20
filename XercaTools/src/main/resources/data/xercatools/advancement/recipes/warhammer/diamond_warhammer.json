@@ -1,0 +1,34 @@
+
+{
+  "parent": "xercatools:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercatools:warhammer/diamond_warhammer"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": "minecraft:diamond"}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercatools:warhammer/diamond_warhammer"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}
+            
+
+

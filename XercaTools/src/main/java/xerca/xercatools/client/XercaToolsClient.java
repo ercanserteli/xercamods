@@ -35,18 +35,18 @@ public final class XercaToolsClient implements ClientModInitializer {
                 Minecraft.getInstance().getSoundManager().play(new HookSound(hook));
             }
         });
-        registerGrabHookProperties(Items.ITEM_GRAB_HOOK);
+        registerGrabHookProperties(Items.GRAB_HOOK);
         registerBowLikeProperties(Items.WOODEN_SCYTHE);
         registerBowLikeProperties(Items.STONE_SCYTHE);
         registerBowLikeProperties(Items.IRON_SCYTHE);
         registerBowLikeProperties(Items.GOLDEN_SCYTHE);
         registerBowLikeProperties(Items.DIAMOND_SCYTHE);
         registerBowLikeProperties(Items.NETHERITE_SCYTHE);
-        registerBowLikeProperties(Items.ITEM_STONE_WARHAMMER);
-        registerBowLikeProperties(Items.ITEM_IRON_WARHAMMER);
-        registerBowLikeProperties(Items.ITEM_GOLD_WARHAMMER);
-        registerBowLikeProperties(Items.ITEM_DIAMOND_WARHAMMER);
-        registerBowLikeProperties(Items.ITEM_NETHERITE_WARHAMMER);
+        registerBowLikeProperties(Items.STONE_WARHAMMER);
+        registerBowLikeProperties(Items.IRON_WARHAMMER);
+        registerBowLikeProperties(Items.GOLD_WARHAMMER);
+        registerBowLikeProperties(Items.DIAMOND_WARHAMMER);
+        registerBowLikeProperties(Items.NETHERITE_WARHAMMER);
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex > 0 ? -1 : ItemFlask.getPotionContents(stack).getColor(), Items.FLASK, Items.ENDER_BOW);
     }
 

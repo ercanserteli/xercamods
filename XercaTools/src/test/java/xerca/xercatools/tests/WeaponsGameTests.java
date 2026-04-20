@@ -21,7 +21,7 @@ public class WeaponsGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
         
-        ItemStack warhammer = new ItemStack(Items.ITEM_IRON_WARHAMMER);
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
         
         float initialHealth = pig.getHealth();
