@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "xercablocks:item_block_straw"
+      "item": "xercablocks:block_straw"
     }
   ],
   "result": {

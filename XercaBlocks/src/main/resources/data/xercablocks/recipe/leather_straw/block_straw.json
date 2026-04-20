@@ -7,10 +7,10 @@
   ],
   "key": {
     "l": {
-      "item": "minecraft:leather"
+      "item": "minecraft:sugar_cane"
     }
   },
   "result": {
-    "id": "xercablocks:item_block_leather"
+    "id": "xercablocks:block_straw"
   }
 }

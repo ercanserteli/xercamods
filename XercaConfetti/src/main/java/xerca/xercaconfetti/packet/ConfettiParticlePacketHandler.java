@@ -18,7 +18,7 @@ public class ConfettiParticlePacketHandler implements ClientPlayNetworking.PlayP
                 double velX = (world.random.nextFloat() + dir.getX() - 0.5D) * 0.3D;
                 double velY = (world.random.nextFloat() + dir.getY() * 0.5D) * 0.5D;
                 double velZ = (world.random.nextFloat() + dir.getZ() - 0.5D) * 0.3D;
-                world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.ITEM_CONFETTI)), pkt.posX(), pkt.posY(), pkt.posZ(), velX, velY, velZ);
+                world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.CONFETTI)), pkt.posX(), pkt.posY(), pkt.posZ(), velX, velY, velZ);
             }
         }
     }

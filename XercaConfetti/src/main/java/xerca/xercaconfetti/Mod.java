@@ -43,8 +43,8 @@ public class Mod implements ModInitializer {
     }
 
     // Item Definitions
-    public static final ItemConfettiBall ITEM_CONFETTI_BALL = new ItemConfettiBall();
-    public static final ItemConfetti ITEM_CONFETTI = new ItemConfetti();
+    public static final ItemConfettiBall CONFETTI_BALL = new ItemConfettiBall();
+    public static final ItemConfetti CONFETTI = new ItemConfetti();
 
     // EntityType Definitions
     public static final EntityType<EntityConfettiBall> ENTITY_CONFETTI_BALL = FabricEntityTypeBuilder.<EntityConfettiBall>create(MobCategory.MISC, EntityConfettiBall::new)
@@ -59,23 +59,23 @@ public class Mod implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(ConfettiParticlePacket.PACKET_ID, ConfettiParticlePacket.PACKET_CODEC);
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
-            entries.accept(ITEM_CONFETTI);
-            entries.accept(ITEM_CONFETTI_BALL);
+            entries.accept(CONFETTI);
+            entries.accept(CONFETTI_BALL);
         });
 
         // Entity Registration
         Registry.register(BuiltInRegistries.ENTITY_TYPE, id("confetti_ball"), ENTITY_CONFETTI_BALL);
 
         // Item Registration
-        Registry.register(BuiltInRegistries.ITEM, id("confetti_ball"), ITEM_CONFETTI_BALL);
-        Registry.register(BuiltInRegistries.ITEM, id("confetti"), ITEM_CONFETTI);
+        Registry.register(BuiltInRegistries.ITEM, id("confetti_ball"), CONFETTI_BALL);
+        Registry.register(BuiltInRegistries.ITEM, id("confetti"), CONFETTI);
 
         // Sound Registration
         Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CRACK.getLocation(), SOUND_CRACK);
         Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CONFETTI.getLocation(), SOUND_CONFETTI);
 
 
-        DispenserBlock.registerBehavior(ITEM_CONFETTI_BALL, new DefaultDispenseItemBehavior() {
+        DispenserBlock.registerBehavior(CONFETTI_BALL, new DefaultDispenseItemBehavior() {
             @Override
             protected ItemStack execute(BlockSource source, ItemStack stackIn) {
                 Position position = DispenserBlock.getDispensePosition(source);
@@ -89,7 +89,7 @@ public class Mod implements ModInitializer {
                 return stackIn;
             }
         });
-        DispenserBlock.registerBehavior(ITEM_CONFETTI, new ConfettiDispenseItemBehavior());
+        DispenserBlock.registerBehavior(CONFETTI, new ConfettiDispenseItemBehavior());
     }
 
     public static void sendToClient(ServerPlayer player, ConfettiParticlePacket packet) {

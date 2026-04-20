@@ -2,7 +2,7 @@
   "parent": "xercablocks:recipes/root",
   "rewards": {
     "recipes": [
-      "xercablocks:leather_straw/item_block_leather"
+      "xercablocks:leather_straw/block_leather"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercablocks:leather_straw/item_block_leather"
+        "recipe": "xercablocks:leather_straw/block_leather"
       }
     }
   },

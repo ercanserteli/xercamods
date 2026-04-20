@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "xercablocks:item_block_leather"
+          "name": "xercablocks:block_leather"
         }
       ],
       "conditions": [

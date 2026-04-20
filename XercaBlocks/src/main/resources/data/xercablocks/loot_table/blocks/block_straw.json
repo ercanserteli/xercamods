@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "xercablocks:item_block_straw"
+          "name": "xercablocks:block_straw"
         }
       ],
       "conditions": [

@@ -2,7 +2,7 @@
   "parent": "xercablocks:recipes/root",
   "rewards": {
     "recipes": [
-      "xercablocks:bookcase/item_bookcase"
+      "xercablocks:bookcase/bookcase"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercablocks:bookcase/item_bookcase"
+        "recipe": "xercablocks:bookcase/bookcase"
       }
     }
   },

@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "xercablocks:item_bookcase"
+          "name": "xercablocks:bookcase"
         }
       ],
       "conditions": [

@@ -90,14 +90,14 @@ public final class ConfettiBallGameTests {
         player.setYRot(180.0F);
         player.setXRot(0.0F);
 
-        ItemStack stack = new ItemStack(Mod.ITEM_CONFETTI_BALL, 2);
+        ItemStack stack = new ItemStack(Mod.CONFETTI_BALL, 2);
         player.setItemSlot(EquipmentSlot.MAINHAND, stack);
 
-        Mod.ITEM_CONFETTI_BALL.use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
+        Mod.CONFETTI_BALL.use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
 
         helper.assertTrue(player.getMainHandItem().getCount() == 1, "Expected player throw to consume exactly one confetti ball");
         EntityConfettiBall ball = requireSingleBallNear(helper, new BlockPos(1, 2, 1), "Expected player use to spawn a confetti ball entity");
-        helper.assertTrue(ball.getItem().is(Mod.ITEM_CONFETTI_BALL), "Expected spawned confetti ball to keep the synced confetti ball item");
+        helper.assertTrue(ball.getItem().is(Mod.CONFETTI_BALL), "Expected spawned confetti ball to keep the synced confetti ball item");
         helper.assertTrue(ball.getOwner() == player, "Expected thrown confetti ball to track the player as its owner");
         helper.succeed();
     }
@@ -113,7 +113,7 @@ public final class ConfettiBallGameTests {
         helper.assertTrue(helper.getLevel().getBlockEntity(absolutePos) instanceof DispenserBlockEntity,
                 "Expected a dispenser block entity at the test position");
         DispenserBlockEntity dispenser = (DispenserBlockEntity) helper.getLevel().getBlockEntity(absolutePos);
-        ItemStack stack = new ItemStack(Mod.ITEM_CONFETTI_BALL);
+        ItemStack stack = new ItemStack(Mod.CONFETTI_BALL);
         dispenser.setItem(0, stack);
 
         DispenseItemBehavior behavior = getDispenseMethod(helper, (DispenserBlock) state.getBlock(), stack);
@@ -121,7 +121,7 @@ public final class ConfettiBallGameTests {
 
         helper.assertTrue(remaining.isEmpty() || remaining.getCount() == 0, "Expected dispenser launch to consume the loaded confetti ball");
         EntityConfettiBall ball = requireSingleBallNear(helper, dispenserPos.relative(Direction.NORTH), "Expected dispenser use to spawn a confetti ball entity");
-        helper.assertTrue(ball.getItem().is(Mod.ITEM_CONFETTI_BALL), "Expected dispenser-spawned confetti ball to have synced item data");
+        helper.assertTrue(ball.getItem().is(Mod.CONFETTI_BALL), "Expected dispenser-spawned confetti ball to have synced item data");
         helper.succeed();
     }
 
@@ -137,7 +137,7 @@ public final class ConfettiBallGameTests {
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected confetti recipe to match paper plus cyan/magenta/yellow dye");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Mod.ITEM_CONFETTI), "Expected confetti recipe to produce confetti");
+        helper.assertTrue(result.is(Mod.CONFETTI), "Expected confetti recipe to produce confetti");
         helper.assertTrue(result.getCount() == 12, "Expected confetti recipe to produce 12 confetti items");
         helper.succeed();
     }
@@ -145,7 +145,7 @@ public final class ConfettiBallGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = CONFETTI_BATCH)
     public static void confettiBallRecipeCraftsTwoBallsFromCrossOfConfettiAndGunpowder(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("confetti_ball"));
-        ItemStack confetti = new ItemStack(Mod.ITEM_CONFETTI);
+        ItemStack confetti = new ItemStack(Mod.CONFETTI);
         CraftingInput grid = craftingGrid(3, 3,
                 ItemStack.EMPTY, confetti.copy(), ItemStack.EMPTY,
                 confetti.copy(), new ItemStack(net.minecraft.world.item.Items.GUNPOWDER), confetti.copy(),
@@ -154,7 +154,7 @@ public final class ConfettiBallGameTests {
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected confetti ball recipe to match its cross pattern");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Mod.ITEM_CONFETTI_BALL), "Expected confetti ball recipe to produce confetti balls");
+        helper.assertTrue(result.is(Mod.CONFETTI_BALL), "Expected confetti ball recipe to produce confetti balls");
         helper.assertTrue(result.getCount() == 2, "Expected confetti ball recipe to produce 2 confetti balls");
         helper.succeed();
     }
@@ -162,7 +162,7 @@ public final class ConfettiBallGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = CONFETTI_BATCH)
     public static void confettiBallRecipeRejectsMissingConfettiArm(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("confetti_ball"));
-        ItemStack confetti = new ItemStack(Mod.ITEM_CONFETTI);
+        ItemStack confetti = new ItemStack(Mod.CONFETTI);
         CraftingInput grid = craftingGrid(3, 3,
                 ItemStack.EMPTY, confetti.copy(), ItemStack.EMPTY,
                 confetti.copy(), new ItemStack(net.minecraft.world.item.Items.GUNPOWDER), ItemStack.EMPTY,

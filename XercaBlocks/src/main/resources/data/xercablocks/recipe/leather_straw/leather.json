@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "xercablocks:item_block_leather"
+      "item": "xercablocks:block_leather"
     }
   ],
   "result": {

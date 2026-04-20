@@ -152,7 +152,7 @@ public final class BlocksGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void leatherBlockRecipeCraftsFromNineLeather(GameTestHelper helper) {
-        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("leather_straw/item_block_leather"));
+        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("leather_straw/block_leather"));
         CraftingInput grid = craftingGrid(3, 3,
                 new ItemStack(net.minecraft.world.item.Items.LEATHER), new ItemStack(net.minecraft.world.item.Items.LEATHER), new ItemStack(net.minecraft.world.item.Items.LEATHER),
                 new ItemStack(net.minecraft.world.item.Items.LEATHER), new ItemStack(net.minecraft.world.item.Items.LEATHER), new ItemStack(net.minecraft.world.item.Items.LEATHER),
@@ -160,13 +160,13 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected leather block recipe to match nine leather");
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.ITEM_BLOCK_LEATHER), "Expected leather block recipe to produce the leather block item");
+        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.BLOCK_LEATHER), "Expected leather block recipe to produce the leather block item");
         helper.succeed();
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void strawBlockRecipeCraftsFromNineSugarCane(GameTestHelper helper) {
-        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("leather_straw/item_block_straw"));
+        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("leather_straw/block_straw"));
         CraftingInput grid = craftingGrid(3, 3,
                 new ItemStack(net.minecraft.world.item.Items.SUGAR_CANE), new ItemStack(net.minecraft.world.item.Items.SUGAR_CANE), new ItemStack(net.minecraft.world.item.Items.SUGAR_CANE),
                 new ItemStack(net.minecraft.world.item.Items.SUGAR_CANE), new ItemStack(net.minecraft.world.item.Items.SUGAR_CANE), new ItemStack(net.minecraft.world.item.Items.SUGAR_CANE),
@@ -174,7 +174,7 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected straw block recipe to match nine sugar cane");
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.ITEM_BLOCK_STRAW), "Expected straw block recipe to produce the straw block item");
+        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.BLOCK_STRAW), "Expected straw block recipe to produce the straw block item");
         helper.succeed();
     }
 
@@ -479,7 +479,7 @@ public final class BlocksGameTests {
         blockEntity.setItem(1, new ItemStack(net.minecraft.world.item.Items.WRITTEN_BOOK));
 
         helper.getLevel().destroyBlock(pos, true);
-        helper.assertItemEntityPresent(Items.ITEM_BOOKCASE, relativePos, 2.0);
+        helper.assertItemEntityPresent(Items.BOOKCASE, relativePos, 2.0);
         helper.assertItemEntityPresent(net.minecraft.world.item.Items.BOOK, relativePos, 2.0);
         helper.assertItemEntityPresent(net.minecraft.world.item.Items.WRITTEN_BOOK, relativePos, 2.0);
         helper.succeed();

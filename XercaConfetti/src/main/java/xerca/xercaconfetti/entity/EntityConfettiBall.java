@@ -34,7 +34,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
 
     private void spawnConfetti(double x, double y, double z) {
         for (int j = 0; j < 18; ++j) {
-            this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.ITEM_CONFETTI)), x, y, z, (this.random.nextFloat() - 0.5D) * 0.3D, (this.random.nextFloat()) * 0.5D, (this.random.nextFloat() - 0.5D) * 0.3D);
+            this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.CONFETTI)), x, y, z, (this.random.nextFloat() - 0.5D) * 0.3D, (this.random.nextFloat()) * 0.5D, (this.random.nextFloat() - 0.5D) * 0.3D);
         }
     }
 
@@ -65,12 +65,12 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
 
     @Override
     protected @NotNull Item getDefaultItem() {
-        return Mod.ITEM_CONFETTI_BALL;
+        return Mod.CONFETTI_BALL;
     }
 
     @Override
     public @NotNull ItemStack getItem() {
-        return new ItemStack(Mod.ITEM_CONFETTI_BALL);
+        return new ItemStack(Mod.CONFETTI_BALL);
     }
 
     @Override

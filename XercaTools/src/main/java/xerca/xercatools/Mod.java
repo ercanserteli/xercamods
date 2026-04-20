@@ -60,8 +60,6 @@ public class Mod implements ModInitializer {
             entries.accept(Items.NETHERITE_SCYTHE);
             entries.accept(Items.KNIFE);
             entries.accept(Items.GRAB_HOOK);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
             entries.accept(Items.FLASK);
             entries.accept(Items.ENDER_BOW);
         });
@@ -79,7 +77,6 @@ public class Mod implements ModInitializer {
             entries.accept(Items.NETHERITE_WARHAMMER);
             entries.accept(Items.KNIFE);
             entries.accept(Items.GRAB_HOOK);
-            entries.accept(Items.ENDER_BOW);
         });
     }
 
