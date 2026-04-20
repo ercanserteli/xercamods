@@ -4,9 +4,15 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import xerca.xercatools.Mod;
+import xerca.xercatools.crafting.RecipeEnderBowFilling;
+import xerca.xercatools.crafting.RecipeFlaskFilling;
 
 public final class Items {
+    public static final Item FLASK = new ItemFlask();
+    public static final Item ENDER_BOW = new ItemPotionLauncher();
     public static final Item ITEM_KNIFE = new ItemKnife();
     public static final Item ITEM_GRAB_HOOK = new ItemGrabHook();
     public static final Item WOODEN_SCYTHE = new ItemScythe(Tiers.WOOD);
@@ -20,11 +26,15 @@ public final class Items {
     public static final Item ITEM_IRON_WARHAMMER = new ItemWarhammer(Tiers.IRON);
     public static final Item ITEM_STONE_WARHAMMER = new ItemWarhammer(Tiers.STONE);
     public static final Item ITEM_NETHERITE_WARHAMMER = new ItemWarhammer(Tiers.NETHERITE);
+    public static final RecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_FLASK_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeFlaskFilling::new);
+    public static final RecipeSerializer<RecipeEnderBowFilling> CRAFTING_SPECIAL_ENDER_BOW_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeEnderBowFilling::new);
 
     private Items() {
     }
 
     public static void register() {
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("flask"), FLASK);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("ender_bow"), ENDER_BOW);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("item_knife"), ITEM_KNIFE);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("item_grab_hook"), ITEM_GRAB_HOOK);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("wooden_scythe"), WOODEN_SCYTHE);
@@ -38,6 +48,8 @@ public final class Items {
         Registry.register(BuiltInRegistries.ITEM, Mod.id("item_iron_warhammer"), ITEM_IRON_WARHAMMER);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("item_stone_warhammer"), ITEM_STONE_WARHAMMER);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("item_netherite_warhammer"), ITEM_NETHERITE_WARHAMMER);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_flask_filling"), CRAFTING_SPECIAL_FLASK_FILLING);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_ender_bow_filling"), CRAFTING_SPECIAL_ENDER_BOW_FILLING);
     }
 }
 

@@ -2,6 +2,7 @@ package xerca.xercatools.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityGrabHook;
 import xerca.xercatools.item.ItemGrabHook;
+import xerca.xercatools.item.ItemFlask;
 import xerca.xercatools.item.ItemScythe;
 import xerca.xercatools.item.ItemWarhammer;
 import xerca.xercatools.item.Items;
@@ -45,6 +47,7 @@ public final class XercaToolsClient implements ClientModInitializer {
         registerBowLikeProperties(Items.ITEM_GOLD_WARHAMMER);
         registerBowLikeProperties(Items.ITEM_DIAMOND_WARHAMMER);
         registerBowLikeProperties(Items.ITEM_NETHERITE_WARHAMMER);
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex > 0 ? -1 : ItemFlask.getPotionContents(stack).getColor(), Items.FLASK, Items.ENDER_BOW);
     }
 
     private static void registerBowLikeProperties(Item item) {

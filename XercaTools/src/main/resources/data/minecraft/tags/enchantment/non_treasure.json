@@ -9,6 +9,9 @@
     "xercatools:enchantment_poison",
     "xercatools:enchantment_quick",
     "xercatools:enchantment_quake",
+    "xercatools:enchantment_capacity",
+    "xercatools:enchantment_range",
+    "xercatools:enchantment_chug",
     "xercatools:enchantment_stealth",
     "xercatools:enchantment_turbo_grab",
     "xercatools:enchantment_uppercut"

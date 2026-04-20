@@ -22,6 +22,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.sounds.SoundSource;
 import xerca.xercatools.enchantment.KnifeEnchantments;
 import xerca.xercatools.enchantment.GrabHookEnchantments;
+import xerca.xercatools.enchantment.FlaskEnchantments;
 import xerca.xercatools.item.ItemScythe;
 import xerca.xercatools.item.ItemKnife;
 import xerca.xercatools.entity.EntityGrabHook;
@@ -60,6 +61,10 @@ public class Mod implements ModInitializer {
             entries.accept(Items.ITEM_KNIFE);
             entries.accept(Items.ITEM_GRAB_HOOK);
         });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
+            entries.accept(Items.FLASK);
+            entries.accept(Items.ENDER_BOW);
+        });
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
             entries.accept(Items.WOODEN_SCYTHE);
             entries.accept(Items.STONE_SCYTHE);
@@ -74,6 +79,7 @@ public class Mod implements ModInitializer {
             entries.accept(Items.ITEM_NETHERITE_WARHAMMER);
             entries.accept(Items.ITEM_KNIFE);
             entries.accept(Items.ITEM_GRAB_HOOK);
+            entries.accept(Items.ENDER_BOW);
         });
     }
 
@@ -125,6 +131,28 @@ public class Mod implements ModInitializer {
                         || enchantment.is(Enchantments.LOOTING)
                         || enchantment.is(KnifeEnchantments.POISON)
                         || enchantment.is(KnifeEnchantments.STEALTH)) {
+                    return TriState.TRUE;
+                }
+
+                return TriState.DEFAULT;
+            }
+
+            if (isFlask(target)) {
+                if (enchantment.is(Enchantments.UNBREAKING)
+                        || enchantment.is(Enchantments.MENDING)
+                        || enchantment.is(FlaskEnchantments.CAPACITY)
+                        || enchantment.is(FlaskEnchantments.CHUG)) {
+                    return TriState.TRUE;
+                }
+
+                return TriState.DEFAULT;
+            }
+
+            if (isPotionLauncher(target)) {
+                if (enchantment.is(Enchantments.UNBREAKING)
+                        || enchantment.is(Enchantments.MENDING)
+                        || enchantment.is(FlaskEnchantments.CAPACITY)
+                        || enchantment.is(FlaskEnchantments.RANGE)) {
                     return TriState.TRUE;
                 }
 
@@ -197,5 +225,13 @@ public class Mod implements ModInitializer {
 
     private static boolean isKnife(ItemStack stack) {
         return stack.is(Items.ITEM_KNIFE);
+    }
+
+    private static boolean isFlask(ItemStack stack) {
+        return stack.is(Items.FLASK);
+    }
+
+    private static boolean isPotionLauncher(ItemStack stack) {
+        return stack.is(Items.ENDER_BOW);
     }
 }
