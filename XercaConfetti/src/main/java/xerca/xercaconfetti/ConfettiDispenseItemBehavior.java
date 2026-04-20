@@ -35,7 +35,7 @@ public class ConfettiDispenseItemBehavior extends DefaultDispenseItemBehavior {
         double x = pos.x() + facingIn.getStepX();
         double y = pos.y() + facingIn.getStepY();
         double z = pos.z() + facingIn.getStepZ();
-        ConfettiParticlePacket pack = new ConfettiParticlePacket(32, x, y, z, facingIn.getNormal());
+        ConfettiParticlePacket pack = new ConfettiParticlePacket(x, y, z, facingIn.getNormal());
         sendToClientsAround(source.level(), new Vec3(x, y, z), 64, pack);
     }
 }

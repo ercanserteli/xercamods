@@ -28,7 +28,7 @@ public class ItemConfetti extends Item {
         playSound(worldIn, playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ());
         if (!worldIn.isClientSide) {
             Vec3 pos = playerIn.position().add(playerIn.getLookAngle()).add(0d, 1d, 0d);
-            ConfettiParticlePacket pack = new ConfettiParticlePacket(32, pos.x, pos.y, pos.z);
+            ConfettiParticlePacket pack = new ConfettiParticlePacket(pos.x, pos.y, pos.z);
             sendToClientsAround((ServerLevel) worldIn, pos, 64, pack);
         }
 

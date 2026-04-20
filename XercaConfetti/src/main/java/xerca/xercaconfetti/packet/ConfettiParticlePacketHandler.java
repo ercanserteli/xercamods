@@ -14,10 +14,10 @@ public class ConfettiParticlePacketHandler implements ClientPlayNetworking.PlayP
         Vec3i dir = pkt.direction();
         Level world = Minecraft.getInstance().level;
         if (world != null) {
-            for (int j = 0; j < pkt.count(); ++j) {
-                double velX = ((double) world.random.nextFloat() + dir.getX() - 0.5D) * 0.3D;
-                double velY = ((double) world.random.nextFloat() + dir.getY() * 0.5D) * 0.5D;
-                double velZ = ((double) world.random.nextFloat() + dir.getZ() - 0.5D) * 0.3D;
+            for (int j = 0; j < 32; ++j) {
+                double velX = (world.random.nextFloat() + dir.getX() - 0.5D) * 0.3D;
+                double velY = (world.random.nextFloat() + dir.getY() * 0.5D) * 0.5D;
+                double velZ = (world.random.nextFloat() + dir.getZ() - 0.5D) * 0.3D;
                 world.addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.ITEM_CONFETTI)), pkt.posX(), pkt.posY(), pkt.posZ(), velX, velY, velZ);
             }
         }

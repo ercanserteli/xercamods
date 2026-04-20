@@ -33,8 +33,8 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     }
 
     private void spawnConfetti(double x, double y, double z) {
-        for (int j = 0; j < 12; ++j) {
-            this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.ITEM_CONFETTI)), x, y, z, ((double) this.random.nextFloat() - 0.5D) * 0.3D, ((double) this.random.nextFloat()) * 0.5D, ((double) this.random.nextFloat() - 0.5D) * 0.3D);
+        for (int j = 0; j < 18; ++j) {
+            this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.ITEM_CONFETTI)), x, y, z, (this.random.nextFloat() - 0.5D) * 0.3D, (this.random.nextFloat()) * 0.5D, (this.random.nextFloat() - 0.5D) * 0.3D);
         }
     }
 
@@ -49,11 +49,6 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
             this.level().playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             this.remove(RemovalReason.DISCARDED);
         }
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        super.defineSynchedData(builder);
     }
 
     @Override
