@@ -18,7 +18,7 @@
   "xercatools.knife_offhand_tooltip": "Can stab in the offhand with right click.",
   "xercatools.grab_hook_tooltip": "Will pull entities towards you.",
   "xercatools.grappling_tooltip": "Target a block to pull yourself there",
-  "xercatools.scythe_tooltip": "Harvests mature crops only.",
+  "xercatools.scythe_tooltip": "Does not break immature crops.",
   "xercatools.guillotine_tooltip": "Hold right click to charge a guillotine strike",
   "xercatools.warhammer_tooltip": "Hold right click to charge",
   "xercatools.ender_flask_tooltip": "Fill with potions",

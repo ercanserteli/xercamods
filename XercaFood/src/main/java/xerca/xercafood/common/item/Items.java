@@ -21,8 +21,7 @@ import xerca.xercafood.common.crafting.RecipeTeaRefilling;
 import xerca.xercafood.common.crafting.RecipeTeaSugaring;
 
 public final class Items {
-    private static final boolean REGISTER_LOCAL_KNIFE = !FabricLoader.getInstance().isModLoaded("xercatools");
-    public static final Item KNIFE = new ItemKnife();
+    public static Item KNIFE;
     public static final Item GLASS = new ItemGlass();
     public static final Item ENDER_CUPCAKE = new ItemEnderCupcake();
     public static final Item COLA_EXTRACT = new Item(new Item.Properties().craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE));
@@ -299,120 +298,9 @@ public final class Items {
     }
 
     public static void registerItems() {
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
-            entries.accept(Items.TOMATO);
-            entries.accept(Items.RAW_SHISH_KEBAB);
-            entries.accept(Items.SHISH_KEBAB);
-            entries.accept(Items.YOGHURT);
-            entries.accept(Items.HONEYBERRY_YOGHURT);
-            entries.accept(Items.HONEY_CUPCAKE);
-            entries.accept(Items.DONER_WRAP);
-            entries.accept(Items.CHUBBY_DONER);
-            entries.accept(Items.ALEXANDER);
-            entries.accept(Items.AYRAN);
-            entries.accept(Items.DONER_SLICE);
-            entries.accept(Items.BAKED_RICE_PUDDING);
-            entries.accept(Items.SWEET_BERRY_JUICE);
-            entries.accept(Items.RICE_PUDDING);
-            entries.accept(Items.SWEET_BERRY_CUPCAKE_FANCY);
-            entries.accept(Items.SWEET_BERRY_CUPCAKE);
-            entries.accept(Items.ENDER_CUPCAKE);
-            entries.accept(Items.SASHIMI);
-            entries.accept(Items.OYAKODON);
-            entries.accept(Items.BEEF_DONBURI);
-            entries.accept(Items.EGG_SUSHI);
-            entries.accept(Items.NIGIRI_SUSHI);
-            entries.accept(Items.OMURICE);
-            entries.accept(Items.SAKE);
-            entries.accept(Items.RICEBALL);
-            entries.accept(Items.SUSHI);
-            entries.accept(Items.COOKED_RICE);
-            entries.accept(Items.COLA);
-            entries.accept(Items.APPLE_CUPCAKE);
-            entries.accept(Items.PUMPKIN_CUPCAKE);
-            entries.accept(Items.COCOA_CUPCAKE);
-            entries.accept(Items.MELON_CUPCAKE);
-            entries.accept(Items.CARROT_CUPCAKE);
-            entries.accept(Items.FANCY_APPLE_CUPCAKE);
-            entries.accept(Items.FANCY_PUMPKIN_CUPCAKE);
-            entries.accept(Items.GLOWBERRY_CUPCAKE);
-            entries.accept(Items.DONUT);
-            entries.accept(Items.FANCY_DONUT);
-            entries.accept(Items.SPRINKLES);
-            entries.accept(Items.CHOCOLATE);
-            entries.accept(Items.BUN);
-            entries.accept(Items.RAW_PATTY);
-            entries.accept(Items.COOKED_PATTY);
-            entries.accept(Items.RAW_CHICKEN_PATTY);
-            entries.accept(Items.COOKED_CHICKEN_PATTY);
-            entries.accept(Items.HAMBURGER);
-            entries.accept(Items.CHICKEN_BURGER);
-            entries.accept(Items.MUSHROOM_BURGER);
-            entries.accept(Items.ULTIMATE_BOTTOM);
-            entries.accept(Items.ULTIMATE_TOP);
-            entries.accept(Items.CHEESEBURGER);
-            entries.accept(Items.COLA_EXTRACT);
-            entries.accept(Items.COLA_POWDER);
-            entries.accept(Items.CARBONATED_WATER);
-            entries.accept(Items.ULTIMATE_BURGER);
-            entries.accept(Items.ROTTEN_BURGER);
-            entries.accept(Items.COOKED_SAUSAGE);
-            entries.accept(Items.HOTDOG);
-            entries.accept(Items.FISH_BREAD);
-            entries.accept(Items.DAISY_SANDWICH);
-            entries.accept(Items.CHICKEN_WRAP);
-            entries.accept(Items.RAW_SCHNITZEL);
-            entries.accept(Items.COOKED_SCHNITZEL);
-            entries.accept(Items.FRIED_EGG);
-            entries.accept(Items.CROISSANT);
-            entries.accept(Items.POTATO_FRIES);
-            entries.accept(Items.ICE_TEA);
-            entries.accept(Items.APPLE_JUICE);
-            entries.accept(Items.CARROT_JUICE);
-            entries.accept(Items.MELON_JUICE);
-            entries.accept(Items.PUMPKIN_JUICE);
-            entries.accept(Items.TOMATO_JUICE);
-            entries.accept(Items.WHEAT_JUICE);
-            entries.accept(Items.GLASS_OF_MILK);
-            entries.accept(Items.GLASS_OF_WATER);
-            entries.accept(Items.SODA);
-            entries.accept(Items.CHEESE_TOAST);
-            entries.accept(Items.SQUID_INK_PAELLA);
-            entries.accept(Items.GLOW_SQUID_INK_PAELLA);
-            entries.accept(Items.APPLE_PIE);
-            entries.accept(Items.SWEET_BERRY_PIE);
-            entries.accept(Items.RAW_PIZZA);
-            entries.accept(Items.PIZZA);
-            entries.accept(Items.TOMATO_SLICES);
-            entries.accept(Items.POTATO_SLICES);
-            entries.accept(Items.RAW_SAUSAGE);
-            entries.accept(Items.CHEESE_WHEEL);
-            entries.accept(Items.CHEESE_SLICE);
-            entries.accept(Items.TEA_LEAF);
-            entries.accept(Items.TEA_DRIED);
-            entries.accept(Items.FULL_TEACUP_0);
-            entries.accept(Items.HOT_TEAPOT_7);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
-            if (REGISTER_LOCAL_KNIFE) {
-                entries.accept(Items.KNIFE);
-            }
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
-            entries.accept(Items.GLASS);
-            entries.accept(Items.TEACUP);
-            entries.accept(Items.TEAPOT);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.NATURAL_BLOCKS).register(entries -> {
-            entries.accept(Items.TOMATO_SEEDS);
-            entries.accept(Items.RICE_SEEDS);
-            entries.accept(Items.TEA_SEEDS);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> {
-            entries.accept(Items.VAT);
-        });
-
+        final boolean REGISTER_LOCAL_KNIFE = !FabricLoader.getInstance().isModLoaded("xercatools");
         if (REGISTER_LOCAL_KNIFE) {
+            KNIFE = new ItemKnife();
             registerItem("knife", KNIFE);
         }
         registerItem("glass", GLASS);
@@ -646,5 +534,119 @@ public final class Items {
         registerItem("pizza_fish", PIZZA_FISH);
         registerItem("pizza_chicken", PIZZA_CHICKEN);
         registerItem("pizza", PIZZA);
+
+
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
+            entries.accept(Items.TOMATO);
+            entries.accept(Items.RAW_SHISH_KEBAB);
+            entries.accept(Items.SHISH_KEBAB);
+            entries.accept(Items.YOGHURT);
+            entries.accept(Items.HONEYBERRY_YOGHURT);
+            entries.accept(Items.HONEY_CUPCAKE);
+            entries.accept(Items.DONER_WRAP);
+            entries.accept(Items.CHUBBY_DONER);
+            entries.accept(Items.ALEXANDER);
+            entries.accept(Items.AYRAN);
+            entries.accept(Items.DONER_SLICE);
+            entries.accept(Items.BAKED_RICE_PUDDING);
+            entries.accept(Items.SWEET_BERRY_JUICE);
+            entries.accept(Items.RICE_PUDDING);
+            entries.accept(Items.SWEET_BERRY_CUPCAKE_FANCY);
+            entries.accept(Items.SWEET_BERRY_CUPCAKE);
+            entries.accept(Items.ENDER_CUPCAKE);
+            entries.accept(Items.SASHIMI);
+            entries.accept(Items.OYAKODON);
+            entries.accept(Items.BEEF_DONBURI);
+            entries.accept(Items.EGG_SUSHI);
+            entries.accept(Items.NIGIRI_SUSHI);
+            entries.accept(Items.OMURICE);
+            entries.accept(Items.SAKE);
+            entries.accept(Items.RICEBALL);
+            entries.accept(Items.SUSHI);
+            entries.accept(Items.COOKED_RICE);
+            entries.accept(Items.COLA);
+            entries.accept(Items.APPLE_CUPCAKE);
+            entries.accept(Items.PUMPKIN_CUPCAKE);
+            entries.accept(Items.COCOA_CUPCAKE);
+            entries.accept(Items.MELON_CUPCAKE);
+            entries.accept(Items.CARROT_CUPCAKE);
+            entries.accept(Items.FANCY_APPLE_CUPCAKE);
+            entries.accept(Items.FANCY_PUMPKIN_CUPCAKE);
+            entries.accept(Items.GLOWBERRY_CUPCAKE);
+            entries.accept(Items.DONUT);
+            entries.accept(Items.FANCY_DONUT);
+            entries.accept(Items.SPRINKLES);
+            entries.accept(Items.CHOCOLATE);
+            entries.accept(Items.BUN);
+            entries.accept(Items.RAW_PATTY);
+            entries.accept(Items.COOKED_PATTY);
+            entries.accept(Items.RAW_CHICKEN_PATTY);
+            entries.accept(Items.COOKED_CHICKEN_PATTY);
+            entries.accept(Items.HAMBURGER);
+            entries.accept(Items.CHICKEN_BURGER);
+            entries.accept(Items.MUSHROOM_BURGER);
+            entries.accept(Items.ULTIMATE_BOTTOM);
+            entries.accept(Items.ULTIMATE_TOP);
+            entries.accept(Items.CHEESEBURGER);
+            entries.accept(Items.COLA_EXTRACT);
+            entries.accept(Items.COLA_POWDER);
+            entries.accept(Items.CARBONATED_WATER);
+            entries.accept(Items.ULTIMATE_BURGER);
+            entries.accept(Items.ROTTEN_BURGER);
+            entries.accept(Items.COOKED_SAUSAGE);
+            entries.accept(Items.HOTDOG);
+            entries.accept(Items.FISH_BREAD);
+            entries.accept(Items.DAISY_SANDWICH);
+            entries.accept(Items.CHICKEN_WRAP);
+            entries.accept(Items.RAW_SCHNITZEL);
+            entries.accept(Items.COOKED_SCHNITZEL);
+            entries.accept(Items.FRIED_EGG);
+            entries.accept(Items.CROISSANT);
+            entries.accept(Items.POTATO_FRIES);
+            entries.accept(Items.ICE_TEA);
+            entries.accept(Items.APPLE_JUICE);
+            entries.accept(Items.CARROT_JUICE);
+            entries.accept(Items.MELON_JUICE);
+            entries.accept(Items.PUMPKIN_JUICE);
+            entries.accept(Items.TOMATO_JUICE);
+            entries.accept(Items.WHEAT_JUICE);
+            entries.accept(Items.GLASS_OF_MILK);
+            entries.accept(Items.GLASS_OF_WATER);
+            entries.accept(Items.SODA);
+            entries.accept(Items.CHEESE_TOAST);
+            entries.accept(Items.SQUID_INK_PAELLA);
+            entries.accept(Items.GLOW_SQUID_INK_PAELLA);
+            entries.accept(Items.APPLE_PIE);
+            entries.accept(Items.SWEET_BERRY_PIE);
+            entries.accept(Items.RAW_PIZZA);
+            entries.accept(Items.PIZZA);
+            entries.accept(Items.TOMATO_SLICES);
+            entries.accept(Items.POTATO_SLICES);
+            entries.accept(Items.RAW_SAUSAGE);
+            entries.accept(Items.CHEESE_WHEEL);
+            entries.accept(Items.CHEESE_SLICE);
+            entries.accept(Items.TEA_LEAF);
+            entries.accept(Items.TEA_DRIED);
+            entries.accept(Items.FULL_TEACUP_0);
+            entries.accept(Items.HOT_TEAPOT_7);
+        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+            if (REGISTER_LOCAL_KNIFE) {
+                entries.accept(KNIFE);
+            }
+        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
+            entries.accept(Items.GLASS);
+            entries.accept(Items.TEACUP);
+            entries.accept(Items.TEAPOT);
+        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.NATURAL_BLOCKS).register(entries -> {
+            entries.accept(Items.TOMATO_SEEDS);
+            entries.accept(Items.RICE_SEEDS);
+            entries.accept(Items.TEA_SEEDS);
+        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> {
+            entries.accept(Items.VAT);
+        });
     }
 }
