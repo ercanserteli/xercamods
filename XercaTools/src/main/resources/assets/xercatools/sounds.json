@@ -1,0 +1,40 @@
+{
+  "sneak_hit": {
+    "sounds": [
+      { "name": "xercatools:sneak_hit1" },
+      { "name": "xercatools:sneak_hit2" },
+      { "name": "xercatools:sneak_hit3" },
+      { "name": "xercatools:sneak_hit4" }
+    ]
+  },
+  "hammer": {
+    "sounds": [
+      { "name": "xercatools:hammer" }
+    ]
+  },
+  "stomp": {
+    "sounds": [
+      { "name": "xercatools:stomp" }
+    ]
+  },
+  "hook_chain": {
+    "sounds": [
+      { "name": "xercatools:hook_chain" }
+    ]
+  },
+  "hook_impact": {
+    "sounds": [
+      { "name": "xercatools:hook_impact" }
+    ]
+  },
+  "behead": {
+    "sounds": [
+      { "name": "xercatools:behead" }
+    ]
+  },
+  "absorb": {
+    "sounds": [
+      { "name": "xercatools:absorb" }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "item.xercatools.item_stone_warhammer": "Stone Warhammer",
+  "item.xercatools.item_iron_warhammer": "Iron Warhammer",
+  "item.xercatools.item_gold_warhammer": "Golden Warhammer",
+  "item.xercatools.item_diamond_warhammer": "Diamond Warhammer",
+  "item.xercatools.item_netherite_warhammer": "Netherite Warhammer",
+  "xercatools.warhammer_tooltip": "Hold right click to charge",
+  "enchantment.xercatools.enchantment_heavy": "Heavyweight",
+  "enchantment.xercatools.enchantment_maim": "Maiming",
+  "enchantment.xercatools.enchantment_quick": "Legerity",
+  "enchantment.xercatools.enchantment_quake": "Quake",
+  "enchantment.xercatools.enchantment_uppercut": "Uppercut",
+  "enchantment.xercatools.enchantment_heavy.desc": "Warhammer enchantment. Increases the maximum pull time, but also adds more damage and knock back.",
+  "enchantment.xercatools.enchantment_maim.desc": "Warhammer enchantment. Cripples your opponent on hit, applying a Slow effect.",
+  "enchantment.xercatools.enchantment_quick.desc": "Warhammer enchantment. Lets you pull the hammer faster while hitting with the same power.",
+  "enchantment.xercatools.enchantment_quake.desc": "Warhammer enchantment. Allows you to target the ground. When you hit the ground, all mobs around the target point are damaged according to their proximity and knocked back from that point.",
+  "enchantment.xercatools.enchantment_uppercut.desc": "Warhammer enchantment. Adds a knock up component to the Warhammer, launching the target upwards."
+}
+

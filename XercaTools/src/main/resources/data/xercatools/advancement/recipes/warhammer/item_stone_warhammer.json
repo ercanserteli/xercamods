@@ -1,0 +1,34 @@
+
+{
+  "parent": "xercatools:recipes/root",
+  "rewards": {
+    "recipes": [
+      "xercatools:warhammer/item_stone_warhammer"
+    ]
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {"items": "minecraft:cobblestone"}
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "xercatools:warhammer/item_stone_warhammer"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item",
+      "has_the_recipe"
+    ]
+  ]
+}
+            
+
+
