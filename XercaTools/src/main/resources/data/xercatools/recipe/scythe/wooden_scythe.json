@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iis",
+    " s ",
+    "s  "
+  ],
+  "key": {
+    "i": {
+      "tag": "minecraft:planks"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "xercatools:wooden_scythe"
+  }
+}

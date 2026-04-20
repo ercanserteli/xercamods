@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import xerca.xercatools.item.ItemScythe;
 import xerca.xercatools.item.ItemWarhammer;
 import xerca.xercatools.item.Items;
 
@@ -19,6 +20,12 @@ public final class XercaToolsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        registerBowLikeProperties(Items.WOODEN_SCYTHE);
+        registerBowLikeProperties(Items.STONE_SCYTHE);
+        registerBowLikeProperties(Items.IRON_SCYTHE);
+        registerBowLikeProperties(Items.GOLDEN_SCYTHE);
+        registerBowLikeProperties(Items.DIAMOND_SCYTHE);
+        registerBowLikeProperties(Items.NETHERITE_SCYTHE);
         registerBowLikeProperties(Items.ITEM_STONE_WARHAMMER);
         registerBowLikeProperties(Items.ITEM_IRON_WARHAMMER);
         registerBowLikeProperties(Items.ITEM_GOLD_WARHAMMER);
@@ -35,7 +42,9 @@ public final class XercaToolsClient implements ClientModInitializer {
 
             int remaining = entity.getUseItemRemainingTicks();
             float useTime = stack.getUseDuration(entity) - remaining;
-            float fullUseTime = ItemWarhammer.getFullUseSeconds(entity.level().registryAccess(), stack) * 20.0F;
+            float fullUseTime = stack.getItem() instanceof ItemWarhammer
+                    ? ItemWarhammer.getFullUseSeconds(entity.level().registryAccess(), stack) * 20.0F
+                    : ItemScythe.getFullUseSeconds(stack) * 20.0F;
             return Mth.clamp(useTime / fullUseTime, 0.0F, 1.0F);
         });
     }

@@ -1,0 +1,22 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.xercatools.enchantment_guillotine"
+  },
+  "effects": {},
+  "max_cost": {
+    "base": 22,
+    "per_level_above_first": 0
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 0
+  },
+  "primary_items": "#xercatools:scythe",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#xercatools:scythe",
+  "weight": 2
+}
