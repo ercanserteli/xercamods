@@ -2,10 +2,11 @@
   "schemaVersion": 1,
   "id": "xercacushion",
   "version": "${version}",
-  "name": "xercacushion",
-  "description": "",
+  "name": "Cushions",
+  "description": "Brings comfort to your world",
   "authors": ["xerca"],
   "contact": {},
+  "icon": "assets/xercacushion/icon.png",
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {

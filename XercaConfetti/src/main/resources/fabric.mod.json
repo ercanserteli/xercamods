@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "id": "xercaconfetti",
   "version": "${version}",
-  "name": "XercaConfetti",
+  "name": "Confetti",
   "description": "",
   "authors": ["xerca"],
   "contact": {},
+  "icon": "assets/xercaconfetti/textures/item/confetti.png",
   "license": "GPL-3.0",
-  "icon": "assets/xercaconfetti/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [

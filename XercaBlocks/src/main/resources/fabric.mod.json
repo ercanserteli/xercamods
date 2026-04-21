@@ -2,10 +2,11 @@
   "schemaVersion": 1,
   "id": "xercablocks",
   "version": "${version}",
-  "name": "xercablocks",
+  "name": "Xerca Blocks",
   "description": "",
   "authors": ["xerca"],
   "contact": {},
+  "icon": "assets/xercablocks/icon.png",
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {

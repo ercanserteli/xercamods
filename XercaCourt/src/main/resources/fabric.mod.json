@@ -2,10 +2,11 @@
   "schemaVersion": 1,
   "id": "xercacourt",
   "version": "${version}",
-  "name": "xercacourt",
-  "description": "",
+  "name": "Courtroom",
+  "description": "Adds items for courtroom enthusiasts",
   "authors": ["xerca"],
   "contact": {},
+  "icon": "assets/xercacourt/textures/item/gavel.png",
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {
