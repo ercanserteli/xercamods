@@ -1,6 +1,5 @@
 package xerca.xercaomnichest.block_entity;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -14,7 +13,7 @@ public final class BlockEntities {
     }
 
     public static void registerBlockEntities() {
-        OMNI_CHEST = FabricBlockEntityTypeBuilder.create(BlockEntityOmniChest::new, Blocks.OMNI_CHEST).build();
+        OMNI_CHEST = BlockEntityType.Builder.of(BlockEntityOmniChest::new, Blocks.OMNI_CHEST).build();
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("omni_chest"), OMNI_CHEST);
     }
 }

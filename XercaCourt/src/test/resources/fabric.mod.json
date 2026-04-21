@@ -6,7 +6,7 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "xerca.xercacourt.tests.CourtroomGameTests"
+      "xerca.xercacourt.tests.CourtGameTests"
     ]
   },
   "depends": {
