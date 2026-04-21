@@ -8,12 +8,7 @@ import net.minecraft.world.item.crafting.SingleItemRecipe;
 import xerca.xercablocks.Mod;
 
 public final class Recipes {
-    public static final RecipeType<CarvingRecipe> CARVING_TYPE = new RecipeType<>() {
-        @Override
-        public String toString() {
-            return Mod.MOD_ID + ":carving";
-        }
-    };
+    public static final RecipeType<CarvingRecipe> CARVING_TYPE = new CarvingRecipeType();
 
     public static final RecipeSerializer<CarvingRecipe> CARVING_SERIALIZER = new CarvingRecipeSerializer();
 
@@ -28,6 +23,13 @@ public final class Recipes {
     private static final class CarvingRecipeSerializer extends SingleItemRecipe.Serializer<CarvingRecipe> {
         private CarvingRecipeSerializer() {
             super(CarvingRecipe::new);
+        }
+    }
+
+    private static class CarvingRecipeType implements RecipeType<CarvingRecipe> {
+        @Override
+        public String toString() {
+            return Mod.MOD_ID + ":carving";
         }
     }
 }

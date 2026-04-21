@@ -274,11 +274,10 @@ class StonecuttingRecipe(Recipe):
     "ingredient": {{
         "item": "{ingredient}"
     }},
-    "result": "{result}",
-    "count": {count}
+    "result": {result}
 }}
         """
-        return template.format(type=self.type, ingredient=self.ingredient, count=self.count, result=self.result).replace("'", '"')
+        return template.format(type=self.type, ingredient=self.ingredient, result=normalize_itemstack({"id": self.result, "count": self.count})).replace("'", '"')
 
     def get_name(self):
         return self.result.split(":", 1)[1] + "_from_" + self.ingredient.split(":", 1)[1] + "_stonecutting"
@@ -299,11 +298,10 @@ class CarvingRecipe(Recipe):
     "ingredient": {{
         "item": "{ingredient}"
     }},
-    "result": "{result}",
-    "count": {count}
+    "result": {result}
 }}
         """
-        return template.format(type=self.type, ingredient=self.ingredient, count=self.count, result=self.result).replace("'", '"')
+        return template.format(type=self.type, ingredient=self.ingredient, result=normalize_itemstack({"id": self.result, "count": self.count})).replace("'", '"')
 
     def get_name(self):
         return self.result.split(":", 1)[1] + "_from_" + self.ingredient.split(":", 1)[1] + "_carving"
