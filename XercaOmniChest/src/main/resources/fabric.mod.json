@@ -2,10 +2,11 @@
   "schemaVersion": 1,
   "id": "xercaomnichest",
   "version": "${version}",
-  "name": "xercaomnichest",
-  "description": "",
+  "name": "Omni Chest",
+  "description": "A chest that anyone can access from anywhere",
   "authors": ["xerca"],
   "contact": {},
+  "icon": "assets/xercaomnichest/icon.png",
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {

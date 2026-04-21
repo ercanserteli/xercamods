@@ -2,10 +2,11 @@
   "schemaVersion": 1,
   "id": "xercatools",
   "version": "${version}",
-  "name": "xercatools",
-  "description": "",
+  "name": "Xerca Tools & Weapons",
+  "description": "Useful tools and fun weapons",
   "authors": ["xerca"],
   "contact": {},
+  "icon": "assets/xercatools/textures/item/grab_hook.png",
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {

@@ -3,7 +3,7 @@
   "id": "xercaconfetti",
   "version": "${version}",
   "name": "Confetti",
-  "description": "",
+  "description": "Adds confetti and confetti balls",
   "authors": ["xerca"],
   "contact": {},
   "icon": "assets/xercaconfetti/textures/item/confetti.png",
