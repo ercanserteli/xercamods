@@ -77,13 +77,13 @@ public class ScytheGameTests {
         enc.set(reg.getOrThrow(Enchantments.SWEEPING_EDGE), 1);
         scythe.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
-        Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, helper.absoluteBlockPos(center), player);
+        Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
         helper.assertTrue(
-            !level.getBlockState(helper.absoluteBlockPos(north)).is(Blocks.WHEAT) &&
-            !level.getBlockState(helper.absoluteBlockPos(south)).is(Blocks.WHEAT) &&
-            !level.getBlockState(helper.absoluteBlockPos(east)).is(Blocks.WHEAT)  &&
-            !level.getBlockState(helper.absoluteBlockPos(west)).is(Blocks.WHEAT),
+            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(north)))).is(Blocks.WHEAT) &&
+            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(south)))).is(Blocks.WHEAT) &&
+            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(east)))).is(Blocks.WHEAT)  &&
+            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(west)))).is(Blocks.WHEAT),
             "Sweeping Edge I should harvest all four cardinal neighbor crops");
         helper.succeed();
     }
@@ -112,13 +112,13 @@ public class ScytheGameTests {
         enc.set(reg.getOrThrow(Enchantments.SWEEPING_EDGE), 2);
         scythe.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
-        Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, helper.absoluteBlockPos(center), player);
+        Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
         helper.assertTrue(
-            !level.getBlockState(helper.absoluteBlockPos(ne)).is(Blocks.WHEAT) &&
-            !level.getBlockState(helper.absoluteBlockPos(nw)).is(Blocks.WHEAT) &&
-            !level.getBlockState(helper.absoluteBlockPos(se)).is(Blocks.WHEAT) &&
-            !level.getBlockState(helper.absoluteBlockPos(sw)).is(Blocks.WHEAT),
+            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(ne)))).is(Blocks.WHEAT) &&
+            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(nw)))).is(Blocks.WHEAT) &&
+            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(se)))).is(Blocks.WHEAT) &&
+            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(sw)))).is(Blocks.WHEAT),
             "Sweeping Edge II should also harvest diagonal crops");
         helper.succeed();
     }
@@ -141,11 +141,11 @@ public class ScytheGameTests {
 
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE); // no sweeping enchantment
 
-        Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, helper.absoluteBlockPos(center), player);
+        Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
         helper.assertTrue(
-            level.getBlockState(helper.absoluteBlockPos(north)).is(Blocks.WHEAT) &&
-            level.getBlockState(helper.absoluteBlockPos(south)).is(Blocks.WHEAT),
+            level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(north)))).is(Blocks.WHEAT) &&
+            level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(south)))).is(Blocks.WHEAT),
             "Scythe without Sweeping Edge must not harvest neighbors");
         helper.succeed();
     }

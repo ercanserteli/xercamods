@@ -2,11 +2,9 @@ package xerca.xercacushion;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -20,10 +18,10 @@ public final class Mod implements ModInitializer {
     public static final String MOD_ID = "xercacushion";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    public static final EntityType<EntityCushion> CUSHION = FabricEntityTypeBuilder.<EntityCushion>create(MobCategory.MISC, EntityCushion::new)
-            .dimensions(EntityDimensions.fixed(1.0F, 0.125F))
-            .trackRangeBlocks(8)
-            .trackedUpdateRate(10)
+    public static final EntityType<EntityCushion> CUSHION = EntityType.Builder.<EntityCushion>of(EntityCushion::new, MobCategory.MISC)
+            .sized(1.0F, 0.125F)
+            .clientTrackingRange(2)
+            .updateInterval(10)
             .build();
 
     public static ResourceLocation id(String path) {

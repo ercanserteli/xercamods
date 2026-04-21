@@ -5,14 +5,12 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -34,14 +32,14 @@ import xerca.xercatools.item.Items;
 public class Mod implements ModInitializer {
     public static final String MOD_ID = "xercatools";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-    public static final EntityType<EntityGrabHook> HOOK = FabricEntityTypeBuilder.<EntityGrabHook>create(MobCategory.MISC, EntityGrabHook::new)
-            .dimensions(EntityDimensions.fixed(0.25F, 0.25F))
-            .trackRangeChunks(8)
-            .trackedUpdateRate(2)
+    public static final EntityType<EntityGrabHook> HOOK = EntityType.Builder.<EntityGrabHook>of(EntityGrabHook::new, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
+            .clientTrackingRange(8)
+            .updateInterval(2)
             .build();
-    public static final EntityType<EntityHealthOrb> HEALTH_ORB = FabricEntityTypeBuilder.<EntityHealthOrb>create(MobCategory.MISC, EntityHealthOrb::new)
-            .dimensions(EntityDimensions.fixed(0.5F, 0.5F))
-            .trackRangeChunks(4)
+    public static final EntityType<EntityHealthOrb> HEALTH_ORB = EntityType.Builder.<EntityHealthOrb>of(EntityHealthOrb::new, MobCategory.MISC)
+            .sized(0.5F, 0.5F)
+            .clientTrackingRange(4)
             .build();
 
     public static ResourceLocation id(String path) {

@@ -33,24 +33,21 @@ public class FlaskAndLauncherGameTests {
     private static final String WEAPONS_BATCH = "xercatools_tests";
 
     // Builds a regular potion stack (PotionItem) with the given potion type.
-    private static ItemStack makeRegularPotion(ServerLevel level, net.minecraft.resources.ResourceKey<Potion> key) {
-        Holder<Potion> holder = level.registryAccess().lookupOrThrow(Registries.POTION).getOrThrow(key);
+    private static ItemStack makeRegularPotion(ServerLevel level, Holder<Potion> holder) {
         ItemStack stack = new ItemStack(net.minecraft.world.item.Items.POTION);
         stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(holder), Optional.empty(), List.of()));
         return stack;
     }
 
     // Builds a splash potion stack (ThrowablePotionItem) used by the Ender Bow recipe.
-    private static ItemStack makeSplashPotion(ServerLevel level, net.minecraft.resources.ResourceKey<Potion> key) {
-        Holder<Potion> holder = level.registryAccess().lookupOrThrow(Registries.POTION).getOrThrow(key);
+    private static ItemStack makeSplashPotion(ServerLevel level, Holder<Potion> holder) {
         ItemStack stack = new ItemStack(net.minecraft.world.item.Items.SPLASH_POTION);
         stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(holder), Optional.empty(), List.of()));
         return stack;
     }
 
     // Builds a lingering potion stack.
-    private static ItemStack makeLingeringPotion(ServerLevel level, net.minecraft.resources.ResourceKey<Potion> key) {
-        Holder<Potion> holder = level.registryAccess().lookupOrThrow(Registries.POTION).getOrThrow(key);
+    private static ItemStack makeLingeringPotion(ServerLevel level, Holder<Potion> holder) {
         ItemStack stack = new ItemStack(net.minecraft.world.item.Items.LINGERING_POTION);
         stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(holder), Optional.empty(), List.of()));
         return stack;
@@ -189,9 +186,8 @@ public class FlaskAndLauncherGameTests {
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemFlask.setCharges(flask, 1);
         // Healing II potion contents (instant effect)
-        Holder<Potion> strongHealing = level.registryAccess().lookupOrThrow(Registries.POTION).getOrThrow(Potions.STRONG_HEALING);
         flask.set(DataComponents.POTION_CONTENTS,
-            new PotionContents(Optional.of(strongHealing), Optional.empty(), List.of()));
+            new PotionContents(Optional.of(Potions.STRONG_HEALING), Optional.empty(), List.of()));
         player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, flask);
 
         float damagedHealth = player.getMaxHealth() - 6.0f;
@@ -237,7 +233,7 @@ public class FlaskAndLauncherGameTests {
         ItemStack launcher = new ItemStack(Items.ENDER_BOW);
         ItemFlask.setCharges(launcher, 1);
         launcher.set(DataComponents.POTION_CONTENTS,
-            new PotionContents(Optional.of(level.registryAccess().lookupOrThrow(Registries.POTION).getOrThrow(Potions.HEALING)),
+            new PotionContents(Optional.of(Potions.HEALING),
                 Optional.empty(), List.of()));
         // isLingering defaults to false → splash potion should be fired
 
@@ -265,7 +261,7 @@ public class FlaskAndLauncherGameTests {
         ItemStack launcher = new ItemStack(Items.ENDER_BOW);
         ItemFlask.setCharges(launcher, 1);
         launcher.set(DataComponents.POTION_CONTENTS,
-            new PotionContents(Optional.of(level.registryAccess().lookupOrThrow(Registries.POTION).getOrThrow(Potions.HEALING)),
+            new PotionContents(Optional.of(Potions.HEALING),
                 Optional.empty(), List.of()));
         ItemPotionLauncher.setLingering(launcher, true);
 

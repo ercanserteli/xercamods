@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Position;
 import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.BlockSource;
@@ -15,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -46,8 +44,8 @@ public class Mod implements ModInitializer {
     public static final ItemConfetti CONFETTI = new ItemConfetti();
 
     // EntityType Definitions
-    public static final EntityType<EntityConfettiBall> ENTITY_CONFETTI_BALL = FabricEntityTypeBuilder.<EntityConfettiBall>create(MobCategory.MISC, EntityConfettiBall::new)
-            .dimensions(EntityDimensions.fixed(0.25f, 0.25f)).trackedUpdateRate(10).build();
+    public static final EntityType<EntityConfettiBall> ENTITY_CONFETTI_BALL = EntityType.Builder.<EntityConfettiBall>of(EntityConfettiBall::new, MobCategory.MISC)
+            .sized(0.25f, 0.25f).updateInterval(10).build();
 
     // Sound Definitions
     public static final SoundEvent SOUND_CRACK = SoundEvent.createVariableRangeEvent(id("crack"));
