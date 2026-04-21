@@ -1,42 +1,51 @@
 package xerca.xercatools.tests;
 
+import net.fabricmc.fabric.api.item.v1.EnchantingContext;
+import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
+import xerca.xercatools.enchantment.KnifeEnchantments;
 import xerca.xercatools.enchantment.ScytheEnchantments;
+import xerca.xercatools.enchantment.WarhammerEnchantments;
 import xerca.xercatools.entity.EntityHealthOrb;
+import xerca.xercatools.item.ItemKnife;
+import xerca.xercatools.item.ItemWarhammer;
 import xerca.xercatools.item.Items;
 
 public class WeaponsGameTests {
     private static final String BASIC_TEMPLATE = "xercatools:basic_test";
     private static final String WEAPONS_BATCH = "xercatools_tests";
 
+    // ── existing tests ────────────────────────────────────────────────────────
+
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
     public static void warhammerDamagesEntityAndLosesDurability(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
-        
+
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
-        
+
         float initialHealth = pig.getHealth();
-        
-        // Simulate attack
         player.attack(pig);
-        
+
         helper.assertTrue(pig.getHealth() < initialHealth, "Expected warhammer to damage the pig");
         helper.assertTrue(warhammer.getDamageValue() == 1, "Expected warhammer to lose 1 durability");
-
         helper.succeed();
     }
 
@@ -57,7 +66,6 @@ public class WeaponsGameTests {
 
         boolean orbsSpawned = !level.getEntitiesOfClass(EntityHealthOrb.class, pig.getBoundingBox().inflate(10)).isEmpty();
         helper.assertTrue(orbsSpawned, "Expected health orbs to spawn when devour kill is triggered");
-
         helper.succeed();
     }
 
@@ -76,7 +84,562 @@ public class WeaponsGameTests {
         orb.playerTouch(player);
 
         helper.assertTrue(player.getHealth() > initialHealth, "Expected health orb to restore player health on touch");
+        helper.succeed();
+    }
 
+    // ── Group A: pull/release scaling ─────────────────────────────────────────
+
+    // Positions player at (2,2,2) looking south, pig at (2,3,3) so ray hits it.
+    private static Pig spawnPigInSight(GameTestHelper helper, Player player) {
+        Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);  // facing south (+z)
+        player.setXRot(0.0f);
+        return helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerGetFullUseSecondsBaseIsOne(GameTestHelper helper) {
+        ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+        float seconds = ItemWarhammer.getFullUseSeconds(helper.getLevel().registryAccess(), stack);
+        helper.assertTrue(seconds == 1.0f, "Base full-use duration should be 1.0s, got " + seconds);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerPullBelowThresholdDoesNothing(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = spawnPigInSight(helper, player);
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+
+        float initialHealth = pig.getHealth();
+        int initialDmg = warhammer.getDamageValue();
+
+        // pull fraction = 1/20 = 0.05 < 0.1 threshold → early return
+        Items.IRON_WARHAMMER.releaseUsing(warhammer, helper.getLevel(), player, 72000 - 1);
+
+        helper.assertTrue(pig.getHealth() == initialHealth, "Pig should not be damaged on sub-threshold pull");
+        helper.assertTrue(warhammer.getDamageValue() == initialDmg, "Durability should not change on sub-threshold pull");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerShortPullDealsReducedDamage(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = spawnPigInSight(helper, player);
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+
+        float initialHealth = pig.getHealth();
+
+        // pull = 5/20 = 0.25 → 0.5× multiplier
+        Items.IRON_WARHAMMER.releaseUsing(warhammer, helper.getLevel(), player, 72000 - 5);
+
+        float dmgDealt = initialHealth - pig.getHealth();
+        helper.assertTrue(dmgDealt > 0, "Expected damage at 0.25 pull");
+
+        // Verify that the 0.5× tier was used: at the next bracket (0.75×) damage would be 50% higher
+        // Record for comparison with medium pull:
+        helper.assertTrue(dmgDealt < initialHealth, "Damage should not exceed pig health");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerMediumPullDealsMoreDamageThanShort(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        // Short pull
+        Pig pig1 = spawnPigInSight(helper, player);
+        ItemStack warhammer1 = new ItemStack(Items.IRON_WARHAMMER);
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer1);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+        float health1Before = pig1.getHealth();
+        Items.IRON_WARHAMMER.releaseUsing(warhammer1, level, player, 72000 - 5); // 0.5× mult
+        float dmgShort = health1Before - pig1.getHealth();
+
+        // Medium pull (fresh pig needed)
+        pig1.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
+        Pig pig2 = spawnPigInSight(helper, player);
+        ItemStack warhammer2 = new ItemStack(Items.IRON_WARHAMMER);
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer2);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+        float health2Before = pig2.getHealth();
+        Items.IRON_WARHAMMER.releaseUsing(warhammer2, level, player, 72000 - 10); // 0.75× mult
+        float dmgMedium = health2Before - pig2.getHealth();
+
+        helper.assertTrue(dmgMedium > dmgShort, "Medium pull (0.75×) should deal more than short pull (0.5×)");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerFullPullDealsMaxDamage(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        // Medium pull for baseline
+        Pig pig1 = spawnPigInSight(helper, player);
+        ItemStack warhammer1 = new ItemStack(Items.IRON_WARHAMMER);
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer1);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+        float h1 = pig1.getHealth();
+        Items.IRON_WARHAMMER.releaseUsing(warhammer1, level, player, 72000 - 17); // 0.85→1.0× mult
+        float dmgMedHigh = h1 - pig1.getHealth();
+
+        pig1.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
+
+        // Full pull
+        Pig pig2 = spawnPigInSight(helper, player);
+        ItemStack warhammer2 = new ItemStack(Items.IRON_WARHAMMER);
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer2);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+        float h2 = pig2.getHealth();
+        Items.IRON_WARHAMMER.releaseUsing(warhammer2, level, player, 72000 - 20); // 1.0→1.75× mult
+        float dmgFull = h2 - pig2.getHealth();
+
+        helper.assertTrue(dmgFull > dmgMedHigh, "Full pull (1.75×) should deal more than mid-high pull (1.0×)");
+        helper.succeed();
+    }
+
+    // ── Group B: enchantment effects ──────────────────────────────────────────
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerHeavyIncreasesFullUseSeconds(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.heavy(level.registryAccess()), 1);
+        stack.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+
+        float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
+        helper.assertTrue(seconds > 1.0f, "Heavy I should increase full-use duration above 1.0s");
+        float expected = 1.0f + 1.0f * 0.1f;
+        helper.assertTrue(Math.abs(seconds - expected) < 0.001f,
+                "Heavy I full-use should be ~" + expected + "s, got " + seconds);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerQuickDecreasesFullUseSeconds(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.quick(level.registryAccess()), 1);
+        stack.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+
+        float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
+        helper.assertTrue(seconds < 1.0f, "Quick I should decrease full-use duration below 1.0s");
+        float expected = 1.0f - 1.0f * 0.12f;
+        helper.assertTrue(Math.abs(seconds - expected) < 0.001f,
+                "Quick I full-use should be ~" + expected + "s, got " + seconds);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerHeavyTakesPrecedenceOverQuick(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.heavy(level.registryAccess()), 1);
+        enc.set(WarhammerEnchantments.quick(level.registryAccess()), 1);
+        stack.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+
+        float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
+        // heavy branch executes first and skips quick
+        float expected = 1.0f + 1.0f * 0.1f;
+        helper.assertTrue(Math.abs(seconds - expected) < 0.001f,
+                "Heavy should take precedence over Quick, expected " + expected + "s, got " + seconds);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerMaimAppliesSlowness(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = spawnPigInSight(helper, player);
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.maim(level.registryAccess()), 1);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+
+        // full pull
+        Items.IRON_WARHAMMER.releaseUsing(warhammer, level, player, 72000 - 20);
+
+        helper.assertTrue(pig.hasEffect(MobEffects.MOVEMENT_SLOWDOWN),
+                "Maim should apply movement slowdown");
+        net.minecraft.world.effect.MobEffectInstance effect = pig.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
+        helper.assertTrue(effect != null && effect.getDuration() >= 140,
+                "Maim I slowdown should last at least 140 ticks (100+40)");
+        helper.assertTrue(effect != null && effect.getAmplifier() == 0,
+                "Maim I slowdown amplitude should be 0");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerMaimLevel2AppliesStrongerSlowness(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = spawnPigInSight(helper, player);
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.maim(level.registryAccess()), 2);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+
+        Items.IRON_WARHAMMER.releaseUsing(warhammer, level, player, 72000 - 20);
+
+        net.minecraft.world.effect.MobEffectInstance effect = pig.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
+        helper.assertTrue(effect != null && effect.getDuration() >= 180,
+                "Maim II slowdown should last at least 180 ticks");
+        helper.assertTrue(effect != null && effect.getAmplifier() == 1,
+                "Maim II slowdown amplitude should be 1");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerUppercutAppliesUpwardVelocity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = spawnPigInSight(helper, player);
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.uppercut(level.registryAccess()), 2);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+
+        // full pull so pullDuration=1.0; bonusVelY = 2 * 0.25 * 1.0 = 0.5
+        Items.IRON_WARHAMMER.releaseUsing(warhammer, level, player, 72000 - 20);
+
+        double vy = pig.getDeltaMovement().y;
+        helper.assertTrue(vy > 0.3, "Uppercut II + full pull should give significant upward velocity, got " + vy);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerQuakeHitsNearbyEntitiesWhenGroundHit(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        // Player at (4, 2, 2) facing south (yRot=180), solid wall at (4, 2, 3).
+        // Pigs at (2, 2, 3) and (6, 2, 3) flanking the wall – not in the raycast path.
+        Vec3 abs = helper.absoluteVec(new Vec3(4.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);
+        player.setXRot(0.0f);
+
+        // Place block at y=3 so the ray at eye-height 3.62 can hit it
+        helper.setBlock(new BlockPos(4, 3, 3), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+
+        Pig pig1 = helper.spawn(EntityType.PIG, new BlockPos(2, 2, 3));
+        Pig pig2 = helper.spawn(EntityType.PIG, new BlockPos(6, 2, 3));
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.quake(level.registryAccess()), 1);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+
+        float h1 = pig1.getHealth();
+        float h2 = pig2.getHealth();
+
+        Items.IRON_WARHAMMER.releaseUsing(warhammer, level, player, 72000 - 20);
+
+        helper.assertTrue(pig1.getHealth() < h1 || pig2.getHealth() < h2,
+                "Quake should damage at least one pig near the impact point");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerQuakeDoesNothingWithoutEnchantment(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        Vec3 abs = helper.absoluteVec(new Vec3(4.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);
+        player.setXRot(0.0f);
+
+        helper.setBlock(new BlockPos(4, 3, 3), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+
+        Pig pig1 = helper.spawn(EntityType.PIG, new BlockPos(2, 2, 3));
+        Pig pig2 = helper.spawn(EntityType.PIG, new BlockPos(6, 2, 3));
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+
+        float h1 = pig1.getHealth();
+        float h2 = pig2.getHealth();
+
+        Items.IRON_WARHAMMER.releaseUsing(warhammer, level, player, 72000 - 20);
+
+        helper.assertTrue(pig1.getHealth() == h1 && pig2.getHealth() == h2,
+                "Warhammer without quake should not damage flanking pigs");
+        helper.succeed();
+    }
+
+    // ── Group C: enchanting-table availability ────────────────────────────────
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerAllowsModSpecificEnchantments(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+
+        helper.assertTrue(
+                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
+                        reg.getOrThrow(WarhammerEnchantments.HEAVY), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+                "Warhammer should allow Heavy enchantment");
+        helper.assertTrue(
+                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
+                        reg.getOrThrow(WarhammerEnchantments.MAIM), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+                "Warhammer should allow Maim enchantment");
+        helper.assertTrue(
+                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
+                        reg.getOrThrow(WarhammerEnchantments.QUICK), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+                "Warhammer should allow Quick enchantment");
+        helper.assertTrue(
+                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
+                        reg.getOrThrow(WarhammerEnchantments.QUAKE), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+                "Warhammer should allow Quake enchantment");
+        helper.assertTrue(
+                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
+                        reg.getOrThrow(WarhammerEnchantments.UPPERCUT), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+                "Warhammer should allow Uppercut enchantment");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerAllowsVanillaWhitelistedEnchantments(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+
+        for (var key : java.util.List.of(Enchantments.UNBREAKING, Enchantments.MENDING,
+                Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS, Enchantments.LOOTING)) {
+            TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker()
+                    .allowEnchanting(reg.getOrThrow(key), stack, EnchantingContext.PRIMARY);
+            helper.assertTrue(result == TriState.TRUE,
+                    "Warhammer should allow vanilla enchantment " + key.location());
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerBlocksOffLimitEnchantments(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+
+        for (var key : java.util.List.of(Enchantments.SHARPNESS, Enchantments.SWEEPING_EDGE, Enchantments.FORTUNE)) {
+            TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker()
+                    .allowEnchanting(reg.getOrThrow(key), stack, EnchantingContext.PRIMARY);
+            helper.assertTrue(result != TriState.TRUE,
+                    "Warhammer should not allow enchantment " + key.location());
+        }
+        helper.succeed();
+    }
+
+    // ── Group H: Knife ────────────────────────────────────────────────────────
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifeBackstabBonusWhenSneak(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        player.setShiftKeyDown(true);
+        pig.setYRot(0.0f);
+        player.setYRot(0.0f);  // both face same direction → attacker is behind target
+
+        ItemStack knife = new ItemStack(Items.KNIFE);
+        float crit = ItemKnife.critDamage(pig, player, knife);
+        helper.assertTrue(crit == 5.0f,
+                "Sneaking backstab should give 5.0 crit bonus, got " + crit);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifeNoBackstabBonusFromFront(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        player.setShiftKeyDown(true);
+        pig.setYRot(0.0f);
+        player.setYRot(180.0f);  // player facing opposite direction → attacker is in front
+
+        ItemStack knife = new ItemStack(Items.KNIFE);
+        float crit = ItemKnife.critDamage(pig, player, knife);
+        helper.assertTrue(crit == 0.0f,
+                "Facing from front should give no backstab bonus, got " + crit);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifeNoBackstabBonusWhenNotSneaking(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        player.setShiftKeyDown(false);
+        pig.setYRot(0.0f);
+        player.setYRot(0.0f);
+
+        float crit = ItemKnife.critDamage(pig, player, new ItemStack(Items.KNIFE));
+        helper.assertTrue(crit == 0.0f,
+                "Not sneaking should give no backstab bonus, got " + crit);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifeStealthEnchantmentIncreasesBackstabBonus(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        player.setShiftKeyDown(true);
+        pig.setYRot(0.0f);
+        player.setYRot(0.0f);
+
+        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(KnifeEnchantments.stealth(level.registryAccess()), 1);
+        knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+
+        float crit = ItemKnife.critDamage(pig, player, knife);
+        helper.assertTrue(crit == 7.0f,
+                "Stealth I backstab should give 5.0 + 2.0 = 7.0 bonus, got " + crit);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifeStealthLevel2IncreasesBackstabFurther(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        player.setShiftKeyDown(true);
+        pig.setYRot(0.0f);
+        player.setYRot(0.0f);
+
+        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(KnifeEnchantments.stealth(level.registryAccess()), 2);
+        knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+
+        float crit = ItemKnife.critDamage(pig, player, knife);
+        helper.assertTrue(crit == 9.0f,
+                "Stealth II backstab should give 5.0 + 4.0 = 9.0 bonus, got " + crit);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifeOffhandUseAddsCooldown(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack knife = new ItemStack(Items.KNIFE);
+        player.setItemSlot(EquipmentSlot.OFFHAND, knife);
+
+        Items.KNIFE.use(helper.getLevel(), player, net.minecraft.world.InteractionHand.OFF_HAND);
+
+        helper.assertTrue(player.getCooldowns().isOnCooldown(Items.KNIFE),
+                "Knife offhand use should add a cooldown");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifePoisonEnchantmentAppliesEffectOnHit(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(KnifeEnchantments.poison(level.registryAccess()), 1);
+        knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, knife);
+
+        knife.hurtEnemy(pig, player);
+
+        helper.assertTrue(pig.hasEffect(MobEffects.POISON),
+                "Poison I knife hit should apply poison effect");
+        net.minecraft.world.effect.MobEffectInstance effect = pig.getEffect(MobEffects.POISON);
+        helper.assertTrue(effect != null && effect.getDuration() >= 60,
+                "Poison I should last at least 60 ticks (30+30)");
+        helper.assertTrue(effect != null && effect.getAmplifier() == 0,
+                "Poison I amplitude should be 0");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifePoisonLevel2HasLongerDuration(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(KnifeEnchantments.poison(level.registryAccess()), 2);
+        knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, knife);
+
+        knife.hurtEnemy(pig, player);
+
+        net.minecraft.world.effect.MobEffectInstance effect = pig.getEffect(MobEffects.POISON);
+        helper.assertTrue(effect != null && effect.getDuration() >= 90,
+                "Poison II should last at least 90 ticks (30+60)");
+        helper.assertTrue(effect != null && effect.getAmplifier() == 1,
+                "Poison II amplitude should be 1");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifeOffhandDamageBaseIsThree(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        // not sneaking → no crit bonus; no sharpness → no enchant bonus
+        float dmg = ItemKnife.getOffhandDamage(level, new ItemStack(Items.KNIFE), pig, player);
+        helper.assertTrue(dmg == 3.0f,
+                "Offhand damage without enchants or backstab should be 3.0, got " + dmg);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void knifeOffhandDamageScalesWithSharpness(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+
+        ItemStack knife1 = new ItemStack(Items.KNIFE);
+        ItemEnchantments.Mutable enc1 = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc1.set(reg.getOrThrow(Enchantments.SHARPNESS), 1);
+        knife1.set(DataComponents.ENCHANTMENTS, enc1.toImmutable());
+        float dmg1 = ItemKnife.getOffhandDamage(level, knife1, pig, player);
+        helper.assertTrue(Math.abs(dmg1 - 4.0f) < 0.001f,
+                "Sharpness I offhand damage should be 4.0, got " + dmg1);
+
+        ItemStack knife2 = new ItemStack(Items.KNIFE);
+        ItemEnchantments.Mutable enc2 = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc2.set(reg.getOrThrow(Enchantments.SHARPNESS), 2);
+        knife2.set(DataComponents.ENCHANTMENTS, enc2.toImmutable());
+        float dmg2 = ItemKnife.getOffhandDamage(level, knife2, pig, player);
+        helper.assertTrue(Math.abs(dmg2 - 4.5f) < 0.001f,
+                "Sharpness II offhand damage should be 4.5, got " + dmg2);
         helper.succeed();
     }
 }

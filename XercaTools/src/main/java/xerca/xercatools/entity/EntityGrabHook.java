@@ -103,6 +103,14 @@ public class EntityGrabHook extends Entity {
         return this.returning;
     }
 
+    public @Nullable Entity getCaughtEntity() {
+        return this.caughtEntity;
+    }
+
+    public int getAge() {
+        return this.age;
+    }
+
     @Override
     public boolean shouldRenderAtSqrDistance(double distance) {
         return distance < 128 * 128;
