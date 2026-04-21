@@ -235,7 +235,7 @@ public class FlaskAndLauncherGameTests {
         launcher.set(DataComponents.POTION_CONTENTS,
             new PotionContents(Optional.of(Potions.HEALING),
                 Optional.empty(), List.of()));
-        // isLingering defaults to false → splash potion should be fired
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, launcher);
 
         Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
 
@@ -264,6 +264,7 @@ public class FlaskAndLauncherGameTests {
             new PotionContents(Optional.of(Potions.HEALING),
                 Optional.empty(), List.of()));
         ItemPotionLauncher.setLingering(launcher, true);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, launcher);
 
         Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
 
@@ -285,6 +286,7 @@ public class FlaskAndLauncherGameTests {
         player.setPos(abs.x, abs.y, abs.z);
 
         ItemStack launcher = new ItemStack(Items.ENDER_BOW);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, launcher);
         // No charges set → getCharges returns 0
 
         var result = Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);

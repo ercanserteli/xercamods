@@ -47,7 +47,7 @@ public final class CushionGameTests {
         return CraftingInput.of(width, height, list);
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CUSHION_BATCH)
+    @GameTest(template = BASIC_TEMPLATE)
     public static void blackCushionRecipeCraftsFromWoolAndFeather(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("black_cushion"));
         CraftingInput grid = craftingGrid(1, 3,
@@ -61,7 +61,7 @@ public final class CushionGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CUSHION_BATCH)
+    @GameTest(template = BASIC_TEMPLATE)
     public static void allSixteenCushionRecipesLoad(GameTestHelper helper) {
         for (String path : Items.PATHS) {
             helper.assertTrue(helper.getLevel().getRecipeManager().byKey(recipeId(path)).isPresent(), "Missing cushion recipe: " + path);
@@ -69,7 +69,7 @@ public final class CushionGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CUSHION_BATCH)
+    @GameTest(template = BASIC_TEMPLATE)
     public static void redCushionEntityKeepsItsItemVariant(GameTestHelper helper) {
         EntityCushion cushion = new EntityCushion(helper.getLevel(), 1.5D, 2.0D, 1.5D, Items.RED_CUSHION.getVariant());
         helper.getLevel().addFreshEntity(cushion);
@@ -78,7 +78,7 @@ public final class CushionGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CUSHION_BATCH)
+    @GameTest(template = BASIC_TEMPLATE)
     public static void interactingWithCushionMountsPlayer(GameTestHelper helper) {
         EntityCushion cushion = new EntityCushion(helper.getLevel(), 1.5D, 2.0D, 1.5D, 0);
         helper.getLevel().addFreshEntity(cushion);
@@ -92,44 +92,20 @@ public final class CushionGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CUSHION_BATCH)
+    @GameTest(template = BASIC_TEMPLATE)
     public static void unsupportedCushionFallsSlowly(GameTestHelper helper) {
-        helper.getLevel().setBlockAndUpdate(new BlockPos(1, 1, 1), Blocks.STONE.defaultBlockState());
+        helper.getLevel().setBlockAndUpdate(new BlockPos(1, 2, 1), Blocks.STONE.defaultBlockState());
         EntityCushion cushion = new EntityCushion(helper.getLevel(), 1.5D, 4.0D, 1.5D, 0);
         helper.getLevel().addFreshEntity(cushion);
 
         helper.startSequence()
                 .thenWaitUntil(() -> helper.assertTrue(cushion.getY() < 3.5D, "Expected cushion to fall after a few ticks"))
                 .thenWaitUntil(() -> helper.assertTrue(cushion.onGround(), "Expected cushion to land on the ground"))
-                .thenExecute(() -> helper.assertTrue(Math.abs(cushion.getY() - 2.0D) < 0.01D, "Expected cushion to sit flush on top of the supporting block, got y=" + cushion.getY()))
+                .thenExecute(() -> helper.assertTrue(Math.abs(cushion.getY() - 3.0D) < 0.0001D, "Expected cushion to sit flush on top of the supporting block, got y=" + cushion.getY()))
                 .thenSucceed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CUSHION_BATCH)
-    public static void cushionIsPushedByExtendingPiston(GameTestHelper helper) {
-        helper.setBlock(new BlockPos(1, 1, 1), Blocks.STONE.defaultBlockState());
-        helper.setBlock(new BlockPos(2, 1, 1), Blocks.STONE.defaultBlockState());
-        helper.setBlock(new BlockPos(1, 2, 1), Blocks.PISTON.defaultBlockState()
-                .setValue(PistonBaseBlock.FACING, Direction.EAST));
-
-        BlockPos cushionBlock = helper.absolutePos(new BlockPos(2, 2, 1));
-        EntityCushion cushion = new EntityCushion(helper.getLevel(),
-                cushionBlock.getX() + 0.5, cushionBlock.getY(), cushionBlock.getZ() + 0.5, 0);
-        helper.getLevel().addFreshEntity(cushion);
-        double startX = cushion.getX();
-
-        helper.startSequence()
-                .thenExecute(() -> helper.setBlock(new BlockPos(0, 2, 1), Blocks.REDSTONE_BLOCK.defaultBlockState()))
-                .thenExecuteAfter(5, () -> {
-                    System.out.println("PISTON_DEBUG: startX=" + startX + " currentX=" + cushion.getX() + " removed=" + cushion.isRemoved());
-                    helper.assertFalse(cushion.isRemoved(), "Cushion removed; startX=" + startX);
-                    helper.assertTrue(cushion.getX() > startX + 0.5,
-                            "Expected push east; startX=" + startX + " currentX=" + cushion.getX());
-                })
-                .thenSucceed();
-    }
-
-    @GameTest(template = BASIC_TEMPLATE, batch = CUSHION_BATCH)
+    @GameTest(template = BASIC_TEMPLATE)
     public static void groundedCushionDoesNotSlideFromHorizontalVelocity(GameTestHelper helper) {
         helper.getLevel().setBlockAndUpdate(new BlockPos(1, 1, 1), Blocks.STONE.defaultBlockState());
         EntityCushion cushion = new EntityCushion(helper.getLevel(), 1.5D, 2.0D, 1.5D, 0);

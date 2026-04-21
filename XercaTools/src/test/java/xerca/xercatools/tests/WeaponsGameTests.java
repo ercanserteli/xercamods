@@ -398,26 +398,17 @@ public class WeaponsGameTests {
         ServerLevel level = helper.getLevel();
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+        EnchantingContext ctx = EnchantingContext.PRIMARY;
 
-        helper.assertTrue(
-                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
-                        reg.getOrThrow(WarhammerEnchantments.HEAVY), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.HEAVY), ctx),
                 "Warhammer should allow Heavy enchantment");
-        helper.assertTrue(
-                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
-                        reg.getOrThrow(WarhammerEnchantments.MAIM), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.MAIM), ctx),
                 "Warhammer should allow Maim enchantment");
-        helper.assertTrue(
-                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
-                        reg.getOrThrow(WarhammerEnchantments.QUICK), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.QUICK), ctx),
                 "Warhammer should allow Quick enchantment");
-        helper.assertTrue(
-                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
-                        reg.getOrThrow(WarhammerEnchantments.QUAKE), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.QUAKE), ctx),
                 "Warhammer should allow Quake enchantment");
-        helper.assertTrue(
-                EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
-                        reg.getOrThrow(WarhammerEnchantments.UPPERCUT), stack, EnchantingContext.PRIMARY) == TriState.TRUE,
+        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.UPPERCUT), ctx),
                 "Warhammer should allow Uppercut enchantment");
         helper.succeed();
     }
