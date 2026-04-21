@@ -1,0 +1,258 @@
+package xerca.xercatools.entity;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import xerca.xercatools.Mod;
+import xerca.xercatools.SoundEvents;
+
+import java.util.List;
+
+public class EntityHealthOrb extends Entity {
+    private static final int LIFETIME = 500;
+    private static final int ENTITY_SCAN_PERIOD = 10;
+    private static final int ORB_GROUPS_PER_AREA = 6;
+
+    private int age;
+    private int health = 5;
+    private int count = 1;
+    private @Nullable Player followingPlayer;
+    private @Nullable Player donorPlayer;
+    private @Nullable Player attackingPlayer;
+
+    public EntityHealthOrb(EntityType<? extends EntityHealthOrb> entityType, Level level) {
+        super(entityType, level);
+    }
+
+    public EntityHealthOrb(Level level, double x, double y, double z, @Nullable Player donorPlayer, @Nullable Player attackingPlayer) {
+        this(Mod.HEALTH_ORB, level);
+        this.setPos(x, y, z);
+        this.setYRot((float) (this.random.nextDouble() * 360.0D));
+        this.setDeltaMovement(
+                (this.random.nextDouble() * 0.2F - 0.1F) * 2.0D,
+                this.random.nextDouble() * 0.2D * 2.0D,
+                (this.random.nextDouble() * 0.2F - 0.1F) * 2.0D
+        );
+        this.donorPlayer = donorPlayer;
+        this.attackingPlayer = attackingPlayer;
+    }
+
+    @Override
+    protected @NotNull MovementEmission getMovementEmission() {
+        return MovementEmission.NONE;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        this.xo = this.getX();
+        this.yo = this.getY();
+        this.zo = this.getZ();
+        if (this.isEyeInFluid(FluidTags.WATER)) {
+            setUnderwaterMovement();
+        } else if (!this.isNoGravity()) {
+            this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.03D, 0.0D));
+        }
+
+        if (this.level().getFluidState(this.blockPosition()).is(FluidTags.LAVA)) {
+            this.setDeltaMovement(
+                    (this.random.nextFloat() - this.random.nextFloat()) * 0.2F,
+                    0.2F,
+                    (this.random.nextFloat() - this.random.nextFloat()) * 0.2F
+            );
+        }
+
+        if (!this.level().noCollision(this.getBoundingBox())) {
+            this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D, this.getZ());
+        }
+
+        if (this.tickCount % ENTITY_SCAN_PERIOD == 1) {
+            scanForEntities();
+        }
+
+        if (this.followingPlayer != null && (this.followingPlayer.isSpectator() || this.followingPlayer.isDeadOrDying())) {
+            this.followingPlayer = null;
+        }
+
+        if (this.followingPlayer != null) {
+            Vec3 toPlayer = new Vec3(
+                    this.followingPlayer.getX() - this.getX(),
+                    this.followingPlayer.getY() + this.followingPlayer.getEyeHeight() / 2.0D - this.getY(),
+                    this.followingPlayer.getZ() - this.getZ()
+            );
+            double distSq = toPlayer.lengthSqr();
+            if (distSq < 16.0D) {
+                double pull = 1.0D - Math.sqrt(distSq) / 4.0D;
+                this.setDeltaMovement(this.getDeltaMovement().add(toPlayer.normalize().scale(pull * pull * 0.1D)));
+            }
+        }
+
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        float friction = 0.98F;
+        this.setDeltaMovement(this.getDeltaMovement().multiply(friction, 0.98D, friction));
+        if (this.onGround()) {
+            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0D, -0.9D, 1.0D));
+        }
+
+        ++this.age;
+        if (this.age >= LIFETIME) {
+            this.discard();
+        }
+    }
+
+    private void scanForEntities() {
+        if (this.followingPlayer == null || this.followingPlayer.distanceToSqr(this) > 36.0D) {
+            if (attackingPlayer != null && attackingPlayer.distanceToSqr(this) <= 36.0D) {
+                followingPlayer = attackingPlayer;
+            } else if (donorPlayer != null) {
+                this.followingPlayer = this.level().getNearestPlayer(TargetingConditions.forNonCombat().range(5.0D), donorPlayer);
+            } else {
+                this.followingPlayer = this.level().getNearestPlayer(this, 5.0D);
+            }
+        }
+
+        if (this.level() instanceof ServerLevel) {
+            for (EntityHealthOrb other : this.level().getEntities(EntityTypeTest.forClass(EntityHealthOrb.class), this.getBoundingBox().inflate(0.5D), this::canMerge)) {
+                this.merge(other);
+            }
+        }
+    }
+
+    public static void award(ServerLevel level, Entity donor, Entity attacker, int val) {
+        if (val <= 0) return;
+        Vec3 pos = donor.getEyePosition();
+        for (int i = 0; i < val; ++i) {
+            if (!tryMergeToExisting(level, pos)) {
+                level.addFreshEntity(new EntityHealthOrb(level, pos.x(), pos.y(), pos.z(),
+                        donor instanceof Player p ? p : null,
+                        attacker instanceof Player p ? p : null));
+            }
+        }
+    }
+
+    private static boolean tryMergeToExisting(ServerLevel level, Vec3 pos) {
+        AABB aabb = AABB.ofSize(pos, 1.0D, 1.0D, 1.0D);
+        int groupId = level.getRandom().nextInt(ORB_GROUPS_PER_AREA);
+        List<EntityHealthOrb> list = level.getEntities(EntityTypeTest.forClass(EntityHealthOrb.class), aabb,
+                orb -> canMerge(orb, groupId));
+        if (!list.isEmpty()) {
+            EntityHealthOrb existing = list.get(0);
+            ++existing.count;
+            existing.age = 0;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean canMerge(EntityHealthOrb other) {
+        return other != this && canMerge(other, this.getId());
+    }
+
+    private static boolean canMerge(EntityHealthOrb orb, int id) {
+        return !orb.isRemoved() && (orb.getId() - id) % ORB_GROUPS_PER_AREA == 0;
+    }
+
+    private void merge(EntityHealthOrb other) {
+        this.count += other.count;
+        this.age = Math.min(this.age, other.age);
+        other.discard();
+    }
+
+    private void setUnderwaterMovement() {
+        Vec3 vel = this.getDeltaMovement();
+        this.setDeltaMovement(vel.x * 0.99F, Math.min(vel.y + 5.0E-4F, 0.06F), vel.z * 0.99F);
+    }
+
+    @Override
+    protected void doWaterSplashEffect() {
+    }
+
+    @Override
+    public boolean hurt(@NotNull DamageSource source, float damage) {
+        if (this.level().isClientSide || this.isRemoved()) return false;
+        if (this.isInvulnerableTo(source)) return false;
+        this.markHurt();
+        this.health = (int) (this.health - damage);
+        if (this.health <= 0) {
+            this.discard();
+        }
+        return true;
+    }
+
+    @Override
+    protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
+        tag.putShort("Health", (short) this.health);
+        tag.putShort("Age", (short) this.age);
+        tag.putInt("Count", this.count);
+        tag.putInt("DonorId", this.donorPlayer != null ? this.donorPlayer.getId() : -1);
+        tag.putInt("AttackerId", this.attackingPlayer != null ? this.attackingPlayer.getId() : -1);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+        this.health = tag.getShort("Health");
+        this.age = tag.getShort("Age");
+        this.count = Math.max(tag.getInt("Count"), 1);
+        int donorId = tag.getInt("DonorId");
+        if (donorId >= 0 && level().getEntity(donorId) instanceof Player p) {
+            donorPlayer = p;
+        }
+        int attackerId = tag.getInt("AttackerId");
+        if (attackerId >= 0 && level().getEntity(attackerId) instanceof Player p) {
+            attackingPlayer = p;
+        }
+    }
+
+    @Override
+    public void playerTouch(@NotNull Player player) {
+        if (!this.level().isClientSide && !player.equals(donorPlayer) && (age > 80 || player.equals(attackingPlayer))) {
+            if (player.takeXpDelay == 0) {
+                player.level().playSound(null, player, SoundEvents.ABSORB, SoundSource.PLAYERS, 1.0f, 0.8f + random.nextFloat() * 0.4f);
+                player.takeXpDelay = 1;
+                player.setHealth(player.getHealth() + 1);
+                --this.count;
+                if (this.count == 0) {
+                    this.discard();
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean isAttackable() {
+        return false;
+    }
+
+    @Override
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity entity) {
+        return new ClientboundAddEntityPacket(this, entity);
+    }
+
+    @Override
+    public @NotNull SoundSource getSoundSource() {
+        return SoundSource.AMBIENT;
+    }
+}

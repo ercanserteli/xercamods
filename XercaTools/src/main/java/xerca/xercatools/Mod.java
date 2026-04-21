@@ -26,6 +26,7 @@ import xerca.xercatools.enchantment.FlaskEnchantments;
 import xerca.xercatools.enchantment.GrabHookEnchantments;
 import xerca.xercatools.enchantment.KnifeEnchantments;
 import xerca.xercatools.entity.EntityGrabHook;
+import xerca.xercatools.entity.EntityHealthOrb;
 import xerca.xercatools.item.ItemKnife;
 import xerca.xercatools.item.ItemScythe;
 import xerca.xercatools.item.Items;
@@ -36,7 +37,11 @@ public class Mod implements ModInitializer {
     public static final EntityType<EntityGrabHook> HOOK = FabricEntityTypeBuilder.<EntityGrabHook>create(MobCategory.MISC, EntityGrabHook::new)
             .dimensions(EntityDimensions.fixed(0.25F, 0.25F))
             .trackRangeChunks(8)
-            .trackedUpdateRate(1)
+            .trackedUpdateRate(2)
+            .build();
+    public static final EntityType<EntityHealthOrb> HEALTH_ORB = FabricEntityTypeBuilder.<EntityHealthOrb>create(MobCategory.MISC, EntityHealthOrb::new)
+            .dimensions(EntityDimensions.fixed(0.5F, 0.5F))
+            .trackRangeChunks(4)
             .build();
 
     public static ResourceLocation id(String path) {
@@ -47,6 +52,7 @@ public class Mod implements ModInitializer {
     public void onInitialize() {
         SoundEvents.register();
         Registry.register(BuiltInRegistries.ENTITY_TYPE, id("hook"), HOOK);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, id("health_orb"), HEALTH_ORB);
         Items.register();
         registerEnchantmentRules();
         registerCombatHooks();

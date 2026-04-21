@@ -48,7 +48,6 @@ public class EntityGrabHook extends Entity {
 
     public EntityGrabHook(EntityType<? extends EntityGrabHook> type, Level level) {
         super(type, level);
-        this.noCulling = true;
     }
 
     public EntityGrabHook(Level level) {

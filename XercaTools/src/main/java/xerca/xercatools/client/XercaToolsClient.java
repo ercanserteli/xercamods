@@ -24,6 +24,7 @@ public final class XercaToolsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         EntityRendererRegistry.register(Mod.HOOK, RenderGrabHook::new);
+        EntityRendererRegistry.register(Mod.HEALTH_ORB, RenderHealthOrb::new);
         ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if (entity instanceof EntityGrabHook hook) {
                 Minecraft.getInstance().getSoundManager().play(new HookSound(hook));

@@ -38,6 +38,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercatools.SoundEvents;
 import xerca.xercatools.enchantment.ScytheEnchantments;
+import xerca.xercatools.entity.EntityHealthOrb;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -176,10 +177,10 @@ public class ItemScythe extends Item {
         return super.isValidRepairItem(toRepair, repair);
     }
 
-    public boolean harvestNeighbourCrops(Level level, BlockPos pos, Player player, ItemStack stack) {
+    public void harvestNeighbourCrops(Level level, BlockPos pos, Player player, ItemStack stack) {
         int sweeping = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SWEEPING_EDGE), stack);
         if (sweeping <= 0) {
-            return false;
+            return;
         }
 
         harvestIfReady(level, pos.south(), player);
@@ -193,7 +194,6 @@ public class ItemScythe extends Item {
             harvestIfReady(level, pos.south().east(), player);
             harvestIfReady(level, pos.south().west(), player);
         }
-        return false;
     }
 
     private static void handleSweepingAttack(ItemStack stack, Player player, Entity target) {
@@ -242,7 +242,7 @@ public class ItemScythe extends Item {
         }
 
         if (player.getRandom().nextFloat() < 0.25F * devourLevel) {
-            healFromDevour((ServerLevel) player.level(), target.position().add(0.0D, target.getBbHeight() * 0.5D, 0.0D), player, 1);
+            EntityHealthOrb.award((ServerLevel) player.level(), target, player, 1);
             player.level().playSound(null, player, SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 0.8F, 0.9F + player.getRandom().nextFloat() * 0.2F);
         }
     }
@@ -250,22 +250,8 @@ public class ItemScythe extends Item {
     private static void handleDevourKill(ItemStack stack, LivingEntity target, Player player) {
         int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.devour(player.level().registryAccess()), stack);
         if (devourLevel > 0 && player.level() instanceof ServerLevel serverLevel && target.isDeadOrDying()) {
-            healFromDevour(serverLevel, target.position().add(0.0D, target.getBbHeight() * 0.5D, 0.0D), player, devourLevel * 2);
-        }
-    }
-
-    private static void healFromDevour(ServerLevel level, Vec3 position, Player player, int amount) {
-        if (amount <= 0) {
-            return;
-        }
-
-        player.heal(amount);
-        level.playSound(null, player, SoundEvents.ABSORB, SoundSource.PLAYERS, 1.0F, 0.8F + player.getRandom().nextFloat() * 0.4F);
-        for (int i = 0; i < amount * 3; i++) {
-            double velX = (level.random.nextDouble() - 0.5D) * 0.2D;
-            double velY = level.random.nextDouble() * 0.2D + 0.02D;
-            double velZ = (level.random.nextDouble() - 0.5D) * 0.2D;
-            level.sendParticles(ParticleTypes.HEART, position.x, position.y, position.z, 1, velX, velY, velZ, 0.0D);
+            int devourCount = player.level().random.nextInt(devourLevel, devourLevel * 2 + 1);
+            EntityHealthOrb.award(serverLevel, target, player, devourCount);
         }
     }
 
