@@ -5,7 +5,7 @@ item_ids = {
     "fish": "minecraft:cod",
     "meat": "xercafood:doner_slice",
     "mushroom": "minecraft:brown_mushroom",
-    "pepperoni": "xercafood:item_raw_sausage",
+    "pepperoni": "xercafood:raw_sausage",
 }
 
 

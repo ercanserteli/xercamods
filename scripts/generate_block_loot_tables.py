@@ -2,9 +2,9 @@ from sys import argv
 
 
 blocks = [
-    ("block_leather", "item_block_leather"),
-    ("block_straw", "item_block_straw"),
-    ("block_bookcase", "item_bookcase"),
+    ("block_leather", "block_leather"),
+    ("block_straw", "block_straw"),
+    ("block_bookcase", "bookcase"),
 
     "carved_oak_1",
     "carved_oak_2",
