@@ -17,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -41,18 +42,18 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        ((FabricBakedModel) baseModel).emitBlockQuads(blockView, state, pos, randomSupplier, context);
-        emitOverlay(context, () -> ((FabricBakedModel) overlayModel).emitBlockQuads(blockView, state, pos, randomSupplier, context));
+        baseModel.emitBlockQuads(blockView, state, pos, randomSupplier, context);
+        emitOverlay(context, () -> overlayModel.emitBlockQuads(blockView, state, pos, randomSupplier, context));
     }
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        ((FabricBakedModel) baseModel).emitItemQuads(stack, randomSupplier, context);
-        emitOverlay(context, () -> ((FabricBakedModel) overlayModel).emitItemQuads(stack, randomSupplier, context));
+        baseModel.emitItemQuads(stack, randomSupplier, context);
+        emitOverlay(context, () -> overlayModel.emitItemQuads(stack, randomSupplier, context));
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource random) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource random) {
         List<BakedQuad> baseQuads = baseModel.getQuads(state, side, random);
         List<BakedQuad> overlayQuads = overlayModel.getQuads(state, side, random);
 
@@ -91,17 +92,17 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon() {
+    public @NotNull TextureAtlasSprite getParticleIcon() {
         return baseModel.getParticleIcon();
     }
 
     @Override
-    public ItemTransforms getTransforms() {
+    public @NotNull ItemTransforms getTransforms() {
         return baseModel.getTransforms();
     }
 
     @Override
-    public ItemOverrides getOverrides() {
+    public @NotNull ItemOverrides getOverrides() {
         return baseModel.getOverrides();
     }
 

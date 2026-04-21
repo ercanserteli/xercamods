@@ -35,7 +35,7 @@ public final class CarvedCrimsonModels {
         }
 
         ResourceLocation resourceId = context.resourceId();
-        if (resourceId == null) {
+        if (resourceId == null || !resourceId.getNamespace().equals(Mod.MOD_ID)) {
             return model;
         }
 
@@ -44,7 +44,8 @@ public final class CarvedCrimsonModels {
             return model;
         }
 
-        ResourceLocation overlayId = ResourceLocation.fromNamespaceAndPath(resourceId.getNamespace(), path + "_overlay");
+        String blockId = path.substring("block/carved_wood/".length());
+        ResourceLocation overlayId = overlayModelId(blockId);
         BakedModel overlayModel = context.baker().bake(overlayId, context.settings());
         return overlayModel == null ? model : new EmissiveOverlayBakedModel(model, overlayModel);
     }

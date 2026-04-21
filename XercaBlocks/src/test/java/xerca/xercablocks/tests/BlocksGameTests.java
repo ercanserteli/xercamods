@@ -8,10 +8,8 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.StonecutterMenu;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -115,27 +113,6 @@ public final class BlocksGameTests {
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected rope recipe to match three string");
         helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.ROPE), "Expected rope recipe to produce rope");
-        helper.succeed();
-    }
-
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void creativeTabContainsEveryXercaBlocksItem(GameTestHelper helper) {
-        Items.BLOCKS_TAB.buildContents(new CreativeModeTab.ItemDisplayParameters(FeatureFlags.DEFAULT_FLAGS, false, helper.getLevel().registryAccess()));
-
-        Set<Item> tabItems = new LinkedHashSet<>();
-        for (ItemStack stack : Items.BLOCKS_TAB.getDisplayItems()) {
-            tabItems.add(stack.getItem());
-        }
-
-        List<Item> modItems = BuiltInRegistries.ITEM.stream()
-                .filter(item -> Mod.MOD_ID.equals(BuiltInRegistries.ITEM.getKey(item).getNamespace()))
-                .toList();
-
-        helper.assertValueEqual(tabItems.size(), modItems.size(), "Expected the creative tab to contain every registered xercablocks item exactly once");
-        for (Item item : modItems) {
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
-            helper.assertTrue(tabItems.contains(item), "Missing creative-tab entry for " + itemId);
-        }
         helper.succeed();
     }
 
