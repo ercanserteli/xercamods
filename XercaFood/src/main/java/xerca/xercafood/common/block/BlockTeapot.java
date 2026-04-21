@@ -10,6 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -20,6 +21,8 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -35,15 +38,30 @@ import java.util.List;
 
 public class BlockTeapot extends Block {
     public static final IntegerProperty TEA_AMOUNT = IntegerProperty.create("tea", 0, 7);
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
     private static final VoxelShape centerShape = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 10.0D, 12.0D);
     private static final VoxelShape topShape = Block.box(7.0D, 10.0D, 7.0D, 9.0D, 11.0D, 9.0D);
-    private static final VoxelShape handleShape = Block.box(7.0D, 3.0D, 12.0D, 9.0D, 9.0D, 14.0D);
-    private static final VoxelShape tipShape = Block.box(7.0D, 8.0D, 3.0D, 9.0D, 9.0D, 4.0D);
-    private static final VoxelShape shape = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape), handleShape), tipShape);
+
+    private static final VoxelShape shapeNorth = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape),
+            Block.box(7.0D, 3.0D, 12.0D, 9.0D, 9.0D, 14.0D)), Block.box(7.0D, 8.0D, 3.0D, 9.0D, 9.0D, 4.0D));
+    private static final VoxelShape shapeWest = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape),
+            Block.box(12.0D, 3.0D, 7.0D, 14.0D, 9.0D, 9.0D)), Block.box(3.0D, 8.0D, 7.0D, 4.0D, 9.0D, 9.0D));
+    private static final VoxelShape shapeSouth = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape),
+            Block.box(7.0D, 3.0D, 2.0D, 9.0D, 9.0D, 4.0D)), Block.box(7.0D, 8.0D, 12.0D, 9.0D, 9.0D, 13.0D));
+    private static final VoxelShape shapeEast = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape),
+            Block.box(2.0D, 3.0D, 7.0D, 4.0D, 9.0D, 9.0D)), Block.box(12.0D, 8.0D, 7.0D, 13.0D, 9.0D, 9.0D));
 
     public BlockTeapot() {
         super(Properties.of().strength(0.0F, 1.0F).sound(SoundType.STONE));
-        this.registerDefaultState(this.stateDefinition.any().setValue(TEA_AMOUNT, 0));
+        this.registerDefaultState(this.stateDefinition.any().setValue(TEA_AMOUNT, 0).setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        return this.defaultBlockState()
+                .setValue(FACING, ctx.getHorizontalDirection().getOpposite())
+                .setValue(TEA_AMOUNT, 0);
     }
 
     @Override
@@ -51,9 +69,16 @@ public class BlockTeapot extends Block {
         int teaAmount = stateIn.getValue(TEA_AMOUNT);
         if (teaAmount > 0) {
             if (r.nextDouble() * 5 < ((double) teaAmount) * 0.5) {
+                Direction facing = stateIn.getValue(FACING);
+                double smokeX = pos.getX() + 0.5D;
+                double smokeZ = pos.getZ() + 0.5D;
+                if (facing == Direction.NORTH) smokeZ = pos.getZ() + 0.25D;
+                else if (facing == Direction.SOUTH) smokeZ = pos.getZ() + 0.75D;
+                else if (facing == Direction.EAST) smokeX = pos.getX() + 0.75D;
+                else if (facing == Direction.WEST) smokeX = pos.getX() + 0.25D;
                 for (int i = 0; i < r.nextInt(1) + 1; ++i) {
                     worldIn.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                            pos.getX() + 0.5D, pos.getY() + 0.6D + r.nextDouble() * 0.5D, pos.getZ() + 0.25D,
+                            smokeX, pos.getY() + 0.6D + r.nextDouble() * 0.5D, smokeZ,
                             0.0D, 0.025D, 0.0D);
                 }
             }
@@ -98,13 +123,18 @@ public class BlockTeapot extends Block {
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
-        return shape;
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext ctx) {
+        return switch (state.getValue(FACING)) {
+            case SOUTH -> shapeSouth;
+            case EAST -> shapeEast;
+            case WEST -> shapeWest;
+            default -> shapeNorth;
+        };
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(TEA_AMOUNT);
+        builder.add(TEA_AMOUNT, FACING);
     }
 
     @Override

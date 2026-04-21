@@ -1,5 +1,8 @@
 {
-    "variants": {
-        "": { "model": "xercafood:block/teapot" }
-    }
+    "multipart": [
+        { "when": { "facing": "north" }, "apply": { "model": "xercafood:block/teapot" } },
+        { "when": { "facing": "east" },  "apply": { "model": "xercafood:block/teapot", "y": 90 } },
+        { "when": { "facing": "south" }, "apply": { "model": "xercafood:block/teapot", "y": 180 } },
+        { "when": { "facing": "west" },  "apply": { "model": "xercafood:block/teapot", "y": 270 } }
+    ]
 }
