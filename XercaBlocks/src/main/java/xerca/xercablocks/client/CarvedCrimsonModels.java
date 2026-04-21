@@ -3,6 +3,7 @@ package xerca.xercablocks.client;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercablocks.Mod;
@@ -35,18 +36,36 @@ public final class CarvedCrimsonModels {
         }
 
         ResourceLocation resourceId = context.resourceId();
-        if (resourceId == null || !resourceId.getNamespace().equals(Mod.MOD_ID)) {
-            return model;
+        String overlayBasePath;
+
+        if (resourceId != null) {
+            // Resource model baking: handles block rendering in the world.
+            if (!Mod.MOD_ID.equals(resourceId.getNamespace())) {
+                return model;
+            }
+            String path = resourceId.getPath();
+            if (!path.startsWith("block/carved_wood/carved_crimson_") || path.endsWith("_overlay")) {
+                return model;
+            }
+            overlayBasePath = path.substring("block/carved_wood/".length());
+        } else {
+            // Top-level model baking: only handle inventory items here.
+            ModelResourceLocation topLevelId = context.topLevelId();
+            if (topLevelId == null || !"inventory".equals(topLevelId.variant())) {
+                return model;
+            }
+            ResourceLocation id = topLevelId.id();
+            if (!Mod.MOD_ID.equals(id.getNamespace())) {
+                return model;
+            }
+            String path = id.getPath();
+            if (!path.startsWith("carved_crimson_")) {
+                return model;
+            }
+            overlayBasePath = path;
         }
 
-        String path = resourceId.getPath();
-        if (!path.startsWith("block/carved_wood/carved_crimson_") || path.endsWith("_overlay")) {
-            return model;
-        }
-
-        String blockId = path.substring("block/carved_wood/".length());
-        ResourceLocation overlayId = overlayModelId(blockId);
-        BakedModel overlayModel = context.baker().bake(overlayId, context.settings());
+        BakedModel overlayModel = context.baker().bake(overlayModelId(overlayBasePath), context.settings());
         return overlayModel == null ? model : new EmissiveOverlayBakedModel(model, overlayModel);
     }
 
