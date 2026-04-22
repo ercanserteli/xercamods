@@ -57,7 +57,7 @@ public class WeaponsGameTests {
 
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(ScytheEnchantments.devour(level.registryAccess()), 3);
+        enchantments.set(ScytheEnchantments.devourEnchantment(level.registryAccess()), 3);
         scythe.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, scythe);
 
@@ -213,7 +213,7 @@ public class WeaponsGameTests {
         ServerLevel level = helper.getLevel();
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.heavy(level.registryAccess()), 1);
+        enc.set(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), 1);
         stack.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
@@ -229,7 +229,7 @@ public class WeaponsGameTests {
         ServerLevel level = helper.getLevel();
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.quick(level.registryAccess()), 1);
+        enc.set(WarhammerEnchantments.quickEnchantment(level.registryAccess()), 1);
         stack.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
@@ -245,8 +245,8 @@ public class WeaponsGameTests {
         ServerLevel level = helper.getLevel();
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.heavy(level.registryAccess()), 1);
-        enc.set(WarhammerEnchantments.quick(level.registryAccess()), 1);
+        enc.set(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), 1);
+        enc.set(WarhammerEnchantments.quickEnchantment(level.registryAccess()), 1);
         stack.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
@@ -265,7 +265,7 @@ public class WeaponsGameTests {
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.maim(level.registryAccess()), 1);
+        enc.set(WarhammerEnchantments.maimEnchantment(level.registryAccess()), 1);
         warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
         player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
@@ -291,7 +291,7 @@ public class WeaponsGameTests {
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.maim(level.registryAccess()), 2);
+        enc.set(WarhammerEnchantments.maimEnchantment(level.registryAccess()), 2);
         warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
         player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
@@ -314,7 +314,7 @@ public class WeaponsGameTests {
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.uppercut(level.registryAccess()), 2);
+        enc.set(WarhammerEnchantments.uppercutEnchantment(level.registryAccess()), 2);
         warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
         player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
@@ -347,7 +347,7 @@ public class WeaponsGameTests {
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.quake(level.registryAccess()), 1);
+        enc.set(WarhammerEnchantments.quakeEnchantment(level.registryAccess()), 1);
         warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
         player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
@@ -507,7 +507,7 @@ public class WeaponsGameTests {
 
         ItemStack knife = new ItemStack(Items.KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(KnifeEnchantments.stealth(level.registryAccess()), 1);
+        enc.set(KnifeEnchantments.stealthEnchantment(level.registryAccess()), 1);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         float crit = ItemKnife.critDamage(pig, player, knife);
@@ -528,7 +528,7 @@ public class WeaponsGameTests {
 
         ItemStack knife = new ItemStack(Items.KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(KnifeEnchantments.stealth(level.registryAccess()), 2);
+        enc.set(KnifeEnchantments.stealthEnchantment(level.registryAccess()), 2);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         float crit = ItemKnife.critDamage(pig, player, knife);
@@ -558,7 +558,7 @@ public class WeaponsGameTests {
 
         ItemStack knife = new ItemStack(Items.KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(KnifeEnchantments.poison(level.registryAccess()), 1);
+        enc.set(KnifeEnchantments.poisonEnchantment(level.registryAccess()), 1);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, knife);
 
@@ -582,7 +582,7 @@ public class WeaponsGameTests {
 
         ItemStack knife = new ItemStack(Items.KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(KnifeEnchantments.poison(level.registryAccess()), 2);
+        enc.set(KnifeEnchantments.poisonEnchantment(level.registryAccess()), 2);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, knife);
 

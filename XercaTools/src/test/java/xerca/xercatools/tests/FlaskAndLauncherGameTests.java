@@ -69,7 +69,7 @@ public class FlaskAndLauncherGameTests {
         ServerLevel level = helper.getLevel();
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(FlaskEnchantments.capacity(level.registryAccess()), 1);
+        enc.set(FlaskEnchantments.capacityEnchantment(level.registryAccess()), 1);
         flask.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         int max = ItemFlask.getMaxCharges(flask, level);
@@ -95,7 +95,7 @@ public class FlaskAndLauncherGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(FlaskEnchantments.chug(level.registryAccess()), 1);
+        enc.set(FlaskEnchantments.chugEnchantment(level.registryAccess()), 1);
         flask.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         int duration = Items.FLASK.getUseDuration(flask, player);
@@ -109,7 +109,7 @@ public class FlaskAndLauncherGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(FlaskEnchantments.chug(level.registryAccess()), 2);
+        enc.set(FlaskEnchantments.chugEnchantment(level.registryAccess()), 2);
         flask.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         int duration = Items.FLASK.getUseDuration(flask, player);

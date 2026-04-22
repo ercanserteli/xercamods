@@ -165,7 +165,7 @@ public class ScytheGameTests {
 
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(ScytheEnchantments.guillotine(level.registryAccess()), 1);
+        enc.set(ScytheEnchantments.guillotineEnchantment(level.registryAccess()), 1);
         scythe.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, scythe);
         player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
@@ -193,7 +193,7 @@ public class ScytheGameTests {
 
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(ScytheEnchantments.guillotine(level.registryAccess()), 1);
+        enc.set(ScytheEnchantments.guillotineEnchantment(level.registryAccess()), 1);
         scythe.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, scythe);
         player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
