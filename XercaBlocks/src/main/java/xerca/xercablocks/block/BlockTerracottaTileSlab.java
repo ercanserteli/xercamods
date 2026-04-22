@@ -42,7 +42,7 @@ public class BlockTerracottaTileSlab extends SlabBlock {
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER)
                 .setValue(FACING, direction);
         Direction clickedFace = context.getClickedFace();
-        return clickedFace != Direction.DOWN && (clickedFace == Direction.UP || !(context.getClickLocation().y - pos.getY() > 0.5D))
+        return clickedFace != Direction.DOWN && (clickedFace == Direction.UP || context.getClickLocation().y - pos.getY() <= 0.5D)
                 ? state
                 : state.setValue(TYPE, SlabType.TOP);
     }

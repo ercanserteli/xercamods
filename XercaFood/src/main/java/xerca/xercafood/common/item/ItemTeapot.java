@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemTeapot extends BlockItem {
-    public static final int maxTea = 7;
     private final int teaAmount;
     private final boolean isHot;
 
@@ -46,8 +45,8 @@ public class ItemTeapot extends BlockItem {
     @Nullable
     protected BlockState getPlacementState(BlockPlaceContext context) {
         BlockState blockstate;
-        if (context.getItemInHand().getItem() instanceof ItemTeapot) {
-            if (!((ItemTeapot) context.getItemInHand().getItem()).isHot) {
+        if (context.getItemInHand().getItem() instanceof ItemTeapot itemTeapot) {
+            if (!itemTeapot.isHot) {
                 blockstate = null;
             } else {
                 BlockState baseState = this.getBlock().getStateForPlacement(context);
