@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.SoundEvents;
 
@@ -39,6 +40,7 @@ public class ItemGoldenCupcake extends Item {
     }
 
     @Override
+    @SuppressFBWarnings(value = "SF", justification = "n is bounded by nextInt(5); all values are covered.")
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entity) {
         if (!(entity instanceof Player)) {
             return stack;
@@ -53,9 +55,11 @@ public class ItemGoldenCupcake extends Item {
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 2));
 
                     LightningBolt lightningBoltEntity = EntityType.LIGHTNING_BOLT.create(worldIn);
-                    lightningBoltEntity.teleportTo(player.getX(), player.getY(), player.getZ());
-                    lightningBoltEntity.setVisualOnly(true);
-                    worldIn.addFreshEntity(lightningBoltEntity);
+                    if (lightningBoltEntity != null) {
+                        lightningBoltEntity.teleportTo(player.getX(), player.getY(), player.getZ());
+                        lightningBoltEntity.setVisualOnly(true);
+                        worldIn.addFreshEntity(lightningBoltEntity);
+                    }
 
                     worldIn.explode(null, player.getX(), player.getY(), player.getZ(), 1.1F, false, Level.ExplosionInteraction.TNT);
 

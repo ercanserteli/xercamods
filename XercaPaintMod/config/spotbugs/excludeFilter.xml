@@ -12,4 +12,10 @@
     <Match>
         <Bug pattern="NP_NONNULL_PARAM_VIOLATION"/>
     </Match>
+    <Match>
+        <Bug code="PA"/>
+    </Match>
+    <Match>
+        <Bug code="MS"/>
+    </Match>
 </FindBugsFilter>

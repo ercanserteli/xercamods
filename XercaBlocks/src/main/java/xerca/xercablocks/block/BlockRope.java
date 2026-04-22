@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockRope extends PipeBlock {
@@ -58,6 +59,7 @@ public class BlockRope extends PipeBlock {
     }
 
     @Override
+    @SuppressFBWarnings(value = "NP", justification = "PROPERTY_BY_DIRECTION is defined for all Direction values.")
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
         return state.setValue(PROPERTY_BY_DIRECTION.get(direction), isConnectable(level, currentPos, direction));
     }

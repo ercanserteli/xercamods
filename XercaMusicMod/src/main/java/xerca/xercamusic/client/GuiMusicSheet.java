@@ -1257,13 +1257,13 @@ public class GuiMusicSheet extends Screen {
         }
         
         // Split by spaces and find the best break point
-        String[] words = text.split(" ");
+        List<String> words = splitByLiteralSpace(text);
         StringBuilder line1 = new StringBuilder();
         StringBuilder line2 = new StringBuilder();
         boolean firstLine = true;
         
-        for (int i = 0; i < words.length; i++) {
-            String word = words[i];
+        for (int i = 0; i < words.size(); i++) {
+            String word = words.get(i);
             String testLine = (firstLine ? line1 : line2).toString();
             if (!testLine.isEmpty()) {
                 testLine += " ";
@@ -1299,6 +1299,27 @@ public class GuiMusicSheet extends Screen {
             return new String[]{line1.toString()};
         }
         return new String[]{line1.toString(), line2.toString()};
+    }
+
+    private static List<String> splitByLiteralSpace(String text) {
+        ArrayList<String> parts = new ArrayList<>();
+        int start = 0;
+        while (start <= text.length()) {
+            int next = text.indexOf(' ', start);
+            if (next < 0) {
+                parts.add(text.substring(start));
+                break;
+            }
+            parts.add(text.substring(start, next));
+            start = next + 1;
+        }
+        while (!parts.isEmpty() && parts.get(parts.size() - 1).isEmpty()) {
+            parts.remove(parts.size() - 1);
+        }
+        if (parts.isEmpty()) {
+            parts.add("");
+        }
+        return parts;
     }
 
     private void drawHelpLine(GuiGraphics guiGraphics, int x, int y, String key, String desc) {

@@ -769,8 +769,8 @@ class SheetInputHandler {
         buffer.writeInt(markersToCopy.size());
         for (VolumeMarker marker : markersToCopy) {
             VolumeMarker copy = new VolumeMarker(marker);
-            copy.startTime -= gui.editCursor;
-            copy.endTime -= gui.editCursor;
+            copy.startTime = toSaturatedShort(copy.startTime - gui.editCursor);
+            copy.endTime = toSaturatedShort(copy.endTime - gui.editCursor);
             copy.encodeToBuffer(buffer);
         }
 
@@ -850,8 +850,8 @@ class SheetInputHandler {
                 // Push back the existing future volume markers
                 for (VolumeMarker marker : gui.volumeMarkers) {
                     if (marker.startTime >= gui.editCursor) {
-                        marker.startTime += length;
-                        marker.endTime += length;
+                        marker.startTime = toSaturatedShort(marker.startTime + length);
+                        marker.endTime = toSaturatedShort(marker.endTime + length);
                     }
                 }
             }
@@ -861,8 +861,8 @@ class SheetInputHandler {
                 gui.notes.add(event);
             }
             for (VolumeMarker marker : markersToPaste) {
-                marker.startTime += gui.editCursor;
-                marker.endTime += gui.editCursor;
+                marker.startTime = toSaturatedShort(marker.startTime + gui.editCursor);
+                marker.endTime = toSaturatedShort(marker.endTime + gui.editCursor);
                 gui.volumeMarkers.add(marker);
             }
 
@@ -876,6 +876,16 @@ class SheetInputHandler {
             gui.dirtyFlag.hasNotes = true;
             gui.dirtyFlag.hasLength = true;
         }
+    }
+
+    private static short toSaturatedShort(int value) {
+        if (value > Short.MAX_VALUE) {
+            return Short.MAX_VALUE;
+        }
+        if (value < Short.MIN_VALUE) {
+            return Short.MIN_VALUE;
+        }
+        return (short) value;
     }
 
     // ----------- Undo ------------

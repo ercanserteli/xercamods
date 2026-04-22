@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.SoundEvents;
 
 public class ItemGlass extends Item {
@@ -21,6 +22,7 @@ public class ItemGlass extends Item {
         return getCarbonatedWater(ctx) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
+    @SuppressFBWarnings(value = "NP", justification = "ctx.getPlayer() is checked for null before dereference.")
     public static boolean getCarbonatedWater(UseOnContext ctx) {
         BlockPos pos = ctx.getClickedPos();
         BlockState state = ctx.getLevel().getBlockState(pos);

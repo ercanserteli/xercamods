@@ -9,10 +9,12 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.item.ItemTeapot;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaPouring extends CustomRecipe {
+    @SuppressFBWarnings(value = "SF", justification = "teaAmount is validated to 1..7 by recipe logic.")
     public static Item getHotTeapot(int teaAmount) {
         Item res = net.minecraft.world.item.Items.AIR;
         switch (teaAmount) {
@@ -104,6 +106,7 @@ public class RecipeTeaPouring extends CustomRecipe {
     }
 
     @Override
+    @SuppressFBWarnings(value = "NP", justification = "hasCraftingRemainingItem() is checked before using crafting remainder item.")
     public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
         NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 

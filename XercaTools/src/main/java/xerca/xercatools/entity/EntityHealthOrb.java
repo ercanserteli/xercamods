@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercatools.Mod;
@@ -66,6 +67,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
+    @SuppressFBWarnings(value = "NP", justification = "followingPlayer and donorPlayer are null-guarded before dereference/use.")
     public void tick() {
         super.tick();
         this.xo = this.getX();
@@ -123,6 +125,7 @@ public class EntityHealthOrb extends Entity {
         }
     }
 
+    @SuppressFBWarnings(value = "NP", justification = "donorPlayer is checked for null before getNearestPlayer(..., donorPlayer).")
     private void scanForEntities() {
         if (this.followingPlayer == null || this.followingPlayer.distanceToSqr(this) > 36.0D) {
             if (attackingPlayer != null && attackingPlayer.distanceToSqr(this) <= 36.0D) {

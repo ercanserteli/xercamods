@@ -39,6 +39,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercaomnichest.block_entity.BlockEntities;
@@ -87,6 +88,7 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
         return result.consumesAction() ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
+    @SuppressFBWarnings(value = "NP", justification = "Server nullability is checked before container lookup")
     private ItemInteractionResult openMenu(Level level, BlockPos pos, Player player) {
         if (level.isClientSide) {
             return ItemInteractionResult.SUCCESS;

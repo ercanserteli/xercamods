@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -72,7 +73,10 @@ public class ItemKnife extends Item {
 
         float critBonus = critDamage(target, attacker, stack);
         if (critBonus > 0.0F) {
-            target.hurt(attacker.damageSources().playerAttack(attacker instanceof Player player ? player : null), critBonus);
+            DamageSource damageSource = attacker instanceof Player player
+                    ? attacker.damageSources().playerAttack(player)
+                    : attacker.damageSources().mobAttack(attacker);
+            target.hurt(damageSource, critBonus);
         }
         return true;
     }

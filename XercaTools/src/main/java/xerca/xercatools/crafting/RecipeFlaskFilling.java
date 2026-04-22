@@ -11,6 +11,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercatools.item.ItemFlask;
 import xerca.xercatools.item.Items;
 
@@ -128,6 +129,7 @@ public class RecipeFlaskFilling extends CustomRecipe {
     }
 
     @Override
+    @SuppressFBWarnings(value = "NP", justification = "hasCraftingRemainingItem() guarantees non-null crafting remainder in this API usage.")
     public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
         NonNullList<ItemStack> remainingItems = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 

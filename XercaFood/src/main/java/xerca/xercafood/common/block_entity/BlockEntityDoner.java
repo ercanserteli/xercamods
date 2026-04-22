@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.SoundEvents;
 
 import static net.minecraft.world.level.block.CampfireBlock.LIT;
@@ -68,6 +69,7 @@ public class BlockEntityDoner extends BlockEntity {
         return this.isSpinning ? (float) this.spinTicks + partialTicks : (float) this.spinTicks;
     }
 
+    @SuppressFBWarnings(value = "NP", justification = "gettingRoasted is used during block entity ticking when level is attached.")
     private boolean gettingRoasted() {
         return isFire(level.getBlockState(worldPosition.below())) || isFire(level.getBlockState(worldPosition.east())) ||
                 isFire(level.getBlockState(worldPosition.west())) || isFire(level.getBlockState(worldPosition.north())) ||

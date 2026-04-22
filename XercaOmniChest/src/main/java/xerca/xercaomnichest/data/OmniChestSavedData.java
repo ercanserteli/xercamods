@@ -28,7 +28,7 @@ public class OmniChestSavedData extends SavedData {
                     continue;
                 }
                 int slot = entry.getByte("Slot") & 255;
-                if (slot >= 0 && slot < data.inventory.getContainerSize()) {
+                if (slot < data.inventory.getContainerSize()) {
                     data.inventory.setItem(slot, ItemStack.parse(registries, entry).orElse(ItemStack.EMPTY));
                 }
             }

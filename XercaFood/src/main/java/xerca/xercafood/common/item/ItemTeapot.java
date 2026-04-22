@@ -50,7 +50,10 @@ public class ItemTeapot extends BlockItem {
             if (!((ItemTeapot) context.getItemInHand().getItem()).isHot) {
                 blockstate = null;
             } else {
-                blockstate = this.getBlock().getStateForPlacement(context).setValue(BlockTeapot.TEA_AMOUNT, ((ItemTeapot) context.getItemInHand().getItem()).teaAmount);
+                BlockState baseState = this.getBlock().getStateForPlacement(context);
+                blockstate = baseState != null
+                        ? baseState.setValue(BlockTeapot.TEA_AMOUNT, ((ItemTeapot) context.getItemInHand().getItem()).teaAmount)
+                        : null;
             }
         } else {
             blockstate = this.getBlock().getStateForPlacement(context);

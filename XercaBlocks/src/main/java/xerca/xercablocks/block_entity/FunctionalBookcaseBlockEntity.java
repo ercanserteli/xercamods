@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercablocks.block.BlockFunctionalBookcase;
 import xerca.xercablocks.menu.BookcaseMenu;
 
@@ -59,6 +60,7 @@ public class FunctionalBookcaseBlockEntity extends BlockEntity implements Contai
         syncVisualState();
     }
 
+    @SuppressFBWarnings(value = "NP", justification = "level is guarded against null at method entry.")
     private void syncVisualState() {
         if (level == null || level.isClientSide) {
             return;

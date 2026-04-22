@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercatools.Mod;
@@ -218,6 +219,7 @@ public class EntityGrabHook extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
     }
 
+    @SuppressFBWarnings(value = "NP", justification = "caughtEntity is assigned from hit result before same-branch dereference.")
     private boolean checkCollision(Player angler) {
         HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this,
                 entity -> !entity.isSpectator() && (entity.isPickable() || entity instanceof ItemEntity) && entity != angler);

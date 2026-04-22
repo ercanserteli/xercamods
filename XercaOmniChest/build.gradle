@@ -1,6 +1,8 @@
 plugins {
     id 'fabric-loom' version '1.6-SNAPSHOT'
     id 'maven-publish'
+    id("com.github.spotbugs") version "6.4.4"
+    id "pmd"
 }
 
 version = project.mod_version
@@ -26,6 +28,7 @@ tasks.register('buildCopy', Copy) {
 
 dependencies {
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
@@ -50,6 +53,19 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         it.options.release = targetJavaVersion
     }
+}
+
+spotbugs {
+    ignoreFailures = true
+    excludeFilter = file("config/spotbugs/excludeFilter.xml")
+}
+
+pmd {
+    toolVersion = "7.11.0"
+    ignoreFailures = true
+    consoleOutput = true
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
 java {

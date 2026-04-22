@@ -69,7 +69,8 @@ public class ItemGrabHook extends FishingRodItem {
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.grab_hook_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
-        if (EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.grappling(context.registries()), stack) > 0) {
+        var registries = context.registries();
+        if (registries != null && EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.grappling(registries), stack) > 0) {
             tooltip.add(Component.translatable("xercatools.grappling_tooltip").withStyle(ChatFormatting.YELLOW));
         }
     }

@@ -8,10 +8,12 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaFilling extends CustomRecipe {
 
+    @SuppressFBWarnings(value = "SF", justification = "teaAmount is constrained to 1..7 by recipe matching.")
     public static Item getFullTeapot(int teaAmount) {
         Item res = net.minecraft.world.item.Items.AIR;
         switch (teaAmount) {

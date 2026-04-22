@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -76,10 +75,8 @@ public class Mod implements ModInitializer {
             @Override
             protected ItemStack execute(BlockSource source, ItemStack stackIn) {
                 Position position = DispenserBlock.getDispensePosition(source);
-                Projectile projectile = new EntityConfettiBall(source.level(), position.x(), position.y(), position.z());
-                if (projectile instanceof EntityConfettiBall confettiBall) {
-                    confettiBall.setItem(stackIn.copyWithCount(1));
-                }
+                EntityConfettiBall projectile = new EntityConfettiBall(source.level(), position.x(), position.y(), position.z());
+                projectile.setItem(stackIn.copyWithCount(1));
                 projectile.shoot(source.state().getValue(DispenserBlock.FACING).getStepX(), source.state().getValue(DispenserBlock.FACING).getStepY() + 0.1F, source.state().getValue(DispenserBlock.FACING).getStepZ(), 1.1F, 6.0F);
                 source.level().addFreshEntity(projectile);
                 stackIn.shrink(1);

@@ -17,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,6 +125,7 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
         }
     }
 
+    @SuppressFBWarnings(value = "NP", justification = "Renderer nullability is checked; SpotBugs loses flow through chained calls.")
     private static @Nullable RenderMaterial overlayMaterial() {
         if (emissiveOverlayMaterial == null && RendererAccess.INSTANCE.getRenderer() != null) {
             emissiveOverlayMaterial = RendererAccess.INSTANCE.getRenderer()

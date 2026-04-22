@@ -8,10 +8,12 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.item.ItemTeacup;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaSugaring extends CustomRecipe {
+    @SuppressFBWarnings(value = "SF", justification = "sugarAmount is constrained to 0..6 by recipe logic.")
     public static Item getTeacup(int sugarAmount) {
         Item res = net.minecraft.world.item.Items.AIR;
         switch (sugarAmount) {
