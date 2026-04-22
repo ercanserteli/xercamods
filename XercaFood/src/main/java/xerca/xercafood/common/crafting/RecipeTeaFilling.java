@@ -12,20 +12,28 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaFilling extends CustomRecipe {
+    private record ParsedInput(ItemStack teapotStack, ItemStack bucketStack, int teaCount, boolean valid) {
+    }
+
+    private static final class ParseState {
+        private ItemStack teapotStack = ItemStack.EMPTY;
+        private ItemStack bucketStack = ItemStack.EMPTY;
+        private int teaCount;
+    }
+
 
     @SuppressFBWarnings(value = "SF", justification = "teaAmount is constrained to 1..7 by recipe matching.")
     public static Item getFullTeapot(int teaAmount) {
-        Item res = net.minecraft.world.item.Items.AIR;
-        switch (teaAmount) {
-            case 1 -> res = Items.FULL_TEAPOT_1;
-            case 2 -> res = Items.FULL_TEAPOT_2;
-            case 3 -> res = Items.FULL_TEAPOT_3;
-            case 4 -> res = Items.FULL_TEAPOT_4;
-            case 5 -> res = Items.FULL_TEAPOT_5;
-            case 6 -> res = Items.FULL_TEAPOT_6;
-            case 7 -> res = Items.FULL_TEAPOT_7;
-        }
-        return res;
+        return switch (teaAmount) {
+            case 1 -> Items.FULL_TEAPOT_1;
+            case 2 -> Items.FULL_TEAPOT_2;
+            case 3 -> Items.FULL_TEAPOT_3;
+            case 4 -> Items.FULL_TEAPOT_4;
+            case 5 -> Items.FULL_TEAPOT_5;
+            case 6 -> Items.FULL_TEAPOT_6;
+            case 7 -> Items.FULL_TEAPOT_7;
+            default -> net.minecraft.world.item.Items.AIR;
+        };
     }
 
     public RecipeTeaFilling(CraftingBookCategory category) {
@@ -36,72 +44,68 @@ public class RecipeTeaFilling extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     public boolean matches(CraftingInput inv, Level worldIn) {
-        int i = 0;
-        ItemStack teapotStack = ItemStack.EMPTY;
-        ItemStack bucketStack = ItemStack.EMPTY;
-
-        for (int j = 0; j < inv.size(); ++j) {
-            ItemStack itemstack = inv.getItem(j);
-            if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.TEAPOT) {
-                    if (!teapotStack.isEmpty()) {
-                        return false;
-                    }
-                    teapotStack = itemstack;
-                } else if (itemstack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
-                    if (!bucketStack.isEmpty()) {
-                        return false;
-                    }
-                    bucketStack = itemstack;
-                } else {
-                    if (itemstack.getItem() != Items.TEA_DRIED) {
-                        return false;
-                    }
-
-                    ++i;
-                }
-            }
-        }
-
-        return !teapotStack.isEmpty() && !bucketStack.isEmpty() && i > 0;
+        ParsedInput parsed = parseInput(inv);
+        return parsed.valid()
+                && !parsed.teapotStack().isEmpty()
+                && !parsed.bucketStack().isEmpty()
+                && parsed.teaCount() > 0;
     }
 
     /**
      * Returns an Item that is the result of this recipe
      */
     public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
-        int i = 0;
-        ItemStack teapotStack = ItemStack.EMPTY;
-        ItemStack bucketStack = ItemStack.EMPTY;
+        ParsedInput parsed = parseInput(inv);
+        if (!parsed.valid()
+                || parsed.teapotStack().isEmpty()
+                || parsed.bucketStack().isEmpty()
+                || parsed.teaCount() < 1
+                || parsed.teaCount() > 7) {
+            return ItemStack.EMPTY;
+        }
+        return new ItemStack(getFullTeapot(parsed.teaCount()));
+    }
 
-        for (int j = 0; j < inv.size(); ++j) {
-            ItemStack itemstack = inv.getItem(j);
-            if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() == Items.TEAPOT) {
-                    if (!teapotStack.isEmpty()) {
-                        return ItemStack.EMPTY;
-                    }
-                    teapotStack = itemstack;
-                } else if (itemstack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
-                    if (!bucketStack.isEmpty()) {
-                        return ItemStack.EMPTY;
-                    }
-                    bucketStack = itemstack;
-                } else {
-                    if (itemstack.getItem() != Items.TEA_DRIED) {
-                        return ItemStack.EMPTY;
-                    }
+    private ParsedInput parseInput(CraftingInput inv) {
+        ParseState state = new ParseState();
 
-                    ++i;
-                }
+        for (int slot = 0; slot < inv.size(); ++slot) {
+            ItemStack itemStack = inv.getItem(slot);
+            if (!itemStack.isEmpty() && !parseItem(itemStack, state)) {
+                return invalid();
             }
         }
 
-        if (!teapotStack.isEmpty() && !bucketStack.isEmpty() && i >= 1 && i <= 7) {
-            return new ItemStack(getFullTeapot(i));
-        } else {
-            return ItemStack.EMPTY;
+        return new ParsedInput(state.teapotStack, state.bucketStack, state.teaCount, true);
+    }
+
+    private static ParsedInput invalid() {
+        return new ParsedInput(ItemStack.EMPTY, ItemStack.EMPTY, 0, false);
+    }
+
+    private boolean parseItem(ItemStack itemStack, ParseState state) {
+        if (itemStack.getItem() == Items.TEAPOT) {
+            if (!state.teapotStack.isEmpty()) {
+                return false;
+            }
+            state.teapotStack = itemStack;
+            return true;
         }
+
+        if (itemStack.getItem() == net.minecraft.world.item.Items.WATER_BUCKET) {
+            if (!state.bucketStack.isEmpty()) {
+                return false;
+            }
+            state.bucketStack = itemStack;
+            return true;
+        }
+
+        if (itemStack.getItem() == Items.TEA_DRIED) {
+            ++state.teaCount;
+            return true;
+        }
+
+        return false;
     }
 
     @Override

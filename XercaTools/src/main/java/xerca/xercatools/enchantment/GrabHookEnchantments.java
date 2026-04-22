@@ -22,11 +22,11 @@ public final class GrabHookEnchantments {
         return ResourceKey.create(Registries.ENCHANTMENT, id);
     }
 
-    public static Holder<Enchantment> grappling(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> grapplingEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(GRAPPLING);
     }
 
-    public static Holder<Enchantment> grappling(HolderLookup.Provider registries) {
+    public static Holder<Enchantment> grapplingEnchantment(HolderLookup.Provider registries) {
         return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(GRAPPLING);
     }
 

@@ -21,19 +21,19 @@ public final class KnifeEnchantments {
         return ResourceKey.create(Registries.ENCHANTMENT, id);
     }
 
-    public static Holder<Enchantment> poison(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> poisonEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(POISON);
     }
 
-    public static Holder<Enchantment> poison(HolderLookup.Provider registries) {
+    public static Holder<Enchantment> poisonEnchantment(HolderLookup.Provider registries) {
         return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(POISON);
     }
 
-    public static Holder<Enchantment> stealth(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> stealthEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(STEALTH);
     }
 
-    public static Holder<Enchantment> stealth(HolderLookup.Provider registries) {
+    public static Holder<Enchantment> stealthEnchantment(HolderLookup.Provider registries) {
         return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(STEALTH);
     }
 }

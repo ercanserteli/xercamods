@@ -21,15 +21,15 @@ public final class FlaskEnchantments {
         return ResourceKey.create(Registries.ENCHANTMENT, id);
     }
 
-    public static Holder<Enchantment> capacity(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> capacityEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(CAPACITY);
     }
 
-    public static Holder<Enchantment> range(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> rangeEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(RANGE);
     }
 
-    public static Holder<Enchantment> chug(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> chugEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(CHUG);
     }
 }

@@ -11,6 +11,9 @@ import xerca.xercafood.common.item.ItemTeapot;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaRefilling extends CustomRecipe {
+    private record ParsedInput(ItemStack teapotStack, ItemTeapot teapot, int teaCount, boolean valid) {
+    }
+
     public RecipeTeaRefilling(CraftingBookCategory category) {
         super(category);
     }
@@ -19,72 +22,29 @@ public class RecipeTeaRefilling extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     public boolean matches(CraftingInput inv, Level worldIn) {
-        int i = 0;
-        ItemStack teapotStack = ItemStack.EMPTY;
-        ItemTeapot teapot = null;
-
-        for (int j = 0; j < inv.size(); ++j) {
-            ItemStack itemstack = inv.getItem(j);
-            if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() instanceof ItemTeapot) {
-                    if (!teapotStack.isEmpty()) {
-                        return false;
-                    }
-
-                    teapotStack = itemstack;
-                    teapot = (ItemTeapot) itemstack.getItem();
-                    if (teapot.isHot() || teapot.getTeaAmount() > 6) {
-                        return false;
-                    }
-                } else {
-                    if (itemstack.getItem() != Items.TEA_DRIED) {
-                        return false;
-                    }
-
-                    ++i;
-                }
-            }
-        }
-
-        return !teapotStack.isEmpty() && teapot != null && !teapot.isHot() && teapot.getTeaAmount() + i <= 7 && i > 0;
+        ParsedInput parsed = parseInput(inv);
+        return parsed.valid()
+                && !parsed.teapotStack().isEmpty()
+                && parsed.teapot() != null
+                && !parsed.teapot().isHot()
+                && parsed.teapot().getTeaAmount() + parsed.teaCount() <= 7
+                && parsed.teaCount() > 0;
     }
 
     /**
      * Returns an Item that is the result of this recipe
      */
     public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
-        int i = 0;
-        ItemStack teapotStack = ItemStack.EMPTY;
-        ItemTeapot teapot = null;
-
-        for (int j = 0; j < inv.size(); ++j) {
-            ItemStack itemstack = inv.getItem(j);
-            if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() instanceof ItemTeapot) {
-                    if (!teapotStack.isEmpty()) {
-                        return ItemStack.EMPTY;
-                    }
-
-                    teapotStack = itemstack;
-                    teapot = (ItemTeapot) itemstack.getItem();
-                    if (teapot.isHot() || teapot.getTeaAmount() > 6) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
-                    if (itemstack.getItem() != Items.TEA_DRIED) {
-                        return ItemStack.EMPTY;
-                    }
-
-                    ++i;
-                }
-            }
-        }
-
-        if (!teapotStack.isEmpty() && teapot != null && !teapot.isHot() && teapot.getTeaAmount() + i <= 7 && i > 0) {
-            return new ItemStack(RecipeTeaFilling.getFullTeapot(teapot.getTeaAmount() + i));
-        } else {
+        ParsedInput parsed = parseInput(inv);
+        if (!parsed.valid()
+                || parsed.teapotStack().isEmpty()
+                || parsed.teapot() == null
+                || parsed.teaCount() <= 0
+                || parsed.teapot().isHot()
+                || parsed.teapot().getTeaAmount() + parsed.teaCount() > 7) {
             return ItemStack.EMPTY;
         }
+        return new ItemStack(RecipeTeaFilling.getFullTeapot(parsed.teapot().getTeaAmount() + parsed.teaCount()));
     }
 
 
@@ -99,5 +59,34 @@ public class RecipeTeaRefilling extends CustomRecipe {
     @Override
     public boolean canCraftInDimensions(int width, int height) {
         return width >= 2 && height >= 2;
+    }
+
+    private ParsedInput parseInput(CraftingInput inv) {
+        int teaCount = 0;
+        ItemStack teapotStack = ItemStack.EMPTY;
+        ItemTeapot teapot = null;
+
+        for (int slot = 0; slot < inv.size(); ++slot) {
+            ItemStack itemStack = inv.getItem(slot);
+            if (!itemStack.isEmpty()) {
+                if (itemStack.getItem() instanceof ItemTeapot currentTeapot) {
+                    if (!teapotStack.isEmpty() || currentTeapot.isHot() || currentTeapot.getTeaAmount() > 6) {
+                        return invalid();
+                    }
+                    teapotStack = itemStack;
+                    teapot = currentTeapot;
+                } else if (itemStack.getItem() == Items.TEA_DRIED) {
+                    ++teaCount;
+                } else {
+                    return invalid();
+                }
+            }
+        }
+
+        return new ParsedInput(teapotStack, teapot, teaCount, true);
+    }
+
+    private static ParsedInput invalid() {
+        return new ParsedInput(ItemStack.EMPTY, null, 0, false);
     }
 }

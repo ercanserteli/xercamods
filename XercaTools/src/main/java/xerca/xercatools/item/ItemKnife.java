@@ -51,7 +51,7 @@ public class ItemKnife extends Item {
             }
             attacker.level().playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 1.0F, attacker.level().random.nextFloat() * 0.2F + 0.8F);
             float bonus = DEFAULT_CRIT_BONUS;
-            bonus += EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.stealth(attacker.level().registryAccess()), stack) * 2.0F;
+            bonus += EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.stealthEnchantment(attacker.level().registryAccess()), stack) * 2.0F;
             return bonus;
         }
         return 0.0F;
@@ -66,7 +66,7 @@ public class ItemKnife extends Item {
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
 
-        int poisonLevel = EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.poison(attacker.level().registryAccess()), stack);
+        int poisonLevel = EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.poisonEnchantment(attacker.level().registryAccess()), stack);
         if (poisonLevel > 0) {
             target.addEffect(new MobEffectInstance(MobEffects.POISON, 30 + 30 * poisonLevel, poisonLevel - 1));
         }

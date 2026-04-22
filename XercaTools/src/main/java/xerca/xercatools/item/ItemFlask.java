@@ -35,7 +35,7 @@ public class ItemFlask extends Item {
 
     @Override
     public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
-        int chug = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.chug(entity.level().registryAccess()), stack);
+        int chug = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.chugEnchantment(entity.level().registryAccess()), stack);
         return switch (chug) {
             case 2 -> 10;
             case 1 -> 21;
@@ -63,29 +63,35 @@ public class ItemFlask extends Item {
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity) {
         int charges = getCharges(stack);
         if (charges > 0 && entity instanceof Player player) {
-            if (!level.isClientSide) {
-                PotionContents potionContents = getPotionContents(stack);
-                for (MobEffectInstance effect : potionContents.getAllEffects()) {
-                    if (effect.getEffect().value().isInstantenous()) {
-                        effect.getEffect().value().applyInstantenousEffect(player, player, entity, effect.getAmplifier(), 1.0D);
-                    } else {
-                        entity.addEffect(new MobEffectInstance(effect));
-                    }
-                }
-            }
-
+            applyPotionEffects(stack, level, player, entity);
             decrementCharges(stack);
-
-            int useDuration = getUseDuration(stack, entity);
-            if (useDuration < 32) {
-                player.getCooldowns().addCooldown(this, (32 - useDuration) / 2);
-            }
-
+            applyUseCooldown(stack, entity, player);
             EquipmentSlot slot = player.getUsedItemHand() == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
             stack.hurtAndBreak(1, player, slot);
         }
 
         return stack;
+    }
+
+    private static void applyPotionEffects(ItemStack stack, Level level, Player player, LivingEntity entity) {
+        if (level.isClientSide) {
+            return;
+        }
+        PotionContents potionContents = getPotionContents(stack);
+        for (MobEffectInstance effect : potionContents.getAllEffects()) {
+            if (effect.getEffect().value().isInstantenous()) {
+                effect.getEffect().value().applyInstantenousEffect(player, player, entity, effect.getAmplifier(), 1.0D);
+            } else {
+                entity.addEffect(new MobEffectInstance(effect));
+            }
+        }
+    }
+
+    private void applyUseCooldown(ItemStack stack, LivingEntity entity, Player player) {
+        int useDuration = getUseDuration(stack, entity);
+        if (useDuration < 32) {
+            player.getCooldowns().addCooldown(this, (32 - useDuration) / 2);
+        }
     }
 
     @Override
@@ -107,7 +113,7 @@ public class ItemFlask extends Item {
     }
 
     public static int getMaxCharges(ItemStack stack, Level level) {
-        int cap = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.capacity(level.registryAccess()), stack);
+        int cap = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.capacityEnchantment(level.registryAccess()), stack);
         return BASE_MAX_CHARGES * (cap + 1);
     }
 
@@ -117,7 +123,7 @@ public class ItemFlask extends Item {
     }
 
     public static int getMaxCharges(ItemStack stack, net.minecraft.core.RegistryAccess registryAccess) {
-        int cap = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.capacity(registryAccess), stack);
+        int cap = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.capacityEnchantment(registryAccess), stack);
         return BASE_MAX_CHARGES * (cap + 1);
     }
 

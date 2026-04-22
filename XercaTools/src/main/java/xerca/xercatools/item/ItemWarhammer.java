@@ -189,11 +189,11 @@ public class ItemWarhammer extends Item {
 
     public static float getFullUseSeconds(RegistryAccess registryAccess, ItemStack stack) {
         float seconds = 1.0f;
-        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavy(registryAccess), stack);
+        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(registryAccess), stack);
         if (heavyLevel > 0) {
             seconds += seconds * 0.1f * heavyLevel;
         } else {
-            int quickLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.quick(registryAccess), stack);
+            int quickLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.quickEnchantment(registryAccess), stack);
             if (quickLevel > 0) {
                 seconds -= seconds * 0.12f * quickLevel;
             }
@@ -203,12 +203,12 @@ public class ItemWarhammer extends Item {
 
     private static void attackEntity(Player player, ItemStack stack, LivingEntity target, float pullDuration, Level level, EquipmentSlot slot) {
         float mult = damageBonusMult(pullDuration);
-        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavy(level.registryAccess()), stack);
+        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
         float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + heavyLevel * 0.5f) * mult;
         float push = (((ItemWarhammer) stack.getItem()).getPushAmount() + heavyLevel * 0.15f) * 2.0f * mult;
 
-        int uppercutLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.uppercut(level.registryAccess()), stack);
+        int uppercutLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.uppercutEnchantment(level.registryAccess()), stack);
         double bonusVelY = (uppercutLevel * 0.25d) * pullDuration;
 
         if (pullDuration > 0.9F && player.fallDistance > 0.0F && !player.onGround() && !player.onClimbable() &&
@@ -232,7 +232,7 @@ public class ItemWarhammer extends Item {
         stack.hurtAndBreak(1, player, slot);
         target.hurt(player.damageSources().playerAttack(player), damage);
 
-        int maimLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.maim(level.registryAccess()), stack);
+        int maimLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.maimEnchantment(level.registryAccess()), stack);
         if (maimLevel > 0) {
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100 + 40 * maimLevel, maimLevel - 1));
         }
@@ -243,7 +243,7 @@ public class ItemWarhammer extends Item {
     }
 
     private static void performQuake(Player player, ItemStack stack, Vec3 position, float pullDuration, Level level, EquipmentSlot slot) {
-        int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.quake(level.registryAccess()), stack);
+        int quakeLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.quakeEnchantment(level.registryAccess()), stack);
         if (quakeLevel <= 0) {
             return;
         }
@@ -259,7 +259,7 @@ public class ItemWarhammer extends Item {
         }
 
         float mult = damageBonusMult(pullDuration);
-        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavy(level.registryAccess()), stack);
+        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
         float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + heavyLevel * 0.5f) * mult * 0.5f;
         float push = (((ItemWarhammer) stack.getItem()).getPushAmount() + heavyLevel * 0.15f) * mult;

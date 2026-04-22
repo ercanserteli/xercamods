@@ -16,111 +16,46 @@ import xerca.xercatools.item.ItemFlask;
 import xerca.xercatools.item.Items;
 
 public class RecipeFlaskFilling extends CustomRecipe {
+    private record ParsedInput(ItemStack flaskStack, PotionContents potionType, PotionContents currentFlaskPotion, int potionCount, boolean valid) {
+    }
+
+    private static final class ParseState {
+        private ItemStack flaskStack = ItemStack.EMPTY;
+        private PotionContents potionType = PotionContents.EMPTY;
+        private PotionContents currentFlaskPotion = PotionContents.EMPTY;
+        private int potionCount;
+    }
+
     public RecipeFlaskFilling(CraftingBookCategory category) {
         super(category);
     }
 
     @Override
     public boolean matches(CraftingInput inv, Level level) {
-        int potionCount = 0;
-        PotionContents potionType = PotionContents.EMPTY;
-        ItemStack flaskStack = ItemStack.EMPTY;
-        PotionContents currentFlaskPotion = PotionContents.EMPTY;
-
-        for (int i = 0; i < inv.size(); ++i) {
-            ItemStack itemStack = inv.getItem(i);
-            if (itemStack.isEmpty()) {
-                continue;
-            }
-
-            if (itemStack.is(Items.FLASK)) {
-                if (!flaskStack.isEmpty()) {
-                    return false;
-                }
-
-                flaskStack = itemStack;
-                currentFlaskPotion = ItemFlask.getPotionContents(flaskStack);
-                if (!potionType.equals(PotionContents.EMPTY) && !currentFlaskPotion.equals(PotionContents.EMPTY) && !currentFlaskPotion.equals(potionType)) {
-                    return false;
-                }
-                continue;
-            }
-
-            if (!(itemStack.getItem() instanceof PotionItem)) {
-                return false;
-            }
-
-            PotionContents potionContents = itemStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-            if (potionType.equals(PotionContents.EMPTY)) {
-                potionType = potionContents;
-            } else if (!potionContents.equals(potionType)) {
-                return false;
-            }
-
-            if (!currentFlaskPotion.equals(PotionContents.EMPTY) && !currentFlaskPotion.equals(potionType)) {
-                return false;
-            }
-
-            ++potionCount;
-        }
-
-        return !flaskStack.isEmpty()
-                && potionCount > 0
-                && !potionType.equals(PotionContents.EMPTY)
-                && (ItemFlask.getCharges(flaskStack) + potionCount) <= ItemFlask.getMaxCharges(flaskStack, level);
+        ParsedInput parsed = parseInput(inv);
+        return parsed.valid()
+                && !parsed.flaskStack().isEmpty()
+                && parsed.potionCount() > 0
+                && !parsed.potionType().equals(PotionContents.EMPTY)
+                && (ItemFlask.getCharges(parsed.flaskStack()) + parsed.potionCount()) <= ItemFlask.getMaxCharges(parsed.flaskStack(), level);
     }
 
     @Override
     public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
-        int potionCount = 0;
-        PotionContents potionType = PotionContents.EMPTY;
-        ItemStack flaskStack = ItemStack.EMPTY;
-        PotionContents currentFlaskPotion = PotionContents.EMPTY;
-
-        for (int i = 0; i < inv.size(); ++i) {
-            ItemStack itemStack = inv.getItem(i);
-            if (itemStack.isEmpty()) {
-                continue;
-            }
-
-            if (itemStack.is(Items.FLASK)) {
-                if (!flaskStack.isEmpty()) {
-                    return ItemStack.EMPTY;
-                }
-
-                flaskStack = itemStack;
-                currentFlaskPotion = ItemFlask.getPotionContents(flaskStack);
-                if (!potionType.equals(PotionContents.EMPTY) && !currentFlaskPotion.equals(PotionContents.EMPTY) && !currentFlaskPotion.equals(potionType)) {
-                    return ItemStack.EMPTY;
-                }
-                continue;
-            }
-
-            if (!(itemStack.getItem() instanceof PotionItem)) {
-                return ItemStack.EMPTY;
-            }
-
-            PotionContents potionContents = itemStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-            if (potionType.equals(PotionContents.EMPTY)) {
-                potionType = potionContents;
-            } else if (!potionContents.equals(potionType)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (!currentFlaskPotion.equals(PotionContents.EMPTY) && !currentFlaskPotion.equals(potionType)) {
-                return ItemStack.EMPTY;
-            }
-
-            ++potionCount;
+        ParsedInput parsed = parseInput(inv);
+        if (!parsed.valid()
+                || parsed.flaskStack().isEmpty()
+                || parsed.potionCount() <= 0
+                || parsed.potionType().equals(PotionContents.EMPTY)) {
+            return ItemStack.EMPTY;
         }
 
-        int oldCharges = ItemFlask.getCharges(flaskStack);
-        int newCharges = oldCharges + potionCount;
-        if (!flaskStack.isEmpty() && potionCount > 0 && !potionType.equals(PotionContents.EMPTY)
-                && newCharges <= ItemFlask.getMaxCharges(flaskStack, provider)) {
-            ItemStack result = flaskStack.copy();
+        int oldCharges = ItemFlask.getCharges(parsed.flaskStack());
+        int newCharges = oldCharges + parsed.potionCount();
+        if (newCharges <= ItemFlask.getMaxCharges(parsed.flaskStack(), provider)) {
+            ItemStack result = parsed.flaskStack().copy();
             result.setCount(1);
-            result.set(DataComponents.POTION_CONTENTS, potionType);
+            result.set(DataComponents.POTION_CONTENTS, parsed.potionType());
             ItemFlask.setCharges(result, newCharges);
             return result;
         }
@@ -153,5 +88,53 @@ public class RecipeFlaskFilling extends CustomRecipe {
     @Override
     public boolean canCraftInDimensions(int width, int height) {
         return width >= 3 && height >= 3;
+    }
+
+    private ParsedInput parseInput(CraftingInput inv) {
+        ParseState state = new ParseState();
+
+        for (int i = 0; i < inv.size(); ++i) {
+            ItemStack itemStack = inv.getItem(i);
+            if (!itemStack.isEmpty() && !parseItem(itemStack, state)) {
+                return invalid();
+            }
+        }
+
+        return new ParsedInput(state.flaskStack, state.potionType, state.currentFlaskPotion, state.potionCount, true);
+    }
+
+    private static ParsedInput invalid() {
+        return new ParsedInput(ItemStack.EMPTY, PotionContents.EMPTY, PotionContents.EMPTY, 0, false);
+    }
+
+    private boolean parseItem(ItemStack itemStack, ParseState state) {
+        if (itemStack.is(Items.FLASK)) {
+            if (!state.flaskStack.isEmpty()) {
+                return false;
+            }
+            state.flaskStack = itemStack;
+            state.currentFlaskPotion = ItemFlask.getPotionContents(state.flaskStack);
+            return isPotionCompatible(state.potionType, state.currentFlaskPotion);
+        }
+
+        if (itemStack.getItem() instanceof PotionItem) {
+            PotionContents potionContents = itemStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+            if (state.potionType.equals(PotionContents.EMPTY)) {
+                state.potionType = potionContents;
+            } else if (!potionContents.equals(state.potionType)) {
+                return false;
+            }
+            if (!isPotionCompatible(state.potionType, state.currentFlaskPotion)) {
+                return false;
+            }
+            ++state.potionCount;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean isPotionCompatible(PotionContents expected, PotionContents current) {
+        return expected.equals(PotionContents.EMPTY) || current.equals(PotionContents.EMPTY) || current.equals(expected);
     }
 }

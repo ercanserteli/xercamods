@@ -21,19 +21,19 @@ public final class ScytheEnchantments {
         return ResourceKey.create(Registries.ENCHANTMENT, id);
     }
 
-    public static Holder<Enchantment> guillotine(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> guillotineEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(GUILLOTINE);
     }
 
-    public static Holder<Enchantment> guillotine(HolderLookup.Provider registries) {
+    public static Holder<Enchantment> guillotineEnchantment(HolderLookup.Provider registries) {
         return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(GUILLOTINE);
     }
 
-    public static Holder<Enchantment> devour(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> devourEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(DEVOUR);
     }
 
-    public static Holder<Enchantment> devour(HolderLookup.Provider registries) {
+    public static Holder<Enchantment> devourEnchantment(HolderLookup.Provider registries) {
         return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(DEVOUR);
     }
 }

@@ -30,6 +30,16 @@ import xerca.xercatools.item.ItemScythe;
 import xerca.xercatools.item.Items;
 
 public class Mod implements ModInitializer {
+    private enum EnchantTargetType {
+        WARHAMMER,
+        SCYTHE,
+        GRAB_HOOK,
+        KNIFE,
+        FLASK,
+        POTION_LAUNCHER,
+        OTHER
+    }
+
     public static final String MOD_ID = "xercatools";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     public static final EntityType<EntityGrabHook> HOOK = EntityType.Builder.<EntityGrabHook>of(EntityGrabHook::new, MobCategory.MISC)
@@ -85,83 +95,91 @@ public class Mod implements ModInitializer {
     }
 
     private void registerEnchantmentRules() {
-        EnchantmentEvents.ALLOW_ENCHANTING.register((enchantment, target, context) -> {
-            if (isWarhammer(target)) {
-                if (enchantment.is(net.minecraft.world.item.enchantment.Enchantments.UNBREAKING)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.MENDING)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.SMITE)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.BANE_OF_ARTHROPODS)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.LOOTING)) {
-                    return TriState.TRUE;
-                }
+        EnchantmentEvents.ALLOW_ENCHANTING.register((enchantment, target, context) -> resolveEnchantmentRule(enchantment, target));
+    }
 
-                return TriState.DEFAULT;
-            }
+    private TriState resolveEnchantmentRule(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment, ItemStack target) {
+        return switch (detectEnchantTargetType(target)) {
+            case WARHAMMER -> isWarhammerEnchantment(enchantment) ? TriState.TRUE : TriState.DEFAULT;
+            case SCYTHE -> isScytheEnchantment(enchantment) ? TriState.TRUE : TriState.DEFAULT;
+            case GRAB_HOOK -> isGrabHookEnchantment(enchantment) ? TriState.TRUE : TriState.DEFAULT;
+            case KNIFE -> isKnifeEnchantment(enchantment) ? TriState.TRUE : TriState.DEFAULT;
+            case FLASK -> isFlaskEnchantment(enchantment) ? TriState.TRUE : TriState.DEFAULT;
+            case POTION_LAUNCHER -> isPotionLauncherEnchantment(enchantment) ? TriState.TRUE : TriState.DEFAULT;
+            case OTHER -> TriState.DEFAULT;
+        };
+    }
 
-            if (isScythe(target)) {
-                if (enchantment.is(net.minecraft.world.item.enchantment.Enchantments.UNBREAKING)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.MENDING)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.FORTUNE)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.SMITE)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.BANE_OF_ARTHROPODS)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.SWEEPING_EDGE)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.LOOTING)) {
-                    return TriState.TRUE;
-                }
+    private EnchantTargetType detectEnchantTargetType(ItemStack target) {
+        if (isWarhammer(target)) {
+            return EnchantTargetType.WARHAMMER;
+        }
+        if (isScythe(target)) {
+            return EnchantTargetType.SCYTHE;
+        }
+        if (isGrabHook(target)) {
+            return EnchantTargetType.GRAB_HOOK;
+        }
+        if (isKnife(target)) {
+            return EnchantTargetType.KNIFE;
+        }
+        if (isFlask(target)) {
+            return EnchantTargetType.FLASK;
+        }
+        if (isPotionLauncher(target)) {
+            return EnchantTargetType.POTION_LAUNCHER;
+        }
+        return EnchantTargetType.OTHER;
+    }
 
-                return TriState.DEFAULT;
-            }
+    private boolean isWarhammerEnchantment(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return enchantment.is(Enchantments.UNBREAKING)
+                || enchantment.is(Enchantments.MENDING)
+                || enchantment.is(Enchantments.SMITE)
+                || enchantment.is(Enchantments.BANE_OF_ARTHROPODS)
+                || enchantment.is(Enchantments.LOOTING);
+    }
 
-            if (isGrabHook(target)) {
-                if (enchantment.is(net.minecraft.world.item.enchantment.Enchantments.UNBREAKING)
-                        || enchantment.is(net.minecraft.world.item.enchantment.Enchantments.MENDING)
-                        || enchantment.is(GrabHookEnchantments.GRAPPLING)
-                        || enchantment.is(GrabHookEnchantments.TURBO_GRAB)
-                        || enchantment.is(GrabHookEnchantments.GENTLE_GRAB)) {
-                    return TriState.TRUE;
-                }
+    private boolean isScytheEnchantment(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return enchantment.is(Enchantments.UNBREAKING)
+                || enchantment.is(Enchantments.MENDING)
+                || enchantment.is(Enchantments.FORTUNE)
+                || enchantment.is(Enchantments.SHARPNESS)
+                || enchantment.is(Enchantments.SMITE)
+                || enchantment.is(Enchantments.BANE_OF_ARTHROPODS)
+                || enchantment.is(Enchantments.SWEEPING_EDGE)
+                || enchantment.is(Enchantments.LOOTING);
+    }
 
-                return TriState.DEFAULT;
-            }
+    private boolean isGrabHookEnchantment(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return enchantment.is(Enchantments.UNBREAKING)
+                || enchantment.is(Enchantments.MENDING)
+                || enchantment.is(GrabHookEnchantments.GRAPPLING)
+                || enchantment.is(GrabHookEnchantments.TURBO_GRAB)
+                || enchantment.is(GrabHookEnchantments.GENTLE_GRAB);
+    }
 
-            if (isKnife(target)) {
-                if (enchantment.is(Enchantments.UNBREAKING)
-                        || enchantment.is(Enchantments.MENDING)
-                        || enchantment.is(Enchantments.SHARPNESS)
-                        || enchantment.is(Enchantments.LOOTING)
-                        || enchantment.is(KnifeEnchantments.POISON)
-                        || enchantment.is(KnifeEnchantments.STEALTH)) {
-                    return TriState.TRUE;
-                }
+    private boolean isKnifeEnchantment(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return enchantment.is(Enchantments.UNBREAKING)
+                || enchantment.is(Enchantments.MENDING)
+                || enchantment.is(Enchantments.SHARPNESS)
+                || enchantment.is(Enchantments.LOOTING)
+                || enchantment.is(KnifeEnchantments.POISON)
+                || enchantment.is(KnifeEnchantments.STEALTH);
+    }
 
-                return TriState.DEFAULT;
-            }
+    private boolean isFlaskEnchantment(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return enchantment.is(Enchantments.UNBREAKING)
+                || enchantment.is(Enchantments.MENDING)
+                || enchantment.is(FlaskEnchantments.CAPACITY)
+                || enchantment.is(FlaskEnchantments.CHUG);
+    }
 
-            if (isFlask(target)) {
-                if (enchantment.is(Enchantments.UNBREAKING)
-                        || enchantment.is(Enchantments.MENDING)
-                        || enchantment.is(FlaskEnchantments.CAPACITY)
-                        || enchantment.is(FlaskEnchantments.CHUG)) {
-                    return TriState.TRUE;
-                }
-
-                return TriState.DEFAULT;
-            }
-
-            if (isPotionLauncher(target)) {
-                if (enchantment.is(Enchantments.UNBREAKING)
-                        || enchantment.is(Enchantments.MENDING)
-                        || enchantment.is(FlaskEnchantments.CAPACITY)
-                        || enchantment.is(FlaskEnchantments.RANGE)) {
-                    return TriState.TRUE;
-                }
-
-                return TriState.DEFAULT;
-            }
-
-            return TriState.DEFAULT;
-        });
+    private boolean isPotionLauncherEnchantment(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return enchantment.is(Enchantments.UNBREAKING)
+                || enchantment.is(Enchantments.MENDING)
+                || enchantment.is(FlaskEnchantments.CAPACITY)
+                || enchantment.is(FlaskEnchantments.RANGE);
     }
 
     private void registerCombatHooks() {
@@ -187,7 +205,7 @@ public class Mod implements ModInitializer {
                 float damage = ItemKnife.getOffhandDamage(level, stack, target, player);
                 target.hurt(player.damageSources().playerAttack(player), damage);
                 stack.hurtAndBreak(1, player, net.minecraft.world.entity.EquipmentSlot.OFFHAND);
-                int poisonLevel = EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.poison(level.registryAccess()), stack);
+                int poisonLevel = EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.poisonEnchantment(level.registryAccess()), stack);
                 if (poisonLevel > 0) {
                     target.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.POISON, 30 + 30 * poisonLevel, poisonLevel - 1));
                     player.magicCrit(target);

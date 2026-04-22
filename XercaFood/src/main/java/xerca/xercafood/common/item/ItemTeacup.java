@@ -15,14 +15,20 @@ public class ItemTeacup extends ItemStackableContainedFood {
     private final int sugarAmount;
 
     public ItemTeacup(int sugarAmount, Item teaCup) {
-        super(sugarAmount == 0 ? (new Item.Properties()).food(Foods.TEACUP0) :
-                sugarAmount == 1 ? (new Item.Properties()).food(Foods.TEACUP1) :
-                        sugarAmount == 2 ? (new Item.Properties()).food(Foods.TEACUP2) :
-                                sugarAmount == 3 ? (new Item.Properties()).food(Foods.TEACUP3) :
-                                        sugarAmount == 4 ? (new Item.Properties()).food(Foods.TEACUP4) :
-                                                sugarAmount == 5 ? (new Item.Properties()).food(Foods.TEACUP5) :
-                                                        (new Item.Properties()).food(Foods.TEACUP6), teaCup, 64);
+        super(createProperties(sugarAmount), teaCup, 64);
         this.sugarAmount = sugarAmount;
+    }
+
+    private static Item.Properties createProperties(int sugarAmount) {
+        return switch (sugarAmount) {
+            case 0 -> new Item.Properties().food(Foods.TEACUP0);
+            case 1 -> new Item.Properties().food(Foods.TEACUP1);
+            case 2 -> new Item.Properties().food(Foods.TEACUP2);
+            case 3 -> new Item.Properties().food(Foods.TEACUP3);
+            case 4 -> new Item.Properties().food(Foods.TEACUP4);
+            case 5 -> new Item.Properties().food(Foods.TEACUP5);
+            default -> new Item.Properties().food(Foods.TEACUP6);
+        };
     }
 
     @Override

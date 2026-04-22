@@ -59,7 +59,7 @@ public class EntityGrabHook extends Entity {
         this(level);
         this.entityData.set(DATA_OWNER, owner.getId());
         this.cachedOwner = owner;
-        this.hasGrappling = EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.grappling(level.registryAccess()), rod) > 0;
+        this.hasGrappling = EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.grapplingEnchantment(level.registryAccess()), rod) > 0;
         this.hasGentle = EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.gentleGrab(level.registryAccess()), rod) > 0;
         this.turboLevel = EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.turboGrab(level.registryAccess()), rod);
         this.speed = DEFAULT_SPEED * (1.0D + this.turboLevel * 0.25D) * pullAmount;
@@ -170,29 +170,15 @@ public class EntityGrabHook extends Entity {
 
         Player angler = this.getAngler();
         if (this.level().isClientSide) {
-            if (angler == null) {
-                this.move(MoverType.SELF, this.getDeltaMovement());
+            if (handleClientTick(angler)) {
                 return;
             }
-            int caughtId = this.entityData.get(DATA_CAUGHT);
-            if (caughtId > 0 && this.caughtEntity == null) {
-                this.caughtEntity = this.level().getEntity(caughtId - 1);
-            }
-        } else if (angler == null || this.age > 80 || !angler.isAlive() || this.distanceToSqr(angler) > 4096.0D) {
+        } else if (shouldDiscardOnServer(angler)) {
             discardHook();
             return;
         }
 
-        if (this.caughtEntity != null) {
-            pullCaughtEntity(angler);
-            return;
-        }
-        if (this.inGround) {
-            if (this.hasGrappling) {
-                pullUser(angler);
-            } else {
-                discardHook();
-            }
+        if (handleCaughtOrGroundedState(angler)) {
             return;
         }
 
@@ -229,21 +215,9 @@ public class EntityGrabHook extends Entity {
                 return false;
             }
 
-            this.caughtEntity = caught;
-            this.entityData.set(DATA_CAUGHT, caught.getId() + 1);
-            if (!this.hasGentle) {
-                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 1.0F, this.level().random.nextFloat() * 0.2F + 0.9F);
-                caught.hurt(this.damageSources().thrown(this, angler), 3.0F);
-                if (!caught.isAlive()) {
-                    discardHook();
-                    return true;
-                }
-            } else {
-                this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 0.6F, this.level().random.nextFloat() * 0.2F + 1.5F);
+            if (!setCaughtEntity(caught, angler)) {
+                return true;
             }
-
-            this.caughtEntity.noPhysics = true;
-            this.caughtEntity.stopRiding();
             return true;
         }
         if (hitResult.getType() == HitResult.Type.BLOCK) {
@@ -257,6 +231,56 @@ public class EntityGrabHook extends Entity {
             return true;
         }
         return false;
+    }
+
+    private boolean handleClientTick(@Nullable Player angler) {
+        if (angler == null) {
+            this.move(MoverType.SELF, this.getDeltaMovement());
+            return true;
+        }
+        int caughtId = this.entityData.get(DATA_CAUGHT);
+        if (caughtId > 0 && this.caughtEntity == null) {
+            this.caughtEntity = this.level().getEntity(caughtId - 1);
+        }
+        return false;
+    }
+
+    private boolean shouldDiscardOnServer(@Nullable Player angler) {
+        return angler == null || this.age > 80 || !angler.isAlive() || this.distanceToSqr(angler) > 4096.0D;
+    }
+
+    private boolean handleCaughtOrGroundedState(Player angler) {
+        if (this.caughtEntity != null) {
+            pullCaughtEntity(angler);
+            return true;
+        }
+        if (!this.inGround) {
+            return false;
+        }
+        if (this.hasGrappling) {
+            pullUser(angler);
+        } else {
+            discardHook();
+        }
+        return true;
+    }
+
+    private boolean setCaughtEntity(Entity caught, Player angler) {
+        this.caughtEntity = caught;
+        this.entityData.set(DATA_CAUGHT, caught.getId() + 1);
+        if (!this.hasGentle) {
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 1.0F, this.level().random.nextFloat() * 0.2F + 0.9F);
+            caught.hurt(this.damageSources().thrown(this, angler), 3.0F);
+            if (!caught.isAlive()) {
+                discardHook();
+                return false;
+            }
+        } else {
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 0.6F, this.level().random.nextFloat() * 0.2F + 1.5F);
+        }
+        this.caughtEntity.noPhysics = true;
+        this.caughtEntity.stopRiding();
+        return true;
     }
 
     private void pullCaughtEntity(Player angler) {

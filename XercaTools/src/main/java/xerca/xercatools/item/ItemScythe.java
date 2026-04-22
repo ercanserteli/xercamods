@@ -42,11 +42,39 @@ import xerca.xercatools.entity.EntityHealthOrb;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 public class ItemScythe extends Item {
     private final Tier tier;
+    private static final Map<EntityType<?>, Item> VANILLA_HEADS = Map.of(
+            EntityType.ZOMBIE, net.minecraft.world.item.Items.ZOMBIE_HEAD,
+            EntityType.CREEPER, net.minecraft.world.item.Items.CREEPER_HEAD,
+            EntityType.SKELETON, net.minecraft.world.item.Items.SKELETON_SKULL,
+            EntityType.WITHER_SKELETON, net.minecraft.world.item.Items.WITHER_SKELETON_SKULL,
+            EntityType.ENDER_DRAGON, net.minecraft.world.item.Items.DRAGON_HEAD,
+            EntityType.PIGLIN, net.minecraft.world.item.Items.PIGLIN_HEAD
+    );
+    private static final Map<EntityType<?>, String[]> CUSTOM_HEADS = Map.ofEntries(
+            Map.entry(EntityType.COW, new String[]{"cow", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBlNGU2ZmJmNWYzZGNmOTQ0MjJhMWYzMTk0NDhmMTUyMzY5ZDE3OWRiZmJjZGYwMGU1YmZlODQ5NWZhOTc3In19fQ=="}),
+            Map.entry(EntityType.IRON_GOLEM, new String[]{"iron_golem", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM2Y2Q3MjAyYzM0ZTc4ZjMwNzMwOTAzNDlmN2Q5NzNiMjg4YWY1ZTViNzMzNGRkMjQ5MDEwYjNmMjcwNzhmOSJ9fX0="}),
+            Map.entry(EntityType.OCELOT, new String[]{"ocelot", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTE4YjZiNzk3ODMzNjhkZmUwMDQyOTg1MTEwZGEzNjZmOWM3ODhiNDUwOTdhM2VhNmQwZDlhNzUzZTlmNDJjNiJ9fX0="}),
+            Map.entry(EntityType.BLAZE, new String[]{"blaze", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA2ZTM0MmY5MGVjNTM4YWFhMTU1MmIyMjRmMjY0YTA0MDg0MDkwMmUxMjZkOTFlY2U2MTM5YWE1YjNjN2NjMyJ9fX0="}),
+            Map.entry(EntityType.PIG, new String[]{"pig", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTU2MmEzN2I4NzFmOTY0YmZjM2UxMzExZWE2NzJhYWEwMzk4NGE1ZGM0NzIxNTRhMzRkYzI1YWYxNTdlMzgyYiJ9fX0="}),
+            Map.entry(EntityType.SLIME, new String[]{"slime", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODZjMjdiMDEzZjFiZjMzNDQ4NjllODFlNWM2MTAwMjdiYzQ1ZWM1Yjc5NTE0ZmRjOTZlMDFkZjFiN2UzYTM4NyJ9fX0="}),
+            Map.entry(EntityType.VILLAGER, new String[]{"villager", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjRiZDgzMjgxM2FjMzhlNjg2NDg5MzhkN2EzMmY2YmEyOTgwMWFhZjMxNzQwNDM2N2YyMTRiNzhiNGQ0NzU0YyJ9fX0="}),
+            Map.entry(EntityType.CAVE_SPIDER, new String[]{"cave_spider", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdiMDcwNjNhNjg3NGZhM2UyMjU0OGUwMjA2MmJkNzMzYzI1ODg1OTI5ODA5NjI0MTgwYWViYjg1MTU1N2Y2YSJ9fX0="}),
+            Map.entry(EntityType.ENDERMAN, new String[]{"enderman", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWIwOWEzNzUyNTEwZTkxNGIwYmRjOTA5NmIzOTJiYjM1OWY3YThlOGE5NTY2YTAyZTdmNjZmYWZmOGQ2Zjg5ZSJ9fX0="}),
+            Map.entry(EntityType.MAGMA_CUBE, new String[]{"magma_cube", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDkwZDYxZThjZTk1MTFhMGEyYjVlYTI3NDJjYjFlZjM2MTMxMzgwZWQ0MTI5ZTFiMTYzY2U4ZmYwMDBkZThlYSJ9fX0="}),
+            Map.entry(EntityType.ZOMBIFIED_PIGLIN, new String[]{"zombified_piglin", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE2ZDE2N2M1NzQ0ZWQxNGViYzAyZjQ0N2YzMjYxNDA1OTM2MmI3ZDJlY2I4MDhmZjA2MTY1ZDJjMzQzYmVmMiJ9fX0="}),
+            Map.entry(EntityType.SPIDER, new String[]{"spider", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjYxYTQ5NTQxYTgzNmFhOGY0Zjc2ZTBkNGNiMmZmMDQ4ODhjNjJmOTQxMWVhMTBjYmFjZjFmMmE1NDQyNDI0MCJ9fX0="}),
+            Map.entry(EntityType.CHICKEN, new String[]{"chicken", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE2YjhlOTgzODljNTQxYmIzNjQ1Mzg1MGJjYmQxZjdiYzVhNTdkYTYyZGNjNTA1MDYwNDA5NzM3ZWM1YjcyYSJ9fX0="}),
+            Map.entry(EntityType.GHAST, new String[]{"ghast", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE0ZTQyZWIxNWEwODgxM2E2YTZmNjFmMTBhYTI4ODAxOWZhMGZhZTEwNmEyOTUzZGRiNDZmNzdlZTJkNzdmIn19fQ=="}),
+            Map.entry(EntityType.MOOSHROOM, new String[]{"mooshroom", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTIzY2ZjNTU4MjQ1NGZjZjk5MDZmODQxZmRhMmNjNmFlODk2Y2Y0NTU4MjFjNGFkYTE5OThkZTcwODc3Y2M4NiJ9fX0="}),
+            Map.entry(EntityType.SHEEP, new String[]{"sheep", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2NhMzhjY2Y0MTdlOTljYTlkNDdlZWIxNWE4YTMwZWRiMTUwN2FhNTJiNjc4YzIyMGM3MTdjNDc0YWE2ZmUzZSJ9fX0="}),
+            Map.entry(EntityType.SQUID, new String[]{"squid", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU4OTEwMWQ1Y2M3NGFhNDU4MDIxYTA2MGY2Mjg5YTUxYTM1YTdkMzRkOGNhZGRmYzNjZGYzYjJjOWEwNzFhIn19fQ=="})
+    );
 
     public static ItemAttributeModifiers createAttributes(Tier tier) {
         return ItemAttributeModifiers.builder()
@@ -108,7 +136,7 @@ public class ItemScythe extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
-        if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotine(level.registryAccess()), heldItem) > 0) {
+        if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(level.registryAccess()), heldItem) > 0) {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(heldItem);
         }
@@ -131,7 +159,7 @@ public class ItemScythe extends Item {
             return;
         }
 
-        if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotine(level.registryAccess()), stack) <= 0) {
+        if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(level.registryAccess()), stack) <= 0) {
             return;
         }
 
@@ -164,7 +192,7 @@ public class ItemScythe extends Item {
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.scythe_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
-        if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotine(context.registries()), stack) > 0) {
+        if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(context.registries()), stack) > 0) {
             tooltip.add(Component.translatable("xercatools.guillotine_tooltip").withStyle(ChatFormatting.YELLOW));
         }
     }
@@ -236,7 +264,7 @@ public class ItemScythe extends Item {
             return;
         }
 
-        int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.devour(player.level().registryAccess()), stack);
+        int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.devourEnchantment(player.level().registryAccess()), stack);
         if (devourLevel <= 0 || player.level().isClientSide || player.getAttackStrengthScale(0.5F) <= 0.9F) {
             return;
         }
@@ -248,7 +276,7 @@ public class ItemScythe extends Item {
     }
 
     private static void handleDevourKill(ItemStack stack, LivingEntity target, Player player) {
-        int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.devour(player.level().registryAccess()), stack);
+        int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.devourEnchantment(player.level().registryAccess()), stack);
         if (devourLevel > 0 && player.level() instanceof ServerLevel serverLevel && target.isDeadOrDying()) {
             int devourCount = player.level().random.nextInt(devourLevel, devourLevel * 2 + 1);
             EntityHealthOrb.award(serverLevel, target, player, devourCount);
@@ -275,55 +303,7 @@ public class ItemScythe extends Item {
             head = new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD);
             head.set(DataComponents.PROFILE, new net.minecraft.world.item.component.ResolvableProfile(playerTarget.getGameProfile()));
         } else {
-            if (target.getType() == EntityType.ZOMBIE) {
-                head = new ItemStack(net.minecraft.world.item.Items.ZOMBIE_HEAD);
-            } else if (target.getType() == EntityType.CREEPER) {
-                head = new ItemStack(net.minecraft.world.item.Items.CREEPER_HEAD);
-            } else if (target.getType() == EntityType.SKELETON) {
-                head = new ItemStack(net.minecraft.world.item.Items.SKELETON_SKULL);
-            } else if (target.getType() == EntityType.WITHER_SKELETON) {
-                head = new ItemStack(net.minecraft.world.item.Items.WITHER_SKELETON_SKULL);
-            } else if (target.getType() == EntityType.ENDER_DRAGON) {
-                head = new ItemStack(net.minecraft.world.item.Items.DRAGON_HEAD);
-            } else if (target.getType() == EntityType.PIGLIN) {
-                head = new ItemStack(net.minecraft.world.item.Items.PIGLIN_HEAD);
-            } else if (target.getType() == EntityType.COW) {
-                head = createCustomMobHead("cow", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDBlNGU2ZmJmNWYzZGNmOTQ0MjJhMWYzMTk0NDhmMTUyMzY5ZDE3OWRiZmJjZGYwMGU1YmZlODQ5NWZhOTc3In19fQ==");
-            } else if (target.getType() == EntityType.IRON_GOLEM) {
-                head = createCustomMobHead("iron_golem", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM2Y2Q3MjAyYzM0ZTc4ZjMwNzMwOTAzNDlmN2Q5NzNiMjg4YWY1ZTViNzMzNGRkMjQ5MDEwYjNmMjcwNzhmOSJ9fX0=");
-            } else if (target.getType() == EntityType.OCELOT) {
-                head = createCustomMobHead("ocelot", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTE4YjZiNzk3ODMzNjhkZmUwMDQyOTg1MTEwZGEzNjZmOWM3ODhiNDUwOTdhM2VhNmQwZDlhNzUzZTlmNDJjNiJ9fX0=");
-            } else if (target.getType() == EntityType.BLAZE) {
-                head = createCustomMobHead("blaze", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA2ZTM0MmY5MGVjNTM4YWFhMTU1MmIyMjRmMjY0YTA0MDg0MDkwMmUxMjZkOTFlY2U2MTM5YWE1YjNjN2NjMyJ9fX0=");
-            } else if (target.getType() == EntityType.PIG) {
-                head = createCustomMobHead("pig", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTU2MmEzN2I4NzFmOTY0YmZjM2UxMzExZWE2NzJhYWEwMzk4NGE1ZGM0NzIxNTRhMzRkYzI1YWYxNTdlMzgyYiJ9fX0=");
-            } else if (target.getType() == EntityType.SLIME) {
-                head = createCustomMobHead("slime", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODZjMjdiMDEzZjFiZjMzNDQ4NjllODFlNWM2MTAwMjdiYzQ1ZWM1Yjc5NTE0ZmRjOTZlMDFkZjFiN2UzYTM4NyJ9fX0=");
-            } else if (target.getType() == EntityType.VILLAGER) {
-                head = createCustomMobHead("villager", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjRiZDgzMjgxM2FjMzhlNjg2NDg5MzhkN2EzMmY2YmEyOTgwMWFhZjMxNzQwNDM2N2YyMTRiNzhiNGQ0NzU0YyJ9fX0=");
-            } else if (target.getType() == EntityType.CAVE_SPIDER) {
-                head = createCustomMobHead("cave_spider", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdiMDcwNjNhNjg3NGZhM2UyMjU0OGUwMjA2MmJkNzMzYzI1ODg1OTI5ODA5NjI0MTgwYWViYjg1MTU1N2Y2YSJ9fX0=");
-            } else if (target.getType() == EntityType.ENDERMAN) {
-                head = createCustomMobHead("enderman", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWIwOWEzNzUyNTEwZTkxNGIwYmRjOTA5NmIzOTJiYjM1OWY3YThlOGE5NTY2YTAyZTdmNjZmYWZmOGQ2Zjg5ZSJ9fX0=");
-            } else if (target.getType() == EntityType.MAGMA_CUBE) {
-                head = createCustomMobHead("magma_cube", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDkwZDYxZThjZTk1MTFhMGEyYjVlYTI3NDJjYjFlZjM2MTMxMzgwZWQ0MTI5ZTFiMTYzY2U4ZmYwMDBkZThlYSJ9fX0=");
-            } else if (target.getType() == EntityType.ZOMBIFIED_PIGLIN) {
-                head = createCustomMobHead("zombified_piglin", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE2ZDE2N2M1NzQ0ZWQxNGViYzAyZjQ0N2YzMjYxNDA1OTM2MmI3ZDJlY2I4MDhmZjA2MTY1ZDJjMzQzYmVmMiJ9fX0=");
-            } else if (target.getType() == EntityType.SPIDER) {
-                head = createCustomMobHead("spider", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjYxYTQ5NTQxYTgzNmFhOGY0Zjc2ZTBkNGNiMmZmMDQ4ODhjNjJmOTQxMWVhMTBjYmFjZjFmMmE1NDQyNDI0MCJ9fX0=");
-            } else if (target.getType() == EntityType.CHICKEN) {
-                head = createCustomMobHead("chicken", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE2YjhlOTgzODljNTQxYmIzNjQ1Mzg1MGJjYmQxZjdiYzVhNTdkYTYyZGNjNTA1MDYwNDA5NzM3ZWM1YjcyYSJ9fX0=");
-            } else if (target.getType() == EntityType.GHAST) {
-                head = createCustomMobHead("ghast", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE0ZTQyZWIxNWEwODgxM2E2YTZmNjFmMTBhYTI4ODAxOWZhMGZhZTEwNmEyOTUzZGRiNDZmNzdlZTJkNzdmIn19fQ==");
-            } else if (target.getType() == EntityType.MOOSHROOM) {
-                head = createCustomMobHead("mooshroom", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTIzY2ZjNTU4MjQ1NGZjZjk5MDZmODQxZmRhMmNjNmFlODk2Y2Y0NTU4MjFjNGFkYTE5OThkZTcwODc3Y2M4NiJ9fX0=");
-            } else if (target.getType() == EntityType.SHEEP) {
-                head = createCustomMobHead("sheep", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2NhMzhjY2Y0MTdlOTljYTlkNDdlZWIxNWE4YTMwZWRiMTUwN2FhNTJiNjc4YzIyMGM3MTdjNDc0YWE2ZmUzZSJ9fX0=");
-            } else if (target.getType() == EntityType.SQUID) {
-                head = createCustomMobHead("squid", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU4OTEwMWQ1Y2M3NGFhNDU4MDIxYTA2MGY2Mjg5YTUxYTM1YTdkMzRkOGNhZGRmYzNjZGYzYjJjOWEwNzFhIn19fQ==");
-            } else {
-                head = null;
-            }
+            head = getMobHead(target.getType());
 
             if (head != null && head.is(net.minecraft.world.item.Items.PLAYER_HEAD)) {
                 head.set(DataComponents.CUSTOM_NAME, Component.literal(target.getType().getDescription().getString() + " Head"));
@@ -333,6 +313,20 @@ public class ItemScythe extends Item {
         if (head != null) {
             Containers.dropItemStack(target.level(), target.getX(), target.getY(), target.getZ(), head);
         }
+    }
+
+    private static ItemStack getMobHead(EntityType<?> type) {
+        Item vanillaHead = VANILLA_HEADS.get(type);
+        if (vanillaHead != null) {
+            return new ItemStack(vanillaHead);
+        }
+
+        String[] customHead = CUSTOM_HEADS.get(type);
+        if (customHead != null) {
+            return createCustomMobHead(customHead[0], customHead[1]);
+        }
+
+        return null;
     }
 
     private static ItemStack createCustomMobHead(String key, String texture) {

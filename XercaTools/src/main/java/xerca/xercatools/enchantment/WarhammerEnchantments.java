@@ -23,23 +23,23 @@ public final class WarhammerEnchantments {
         return ResourceKey.create(Registries.ENCHANTMENT, id);
     }
 
-    public static Holder<Enchantment> heavy(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> heavyEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(HEAVY);
     }
 
-    public static Holder<Enchantment> maim(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> maimEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(MAIM);
     }
 
-    public static Holder<Enchantment> quick(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> quickEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(QUICK);
     }
 
-    public static Holder<Enchantment> quake(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> quakeEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(QUAKE);
     }
 
-    public static Holder<Enchantment> uppercut(RegistryAccess registryAccess) {
+    public static Holder<Enchantment> uppercutEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(UPPERCUT);
     }
 }

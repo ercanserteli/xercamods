@@ -35,38 +35,44 @@ public final class CarvedCrimsonModels {
             return null;
         }
 
-        ResourceLocation resourceId = context.resourceId();
-        String overlayBasePath;
-
-        if (resourceId != null) {
-            // Resource model baking: handles block rendering in the world.
-            if (!Mod.MOD_ID.equals(resourceId.getNamespace())) {
-                return model;
-            }
-            String path = resourceId.getPath();
-            if (!path.startsWith("block/carved_wood/carved_crimson_") || path.endsWith("_overlay")) {
-                return model;
-            }
-            overlayBasePath = path.substring("block/carved_wood/".length());
-        } else {
-            // Top-level model baking: only handle inventory items here.
-            ModelResourceLocation topLevelId = context.topLevelId();
-            if (topLevelId == null || !"inventory".equals(topLevelId.variant())) {
-                return model;
-            }
-            ResourceLocation id = topLevelId.id();
-            if (!Mod.MOD_ID.equals(id.getNamespace())) {
-                return model;
-            }
-            String path = id.getPath();
-            if (!path.startsWith("carved_crimson_")) {
-                return model;
-            }
-            overlayBasePath = path;
+        String overlayBasePath = getOverlayBasePath(context);
+        if (overlayBasePath == null) {
+            return model;
         }
 
         BakedModel overlayModel = context.baker().bake(overlayModelId(overlayBasePath), context.settings());
         return overlayModel == null ? model : new EmissiveOverlayBakedModel(model, overlayModel);
+    }
+
+    private static @Nullable String getOverlayBasePath(ModelModifier.AfterBake.Context context) {
+        ResourceLocation resourceId = context.resourceId();
+        if (resourceId != null) {
+            return getWorldOverlayPath(resourceId);
+        }
+        return getInventoryOverlayPath(context.topLevelId());
+    }
+
+    private static @Nullable String getWorldOverlayPath(ResourceLocation resourceId) {
+        if (!Mod.MOD_ID.equals(resourceId.getNamespace())) {
+            return null;
+        }
+        String path = resourceId.getPath();
+        if (!path.startsWith("block/carved_wood/carved_crimson_") || path.endsWith("_overlay")) {
+            return null;
+        }
+        return path.substring("block/carved_wood/".length());
+    }
+
+    private static @Nullable String getInventoryOverlayPath(@Nullable ModelResourceLocation topLevelId) {
+        if (topLevelId == null || !"inventory".equals(topLevelId.variant())) {
+            return null;
+        }
+        ResourceLocation id = topLevelId.id();
+        if (!Mod.MOD_ID.equals(id.getNamespace())) {
+            return null;
+        }
+        String path = id.getPath();
+        return path.startsWith("carved_crimson_") ? path : null;
     }
 
     private static ResourceLocation overlayModelId(String blockId) {
