@@ -1,0 +1,20 @@
+{
+  "item.xercacushion.black_cushion": "黒いクッション",
+  "item.xercacushion.blue_cushion": "青いクッション",
+  "item.xercacushion.brown_cushion": "茶色のクッション",
+  "item.xercacushion.cyan_cushion": "シアンのクッション",
+  "item.xercacushion.gray_cushion": "灰色のクッション",
+  "item.xercacushion.green_cushion": "緑のクッション",
+  "item.xercacushion.light_blue_cushion": "薄青のクッション",
+  "item.xercacushion.light_gray_cushion": "薄灰のクッション",
+  "item.xercacushion.lime_cushion": "黄緑のクッション",
+  "item.xercacushion.magenta_cushion": "マゼンタのクッション",
+  "item.xercacushion.orange_cushion": "橙のクッション",
+  "item.xercacushion.pink_cushion": "ピンクのクッション",
+  "item.xercacushion.purple_cushion": "紫のクッション",
+  "item.xercacushion.red_cushion": "赤いクッション",
+  "item.xercacushion.white_cushion": "白いクッション",
+  "item.xercacushion.yellow_cushion": "黄色のクッション",
+  "entity.xercacushion.cushion": "クッション",
+  "xercacushion.cushion_tooltip": "座ることができます"
+}

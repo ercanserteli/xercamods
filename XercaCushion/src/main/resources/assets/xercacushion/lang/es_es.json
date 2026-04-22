@@ -1,0 +1,20 @@
+{
+  "item.xercacushion.black_cushion": "Cojín Negro",
+  "item.xercacushion.blue_cushion": "Cojín Azul",
+  "item.xercacushion.brown_cushion": "Cojín Marrón",
+  "item.xercacushion.cyan_cushion": "Cojín Cian",
+  "item.xercacushion.gray_cushion": "Cojín Gris",
+  "item.xercacushion.green_cushion": "Cojín Verde",
+  "item.xercacushion.light_blue_cushion": "Cojín Azul Claro",
+  "item.xercacushion.light_gray_cushion": "Cojín Gris Claro",
+  "item.xercacushion.lime_cushion": "Cojín Lima",
+  "item.xercacushion.magenta_cushion": "Cojín Magenta",
+  "item.xercacushion.orange_cushion": "Cojín Naranja",
+  "item.xercacushion.pink_cushion": "Cojín Rosa",
+  "item.xercacushion.purple_cushion": "Cojín Morado",
+  "item.xercacushion.red_cushion": "Cojín Rojo",
+  "item.xercacushion.white_cushion": "Cojín Blanco",
+  "item.xercacushion.yellow_cushion": "Cojín Amarillo",
+  "entity.xercacushion.cushion": "Cojín",
+  "xercacushion.cushion_tooltip": "Puedes sentarte en él"
+}

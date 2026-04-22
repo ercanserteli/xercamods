@@ -1,0 +1,20 @@
+{
+  "item.xercacushion.black_cushion": "Cuscino Nero",
+  "item.xercacushion.blue_cushion": "Cuscino Blu",
+  "item.xercacushion.brown_cushion": "Cuscino Marrone",
+  "item.xercacushion.cyan_cushion": "Cuscino Ciano",
+  "item.xercacushion.gray_cushion": "Cuscino Grigio",
+  "item.xercacushion.green_cushion": "Cuscino Verde",
+  "item.xercacushion.light_blue_cushion": "Cuscino Azzurro",
+  "item.xercacushion.light_gray_cushion": "Cuscino Grigio Chiaro",
+  "item.xercacushion.lime_cushion": "Cuscino Verde Lime",
+  "item.xercacushion.magenta_cushion": "Cuscino Magenta",
+  "item.xercacushion.orange_cushion": "Cuscino Arancione",
+  "item.xercacushion.pink_cushion": "Cuscino Rosa",
+  "item.xercacushion.purple_cushion": "Cuscino Viola",
+  "item.xercacushion.red_cushion": "Cuscino Rosso",
+  "item.xercacushion.white_cushion": "Cuscino Bianco",
+  "item.xercacushion.yellow_cushion": "Cuscino Giallo",
+  "entity.xercacushion.cushion": "Cuscino",
+  "xercacushion.cushion_tooltip": "Puoi sederci sopra"
+}
