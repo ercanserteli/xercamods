@@ -10,7 +10,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:raw_shish_kebab"}
+          {
+            "items": "xercafood:raw_shish_kebab"
+          }
         ]
       }
     },
@@ -28,4 +30,3 @@
     ]
   ]
 }
-

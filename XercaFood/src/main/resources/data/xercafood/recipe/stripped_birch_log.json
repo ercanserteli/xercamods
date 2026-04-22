@@ -1,7 +1,0 @@
-{
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"tag": "c:tools/knife"}, {"item": "minecraft:birch_log"}],
-    "result": {"id": "minecraft:stripped_birch_log"}
-}
-

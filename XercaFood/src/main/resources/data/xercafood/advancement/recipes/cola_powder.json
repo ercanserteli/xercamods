@@ -10,7 +10,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "minecraft:spider_eye"}
+          {
+            "items": "minecraft:spider_eye"
+          }
         ]
       }
     },
@@ -28,4 +30,3 @@
     ]
   ]
 }
-

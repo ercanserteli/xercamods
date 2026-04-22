@@ -4,7 +4,7 @@
     "item": "minecraft:stripped_oak_log"
   },
   "result": {
-    "id": "xercablocks:carved_oak_1"
+    "id": "xercablocks:carved_oak_1",
+    "count": 1
   }
 }
-

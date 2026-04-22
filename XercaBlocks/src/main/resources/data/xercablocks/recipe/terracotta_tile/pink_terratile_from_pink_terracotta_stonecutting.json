@@ -4,6 +4,7 @@
     "item": "minecraft:pink_terracotta"
   },
   "result": {
-    "id": "xercablocks:pink_terratile"
+    "id": "xercablocks:pink_terratile",
+    "count": 1
   }
 }

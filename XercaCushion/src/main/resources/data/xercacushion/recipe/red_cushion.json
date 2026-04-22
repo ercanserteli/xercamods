@@ -7,11 +7,14 @@
     "#"
   ],
   "key": {
-    "#": { "item": "minecraft:red_wool" },
-    "f": { "item": "minecraft:feather" }
+    "#": {
+      "item": "minecraft:red_wool"
+    },
+    "f": {
+      "item": "minecraft:feather"
+    }
   },
   "result": {
     "id": "xercacushion:red_cushion"
   }
 }
-

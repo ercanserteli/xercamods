@@ -1,7 +1,15 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "xercafood:cheese_wheel"}, {"tag": "c:tools/knife"}],
-    "result": {"count": 4, "id": "xercafood:cheese_slice"}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xercafood:cheese_wheel"
+    },
+    {
+      "tag": "c:tools/knife"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "xercafood:cheese_slice"
+  }
 }
-

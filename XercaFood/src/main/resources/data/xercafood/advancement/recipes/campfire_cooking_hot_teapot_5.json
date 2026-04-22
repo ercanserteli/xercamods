@@ -10,7 +10,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:full_teapot_5"}
+          {
+            "items": "xercafood:full_teapot_5"
+          }
         ]
       }
     },
@@ -28,4 +30,3 @@
     ]
   ]
 }
-

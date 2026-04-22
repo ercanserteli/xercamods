@@ -1,9 +1,11 @@
 {
-    "type": "minecraft:smoking",
-    
-    "ingredient": {"item": "xercafood:tea_leaf"},
-    "result": {"id": "xercafood:tea_dried"},
-    "experience": 0.1,
-    "cookingtime": 100
+  "type": "minecraft:smoking",
+  "ingredient": {
+    "item": "xercafood:tea_leaf"
+  },
+  "result": {
+    "id": "xercafood:tea_dried"
+  },
+  "experience": 0.1,
+  "cookingtime": 100
 }
-

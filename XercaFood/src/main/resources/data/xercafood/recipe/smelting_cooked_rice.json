@@ -1,9 +1,11 @@
 {
-    "type": "minecraft:smelting",
-    
-    "ingredient": {"item": "xercafood:rice_seeds"},
-    "result": {"id": "xercafood:cooked_rice"},
-    "experience": 0.2,
-    "cookingtime": 200
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "xercafood:rice_seeds"
+  },
+  "result": {
+    "id": "xercafood:cooked_rice"
+  },
+  "experience": 0.2,
+  "cookingtime": 200
 }
-

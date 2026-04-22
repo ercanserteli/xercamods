@@ -1,13 +1,20 @@
-
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        " c ",
-        "cgc",
-        " c "
-    ],
-    "key": {"c": {"item": "xercaconfetti:confetti"}, "g": {"item": "minecraft:gunpowder"}},
-    "result": {"id": "xercaconfetti:confetti_ball", "count": 2}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " c ",
+    "cgc",
+    " c "
+  ],
+  "key": {
+    "c": {
+      "item": "xercaconfetti:confetti"
+    },
+    "g": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "result": {
+    "count": 2,
+    "id": "xercaconfetti:confetti_ball"
+  }
 }
-        

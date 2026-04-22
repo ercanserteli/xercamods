@@ -10,7 +10,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "minecraft:egg"}
+          {
+            "items": "minecraft:egg"
+          }
         ]
       }
     },
@@ -28,4 +30,3 @@
     ]
   ]
 }
-

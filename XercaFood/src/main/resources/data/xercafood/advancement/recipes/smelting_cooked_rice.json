@@ -10,7 +10,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:rice_seeds"}
+          {
+            "items": "xercafood:rice_seeds"
+          }
         ]
       }
     },
@@ -28,4 +30,3 @@
     ]
   ]
 }
-

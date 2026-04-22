@@ -7,11 +7,14 @@
     "#"
   ],
   "key": {
-    "#": { "item": "minecraft:light_blue_wool" },
-    "f": { "item": "minecraft:feather" }
+    "#": {
+      "item": "minecraft:light_blue_wool"
+    },
+    "f": {
+      "item": "minecraft:feather"
+    }
   },
   "result": {
     "id": "xercacushion:light_blue_cushion"
   }
 }
-

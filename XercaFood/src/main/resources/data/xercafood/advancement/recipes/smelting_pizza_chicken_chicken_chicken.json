@@ -10,7 +10,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "xercafood:raw_pizza_chicken_chicken_chicken"}
+          {
+            "items": "xercafood:raw_pizza_chicken_chicken_chicken"
+          }
         ]
       }
     },
@@ -28,4 +30,3 @@
     ]
   ]
 }
-

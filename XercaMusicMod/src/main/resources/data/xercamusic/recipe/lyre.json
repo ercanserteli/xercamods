@@ -1,10 +1,18 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "sis",
-        " s "
-    ],
-    "key": {"s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:string"}},
-    "result": {"id": "xercamusic:lyre"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sis",
+    " s "
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:stick"
+    },
+    "i": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "id": "xercamusic:lyre"
+  }
 }

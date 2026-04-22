@@ -1,11 +1,22 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        " s ",
-        "pip",
-        " p "
-    ],
-    "key": {"p": {"item": "minecraft:acacia_planks"}, "s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:string"}},
-    "result": {"id": "xercamusic:banjo"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " s ",
+    "pip",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "item": "minecraft:acacia_planks"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    },
+    "i": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "id": "xercamusic:banjo"
+  }
 }

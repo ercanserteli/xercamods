@@ -1,7 +1,15 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "minecraft:chicken"}, {"tag": "c:tools/knife"}],
-    "result": {"count": 2, "id": "xercafood:raw_chicken_patty"}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:chicken"
+    },
+    {
+      "tag": "c:tools/knife"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "xercafood:raw_chicken_patty"
+  }
 }
-

@@ -1,7 +1,0 @@
-{
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"tag": "c:tools/knife"}, {"item": "minecraft:spruce_log"}],
-    "result": {"id": "minecraft:stripped_spruce_log"}
-}
-

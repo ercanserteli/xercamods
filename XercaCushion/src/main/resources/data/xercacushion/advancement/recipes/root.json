@@ -1,15 +1,12 @@
 {
   "criteria": {
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "xercacushion:black_cushion"
-      }
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
   },
-  "rewards": {
-    "recipes": [
-      "xercacushion:black_cushion"
+  "requirements": [
+    [
+      "impossible"
     ]
-  }
+  ]
 }

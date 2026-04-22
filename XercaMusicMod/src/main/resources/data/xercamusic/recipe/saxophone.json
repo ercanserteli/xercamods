@@ -1,11 +1,16 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "  g",
-        "g g",
-        " g "
-    ],
-    "key": {"g": {"item": "minecraft:gold_nugget"}},
-    "result": {"id": "xercamusic:saxophone"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  g",
+    "g g",
+    " g "
+  ],
+  "key": {
+    "g": {
+      "item": "minecraft:gold_nugget"
+    }
+  },
+  "result": {
+    "id": "xercamusic:saxophone"
+  }
 }

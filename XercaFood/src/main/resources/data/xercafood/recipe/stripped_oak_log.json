@@ -1,7 +1,0 @@
-{
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"tag": "c:tools/knife"}, {"item": "minecraft:oak_log"}],
-    "result": {"id": "minecraft:stripped_oak_log"}
-}
-

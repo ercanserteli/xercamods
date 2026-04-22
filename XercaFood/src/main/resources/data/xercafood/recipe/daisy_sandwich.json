@@ -1,12 +1,20 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        " b ",
-        "yyy",
-        " b "
-    ],
-    "key": {"b": {"item": "minecraft:bread"}, "y": {"item": "minecraft:oxeye_daisy"}},
-    "result": {"count": 3, "id": "xercafood:daisy_sandwich"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "yyy",
+    " b "
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:bread"
+    },
+    "y": {
+      "item": "minecraft:oxeye_daisy"
+    }
+  },
+  "result": {
+    "id": "xercafood:daisy_sandwich",
+    "count": 3
+  }
 }
-

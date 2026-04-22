@@ -4,7 +4,7 @@
     "item": "minecraft:spruce_log"
   },
   "result": {
-    "id": "minecraft:stripped_spruce_log"
+    "id": "minecraft:stripped_spruce_log",
+    "count": 1
   }
 }
-

@@ -6,14 +6,14 @@
     "aea"
   ],
   "key": {
-    "a": {
-      "item": "minecraft:amethyst_block"
+    "e": {
+      "item": "minecraft:ender_eye"
     },
     "c": {
       "item": "minecraft:ender_chest"
     },
-    "e": {
-      "item": "minecraft:ender_eye"
+    "a": {
+      "item": "minecraft:amethyst_block"
     }
   },
   "result": {

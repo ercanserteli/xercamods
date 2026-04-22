@@ -4,6 +4,7 @@
     "item": "minecraft:black_terracotta"
   },
   "result": {
-    "id": "xercablocks:black_terratile"
+    "id": "xercablocks:black_terratile",
+    "count": 1
   }
 }

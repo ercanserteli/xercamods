@@ -1,12 +1,30 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "group": "cupcake",
-    "pattern": [
-        "sas",
-        "mem",
-        "www"
-    ],
-    "key": {"a": {"item": "minecraft:honey_bottle"}, "s": {"item": "minecraft:sugar"}, "e": {"item": "minecraft:egg"}, "w": {"item": "minecraft:wheat"}, "m": {"item": "minecraft:milk_bucket"}},
-    "result": {"count": 6, "id": "xercafood:honey_cupcake"}
+  "type": "minecraft:crafting_shaped",
+  "group": "cupcake",
+  "pattern": [
+    "sas",
+    "mem",
+    "www"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:honey_bottle"
+    },
+    "s": {
+      "item": "minecraft:sugar"
+    },
+    "e": {
+      "item": "minecraft:egg"
+    },
+    "w": {
+      "item": "minecraft:wheat"
+    },
+    "m": {
+      "item": "minecraft:milk_bucket"
+    }
+  },
+  "result": {
+    "id": "xercafood:honey_cupcake",
+    "count": 6
+  }
 }
-

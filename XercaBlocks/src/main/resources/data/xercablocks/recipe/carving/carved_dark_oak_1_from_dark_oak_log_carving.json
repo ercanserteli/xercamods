@@ -4,7 +4,7 @@
     "item": "minecraft:dark_oak_log"
   },
   "result": {
-    "id": "xercablocks:carved_dark_oak_1"
+    "id": "xercablocks:carved_dark_oak_1",
+    "count": 1
   }
 }
-

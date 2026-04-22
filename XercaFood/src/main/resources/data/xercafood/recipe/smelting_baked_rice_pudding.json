@@ -1,9 +1,11 @@
 {
-    "type": "minecraft:smelting",
-    
-    "ingredient": {"item": "xercafood:rice_pudding"},
-    "result": {"id": "xercafood:baked_rice_pudding"},
-    "experience": 0.2,
-    "cookingtime": 250
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "xercafood:rice_pudding"
+  },
+  "result": {
+    "id": "xercafood:baked_rice_pudding"
+  },
+  "experience": 0.2,
+  "cookingtime": 250
 }
-

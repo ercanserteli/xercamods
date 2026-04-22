@@ -4,6 +4,7 @@
     "item": "minecraft:magenta_terracotta"
   },
   "result": {
-    "id": "xercablocks:magenta_terratile"
+    "id": "xercablocks:magenta_terratile",
+    "count": 1
   }
 }

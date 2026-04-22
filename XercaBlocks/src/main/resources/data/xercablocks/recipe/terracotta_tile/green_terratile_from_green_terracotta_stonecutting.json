@@ -4,6 +4,7 @@
     "item": "minecraft:green_terracotta"
   },
   "result": {
-    "id": "xercablocks:green_terratile"
+    "id": "xercablocks:green_terratile",
+    "count": 1
   }
 }

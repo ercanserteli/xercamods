@@ -1,9 +1,11 @@
 {
-    "type": "minecraft:smoking",
-    
-    "ingredient": {"item": "xercafood:raw_pizza_fish_meat_pepperoni"},
-    "result": {"id": "xercafood:pizza_fish_meat_pepperoni"},
-    "experience": 0.2,
-    "cookingtime": 150
+  "type": "minecraft:smoking",
+  "ingredient": {
+    "item": "xercafood:raw_pizza_fish_meat_pepperoni"
+  },
+  "result": {
+    "id": "xercafood:pizza_fish_meat_pepperoni"
+  },
+  "experience": 0.2,
+  "cookingtime": 150
 }
-

@@ -1,9 +1,11 @@
 {
-    "type": "minecraft:campfire_cooking",
-    
-    "ingredient": {"item": "xercafood:raw_sausage"},
-    "result": {"id": "xercafood:cooked_sausage"},
-    "experience": 0.2,
-    "cookingtime": 600
+  "type": "minecraft:campfire_cooking",
+  "ingredient": {
+    "item": "xercafood:raw_sausage"
+  },
+  "result": {
+    "id": "xercafood:cooked_sausage"
+  },
+  "experience": 0.2,
+  "cookingtime": 600
 }
-

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "xercapaint:item_canvas_long"
-            ]
+            "items": "xercapaint:item_canvas_long"
           }
         ]
       }

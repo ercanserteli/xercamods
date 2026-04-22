@@ -1,7 +1,21 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "group": "pizza",
-    "ingredients": [{"item": "xercafood:raw_pizza"}, {"item": "minecraft:chicken"}, {"item": "minecraft:brown_mushroom"}, {"item": "xercafood:raw_sausage"}],
-    "result": {"id": "xercafood:raw_pizza_chicken_mushroom_pepperoni"}
+  "type": "minecraft:crafting_shapeless",
+  "group": "pizza",
+  "ingredients": [
+    {
+      "item": "xercafood:raw_pizza"
+    },
+    {
+      "item": "minecraft:chicken"
+    },
+    {
+      "item": "minecraft:brown_mushroom"
+    },
+    {
+      "item": "xercafood:raw_sausage"
+    }
+  ],
+  "result": {
+    "id": "xercafood:raw_pizza_chicken_mushroom_pepperoni"
+  }
 }
-

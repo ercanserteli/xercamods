@@ -1,4 +1,3 @@
-
 {
   "parent": "xercatools:recipes/root",
   "rewards": {
@@ -11,7 +10,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": "minecraft:diamond"}
+          {
+            "items": "minecraft:diamond"
+          }
         ]
       }
     },
@@ -29,6 +30,3 @@
     ]
   ]
 }
-            
-
-

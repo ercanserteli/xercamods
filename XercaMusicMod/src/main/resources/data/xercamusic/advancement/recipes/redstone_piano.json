@@ -1,8 +1,8 @@
 {
-  "parent": "xercafood:recipes/root",
+  "parent": "xercamusic:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:stripped_spruce_log"
+      "xercamusic:redstone_piano"
     ]
   },
   "criteria": {
@@ -10,14 +10,16 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"tag": "c:tools/knife"}
+          {
+            "items": "minecraft:redstone"
+          }
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:stripped_spruce_log"
+        "recipe": "xercamusic:redstone_piano"
       }
     }
   },
@@ -28,4 +30,3 @@
     ]
   ]
 }
-

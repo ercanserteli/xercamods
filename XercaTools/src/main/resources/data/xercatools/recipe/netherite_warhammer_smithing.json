@@ -6,12 +6,10 @@
   "addition": {
     "item": "minecraft:netherite_ingot"
   },
-  "result": {"id": "xercatools:netherite_warhammer"
+  "result": {
+    "id": "xercatools:netherite_warhammer"
   },
   "template": {
     "item": "minecraft:netherite_upgrade_smithing_template"
   }
 }
-        
-
-

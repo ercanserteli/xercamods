@@ -1,8 +1,8 @@
 {
-  "parent": "xercafood:recipes/root",
+  "parent": "xercamusic:recipes/root",
   "rewards": {
     "recipes": [
-      "xercafood:stripped_jungle_log"
+      "xercamusic:trumpet"
     ]
   },
   "criteria": {
@@ -10,14 +10,16 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"tag": "c:tools/knife"}
+          {
+            "items": "minecraft:gold_nugget"
+          }
         ]
       }
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercafood:stripped_jungle_log"
+        "recipe": "xercamusic:trumpet"
       }
     }
   },
@@ -28,4 +30,3 @@
     ]
   ]
 }
-

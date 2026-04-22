@@ -8,11 +8,13 @@ mod_id_to_folder = {
     "xercafood": "XercaFood",
     "xercaconfetti": "XercaConfetti",
     "xercamusic": "XercaMusicMod",
-    "xercapaint": "XercaPaintMod"
+    "xercapaint": "XercaPaintMod",
+    "xercablocks": "XercaBlocks",
+    "xercacourt": "XercaCourt",
+    "xercacushion": "XercaCushion",
+    "xercaomnichest": "XercaOmniChest",
+    "xercatools": "XercaTools",
 }
-
-conditions = ["grab_hook", "warhammer", "cushion", "tea", "food", "confetti", "ender_flask", "courtroom", "carved_wood",
-              "leather_straw", "bookcase", "coins", "scythe", "rope", "terracotta_tile", "omni_chest"]
 
 
 def normalize_itemstack(result):
@@ -53,20 +55,12 @@ class Type(Enum):
 
 
 class Recipe:
-    def __init__(self, type, group, discover_item, folder):
+    def __init__(self, type, group, discover_item, folder, load_conditions=None):
         self.type = type
         self.group = group
         self.discover_item = normalize_advancement_item_predicate(discover_item)
         self.folder = folder
-
-        self.cond = None
-        if "condition" in type:
-            for c in conditions:
-                if c in type:
-                    self.cond = c
-                    if folder == "":
-                        self.folder = self.cond
-                    break
+        self.load_conditions = load_conditions
 
     def produce_advancement_json(self):
         if self.folder:
@@ -74,162 +68,87 @@ class Recipe:
         else:
             recipe_path = self.get_name()
 
-        if self.cond is None:
-            template = """
-{{
-  "parent": "{mod_id}:recipes/root",
-  "rewards": {{
-    "recipes": [
-      "{mod_id}:{recipe_path}"
-    ]
-  }},
-  "criteria": {{
-    "has_item": {{
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {{
-        "items": [
-          {discover_item}
-        ]
-      }}
-    }},
-    "has_the_recipe": {{
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {{
-        "recipe": "{mod_id}:{recipe_path}"
-      }}
-    }}
-  }},
-  "requirements": [
-    [
-      "has_item",
-      "has_the_recipe"
-    ]
-  ]
-}}
-        """
-            return template.format(
-                mod_id=mod_id,
-                recipe_path=recipe_path,
-                discover_item=json.dumps(self.discover_item)
-            )
-        else:
-            template = """
-{{
-  "parent": "{mod_id}:recipes/root",
-  "rewards": {{
-    "recipes": [
-      "{mod_id}:{recipe_path}"
-    ]
-  }},
-  "criteria": {{
-    "has_item": {{
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {{
-        "items": [
-          {discover_item}
-        ]
-      }}
-    }},
-    "has_the_recipe": {{
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {{
-        "recipe": "{mod_id}:{recipe_path}"
-      }}
-    }},
-    "config": {{
-      "trigger": "xercafood:config_check",
-      "conditions":{{
-        "config": "{cond}"
-      }}
-    }}
-  }},
-  "requirements": [
-    [
-      "has_item",
-      "has_the_recipe"
-    ],
-    ["config"]
-  ]
-}}
-            """
-            return template.format(
-                mod_id=mod_id,
-                recipe_path=recipe_path,
-                discover_item=json.dumps(self.discover_item),
-                cond=self.cond
-            )
+        d = {}
+        if self.load_conditions:
+            d["fabric:load_conditions"] = self.load_conditions
+
+        d.update({
+            "parent": f"{mod_id}:recipes/root",
+            "rewards": {"recipes": [f"{mod_id}:{recipe_path}"]},
+            "criteria": {
+                "has_item": {
+                    "trigger": "minecraft:inventory_changed",
+                    "conditions": {"items": [self.discover_item]},
+                },
+                "has_the_recipe": {
+                    "trigger": "minecraft:recipe_unlocked",
+                    "conditions": {"recipe": f"{mod_id}:{recipe_path}"},
+                },
+            },
+            "requirements": [["has_item", "has_the_recipe"]],
+        })
+        return json.dumps(d, indent=2)
+
+    def add_common_fields(self, d):
+        if self.load_conditions:
+            d["fabric:load_conditions"] = self.load_conditions
+        d["type"] = self.type
+        if self.group:
+            d["group"] = self.group
 
 
 class ShapedRecipe(Recipe):
-    def __init__(self, pattern, result, key, discover_item=None, group="", folder="", type="minecraft:crafting_shaped"):
-        super().__init__(type, group, discover_item, folder)
+    def __init__(self, pattern, result, key, discover_item=None, group="", folder="", type="minecraft:crafting_shaped", load_conditions=None):
+        super().__init__(type, group, discover_item, folder, load_conditions)
         self.pattern = pattern
         self.key = key
         self.result = result
 
     def produce_recipe_json(self):
-        group_line = '"group": "{}",'.format(self.group) if self.group else ""
-        pattern_line = ",\n        ".join(['"{}"'.format(p) for p in self.pattern])
-        template = """
-{{
-    "type": "{type}",
-    {group}
-    "pattern": [
-        {pattern}
-    ],
-    "key": {key},
-    "result": {result}
-}}
-        """
-        return template.format(type=self.type, group=group_line, pattern=pattern_line, key=self.key, result=normalize_itemstack(self.result)).replace("'", '"')
+        d = {}
+        self.add_common_fields(d)
+        d["pattern"] = self.pattern
+        d["key"] = self.key
+        d["result"] = normalize_itemstack(self.result)
+        return json.dumps(d, indent=2)
 
     def get_name(self):
         return result_id(self.result).split(":", 1)[1]
 
 
 class ShapelessRecipe(Recipe):
-    def __init__(self, ingredients, result, discover_item=None, group="", folder="", type="minecraft:crafting_shapeless"):
-        super().__init__(type, group, discover_item, folder)
+    def __init__(self, ingredients, result, discover_item=None, group="", folder="", type="minecraft:crafting_shapeless", load_conditions=None):
+        super().__init__(type, group, discover_item, folder, load_conditions)
         self.ingredients = ingredients
         self.result = result
 
     def produce_recipe_json(self):
-        group_line = '"group": "{}",'.format(self.group) if self.group else ""
-        template = """
-{{
-    "type": "{type}",
-    {group}
-    "ingredients": {ingredients},
-    "result": {result}
-}}
-        """
-        return template.format(type=self.type, group=group_line, ingredients=self.ingredients, result=normalize_itemstack(self.result)).replace("'", '"')
+        d = {}
+        self.add_common_fields(d)
+        d["ingredients"] = self.ingredients
+        d["result"] = normalize_itemstack(self.result)
+        return json.dumps(d, indent=2)
 
     def get_name(self):
         return result_id(self.result).split(":", 1)[1]
 
 
 class CookingRecipe(Recipe):
-    def __init__(self, type, ingredient, result, experience, cooking_time, discover_item=None, group="", folder=""):
-        super().__init__(type, group, discover_item, folder)
+    def __init__(self, type, ingredient, result, experience, cooking_time, discover_item=None, group="", folder="", load_conditions=None):
+        super().__init__(type, group, discover_item, folder, load_conditions)
         self.ingredient = ingredient
         self.experience = experience
         self.cooking_time = cooking_time
         self.result = result
 
     def produce_recipe_json(self):
-        group_line = '"group": "{}",'.format(self.group) if self.group else ""
-        template = """
-{{
-    "type": "{type}",
-    {group}
-    "ingredient": {ingredient},
-    "result": {result},
-    "experience": {experience},
-    "cookingtime": {cooking_time}
-}}
-        """
-        return template.format(type=self.type, group=group_line, ingredient=self.ingredient, experience=self.experience, cooking_time=self.cooking_time, result=normalize_itemstack(self.result)).replace("'", '"')
+        d = {}
+        self.add_common_fields(d)
+        d["ingredient"] = self.ingredient
+        d["result"] = normalize_itemstack(self.result)
+        d["experience"] = self.experience
+        d["cookingtime"] = self.cooking_time
+        return json.dumps(d, indent=2)
 
     def get_name(self):
         item_name = result_id(self.result).split(":", 1)[1]
@@ -242,95 +161,76 @@ class CookingRecipe(Recipe):
 
 
 class SpecialRecipe(Recipe):
-    def __init__(self, type, discover_item=None, group="", folder=""):
-        super().__init__(type, group, discover_item, folder)
+    def __init__(self, type, discover_item=None, group="", folder="", load_conditions=None):
+        super().__init__(type, group, discover_item, folder, load_conditions)
 
     def produce_recipe_json(self):
-        group_line = '"group": "{}",'.format(self.group) if self.group else ""
-        template = """
-{{
-    {group}
-    "type": "{type}"
-}}
-        """
-        return template.format(group=group_line, type=self.type).replace("'", '"')
+        d = {}
+        self.add_common_fields(d)
+        return json.dumps(d, indent=2)
 
     def get_name(self):
         return self.type.split("crafting_special_", 1)[1]
 
 
 class StonecuttingRecipe(Recipe):
-    def __init__(self, ingredient, result, count, group="", folder="", type="minecraft:stonecutting"):
-        super().__init__(type, group, None, folder)
+    def __init__(self, ingredient, result, count, group="", folder="", type="minecraft:stonecutting", load_conditions=None):
+        super().__init__(type, group, None, folder, load_conditions)
         self.ingredient = ingredient
         self.count = count
         self.result = result
 
     def produce_recipe_json(self):
-        # group_line = '"group": "{}",'.format(self.group) if self.group else ""
-        template = """
-{{
-    "type": "{type}",
-    "ingredient": {{
-        "item": "{ingredient}"
-    }},
-    "result": {result}
-}}
-        """
-        return template.format(type=self.type, ingredient=self.ingredient, result=normalize_itemstack({"id": self.result, "count": self.count})).replace("'", '"')
+        d = {}
+        self.add_common_fields(d)
+        d.update({
+            "ingredient": {"item": self.ingredient},
+            "result": normalize_itemstack({"id": self.result, "count": self.count}),
+        })
+        return json.dumps(d, indent=2)
 
     def get_name(self):
         return self.result.split(":", 1)[1] + "_from_" + self.ingredient.split(":", 1)[1] + "_stonecutting"
 
 
 class CarvingRecipe(Recipe):
-    def __init__(self, ingredient, result, count, group="", folder="", type="xercablocks:carving"):
-        super().__init__(type, group, None, folder)
+    def __init__(self, ingredient, result, count, group="", folder="", type="xercablocks:carving", load_conditions=None):
+        super().__init__(type, group, None, folder, load_conditions)
         self.ingredient = ingredient
         self.count = count
         self.result = result
 
     def produce_recipe_json(self):
-        # group_line = '"group": "{}",'.format(self.group) if self.group else ""
-        template = """
-{{
-    "type": "{type}",
-    "ingredient": {{
-        "item": "{ingredient}"
-    }},
-    "result": {result}
-}}
-        """
-        return template.format(type=self.type, ingredient=self.ingredient, result=normalize_itemstack({"id": self.result, "count": self.count})).replace("'", '"')
+        d = {}
+        self.add_common_fields(d)
+        d.update({
+            "ingredient": {"item": self.ingredient},
+            "result": normalize_itemstack({"id": self.result, "count": self.count}),
+        })
+        return json.dumps(d, indent=2)
 
     def get_name(self):
         return self.result.split(":", 1)[1] + "_from_" + self.ingredient.split(":", 1)[1] + "_carving"
 
 
 class SmithingRecipe(Recipe):
-    def __init__(self, base, addition, result, group="", folder="", type="minecraft:smithing"):
-        super().__init__(type, group, None, folder)
+    def __init__(self, base, addition, result, template="minecraft:netherite_upgrade_smithing_template", group="", folder="", type="minecraft:smithing_transform", load_conditions=None):
+        super().__init__(type, group, None, folder, load_conditions)
         self.base = base
         self.addition = addition
         self.result = result
+        self.template = template
 
     def produce_recipe_json(self):
-        # group_line = '"group": "{}",'.format(self.group) if self.group else ""
-        template = """
-{{
-    "type": "{type}",
-    "base": {{
-        "item": "{base}"
-    }},
-    "addition": {{
-        "item": "{addition}"
-    }},
-    "result": {{
-        "item": "{result}"
-    }}
-}}
-        """
-        return template.format(type=self.type, base=self.base, addition=self.addition, result=self.result).replace("'", '"')
+        d = {}
+        self.add_common_fields(d)
+        d.update({
+            "base": {"item": self.base},
+            "addition": {"item": self.addition},
+            "result": {"id": self.result},
+            "template": {"item": self.template},
+        })
+        return json.dumps(d, indent=2)
 
     def get_name(self):
         return self.result.split(":", 1)[1] + "_smithing"

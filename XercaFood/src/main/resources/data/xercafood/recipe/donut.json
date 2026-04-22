@@ -1,12 +1,23 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "sws",
-        "wxw",
-        "sws"
-    ],
-    "key": {"s": {"item": "minecraft:sugar"}, "w": {"item": "minecraft:wheat"}, "x": {"item": "minecraft:milk_bucket"}},
-    "result": {"count": 4, "id": "xercafood:donut"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sws",
+    "wxw",
+    "sws"
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:sugar"
+    },
+    "w": {
+      "item": "minecraft:wheat"
+    },
+    "x": {
+      "item": "minecraft:milk_bucket"
+    }
+  },
+  "result": {
+    "id": "xercafood:donut",
+    "count": 4
+  }
 }
-

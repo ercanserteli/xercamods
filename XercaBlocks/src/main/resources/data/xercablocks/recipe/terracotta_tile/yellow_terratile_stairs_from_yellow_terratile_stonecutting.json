@@ -4,6 +4,7 @@
     "item": "xercablocks:yellow_terratile"
   },
   "result": {
-    "id": "xercablocks:yellow_terratile_stairs"
+    "id": "xercablocks:yellow_terratile_stairs",
+    "count": 1
   }
 }

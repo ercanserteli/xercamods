@@ -1,7 +1,17 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "minecraft:mutton"}, {"item": "minecraft:stick"}, {"item": "xercafood:tomato_slices"}],
-    "result": {"id": "xercafood:raw_shish_kebab"}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:mutton"
+    },
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "xercafood:tomato_slices"
+    }
+  ],
+  "result": {
+    "id": "xercafood:raw_shish_kebab"
+  }
 }
-

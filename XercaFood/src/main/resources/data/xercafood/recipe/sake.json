@@ -1,7 +1,17 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "xercafood:glass"}, {"item": "xercafood:rice_seeds"}, {"item": "xercafood:rice_seeds"}],
-    "result": {"id": "xercafood:sake"}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xercafood:glass"
+    },
+    {
+      "item": "xercafood:rice_seeds"
+    },
+    {
+      "item": "xercafood:rice_seeds"
+    }
+  ],
+  "result": {
+    "id": "xercafood:sake"
+  }
 }
-

@@ -4,6 +4,7 @@
     "item": "minecraft:light_blue_terracotta"
   },
   "result": {
-    "id": "xercablocks:light_blue_terratile"
+    "id": "xercablocks:light_blue_terratile",
+    "count": 1
   }
 }

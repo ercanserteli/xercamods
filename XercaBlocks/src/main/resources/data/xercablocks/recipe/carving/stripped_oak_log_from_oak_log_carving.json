@@ -4,7 +4,7 @@
     "item": "minecraft:oak_log"
   },
   "result": {
-    "id": "minecraft:stripped_oak_log"
+    "id": "minecraft:stripped_oak_log",
+    "count": 1
   }
 }
-

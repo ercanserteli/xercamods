@@ -1,9 +1,11 @@
 {
-    "type": "minecraft:smelting",
-    
-    "ingredient": {"item": "minecraft:egg"},
-    "result": {"id": "xercafood:fried_egg"},
-    "experience": 0.2,
-    "cookingtime": 200
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "minecraft:egg"
+  },
+  "result": {
+    "id": "xercafood:fried_egg"
+  },
+  "experience": 0.2,
+  "cookingtime": 200
 }
-

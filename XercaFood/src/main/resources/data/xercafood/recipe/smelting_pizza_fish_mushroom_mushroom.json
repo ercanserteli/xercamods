@@ -1,9 +1,11 @@
 {
-    "type": "minecraft:smelting",
-    
-    "ingredient": {"item": "xercafood:raw_pizza_fish_mushroom_mushroom"},
-    "result": {"id": "xercafood:pizza_fish_mushroom_mushroom"},
-    "experience": 0.2,
-    "cookingtime": 300
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "xercafood:raw_pizza_fish_mushroom_mushroom"
+  },
+  "result": {
+    "id": "xercafood:pizza_fish_mushroom_mushroom"
+  },
+  "experience": 0.2,
+  "cookingtime": 300
 }
-

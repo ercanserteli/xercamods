@@ -1,12 +1,25 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        " b ",
-        "dhc",
-        " b "
-    ],
-    "key": {"b": {"item": "xercafood:bun"}, "d": {"item": "xercafood:tomato_slices"}, "h": {"item": "xercafood:cooked_patty"}, "c": {"item": "xercafood:cheese_slice"}},
-    "result": {"id": "xercafood:cheeseburger"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "dhc",
+    " b "
+  ],
+  "key": {
+    "b": {
+      "item": "xercafood:bun"
+    },
+    "d": {
+      "item": "xercafood:tomato_slices"
+    },
+    "h": {
+      "item": "xercafood:cooked_patty"
+    },
+    "c": {
+      "item": "xercafood:cheese_slice"
+    }
+  },
+  "result": {
+    "id": "xercafood:cheeseburger"
+  }
 }
-
