@@ -1,5 +1,6 @@
 */out
 */build
+build/
 */bin
 .gradle/
 run/
@@ -8,3 +9,4 @@ builds/
 *.md
 desktop.ini
 **/.cache
+.sonar.ps1
