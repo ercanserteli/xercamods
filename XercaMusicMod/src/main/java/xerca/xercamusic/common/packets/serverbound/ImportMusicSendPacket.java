@@ -60,7 +60,7 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
                 Mod.LOGGER.error("CompoundTag was null in ImportMusicSendPacket");
                 return createEmpty();
             }
-            return notes == null ? ImportMusicSendPacket.create(tag) : ImportMusicSendPacket.create(tag, notes);
+            return notes == null ? create(tag) : create(tag, notes);
         } catch (IllegalArgumentException | NotesTooLargeException e) {
             Mod.LOGGER.error("Invalid ImportMusicSendPacket", e);
             return createEmpty();

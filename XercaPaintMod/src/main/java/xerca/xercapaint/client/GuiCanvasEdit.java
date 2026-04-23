@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
@@ -53,33 +52,33 @@ public class GuiCanvasEdit extends BasePalette {
     private final int canvasPixelScale;
     private final int canvasPixelWidth;
     private final int canvasPixelHeight;
-    private int brushSize = 0;
-    private boolean touchedCanvas = false;
-    private boolean undoStarted = false;
+    private int brushSize;
+    private boolean touchedCanvas;
+    private boolean undoStarted;
     private boolean gettingSigned;
     private boolean isCarryingCanvas;
     private Button buttonSign;
     private Button buttonCancel;
     private Button buttonFinalize;
     private int updateCount;
-    private BrushSound brushSound = null;
+    private BrushSound brushSound;
     private static final int CANVAS_HOLDER_HEIGHT = 10;
-    private int brushOpacitySetting = 0;
+    private int brushOpacitySetting;
     private static final float[] BRUSH_OPACITIES = {1.f, 0.75f, 0.5f, 0.25f};
-    private static boolean showHelp = false;
+    private static boolean showHelp;
     private final Set<Integer> draggedPoints = new HashSet<>();
 
     private final Player editingPlayer;
 
     private final CanvasType canvasType;
-    private boolean isSigned = false;
+    private boolean isSigned;
     private int[] pixels;
     private String canvasTitle = "";
     private final String canvasId;
-    private int version = 0;
+    private int version;
     private final EntityEasel easel;
-    private int timeSinceLastUpdate = 0;
-    private boolean skippedUpdate = false;
+    private int timeSinceLastUpdate;
+    private boolean skippedUpdate;
 
     private static final Vec2[] OUTLINE_POSS_1 = {
             new Vec2(0.f, 199.0f),
@@ -149,7 +148,7 @@ public class GuiCanvasEdit extends BasePalette {
         Window window = minecraft.getWindow();
 
         // Hide mouse cursor
-        GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         int x = window.getGuiScaledWidth() - 120;
         int y = window.getGuiScaledHeight() - 30;
@@ -159,7 +158,7 @@ public class GuiCanvasEdit extends BasePalette {
                 resetPositions();
                 updateButtons();
 
-                GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }).bounds(x, y, 98, 20).build());
         this.buttonFinalize = this.addRenderableWidget(Button.builder(Component.translatable("canvas.finalizeButton"), button -> {
@@ -177,7 +176,7 @@ public class GuiCanvasEdit extends BasePalette {
                 gettingSigned = false;
                 updateButtons();
 
-                GLFW.glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
         }).bounds((int) canvasX - 100, 130, 98, 20).build());
 
@@ -283,7 +282,7 @@ public class GuiCanvasEdit extends BasePalette {
         final int padding = 40;
         final int paletteCanvasX = (this.width - (PALETTE_WIDTH + canvasWidth + padding)) / 2;
         canvasX = paletteCanvasX + PALETTE_WIDTH + padding;
-        if (canvasType.equals(CanvasType.LONG)) {
+        if (canvasType == CanvasType.LONG) {
             canvasY = 80;
         } else {
             canvasY = 40;
@@ -480,11 +479,11 @@ public class GuiCanvasEdit extends BasePalette {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (this.gettingSigned) {
             switch (Integer.valueOf(keyCode)) {
-                case Integer k when k == GLFW.GLFW_KEY_BACKSPACE && !this.canvasTitle.isEmpty() -> {
+                case Integer k when k == GLFW_KEY_BACKSPACE && !this.canvasTitle.isEmpty() -> {
                     this.canvasTitle = this.canvasTitle.substring(0, this.canvasTitle.length() - 1);
                     this.updateButtons();
                 }
-                case Integer k when k == GLFW.GLFW_KEY_ENTER && !this.canvasTitle.isEmpty() -> {
+                case Integer k when k == GLFW_KEY_ENTER && !this.canvasTitle.isEmpty() -> {
                     canvasDirty = true;
                     this.isSigned = true;
                     if (this.minecraft != null) {
@@ -497,7 +496,7 @@ public class GuiCanvasEdit extends BasePalette {
             }
             return true;
         } else {
-            if (keyCode == GLFW.GLFW_KEY_Z && (modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
+            if (keyCode == GLFW_KEY_Z && (modifiers & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
                 if (!undoStack.isEmpty()) {
                     pixels = undoStack.pop();
                     canvasDirty = true;
@@ -757,7 +756,7 @@ public class GuiCanvasEdit extends BasePalette {
         protected final int texHeight;
 
         public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
-            super(x, y, width, height, Component.empty(), onClick, Button.DEFAULT_NARRATION);
+            super(x, y, width, height, Component.empty(), onClick, DEFAULT_NARRATION);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
             this.xTexStart = xTexStart;

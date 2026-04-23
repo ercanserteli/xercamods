@@ -42,14 +42,14 @@ public class Mod implements ModInitializer {
 
     @Nullable
     public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) throws Exception {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             return toRun.get().call();
         }
         return null;
     }
 
     public static void onlyRunOnClient(Supplier<Runnable> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             toRun.get().run();
         }
     }

@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -40,7 +39,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     public static final BooleanProperty POWERING = BooleanProperty.create("powering");
     public static final BooleanProperty HAS_MUSIC = BooleanProperty.create("has_music");
     public static final BooleanProperty HAS_INSTRUMENT = BooleanProperty.create("has_instrument");
-    public static final MapCodec<BlockMusicBox> MUSIC_BOX_CODEC = BlockBehaviour.simpleCodec(BlockMusicBox::new);
+    public static final MapCodec<BlockMusicBox> MUSIC_BOX_CODEC = simpleCodec(BlockMusicBox::new);
 
     public BlockMusicBox(Properties properties) {
         super(properties);

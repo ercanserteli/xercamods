@@ -31,7 +31,10 @@ import xerca.xercablocks.menu.CarvingStationMenu;
 import xerca.xercablocks.recipe.CarvingRecipe;
 import xerca.xercablocks.recipe.Recipes;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public final class BlocksGameTests {
     private static final String BASIC_TEMPLATE = "xercablocks:basic_test";
@@ -67,9 +70,7 @@ public final class BlocksGameTests {
 
     private static CraftingInput craftingGrid(int width, int height, ItemStack... stacks) {
         List<ItemStack> list = new ArrayList<>(stacks.length);
-        for (ItemStack stack : stacks) {
-            list.add(stack);
-        }
+        Collections.addAll(list, stacks);
         return CraftingInput.of(width, height, list);
     }
 

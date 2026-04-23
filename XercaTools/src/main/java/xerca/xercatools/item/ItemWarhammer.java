@@ -206,7 +206,7 @@ public class ItemWarhammer extends Item {
         int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
         float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + heavyLevel * 0.5f) * mult;
-        float push = (((ItemWarhammer) stack.getItem()).getPushAmount() + heavyLevel * 0.15f) * 2.0f * mult;
+        float push = (((ItemWarhammer) stack.getItem()).pushAmount + heavyLevel * 0.15f) * 2.0f * mult;
 
         int uppercutLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.uppercutEnchantment(level.registryAccess()), stack);
         double bonusVelY = (uppercutLevel * 0.25d) * pullDuration;
@@ -262,7 +262,7 @@ public class ItemWarhammer extends Item {
         int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
         float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + heavyLevel * 0.5f) * mult * 0.5f;
-        float push = (((ItemWarhammer) stack.getItem()).getPushAmount() + heavyLevel * 0.15f) * mult;
+        float push = (((ItemWarhammer) stack.getItem()).pushAmount + heavyLevel * 0.15f) * mult;
         float pitch = 2.0f / (damage + heavyLevel);
 
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class,

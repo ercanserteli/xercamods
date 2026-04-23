@@ -47,7 +47,7 @@ public final class Items {
     public static final DataComponentType<ItemPalette.ComponentCustomColor> PALETTE_CUSTOM_COLORS = DataComponentType.<ItemPalette.ComponentCustomColor>builder().persistent(ItemPalette.ComponentCustomColor.CODEC).build();
 
     public static final CreativeModeTab PAINT_TAB = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(Items.ITEM_PALETTE))
+            .icon(() -> new ItemStack(ITEM_PALETTE))
             .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);
                 byte[] basicColors = new byte[16];

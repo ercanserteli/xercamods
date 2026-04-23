@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -25,7 +24,7 @@ import xerca.xercablocks.block_entity.FunctionalBookcaseBlockEntity;
 
 public class BlockFunctionalBookcase extends BaseEntityBlock {
     public static final IntegerProperty BOOK_AMOUNT = IntegerProperty.create("books", 0, 6);
-    public static final MapCodec<BlockFunctionalBookcase> CODEC = BlockBehaviour.simpleCodec(properties -> new BlockFunctionalBookcase());
+    public static final MapCodec<BlockFunctionalBookcase> CODEC = simpleCodec(properties -> new BlockFunctionalBookcase());
 
     public BlockFunctionalBookcase() {
         super(Properties.of()

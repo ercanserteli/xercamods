@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -23,11 +24,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
     public static final IntegerProperty TEA_AGE = BlockStateProperties.AGE_3;
-    private static final VoxelShape[] SHAPE = new VoxelShape[]{Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 11.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 13.0D, 16.0D)};
+    private static final VoxelShape[] SHAPE = {box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 11.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 13.0D, 16.0D)};
 
 
     BlockTeaPlant() {
-        super(Block.Properties.of().sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
+        super(BlockBehaviour.Properties.of().sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
     }
 
     @Override
@@ -64,6 +65,6 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return SHAPE[state.getValue(this.getAgeProperty())];
+        return SHAPE[state.getValue(TEA_AGE)];
     }
 }

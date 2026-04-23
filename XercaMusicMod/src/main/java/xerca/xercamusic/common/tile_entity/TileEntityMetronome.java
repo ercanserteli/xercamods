@@ -24,9 +24,9 @@ import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 public class TileEntityMetronome extends BlockEntity {
     private static final Vec3i HALF_RANGE = new Vec3i(8, 2, 8);
 
-    private int age = 0;
-    private boolean oldPoweredState = false;
-    private int countDown = 0;
+    private int age;
+    private boolean oldPoweredState;
+    private int countDown;
 
     public TileEntityMetronome(BlockPos blockPos, BlockState blockState) {
         super(BlockEntities.METRONOME, blockPos, blockState);

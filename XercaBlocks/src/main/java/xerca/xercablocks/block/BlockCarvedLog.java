@@ -6,7 +6,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -14,7 +13,7 @@ import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockCarvedLog extends HorizontalDirectionalBlock {
-    public static final MapCodec<BlockCarvedLog> CODEC = BlockBehaviour.simpleCodec(properties -> new BlockCarvedLog());
+    public static final MapCodec<BlockCarvedLog> CODEC = simpleCodec(properties -> new BlockCarvedLog());
 
     public BlockCarvedLog() {
         this(Properties.of()

@@ -2,8 +2,8 @@ package xerca.xercacushion.block;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import xerca.xercacushion.Mod;
 import xerca.xercacushion.item.Items;
@@ -49,7 +49,7 @@ public final class Blocks {
     }
 
     private static BlockCushion create(int variant, MapColor mapColor) {
-        return new BlockCushion(Block.Properties.of().mapColor(mapColor).strength(0.8F).sound(SoundType.WOOL).noOcclusion(), variant);
+        return new BlockCushion(BlockBehaviour.Properties.of().mapColor(mapColor).strength(0.8F).sound(SoundType.WOOL).noOcclusion(), variant);
     }
 
     public static void register() {

@@ -43,9 +43,9 @@ public class EntityMusicSpirit extends Entity {
     private float volume;
     private byte bps;
     private boolean isPlaying = true;
-    private BlockInstrument blockInstrument = null;
-    private BlockPos blockInsPos = null;
-    private SoundController soundController = null;
+    private BlockInstrument blockInstrument;
+    private BlockPos blockInsPos;
+    private SoundController soundController;
 
     private static byte sanitizeBps(int bps) {
         return (byte) Math.max(1, Math.min(50, bps));

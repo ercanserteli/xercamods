@@ -40,17 +40,17 @@ public class BlockTeapot extends Block {
     public static final IntegerProperty TEA_AMOUNT = IntegerProperty.create("tea", 0, 7);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final VoxelShape centerShape = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 10.0D, 12.0D);
-    private static final VoxelShape topShape = Block.box(7.0D, 10.0D, 7.0D, 9.0D, 11.0D, 9.0D);
+    private static final VoxelShape centerShape = box(4.0D, 0.0D, 4.0D, 12.0D, 10.0D, 12.0D);
+    private static final VoxelShape topShape = box(7.0D, 10.0D, 7.0D, 9.0D, 11.0D, 9.0D);
 
     private static final VoxelShape shapeNorth = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape),
-            Block.box(7.0D, 3.0D, 12.0D, 9.0D, 9.0D, 14.0D)), Block.box(7.0D, 8.0D, 3.0D, 9.0D, 9.0D, 4.0D));
+            box(7.0D, 3.0D, 12.0D, 9.0D, 9.0D, 14.0D)), box(7.0D, 8.0D, 3.0D, 9.0D, 9.0D, 4.0D));
     private static final VoxelShape shapeWest = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape),
-            Block.box(12.0D, 3.0D, 7.0D, 14.0D, 9.0D, 9.0D)), Block.box(3.0D, 8.0D, 7.0D, 4.0D, 9.0D, 9.0D));
+            box(12.0D, 3.0D, 7.0D, 14.0D, 9.0D, 9.0D)), box(3.0D, 8.0D, 7.0D, 4.0D, 9.0D, 9.0D));
     private static final VoxelShape shapeSouth = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape),
-            Block.box(7.0D, 3.0D, 2.0D, 9.0D, 9.0D, 4.0D)), Block.box(7.0D, 8.0D, 12.0D, 9.0D, 9.0D, 13.0D));
+            box(7.0D, 3.0D, 2.0D, 9.0D, 9.0D, 4.0D)), box(7.0D, 8.0D, 12.0D, 9.0D, 9.0D, 13.0D));
     private static final VoxelShape shapeEast = Shapes.or(Shapes.or(Shapes.or(centerShape, topShape),
-            Block.box(2.0D, 3.0D, 7.0D, 4.0D, 9.0D, 9.0D)), Block.box(12.0D, 8.0D, 7.0D, 13.0D, 9.0D, 9.0D));
+            box(2.0D, 3.0D, 7.0D, 4.0D, 9.0D, 9.0D)), box(12.0D, 8.0D, 7.0D, 13.0D, 9.0D, 9.0D));
 
     public BlockTeapot() {
         super(Properties.of().strength(0.0F, 1.0F).sound(SoundType.STONE));
@@ -68,7 +68,7 @@ public class BlockTeapot extends Block {
     public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource r) {
         int teaAmount = stateIn.getValue(TEA_AMOUNT);
         if (teaAmount > 0) {
-            if (r.nextDouble() * 5 < ((double) teaAmount) * 0.5) {
+            if (r.nextDouble() * 5 < teaAmount * 0.5) {
                 Direction facing = stateIn.getValue(FACING);
                 double smokeX = pos.getX() + 0.5D;
                 double smokeZ = pos.getZ() + 0.5D;

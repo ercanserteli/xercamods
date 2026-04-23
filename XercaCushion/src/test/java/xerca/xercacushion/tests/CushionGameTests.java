@@ -1,7 +1,6 @@
 package xerca.xercacushion.tests;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -14,12 +13,12 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import xerca.xercacushion.Mod;
 import xerca.xercacushion.entity.EntityCushion;
 import xerca.xercacushion.item.Items;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,9 +40,7 @@ public final class CushionGameTests {
 
     private static CraftingInput craftingGrid(int width, int height, ItemStack... stacks) {
         List<ItemStack> list = new ArrayList<>(stacks.length);
-        for (ItemStack stack : stacks) {
-            list.add(stack);
-        }
+        Collections.addAll(list, stacks);
         return CraftingInput.of(width, height, list);
     }
 

@@ -1,5 +1,6 @@
 package xerca.xercafood.common.crafting;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -8,7 +9,6 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaFilling extends CustomRecipe {

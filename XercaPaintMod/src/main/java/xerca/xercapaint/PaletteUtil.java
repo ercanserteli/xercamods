@@ -63,11 +63,11 @@ public class PaletteUtil {
     }
 
     public static final class CustomColor {
-        public int totalRed = 0;
-        public int totalGreen = 0;
-        public int totalBlue = 0;
-        public int totalMaximum = 0;
-        public int numberOfColors = 0;
+        public int totalRed;
+        public int totalGreen;
+        public int totalBlue;
+        public int totalMaximum;
+        public int numberOfColors;
 
         private Color result;
 

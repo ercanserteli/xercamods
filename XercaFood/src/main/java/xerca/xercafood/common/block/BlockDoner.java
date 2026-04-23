@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -42,13 +43,13 @@ public class BlockDoner extends Block implements EntityBlock {
     private RenderShape renderType = RenderShape.ENTITYBLOCK_ANIMATED;
 
     public BlockDoner() {
-        super(Block.Properties.of().sound(SoundType.METAL).strength(1).noOcclusion());
+        super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1).noOcclusion());
         registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(IS_RAW, true));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
+        return box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
     }
 
     @Override

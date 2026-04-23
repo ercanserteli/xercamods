@@ -1,16 +1,17 @@
 package xerca.xercablocks.mixin;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import xerca.xercablocks.menu.CarvingStationMenu;
 import xerca.xercablocks.recipe.Recipes;
 
+@SuppressWarnings("ConstantValue")
 @Mixin(StonecutterMenu.class)
 abstract class MixinStonecutterMenu {
     @Redirect(
@@ -19,7 +20,7 @@ abstract class MixinStonecutterMenu {
     )
     @SuppressFBWarnings(value = "BC", justification = "Mixin applies to multiple menu runtime types; static analyzer cannot model transformed type.")
     private RecipeType<StonecutterRecipe> xercablocks$useCarvingRecipeTypeForCarvingStation() {
-        return ((Object) this) instanceof CarvingStationMenu
+        return CarvingStationMenu.class.isInstance(this)
                 ? castRecipeType(Recipes.CARVING_TYPE)
                 : RecipeType.STONECUTTING;
     }
@@ -30,7 +31,7 @@ abstract class MixinStonecutterMenu {
     )
     @SuppressFBWarnings(value = "BC", justification = "Mixin applies to multiple menu runtime types; static analyzer cannot model transformed type.")
     private RecipeType<StonecutterRecipe> xercablocks$useCarvingRecipeTypeForCarvingQuickMove(Player player, int slot) {
-        return ((Object) this) instanceof CarvingStationMenu
+        return CarvingStationMenu.class.isInstance(this)
                 ? castRecipeType(Recipes.CARVING_TYPE)
                 : RecipeType.STONECUTTING;
     }

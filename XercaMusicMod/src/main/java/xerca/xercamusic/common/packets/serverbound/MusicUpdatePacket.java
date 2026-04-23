@@ -75,7 +75,7 @@ public record MusicUpdatePacket(FieldFlag availability, List<NoteEvent> notes, L
                 volumeMarkers = readVolumeMarkers(buf);
             }
 
-            return MusicUpdatePacket.create(
+            return create(
                     flag,
                     notes,
                     volumeMarkers,

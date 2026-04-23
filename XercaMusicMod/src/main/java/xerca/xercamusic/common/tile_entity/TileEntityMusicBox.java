@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -36,18 +37,18 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 public class TileEntityMusicBox extends BlockEntity {
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
     private final ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
-    private boolean isPlaying = false;
-    private boolean oldPoweredState = false;
-    private boolean isPowering = false;
+    private boolean isPlaying;
+    private boolean oldPoweredState;
+    private boolean isPowering;
     private boolean firstBlockUpdate = true;
     private ItemStack sheetStack = ItemStack.EMPTY;
     private IItemInstrument instrument;
     private byte bps;
     private float volume;
-    private int poweringAge = 0;
-    private int playingAge = 0;
-    private int length = 0;
-    private SoundController soundController = null;
+    private int poweringAge;
+    private int playingAge;
+    private int length;
+    private SoundController soundController;
     private static final String KEY_NOTE = "note";
     private static final String KEY_INS_ID = "instrument_id";
 
@@ -161,7 +162,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
         Level level = t.level;
         if (level != null) {
-            Direction rightSide = state.getValue(BlockMusicBox.FACING).getClockWise();
+            Direction rightSide = state.getValue(HorizontalDirectionalBlock.FACING).getClockWise();
             level.setBlockAndUpdate(t.worldPosition, state.setValue(BlockMusicBox.POWERING, true));
 
             BlockPos neighbor = t.worldPosition.relative(rightSide);

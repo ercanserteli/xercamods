@@ -38,9 +38,9 @@ import java.util.*;
 public class EntityCanvas extends HangingEntity {
     private String canvasTitle;
     private String canvasAuthor;
-    private int canvasGeneration = 0;
+    private int canvasGeneration;
     private boolean canvasSigned;
-    private int tickCounter1 = 0;
+    private int tickCounter1;
     private static final EntityDataAccessor<String> CANVAS_ID = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> CANVAS_VERSION = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Byte> CANVAS_TYPE_KEY = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);

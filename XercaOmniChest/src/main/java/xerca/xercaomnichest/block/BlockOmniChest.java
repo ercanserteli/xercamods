@@ -1,6 +1,7 @@
 package xerca.xercaomnichest.block;
 
 import com.mojang.serialization.MapCodec;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -39,7 +39,6 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercaomnichest.block_entity.BlockEntities;
@@ -48,10 +47,10 @@ import xerca.xercaomnichest.data.OmniChestInventory;
 import xerca.xercaomnichest.data.OmniChestSavedData;
 
 public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterloggedBlock {
-    public static final MapCodec<BlockOmniChest> CODEC = BlockBehaviour.simpleCodec(properties -> new BlockOmniChest());
+    public static final MapCodec<BlockOmniChest> CODEC = simpleCodec(properties -> new BlockOmniChest());
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    private static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+    private static final VoxelShape SHAPE = box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
     private static final Component CONTAINER_TITLE = Component.translatable("container.xercaomnichest.omni_chest");
 
     public BlockOmniChest() {

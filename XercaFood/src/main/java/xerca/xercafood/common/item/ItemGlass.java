@@ -1,5 +1,6 @@
 package xerca.xercafood.common.item;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -9,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.SoundEvents;
 
 public class ItemGlass extends Item {
@@ -27,7 +27,7 @@ public class ItemGlass extends Item {
         BlockPos pos = ctx.getClickedPos();
         BlockState state = ctx.getLevel().getBlockState(pos);
         if (ctx.getPlayer() != null && state.getBlock() == Blocks.SOUL_SAND &&
-                ctx.getClickedFace().equals(Direction.UP) &&
+                ctx.getClickedFace() == Direction.UP &&
                 ctx.getLevel().getBlockState(pos.above()).getBlock() == Blocks.BUBBLE_COLUMN
         ) {
             ctx.getItemInHand().shrink(1);

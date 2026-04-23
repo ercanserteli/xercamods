@@ -158,7 +158,7 @@ public class VolumeMarker {
         if (tag.contains(KEY_VOLUME_MARKERS)) {
             ListTag markerList = tag.getList(KEY_VOLUME_MARKERS, Tag.TAG_COMPOUND);
             for (int i = 0; i < markerList.size(); i++) {
-                markers.add(VolumeMarker.fromNBT(markerList.getCompound(i)));
+                markers.add(fromNBT(markerList.getCompound(i)));
             }
         }
     }

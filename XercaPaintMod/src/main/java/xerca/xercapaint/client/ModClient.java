@@ -95,7 +95,7 @@ public class ModClient implements ClientModInitializer {
             else return 1.0F;
         };
         ClampedItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
-                ((float) ItemPalette.basicColorCount(stack)) / 16.0F;
+                ItemPalette.basicColorCount(stack) / 16.0F;
         ItemProperties.register(Items.ITEM_CANVAS, Mod.id(DRAWN_PREDICATE_ID), drawn);
         ItemProperties.register(Items.ITEM_CANVAS_LARGE, Mod.id(DRAWN_PREDICATE_ID), drawn);
         ItemProperties.register(Items.ITEM_CANVAS_LONG, Mod.id(DRAWN_PREDICATE_ID), drawn);

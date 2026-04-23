@@ -21,17 +21,17 @@ public class BlockPiano extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape[] SHAPES = {
             Shapes.or(
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
-                    Block.box(0.0D, 10.0D, 7.0D, 16.0D, 16.0D, 16.0D)),
+                    box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
+                    box(0.0D, 10.0D, 7.0D, 16.0D, 16.0D, 16.0D)),
             Shapes.or(
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
-                    Block.box(0.0D, 10.0D, 0.0D, 16.0D, 16.0D, 9.0D)),
+                    box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
+                    box(0.0D, 10.0D, 0.0D, 16.0D, 16.0D, 9.0D)),
             Shapes.or(
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
-                    Block.box(7.0D, 10.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
+                    box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
+                    box(7.0D, 10.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             Shapes.or(
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
-                    Block.box(0.0D, 10.0D, 0.0D, 9.0D, 16.0D, 16.0D)),
+                    box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D),
+                    box(0.0D, 10.0D, 0.0D, 9.0D, 16.0D, 16.0D)),
     };
 
     public BlockPiano() {

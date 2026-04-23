@@ -35,12 +35,12 @@ import xerca.xercafood.common.item.Items;
 class BlockCheese extends Block {
     public static final int MAX_BITES = 3;
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, MAX_BITES);
-    protected static final VoxelShape[] SHAPE_BY_BITE = new VoxelShape[]{
-            Block.box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D),
-            Shapes.or(Block.box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
-                    Block.box(1.0D, 0.0D, 1.0D, 8.0D, 8.0D, 8.0D)),
-            Block.box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
-            Block.box(8.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D)
+    protected static final VoxelShape[] SHAPE_BY_BITE = {
+            box(1.0D, 0.0D, 1.0D, 15.0D, 8.0D, 15.0D),
+            Shapes.or(box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
+                    box(1.0D, 0.0D, 1.0D, 8.0D, 8.0D, 8.0D)),
+            box(1.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D),
+            box(8.0D, 0.0D, 8.0D, 15.0D, 8.0D, 15.0D)
     };
 
     public BlockCheese() {

@@ -34,7 +34,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!orgCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!freshCanvas.isEmpty() && !((ItemCanvas) freshCanvas.getItem()).getCanvasType().equals(((ItemCanvas) stack.getItem()).getCanvasType())) {
+                    if (!freshCanvas.isEmpty() && ((ItemCanvas) freshCanvas.getItem()).getCanvasType() != ((ItemCanvas) stack.getItem()).getCanvasType()) {
                         return false;
                     }
 
@@ -43,7 +43,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!freshCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!orgCanvas.isEmpty() && !((ItemCanvas) orgCanvas.getItem()).getCanvasType().equals(((ItemCanvas) stack.getItem()).getCanvasType())) {
+                    if (!orgCanvas.isEmpty() && ((ItemCanvas) orgCanvas.getItem()).getCanvasType() != ((ItemCanvas) stack.getItem()).getCanvasType()) {
                         return false;
                     }
 
@@ -70,7 +70,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!orgCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!freshCanvas.isEmpty() && !((ItemCanvas) freshCanvas.getItem()).getCanvasType().equals(((ItemCanvas) stack.getItem()).getCanvasType())) {
+                    if (!freshCanvas.isEmpty() && ((ItemCanvas) freshCanvas.getItem()).getCanvasType() != ((ItemCanvas) stack.getItem()).getCanvasType()) {
                         return ItemStack.EMPTY;
                     }
 
@@ -79,7 +79,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!freshCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!orgCanvas.isEmpty() && !((ItemCanvas) orgCanvas.getItem()).getCanvasType().equals(((ItemCanvas) stack.getItem()).getCanvasType())) {
+                    if (!orgCanvas.isEmpty() && ((ItemCanvas) orgCanvas.getItem()).getCanvasType() != ((ItemCanvas) stack.getItem()).getCanvasType()) {
                         return ItemStack.EMPTY;
                     }
 

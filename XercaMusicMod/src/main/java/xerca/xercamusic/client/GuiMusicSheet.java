@@ -126,7 +126,7 @@ public class GuiMusicSheet extends Screen {
     private int version;
     ArrayList<NoteEvent> notes = new ArrayList<>();
     ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
-    short lengthBeats = 0;
+    short lengthBeats;
     private byte bps = 8;
     private int bpm;
     int previewInstrument = -1;
@@ -144,14 +144,14 @@ public class GuiMusicSheet extends Screen {
     ArrayList<Byte> glissandoPendingPositions; // Beat index (1..note length) for each pending waypoint while editing
     private int renderMouseX = -1;
     private int renderMouseY = -1;
-    int sliderPosition = 0;
+    int sliderPosition;
     private int maxSliderPosition = 500;
     int currentOctavePos = 1;
     private float volume = 1.f;
-    static final int maxNoteLength = 120;  // Max note length in beats (byte max is 127)
-    boolean helpOn = false;
-    int helpScrollOffset = 0;
-    private int helpContentHeight = 0;
+    static final int MAX_PLACED_NOTE_LENGTH = 120;  // Max note length in beats (byte max is 127)
+    boolean helpOn;
+    int helpScrollOffset;
+    private int helpContentHeight;
     private final int[] helpSectionContentY = new int[7];
     private int helpPanelX, helpPanelY, helpPanelW, helpPanelBottom;
     private int helpContentTop, helpContentBottomY;
@@ -196,7 +196,7 @@ public class GuiMusicSheet extends Screen {
          "note.helpMisc1a", "note.helpMisc1b",
          "note.helpMisc2a", "note.helpMisc2b"}
     };
-    boolean rectSelection = false;  // Whether current selection is rectangular (note-bounded)
+    boolean rectSelection;  // Whether current selection is rectangular (note-bounded)
     byte rectSelectNoteTop;          // Highest note in rectangular selection
     byte rectSelectNoteBottom;       // Lowest note in rectangular selection
     byte rectSelectNoteStart;        // The note where rect selection started (for drag direction)
@@ -350,7 +350,7 @@ public class GuiMusicSheet extends Screen {
                 return;
             }
             try {
-                notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ClientStuff.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), ((float) volume) / 128.f, noteSound.pitch()));
+                notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ClientStuff.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), volume / 128.f, noteSound.pitch()));
             } catch (Exception e) {
                 Mod.LOGGER.error("Error playing sound", e);
             }
@@ -675,11 +675,8 @@ public class GuiMusicSheet extends Screen {
             }
         }
         // Click inside panel absorbs the click (keep help open)
-        if (mouseX >= helpPanelX && mouseX < helpPanelX + helpPanelW
-                && mouseY >= helpPanelY && mouseY < helpPanelBottom) {
-            return true;
-        }
-        return false;
+        return mouseX >= helpPanelX && mouseX < helpPanelX + helpPanelW
+                && mouseY >= helpPanelY && mouseY < helpPanelBottom;
     }
 
     /**
@@ -1879,7 +1876,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Component message) {
-            super(x, y, width, height, message, onClick, Button.DEFAULT_NARRATION);
+            super(x, y, width, height, message, onClick, DEFAULT_NARRATION);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
             this.xTexStart = xTexStart;
@@ -2146,7 +2143,7 @@ public class GuiMusicSheet extends Screen {
         public final Button buttonExit;
         private VolumeMarker marker;
         private final AbstractWidget[] children = new AbstractWidget[4];
-        private boolean changed = false;
+        private boolean changed;
 
         public MarkerEditBox(int x, int y, int w, int h, Component msg) {
             super(x, y, w, h, msg);

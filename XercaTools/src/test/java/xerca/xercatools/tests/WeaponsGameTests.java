@@ -218,7 +218,7 @@ public class WeaponsGameTests {
 
         float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
         helper.assertTrue(seconds > 1.0f, "Heavy I should increase full-use duration above 1.0s");
-        float expected = 1.0f + 1.0f * 0.1f;
+        float expected = 1.0f + 0.1f;
         helper.assertTrue(Math.abs(seconds - expected) < 0.001f,
                 "Heavy I full-use should be ~" + expected + "s, got " + seconds);
         helper.succeed();
@@ -234,7 +234,7 @@ public class WeaponsGameTests {
 
         float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
         helper.assertTrue(seconds < 1.0f, "Quick I should decrease full-use duration below 1.0s");
-        float expected = 1.0f - 1.0f * 0.12f;
+        float expected = 1.0f - 0.12f;
         helper.assertTrue(Math.abs(seconds - expected) < 0.001f,
                 "Quick I full-use should be ~" + expected + "s, got " + seconds);
         helper.succeed();
@@ -251,7 +251,7 @@ public class WeaponsGameTests {
 
         float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
         // heavy branch executes first and skips quick
-        float expected = 1.0f + 1.0f * 0.1f;
+        float expected = 1.0f + 0.1f;
         helper.assertTrue(Math.abs(seconds - expected) < 0.001f,
                 "Heavy should take precedence over Quick, expected " + expected + "s, got " + seconds);
         helper.succeed();

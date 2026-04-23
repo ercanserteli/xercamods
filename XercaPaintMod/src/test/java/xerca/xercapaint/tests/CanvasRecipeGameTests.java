@@ -29,7 +29,7 @@ public class CanvasRecipeGameTests {
     private record CanvasRecipeSpec(ResourceLocation recipeId, int width, int height, Item expectedResult) {
     }
 
-    private static final CanvasRecipeSpec[] SMALL_CANVAS_RECIPES = new CanvasRecipeSpec[]{
+    private static final CanvasRecipeSpec[] SMALL_CANVAS_RECIPES = {
             new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_long"), 2, 1, Items.ITEM_CANVAS_LONG),
             new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_tall"), 1, 2, Items.ITEM_CANVAS_TALL),
             new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_large"), 2, 2, Items.ITEM_CANVAS_LARGE)

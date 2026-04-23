@@ -1,5 +1,6 @@
 package xerca.xercablocks.block_entity;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -15,7 +16,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercablocks.block.BlockFunctionalBookcase;
 import xerca.xercablocks.menu.BookcaseMenu;
 

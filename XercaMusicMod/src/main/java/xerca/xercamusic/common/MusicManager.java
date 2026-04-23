@@ -48,8 +48,8 @@ public final class MusicManager {
     }
 
     public static List<NoteEvent> getFinishedNotesFromBuffer(UUID id) {
-        if (MusicManager.TEMP_NOTES_MAP.containsKey(id)) {
-            MusicManager.TempNotesBuffer buffer = MusicManager.TEMP_NOTES_MAP.get(id);
+        if (TEMP_NOTES_MAP.containsKey(id)) {
+            MusicManager.TempNotesBuffer buffer = TEMP_NOTES_MAP.get(id);
             if (buffer.isFinished()) {
                 try {
                     return buffer.joinParts();

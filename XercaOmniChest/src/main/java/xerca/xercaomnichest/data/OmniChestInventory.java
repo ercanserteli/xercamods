@@ -50,7 +50,7 @@ public class OmniChestInventory extends SimpleContainer {
 
     public boolean testPlayerChest(Player player, BlockEntityOmniChest chest) {
         BlockPos activePos = playerChests.get(player.getUUID());
-        return activePos != null && activePos.equals(chest.getBlockPos());
+        return chest.getBlockPos().equals(activePos);
     }
 
     @Override

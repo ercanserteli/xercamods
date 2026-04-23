@@ -38,9 +38,9 @@ import javax.annotation.Nullable;
 public class EntityEasel extends Entity {
     private static final int MAX_PAINTER_DISTANCE_SQR = 64;
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
-    private Player painter = null;
-    private Runnable dropDeferred = null;
-    private int dropWaitTicks = 0;
+    private Player painter;
+    private Runnable dropDeferred;
+    private int dropWaitTicks;
 
     static {
         DATA_CANVAS = SynchedEntityData.defineId(EntityEasel.class, EntityDataSerializers.ITEM_STACK);
@@ -118,7 +118,7 @@ public class EntityEasel extends Entity {
                     CloseGuiPacket pack = new CloseGuiPacket();
                     ServerPlayNetworking.send(serverPainter, pack);
                 }
-                setDropDeferred(() -> doDrop(entity, dropSelf));
+                dropDeferred = () -> doDrop(entity, dropSelf);
             }
         } else {
             doDrop(entity, dropSelf);
@@ -264,12 +264,12 @@ public class EntityEasel extends Entity {
             dropWaitTicks++;
             if (painter == null || dropWaitTicks > 80) {
                 dropDeferred.run();
-                setDropDeferred(null);
+                dropDeferred = null;
                 dropWaitTicks = 0;
             }
         }
         if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > MAX_PAINTER_DISTANCE_SQR)) {
-            setPainter(null);
+            painter = null;
         }
     }
 

@@ -89,7 +89,7 @@ public class SoundController extends Thread {
             NoteEvent firstEvent = notes.get(noteIdx);
             while (firstEvent.time > currentBeat) {
                 // Sleep until the absolute target time for the next beat
-                long targetNanos = songStartNanos + (long)(currentBeat + 1) * nanosPerBeat + pausedNanos;
+                long targetNanos = songStartNanos + (currentBeat + 1) * nanosPerBeat + pausedNanos;
                 sleepUntil(targetNanos);
                 currentBeat++;
                 updateActiveSounds(currentBeat);
@@ -251,7 +251,7 @@ public class SoundController extends Thread {
                 sleep(remainingMs - 8);
             } catch (InterruptedException e) {
                 Mod.LOGGER.warn("Interrupted while sleeping", e);
-                Thread.currentThread().interrupt();
+                currentThread().interrupt();
             }
         }
 
@@ -262,7 +262,7 @@ public class SoundController extends Thread {
 
         // Hot spin only the final ~1ms for precise timing
         while (System.nanoTime() < targetNanos) {
-            Thread.onSpinWait();
+            onSpinWait();
         }
     }
 
@@ -273,7 +273,7 @@ public class SoundController extends Thread {
             sleep(millis);
         } catch (InterruptedException e) {
             Mod.LOGGER.warn("Interrupted while sleeping", e);
-            Thread.currentThread().interrupt();
+            currentThread().interrupt();
         }
     }
 }

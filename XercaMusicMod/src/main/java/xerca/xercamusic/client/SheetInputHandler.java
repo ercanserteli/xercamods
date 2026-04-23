@@ -239,7 +239,7 @@ class SheetInputHandler {
                 }
             } else if (gui.currentlyAddedNote != null && validClick(mx, my)) {
                 int time = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
-                if (gui.currentlyAddedNote.time < time && time - gui.currentlyAddedNote.time <= GuiMusicSheet.maxNoteLength) {
+                if (gui.currentlyAddedNote.time < time && time - gui.currentlyAddedNote.time <= GuiMusicSheet.MAX_PLACED_NOTE_LENGTH) {
                     gui.currentlyAddedNote.length = (byte) (time - gui.currentlyAddedNote.time);
                 }
             }

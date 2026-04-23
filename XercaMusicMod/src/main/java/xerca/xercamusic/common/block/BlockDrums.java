@@ -19,10 +19,10 @@ import xerca.xercamusic.common.item.Items;
 public class BlockDrums extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape[] SHAPES = {
-            Block.box(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 15.0D),
-            Block.box(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 14.0D),
-            Block.box(2.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D),
-            Block.box(1.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D),
+            box(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 15.0D),
+            box(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 14.0D),
+            box(2.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D),
+            box(1.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D),
     };
 
     public BlockDrums() {

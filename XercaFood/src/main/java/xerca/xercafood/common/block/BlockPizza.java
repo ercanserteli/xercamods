@@ -39,12 +39,12 @@ public class BlockPizza extends Block {
     public static final int MAX_BITES = 3;
     public final int hungerPerBite;
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, MAX_BITES);
-    protected static final VoxelShape[] SHAPE_BY_BITE = new VoxelShape[]{
-            Block.box(1.0D, 0.0D, 1.0D, 15.0D, 2.0D, 15.0D),
-            Shapes.or(Block.box(1.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D),
-                    Block.box(1.0D, 0.0D, 1.0D, 8.0D, 2.0D, 8.0D)),
-            Block.box(1.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D),
-            Block.box(8.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D)
+    protected static final VoxelShape[] SHAPE_BY_BITE = {
+            box(1.0D, 0.0D, 1.0D, 15.0D, 2.0D, 15.0D),
+            Shapes.or(box(1.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D),
+                    box(1.0D, 0.0D, 1.0D, 8.0D, 2.0D, 8.0D)),
+            box(1.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D),
+            box(8.0D, 0.0D, 8.0D, 15.0D, 2.0D, 15.0D)
     };
 
     public BlockPizza(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
@@ -52,7 +52,7 @@ public class BlockPizza extends Block {
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
-        this.hungerPerBite = 1 + (slot1.equals(Ingredient.EMPTY) ? 0 : 1) + (slot2.equals(Ingredient.EMPTY) ? 0 : 1) + (slot3.equals(Ingredient.EMPTY) ? 0 : 1);
+        this.hungerPerBite = 1 + (slot1 == Ingredient.EMPTY ? 0 : 1) + (slot2 == Ingredient.EMPTY ? 0 : 1) + (slot3 == Ingredient.EMPTY ? 0 : 1);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class BlockPizza extends Block {
     }
 
     public static boolean isAllEmpty(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
-        return slot1.equals(BlockPizza.Ingredient.EMPTY) && slot2.equals(BlockPizza.Ingredient.EMPTY) && slot3.equals(BlockPizza.Ingredient.EMPTY);
+        return slot1 == Ingredient.EMPTY && slot2 == Ingredient.EMPTY && slot3 == Ingredient.EMPTY;
     }
 
     public static String postfix(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
@@ -133,6 +133,6 @@ public class BlockPizza extends Block {
     }
 
     private static String itn(BlockPizza.Ingredient ingredient) {
-        return ingredient.equals(BlockPizza.Ingredient.EMPTY) ? "" : "_" + ingredient.name().toLowerCase();
+        return ingredient == Ingredient.EMPTY ? "" : "_" + ingredient.name().toLowerCase();
     }
 }

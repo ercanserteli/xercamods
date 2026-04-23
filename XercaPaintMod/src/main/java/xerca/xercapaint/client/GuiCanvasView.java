@@ -27,7 +27,7 @@ public class GuiCanvasView extends Screen {
     private int[] pixels;
     private String authorName = "";
     private String canvasTitle = "";
-    private int generation = 0;
+    private int generation;
     private final EntityEasel easel;
     private final Player player;
 
@@ -55,7 +55,7 @@ public class GuiCanvasView extends Screen {
     @Override
     public void init() {
         canvasX = (this.width - canvasWidth) / 2;
-        if (canvasType.equals(CanvasType.LONG)) {
+        if (canvasType == CanvasType.LONG) {
             canvasY += 40;
         }
     }

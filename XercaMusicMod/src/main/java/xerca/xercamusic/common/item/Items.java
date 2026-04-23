@@ -49,7 +49,7 @@ public final class Items {
     public static final Item MUSIC_SHEET = new ItemMusicSheet();
 
     public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(Items.GUITAR))
+            .icon(() -> new ItemStack(GUITAR))
             .displayItems((params, output) -> {
                 output.accept(MUSIC_SHEET);
                 output.accept(GUITAR);

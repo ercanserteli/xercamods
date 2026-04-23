@@ -100,18 +100,18 @@ public abstract class BasePalette extends Screen {
     static final float BASIC_COLOR_RADIUS = 11.f;
     static final float CUSTOM_COLOR_RADIUS = 6.5f;
 
-    boolean isPickingColor = false;
-    boolean isCarryingColor = false;
-    boolean isCarryingWater = false;
-    boolean canvasDirty = false;
-    boolean paletteDirty = false;
+    boolean isPickingColor;
+    boolean isCarryingColor;
+    boolean isCarryingWater;
+    boolean canvasDirty;
+    boolean paletteDirty;
     PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
     PaletteUtil.Color currentColor = BASIC_COLORS[0];
     final PaletteUtil.CustomColor[] customColors;
     final boolean[] basicColorFlags;
-    boolean paletteComplete = false;
-    boolean isCarryingPalette = false;
+    boolean paletteComplete;
+    boolean isCarryingPalette;
 
     BasePalette(Component titleIn, ItemStack paletteStack) {
         super(titleIn);

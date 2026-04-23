@@ -28,6 +28,7 @@ import xerca.xercaconfetti.entity.EntityConfettiBall;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,9 +67,7 @@ public final class ConfettiBallGameTests {
 
     private static CraftingInput craftingGrid(int width, int height, ItemStack... stacks) {
         List<ItemStack> list = new ArrayList<>(stacks.length);
-        for (ItemStack stack : stacks) {
-            list.add(stack);
-        }
+        Collections.addAll(list, stacks);
         return CraftingInput.of(width, height, list);
     }
 

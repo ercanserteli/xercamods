@@ -1,5 +1,6 @@
 package xerca.xercatools.crafting;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -11,7 +12,6 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercatools.item.ItemFlask;
 import xerca.xercatools.item.Items;
 

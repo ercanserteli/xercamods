@@ -77,7 +77,7 @@ public class NoteEvent implements Serializable {
     public static void fillArrayFromNBT(List<NoteEvent> noteEvents, CompoundTag tag) {
         ListTag notesTag = tag.getList(KEY_NOTES, Tag.TAG_COMPOUND);
         for (int i = 0; i < notesTag.size(); i++) {
-            noteEvents.add(NoteEvent.fromNBT(notesTag.getCompound(i)));
+            noteEvents.add(fromNBT(notesTag.getCompound(i)));
         }
         sortNotes(noteEvents);
         removeDuplicates(noteEvents);

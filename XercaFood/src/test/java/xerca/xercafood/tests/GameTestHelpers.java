@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import xerca.xercafood.common.Mod;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,7 +83,7 @@ class GameTestHelpers {
 
     static CraftingInput craftingGrid(int width, int height, ItemStack... stacks) {
         List<ItemStack> list = new ArrayList<>(stacks.length);
-        for (ItemStack stack : stacks) list.add(stack);
+        Collections.addAll(list, stacks);
         return CraftingInput.of(width, height, list);
     }
 

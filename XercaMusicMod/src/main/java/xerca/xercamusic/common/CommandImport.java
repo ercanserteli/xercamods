@@ -210,7 +210,7 @@ public final class CommandImport {
         }
 
         ItemStack mainHandItem = player.getMainHandItem();
-        if (!(mainHandItem.getItem() instanceof ItemMusicSheet) || !ItemMusicSheet.isEmptySheet(mainHandItem)) {
+        if (!(mainHandItem.getItem() instanceof ItemMusicSheet) || !isEmptySheet(mainHandItem)) {
             player.sendSystemMessage(translatable("xercamusic.import.fail.1").withStyle(ChatFormatting.RED));
             return false;
         }

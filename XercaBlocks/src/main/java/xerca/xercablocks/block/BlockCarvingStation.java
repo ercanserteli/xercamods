@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import xerca.xercablocks.menu.CarvingStationMenu;
 
 public class BlockCarvingStation extends HorizontalDirectionalBlock {
-    public static final MapCodec<BlockCarvingStation> CODEC = BlockBehaviour.simpleCodec(properties -> new BlockCarvingStation());
+    public static final MapCodec<BlockCarvingStation> CODEC = simpleCodec(properties -> new BlockCarvingStation());
     private static final Component CONTAINER_NAME = Component.translatable("container.xercablocks.carving_station");
 
     public BlockCarvingStation() {

@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SoundEvents {
-    public static SoundEvent TICK = null;
-    public static SoundEvent METRONOME_SET = null;
-    public static SoundEvent OPEN_SCROLL = null;
-    public static SoundEvent CLOSE_SCROLL = null;
+    public static SoundEvent TICK;
+    public static SoundEvent METRONOME_SET;
+    public static SoundEvent OPEN_SCROLL;
+    public static SoundEvent CLOSE_SCROLL;
 
     // Instrument sounds
     public static List<Pair<Integer, SoundEvent>> cymbals;
@@ -62,6 +62,8 @@ public class SoundEvents {
     private static final String NAME_FRENCH_HORN = "french_horn";
     private static final String NAME_BASS_GUITAR = "bass_guitar";
     private static final String NAME_HARP_MC = "harp_mc";
+    private static final String NAME_REDSTONE_PIANO = "redstone_piano";
+    private static final String NAME_ORGAN = "organ";
 
     private SoundEvents() {
     }
@@ -187,32 +189,12 @@ public class SoundEvents {
         addSound(trumpets, "trumpet", 84);
 
         // Eredstone Piano samples (MIDI 24-96, step 6)
-        addSound(redstone_pianos, "redstone_piano", 24);
-        addSound(redstone_pianos, "redstone_piano", 30);
-        addSound(redstone_pianos, "redstone_piano", 36);
-        addSound(redstone_pianos, "redstone_piano", 42);
-        addSound(redstone_pianos, "redstone_piano", 48);
-        addSound(redstone_pianos, "redstone_piano", 54);
-        addSound(redstone_pianos, "redstone_piano", 60);
-        addSound(redstone_pianos, "redstone_piano", 66);
-        addSound(redstone_pianos, "redstone_piano", 72);
-        addSound(redstone_pianos, "redstone_piano", 78);
-        addSound(redstone_pianos, "redstone_piano", 84);
-        addSound(redstone_pianos, "redstone_piano", 90);
-        addSound(redstone_pianos, "redstone_piano", 96);
+        addFixed(redstone_pianos, NAME_REDSTONE_PIANO,
+                24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96);
 
         // Organ samples (MIDI 36-96, step 6)
-        addSound(organs, "organ", 36);
-        addSound(organs, "organ", 42);
-        addSound(organs, "organ", 48);
-        addSound(organs, "organ", 54);
-        addSound(organs, "organ", 60);
-        addSound(organs, "organ", 66);
-        addSound(organs, "organ", 72);
-        addSound(organs, "organ", 78);
-        addSound(organs, "organ", 84);
-        addSound(organs, "organ", 90);
-        addSound(organs, "organ", 96);
+        addFixed(organs, NAME_ORGAN,
+                36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96);
 
         // Instrument SoundEvent setting
         ((IItemInstrument) Items.CYMBAL).setSounds(cymbals);

@@ -7,7 +7,7 @@ import xerca.xercapaint.SoundEvents;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class BrushSound extends AbstractTickableSoundInstance {
-    private int age = 0;
+    private int age;
     private int fadingTicks = 4;
 
     private static final float[] FADE_VOLUMES = {0.0f, 0.3f, 0.7f};

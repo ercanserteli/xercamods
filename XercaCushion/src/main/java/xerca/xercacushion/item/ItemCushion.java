@@ -58,7 +58,7 @@ public class ItemCushion extends Item {
 
         if (!level.isClientSide) {
             EntityCushion cushion = new EntityCushion(level, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, variant);
-            float yaw = (float) Mth.floor((Mth.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
+            float yaw = Mth.floor((Mth.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
             cushion.moveTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, yaw, 0.0F);
             level.addFreshEntity(cushion);
             level.playSound(null, cushion.getX(), cushion.getY(), cushion.getZ(), SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);

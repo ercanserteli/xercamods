@@ -1,5 +1,6 @@
 package xerca.xercafood.common.item;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.SoundEvents;
 
@@ -42,10 +42,9 @@ public class ItemGoldenCupcake extends Item {
     @Override
     @SuppressFBWarnings(value = "SF", justification = "n is bounded by nextInt(5); all values are covered.")
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entity) {
-        if (!(entity instanceof Player)) {
+        if (!(entity instanceof Player player)) {
             return stack;
         }
-        Player player = (Player) entity;
 
         if (!worldIn.isClientSide) {
             int n = worldIn.random.nextInt(5);

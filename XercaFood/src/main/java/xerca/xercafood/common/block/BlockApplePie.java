@@ -5,15 +5,15 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CakeBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 class BlockApplePie extends CakeBlock {
     public BlockApplePie() {
-        super(Block.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.CAKE));
+        super(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.CAKE));
     }
 
     @Override
