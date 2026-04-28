@@ -3,7 +3,6 @@ package xerca.xercafood.common.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -88,7 +87,7 @@ public class BlockTeapot extends Block {
     @Override
     public ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (heldItem.getItem() == Items.TEACUP && state.getValue(TEA_AMOUNT) > 0) {
-            if (player instanceof ServerPlayer) {
+            if (!worldIn.isClientSide) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
                 heldItem.shrink(1);
                 player.addItem(new ItemStack(Items.FULL_TEACUP_0));

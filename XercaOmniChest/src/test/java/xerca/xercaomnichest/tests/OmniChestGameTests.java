@@ -5,7 +5,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import xerca.xercaomnichest.Mod;
@@ -67,8 +68,8 @@ public final class OmniChestGameTests {
         OmniChestInventory inventory = BlockOmniChest.getContainer(helper.getLevel().getServer());
         inventory.setItem(0, new ItemStack(net.minecraft.world.item.Items.DIAMOND, 7));
 
-        ServerPlayer firstPlayer = helper.makeMockServerPlayerInLevel();
-        ServerPlayer secondPlayer = helper.makeMockServerPlayerInLevel();
+        Player firstPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
+        Player secondPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
 
         BlockEntity firstBlockEntity = helper.getLevel().getBlockEntity(firstPos);
         BlockEntity secondBlockEntity = helper.getLevel().getBlockEntity(secondPos);
@@ -100,8 +101,8 @@ public final class OmniChestGameTests {
         helper.getLevel().setBlockAndUpdate(firstPos, Blocks.OMNI_CHEST.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(secondPos, Blocks.OMNI_CHEST.defaultBlockState());
 
-        ServerPlayer firstPlayer = helper.makeMockServerPlayerInLevel();
-        ServerPlayer secondPlayer = helper.makeMockServerPlayerInLevel();
+        Player firstPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
+        Player secondPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
         OmniChestInventory inventory = BlockOmniChest.getContainer(helper.getLevel().getServer());
 
         BlockEntityOmniChest firstChest = (BlockEntityOmniChest) helper.getLevel().getBlockEntity(firstPos);
@@ -134,7 +135,7 @@ public final class OmniChestGameTests {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());
 
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         BlockState omniChestState = helper.getLevel().getBlockState(pos);
         BlockState enderChestState = net.minecraft.world.level.block.Blocks.ENDER_CHEST.defaultBlockState();
 

@@ -8,7 +8,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
@@ -50,7 +52,7 @@ public final class CommandImport {
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, List<NoteEvent> notes, UUID importBufferId, ServerPlayer player) {
+    public static void doImport(CompoundTag tag, List<NoteEvent> notes, UUID importBufferId, Player player) {
         if (tag == null) {
             player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken sheet file: missing tag");
@@ -73,7 +75,7 @@ public final class CommandImport {
         player.sendSystemMessage(translatable("xercamusic.import.success").withStyle(ChatFormatting.GREEN));
     }
 
-    private static boolean sanitizeTag(CompoundTag tag, ServerPlayer player) {
+    private static boolean sanitizeTag(CompoundTag tag, Player player) {
         boolean hasAuthor = tag.contains(KEY_AUTHOR, 8);
         boolean hasTitle = tag.contains(KEY_TITLE, 8);
         boolean hasLegacyMusic = tag.contains(KEY_MUSIC_OLD);
@@ -125,7 +127,13 @@ public final class CommandImport {
         return true;
     }
 
-    private static boolean loadAndSendMusicData(CompoundTag tag, List<NoteEvent> notes, UUID importBufferId, ServerPlayer player) {
+    private static boolean loadAndSendMusicData(CompoundTag tag, List<NoteEvent> notes, UUID importBufferId, Player player) {
+        MinecraftServer server = player.level().getServer();
+        if (server == null) {
+            Mod.LOGGER.warn("Cannot import music data without a server");
+            return false;
+        }
+
         if (tag.contains(KEY_ID) && tag.contains(KEY_VERSION)) {
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
@@ -144,21 +152,25 @@ public final class CommandImport {
                 return false;
             }
 
-            MusicManager.setMusicData(id, ver, notes, volumeMarkers, player.server);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, notes, volumeMarkers));
+            MusicManager.setMusicData(id, ver, notes, volumeMarkers, server);
+            if (player instanceof ServerPlayer serverPlayer) {
+                sendToClient(serverPlayer, new MusicDataResponsePacket(id, ver, notes, volumeMarkers));
+            }
             return true;
         }
 
         if (tag.contains(KEY_MUSIC_OLD)) {
             // old version
             Mod.LOGGER.info("Old music file version");
-            List<NoteEvent> converted = convertFromOld(tag, player.server);
+            List<NoteEvent> converted = convertFromOld(tag, server);
             if (!validateNotes(converted, player)) {
                 return false;
             }
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, converted, null));
+            if (player instanceof ServerPlayer serverPlayer) {
+                sendToClient(serverPlayer, new MusicDataResponsePacket(id, ver, converted, null));
+            }
             return true;
         }
 
@@ -172,7 +184,7 @@ public final class CommandImport {
         return volumeMarkers.isEmpty() ? null : volumeMarkers;
     }
 
-    private static boolean validateNotes(List<NoteEvent> notes, ServerPlayer player) {
+    private static boolean validateNotes(List<NoteEvent> notes, Player player) {
         for (NoteEvent note : notes) {
             int noteLength = note.length & 0xFF;
             byte[] glissandoWaypoints = note.getEffectiveWaypoints();
@@ -201,7 +213,7 @@ public final class CommandImport {
         return true;
     }
 
-    private static boolean giveImportedSheetToPlayer(CompoundTag tag, ServerPlayer player) {
+    private static boolean giveImportedSheetToPlayer(CompoundTag tag, Player player) {
         if (player.isCreative()) {
             ItemStack itemStack = new ItemStack(Items.MUSIC_SHEET);
             importIntoStack(itemStack, tag);

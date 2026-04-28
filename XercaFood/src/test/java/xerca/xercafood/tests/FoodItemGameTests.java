@@ -3,10 +3,11 @@ package xerca.xercafood.tests;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import xerca.xercafood.common.item.Items;
@@ -17,7 +18,7 @@ public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void rottenBurgerLowersHungerAndCanApplyPoison(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getFoodData().setFoodLevel(20);
         player.getFoodData().setSaturation(0.0f);
 
@@ -29,7 +30,7 @@ public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void ultimateBurgerAppliesSaturationEffect(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getFoodData().setFoodLevel(10);
         new ItemStack(Items.ULTIMATE_BURGER).getItem().finishUsingItem(new ItemStack(Items.ULTIMATE_BURGER), helper.getLevel(), player);
         helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.SATURATION), "Expected ultimate burger to apply saturation");
@@ -38,7 +39,7 @@ public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void chorusCupcakeTeleportsPlayer(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 before = player.position();
         new ItemStack(Items.ENDER_CUPCAKE).getItem().finishUsingItem(new ItemStack(Items.ENDER_CUPCAKE), helper.getLevel(), player);
         double movedSq = player.position().distanceToSqr(before);
@@ -48,7 +49,7 @@ public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void goldenCupcakeProducesRandomOutcomes(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         boolean sawLevitation = false;
         boolean sawJump = false;
         boolean sawBlindness = false;
@@ -86,7 +87,7 @@ public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void teaUseDurationAndDrinkEffectsAreCorrect(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         helper.assertTrue(Items.FULL_TEACUP_0.getUseDuration(new ItemStack(Items.FULL_TEACUP_0), player) == 64, "Expected teacup drink time to be 64 ticks");
         Items.FULL_TEACUP_0.finishUsingItem(new ItemStack(Items.FULL_TEACUP_0), helper.getLevel(), player);
         helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.DIG_SPEED), "Expected tea drinking to grant haste");
@@ -95,7 +96,7 @@ public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void tomatoProjectileHitDamagesEntity(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Zombie zombie = new Zombie(helper.getLevel());
         zombie.setPos(player.getX() + 2.0, player.getY(), player.getZ());
         helper.getLevel().addFreshEntity(zombie);

@@ -6,9 +6,10 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import xerca.xercafood.common.Mod;
@@ -77,7 +78,7 @@ public class BlockGameTests {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, xerca.xercafood.common.block.Blocks.VAT.defaultBlockState());
 
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         BlockState state = helper.getLevel().getBlockState(pos);
 
         player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
@@ -124,7 +125,7 @@ public class BlockGameTests {
         helper.getLevel().setBlockAndUpdate(applePiePos, applePieBlock.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(berryPiePos, berryPieBlock.defaultBlockState());
 
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
 
         float cakeProgress = helper.getLevel().getBlockState(cakePos).getDestroyProgress(player, helper.getLevel(), cakePos);
@@ -148,7 +149,7 @@ public class BlockGameTests {
                 .get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_sweet_berry_pie"));
         helper.getLevel().setBlockAndUpdate(applePiePos, applePieBlock.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(berryPiePos, berryPieBlock.defaultBlockState());
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getFoodData().setFoodLevel(0);
 
         for (int i = 0; i < 7; i++) {
@@ -171,7 +172,7 @@ public class BlockGameTests {
         net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "cheese_wheel"));
         helper.getLevel().setBlockAndUpdate(cheesePos, cheeseBlock.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(pizzaPos, xerca.xercafood.common.block.Blocks.PIZZA.defaultBlockState());
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getFoodData().setFoodLevel(0);
 
         for (int i = 0; i < 4; i++) {
@@ -192,7 +193,7 @@ public class BlockGameTests {
         BlockPos cheesePos = helper.absolutePos(new BlockPos(1, 2, 1));
         net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "cheese_wheel"));
         helper.getLevel().setBlockAndUpdate(cheesePos, cheeseBlock.defaultBlockState());
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack knife = new ItemStack(Items.KNIFE);
         useBlockWithItem(helper, cheesePos, player, knife);
 
@@ -204,7 +205,7 @@ public class BlockGameTests {
     public static void vatMilkToCheeseConversionFlowWorks(GameTestHelper helper) {
         BlockPos vatPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(vatPos, xerca.xercafood.common.block.Blocks.VAT.defaultBlockState());
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack milkBucket = new ItemStack(net.minecraft.world.item.Items.MILK_BUCKET);
 
         useBlockWithItem(helper, vatPos, player, milkBucket);
@@ -225,7 +226,7 @@ public class BlockGameTests {
         helper.getLevel().setBlockAndUpdate(donerPos, Blocks.IRON_BARS.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(donerPos.below(), Blocks.CAMPFIRE.defaultBlockState().setValue(net.minecraft.world.level.block.CampfireBlock.LIT, true));
         helper.getLevel().setBlockAndUpdate(donerPos.east(), Blocks.REDSTONE_BLOCK.defaultBlockState());
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 
         ItemStack mutton = new ItemStack(net.minecraft.world.item.Items.MUTTON, 4);
         player.getInventory().setItem(player.getInventory().selected, mutton);
@@ -295,7 +296,7 @@ public class BlockGameTests {
     public static void teapotBlockInteractionFillsCup(GameTestHelper helper) {
         BlockPos teapotPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(teapotPos, xerca.xercafood.common.block.Blocks.BLOCK_TEAPOT.defaultBlockState().setValue(xerca.xercafood.common.block.BlockTeapot.TEA_AMOUNT, 2));
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack cup = new ItemStack(Items.TEACUP);
         player.getInventory().setItem(player.getInventory().selected, cup);
 

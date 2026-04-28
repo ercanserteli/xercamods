@@ -9,7 +9,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -239,10 +238,8 @@ public final class MusicRegressionGameTests {
         return stack;
     }
 
-    private static ServerPlayer makeMockServerPlayer(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
-        player.setGameMode(GameType.SURVIVAL);
-        return player;
+    private static Player makeMockSurvivalPlayer(GameTestHelper helper) {
+        return helper.makeMockPlayer(GameType.SURVIVAL);
     }
 
     private static Path exportPath(String filename) {
@@ -494,7 +491,7 @@ public final class MusicRegressionGameTests {
         markers.add(new VolumeMarker((short) 0, (short) 6, (byte) 40, (byte) 100, (byte) 60, (byte) 72));
         MusicManagerClient.setMusicData(id, version, notes, markers);
 
-        ServerPlayer exporter = makeMockServerPlayer(helper);
+        Player exporter = makeMockSurvivalPlayer(helper);
         exporter.setItemSlot(EquipmentSlot.MAINHAND,
                 createSheetStack(id, version, 1, 12, 8, 0.75f, "signed_export", "tester"));
 
@@ -519,7 +516,7 @@ public final class MusicRegressionGameTests {
         helper.assertTrue(exportedMarkers.size() == markers.size(),
                 "Expected signed export to write all volume markers");
 
-        ServerPlayer importer = makeMockServerPlayer(helper);
+        Player importer = makeMockSurvivalPlayer(helper);
         importer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.MUSIC_SHEET));
         CommandImport.doImport(exportedTag, exportedNotes, id, importer);
 
@@ -563,7 +560,7 @@ public final class MusicRegressionGameTests {
         markers.add(new VolumeMarker((short) 0, (short) 8, (byte) 32, (byte) 96, (byte) 58, (byte) 69));
         MusicManagerClient.setMusicData(originalId, originalVersion, notes, markers);
 
-        ServerPlayer exporter = makeMockServerPlayer(helper);
+        Player exporter = makeMockSurvivalPlayer(helper);
         exporter.setItemSlot(EquipmentSlot.MAINHAND,
                 createSheetStack(originalId, originalVersion, 0, 16, 12, 1.0f, null, null));
 
@@ -590,7 +587,7 @@ public final class MusicRegressionGameTests {
                         new ArrayList<>(exportedNotes.subList(1, exportedNotes.size())))),
                 "Expected the second multipart note payload to complete the import buffer");
 
-        ServerPlayer importer = makeMockServerPlayer(helper);
+        Player importer = makeMockSurvivalPlayer(helper);
         importer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.MUSIC_SHEET));
         CommandImport.doImport(exportedTag, null, originalId, importer);
 

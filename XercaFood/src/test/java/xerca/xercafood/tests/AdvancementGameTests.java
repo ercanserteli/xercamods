@@ -16,7 +16,7 @@ public class AdvancementGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void teaAdvancementOnlyTriggersForHotTeapots(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        ServerPlayer player = makeServerPlayer(helper);
         AdvancementHolder advancement = requireAdvancement(helper, advancementId("achievements/brew_tea"));
 
         helper.assertFalse(advancementProgress(player, advancement).isDone(), "Expected brew tea advancement to start locked");
@@ -31,7 +31,7 @@ public class AdvancementGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void recipeAdvancementUnlocksTomatoSlicingRecipe(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        ServerPlayer player = makeServerPlayer(helper);
         ResourceLocation tomatoSlicesRecipeId = recipeId("tomato_slices");
         AdvancementHolder advancement = requireAdvancement(helper, advancementId("recipes/tomato_slices"));
 
@@ -47,7 +47,7 @@ public class AdvancementGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void advancementTriggersForUltimateBurgerTomatoHitAndGoldenCupcake(GameTestHelper helper) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        ServerPlayer player = makeServerPlayer(helper);
         AdvancementHolder ultimateBurgerAdv = requireAdvancement(helper, advancementId("achievements/fat_fuck"));
         AdvancementHolder tomatoShotAdv = requireAdvancement(helper, advancementId("achievements/shoot_tomato"));
         AdvancementHolder cupcakeAdv = requireAdvancement(helper, advancementId("achievements/cupcake"));

@@ -8,6 +8,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.Item;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -85,7 +87,7 @@ public final class BlocksGameTests {
     private static void assertBreaksFasterWithPickaxeThanByHand(GameTestHelper helper, BlockState state, BlockPos pos, String description) {
         helper.getLevel().setBlockAndUpdate(pos, state);
 
-        var player = helper.makeMockServerPlayerInLevel();
+        var player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
         float handProgress = state.getDestroyProgress(player, helper.getLevel(), pos);
 
@@ -95,7 +97,7 @@ public final class BlocksGameTests {
         helper.assertTrue(pickaxeProgress > handProgress, "Expected " + description + " to break faster with a pickaxe than by hand");
     }
 
-    private static BlockState ropePlacementState(GameTestHelper helper, net.minecraft.server.level.ServerPlayer player, BlockPos relativePos) {
+    private static BlockState ropePlacementState(GameTestHelper helper, Player player, BlockPos relativePos) {
         BlockPos absolutePos = helper.absolutePos(relativePos);
         player.getInventory().setItem(player.getInventory().selected, new ItemStack(Items.ROPE));
         BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(absolutePos), Direction.UP, absolutePos, false);
@@ -339,7 +341,7 @@ public final class BlocksGameTests {
         BlockState state = modBlock("carved_oak_1").defaultBlockState();
         helper.getLevel().setBlockAndUpdate(pos, state);
 
-        var player = helper.makeMockServerPlayerInLevel();
+        var player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
         float handProgress = state.getDestroyProgress(player, helper.getLevel(), pos);
 
@@ -377,7 +379,7 @@ public final class BlocksGameTests {
         BlockPos ropePos = new BlockPos(1, 2, 1);
         BlockPos ropeBelowPos = new BlockPos(1, 1, 1);
 
-        var player = helper.makeMockServerPlayerInLevel();
+        var player = helper.makeMockPlayer(GameType.SURVIVAL);
         helper.getLevel().setBlockAndUpdate(helper.absolutePos(ropePos), ropePlacementState(helper, player, ropePos));
         helper.setBlock(new BlockPos(2, 2, 1), net.minecraft.world.level.block.Blocks.STONE);
 
@@ -402,7 +404,7 @@ public final class BlocksGameTests {
         BlockState state = helper.getLevel().getBlockState(ropePos);
         helper.assertTrue(state.is(BlockTags.CLIMBABLE), "Expected rope to be in the minecraft:climbable block tag");
 
-        var player = helper.makeMockServerPlayerInLevel();
+        var player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.setPos(helper.absoluteVec(new Vec3(1.5D, 2.05D, 1.5D)));
         helper.assertTrue(player.onClimbable(), "Expected players standing in rope to treat it as climbable");
         helper.succeed();

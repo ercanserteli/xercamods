@@ -4,12 +4,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import xerca.xercafood.common.item.Items;
@@ -278,7 +279,7 @@ public class RecipeGameTests {
         BlockPos soulSandPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(soulSandPos, net.minecraft.world.level.block.Blocks.SOUL_SAND.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(soulSandPos.above(), net.minecraft.world.level.block.Blocks.BUBBLE_COLUMN.defaultBlockState());
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack glass = new ItemStack(Items.GLASS);
         player.getInventory().setItem(player.getInventory().selected, glass);
 
