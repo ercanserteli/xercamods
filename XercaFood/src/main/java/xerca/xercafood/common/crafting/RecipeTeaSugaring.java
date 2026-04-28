@@ -9,11 +9,12 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.item.ItemTeacup;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaSugaring extends CustomRecipe {
-    private record ParsedInput(ItemStack teacupStack, ItemTeacup teacup, int sugarCount, boolean valid) {
+    private record ParsedInput(ItemStack teacupStack, @Nullable ItemTeacup teacup, int sugarCount, boolean valid) {
     }
 
     @SuppressFBWarnings(value = "SF", justification = "sugarAmount is constrained to 0..6 by recipe logic.")

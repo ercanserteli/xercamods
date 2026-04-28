@@ -12,7 +12,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
@@ -105,7 +105,7 @@ public abstract class BasePalette extends Screen {
     boolean isCarryingWater;
     boolean canvasDirty;
     boolean paletteDirty;
-    PaletteUtil.Color carriedColor;
+    @Nullable PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
     PaletteUtil.Color currentColor = BASIC_COLORS[0];
     final PaletteUtil.CustomColor[] customColors;
@@ -142,7 +142,7 @@ public abstract class BasePalette extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         RenderSystem.setShaderTexture(0, PALETTE_TEXTURES);
@@ -293,7 +293,7 @@ public abstract class BasePalette extends Screen {
                             customColor.reset();
                             playSound(SoundEvents.WATER_DROP);
                         } else {
-                            if (carriedCustomColorId != i) {
+                            if (carriedCustomColorId != i && carriedColor != null) {
                                 customColor.mix(carriedColor);
                                 currentColor = customColor.getColor();
                                 playSound(SoundEvents.MIX);

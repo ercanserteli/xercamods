@@ -29,7 +29,6 @@ import xerca.xercafood.common.entity.Entities;
 import xerca.xercafood.common.entity.EntityTomato;
 import xerca.xercafood.common.item.Items;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class Mod implements ModInitializer {
@@ -51,9 +50,8 @@ public class Mod implements ModInitializer {
     public void onInitialize() {
         // Making tomato dispensable by dispenser
         DispenserBlock.registerBehavior(Items.TOMATO, new DefaultDispenseItemBehavior() {
-            @Nonnull
             @Override
-            protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stackIn) {
+            protected ItemStack execute(BlockSource source, ItemStack stackIn) {
                 Direction direction = source.state().getValue(DispenserBlock.FACING);
                 Position position = DispenserBlock.getDispensePosition(source);
                 Projectile projectile = new EntityTomato(source.level(), position.x(), position.y(), position.z());

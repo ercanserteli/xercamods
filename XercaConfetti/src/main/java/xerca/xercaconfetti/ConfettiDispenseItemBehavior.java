@@ -6,7 +6,6 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercaconfetti.item.ItemConfetti;
 import xerca.xercaconfetti.packet.ConfettiParticlePacket;
 
@@ -14,7 +13,7 @@ import static xerca.xercaconfetti.Mod.sendToClientsAround;
 
 public class ConfettiDispenseItemBehavior extends DefaultDispenseItemBehavior {
     @Override
-    protected @NotNull ItemStack execute(@NotNull BlockSource source, ItemStack stack) {
+    protected ItemStack execute(BlockSource source, ItemStack stack) {
         stack.shrink(1);
         return stack;
     }

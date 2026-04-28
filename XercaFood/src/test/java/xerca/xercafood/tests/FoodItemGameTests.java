@@ -70,8 +70,8 @@ public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void teacupSugarLevelsChangeNutritionAndEffects(GameTestHelper helper) {
-        net.minecraft.world.food.FoodProperties sugar0 = Items.FULL_TEACUP_0.components().get(net.minecraft.core.component.DataComponents.FOOD);
-        net.minecraft.world.food.FoodProperties sugar6 = Items.FULL_TEACUP_6.components().get(net.minecraft.core.component.DataComponents.FOOD);
+        net.minecraft.world.food.FoodProperties sugar0 = requireFoodProperties(helper, Items.FULL_TEACUP_0);
+        net.minecraft.world.food.FoodProperties sugar6 = requireFoodProperties(helper, Items.FULL_TEACUP_6);
         helper.assertTrue(sugar0.nutrition() < sugar6.nutrition(), "Expected more sugar to increase teacup nutrition");
         helper.succeed();
     }

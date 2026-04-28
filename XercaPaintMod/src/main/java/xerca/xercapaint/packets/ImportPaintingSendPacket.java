@@ -4,8 +4,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
+
+import java.util.Objects;
 
 public record ImportPaintingSendPacket(CompoundTag tag) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ImportPaintingSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("import_painting_send"));
@@ -17,26 +18,23 @@ public record ImportPaintingSendPacket(CompoundTag tag) implements CustomPacketP
 
     public static ImportPaintingSendPacket decode(FriendlyByteBuf buf) {
         CompoundTag tag = buf.readNbt();
+        if (tag == null) {
+            throw new IllegalArgumentException("Missing painting tag in ImportPaintingSendPacket");
+        }
         return new ImportPaintingSendPacket(tag);
     }
 
     public ImportPaintingSendPacket {
-        if (tag != null) {
-            tag = tag.copy();
-        }
+        tag = Objects.requireNonNull(tag, "Painting tag").copy();
     }
 
     @Override
     public CompoundTag tag() {
-        if (tag == null) {
-            return null;
-        }
         return tag.copy();
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }
-

@@ -3,7 +3,7 @@ package xerca.xercamusic.common.packets.clientbound;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public record MusicDataResponsePacket(UUID id, int version, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers) implements CustomPacketPayload {
+public record MusicDataResponsePacket(UUID id, int version, List<NoteEvent> notes,
+                                      @Nullable List<VolumeMarker> volumeMarkers) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<MusicDataResponsePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("music_data_response"));
     public static final StreamCodec<FriendlyByteBuf, MusicDataResponsePacket> PACKET_CODEC = StreamCodec.ofMember(MusicDataResponsePacket::encode, MusicDataResponsePacket::decode);
 
@@ -36,7 +37,7 @@ public record MusicDataResponsePacket(UUID id, int version, List<NoteEvent> note
         }
     }
 
-    private static List<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
+    private static @Nullable List<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
         if (!buf.readBoolean()) {
             return null;
         }
@@ -68,7 +69,7 @@ public record MusicDataResponsePacket(UUID id, int version, List<NoteEvent> note
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }

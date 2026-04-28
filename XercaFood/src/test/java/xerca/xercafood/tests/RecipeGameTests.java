@@ -55,7 +55,8 @@ public class RecipeGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void slicingTomatoDamagesKnife(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tomato_slices"));
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        net.minecraft.world.item.Item knifeItem = requireKnifeItem();
+        ItemStack knife = new ItemStack(knifeItem);
         knife.setDamageValue(7);
         CraftingInput grid = craftingGrid(3, 3,
                 new ItemStack(Items.TOMATO), knife,
@@ -68,15 +69,16 @@ public class RecipeGameTests {
         helper.assertTrue(result.getCount() == 3, "Expected tomato slicing recipe to craft 3 slices");
 
         NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
-        helper.assertTrue(remainingItems.get(1).is(Items.KNIFE), "Expected knife to remain after slicing tomato");
+        helper.assertTrue(remainingItems.get(1).is(knifeItem), "Expected knife to remain after slicing tomato");
         helper.assertTrue(remainingItems.get(1).getDamageValue() == 8, "Expected knife durability to decrease by 1");
         helper.succeed();
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void repairingKnivesHasNoCraftingRecipe(GameTestHelper helper) {
-        ItemStack firstKnife = new ItemStack(Items.KNIFE);
-        ItemStack secondKnife = new ItemStack(Items.KNIFE);
+        net.minecraft.world.item.Item knifeItem = requireKnifeItem();
+        ItemStack firstKnife = new ItemStack(knifeItem);
+        ItemStack secondKnife = new ItemStack(knifeItem);
         firstKnife.setDamageValue(30);
         secondKnife.setDamageValue(70);
 

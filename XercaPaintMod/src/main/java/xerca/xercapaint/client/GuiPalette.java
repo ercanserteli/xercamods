@@ -4,13 +4,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.packets.PaletteUpdatePacket;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiPalette extends BasePalette {
 
-    protected GuiPalette(@NotNull ItemStack paletteStack, Component title) {
+    protected GuiPalette(ItemStack paletteStack, Component title) {
         super(title, paletteStack);
     }
 
@@ -26,14 +25,14 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         super.render(guiGraphics, mouseX, mouseY, f);
 
         renderCursor(guiGraphics, mouseX, mouseY);
     }
 
     private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (isCarryingColor) {
+        if (isCarryingColor && carriedColor != null) {
             carriedColor.setGLColor();
             guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
 

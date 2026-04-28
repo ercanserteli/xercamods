@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercacushion.entity.EntityCushion;
 
 public class CushionRenderer extends EntityRenderer<EntityCushion> {
@@ -20,7 +19,7 @@ public class CushionRenderer extends EntityRenderer<EntityCushion> {
     }
 
     @Override
-    public void render(EntityCushion entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight) {
+    public void render(EntityCushion entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         poseStack.pushPose();
         poseStack.translate(0.0D, 0.5D, 0.0D);
@@ -33,7 +32,7 @@ public class CushionRenderer extends EntityRenderer<EntityCushion> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull EntityCushion entity) {
+    public ResourceLocation getTextureLocation(EntityCushion entity) {
         return InventoryMenu.BLOCK_ATLAS;
     }
 }

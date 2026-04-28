@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.BlockPizza;
 import xerca.xercafood.common.block.Blocks;
@@ -20,12 +21,14 @@ import xerca.xercafood.common.crafting.RecipeTeaPouring;
 import xerca.xercafood.common.crafting.RecipeTeaRefilling;
 import xerca.xercafood.common.crafting.RecipeTeaSugaring;
 
+import java.util.Objects;
+
 public final class Items {
     private Items() {
     }
 
     private static final boolean REGISTER_LOCAL_KNIFE = !FabricLoader.getInstance().isModLoaded("xercatools");
-    public static final Item KNIFE = REGISTER_LOCAL_KNIFE ? new ItemKnife() : null;
+    public static final @Nullable Item KNIFE = REGISTER_LOCAL_KNIFE ? new ItemKnife() : null;
     public static final Item GLASS = new ItemGlass();
     public static final Item ENDER_CUPCAKE = new ItemEnderCupcake();
     public static final Item COLA_EXTRACT = new Item(new Item.Properties().craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE));
@@ -277,6 +280,10 @@ public final class Items {
         return new ItemDrink(new Item.Properties().food(food), container);
     }
 
+    public static Item requireLocalKnife() {
+        return Objects.requireNonNull(KNIFE, "Local knife must exist when XercaTools knife is not active");
+    }
+
     private static void registerItem(String name, Item item) {
         Registry.register(BuiltInRegistries.ITEM, Mod.id(name), item);
     }
@@ -303,7 +310,7 @@ public final class Items {
 
     public static void registerItems() {
         if (REGISTER_LOCAL_KNIFE) {
-            registerItem("knife", KNIFE);
+            registerItem("knife", requireLocalKnife());
         }
         registerItem("glass", GLASS);
         registerItem("ender_cupcake", ENDER_CUPCAKE);
@@ -634,7 +641,7 @@ public final class Items {
         });
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             if (REGISTER_LOCAL_KNIFE) {
-                entries.accept(KNIFE);
+                entries.accept(requireLocalKnife());
             }
         });
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {

@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
@@ -36,16 +37,16 @@ import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 public class EntityMusicSpirit extends Entity {
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
     private final ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
-    private Player body;
-    private ItemStack note;
-    private IItemInstrument instrument;
+    private @Nullable Player body;
+    private @Nullable ItemStack note;
+    private @Nullable IItemInstrument instrument;
     private int length;
     private float volume;
     private byte bps;
     private boolean isPlaying = true;
-    private BlockInstrument blockInstrument;
-    private BlockPos blockInsPos;
-    private SoundController soundController;
+    private @Nullable BlockInstrument blockInstrument;
+    private @Nullable BlockPos blockInsPos;
+    private @Nullable SoundController soundController;
 
     private static byte sanitizeBps(int bps) {
         return (byte) Math.clamp(bps, 1, 50);
@@ -124,6 +125,9 @@ public class EntityMusicSpirit extends Entity {
     }
 
     private boolean isBodyHandLegit() {
+        if (body == null) {
+            return false;
+        }
         ItemStack mainStack = body.getMainHandItem();
         ItemStack offStack = body.getOffhandItem();
         if (blockInstrument != null && blockInsPos != null) {
@@ -150,7 +154,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+    protected void readAdditionalSaveData(CompoundTag tag) {
         notes.clear();
         NoteEvent.fillArrayFromNBT(notes, tag);
         this.length = sanitizeLengthBeats(tag.getInt(KEY_LENGTH));
@@ -163,7 +167,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
+    protected void addAdditionalSaveData(CompoundTag tag) {
         NoteEvent.fillNBTFromArray(notes, tag);
         tag.putInt(KEY_LENGTH, length);
         tag.putByte(KEY_BPS, bps);
@@ -178,7 +182,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity serverEntity) {
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
         if (body == null) {
             Mod.LOGGER.error("Body is null on EntityMusicSpirit.getAddEntityPacket!");
             return new ClientboundAddEntityPacket(this, serverEntity, 0);
@@ -189,7 +193,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     @Override
-    public void recreateFromPacket(@NotNull ClientboundAddEntityPacket packet) {
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
         super.recreateFromPacket(packet);
         int data = packet.getData();
         if (data == 0) {
@@ -219,7 +223,8 @@ public class EntityMusicSpirit extends Entity {
             setBlockPosAndInstrument(new BlockPos(bx, by, bz), bIns);
         }
 
-        if (blockInsPos != null) {
+        BlockInstrument blockInstrument = this.blockInstrument;
+        if (blockInstrument != null && blockInsPos != null) {
             this.instrument = blockInstrument.getItemInstrument();
             this.setNoteFromBody();
         } else if (body != null) {
@@ -234,6 +239,7 @@ public class EntityMusicSpirit extends Entity {
             }
         }
 
+        ItemStack note = this.note;
         if (note == null || !level().isClientSide) {
             return;
         }
@@ -255,6 +261,10 @@ public class EntityMusicSpirit extends Entity {
                 }
             }
 
+            IItemInstrument instrument = this.instrument;
+            if (instrument == null) {
+                return;
+            }
             soundController = new SoundController(notes, volumeMarkers, getX(), getY(), getZ(), instrument, bps, volume, getId());
             soundController.start();
         });
@@ -276,6 +286,7 @@ public class EntityMusicSpirit extends Entity {
         if (this.level().isClientSide) {
             return false;
         }
+        Player body = this.body;
         if (body == null || !isPlaying) {
             this.remove(RemovalReason.DISCARDED);
             return true;
@@ -285,12 +296,14 @@ public class EntityMusicSpirit extends Entity {
             this.remove(RemovalReason.DISCARDED);
             return true;
         }
+        BlockPos blockInsPos = this.blockInsPos;
+        BlockInstrument blockInstrument = this.blockInstrument;
         if (blockInsPos != null && blockInstrument != null) {
             if (!Objects.equals(level().getBlockState(blockInsPos).getBlock(), blockInstrument)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
             }
-            if (this.position().distanceToSqr(this.body.position()) > 16) {
+            if (this.position().distanceToSqr(body.position()) > 16) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
             }
@@ -316,6 +329,7 @@ public class EntityMusicSpirit extends Entity {
         isPlaying = playing;
     }
 
+    @Nullable
     public Player getBody() {
         return body;
     }

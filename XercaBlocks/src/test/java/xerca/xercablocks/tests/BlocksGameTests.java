@@ -542,7 +542,7 @@ public final class BlocksGameTests {
         var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         CarvingStationMenu carvingMenu = new CarvingStationMenu(0, player.getInventory());
 
-        helper.assertTrue(carvingMenu.getType() == xerca.xercablocks.menu.Menus.carvingStation,
+        helper.assertTrue(carvingMenu.getType() == xerca.xercablocks.menu.Menus.CARVING_STATION,
                 "Expected carving station menu to use the custom xercablocks carving menu type");
         helper.succeed();
     }

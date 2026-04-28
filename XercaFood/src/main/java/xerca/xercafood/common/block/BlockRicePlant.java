@@ -26,11 +26,6 @@ class BlockRicePlant extends CropBlock implements BonemealableBlock {
     }
 
     @Override
-    public int getMaxAge() {
-        return 7;
-    }
-
-    @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
         if (state.getBlock() == Blocks.FARMLAND && state.getValue(FarmBlock.MOISTURE) > 6) {
             int waterCount = 0;

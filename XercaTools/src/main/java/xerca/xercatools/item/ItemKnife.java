@@ -24,7 +24,6 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercatools.SoundEvents;
 import xerca.xercatools.enchantment.KnifeEnchantments;
 
@@ -63,7 +62,7 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
 
         int poisonLevel = EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.poisonEnchantment(attacker.level().registryAccess()), stack);
@@ -82,7 +81,7 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (hand == InteractionHand.OFF_HAND) {
             player.swing(hand, true);
             player.getCooldowns().addCooldown(this, 15);
@@ -92,7 +91,7 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public @NotNull ItemStack getRecipeRemainder(@NotNull ItemStack stack) {
+    public ItemStack getRecipeRemainder(ItemStack stack) {
         ItemStack remainder = stack.copy();
         remainder.setCount(1);
         remainder.setDamageValue(stack.getDamageValue() + 1);
@@ -103,7 +102,7 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<net.minecraft.network.chat.Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flag) {
         tooltip.add(net.minecraft.network.chat.Component.translatable("xercatools.knife_tooltip").withStyle(ChatFormatting.BLUE));
         tooltip.add(net.minecraft.network.chat.Component.translatable("xercatools.knife_offhand_tooltip").withStyle(ChatFormatting.YELLOW));
     }

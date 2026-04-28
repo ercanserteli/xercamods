@@ -7,11 +7,12 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.item.ItemTeapot;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaRefilling extends CustomRecipe {
-    private record ParsedInput(ItemStack teapotStack, ItemTeapot teapot, int teaCount, boolean valid) {
+    private record ParsedInput(ItemStack teapotStack, @Nullable ItemTeapot teapot, int teaCount, boolean valid) {
     }
 
     public RecipeTeaRefilling(CraftingBookCategory category) {

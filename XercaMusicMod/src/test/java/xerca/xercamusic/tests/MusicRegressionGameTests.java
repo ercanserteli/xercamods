@@ -20,10 +20,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.common.*;
 import xerca.xercamusic.common.block.BlockMetronome;
@@ -86,30 +88,44 @@ public final class MusicRegressionGameTests {
 
     private static TileEntityMusicBox requireMusicBox(GameTestHelper helper, BlockPos relativePos) {
         BlockPos absolutePos = helper.absolutePos(relativePos);
-        helper.assertTrue(helper.getLevel().getBlockEntity(absolutePos) instanceof TileEntityMusicBox,
+        BlockEntity blockEntity = helper.getLevel().getBlockEntity(absolutePos);
+        helper.assertTrue(blockEntity instanceof TileEntityMusicBox,
                 "Expected music box block entity at " + relativePos);
-        return (TileEntityMusicBox) helper.getLevel().getBlockEntity(absolutePos);
+        if (blockEntity instanceof TileEntityMusicBox musicBox) {
+            return musicBox;
+        }
+        throw new IllegalStateException("Expected music box block entity at " + relativePos);
     }
 
     private static TileEntityMetronome requireMetronome(GameTestHelper helper, BlockPos relativePos) {
         BlockPos absolutePos = helper.absolutePos(relativePos);
-        helper.assertTrue(helper.getLevel().getBlockEntity(absolutePos) instanceof TileEntityMetronome,
+        BlockEntity blockEntity = helper.getLevel().getBlockEntity(absolutePos);
+        helper.assertTrue(blockEntity instanceof TileEntityMetronome,
                 "Expected metronome block entity at " + relativePos);
-        return (TileEntityMetronome) helper.getLevel().getBlockEntity(absolutePos);
+        if (blockEntity instanceof TileEntityMetronome metronome) {
+            return metronome;
+        }
+        throw new IllegalStateException("Expected metronome block entity at " + relativePos);
     }
 
     private static EntityMusicSpirit requireSingleSpiritNear(GameTestHelper helper, BlockPos relativePos, String message) {
         AABB searchBox = new AABB(helper.absolutePos(relativePos)).inflate(2.5D, 2.5D, 2.5D);
         List<EntityMusicSpirit> spirits = helper.getLevel().getEntitiesOfClass(EntityMusicSpirit.class, searchBox, Entity::isAlive);
         helper.assertTrue(!spirits.isEmpty(), message);
-        return spirits.get(0);
+        if (!spirits.isEmpty()) {
+            return spirits.getFirst();
+        }
+        throw new IllegalStateException(message);
     }
 
     private static ItemEntity requireSingleDroppedItemNear(GameTestHelper helper, BlockPos relativePos, Item item, String message) {
         AABB searchBox = new AABB(helper.absolutePos(relativePos)).inflate(2.5D, 2.5D, 2.5D);
         List<ItemEntity> items = helper.getLevel().getEntitiesOfClass(ItemEntity.class, searchBox, it -> it.getItem().is(item));
         helper.assertTrue(!items.isEmpty(), message);
-        return items.get(0);
+        if (!items.isEmpty()) {
+            return items.getFirst();
+        }
+        throw new IllegalStateException(message);
     }
 
     private static int countSpiritsNear(GameTestHelper helper, BlockPos relativePos) {
@@ -221,7 +237,8 @@ public final class MusicRegressionGameTests {
     }
 
     private static ItemStack createSheetStack(UUID id, int version, int generation, int lengthBeats, int bps, float volume,
-                                              String title, String author) {
+                                              @Nullable String title,
+                                              @Nullable String author) {
         ItemStack stack = new ItemStack(Items.MUSIC_SHEET);
         stack.set(Items.SHEET_ID, id);
         stack.set(Items.SHEET_VERSION, version);
@@ -259,11 +276,32 @@ public final class MusicRegressionGameTests {
         try {
             CompoundTag tag = NbtIo.read(path);
             helper.assertTrue(tag != null, "Expected exported music sheet NBT at " + path);
-            return tag == null ? new CompoundTag() : tag;
+            if (tag != null) {
+                return tag;
+            }
+            throw new IllegalStateException("Expected exported music sheet NBT at " + path);
         } catch (IOException e) {
             helper.assertTrue(false, "Failed to read exported music sheet " + path + ": " + e);
             return new CompoundTag();
         }
+    }
+
+    private static UUID requireSheetId(GameTestHelper helper, ItemStack stack, String message) {
+        UUID id = stack.get(Items.SHEET_ID);
+        helper.assertTrue(id != null, message);
+        if (id != null) {
+            return id;
+        }
+        throw new IllegalStateException(message);
+    }
+
+    private static MusicManager.MusicData requireMusicData(GameTestHelper helper, UUID id, int version, String message) {
+        MusicManager.MusicData data = MusicManager.getMusicData(id, version, helper.getLevel().getServer());
+        helper.assertTrue(data != null, message);
+        if (data != null) {
+            return data;
+        }
+        throw new IllegalStateException(message);
     }
 
     private static List<NoteEvent> notesFromTag(CompoundTag tag) {
@@ -533,8 +571,8 @@ public final class MusicRegressionGameTests {
         helper.assertTrue("tester".equals(importedSheet.get(Items.SHEET_AUTHOR)),
                 "Expected signed import to keep the author");
 
-        MusicManager.MusicData importedData = MusicManager.getMusicData(id, version, helper.getLevel().getServer());
-        helper.assertTrue(importedData != null, "Expected signed import to register music data on the server");
+        MusicManager.MusicData importedData = requireMusicData(helper, id, version,
+                "Expected signed import to register music data on the server");
         helper.assertTrue(importedData.notes().size() == notes.size(),
                 "Expected signed import to restore the exported note count");
         helper.assertTrue(importedData.volumeMarkers() != null && importedData.volumeMarkers().size() == markers.size(),
@@ -593,8 +631,8 @@ public final class MusicRegressionGameTests {
 
         ItemStack importedSheet = findImportedSheet(importer);
         helper.assertTrue(!importedSheet.isEmpty(), "Expected unsigned import to produce a populated music sheet");
-        UUID importedId = importedSheet.get(Items.SHEET_ID);
-        helper.assertTrue(importedId != null, "Expected unsigned import to assign a new sheet id");
+        UUID importedId = requireSheetId(helper, importedSheet,
+                "Expected unsigned import to assign a new sheet id");
         helper.assertTrue(!originalId.equals(importedId),
                 "Expected unsigned import to regenerate the sheet id instead of reusing the exported one");
         helper.assertTrue(importedSheet.getOrDefault(Items.SHEET_VERSION, -1) == 1,
@@ -606,8 +644,8 @@ public final class MusicRegressionGameTests {
         helper.assertTrue(importedSheet.get(Items.SHEET_AUTHOR) == null,
                 "Expected unsigned import to keep the sheet author empty");
 
-        MusicManager.MusicData importedData = MusicManager.getMusicData(importedId, 1, helper.getLevel().getServer());
-        helper.assertTrue(importedData != null, "Expected unsigned import to store music data under the new id");
+        MusicManager.MusicData importedData = requireMusicData(helper, importedId, 1,
+                "Expected unsigned import to store music data under the new id");
         helper.assertTrue(importedData.notes().size() == notes.size(),
                 "Expected unsigned import to restore the multipart note payload");
         helper.assertTrue(importedData.volumeMarkers() != null && importedData.volumeMarkers().size() == markers.size(),

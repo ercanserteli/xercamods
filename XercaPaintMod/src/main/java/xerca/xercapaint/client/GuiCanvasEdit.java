@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
@@ -57,11 +57,11 @@ public class GuiCanvasEdit extends BasePalette {
     private boolean undoStarted;
     private boolean gettingSigned;
     private boolean isCarryingCanvas;
-    private Button buttonSign;
-    private Button buttonCancel;
-    private Button buttonFinalize;
+    private @Nullable Button buttonSign;
+    private @Nullable Button buttonCancel;
+    private @Nullable Button buttonFinalize;
     private int updateCount;
-    private BrushSound brushSound;
+    private @Nullable BrushSound brushSound;
     private static final int CANVAS_HOLDER_HEIGHT = 10;
     private int brushOpacitySetting;
     private static final float[] BRUSH_OPACITIES = {1.f, 0.75f, 0.5f, 0.25f};
@@ -76,7 +76,7 @@ public class GuiCanvasEdit extends BasePalette {
     private String canvasTitle = "";
     private final String canvasId;
     private int version;
-    private final EntityEasel easel;
+    private final @Nullable EntityEasel easel;
     private int timeSinceLastUpdate;
     private boolean skippedUpdate;
 
@@ -97,7 +97,7 @@ public class GuiCanvasEdit extends BasePalette {
     private static final int MAX_UNDO_LENGTH = 16;
     private final Deque<int[]> undoStack = new ArrayDeque<>(MAX_UNDO_LENGTH);
 
-    protected GuiCanvasEdit(Player player, ItemStack canvasStack, ItemStack paletteStack, Component title, CanvasType canvasType, EntityEasel easel) {
+    protected GuiCanvasEdit(Player player, ItemStack canvasStack, ItemStack paletteStack, Component title, CanvasType canvasType, @Nullable EntityEasel easel) {
         super(title, paletteStack);
         updateCount = 0;
 
@@ -191,13 +191,18 @@ public class GuiCanvasEdit extends BasePalette {
 
     private void updateButtons() {
         if (!this.isSigned) {
-            this.buttonSign.visible = !this.gettingSigned;
-            this.buttonCancel.visible = this.gettingSigned;
-            this.buttonFinalize.visible = this.gettingSigned;
-            this.buttonFinalize.active = !this.canvasTitle.trim().isEmpty();
-
-            this.buttonFinalize.setX((int) canvasX - 100);
-            this.buttonCancel.setX((int) canvasX - 100);
+            if (this.buttonSign != null) {
+                this.buttonSign.visible = !this.gettingSigned;
+            }
+            if (this.buttonCancel != null) {
+                this.buttonCancel.visible = this.gettingSigned;
+                this.buttonCancel.setX((int) canvasX - 100);
+            }
+            if (this.buttonFinalize != null) {
+                this.buttonFinalize.visible = this.gettingSigned;
+                this.buttonFinalize.active = !this.canvasTitle.trim().isEmpty();
+                this.buttonFinalize.setX((int) canvasX - 100);
+            }
         }
     }
 
@@ -311,7 +316,7 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         if (!gettingSigned) {
             super.render(guiGraphics, mouseX, mouseY, f);
         } else {
@@ -376,8 +381,8 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    private void renderCursor(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (isCarryingColor) {
+    private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (isCarryingColor && carriedColor != null) {
             carriedColor.setGLColor();
             guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
 
@@ -400,7 +405,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    private void drawOutline(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, int brushSize) {
+    private void drawOutline(GuiGraphics guiGraphics, int mouseX, int mouseY, int brushSize) {
         if (inCanvas(mouseX, mouseY)) {
             // Render drawing outline
             int x = 0;
@@ -445,7 +450,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    private void drawSigning(@NotNull GuiGraphics guiGraphics) {
+    private void drawSigning(GuiGraphics guiGraphics) {
         int i = (int) canvasX;
         int j = (int) canvasY;
 
@@ -739,7 +744,9 @@ public class GuiCanvasEdit extends BasePalette {
                     skippedUpdate = true;
                 } else {
                     version++;
-                    ClientPlayNetworking.send(new CanvasMiniUpdatePacket(pixels, canvasId, version, easel.getId(), canvasType));
+                    if (easel != null) {
+                        ClientPlayNetworking.send(new CanvasMiniUpdatePacket(pixels, canvasId, version, easel.getId(), canvasType));
+                    }
                     canvasDirty = false;
                     timeSinceLastUpdate = 0;
                 }
@@ -770,7 +777,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         @Override
-        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             RenderSystem.setShaderTexture(0, this.resourceLocation);
             GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;

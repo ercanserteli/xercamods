@@ -80,6 +80,14 @@ public final class ConfettiBallGameTests {
         }
     }
 
+    private static DispenserBlockEntity requireDispenser(GameTestHelper helper, BlockPos absolutePos) {
+        if (helper.getLevel().getBlockEntity(absolutePos) instanceof DispenserBlockEntity dispenser) {
+            return dispenser;
+        }
+        helper.assertTrue(false, "Expected a dispenser block entity at the test position");
+        throw new IllegalStateException("Unreachable after GameTest assertion failure");
+    }
+
     @GameTest(template = BASIC_TEMPLATE, batch = CONFETTI_BATCH)
     public static void playerUseSpawnsConfettiBallAndConsumesOneItem(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -109,9 +117,7 @@ public final class ConfettiBallGameTests {
                 .setValue(DispenserBlock.FACING, Direction.NORTH);
         helper.getLevel().setBlockAndUpdate(absolutePos, state);
 
-        helper.assertTrue(helper.getLevel().getBlockEntity(absolutePos) instanceof DispenserBlockEntity,
-                "Expected a dispenser block entity at the test position");
-        DispenserBlockEntity dispenser = (DispenserBlockEntity) helper.getLevel().getBlockEntity(absolutePos);
+        DispenserBlockEntity dispenser = requireDispenser(helper, absolutePos);
         ItemStack stack = new ItemStack(Mod.CONFETTI_BALL);
         dispenser.setItem(0, stack);
 

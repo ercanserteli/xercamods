@@ -3,7 +3,6 @@ package xerca.xercapaint.packets;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
@@ -34,7 +33,6 @@ public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, Str
         }
         int easelId = buf.readInt();
         CanvasType canvasType = CanvasType.fromByte(buf.readByte());
-        assert canvasType != null;
         int version = buf.readInt();
         String canvasId = buf.readUtf(64);
         String title = buf.readUtf(32);
@@ -60,8 +58,7 @@ public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, Str
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }
-

@@ -29,7 +29,13 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
         ItemStack note = pl.getMainHandItem();
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
             MusicUpdatePacket.FieldFlag flag = msg.availability();
-            if (flag.hasId) note.set(Items.SHEET_ID, msg.id());
+            if (flag.hasId) {
+                UUID id = msg.id();
+                if (id == null) {
+                    return;
+                }
+                note.set(Items.SHEET_ID, id);
+            }
             if (flag.hasVersion) note.set(Items.SHEET_VERSION, msg.version());
             if (flag.hasLength) note.set(Items.SHEET_LENGTH, (int) msg.lengthBeats());
             if (flag.hasBps) note.set(Items.SHEET_BPS, sanitizeBps(msg.bps()));
@@ -38,7 +44,11 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
             if (flag.hasPrevInsLocked) note.set(Items.SHEET_PREV_INSTRUMENT_LOCKED, msg.prevInsLocked());
             if (flag.hasHlInterval) note.set(Items.SHEET_HIGHLIGHT_INTERVAL, sanitizeHighlightInterval(msg.highlightInterval()));
             if (flag.hasSigned && msg.signed()) {
-                if (flag.hasTitle) note.set(Items.SHEET_TITLE, msg.title().trim());
+                String title = msg.title();
+                if (!flag.hasTitle || title == null) {
+                    return;
+                }
+                note.set(Items.SHEET_TITLE, title.trim());
                 note.set(Items.SHEET_AUTHOR, pl.getName().getString());
                 note.set(Items.SHEET_GENERATION, 1);
                 Triggers.BECOME_MUSICIAN.trigger(pl);
@@ -46,6 +56,9 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
             if (flag.hasNotes) {
                 List<NoteEvent> notes = msg.notes();
                 UUID id = note.get(Items.SHEET_ID);
+                if (id == null) {
+                    return;
+                }
                 if (notes == null) {
                     // Get if a large sheet was sent in parts
                     notes = MusicManager.getFinishedNotesFromBuffer(id);

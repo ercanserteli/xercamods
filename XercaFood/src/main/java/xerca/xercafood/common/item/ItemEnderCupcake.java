@@ -9,15 +9,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
-
 class ItemEnderCupcake extends Item {
 
     public ItemEnderCupcake() {
         super(new Properties().food(Foods.ENDER_CUPCAKE));
     }
 
-    @Nonnull
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
         ItemStack resultStack = super.finishUsingItem(stack, world, entity);

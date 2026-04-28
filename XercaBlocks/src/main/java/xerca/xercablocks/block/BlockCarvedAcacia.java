@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockCarvedAcacia extends BlockCarvedLog {
     public static final MapCodec<BlockCarvedAcacia> CODEC = simpleCodec(properties -> new BlockCarvedAcacia());
@@ -20,7 +19,7 @@ public class BlockCarvedAcacia extends BlockCarvedLog {
     }
 
     @Override
-    protected @NotNull MapCodec<? extends BlockCarvedLog> codec() {
+    protected MapCodec<? extends BlockCarvedLog> codec() {
         return CODEC;
     }
 }

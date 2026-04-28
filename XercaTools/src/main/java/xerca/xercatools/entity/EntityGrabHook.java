@@ -136,12 +136,12 @@ public class EntityGrabHook extends Entity {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity entity) {
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
         return new ClientboundAddEntityPacket(this, entity, this.entityData.get(DATA_OWNER));
     }
 
     @Override
-    public void recreateFromPacket(@NotNull ClientboundAddEntityPacket packet) {
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
         super.recreateFromPacket(packet);
         int ownerId = packet.getData();
         if (ownerId > 0) {
@@ -193,6 +193,10 @@ public class EntityGrabHook extends Entity {
             }
         } else if (shouldDiscardOnServer(angler)) {
             discardHook();
+            return;
+        }
+
+        if (angler == null) {
             return;
         }
 
@@ -281,7 +285,7 @@ public class EntityGrabHook extends Entity {
         return true;
     }
 
-    private boolean setCaughtEntity(Entity caught, Player angler) {
+    private void setCaughtEntity(Entity caught, Player angler) {
         this.caughtEntity = caught;
         this.entityData.set(DATA_CAUGHT, caught.getId() + 1);
         if (!this.hasGentle) {
@@ -289,14 +293,13 @@ public class EntityGrabHook extends Entity {
             caught.hurt(this.damageSources().thrown(this, angler), 3.0F);
             if (!caught.isAlive()) {
                 discardHook();
-                return false;
+                return;
             }
         } else {
             this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 0.6F, this.level().random.nextFloat() * 0.2F + 1.5F);
         }
         this.caughtEntity.noPhysics = true;
         this.caughtEntity.stopRiding();
-        return true;
     }
 
     private void pullCaughtEntity(Player angler) {

@@ -19,6 +19,9 @@ public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayPay
         String filepath = "paintings/" + filename;
         try {
             CompoundTag tag = NbtIo.read(Path.of(filepath));
+            if (tag == null) {
+                throw new IOException("Painting file did not contain NBT data");
+            }
             ClientPlayNetworking.send(new ImportPaintingSendPacket(tag));
         } catch (IOException e) {
             Mod.LOGGER.error("Could not read painting file {}", filepath, e);

@@ -27,9 +27,7 @@ public final class OmniChestItemRenderer extends BlockEntityWithoutLevelRenderer
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
         BlockEntityRenderDispatcher dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
-        if (dispatcher != null) {
-            dispatcher.renderItem(chest, matrices, vertexConsumers, light, overlay);
-        }
+        dispatcher.renderItem(chest, matrices, vertexConsumers, light, overlay);
     }
 
     @Override

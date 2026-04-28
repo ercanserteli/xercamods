@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercacourt.SoundEvents;
 
 public class ItemBadge extends Item {
@@ -16,7 +15,7 @@ public class ItemBadge extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
         level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.OBJECTION, SoundSource.PLAYERS, 1.0F,
                 level.random.nextFloat() * 0.2F + 0.8F);

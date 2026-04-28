@@ -3,7 +3,6 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 
@@ -20,7 +19,7 @@ public record SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId,
         int partsCount = buf.readInt();
         int partId = buf.readInt();
         List<NoteEvent> notes = ImportMusicSendPacket.notesFromBuffer(buf);
-        return new SendNotesPartToServerPacket(uuid, partsCount, partId, notes);
+        return new SendNotesPartToServerPacket(uuid, partsCount, partId, notes == null ? List.of() : notes);
     }
 
     public void encode(FriendlyByteBuf buf) {
@@ -34,7 +33,7 @@ public record SendNotesPartToServerPacket(UUID uuid, int partsCount, int partId,
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }

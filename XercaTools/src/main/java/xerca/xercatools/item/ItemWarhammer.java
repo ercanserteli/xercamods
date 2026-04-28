@@ -34,7 +34,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercatools.enchantment.WarhammerEnchantments;
 
 import java.util.List;
@@ -61,10 +61,12 @@ public class ItemWarhammer extends Item {
     }
 
     private float getPushFromMaterial(Tier mat) {
-        if (mat == Tiers.STONE) return 0.15f;
-        if (mat == Tiers.IRON) return 0.3f;
-        if (mat == Tiers.DIAMOND) return 0.4f;
-        return 0.5f; // Gold and Netherite
+        return switch (mat) {
+            case Tiers.STONE -> 0.15f;
+            case Tiers.IRON -> 0.3f;
+            case Tiers.DIAMOND -> 0.4f;
+            default -> 0.5f; // Gold and Netherite
+        };
     }
 
     @Override
@@ -73,13 +75,13 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
         return true;
     }
 
     @Override
-    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level worldIn, BlockState blockIn, @NotNull BlockPos pos, @NotNull LivingEntity entityLiving) {
+    public boolean mineBlock(ItemStack stack, Level worldIn, BlockState blockIn, BlockPos pos, LivingEntity entityLiving) {
         if (blockIn.getDestroySpeed(worldIn, pos) != 0.0D) {
             stack.hurtAndBreak(1, entityLiving, EquipmentSlot.MAINHAND);
         }
@@ -87,33 +89,31 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
-    public boolean isValidRepairItem(@NotNull ItemStack toRepair, @NotNull ItemStack repair) {
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
         Ingredient ingr = this.material.getRepairIngredient();
         if (ingr.test(repair)) return true;
         return super.isValidRepairItem(toRepair, repair);
     }
 
-    @NotNull
     @Override
-    public UseAnim getUseAnimation(@NotNull ItemStack stack) {
+    public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BOW;
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }
 
-    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         playerIn.startUsingItem(hand);
         return InteractionResultHolder.consume(heldItem);
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player)) return;
         if (worldIn.isClientSide) return;
 
@@ -143,11 +143,7 @@ public class ItemWarhammer extends Item {
         }
     }
 
-    public float getPushAmount() {
-        return pushAmount;
-    }
-
-    private static EntityHitResult findLivingEntityHit(Player player, Level level, double range) {
+    private static @Nullable EntityHitResult findLivingEntityHit(Player player, Level level, double range) {
         Vec3 start = player.getEyePosition(1.0F);
         Vec3 end = start.add(player.getViewVector(1.0F).scale(range));
         AABB searchBox = player.getBoundingBox().expandTowards(end.subtract(start)).inflate(1.0D);
@@ -172,7 +168,7 @@ public class ItemWarhammer extends Item {
             }
         }
 
-        return closestEntity != null && closestHitPos != null ? new EntityHitResult(closestEntity, closestHitPos) : null;
+        return closestEntity != null ? new EntityHitResult(closestEntity, closestHitPos) : null;
     }
 
     private static float damageBonusMult(float pullDuration) {
@@ -300,7 +296,7 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         MutableComponent text = Component.translatable("xercatools.warhammer_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
     }

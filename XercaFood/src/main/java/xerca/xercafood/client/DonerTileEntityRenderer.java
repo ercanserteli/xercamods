@@ -10,11 +10,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.block.Blocks;
 import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
 public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityDoner> {
-    protected static BlockRenderDispatcher blockRenderer;
+    protected static @Nullable BlockRenderDispatcher blockRenderer;
 
     public DonerTileEntityRenderer(BlockEntityRendererProvider.Context ctx) {
     }

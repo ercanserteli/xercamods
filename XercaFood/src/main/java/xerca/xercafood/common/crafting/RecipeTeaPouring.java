@@ -10,11 +10,12 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.item.ItemTeapot;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaPouring extends CustomRecipe {
-    private record ParsedInput(ItemStack teapotStack, ItemTeapot teapot, int teacupCount, boolean valid) {
+    private record ParsedInput(ItemStack teapotStack, @Nullable ItemTeapot teapot, int teacupCount, boolean valid) {
     }
 
     @SuppressFBWarnings(value = "SF", justification = "teaAmount is validated to 1..7 by recipe logic.")
@@ -73,7 +74,8 @@ public class RecipeTeaPouring extends CustomRecipe {
             ItemStack itemstack = inv.getItem(i);
             Item item = itemstack.getItem();
             if (item.hasCraftingRemainingItem()) {
-                nonnulllist.set(i, item.getCraftingRemainingItem().getDefaultInstance());
+                Item remainder = item.getCraftingRemainingItem();
+                nonnulllist.set(i, remainder == null ? ItemStack.EMPTY : remainder.getDefaultInstance());
             } else if (itemstack.getItem() instanceof ItemTeapot oldTeapot) {
                 nonnulllist.set(i, getTeapotRemainder(oldTeapot, teacupCount));
                 break;

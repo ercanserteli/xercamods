@@ -8,19 +8,21 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.Items;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
-public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sheetSent, boolean noSheet, UUID sheetId,
+public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sheetSent, boolean noSheet,
+                                   @Nullable UUID sheetId,
                                    int version, byte bps, int length, float volume) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<MusicBoxUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("music_box_update"));
     public static final StreamCodec<FriendlyByteBuf, MusicBoxUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicBoxUpdatePacket::encode, MusicBoxUpdatePacket::decode);
 
-    public static MusicBoxUpdatePacket create(BlockPos pos, ItemStack sheetStack, Item itemInstrument) {
+    public static MusicBoxUpdatePacket create(BlockPos pos, @Nullable ItemStack sheetStack, @Nullable Item itemInstrument) {
         String instrumentId = "";
         if (itemInstrument != null) {
             ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey(itemInstrument);
@@ -69,7 +71,7 @@ public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sh
         buf.writeBoolean(noSheet);
         buf.writeBoolean(sheetSent);
         if (sheetSent && !noSheet) {
-            buf.writeUUID(sheetId);
+            buf.writeUUID(Objects.requireNonNull(sheetId, "sheetId"));
             buf.writeInt(version);
             buf.writeByte(bps);
             buf.writeInt(length);
@@ -78,7 +80,7 @@ public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sh
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }

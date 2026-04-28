@@ -64,7 +64,7 @@ public class EaselTests {
             return (Player) PAINTER_FIELD.get(easel);
         } catch (IllegalAccessException e) {
             helper.assertTrue(false, "Failed to read easel painter field: " + e);
-            return null;
+            throw new IllegalStateException("Unreachable after GameTest assertion failure", e);
         }
     }
 
@@ -73,7 +73,7 @@ public class EaselTests {
             return (Runnable) DROP_DEFERRED_FIELD.get(easel);
         } catch (IllegalAccessException e) {
             helper.assertTrue(false, "Failed to read easel deferred-drop field: " + e);
-            return null;
+            throw new IllegalStateException("Unreachable after GameTest assertion failure", e);
         }
     }
 

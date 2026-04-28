@@ -3,7 +3,7 @@ package xerca.xercaomnichest.data;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class OmniChestInventory extends SimpleContainer {
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(Player player) {
         BlockEntityOmniChest chest = getActiveChest(player);
         return chest != null && chest.stillValid(player);
     }
@@ -59,7 +59,7 @@ public class OmniChestInventory extends SimpleContainer {
         dirtyCallback.run();
     }
 
-    private BlockEntityOmniChest getActiveChest(Player player) {
+    private @Nullable BlockEntityOmniChest getActiveChest(Player player) {
         BlockPos activePos = playerChests.get(player.getUUID());
         if (activePos == null) {
             return null;

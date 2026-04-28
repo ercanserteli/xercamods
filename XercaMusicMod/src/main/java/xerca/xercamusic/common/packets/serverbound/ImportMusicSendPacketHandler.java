@@ -11,8 +11,6 @@ public class ImportMusicSendPacketHandler implements ServerPlayNetworking.PlayPa
 
     @Override
     public void receive(ImportMusicSendPacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

@@ -22,7 +22,6 @@ import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,11 +114,11 @@ public class ItemMusicSheet extends Item {
         return notes;
     }
 
-    public static byte getBPS(@Nonnull ItemStack stack) {
+    public static byte getBPS(ItemStack stack) {
         return stack.getOrDefault(Items.SHEET_BPS, (byte) 0);
     }
 
-    public static int getPrevInstrument(@Nonnull ItemStack stack) {
+    public static int getPrevInstrument(ItemStack stack) {
         Byte prevIns = stack.get(Items.SHEET_PREV_INSTRUMENT);
         if (prevIns != null) {
             return prevIns;
@@ -127,17 +126,16 @@ public class ItemMusicSheet extends Item {
         return -1;
     }
 
-    public static float getVolume(@Nonnull ItemStack stack) {
+    public static float getVolume(ItemStack stack) {
         return stack.getOrDefault(Items.SHEET_VOLUME, 1.f);
     }
 
-    public static boolean isEmptySheet(@Nonnull ItemStack stack) {
+    public static boolean isEmptySheet(ItemStack stack) {
         return stack.get(Items.SHEET_GENERATION) == null && stack.get(Items.SHEET_ID) == null && stack.get(Items.SHEET_VERSION) == null;
     }
 
-    @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if (worldIn.isClientSide) {
             onlyRunOnClient(() -> ClientStuff::showMusicGui);
@@ -145,9 +143,8 @@ public class ItemMusicSheet extends Item {
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
-    @Nonnull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(ItemStack stack) {
         String title = stack.get(Items.SHEET_TITLE);
         if (title != null) {
             return Component.literal(title);
@@ -159,7 +156,7 @@ public class ItemMusicSheet extends Item {
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.@NotNull TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
         String s = stack.get(Items.SHEET_AUTHOR);
 
         if (s != null) {
@@ -188,7 +185,6 @@ public class ItemMusicSheet extends Item {
         }
     }
 
-    @Nonnull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();

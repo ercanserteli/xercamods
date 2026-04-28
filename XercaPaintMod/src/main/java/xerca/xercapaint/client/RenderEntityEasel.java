@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
@@ -30,7 +30,7 @@ import java.util.List;
 public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
     protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
-    static RenderEntityEasel theInstance;
+    static @Nullable RenderEntityEasel theInstance;
     private static final ResourceLocation WOOD_TEXTURE = Mod.id("textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
@@ -40,12 +40,12 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     }
 
     @Override
-    public @NotNull EaselModel getModel() {
+    public EaselModel getModel() {
         return this.model;
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityEasel entity) {
+    public ResourceLocation getTextureLocation(EntityEasel entity) {
         return WOOD_TEXTURE;
     }
 
@@ -93,7 +93,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
     public static class RenderEntityEaselFactory implements EntityRendererProvider<EntityEasel> {
         @Override
-        public @NotNull EntityRenderer<EntityEasel> create(Context ctx) {
+        public EntityRenderer<EntityEasel> create(Context ctx) {
             theInstance = new RenderEntityEasel(ctx);
             return theInstance;
         }

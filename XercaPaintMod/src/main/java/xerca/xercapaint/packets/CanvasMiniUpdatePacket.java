@@ -3,7 +3,6 @@ package xerca.xercapaint.packets;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 
@@ -23,7 +22,9 @@ public record CanvasMiniUpdatePacket(int[] pixels, String canvasId, int version,
     public static CanvasMiniUpdatePacket decode(FriendlyByteBuf buf) {
         int easelId = buf.readInt();
         CanvasType canvasType = CanvasType.fromByte(buf.readByte());
-        assert canvasType != null;
+        if (canvasType == null) {
+            throw new IllegalArgumentException("Invalid canvas type in CanvasMiniUpdatePacket");
+        }
         int version = buf.readInt();
         String canvasId = buf.readUtf(64);
         int area = CanvasType.getHeight(canvasType) * CanvasType.getWidth(canvasType);
@@ -41,7 +42,7 @@ public record CanvasMiniUpdatePacket(int[] pixels, String canvasId, int version,
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }

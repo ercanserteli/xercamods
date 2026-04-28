@@ -49,6 +49,9 @@ public class BlockEntityDoner extends BlockEntity {
 
     @SuppressFBWarnings(value = "NP", justification = "gettingRoasted is used during block entity ticking when level is attached.")
     private boolean gettingRoasted() {
+        if (level == null) {
+            return false;
+        }
         return isFire(level.getBlockState(worldPosition.below())) || isFire(level.getBlockState(worldPosition.east())) ||
                 isFire(level.getBlockState(worldPosition.west())) || isFire(level.getBlockState(worldPosition.north())) ||
                 isFire(level.getBlockState(worldPosition.south())) || isFire(level.getBlockState(worldPosition.offset(0, -1, 1))) ||

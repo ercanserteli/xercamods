@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.entity.EntityCanvas;
@@ -31,7 +30,7 @@ import java.util.Map;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 @ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
-    static RenderEntityCanvas theInstance;
+    static @Nullable RenderEntityCanvas theInstance;
     private static final ResourceLocation BACK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final int[] EMPTY_PIXELS;
 
@@ -51,7 +50,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityCanvas entity) {
+    public ResourceLocation getTextureLocation(EntityCanvas entity) {
         return getCanvasRendererInstance(entity).location;
     }
 
@@ -63,7 +62,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
         @Override
-        public @NotNull EntityRenderer<EntityCanvas> create(Context ctx) {
+        public EntityRenderer<EntityCanvas> create(Context ctx) {
             theInstance = new RenderEntityCanvas(ctx);
             return theInstance;
         }
@@ -73,7 +72,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         return getCanvasRendererInstance(canvas.getCanvasID(), canvas.getVersion(), canvas.getWidth(), canvas.getHeight());
     }
 
-    Instance getCanvasRendererInstance(ItemStack canvasStack, int width, int height) {
+    @org.jetbrains.annotations.Nullable Instance getCanvasRendererInstance(ItemStack canvasStack, int width, int height) {
         String canvasId = canvasStack.get(Items.CANVAS_ID);
         List<Integer> pixels = canvasStack.get(Items.CANVAS_PIXELS);
         if (canvasId == null || pixels == null) {

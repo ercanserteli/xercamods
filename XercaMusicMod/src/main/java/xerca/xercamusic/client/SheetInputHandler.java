@@ -2,9 +2,11 @@ package xerca.xercamusic.client;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringUtil;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
@@ -127,17 +129,19 @@ class SheetInputHandler {
                             // Subsequent click: add or replace a waypoint snapped to a beat within the note
                             byte interval = (byte) (note - gui.glissandoSourceNote.note);
                             int beatIndex = getGlissandoBeatIndex(nrx);
-                            int existingIndex = gui.glissandoPendingPositions.indexOf((byte) beatIndex);
+                            List<Byte> pendingPositions = requirePendingPositions();
+                            List<Byte> pendingWaypoints = requirePendingWaypoints();
+                            int existingIndex = pendingPositions.indexOf((byte) beatIndex);
                             if (existingIndex >= 0) {
-                                gui.glissandoPendingWaypoints.set(existingIndex, interval);
+                                pendingWaypoints.set(existingIndex, interval);
                             } else {
                                 int insertIndex = 0;
-                                while (insertIndex < gui.glissandoPendingPositions.size()
-                                        && (gui.glissandoPendingPositions.get(insertIndex) & 0xFF) < beatIndex) {
+                                while (insertIndex < pendingPositions.size()
+                                        && (pendingPositions.get(insertIndex) & 0xFF) < beatIndex) {
                                     insertIndex++;
                                 }
-                                gui.glissandoPendingPositions.add(insertIndex, (byte) beatIndex);
-                                gui.glissandoPendingWaypoints.add(insertIndex, interval);
+                                pendingPositions.add(insertIndex, (byte) beatIndex);
+                                pendingWaypoints.add(insertIndex, interval);
                             }
                             if (gui.glissandoSourceNote.length > 0
                                     && beatIndex >= (gui.glissandoSourceNote.length & 0xFF)) {
@@ -156,12 +160,12 @@ class SheetInputHandler {
                     int i = findNote((byte) note, (short) time);
                     if (i >= 0) {
                         NoteEvent event = gui.notes.get(i);
-                        gui.noteEditBox.appear(mouseX, mouseY, event);
+                        gui.requireNoteEditBox().appear(mouseX, mouseY, event);
                     } else {
                         // Check if clicking on a volume marker
                         VolumeMarker clickedMarker = findVolumeMarker((byte) note, (short) time);
                         if (clickedMarker != null) {
-                            gui.markerEditBox.appear(mouseX, mouseY, clickedMarker);
+                            gui.requireMarkerEditBox().appear(mouseX, mouseY, clickedMarker);
                         }
                     }
                 }
@@ -249,12 +253,14 @@ class SheetInputHandler {
 
     boolean handleMouseReleased(double posX, double posY, int mouseButton) {
         gui.setDragging(false);
-        if (gui.noteEditBox.active) {
-            gui.noteEditBox.mouseReleased(posX, posY, mouseButton);
+        GuiMusicSheet.NoteEditBox noteEditBox = gui.requireNoteEditBox();
+        if (noteEditBox.active) {
+            noteEditBox.mouseReleased(posX, posY, mouseButton);
             return true;
         }
-        if (gui.markerEditBox.active) {
-            gui.markerEditBox.mouseReleased(posX, posY, mouseButton);
+        GuiMusicSheet.MarkerEditBox markerEditBox = gui.requireMarkerEditBox();
+        if (markerEditBox.active) {
+            markerEditBox.mouseReleased(posX, posY, mouseButton);
             return true;
         }
         if (mouseButton == 0) {
@@ -294,11 +300,13 @@ class SheetInputHandler {
         }
         if (scrollY != 0.d) {
             if (scrollY > 0) {
-                gui.octaveUp.playDownSound(Minecraft.getInstance().getSoundManager());
-                gui.octaveUp.onPress();
+                Button octaveUp = GuiMusicSheet.requireWidget(gui.octaveUp, "octaveUp");
+                octaveUp.playDownSound(Minecraft.getInstance().getSoundManager());
+                octaveUp.onPress();
             } else if (scrollY < 0) {
-                gui.octaveDown.playDownSound(Minecraft.getInstance().getSoundManager());
-                gui.octaveDown.onPress();
+                Button octaveDown = GuiMusicSheet.requireWidget(gui.octaveDown, "octaveDown");
+                octaveDown.playDownSound(Minecraft.getInstance().getSoundManager());
+                octaveDown.onPress();
             }
             return true;
         }
@@ -348,10 +356,7 @@ class SheetInputHandler {
                             gui.dirtyFlag.hasSigned = true;
                             gui.dirtyFlag.hasTitle = true;
                             gui.isSigned = true;
-                            Minecraft mc = Minecraft.getInstance();
-                            if (mc != null) {
-                                mc.setScreen(null);
-                            }
+                            Minecraft.getInstance().setScreen(null);
                         }
                     }
                     default -> {
@@ -441,7 +446,7 @@ class SheetInputHandler {
                     }
                     case GLFW.GLFW_KEY_Z -> {
                         if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                            if (gui.noteEditBox.active) {
+                            if (gui.requireNoteEditBox().active) {
                                 break;
                             }
                             // Exit glissando mode on undo so state stays consistent
@@ -928,16 +933,17 @@ class SheetInputHandler {
     }
 
     private void finishAddingMarker(int mouseX, int mouseY) {
-        if (gui.currentlyAddedMarker == null) {
+        VolumeMarker marker = gui.currentlyAddedMarker;
+        if (marker == null) {
             return;
         }
         // Only add if the marker has some meaningful size
-        if (gui.currentlyAddedMarker.isValid() && isMarkerPlacementAvailable(gui.currentlyAddedMarker)) {
+        if (marker.isValid() && isMarkerPlacementAvailable(marker)) {
             pushUndo();
             // Add the marker to the list and show the edit box
-            gui.volumeMarkers.add(gui.currentlyAddedMarker);
+            gui.volumeMarkers.add(marker);
             gui.dirtyFlag.hasNotes = true;  // Volume markers are saved with notes
-            gui.markerEditBox.appear(mouseX, mouseY, gui.currentlyAddedMarker);
+            gui.requireMarkerEditBox().appear(mouseX, mouseY, marker);
         }
         gui.currentlyAddedMarker = null;
     }
@@ -982,7 +988,7 @@ class SheetInputHandler {
         return -1;
     }
 
-    private VolumeMarker findVolumeMarker(byte note, short time) {
+    private @Nullable VolumeMarker findVolumeMarker(byte note, short time) {
         for (VolumeMarker marker : gui.volumeMarkers) {
             if (marker.affects(time, note)) {
                 return marker;
@@ -998,6 +1004,14 @@ class SheetInputHandler {
             }
         }
         return true;
+    }
+
+    private List<Byte> requirePendingWaypoints() {
+        return GuiMusicSheet.requireWidget(gui.glissandoPendingWaypoints, "glissandoPendingWaypoints");
+    }
+
+    private List<Byte> requirePendingPositions() {
+        return GuiMusicSheet.requireWidget(gui.glissandoPendingPositions, "glissandoPendingPositions");
     }
 
     private int getGlissandoBeatIndex(int noteRegionX) {

@@ -17,7 +17,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercacushion.entity.EntityCushion;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public class ItemCushion extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         Direction face = context.getClickedFace();
         if (face == Direction.DOWN) {
             return InteractionResult.FAIL;
@@ -69,7 +68,7 @@ public class ItemCushion extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("xercacushion.cushion_tooltip").withStyle(ChatFormatting.BLUE));
     }
 }

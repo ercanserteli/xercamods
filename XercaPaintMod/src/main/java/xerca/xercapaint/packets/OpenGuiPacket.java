@@ -4,7 +4,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 
 public record OpenGuiPacket(int easelId, boolean allowed, boolean edit,
@@ -32,7 +31,7 @@ public record OpenGuiPacket(int easelId, boolean allowed, boolean edit,
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }

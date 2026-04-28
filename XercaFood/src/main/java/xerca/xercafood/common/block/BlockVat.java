@@ -24,7 +24,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockVat extends Block {
     public enum VatContent {EMPTY, MILK, CHEESE}
@@ -56,7 +55,7 @@ public class BlockVat extends Block {
 
 
     @Override
-    public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack itemstack, @NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult blockHitResult) {
+    public ItemInteractionResult useItemOn(ItemStack itemstack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (content == VatContent.EMPTY && itemstack.getItem() == Items.MILK_BUCKET) {
             if (!player.isCreative()) {
                 itemstack.shrink(1);
@@ -88,7 +87,7 @@ public class BlockVat extends Block {
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull BlockHitResult blockHitResult) {
+    public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (content != VatContent.CHEESE) {
             return InteractionResult.PASS;
         }

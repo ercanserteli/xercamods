@@ -11,8 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import xerca.xercafood.common.entity.EntityTomato;
 
-import javax.annotation.Nonnull;
-
 public class ItemTomato extends Item {
     public ItemTomato() {
         super(new Item.Properties());
@@ -21,9 +19,8 @@ public class ItemTomato extends Item {
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
-    @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if (!playerIn.isCreative()) {
             heldItem.shrink(1);

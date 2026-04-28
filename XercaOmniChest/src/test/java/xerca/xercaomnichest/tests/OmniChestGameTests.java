@@ -43,6 +43,14 @@ public final class OmniChestGameTests {
         return (CraftingRecipe) recipe;
     }
 
+    private static BlockEntityOmniChest requireOmniChest(GameTestHelper helper, BlockPos pos, String message) {
+        if (helper.getLevel().getBlockEntity(pos) instanceof BlockEntityOmniChest chest) {
+            return chest;
+        }
+        helper.assertTrue(false, message);
+        throw new IllegalStateException("Unreachable after GameTest assertion failure");
+    }
+
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void omniChestRecipeCraftsFromAmethystEyesAndEnderChest(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("omni_chest"));
@@ -71,13 +79,11 @@ public final class OmniChestGameTests {
         Player firstPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
         Player secondPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
 
-        BlockEntity firstBlockEntity = helper.getLevel().getBlockEntity(firstPos);
-        BlockEntity secondBlockEntity = helper.getLevel().getBlockEntity(secondPos);
-        helper.assertTrue(firstBlockEntity instanceof BlockEntityOmniChest, "Expected first Omni Chest block entity");
-        helper.assertTrue(secondBlockEntity instanceof BlockEntityOmniChest, "Expected second Omni Chest block entity");
+        BlockEntityOmniChest firstChest = requireOmniChest(helper, firstPos, "Expected first Omni Chest block entity");
+        BlockEntityOmniChest secondChest = requireOmniChest(helper, secondPos, "Expected second Omni Chest block entity");
 
-        inventory.setActiveChest((BlockEntityOmniChest) firstBlockEntity, firstPlayer);
-        inventory.setActiveChest((BlockEntityOmniChest) secondBlockEntity, secondPlayer);
+        inventory.setActiveChest(firstChest, firstPlayer);
+        inventory.setActiveChest(secondChest, secondPlayer);
 
         ChestMenu firstMenu = ChestMenu.threeRows(0, firstPlayer.getInventory(), inventory);
         ChestMenu secondMenu = ChestMenu.threeRows(1, secondPlayer.getInventory(), inventory);
@@ -105,8 +111,8 @@ public final class OmniChestGameTests {
         Player secondPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
         OmniChestInventory inventory = BlockOmniChest.getContainer(helper.getLevel().getServer());
 
-        BlockEntityOmniChest firstChest = (BlockEntityOmniChest) helper.getLevel().getBlockEntity(firstPos);
-        BlockEntityOmniChest secondChest = (BlockEntityOmniChest) helper.getLevel().getBlockEntity(secondPos);
+        BlockEntityOmniChest firstChest = requireOmniChest(helper, firstPos, "Expected first Omni Chest block entity");
+        BlockEntityOmniChest secondChest = requireOmniChest(helper, secondPos, "Expected second Omni Chest block entity");
         inventory.setActiveChest(firstChest, firstPlayer);
         inventory.setActiveChest(secondChest, secondPlayer);
 

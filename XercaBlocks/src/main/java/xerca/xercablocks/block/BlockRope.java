@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockRope extends PipeBlock {
     public static final MapCodec<BlockRope> CODEC = simpleCodec(properties -> new BlockRope());
@@ -32,7 +31,7 @@ public class BlockRope extends PipeBlock {
     }
 
     @Override
-    protected @NotNull MapCodec<? extends PipeBlock> codec() {
+    protected MapCodec<? extends PipeBlock> codec() {
         return CODEC;
     }
 

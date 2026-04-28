@@ -15,11 +15,10 @@ public enum CanvasType {
 
     public static CanvasType fromByte(byte x) {
         return switch (x) {
-            case 0 -> SMALL;
             case 1 -> LARGE;
             case 2 -> LONG;
             case 3 -> TALL;
-            default -> null;
+            default -> SMALL;
         };
     }
 

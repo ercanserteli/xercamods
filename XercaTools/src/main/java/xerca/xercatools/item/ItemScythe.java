@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercatools.SoundEvents;
 import xerca.xercatools.enchantment.ScytheEnchantments;
 import xerca.xercatools.entity.EntityHealthOrb;
@@ -97,7 +97,7 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public float getDestroySpeed(@NotNull ItemStack stack, BlockState state) {
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
         if (state.getBlock() instanceof CropBlock cropBlock) {
             return cropBlock.isMaxAge(state) ? 1.0F : 0.0F;
         }
@@ -105,7 +105,7 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level level, BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entity) {
+    public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity entity) {
         if (entity instanceof Player player && isHarvestablePlant(state)) {
             harvestNeighbourCrops(level, pos, player, stack);
         }
@@ -116,7 +116,7 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
         if (attacker instanceof Player player) {
             handleDevourKill(stack, target, player);
@@ -129,9 +129,8 @@ public class ItemScythe extends Item {
         handleDevourHit(stack, player, entity);
     }
 
-    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
         if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(level.registryAccess()), heldItem) > 0) {
             player.startUsingItem(hand);
@@ -141,17 +140,17 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
+    public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BOW;
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity livingEntity, int timeLeft) {
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeLeft) {
         if (!(livingEntity instanceof Player player) || level.isClientSide) {
             return;
         }
@@ -186,16 +185,18 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.scythe_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
-        if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(context.registries()), stack) > 0) {
+        var registries = context.registries();
+        if (registries != null
+                && EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(registries), stack) > 0) {
             tooltip.add(Component.translatable("xercatools.guillotine_tooltip").withStyle(ChatFormatting.YELLOW));
         }
     }
 
     @Override
-    public boolean isValidRepairItem(@NotNull ItemStack toRepair, @NotNull ItemStack repair) {
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
         if (this.tier.getRepairIngredient().test(repair)) {
             return true;
         }
@@ -312,7 +313,7 @@ public class ItemScythe extends Item {
         }
     }
 
-    private static ItemStack getMobHead(EntityType<?> type) {
+    private static @Nullable ItemStack getMobHead(EntityType<?> type) {
         Item vanillaHead = VANILLA_HEADS.get(type);
         if (vanillaHead != null) {
             return new ItemStack(vanillaHead);
@@ -367,7 +368,7 @@ public class ItemScythe extends Item {
         return damage;
     }
 
-    private static EntityHitResult findLivingEntityHit(Player player, Level level, double range) {
+    private static @Nullable EntityHitResult findLivingEntityHit(Player player, Level level, double range) {
         Vec3 start = player.getEyePosition(1.0F);
         Vec3 end = start.add(player.getViewVector(1.0F).scale(range));
         level.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
@@ -393,6 +394,6 @@ public class ItemScythe extends Item {
             }
         }
 
-        return closestEntity != null && closestHitPos != null ? new EntityHitResult(closestEntity, closestHitPos) : null;
+        return closestEntity != null ? new EntityHitResult(closestEntity, closestHitPos) : null;
     }
 }

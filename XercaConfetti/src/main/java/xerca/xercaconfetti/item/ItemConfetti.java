@@ -10,7 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercaconfetti.Mod;
 import xerca.xercaconfetti.packet.ConfettiParticlePacket;
@@ -24,7 +23,7 @@ public class ItemConfetti extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         playSound(worldIn, playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ());
         if (!worldIn.isClientSide) {
             Vec3 pos = playerIn.position().add(playerIn.getLookAngle()).add(0d, 1d, 0d);

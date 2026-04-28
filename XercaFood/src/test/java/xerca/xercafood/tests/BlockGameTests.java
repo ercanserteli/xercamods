@@ -194,7 +194,7 @@ public class BlockGameTests {
         net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "cheese_wheel"));
         helper.getLevel().setBlockAndUpdate(cheesePos, cheeseBlock.defaultBlockState());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(requireKnifeItem());
         useBlockWithItem(helper, cheesePos, player, knife);
 
         helper.assertTrue(hasNearbyItem(helper, new BlockPos(1, 2, 1), Items.CHEESE_SLICE, 3.0), "Expected slicing cheese to drop a cheese slice");
@@ -238,13 +238,13 @@ public class BlockGameTests {
         useBlockWithItem(helper, donerPos, player, mutton);
         helper.assertTrue(helper.getLevel().getBlockState(donerPos).getValue(xerca.xercafood.common.block.BlockDoner.MEAT_AMOUNT) == 4, "Expected doner to reach max meat");
 
-        xerca.xercafood.common.block_entity.BlockEntityDoner be = (xerca.xercafood.common.block_entity.BlockEntityDoner) helper.getLevel().getBlockEntity(donerPos);
+        xerca.xercafood.common.block_entity.BlockEntityDoner be = requireDonerBlockEntity(helper, donerPos);
         for (int i = 0; i < 510; i++) {
             xerca.xercafood.common.block_entity.BlockEntityDoner.tick(helper.getLevel(), be);
         }
         helper.assertFalse(helper.getLevel().getBlockState(donerPos).getValue(xerca.xercafood.common.block.BlockDoner.IS_RAW), "Expected doner to cook when heated and powered");
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(requireKnifeItem());
         useBlockWithItem(helper, donerPos, player, knife);
         helper.assertTrue(hasNearbyItem(helper, new BlockPos(1, 2, 1), Items.DONER_SLICE, 3.0), "Expected slicing cooked doner to drop doner slice");
         helper.succeed();

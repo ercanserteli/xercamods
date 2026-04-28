@@ -10,18 +10,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.Mod;
+import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 class GameTestHelpers {
     static final String BASIC_TEMPLATE = "xercafood:basic_test";
@@ -70,7 +70,25 @@ class GameTestHelpers {
     static AdvancementHolder requireAdvancement(GameTestHelper helper, ResourceLocation id) {
         AdvancementHolder advancement = helper.getLevel().getServer().getAdvancements().get(id);
         helper.assertTrue(advancement != null, "Missing advancement: " + id);
-        return advancement;
+        return Objects.requireNonNull(advancement, "Missing advancement after assertion: " + id);
+    }
+
+    static net.minecraft.world.item.Item requireKnifeItem() {
+        return KnifeCompat.getKnifeItem();
+    }
+
+    static BlockEntityDoner requireDonerBlockEntity(GameTestHelper helper, BlockPos pos) {
+        if (helper.getLevel().getBlockEntity(pos) instanceof BlockEntityDoner doner) {
+            return doner;
+        }
+        helper.assertTrue(false, "Expected doner block entity at " + pos);
+        throw new IllegalStateException("Unreachable after GameTest assertion failure");
+    }
+
+    static FoodProperties requireFoodProperties(GameTestHelper helper, net.minecraft.world.item.Item item) {
+        FoodProperties food = item.components().get(net.minecraft.core.component.DataComponents.FOOD);
+        helper.assertTrue(food != null, "Expected food component on " + item);
+        return Objects.requireNonNull(food, "Food component unexpectedly missing after assertion");
     }
 
     static ServerPlayer makeServerPlayer(GameTestHelper helper) {

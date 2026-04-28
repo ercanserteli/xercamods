@@ -57,7 +57,9 @@ public class ClientStuff implements ClientModInitializer {
 
     public static void showInstrumentGui(IItemInstrument instrument, BlockPos blockInsPos) {
         LocalPlayer player = Minecraft.getInstance().player;
-        Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), blockInsPos));
+        if (player != null) {
+            Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), blockInsPos));
+        }
     }
 
     public static NoteSound playNote(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {

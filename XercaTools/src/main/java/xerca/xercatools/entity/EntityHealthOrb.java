@@ -2,11 +2,7 @@ package xerca.xercatools.entity;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -20,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercatools.Mod;
 import xerca.xercatools.SoundEvents;
@@ -74,7 +69,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    protected @NotNull MovementEmission getMovementEmission() {
+    protected MovementEmission getMovementEmission() {
         return MovementEmission.NONE;
     }
 
@@ -179,7 +174,7 @@ public class EntityHealthOrb extends Entity {
         List<EntityHealthOrb> list = level.getEntities(EntityTypeTest.forClass(EntityHealthOrb.class), aabb,
                 orb -> canMerge(orb, groupId));
         if (!list.isEmpty()) {
-            EntityHealthOrb existing = list.get(0);
+            EntityHealthOrb existing = list.getFirst();
             ++existing.count;
             existing.age = 0;
             return true;
@@ -212,7 +207,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
         if (this.level().isClientSide || this.isRemoved()) return false;
         if (this.isInvulnerableTo(source)) return false;
         this.markHurt();
@@ -224,7 +219,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
+    protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putShort("Health", (short) this.health);
         tag.putShort("Age", (short) this.age);
         tag.putInt("Count", this.count);
@@ -233,7 +228,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+    protected void readAdditionalSaveData(CompoundTag tag) {
         this.health = tag.getShort("Health");
         this.age = tag.getShort("Age");
         this.count = Math.max(tag.getInt("Count"), 1);
@@ -248,7 +243,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    public void playerTouch(@NotNull Player player) {
+    public void playerTouch(Player player) {
         if (!this.level().isClientSide && !player.equals(donorPlayer) && (age > 80 || player.equals(attackingPlayer)) && player.takeXpDelay == 0) {
             player.level().playSound(null, player, SoundEvents.ABSORB, SoundSource.PLAYERS, 1.0f, 0.8f + random.nextFloat() * 0.4f);
             player.takeXpDelay = 1;
@@ -266,12 +261,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity entity) {
-        return new ClientboundAddEntityPacket(this, entity);
-    }
-
-    @Override
-    public @NotNull SoundSource getSoundSource() {
+    public SoundSource getSoundSource() {
         return SoundSource.AMBIENT;
     }
 }

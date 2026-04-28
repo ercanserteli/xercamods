@@ -3,7 +3,7 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
@@ -11,13 +11,16 @@ import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket.NotesTo
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
-public record MusicUpdatePacket(FieldFlag availability, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, short lengthBeats, byte bps,
-                                float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked,
-                                UUID id, int version, byte highlightInterval) implements CustomPacketPayload {
+public record MusicUpdatePacket(FieldFlag availability, @Nullable List<NoteEvent> notes,
+                                @Nullable List<VolumeMarker> volumeMarkers, short lengthBeats, byte bps,
+                                float volume, boolean signed, @Nullable String title, byte prevInstrument,
+                                boolean prevInsLocked,
+                                @Nullable UUID id, int version, byte highlightInterval) implements CustomPacketPayload {
     public static final Type<MusicUpdatePacket> PACKET_ID = new Type<>(Mod.id("music_update"));
     public static final StreamCodec<FriendlyByteBuf, MusicUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(MusicUpdatePacket::encode, MusicUpdatePacket::decode);
 
@@ -25,7 +28,7 @@ public record MusicUpdatePacket(FieldFlag availability, List<NoteEvent> notes, L
         return new MusicUpdatePacket(new FieldFlag(), null, null, (short) 0, (byte) 0, 0.0f, false, null, (byte) 0, false, null, 0, (byte) 0);
     }
 
-    public static MusicUpdatePacket create(FieldFlag availability, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, short lengthBeats, byte bps, float volume, boolean signed, String title, byte prevInstrument, boolean prevInsLocked, UUID id, int version, byte highlightInterval) throws NotesTooLargeException {
+    public static MusicUpdatePacket create(FieldFlag availability, @Nullable List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers, short lengthBeats, byte bps, float volume, boolean signed, @Nullable String title, byte prevInstrument, boolean prevInsLocked, @Nullable UUID id, int version, byte highlightInterval) throws NotesTooLargeException {
         if (notes != null && notes.size() > MAX_NOTES_IN_PACKET) {
             throw new NotesTooLargeException(notes, id);
         }
@@ -96,7 +99,7 @@ public record MusicUpdatePacket(FieldFlag availability, List<NoteEvent> notes, L
         }
     }
 
-    private static List<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
+    private static @Nullable List<VolumeMarker> readVolumeMarkers(FriendlyByteBuf buf) {
         int markerCount = buf.readInt();
         if (markerCount < 0 || markerCount > Mod.MAX_VOLUME_MARKERS_IN_PACKET) {
             throw new IllegalArgumentException("markerCount=" + markerCount);
@@ -114,7 +117,7 @@ public record MusicUpdatePacket(FieldFlag availability, List<NoteEvent> notes, L
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeInt(availability.toInt());
-        if (availability.hasTitle) buf.writeUtf(title);
+        if (availability.hasTitle) buf.writeUtf(Objects.requireNonNull(title, "title"));
         if (availability.hasSigned) buf.writeBoolean(signed);
         if (availability.hasBps) buf.writeByte(bps);
         if (availability.hasVolume) buf.writeFloat(volume);
@@ -131,7 +134,7 @@ public record MusicUpdatePacket(FieldFlag availability, List<NoteEvent> notes, L
         }
         if (availability.hasPrevIns) buf.writeByte(prevInstrument);
         if (availability.hasPrevInsLocked) buf.writeBoolean(prevInsLocked);
-        if (availability.hasId) buf.writeUUID(id);
+        if (availability.hasId) buf.writeUUID(Objects.requireNonNull(id, "id"));
         if (availability.hasVersion) buf.writeInt(version);
         if (availability.hasHlInterval) buf.writeByte(highlightInterval);
         if (availability.hasVolumeMarkers) {
@@ -147,7 +150,7 @@ public record MusicUpdatePacket(FieldFlag availability, List<NoteEvent> notes, L
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 

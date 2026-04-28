@@ -51,10 +51,6 @@ public class CommandImport {
     }
 
     public static void doImport(CompoundTag tag, ServerPlayer player) {
-        if (tag == null) {
-            notifyBrokenPaintFile(player);
-            return;
-        }
         // Sanitizing
         if (!tag.contains("ct", 1)) {
             notifyBrokenPaintFile(player);
@@ -94,10 +90,6 @@ public class CommandImport {
 
         byte canvasType = tag.getByte("ct");
         CanvasType importedCanvasType = CanvasType.fromByte(canvasType);
-        if (importedCanvasType == null) {
-            notifyBrokenPaintFile(player);
-            return;
-        }
         tag.remove("ct");
         if (tag.getInt(TAG_GENERATION) > 0) {
             tag.putInt(TAG_GENERATION, tag.getInt(TAG_GENERATION) + 1);
@@ -106,12 +98,7 @@ public class CommandImport {
         ItemStack itemStack;
         boolean doAddItem = false;
         if (player.isCreative()) {
-            CanvasType type = CanvasType.fromByte(canvasType);
-            if (type == null) {
-                Mod.LOGGER.error("Invalid canvas type");
-                return;
-            }
-            switch (type) {
+            switch (importedCanvasType) {
                 case SMALL -> itemStack = new ItemStack(Items.ITEM_CANVAS);
                 case LONG -> itemStack = new ItemStack(Items.ITEM_CANVAS_LONG);
                 case TALL -> itemStack = new ItemStack(Items.ITEM_CANVAS_TALL);
@@ -130,13 +117,9 @@ public class CommandImport {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
-            if (((ItemCanvas) mainHand.getItem()).getCanvasType() != CanvasType.fromByte(canvasType)) {
-                CanvasType type = CanvasType.fromByte(canvasType);
-                if (type == null) {
-                    return;
-                }
+            if (((ItemCanvas) mainHand.getItem()).getCanvasType() != importedCanvasType) {
                 Component typeName;
-                switch (type) {
+                switch (importedCanvasType) {
                     case LONG -> typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
                     case TALL -> typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
                     case LARGE -> typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);

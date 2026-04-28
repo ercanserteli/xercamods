@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityHealthOrb;
@@ -27,12 +26,12 @@ public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb> {
     }
 
     @Override
-    protected int getBlockLightLevel(@NotNull EntityHealthOrb entity, @NotNull BlockPos pos) {
+    protected int getBlockLightLevel(EntityHealthOrb entity, BlockPos pos) {
         return Mth.clamp(super.getBlockLightLevel(entity, pos) + 7, 0, 15);
     }
 
     @Override
-    public void render(@NotNull EntityHealthOrb orb, float entityYaw, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight) {
+    public void render(EntityHealthOrb orb, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
         float animTime = (orb.tickCount + partialTicks) / 2.0F;
         int red = (int) ((Mth.sin(animTime) + 1.0F) * 32.0F) + 192;
@@ -61,7 +60,7 @@ public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull EntityHealthOrb entity) {
+    public ResourceLocation getTextureLocation(EntityHealthOrb entity) {
         return TEXTURE;
     }
 }

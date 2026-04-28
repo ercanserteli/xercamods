@@ -1,13 +1,9 @@
 package xerca.xercacushion.entity;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -102,12 +98,12 @@ public class EntityCushion extends Entity {
     }
 
     @Override
-    public boolean skipAttackInteraction(@NotNull Entity entity) {
+    public boolean skipAttackInteraction(Entity entity) {
         return entity instanceof Player player && this.hurt(this.damageSources().playerAttack(player), 0.0F);
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
         }
@@ -160,7 +156,7 @@ public class EntityCushion extends Entity {
     }
 
     @Override
-    public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 hitPos, @NotNull InteractionHand hand) {
+    public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand hand) {
         if (!this.level().isClientSide) {
             player.startRiding(this);
         }
@@ -168,7 +164,7 @@ public class EntityCushion extends Entity {
     }
 
     @Override
-    public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         if (player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         }
@@ -184,8 +180,4 @@ public class EntityCushion extends Entity {
         return new ItemStack(Items.byVariant(getVariant()));
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity entity) {
-        return new ClientboundAddEntityPacket(this, entity);
-    }
 }

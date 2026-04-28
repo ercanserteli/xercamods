@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
 
@@ -30,7 +29,7 @@ public class ItemEasel extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext ctx) {
+    public InteractionResult useOn(UseOnContext ctx) {
         Direction direction = ctx.getClickedFace();
         if (direction == Direction.DOWN) {
             return InteractionResult.FAIL;

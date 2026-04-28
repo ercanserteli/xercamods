@@ -3,6 +3,7 @@ package xerca.xercamusic.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
@@ -27,7 +28,7 @@ public class SoundController extends Thread {
     private volatile double x;
     private volatile double y;
     private volatile double z;
-    private TileEntityMusicBox musicBox;
+    private @Nullable TileEntityMusicBox musicBox;
     private static final AtomicInteger CONTROLLER_COUNTER = new AtomicInteger();
 
     // Tracks sustained notes inside volume markers for dynamic volume updates
@@ -35,7 +36,7 @@ public class SoundController extends Thread {
 
     private record ActiveSound(NoteSound sound, NoteEvent event, VolumeMarker marker, int endBeat) {}
 
-    public SoundController(List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
+    public SoundController(List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
         this.notes = notes;
         this.volumeMarkers = volumeMarkers != null ? volumeMarkers : Collections.emptyList();
         this.x = x;
@@ -49,7 +50,7 @@ public class SoundController extends Thread {
         setName("XercaMusic-SoundController-" + CONTROLLER_COUNTER.incrementAndGet());
     }
 
-    public SoundController(List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
+    public SoundController(List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
         this(notes, volumeMarkers, x, y, z, instrument, bps, volume, -1);
         this.musicBox = musicBox;
     }
@@ -168,7 +169,7 @@ public class SoundController extends Thread {
                         }
 
                         // Apply glissando (smooth pitch slide)
-                        if (event.hasGlissando() && sound != null) {
+                        if (event.hasGlissando()) {
                             byte[] wps = event.getEffectiveWaypoints();
                             if (wps != null && wps.length > 0) {
                                 float[] pitchWaypoints = new float[wps.length];
@@ -189,7 +190,7 @@ public class SoundController extends Thread {
                         }
 
                         // Track sustained notes inside volume markers for dynamic volume
-                        if (sound != null && activeMarker != null && event.length > 1) {
+                        if (activeMarker != null && event.length > 1) {
                             synchronized (activeSounds) {
                                 activeSounds.add(new ActiveSound(sound, event, activeMarker, event.time + event.length));
                             }

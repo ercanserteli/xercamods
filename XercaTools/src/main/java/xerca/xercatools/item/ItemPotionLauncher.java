@@ -18,7 +18,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercatools.enchantment.FlaskEnchantments;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class ItemPotionLauncher extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (ItemFlask.getCharges(stack) <= 0) {
             return InteractionResultHolder.fail(stack);
@@ -58,7 +57,7 @@ public class ItemPotionLauncher extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.ender_bow_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
         ItemFlask.getPotionContents(stack).addPotionTooltip(tooltip::add, 1.0F, context.tickRate());

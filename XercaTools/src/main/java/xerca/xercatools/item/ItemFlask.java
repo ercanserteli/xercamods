@@ -21,7 +21,6 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercatools.enchantment.FlaskEnchantments;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class ItemFlask extends Item {
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         int chug = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.chugEnchantment(entity.level().registryAccess()), stack);
         return switch (chug) {
             case 2 -> 10;
@@ -44,12 +43,12 @@ public class ItemFlask extends Item {
     }
 
     @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
+    public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.DRINK;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getCharges(stack) <= 0) {
             return InteractionResultHolder.fail(stack);
@@ -60,7 +59,7 @@ public class ItemFlask extends Item {
     }
 
     @Override
-    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity) {
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         int charges = getCharges(stack);
         if (charges > 0 && entity instanceof Player player) {
             applyPotionEffects(stack, level, player, entity);
@@ -95,7 +94,7 @@ public class ItemFlask extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.ender_flask_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
         getPotionContents(stack).addPotionTooltip(tooltip::add, 1.0F, context.tickRate());

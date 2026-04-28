@@ -10,15 +10,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import xerca.xercafood.common.SoundEvents;
 
-import javax.annotation.Nonnull;
-
 class ItemUltimateBurger extends Item {
 
     public ItemUltimateBurger() {
         super(new Item.Properties().food(Foods.ULTIMATE_BURGER));
     }
 
-    @Nonnull
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
         if (entityLiving instanceof Player entityPlayer) {

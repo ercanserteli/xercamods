@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
@@ -26,7 +27,7 @@ public class ModClient implements ClientModInitializer {
     public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(Mod.id("easel"), "canvas");
     private static final String ITEM_CANVAS_TRANSLATION_KEY = "item.xercapaint.item_canvas";
     private static final String DRAWN_PREDICATE_ID = "drawn";
-    private static CanvasItemRenderer canvasItemRenderer;
+    private static @Nullable CanvasItemRenderer canvasItemRenderer;
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette) {
         showCanvasGui(easel, palette, Minecraft.getInstance());
@@ -39,6 +40,9 @@ public class ModClient implements ClientModInitializer {
                     Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
                     ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
         } else {
+            if (minecraft.player == null) {
+                return;
+            }
             minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvasStack, paletteStack,
                     Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
                     ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
@@ -73,7 +77,10 @@ public class ModClient implements ClientModInitializer {
         }
     }
 
-    static CanvasItemRenderer getCanvasItemRenderer() {
+    static CanvasItemRenderer requireCanvasItemRenderer() {
+        if (canvasItemRenderer == null) {
+            throw new IllegalStateException("Canvas item renderer not initialized");
+        }
         return canvasItemRenderer;
     }
 

@@ -39,8 +39,8 @@ import java.util.Objects;
 public class EntityEasel extends Entity {
     private static final int MAX_PAINTER_DISTANCE_SQR = 64;
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
-    private Player painter;
-    private Runnable dropDeferred;
+    private @Nullable Player painter;
+    private @Nullable Runnable dropDeferred;
     private int dropWaitTicks;
 
     static {
@@ -56,7 +56,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }
@@ -76,7 +76,7 @@ public class EntityEasel extends Entity {
         return painter;
     }
 
-    public void setPainter(Player painter) {
+    public void setPainter(@Nullable Player painter) {
         this.painter = painter;
     }
 
@@ -86,7 +86,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource damageSource, float amount) {
+    public boolean hurt(DamageSource damageSource, float amount) {
         if (this.isInvulnerableTo(damageSource)) {
             return false;
         }
@@ -182,15 +182,15 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public @NotNull SlotAccess getSlot(int i) {
+    public SlotAccess getSlot(int i) {
         return i == 0 ? new SlotAccess() {
             @Override
-            public @NotNull ItemStack get() {
+            public ItemStack get() {
                 return EntityEasel.this.getItem();
             }
 
             @Override
-            public boolean set(@NotNull ItemStack itemStack) {
+            public boolean set(ItemStack itemStack) {
                 EntityEasel.this.setItem(itemStack);
                 return true;
             }
@@ -198,7 +198,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> accessor) {
+    public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
         super.onSyncedDataUpdated(accessor);
         if (accessor.equals(DATA_CANVAS)) {
             ItemStack itemStack = this.getItem();
@@ -209,7 +209,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
+    public void addAdditionalSaveData(CompoundTag tag) {
         if (!this.getItem().isEmpty()) {
             tag.put("Item", this.getItem().save(this.registryAccess()));
         }
@@ -228,7 +228,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;

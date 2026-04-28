@@ -5,7 +5,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.StonecutterMenu;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercablocks.block.Blocks;
 
 public class CarvingStationMenu extends StonecutterMenu {
@@ -21,12 +20,12 @@ public class CarvingStationMenu extends StonecutterMenu {
     }
 
     @Override
-    public @NotNull MenuType<?> getType() {
-        return Menus.carvingStation;
+    public MenuType<?> getType() {
+        return Menus.CARVING_STATION;
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
+    public boolean stillValid(Player player) {
         return stillValid(access, player, Blocks.CARVING_STATION);
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface IItemInstrument {
@@ -37,6 +38,7 @@ public interface IItemInstrument {
 
     void setSounds(List<Pair<Integer, SoundEvent>> sounds);
 
+    @Nullable
     InsSound getSound(int note);
 
     record InsSound(SoundEvent sound, float pitch) {

@@ -1,6 +1,7 @@
 package xerca.xercamusic.client;
 
 import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 
 import javax.sound.midi.*;
@@ -12,10 +13,10 @@ public class MidiHandler {
     final ArrayList<Transmitter> transmitters = new ArrayList<>();
     final Consumer<MidiData> noteOnHandler;
     final Consumer<Integer> noteOffHandler;
-    final Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
+    final @Nullable Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
     private volatile int currentOctave;
 
-    public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler, Consumer<GuiMusicSheet.MidiControl> midiControlHandler) {
+    public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler, @Nullable Consumer<GuiMusicSheet.MidiControl> midiControlHandler) {
         this.noteOnHandler = noteOnHandler;
         this.noteOffHandler = noteOffHandler;
         this.midiControlHandler = midiControlHandler;

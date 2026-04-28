@@ -14,7 +14,6 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityGrabHook;
@@ -28,7 +27,7 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook> {
     }
 
     @Override
-    public void render(EntityGrabHook entity, float entityYaw, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight) {
+    public void render(EntityGrabHook entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         Player player = entity.getAngler();
 
         poseStack.pushPose();
@@ -106,7 +105,7 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull EntityGrabHook entity) {
+    public ResourceLocation getTextureLocation(EntityGrabHook entity) {
         return TEXTURE;
     }
 }

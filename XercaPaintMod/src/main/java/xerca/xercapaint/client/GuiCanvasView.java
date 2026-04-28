@@ -7,7 +7,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.Items;
@@ -24,14 +24,14 @@ public class GuiCanvasView extends Screen {
     private final int canvasPixelHeight;
     private final CanvasType canvasType;
 
-    private int[] pixels;
-    private String authorName = "";
+    private int @Nullable [] pixels;
+    private @Nullable String authorName = "";
     private String canvasTitle = "";
     private int generation;
-    private final EntityEasel easel;
-    private final Player player;
+    private final @Nullable EntityEasel easel;
+    private final @Nullable Player player;
 
-    protected GuiCanvasView(ItemStack canvasStack, Component title, CanvasType canvasType, EntityEasel easel) {
+    protected GuiCanvasView(ItemStack canvasStack, Component title, CanvasType canvasType, @Nullable EntityEasel easel) {
         super(title);
 
         this.canvasType = canvasType;
@@ -70,7 +70,7 @@ public class GuiCanvasView extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         for (int i = 0; i < canvasPixelHeight; i++) {
             for (int j = 0; j < canvasPixelWidth; j++) {
                 int x = canvasX + j * canvasPixelScale;
@@ -100,7 +100,8 @@ public class GuiCanvasView extends Screen {
 
     @Override
     public void tick() {
-        if (easel != null && (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 64)) {
+        if (easel != null && player != null
+                && (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 64)) {
             this.onClose();
         }
         super.tick();

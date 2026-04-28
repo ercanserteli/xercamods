@@ -21,7 +21,7 @@ public final class KnifeCompat {
         if (useToolsKnife()) {
             return BuiltInRegistries.ITEM.get(XERCATOOLS_KNIFE_ID);
         }
-        return Items.KNIFE;
+        return Items.requireLocalKnife();
     }
 
     public static boolean isKnife(ItemStack stack) {

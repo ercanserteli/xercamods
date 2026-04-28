@@ -10,7 +10,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.Items;
 
 import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
@@ -24,7 +23,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(@NotNull CraftingInput inv, @NotNull Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         if (super.matches(inv, worldIn)) {
             for (int j = 0; j < inv.size(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
@@ -41,7 +40,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public @NotNull ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ItemStack result = super.assemble(inv, provider);
         if (!result.isEmpty()) {
             for (int j = 0; j < inv.size(); ++j) {
@@ -61,7 +60,7 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return CRAFTING_TAGLESS_SHAPED;
     }
 
@@ -76,12 +75,12 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         public static final StreamCodec<RegistryFriendlyByteBuf, RecipeTaglessShaped> STREAM_CODEC = StreamCodec.of(RecipeTaglessShaped.TaglessSerializer::toNetwork, RecipeTaglessShaped.TaglessSerializer::fromNetwork);
 
         @Override
-        public @NotNull MapCodec<RecipeTaglessShaped> codec() {
+        public MapCodec<RecipeTaglessShaped> codec() {
             return MAP_CODEC;
         }
 
         @Override
-        public @NotNull StreamCodec<RegistryFriendlyByteBuf, RecipeTaglessShaped> streamCodec() {
+        public StreamCodec<RegistryFriendlyByteBuf, RecipeTaglessShaped> streamCodec() {
             return STREAM_CODEC;
         }
 

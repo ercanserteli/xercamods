@@ -22,7 +22,7 @@ public class BookcaseMenu extends AbstractContainerMenu {
     }
 
     public BookcaseMenu(int syncId, Inventory playerInventory, Container container) {
-        super(Menus.bookcase, syncId);
+        super(Menus.BOOKCASE, syncId);
         checkContainerSize(container, 6);
         this.container = container;
         container.startOpen(playerInventory.player);

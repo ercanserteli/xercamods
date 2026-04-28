@@ -47,9 +47,9 @@ public final class XercaToolsClient implements ClientModInitializer {
     }
 
     private static void registerBowLikeProperties(Item item) {
-        registerProperty(item, PULLING, (stack, level, entity, seed) -> isUsingThisStack(entity, stack) ? 1.0F : 0.0F);
+        registerProperty(item, PULLING, (stack, level, entity, seed) -> entity != null && isUsingThisStack(entity, stack) ? 1.0F : 0.0F);
         registerProperty(item, PULL, (stack, level, entity, seed) -> {
-            if (!isUsingThisStack(entity, stack)) {
+            if (entity == null || !isUsingThisStack(entity, stack)) {
                 return 0.0F;
             }
 
@@ -63,7 +63,7 @@ public final class XercaToolsClient implements ClientModInitializer {
     }
 
     private static boolean isUsingThisStack(LivingEntity entity, ItemStack stack) {
-        return entity != null && entity.isUsingItem() && ItemStack.isSameItemSameComponents(entity.getUseItem(), stack);
+        return entity.isUsingItem() && ItemStack.isSameItemSameComponents(entity.getUseItem(), stack);
     }
 
     private static void registerProperty(Item item, ResourceLocation id, ClampedItemPropertyFunction function) {

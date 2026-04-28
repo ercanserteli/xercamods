@@ -11,10 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.Mod;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     private final int minOctave;
     private final int maxOctave;
     private final int instrumentId;
-    private IItemInstrument.InsSound[] insSounds;
+    private @Nullable IItemInstrument.InsSound[] insSounds;
 
     public ItemBlockInstrument(int instrumentId, int minOctave, int maxOctave, Block block) {
         this(instrumentId, minOctave, maxOctave, new Properties(), block);
@@ -51,14 +49,12 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     }
 
     @Override
-    @Nonnull
-    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         return ItemInstrument.useInstrument(worldIn, playerIn, handIn);
     }
 
-    @Nonnull
     @Override
-    public InteractionResult useOn(@NotNull UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         if (ItemInstrument.useInstrumentOn(context)) {
             return InteractionResult.SUCCESS;
         } else {
@@ -67,7 +63,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         ItemInstrument.hurtEnemyWithInstrument(target, attacker, minOctave, maxOctave, this);
         return true;
     }

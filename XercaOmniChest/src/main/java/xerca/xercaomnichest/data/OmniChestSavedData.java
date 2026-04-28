@@ -38,7 +38,7 @@ public class OmniChestSavedData extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+    public CompoundTag save(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         ListTag listTag = new ListTag();
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
             ItemStack stack = inventory.getItem(i);

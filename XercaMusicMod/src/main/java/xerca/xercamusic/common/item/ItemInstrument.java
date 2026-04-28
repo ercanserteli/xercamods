@@ -15,14 +15,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.packets.clientbound.TripleNoteClientPacket;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
     public final int minOctave;
     public final int maxOctave;
     private final int instrumentId;
-    private InsSound[] insSounds;
+    private InsSound @Nullable [] insSounds;
 
     public ItemInstrument(int instrumentId, int minOctave, int maxOctave) {
         this(instrumentId, minOctave, maxOctave, new Properties());
@@ -51,7 +50,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
         return instrumentId;
     }
 
-    public static InteractionResultHolder<ItemStack> useInstrument(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand handIn) {
+    public static InteractionResultHolder<ItemStack> useInstrument(Level worldIn, Player playerIn, InteractionHand handIn) {
         final ItemStack heldItem = playerIn.getItemInHand(handIn);
         ItemStack off = playerIn.getOffhandItem();
         if (handIn == InteractionHand.MAIN_HAND && off.getItem() == Items.MUSIC_SHEET) {
@@ -66,7 +65,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
-    public static boolean useInstrumentOn(@NotNull UseOnContext context) {
+    public static boolean useInstrumentOn(UseOnContext context) {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         BlockState blockState = world.getBlockState(blockpos);
@@ -85,7 +84,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
         return false;
     }
 
-    public static void hurtEnemyWithInstrument(@NotNull LivingEntity target, LivingEntity attacker, int minOctave, int maxOctave, IItemInstrument instrument) {
+    public static void hurtEnemyWithInstrument(LivingEntity target, LivingEntity attacker, int minOctave, int maxOctave, IItemInstrument instrument) {
         Level world = attacker.level();
         if (!world.isClientSide) {
             int note1 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
@@ -101,14 +100,12 @@ public class ItemInstrument extends Item implements IItemInstrument {
     }
 
     @Override
-    @Nonnull
-    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         return useInstrument(worldIn, playerIn, handIn);
     }
 
-    @Nonnull
     @Override
-    public InteractionResult useOn(@NotNull UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         if (useInstrumentOn(context)) {
             return InteractionResult.SUCCESS;
         } else {
@@ -117,7 +114,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         hurtEnemyWithInstrument(target, attacker, minOctave, maxOctave, this);
         return true;
     }
@@ -153,9 +150,9 @@ public class ItemInstrument extends Item implements IItemInstrument {
     }
 
     @Override
-    public InsSound getSound(int note) {
+    public @Nullable InsSound getSound(int note) {
         int id = IItemInstrument.noteToId(note);
-        if (id >= 0 && id < TOTAL_NOTES) {
+        if (insSounds != null && id >= 0 && id < TOTAL_NOTES) {
             return insSounds[id];
         }
         Mod.LOGGER.warn("Requested invalid note from Instrument getSound: {}", note);

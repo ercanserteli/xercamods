@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -71,7 +72,8 @@ public class RecipeFlaskFilling extends CustomRecipe {
         for (int i = 0; i < remainingItems.size(); ++i) {
             ItemStack itemStack = inv.getItem(i);
             if (itemStack.getItem().hasCraftingRemainingItem()) {
-                remainingItems.set(i, itemStack.getItem().getCraftingRemainingItem().getDefaultInstance());
+                Item remainderItem = itemStack.getItem().getCraftingRemainingItem();
+                remainingItems.set(i, remainderItem == null ? ItemStack.EMPTY : remainderItem.getDefaultInstance());
             } else if (itemStack.getItem() instanceof PotionItem) {
                 remainingItems.set(i, new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE));
             }

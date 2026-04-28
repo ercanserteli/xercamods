@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
@@ -42,13 +43,13 @@ public class TileEntityMusicBox extends BlockEntity {
     private boolean isPowering;
     private boolean firstBlockUpdate = true;
     private ItemStack sheetStack = ItemStack.EMPTY;
-    private IItemInstrument instrument;
+    private @Nullable IItemInstrument instrument;
     private byte bps;
     private float volume;
     private int poweringAge;
     private int playingAge;
     private int length;
-    private SoundController soundController;
+    private @Nullable SoundController soundController;
     private static final String KEY_NOTE = "note";
     private static final String KEY_INS_ID = "instrument_id";
 
@@ -69,7 +70,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState state, TileEntityMusicBox t) {
-        if (level != null && !t.sheetStack.isEmpty() && t.notes.isEmpty() && !ItemMusicSheet.isEmptySheet(t.sheetStack)) {
+        if (!t.sheetStack.isEmpty() && t.notes.isEmpty() && !ItemMusicSheet.isEmptySheet(t.sheetStack)) {
             UUID id = t.sheetStack.get(Items.SHEET_ID);
             int ver = t.sheetStack.getOrDefault(Items.SHEET_VERSION, -1);
             byte bps = t.sheetStack.getOrDefault(Items.SHEET_BPS, (byte) 0);
@@ -174,17 +175,18 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     public static void musicStart(TileEntityMusicBox t, BlockPos blockPos) {
-        if (t.level != null && t.level.isClientSide) {
+        IItemInstrument instrument = t.instrument;
+        if (t.level != null && t.level.isClientSide && instrument != null) {
             if (t.soundController != null) {
                 t.soundController.setStop();
             }
-            t.soundController = new SoundController(t.notes, t.volumeMarkers, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
+            t.soundController = new SoundController(t.notes, t.volumeMarkers, blockPos.getX(), blockPos.getY(), blockPos.getZ(), instrument, t.bps, t.volume, t);
             t.soundController.start();
         }
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag parent, HolderLookup.@NotNull Provider levelRegistry) {
+    public void saveAdditional(CompoundTag parent, HolderLookup.@NotNull Provider levelRegistry) {
         super.saveAdditional(parent, levelRegistry);
 
         if (!this.sheetStack.isEmpty()) {
@@ -198,7 +200,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag parent, HolderLookup.@NotNull Provider levelRegistry) {
+    public void loadAdditional(CompoundTag parent, HolderLookup.@NotNull Provider levelRegistry) {
         super.loadAdditional(parent, levelRegistry);
         if (parent.contains(KEY_NOTE, 10)) {
             CompoundTag sheetTag = parent.getCompound(KEY_NOTE);
@@ -211,7 +213,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider registries) {
+    public CompoundTag getUpdateTag(HolderLookup.@NotNull Provider registries) {
         return this.saveWithFullMetadata(registries);
     }
 
@@ -262,6 +264,7 @@ public class TileEntityMusicBox extends BlockEntity {
         }
     }
 
+    @Nullable
     public IItemInstrument getInstrument() {
         return instrument;
     }
@@ -289,7 +292,7 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     // Send update to clients
-    private void updateClient(ItemStack sheetStack, Item itemInstrument) {
+    private void updateClient(@Nullable ItemStack sheetStack, @Nullable Item itemInstrument) {
         MusicBoxUpdatePacket packet = MusicBoxUpdatePacket.create(worldPosition, sheetStack, itemInstrument);
         for (ServerPlayer player : PlayerLookup.tracking(this)) {
             sendToClient(player, packet);
@@ -298,7 +301,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
     // fix to sync client state after the block was moved
     @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+    public @Nullable ClientboundBlockEntityDataPacket getUpdatePacket() {
         // send update only on the first block update to not send more packets than needed as updateClient() already does most of the functionality
         if (firstBlockUpdate) {
             firstBlockUpdate = false;

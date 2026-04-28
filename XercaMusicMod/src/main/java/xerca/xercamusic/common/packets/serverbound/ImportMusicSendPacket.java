@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 
@@ -17,8 +17,8 @@ import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_ID;
 import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_NOTES;
 
-public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
-                                    List<NoteEvent> notes) implements CustomPacketPayload {
+public record ImportMusicSendPacket(@Nullable UUID uuid, @Nullable CompoundTag tag,
+                                    @Nullable List<NoteEvent> notes) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ImportMusicSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("import_music_send"));
     public static final StreamCodec<FriendlyByteBuf, ImportMusicSendPacket> PACKET_CODEC = StreamCodec.ofMember(ImportMusicSendPacket::encode, ImportMusicSendPacket::decode);
 
@@ -44,7 +44,7 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
         return new ImportMusicSendPacket(uuid, tag, notes);
     }
 
-    public static ImportMusicSendPacket create(CompoundTag tag, List<NoteEvent> notes) {
+    public static ImportMusicSendPacket create(CompoundTag tag, @Nullable List<NoteEvent> notes) {
         UUID uuid = null;
         if (tag.contains(KEY_ID)) {
             uuid = tag.getUUID(KEY_ID);
@@ -67,7 +67,7 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
         }
     }
 
-    public static List<NoteEvent> notesFromBuffer(FriendlyByteBuf buf) {
+    public static @Nullable List<NoteEvent> notesFromBuffer(FriendlyByteBuf buf) {
         int eventCount = buf.readInt();
         if (eventCount < 0 || eventCount > MAX_NOTES_IN_PACKET) {
             throw new IllegalArgumentException("eventCount=" + eventCount);
@@ -95,7 +95,7 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 
@@ -104,13 +104,13 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
         private static final long serialVersionUID = 1L;
 
         private final List<NoteEvent> notes;
-        public final UUID id;
+        public final @Nullable UUID id;
 
         public List<NoteEvent> getNotes() {
             return notes;
         }
 
-        public NotesTooLargeException(List<NoteEvent> notes, UUID id) {
+        public NotesTooLargeException(List<NoteEvent> notes, @Nullable UUID id) {
             this.notes = notes;
             this.id = id;
         }

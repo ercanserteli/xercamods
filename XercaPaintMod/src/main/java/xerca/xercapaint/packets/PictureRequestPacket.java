@@ -3,7 +3,6 @@ package xerca.xercapaint.packets;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 
 public record PictureRequestPacket(String canvasId) implements CustomPacketPayload {
@@ -20,7 +19,7 @@ public record PictureRequestPacket(String canvasId) implements CustomPacketPaylo
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }

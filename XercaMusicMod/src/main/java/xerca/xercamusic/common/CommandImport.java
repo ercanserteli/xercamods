@@ -12,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.clientbound.ImportMusicPacket;
@@ -52,7 +53,7 @@ public final class CommandImport {
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, List<NoteEvent> notes, UUID importBufferId, Player player) {
+    public static void doImport(@Nullable CompoundTag tag, @Nullable List<NoteEvent> notes, @Nullable UUID importBufferId, Player player) {
         if (tag == null) {
             player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken sheet file: missing tag");
@@ -127,7 +128,7 @@ public final class CommandImport {
         return true;
     }
 
-    private static boolean loadAndSendMusicData(CompoundTag tag, List<NoteEvent> notes, UUID importBufferId, Player player) {
+    private static boolean loadAndSendMusicData(CompoundTag tag, @Nullable List<NoteEvent> notes, @Nullable UUID importBufferId, Player player) {
         MinecraftServer server = player.level().getServer();
         if (server == null) {
             Mod.LOGGER.warn("Cannot import music data without a server");
@@ -178,7 +179,7 @@ public final class CommandImport {
         return false;
     }
 
-    private static List<VolumeMarker> readVolumeMarkers(CompoundTag tag) {
+    private static @Nullable List<VolumeMarker> readVolumeMarkers(CompoundTag tag) {
         ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
         VolumeMarker.fillArrayFromNBT(volumeMarkers, tag);
         return volumeMarkers.isEmpty() ? null : volumeMarkers;

@@ -18,7 +18,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource random) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource random) {
         List<BakedQuad> baseQuads = baseModel.getQuads(state, side, random);
         List<BakedQuad> overlayQuads = overlayModel.getQuads(state, side, random);
 
@@ -93,17 +92,17 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
     }
 
     @Override
-    public @NotNull TextureAtlasSprite getParticleIcon() {
+    public TextureAtlasSprite getParticleIcon() {
         return baseModel.getParticleIcon();
     }
 
     @Override
-    public @NotNull ItemTransforms getTransforms() {
+    public ItemTransforms getTransforms() {
         return baseModel.getTransforms();
     }
 
     @Override
-    public @NotNull ItemOverrides getOverrides() {
+    public ItemOverrides getOverrides() {
         return baseModel.getOverrides();
     }
 
