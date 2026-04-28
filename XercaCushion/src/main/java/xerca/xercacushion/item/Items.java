@@ -24,7 +24,7 @@ public final class Items {
     public static final ItemCushion WHITE_CUSHION = create(Blocks.WHITE_CUSHION.getVariant());
     public static final ItemCushion YELLOW_CUSHION = create(Blocks.YELLOW_CUSHION.getVariant());
 
-    public static final ItemCushion[] ALL = {
+    private static final ItemCushion[] ALL = {
             BLACK_CUSHION,
             BLUE_CUSHION,
             BROWN_CUSHION,
@@ -81,5 +81,9 @@ public final class Items {
         for (int i = 0; i < ALL.length; i++) {
             Registry.register(BuiltInRegistries.ITEM, Mod.id(PATHS[i]), ALL[i]);
         }
+    }
+
+    public static ItemCushion[] all() {
+        return ALL;
     }
 }

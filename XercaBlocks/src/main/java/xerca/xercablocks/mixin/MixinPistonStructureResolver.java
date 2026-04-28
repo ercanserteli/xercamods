@@ -11,14 +11,14 @@ import xerca.xercablocks.block.Blocks;
 @Mixin(PistonStructureResolver.class)
 public abstract class MixinPistonStructureResolver {
     @Inject(method = "isSticky", at = @At("HEAD"), cancellable = true)
-    private static void xercablocks$isSticky(BlockState state, CallbackInfoReturnable<Boolean> cir) {
+    private static void isSticky(BlockState state, CallbackInfoReturnable<Boolean> cir) {
         if (state.is(Blocks.ROPE)) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "canStickToEachOther", at = @At("HEAD"), cancellable = true)
-    private static void xercablocks$canStickToEachOther(BlockState first, BlockState second, CallbackInfoReturnable<Boolean> cir) {
+    private static void canStickToEachOther(BlockState first, BlockState second, CallbackInfoReturnable<Boolean> cir) {
         if (first.is(Blocks.ROPE) || second.is(Blocks.ROPE)) {
             cir.setReturnValue(true);
         }

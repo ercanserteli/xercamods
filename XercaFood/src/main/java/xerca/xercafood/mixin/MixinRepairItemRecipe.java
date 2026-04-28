@@ -11,7 +11,7 @@ import xerca.xercafood.common.KnifeCompat;
 @Mixin(RepairItemRecipe.class)
 public abstract class MixinRepairItemRecipe {
     @Inject(method = "canCombine", at = @At("HEAD"), cancellable = true)
-    private static void xercafood$disableKnifeRepair(ItemStack first, ItemStack second, CallbackInfoReturnable<Boolean> cir) {
+    private static void disableKnifeRepair(ItemStack first, ItemStack second, CallbackInfoReturnable<Boolean> cir) {
         if (KnifeCompat.isKnife(first) || KnifeCompat.isKnife(second)) {
             cir.setReturnValue(false);
         }

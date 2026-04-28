@@ -7,16 +7,14 @@ import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.Blocks;
 
 public class BlockEntities {
-    public static BlockEntityType<?> METRONOME;
-    public static BlockEntityType<?> MUSIC_BOX;
+    public static final BlockEntityType<?> METRONOME = BlockEntityType.Builder.of(TileEntityMetronome::new, Blocks.BLOCK_METRONOME).build();
+    public static final BlockEntityType<?> MUSIC_BOX = BlockEntityType.Builder.of(TileEntityMusicBox::new, Blocks.MUSIC_BOX).build();
 
     private BlockEntities() {
     }
 
     public static void registerBlockEntities() {
         Mod.LOGGER.info("XercaMusic: Registering tile entities");
-        METRONOME = BlockEntityType.Builder.of(TileEntityMetronome::new, Blocks.BLOCK_METRONOME).build();
-        MUSIC_BOX = BlockEntityType.Builder.of(TileEntityMusicBox::new, Blocks.MUSIC_BOX).build();
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("metronome"), METRONOME);
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("music_box"), MUSIC_BOX);
     }

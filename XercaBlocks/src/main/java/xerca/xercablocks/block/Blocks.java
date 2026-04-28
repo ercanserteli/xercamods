@@ -50,10 +50,10 @@ public final class Blocks {
     );
 
     private static final Map<String, Block> BLOCKS = new LinkedHashMap<>();
-    public static final Map<String, Block> TERRATILES = new LinkedHashMap<>();
-    public static final Map<String, Block> TERRATILE_SLABS = new LinkedHashMap<>();
-    public static final Map<String, Block> TERRATILE_STAIRS = new LinkedHashMap<>();
-    public static final Map<String, Block> CARVED_WOODS = new LinkedHashMap<>();
+    private static final Map<String, Block> TERRATILES = new LinkedHashMap<>();
+    private static final Map<String, Block> TERRATILE_SLABS = new LinkedHashMap<>();
+    private static final Map<String, Block> TERRATILE_STAIRS = new LinkedHashMap<>();
+    private static final Map<String, Block> CARVED_WOODS = new LinkedHashMap<>();
 
     public static final Block BLOCK_LEATHER = register("block_leather",
             new Block(BlockBehaviour.Properties.of().ignitedByLava().mapColor(DyeColor.YELLOW).sound(SoundType.WOOL).strength(1.0f)));
@@ -102,5 +102,21 @@ public final class Blocks {
 
     public static Map<String, Block> allBlocks() {
         return BLOCKS;
+    }
+
+    public static Map<String, Block> terratiles() {
+        return TERRATILES;
+    }
+
+    public static Map<String, Block> terratileSlabs() {
+        return TERRATILE_SLABS;
+    }
+
+    public static Map<String, Block> terratileStairs() {
+        return TERRATILE_STAIRS;
+    }
+
+    public static Map<String, Block> carvedWoods() {
+        return CARVED_WOODS;
     }
 }

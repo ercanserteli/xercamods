@@ -21,7 +21,8 @@ import xerca.xercafood.common.crafting.RecipeTeaRefilling;
 import xerca.xercafood.common.crafting.RecipeTeaSugaring;
 
 public final class Items {
-    public static Item KNIFE;
+    private static final boolean REGISTER_LOCAL_KNIFE = !FabricLoader.getInstance().isModLoaded("xercatools");
+    public static final Item KNIFE = REGISTER_LOCAL_KNIFE ? new ItemKnife() : null;
     public static final Item GLASS = new ItemGlass();
     public static final Item ENDER_CUPCAKE = new ItemEnderCupcake();
     public static final Item COLA_EXTRACT = new Item(new Item.Properties().craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE));
@@ -298,9 +299,7 @@ public final class Items {
     }
 
     public static void registerItems() {
-        final boolean REGISTER_LOCAL_KNIFE = !FabricLoader.getInstance().isModLoaded("xercatools");
         if (REGISTER_LOCAL_KNIFE) {
-            KNIFE = new ItemKnife();
             registerItem("knife", KNIFE);
         }
         registerItem("glass", GLASS);

@@ -19,7 +19,7 @@ abstract class MixinStonecutterMenu {
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/item/crafting/RecipeType;STONECUTTING:Lnet/minecraft/world/item/crafting/RecipeType;")
     )
     @SuppressFBWarnings(value = "BC", justification = "Mixin applies to multiple menu runtime types; static analyzer cannot model transformed type.")
-    private RecipeType<StonecutterRecipe> xercablocks$useCarvingRecipeTypeForCarvingStation() {
+    private RecipeType<StonecutterRecipe> useCarvingRecipeTypeForCarvingStation() {
         return CarvingStationMenu.class.isInstance(this)
                 ? castRecipeType(Recipes.CARVING_TYPE)
                 : RecipeType.STONECUTTING;
@@ -30,7 +30,7 @@ abstract class MixinStonecutterMenu {
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/item/crafting/RecipeType;STONECUTTING:Lnet/minecraft/world/item/crafting/RecipeType;")
     )
     @SuppressFBWarnings(value = "BC", justification = "Mixin applies to multiple menu runtime types; static analyzer cannot model transformed type.")
-    private RecipeType<StonecutterRecipe> xercablocks$useCarvingRecipeTypeForCarvingQuickMove(Player player, int slot) {
+    private RecipeType<StonecutterRecipe> useCarvingRecipeTypeForCarvingQuickMove(Player player, int slot) {
         return CarvingStationMenu.class.isInstance(this)
                 ? castRecipeType(Recipes.CARVING_TYPE)
                 : RecipeType.STONECUTTING;

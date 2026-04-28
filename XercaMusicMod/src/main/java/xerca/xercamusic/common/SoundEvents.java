@@ -12,35 +12,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SoundEvents {
-    public static SoundEvent TICK;
-    public static SoundEvent METRONOME_SET;
-    public static SoundEvent OPEN_SCROLL;
-    public static SoundEvent CLOSE_SCROLL;
+    public static final SoundEvent TICK = createSoundEvent("tick");
+    public static final SoundEvent METRONOME_SET = createSoundEvent("metronome_set");
+    public static final SoundEvent OPEN_SCROLL = createSoundEvent("open_scroll");
+    public static final SoundEvent CLOSE_SCROLL = createSoundEvent("close_scroll");
 
     // Instrument sounds
-    public static List<Pair<Integer, SoundEvent>> cymbals;
-    public static List<Pair<Integer, SoundEvent>> drum_kits;
-    public static List<Pair<Integer, SoundEvent>> guitars;
-    public static List<Pair<Integer, SoundEvent>> lyres;
-    public static List<Pair<Integer, SoundEvent>> drums;
-    public static List<Pair<Integer, SoundEvent>> flutes;
-    public static List<Pair<Integer, SoundEvent>> banjos;
-    public static List<Pair<Integer, SoundEvent>> saxophones;
-    public static List<Pair<Integer, SoundEvent>> gods;
-    public static List<Pair<Integer, SoundEvent>> harp_mcs;
-    public static List<Pair<Integer, SoundEvent>> sansulas;
-    public static List<Pair<Integer, SoundEvent>> tubular_bells;
-    public static List<Pair<Integer, SoundEvent>> violins;
-    public static List<Pair<Integer, SoundEvent>> xylophones;
-    public static List<Pair<Integer, SoundEvent>> cellos;
-    public static List<Pair<Integer, SoundEvent>> pianos;
-    public static List<Pair<Integer, SoundEvent>> oboes;
-    public static List<Pair<Integer, SoundEvent>> redstone_guitars;
-    public static List<Pair<Integer, SoundEvent>> french_horns;
-    public static List<Pair<Integer, SoundEvent>> bass_guitars;
-    public static List<Pair<Integer, SoundEvent>> trumpets;
-    public static List<Pair<Integer, SoundEvent>> redstone_pianos;
-    public static List<Pair<Integer, SoundEvent>> organs;
+    public static final List<Pair<Integer, SoundEvent>> cymbals = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> drum_kits = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> guitars = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> lyres = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> drums = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> flutes = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> banjos = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> saxophones = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> gods = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> harp_mcs = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> sansulas = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> tubular_bells = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> violins = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> xylophones = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> cellos = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> pianos = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> oboes = new ArrayList<>(21);
+    public static final List<Pair<Integer, SoundEvent>> redstone_guitars = new ArrayList<>(11);
+    public static final List<Pair<Integer, SoundEvent>> french_horns = new ArrayList<>(11);
+    public static final List<Pair<Integer, SoundEvent>> bass_guitars = new ArrayList<>(8);
+    public static final List<Pair<Integer, SoundEvent>> trumpets = new ArrayList<>(7);
+    public static final List<Pair<Integer, SoundEvent>> redstone_pianos = new ArrayList<>(13);
+    public static final List<Pair<Integer, SoundEvent>> organs = new ArrayList<>(11);
 
     private static final String NAME_GUITAR = "guitar";
     private static final String NAME_DRUM_KIT = "drum_kit";
@@ -90,36 +90,29 @@ public class SoundEvents {
     }
 
     public static void registerSoundEvents() {
-        // core sounds
-        TICK = createSoundEvent("tick");
-        METRONOME_SET = createSoundEvent("metronome_set");
-        OPEN_SCROLL = createSoundEvent("open_scroll");
-        CLOSE_SCROLL = createSoundEvent("close_scroll");
-
-        // init lists
-        cymbals = new ArrayList<>(48);
-        drum_kits = new ArrayList<>(48);
-        french_horns = new ArrayList<>(11);
-        guitars = new ArrayList<>(48);
-        drums = new ArrayList<>(48);
-        redstone_guitars = new ArrayList<>(11);
-        lyres = new ArrayList<>(48);
-        flutes = new ArrayList<>(48);
-        banjos = new ArrayList<>(48);
-        saxophones = new ArrayList<>(48);
-        gods = new ArrayList<>(48);
-        oboes = new ArrayList<>(21);
-        harp_mcs = new ArrayList<>(48);
-        sansulas = new ArrayList<>(48);
-        tubular_bells = new ArrayList<>(48);
-        violins = new ArrayList<>(48);
-        bass_guitars = new ArrayList<>(8);
-        xylophones = new ArrayList<>(48);
-        cellos = new ArrayList<>(48);
-        pianos = new ArrayList<>(48);
-        trumpets = new ArrayList<>(7);
-        redstone_pianos = new ArrayList<>(13);
-        organs = new ArrayList<>(11);
+        cymbals.clear();
+        drum_kits.clear();
+        french_horns.clear();
+        guitars.clear();
+        drums.clear();
+        redstone_guitars.clear();
+        lyres.clear();
+        flutes.clear();
+        banjos.clear();
+        saxophones.clear();
+        gods.clear();
+        oboes.clear();
+        harp_mcs.clear();
+        sansulas.clear();
+        tubular_bells.clear();
+        violins.clear();
+        bass_guitars.clear();
+        xylophones.clear();
+        cellos.clear();
+        pianos.clear();
+        trumpets.clear();
+        redstone_pianos.clear();
+        organs.clear();
 
         // ranges
         addRange(drum_kits, NAME_DRUM_KIT, 21, 116);

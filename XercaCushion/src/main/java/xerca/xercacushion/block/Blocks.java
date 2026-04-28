@@ -26,7 +26,7 @@ public final class Blocks {
     public static final BlockCushion WHITE_CUSHION = create(14, MapColor.WOOL);
     public static final BlockCushion YELLOW_CUSHION = create(15, MapColor.COLOR_YELLOW);
 
-    public static final BlockCushion[] ALL = {
+    private static final BlockCushion[] ALL = {
             BLACK_CUSHION,
             BLUE_CUSHION,
             BROWN_CUSHION,
@@ -56,5 +56,9 @@ public final class Blocks {
         for (BlockCushion block : ALL) {
             Registry.register(BuiltInRegistries.BLOCK, Mod.id(Items.pathByVariant(block.getVariant())), block);
         }
+    }
+
+    public static BlockCushion[] all() {
+        return ALL;
     }
 }

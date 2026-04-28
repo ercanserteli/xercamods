@@ -35,7 +35,7 @@ public final class Mod implements ModInitializer {
         Registry.register(BuiltInRegistries.ENTITY_TYPE, id("cushion"), CUSHION);
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries -> {
-            for (var item : Items.ALL) {
+            for (var item : Items.all()) {
                 entries.accept(item);
             }
         });

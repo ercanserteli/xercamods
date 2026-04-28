@@ -30,10 +30,10 @@ public final class Items {
         register("bookcase", BOOKCASE);
         register("rope", ROPE);
         register("carving_station", CARVING_STATION);
-        Blocks.CARVED_WOODS.forEach(Items::registerBuildingBlockItem);
-        Blocks.TERRATILES.forEach(Items::registerBuildingBlockItem);
-        Blocks.TERRATILE_SLABS.forEach(Items::registerBuildingBlockItem);
-        Blocks.TERRATILE_STAIRS.forEach(Items::registerBuildingBlockItem);
+        Blocks.carvedWoods().forEach(Items::registerBuildingBlockItem);
+        Blocks.terratiles().forEach(Items::registerBuildingBlockItem);
+        Blocks.terratileSlabs().forEach(Items::registerBuildingBlockItem);
+        Blocks.terratileStairs().forEach(Items::registerBuildingBlockItem);
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> {
             entries.accept(BOOKCASE);

@@ -7,13 +7,12 @@ import xerca.xercaomnichest.Mod;
 import xerca.xercaomnichest.block.Blocks;
 
 public final class BlockEntities {
-    public static BlockEntityType<BlockEntityOmniChest> OMNI_CHEST;
+    public static final BlockEntityType<BlockEntityOmniChest> OMNI_CHEST = BlockEntityType.Builder.of(BlockEntityOmniChest::new, Blocks.OMNI_CHEST).build();
 
     private BlockEntities() {
     }
 
     public static void registerBlockEntities() {
-        OMNI_CHEST = BlockEntityType.Builder.of(BlockEntityOmniChest::new, Blocks.OMNI_CHEST).build();
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("omni_chest"), OMNI_CHEST);
     }
 }

@@ -66,7 +66,7 @@ public class GuiMusicSheet extends Screen {
     static final int MAX_UNDO_LENGTH = 16;
     private static final String NOTE_LEFT_STR_KEY = "note.leftButton";
     private static final String NOTE_RIGHT_STR_KEY = "note.rightButton";
-    static int currentOctave = 1;
+    private static int currentOctave = 1;
     static float brushVolume = 0.5f;
     private final Player editingPlayer;
     private final NoteSound[] notePlaySounds;
@@ -275,7 +275,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         this.midiHandler = new MidiHandler(this::startSound, this::endSound, this::midiControlCommand);
-        midiHandler.currentOctave = currentOctave;
+        midiHandler.setCurrentOctave(currentOctave);
         this.notePlaySounds = new NoteSound[IItemInstrument.TOTAL_NOTES];
         this.inputHandler = new SheetInputHandler(this);
     }
@@ -2278,5 +2278,13 @@ public class GuiMusicSheet extends Screen {
             sliderEndVolume.onRelease(posX, posY);
             return true;
         }
+    }
+
+    static int getCurrentOctave() {
+        return currentOctave;
+    }
+
+    static void setCurrentOctave(int currentOctave) {
+        GuiMusicSheet.currentOctave = currentOctave;
     }
 }

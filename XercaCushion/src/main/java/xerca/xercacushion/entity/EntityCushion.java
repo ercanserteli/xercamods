@@ -62,7 +62,7 @@ public class EntityCushion extends Entity {
     }
 
     public BlockCushion getVariantBlock() {
-        return Blocks.ALL[getVariant()];
+        return Blocks.all()[getVariant()];
     }
 
     private boolean hasSupportBelow() {

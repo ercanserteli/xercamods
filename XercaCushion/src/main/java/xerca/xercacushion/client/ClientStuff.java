@@ -12,7 +12,7 @@ public class ClientStuff implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         EntityRendererRegistry.register(Mod.CUSHION, CushionRenderer::new);
-        for (var block : Blocks.ALL) {
+        for (var block : Blocks.all()) {
             BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutoutMipped());
         }
     }

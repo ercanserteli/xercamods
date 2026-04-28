@@ -13,7 +13,7 @@ public final class ModClient implements ClientModInitializer {
     public void onInitializeClient() {
         CarvedCrimsonModels.register();
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.ROPE, RenderType.cutoutMipped());
-        Blocks.CARVED_WOODS.values().forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutoutMipped()));
+        Blocks.carvedWoods().values().forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutoutMipped()));
         MenuScreens.register(Menus.CARVING_STATION, StonecutterScreen::new);
         MenuScreens.register(Menus.BOOKCASE, BookcaseScreen::new);
     }

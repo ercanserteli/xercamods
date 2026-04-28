@@ -78,7 +78,7 @@ public class GuiInstrument extends Screen {
         } else if (currentKeyboardOctave > instrument.getMaxOctave()) {
             currentKeyboardOctave = instrument.getMaxOctave();
         }
-        midiHandler.currentOctave = currentKeyboardOctave;
+        midiHandler.setCurrentOctave(currentKeyboardOctave);
 
         this.addRenderableWidget(Button.builder(Component.translatable("note.upButton"), button -> increaseOctave()).
                 bounds(octaveButtonX, OCTAVE_BUTTON_Y, 10, 10).
@@ -268,7 +268,7 @@ public class GuiInstrument extends Screen {
     private void decreaseOctave() {
         if (currentKeyboardOctave > -3) {
             currentKeyboardOctave--;
-            midiHandler.currentOctave = currentKeyboardOctave;
+            midiHandler.setCurrentOctave(currentKeyboardOctave);
             stopAllSounds();
         }
     }
@@ -276,7 +276,7 @@ public class GuiInstrument extends Screen {
     private void increaseOctave() {
         if (currentKeyboardOctave < instrument.getMaxOctave()) {
             currentKeyboardOctave++;
-            midiHandler.currentOctave = currentKeyboardOctave;
+            midiHandler.setCurrentOctave(currentKeyboardOctave);
             stopAllSounds();
         }
     }

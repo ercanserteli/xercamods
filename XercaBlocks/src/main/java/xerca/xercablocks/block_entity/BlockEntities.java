@@ -7,13 +7,12 @@ import xerca.xercablocks.Mod;
 import xerca.xercablocks.block.Blocks;
 
 public final class BlockEntities {
-    public static BlockEntityType<FunctionalBookcaseBlockEntity> FUNCTIONAL_BOOKCASE;
+    public static final BlockEntityType<FunctionalBookcaseBlockEntity> FUNCTIONAL_BOOKCASE = BlockEntityType.Builder.of(FunctionalBookcaseBlockEntity::new, Blocks.BLOCK_BOOKCASE).build();
 
     private BlockEntities() {
     }
 
     public static void registerBlockEntities() {
-        FUNCTIONAL_BOOKCASE = BlockEntityType.Builder.of(FunctionalBookcaseBlockEntity::new, Blocks.BLOCK_BOOKCASE).build();
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("functional_bookcase"), FUNCTIONAL_BOOKCASE);
     }
 }

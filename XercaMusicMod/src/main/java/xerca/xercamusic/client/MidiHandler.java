@@ -13,7 +13,7 @@ public class MidiHandler {
     final Consumer<MidiData> noteOnHandler;
     final Consumer<Integer> noteOffHandler;
     final Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
-    public volatile int currentOctave;
+    private volatile int currentOctave;
 
     public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler, Consumer<GuiMusicSheet.MidiControl> midiControlHandler) {
         this.noteOnHandler = noteOnHandler;
@@ -45,6 +45,14 @@ public class MidiHandler {
 
     public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler) {
         this(noteOnHandler, noteOffHandler, null);
+    }
+
+    public int getCurrentOctave() {
+        return currentOctave;
+    }
+
+    public void setCurrentOctave(int currentOctave) {
+        this.currentOctave = currentOctave;
     }
 
     public void closeDevices() {

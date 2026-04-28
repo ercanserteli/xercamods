@@ -7,10 +7,9 @@ import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.Blocks;
 
 public class BlockEntities {
-    public static BlockEntityType<BlockEntityDoner> DONER;
+    public static final BlockEntityType<BlockEntityDoner> DONER = BlockEntityType.Builder.of(BlockEntityDoner::new, Blocks.BLOCK_DONER).build();
 
     public static void registerBlockEntities() {
-        DONER = BlockEntityType.Builder.of(BlockEntityDoner::new, Blocks.BLOCK_DONER).build();
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("doner"), DONER);
     }
 }

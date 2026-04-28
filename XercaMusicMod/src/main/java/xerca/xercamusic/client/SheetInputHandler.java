@@ -172,8 +172,8 @@ class SheetInputHandler {
                     final int x = GuiMusicSheet.NOTE_REGION_LEFT - 24;
                     final int y = GuiMusicSheet.NOTE_REGION_BOTTOM - 18 - i * 36;
                     if (mx >= x - 10 && mx <= x + 10 && my >= y - 4 && my <= y + 12) {
-                        GuiMusicSheet.currentOctave = gui.currentOctavePos + i;
-                        gui.midiHandler.currentOctave = GuiMusicSheet.currentOctave;
+                        GuiMusicSheet.setCurrentOctave(gui.currentOctavePos + i);
+                        gui.midiHandler.setCurrentOctave(GuiMusicSheet.getCurrentOctave());
                         if (gui.recording) {
                             gui.recordingNotes.clear();
                         }
@@ -469,11 +469,11 @@ class SheetInputHandler {
                             resetEditCursorEnd = false;
                         } else {
                             if (gui.editCursor == gui.editCursorEnd) {
-                                GuiMusicSheet.currentOctave--;
-                                if (GuiMusicSheet.currentOctave < -2) {
-                                    GuiMusicSheet.currentOctave = -2;
+                                GuiMusicSheet.setCurrentOctave(GuiMusicSheet.getCurrentOctave() - 1);
+                                if (GuiMusicSheet.getCurrentOctave() < -2) {
+                                    GuiMusicSheet.setCurrentOctave(-2);
                                 }
-                                gui.midiHandler.currentOctave = GuiMusicSheet.currentOctave;
+                                gui.midiHandler.setCurrentOctave(GuiMusicSheet.getCurrentOctave());
                                 if (gui.recording) {
                                     gui.recordingNotes.clear();
                                 }
@@ -484,11 +484,11 @@ class SheetInputHandler {
                     }
                     case GLFW.GLFW_KEY_S -> {
                         if (gui.editCursor == gui.editCursorEnd) {
-                            GuiMusicSheet.currentOctave++;
-                            if (GuiMusicSheet.currentOctave > 7) {
-                                GuiMusicSheet.currentOctave = 7;
+                            GuiMusicSheet.setCurrentOctave(GuiMusicSheet.getCurrentOctave() + 1);
+                            if (GuiMusicSheet.getCurrentOctave() > 7) {
+                                GuiMusicSheet.setCurrentOctave(7);
                             }
-                            gui.midiHandler.currentOctave = GuiMusicSheet.currentOctave;
+                            gui.midiHandler.setCurrentOctave(GuiMusicSheet.getCurrentOctave());
                             if (gui.recording) {
                                 gui.recordingNotes.clear();
                             }
@@ -510,12 +510,12 @@ class SheetInputHandler {
                     default -> {
                         int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
                         int lastScanCode = firstScanCode + 11;
-                        if (scanCode >= firstScanCode && scanCode <= lastScanCode && GuiMusicSheet.currentOctave >= 0) {
+                        if (scanCode >= firstScanCode && scanCode <= lastScanCode && GuiMusicSheet.getCurrentOctave() >= 0) {
                             if (gui.recording) {
-                                gui.startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.currentOctave)), (byte) 100);
+                                gui.startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.getCurrentOctave())), (byte) 100);
                             } else {
                                 putSpace(x - 1);
-                                addNote((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.currentOctave), (short) x, false);
+                                addNote((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.getCurrentOctave()), (short) x, false);
                                 finishAddingNote();
                             }
                         }
@@ -535,8 +535,8 @@ class SheetInputHandler {
         gui.callSuperKeyReleased(keyCode, scanCode, modifiers);
         int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
         int lastScanCode = firstScanCode + 11;
-        if (scanCode >= firstScanCode && scanCode <= lastScanCode && GuiMusicSheet.currentOctave >= 0 && gui.recording) {
-            gui.endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.currentOctave)));
+        if (scanCode >= firstScanCode && scanCode <= lastScanCode && GuiMusicSheet.getCurrentOctave() >= 0 && gui.recording) {
+            gui.endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.getCurrentOctave())));
         }
         return true;
     }
