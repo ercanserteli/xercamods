@@ -16,6 +16,9 @@ import xerca.xercafood.common.item.Items;
 
 @Mixin(BrewingStandBlockEntity.class)
 public abstract class MixinBrewingStandBlockEntity {
+    private MixinBrewingStandBlockEntity() {
+    }
+
     @Inject(method = "isBrewable", at = @At("HEAD"), cancellable = true)
     private static void isColaExtractBrewable(net.minecraft.world.item.alchemy.PotionBrewing potionBrewing, NonNullList<ItemStack> items, CallbackInfoReturnable<Boolean> cir) {
         if (!items.get(3).is(Items.COLA_POWDER)) {

@@ -32,22 +32,15 @@ public class FlaskAndLauncherGameTests {
     private static final String WEAPONS_BATCH = "xercatools_tests";
 
     // Builds a regular potion stack (PotionItem) with the given potion type.
-    private static ItemStack makeRegularPotion(ServerLevel level, Holder<Potion> holder) {
+    private static ItemStack makeRegularPotion(Holder<Potion> holder) {
         ItemStack stack = new ItemStack(net.minecraft.world.item.Items.POTION);
         stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(holder), Optional.empty(), List.of()));
         return stack;
     }
 
     // Builds a splash potion stack (ThrowablePotionItem) used by the Ender Bow recipe.
-    private static ItemStack makeSplashPotion(ServerLevel level, Holder<Potion> holder) {
+    private static ItemStack makeSplashPotion(Holder<Potion> holder) {
         ItemStack stack = new ItemStack(net.minecraft.world.item.Items.SPLASH_POTION);
-        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(holder), Optional.empty(), List.of()));
-        return stack;
-    }
-
-    // Builds a lingering potion stack.
-    private static ItemStack makeLingeringPotion(ServerLevel level, Holder<Potion> holder) {
-        ItemStack stack = new ItemStack(net.minecraft.world.item.Items.LINGERING_POTION);
         stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(holder), Optional.empty(), List.of()));
         return stack;
     }
@@ -80,7 +73,6 @@ public class FlaskAndLauncherGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
     public static void flaskUseDurationBaseIs32(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack flask = new ItemStack(Items.FLASK);
         int duration = Items.FLASK.getUseDuration(flask, player);
@@ -124,7 +116,7 @@ public class FlaskAndLauncherGameTests {
         RecipeFlaskFilling recipe = new RecipeFlaskFilling(CraftingBookCategory.MISC);
 
         ItemStack flask = new ItemStack(Items.FLASK);
-        ItemStack potion = makeRegularPotion(level, Potions.HEALING);
+        ItemStack potion = makeRegularPotion(Potions.HEALING);
         // 3×3 grid: flask + one potion, rest empty
         CraftingInput input = CraftingInput.of(3, 3, List.of(
             flask, potion, ItemStack.EMPTY,
@@ -144,7 +136,7 @@ public class FlaskAndLauncherGameTests {
 
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemFlask.setCharges(flask, 16); // already at max capacity
-        ItemStack potion = makeRegularPotion(level, Potions.HEALING);
+        ItemStack potion = makeRegularPotion(Potions.HEALING);
         CraftingInput input = CraftingInput.of(3, 3, List.of(
             flask, potion, ItemStack.EMPTY,
             ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
@@ -162,8 +154,8 @@ public class FlaskAndLauncherGameTests {
         RecipeFlaskFilling recipe = new RecipeFlaskFilling(CraftingBookCategory.MISC);
 
         ItemStack flask = new ItemStack(Items.FLASK);
-        ItemStack healing = makeRegularPotion(level, Potions.HEALING);
-        ItemStack regen = makeRegularPotion(level, Potions.REGENERATION);
+        ItemStack healing = makeRegularPotion(Potions.HEALING);
+        ItemStack regen = makeRegularPotion(Potions.REGENERATION);
         CraftingInput input = CraftingInput.of(3, 3, List.of(
             flask, healing, regen,
             ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
@@ -208,7 +200,7 @@ public class FlaskAndLauncherGameTests {
         RecipeEnderBowFilling recipe = new RecipeEnderBowFilling(CraftingBookCategory.MISC);
 
         ItemStack launcher = new ItemStack(Items.ENDER_BOW);
-        ItemStack splash = makeSplashPotion(level, Potions.HEALING);
+        ItemStack splash = makeSplashPotion(Potions.HEALING);
         CraftingInput input = CraftingInput.of(3, 3, List.of(
             launcher, splash, ItemStack.EMPTY,
             ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,

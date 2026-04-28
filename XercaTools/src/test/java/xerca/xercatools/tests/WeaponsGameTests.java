@@ -448,7 +448,6 @@ public class WeaponsGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
     public static void knifeBackstabBonusWhenSneak(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
 
@@ -465,7 +464,6 @@ public class WeaponsGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
     public static void knifeNoBackstabBonusFromFront(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
 

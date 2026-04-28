@@ -46,6 +46,7 @@ public class EntityTomato extends ThrowableItemProjectile {
         }
     }
 
+    @Override
     public void handleEntityEvent(byte id) {
         if (id == 3) {
             for (int j = 0; j < 8; ++j) {

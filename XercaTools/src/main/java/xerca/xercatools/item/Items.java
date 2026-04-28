@@ -52,5 +52,3 @@ public final class Items {
         Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_ender_bow_filling"), CRAFTING_SPECIAL_ENDER_BOW_FILLING);
     }
 }
-
-

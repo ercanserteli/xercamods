@@ -17,6 +17,9 @@ import java.util.stream.IntStream;
 
 @Mixin(ItemStackComponentizationFix.class)
 public class ItemStackComponentizationFixMixin {
+    private ItemStackComponentizationFixMixin() {
+    }
+
     // Called reflectively by Mixin injection.
     @SuppressWarnings({"UnusedMethod", "UnusedVariable"})
     @Inject(at = @At("TAIL"), method = "fixItemStack(Lnet/minecraft/util/datafix/fixes/ItemStackComponentizationFix$ItemStackData;Lcom/mojang/serialization/Dynamic;)V")

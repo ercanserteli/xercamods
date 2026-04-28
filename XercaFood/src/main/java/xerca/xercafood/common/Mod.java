@@ -36,8 +36,6 @@ public class Mod implements ModInitializer {
     public static final String MODID = "xercafood";
     public static final String NAME = "Xerca Food";
 
-    private static final String PROTOCOL_VERSION = Integer.toString(1);
-
     public static final Logger LOGGER = LogManager.getLogger();
     private static final ResourceKey<LootTable> GRASS_LOOT_TABLE_ID = net.minecraft.world.level.block.Blocks.SHORT_GRASS.getLootTable();
 

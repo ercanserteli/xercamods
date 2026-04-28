@@ -8,6 +8,9 @@ import net.minecraft.world.entity.MobCategory;
 import xerca.xercapaint.Mod;
 
 public class Entities {
+    private Entities() {
+    }
+
     public static final ResourceLocation CANVAS_ID = Mod.id("canvas");
     public static final ResourceLocation EASEL_ID = Mod.id("easel");
 

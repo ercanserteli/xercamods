@@ -21,6 +21,9 @@ import xerca.xercafood.common.crafting.RecipeTeaRefilling;
 import xerca.xercafood.common.crafting.RecipeTeaSugaring;
 
 public final class Items {
+    private Items() {
+    }
+
     private static final boolean REGISTER_LOCAL_KNIFE = !FabricLoader.getInstance().isModLoaded("xercatools");
     public static final Item KNIFE = REGISTER_LOCAL_KNIFE ? new ItemKnife() : null;
     public static final Item GLASS = new ItemGlass();

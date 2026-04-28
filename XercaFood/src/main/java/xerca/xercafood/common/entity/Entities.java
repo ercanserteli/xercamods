@@ -7,6 +7,9 @@ import net.minecraft.world.entity.MobCategory;
 import xerca.xercafood.common.Mod;
 
 public final class Entities {
+    private Entities() {
+    }
+
     public static final EntityType<EntityTomato> TOMATO = EntityType.Builder.<EntityTomato>of(EntityTomato::new, MobCategory.MISC)
             .sized(0.25f, 0.25f).updateInterval(10).build();
 

@@ -4,6 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
+    private PaletteUtil() {
+    }
+
     public static final Color EMPTINESS_COLOR = new Color(255, 236, 229);
     private static final float RATIO_FULL = 1.0f;
     private static final float RATIO_EMPTY = 0.0f;

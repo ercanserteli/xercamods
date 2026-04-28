@@ -26,6 +26,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class Items {
+    private Items() {
+    }
+
     public static final ItemPalette ITEM_PALETTE = new ItemPalette();
     public static final ItemCanvas ITEM_CANVAS = new ItemCanvas(CanvasType.SMALL);
     public static final ItemCanvas ITEM_CANVAS_LARGE = new ItemCanvas(CanvasType.LARGE);

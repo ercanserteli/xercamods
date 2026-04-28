@@ -5,6 +5,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 
 public class SoundEvents {
+    private SoundEvents() {
+    }
+
     public static final SoundEvent TOMATO_SPLASH = SoundEvent.createVariableRangeEvent(Mod.id("tomato_splash"));
     public static final SoundEvent BIG_BURP = SoundEvent.createVariableRangeEvent(Mod.id("big_burp"));
     public static final SoundEvent YAHOO = SoundEvent.createVariableRangeEvent(Mod.id("yahoo"));

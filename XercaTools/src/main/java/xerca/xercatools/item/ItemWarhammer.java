@@ -44,7 +44,7 @@ public class ItemWarhammer extends Item {
     private final float pushAmount;
     private final Tier material;
 
-    public static ItemAttributeModifiers createAttributes(Tier material, float attackDamage, float attackSpeed) {
+    public static ItemAttributeModifiers createAttributes(float attackDamage, float attackSpeed) {
         return ItemAttributeModifiers.builder()
                 .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, attackDamage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, attackSpeed, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
@@ -52,9 +52,9 @@ public class ItemWarhammer extends Item {
     }
 
     public ItemWarhammer(Tier mat) {
-        super(mat == Tiers.NETHERITE 
-                ? new Item.Properties().stacksTo(1).durability(mat.getUses()).fireResistant().attributes(createAttributes(mat, 1.0F + mat.getAttackDamageBonus(), -3.0F))
-                : new Item.Properties().stacksTo(1).durability(mat.getUses()).attributes(createAttributes(mat, 1.0F + mat.getAttackDamageBonus(), -3.0F)));
+        super(mat == Tiers.NETHERITE
+                ? new Item.Properties().stacksTo(1).durability(mat.getUses()).fireResistant().attributes(createAttributes(1.0F + mat.getAttackDamageBonus(), -3.0F))
+                : new Item.Properties().stacksTo(1).durability(mat.getUses()).attributes(createAttributes(1.0F + mat.getAttackDamageBonus(), -3.0F)));
         
         this.material = mat;
         this.pushAmount = getPushFromMaterial(mat);

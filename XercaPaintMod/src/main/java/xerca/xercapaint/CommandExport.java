@@ -22,6 +22,9 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class CommandExport {
+    private CommandExport() {
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("paintexport")

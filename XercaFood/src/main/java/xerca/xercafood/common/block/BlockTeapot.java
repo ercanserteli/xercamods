@@ -66,20 +66,18 @@ public class BlockTeapot extends Block {
     @Override
     public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource r) {
         int teaAmount = stateIn.getValue(TEA_AMOUNT);
-        if (teaAmount > 0) {
-            if (r.nextDouble() * 5 < teaAmount * 0.5) {
-                Direction facing = stateIn.getValue(FACING);
-                double smokeX = pos.getX() + 0.5D;
-                double smokeZ = pos.getZ() + 0.5D;
-                if (facing == Direction.NORTH) smokeZ = pos.getZ() + 0.25D;
-                else if (facing == Direction.SOUTH) smokeZ = pos.getZ() + 0.75D;
-                else if (facing == Direction.EAST) smokeX = pos.getX() + 0.75D;
-                else if (facing == Direction.WEST) smokeX = pos.getX() + 0.25D;
-                for (int i = 0; i < r.nextInt(1) + 1; ++i) {
-                    worldIn.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                            smokeX, pos.getY() + 0.6D + r.nextDouble() * 0.5D, smokeZ,
-                            0.0D, 0.025D, 0.0D);
-                }
+        if (teaAmount > 0 && r.nextDouble() * 5 < teaAmount * 0.5) {
+            Direction facing = stateIn.getValue(FACING);
+            double smokeX = pos.getX() + 0.5D;
+            double smokeZ = pos.getZ() + 0.5D;
+            if (facing == Direction.NORTH) smokeZ = pos.getZ() + 0.25D;
+            else if (facing == Direction.SOUTH) smokeZ = pos.getZ() + 0.75D;
+            else if (facing == Direction.EAST) smokeX = pos.getX() + 0.75D;
+            else if (facing == Direction.WEST) smokeX = pos.getX() + 0.25D;
+            for (int i = 0; i < r.nextInt(1) + 1; ++i) {
+                worldIn.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                        smokeX, pos.getY() + 0.6D + r.nextDouble() * 0.5D, smokeZ,
+                        0.0D, 0.025D, 0.0D);
             }
         }
     }

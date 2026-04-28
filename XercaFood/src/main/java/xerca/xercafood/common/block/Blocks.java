@@ -6,6 +6,9 @@ import net.minecraft.world.level.block.Block;
 import xerca.xercafood.common.Mod;
 
 public class Blocks {
+    private Blocks() {
+    }
+
     public static final BlockDoner BLOCK_DONER = new BlockDoner();
     public static final BlockTeapot BLOCK_TEAPOT = new BlockTeapot();
     public static final BlockTeaPlant BLOCK_TEA_PLANT = new BlockTeaPlant();

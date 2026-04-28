@@ -6,6 +6,9 @@ import net.minecraft.sounds.SoundEvent;
 import static net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT;
 
 public class SoundEvents {
+    private SoundEvents() {
+    }
+
     public static final SoundEvent STROKE_LOOP = SoundEvent.createVariableRangeEvent(Mod.id("stroke_loop"));
     public static final SoundEvent MIX = SoundEvent.createVariableRangeEvent(Mod.id("mix"));
     public static final SoundEvent COLOR_PICKER = SoundEvent.createVariableRangeEvent(Mod.id("color_picker"));

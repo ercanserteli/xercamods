@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityGrabHook;
@@ -39,12 +38,11 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook> {
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
         PoseStack.Pose pose = poseStack.last();
         Matrix4f matrix4f = pose.pose();
-        Matrix3f matrix3f = pose.normal();
         VertexConsumer vertexConsumer = buffer.getBuffer(RENDER_TYPE);
-        vertex(vertexConsumer, matrix4f, matrix3f, packedLight, 0.0F, 0, 0, 1);
-        vertex(vertexConsumer, matrix4f, matrix3f, packedLight, 1.0F, 0, 1, 1);
-        vertex(vertexConsumer, matrix4f, matrix3f, packedLight, 1.0F, 1, 1, 0);
-        vertex(vertexConsumer, matrix4f, matrix3f, packedLight, 0.0F, 1, 0, 0);
+        vertex(vertexConsumer, matrix4f, packedLight, 0.0F, 0, 0, 1);
+        vertex(vertexConsumer, matrix4f, packedLight, 1.0F, 0, 1, 1);
+        vertex(vertexConsumer, matrix4f, packedLight, 1.0F, 1, 1, 0);
+        vertex(vertexConsumer, matrix4f, packedLight, 0.0F, 1, 0, 0);
         poseStack.popPose();
 
         if (player != null) {
@@ -85,7 +83,7 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook> {
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
 
-    private static void vertex(VertexConsumer consumer, Matrix4f pose, Matrix3f normal, int light, float x, int y, int u, int v) {
+    private static void vertex(VertexConsumer consumer, Matrix4f pose, int light, float x, int y, int u, int v) {
         consumer.addVertex(pose, x - 0.5F, y - 0.5F, 0.0F)
                 .setColor(255, 255, 255, 255)
                 .setUv(u, v)

@@ -20,7 +20,7 @@ abstract class MixinStonecutterMenu {
     )
     @SuppressFBWarnings(value = "BC", justification = "Mixin applies to multiple menu runtime types; static analyzer cannot model transformed type.")
     private RecipeType<StonecutterRecipe> useCarvingRecipeTypeForCarvingStation() {
-        return CarvingStationMenu.class.isInstance(this)
+        return CarvingStationMenu.class.isAssignableFrom(this.getClass())
                 ? castRecipeType(Recipes.CARVING_TYPE)
                 : RecipeType.STONECUTTING;
     }
@@ -31,7 +31,7 @@ abstract class MixinStonecutterMenu {
     )
     @SuppressFBWarnings(value = "BC", justification = "Mixin applies to multiple menu runtime types; static analyzer cannot model transformed type.")
     private RecipeType<StonecutterRecipe> useCarvingRecipeTypeForCarvingQuickMove(Player player, int slot) {
-        return CarvingStationMenu.class.isInstance(this)
+        return CarvingStationMenu.class.isAssignableFrom(this.getClass())
                 ? castRecipeType(Recipes.CARVING_TYPE)
                 : RecipeType.STONECUTTING;
     }

@@ -69,14 +69,13 @@ public class BookcaseMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack original = ItemStack.EMPTY;
         Slot slot = slots.get(index);
         if (!slot.hasItem()) {
             return ItemStack.EMPTY;
         }
 
         ItemStack stack = slot.getItem();
-        original = stack.copy();
+        ItemStack original = stack.copy();
         int containerSlotCount = 6;
 
         if (index < containerSlotCount) {

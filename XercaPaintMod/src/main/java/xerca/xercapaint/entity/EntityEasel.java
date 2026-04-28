@@ -63,10 +63,6 @@ public class EntityEasel extends Entity {
         this.painter = painter;
     }
 
-    private void setDropDeferred(@Nullable Runnable dropAction) {
-        this.dropDeferred = dropAction;
-    }
-
     @Override
     public boolean isPushable() {
         return false;

@@ -19,6 +19,9 @@ import xerca.xercapaint.packets.ImportPaintingPacket;
 import java.util.Arrays;
 
 public class CommandImport {
+    private CommandImport() {
+    }
+
     private static final String TAG_AUTHOR = "author";
     private static final String TAG_TITLE = "title";
     private static final String TAG_GENERATION = "generation";

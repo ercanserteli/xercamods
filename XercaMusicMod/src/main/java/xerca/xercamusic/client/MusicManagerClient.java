@@ -11,6 +11,7 @@ import xerca.xercamusic.common.packets.serverbound.MusicDataRequestPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -61,16 +62,20 @@ public final class MusicManagerClient {
                         VolumeMarker.fillArrayFromNBT(markers, tag);
                         MUSIC_MAP.put(id, new MusicManager.MusicData(version, notes, markers.isEmpty() ? null : markers));
                     } else {
-                        if (!file.delete()) {
-                            Mod.LOGGER.warn("Could not delete invalid music sheet file: {}", file::getAbsolutePath);
-                        }
+                        deleteInvalidCacheFile(file, "invalid music sheet file");
                     }
                 } catch (IllegalArgumentException | IOException e) {
-                    if (!file.delete()) {
-                        Mod.LOGGER.warn("Could not delete music sheet file on exception {}: {}", e, file.getAbsolutePath());
-                    }
+                    deleteInvalidCacheFile(file, "music sheet file on exception " + e);
                 }
             }
+        }
+    }
+
+    private static void deleteInvalidCacheFile(File file, String reason) {
+        try {
+            Files.delete(file.toPath());
+        } catch (IOException deleteError) {
+            Mod.LOGGER.warn("Could not delete {}: {}", reason, file.getAbsolutePath(), deleteError);
         }
     }
 

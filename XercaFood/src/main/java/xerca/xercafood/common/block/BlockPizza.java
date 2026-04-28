@@ -32,10 +32,6 @@ public class BlockPizza extends Block {
         EMPTY, CHICKEN, FISH, MEAT, MUSHROOM, PEPPERONI
     }
 
-    private final Ingredient slot1;
-    private final Ingredient slot2;
-    private final Ingredient slot3;
-
     public static final int MAX_BITES = 3;
     public final int hungerPerBite;
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, MAX_BITES);
@@ -49,9 +45,6 @@ public class BlockPizza extends Block {
 
     public BlockPizza(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
         super(Properties.of().sound(SoundType.WOOL).strength(0.5F));
-        this.slot1 = slot1;
-        this.slot2 = slot2;
-        this.slot3 = slot3;
         this.hungerPerBite = 1 + (slot1 == Ingredient.EMPTY ? 0 : 1) + (slot2 == Ingredient.EMPTY ? 0 : 1) + (slot3 == Ingredient.EMPTY ? 0 : 1);
     }
 

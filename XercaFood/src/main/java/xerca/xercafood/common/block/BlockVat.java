@@ -57,37 +57,31 @@ public class BlockVat extends Block {
 
     @Override
     public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack itemstack, @NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult blockHitResult) {
-        switch (content) {
-            case EMPTY -> {
-                if (itemstack.getItem() == Items.MILK_BUCKET) {
-                    if (!player.isCreative()) {
-                        itemstack.shrink(1);
-                        player.addItem(new ItemStack(Items.BUCKET));
-                    }
+        if (content == VatContent.EMPTY && itemstack.getItem() == Items.MILK_BUCKET) {
+            if (!player.isCreative()) {
+                itemstack.shrink(1);
+                player.addItem(new ItemStack(Items.BUCKET));
+            }
 
-                    level.setBlockAndUpdate(blockPos, Blocks.VAT_MILK.defaultBlockState());
-                    level.playSound(null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos);
-                    return ItemInteractionResult.SUCCESS;
-                }
+            level.setBlockAndUpdate(blockPos, Blocks.VAT_MILK.defaultBlockState());
+            level.playSound(null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos);
+            return ItemInteractionResult.SUCCESS;
+        }
+        if (content == VatContent.MILK && itemstack.getItem() == Items.BUCKET) {
+            if (!player.isCreative()) {
+                itemstack.shrink(1);
+                player.addItem(new ItemStack(Items.MILK_BUCKET));
             }
-            case MILK -> {
-                if (itemstack.getItem() == Items.BUCKET) {
-                    if (!player.isCreative()) {
-                        itemstack.shrink(1);
-                        player.addItem(new ItemStack(Items.MILK_BUCKET));
-                    }
 
-                    level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
-                    level.playSound(null, blockPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
-                    return ItemInteractionResult.SUCCESS;
-                }
-            }
-            case CHEESE -> {
-                InteractionResult used = useWithoutItem(blockState, level, blockPos, player, blockHitResult);
-                return used.consumesAction() ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-            }
+            level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
+            level.playSound(null, blockPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
+            return ItemInteractionResult.SUCCESS;
+        }
+        if (content == VatContent.CHEESE) {
+            InteractionResult used = useWithoutItem(blockState, level, blockPos, player, blockHitResult);
+            return used.consumesAction() ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -119,7 +113,6 @@ public class BlockVat extends Block {
     @Override
     public void randomTick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource random) {
         if (content == VatContent.MILK) {
-//            xercafood.LOGGER.info("MILKY TICK");
             level.setBlockAndUpdate(blockPos, Blocks.VAT_CHEESE.defaultBlockState());
             level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_STEP, SoundSource.BLOCKS, 0.7F, 0.9F + level.random.nextFloat() * 0.2f);
         }

@@ -26,4 +26,3 @@ public final class SoundEvents {
         Registry.register(BuiltInRegistries.SOUND_EVENT, ABSORB.getLocation(), ABSORB);
     }
 }
-

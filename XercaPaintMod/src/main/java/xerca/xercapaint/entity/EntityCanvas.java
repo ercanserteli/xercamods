@@ -144,20 +144,13 @@ public class EntityCanvas extends HangingEntity {
             if (brokenEntity instanceof Player playerEntity && playerEntity.getAbilities().instabuild) {
                 return;
             }
-            ItemStack canvasItem;
             CanvasType canvasType = getCanvasType();
-            if (canvasType == CanvasType.SMALL) {
-                canvasItem = new ItemStack(Items.ITEM_CANVAS);
-            } else if (canvasType == CanvasType.LARGE) {
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_LARGE);
-            } else if (canvasType == CanvasType.LONG) {
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_LONG);
-            } else if (canvasType == CanvasType.TALL) {
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_TALL);
-            } else {
-                Mod.LOGGER.error("Invalid canvas type");
-                return;
-            }
+            ItemStack canvasItem = switch (canvasType) {
+                case SMALL -> new ItemStack(Items.ITEM_CANVAS);
+                case LARGE -> new ItemStack(Items.ITEM_CANVAS_LARGE);
+                case LONG -> new ItemStack(Items.ITEM_CANVAS_LONG);
+                case TALL -> new ItemStack(Items.ITEM_CANVAS_TALL);
+            };
 
             canvasItem.set(Items.CANVAS_ID, getCanvasID());
             canvasItem.set(Items.CANVAS_VERSION, getVersion());
