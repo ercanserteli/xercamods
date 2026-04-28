@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
@@ -71,6 +72,15 @@ public class FoodItemGameTests {
         net.minecraft.world.food.FoodProperties sugar0 = Items.FULL_TEACUP_0.components().get(net.minecraft.core.component.DataComponents.FOOD);
         net.minecraft.world.food.FoodProperties sugar6 = Items.FULL_TEACUP_6.components().get(net.minecraft.core.component.DataComponents.FOOD);
         helper.assertTrue(sugar0.nutrition() < sugar6.nutrition(), "Expected more sugar to increase teacup nutrition");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void meatFoodsUseMinecraftTags(GameTestHelper helper) {
+        ItemStack cookedPatty = new ItemStack(Items.COOKED_PATTY);
+        helper.assertTrue(cookedPatty.is(ItemTags.MEAT), "Expected cooked patty to be tagged as meat");
+        helper.assertTrue(cookedPatty.is(ItemTags.WOLF_FOOD), "Expected meat tag to make cooked patty wolf food");
+        helper.assertFalse(new ItemStack(Items.CHOCOLATE).is(ItemTags.MEAT), "Expected chocolate not to be tagged as meat");
         helper.succeed();
     }
 

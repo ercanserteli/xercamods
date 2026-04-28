@@ -9,20 +9,20 @@ import net.minecraft.world.inventory.MenuType;
 import xerca.xercablocks.Mod;
 
 public final class Menus {
-    public static MenuType<BookcaseMenu> BOOKCASE;
-    public static MenuType<CarvingStationMenu> CARVING_STATION;
+    public static MenuType<BookcaseMenu> bookcase;
+    public static MenuType<CarvingStationMenu> carvingStation;
 
     private Menus() {
     }
 
     public static void register() {
-        CARVING_STATION = Registry.register(
+        carvingStation = Registry.register(
                 BuiltInRegistries.MENU,
                 Mod.id("carving_station"),
                 new MenuType<>(CarvingStationMenu::new, FeatureFlags.DEFAULT_FLAGS)
         );
 
-        BOOKCASE = Registry.register(
+        bookcase = Registry.register(
                 BuiltInRegistries.MENU,
                 Mod.id("container_functional_bookcase"),
                 new ExtendedScreenHandlerType<>(BookcaseMenu::new, BlockPos.STREAM_CODEC)

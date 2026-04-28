@@ -22,7 +22,7 @@ public class CarvingStationMenu extends StonecutterMenu {
 
     @Override
     public @NotNull MenuType<?> getType() {
-        return Menus.CARVING_STATION;
+        return Menus.carvingStation;
     }
 
     @Override

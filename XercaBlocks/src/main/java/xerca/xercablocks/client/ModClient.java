@@ -14,7 +14,7 @@ public final class ModClient implements ClientModInitializer {
         CarvedCrimsonModels.register();
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.ROPE, RenderType.cutoutMipped());
         Blocks.carvedWoods().values().forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutoutMipped()));
-        MenuScreens.register(Menus.CARVING_STATION, StonecutterScreen::new);
-        MenuScreens.register(Menus.BOOKCASE, BookcaseScreen::new);
+        MenuScreens.register(Menus.carvingStation, StonecutterScreen::new);
+        MenuScreens.register(Menus.bookcase, BookcaseScreen::new);
     }
 }
