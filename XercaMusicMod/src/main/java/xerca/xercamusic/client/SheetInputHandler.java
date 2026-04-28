@@ -34,11 +34,10 @@ class SheetInputHandler {
         if (gui.helpOn) {
             int mx = (int) Math.round(dmouseX);
             int my = (int) Math.round(dmouseY);
-            if (gui.handleHelpClick(mx, my)) {
-                return true;
+            if (!gui.handleHelpClick(mx, my)) {
+                gui.helpOn = false;
+                gui.updateButtons();
             }
-            gui.helpOn = false;
-            gui.updateButtons();
             return true;
         }
 
@@ -959,7 +958,7 @@ class SheetInputHandler {
                 int noteLength = gui.glissandoSourceNote.length & 0xFF;
                 for (int i = 0; i < positions.length; i++) {
                     int beatIndex = gui.glissandoPendingPositions.get(i) & 0xFF;
-                    int posPct = Math.max(1, Math.min(100, Math.round(beatIndex * 100.0f / noteLength)));
+                    int posPct = Math.clamp(Math.round(beatIndex * 100.0f / noteLength), 1, 100);
                     positions[i] = (byte) posPct;
                 }
             }
@@ -1008,7 +1007,7 @@ class SheetInputHandler {
         float exactTime = noteRegionX / 3.0f + gui.sliderPosition;
         int relativeBeat = (int) Math.floor(exactTime - gui.glissandoSourceNote.time);
         int noteLength = gui.glissandoSourceNote.length & 0xFF;
-        return Math.max(1, Math.min(noteLength, relativeBeat + 1));
+        return Math.clamp(relativeBeat + 1L, 1, noteLength);
     }
 
     // ------------ Cursor & Selection ---------------

@@ -111,19 +111,19 @@ public class BookcaseMenu extends AbstractContainerMenu {
         return container.stillValid(player);
     }
 
-    private static boolean isAllowedBook(ItemStack stack) {
-        Item item = stack.getItem();
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
-        return stack.is(net.minecraft.world.item.Items.BOOK)
-                || stack.is(net.minecraft.world.item.Items.WRITABLE_BOOK)
-                || stack.is(net.minecraft.world.item.Items.WRITTEN_BOOK)
-                || stack.is(net.minecraft.world.item.Items.ENCHANTED_BOOK)
-                || MUSIC_SHEET_ID.equals(itemId);
-    }
-
     private static final class BookSlot extends Slot {
         private BookSlot(Container container, int slot, int x, int y) {
             super(container, slot, x, y);
+        }
+
+        private static boolean isAllowedBook(ItemStack stack) {
+            Item item = stack.getItem();
+            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
+            return stack.is(net.minecraft.world.item.Items.BOOK)
+                    || stack.is(net.minecraft.world.item.Items.WRITABLE_BOOK)
+                    || stack.is(net.minecraft.world.item.Items.WRITTEN_BOOK)
+                    || stack.is(net.minecraft.world.item.Items.ENCHANTED_BOOK)
+                    || MUSIC_SHEET_ID.equals(itemId);
         }
 
         @Override

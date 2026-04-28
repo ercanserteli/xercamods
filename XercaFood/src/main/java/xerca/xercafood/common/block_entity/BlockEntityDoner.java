@@ -28,7 +28,7 @@ public class BlockEntityDoner extends BlockEntity {
         sizzleCooldown = 0;
     }
 
-    public static void tick(Level level, BlockPos blockPos, BlockState blockState, BlockEntityDoner t) {
+    public static void tick(Level level, BlockEntityDoner t) {
         if (!level.hasNeighborSignal(t.worldPosition)) {
             t.isSpinning = false;
             return;

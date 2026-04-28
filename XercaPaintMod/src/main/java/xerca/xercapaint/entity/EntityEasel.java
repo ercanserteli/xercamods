@@ -33,6 +33,7 @@ import xerca.xercapaint.packets.CloseGuiPacket;
 import xerca.xercapaint.packets.OpenGuiPacket;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 
 public class EntityEasel extends Entity {
@@ -52,6 +53,22 @@ public class EntityEasel extends Entity {
 
     public EntityEasel(EntityType<EntityEasel> entityCanvasEntityType, Level world) {
         super(entityCanvasEntityType, world);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityEasel other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityEasel.class, this.getUUID());
     }
 
     @Nullable

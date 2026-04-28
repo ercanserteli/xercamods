@@ -26,6 +26,7 @@ import xerca.xercatools.Mod;
 import xerca.xercatools.SoundEvents;
 
 import java.util.List;
+import java.util.Objects;
 
 public class EntityHealthOrb extends Entity {
     private static final int LIFETIME = 500;
@@ -54,6 +55,22 @@ public class EntityHealthOrb extends Entity {
         );
         this.donorPlayer = donorPlayer;
         this.attackingPlayer = attackingPlayer;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityHealthOrb other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityHealthOrb.class, this.getUUID());
     }
 
     @Override

@@ -49,7 +49,7 @@ public class BlockEntityOmniChest extends BlockEntity implements LidBlockEntity 
         super(BlockEntities.OMNI_CHEST, pos, state);
     }
 
-    public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, BlockEntityOmniChest blockEntity) {
+    public static void lidAnimateTick(BlockEntityOmniChest blockEntity) {
         blockEntity.chestLidController.tickLid();
     }
 

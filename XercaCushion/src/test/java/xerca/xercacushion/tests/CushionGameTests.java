@@ -24,7 +24,6 @@ import java.util.Optional;
 
 public final class CushionGameTests {
     private static final String BASIC_TEMPLATE = "xercacushion:basic_test";
-    private static final String CUSHION_BATCH = "xercacushion_regressions";
 
     private static ResourceLocation recipeId(String path) {
         return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);

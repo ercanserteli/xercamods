@@ -103,8 +103,12 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
         @Serial
         private static final long serialVersionUID = 1L;
 
-        public final List<NoteEvent> notes;
+        private final List<NoteEvent> notes;
         public final UUID id;
+
+        public List<NoteEvent> getNotes() {
+            return notes;
+        }
 
         public NotesTooLargeException(List<NoteEvent> notes, UUID id) {
             this.notes = notes;

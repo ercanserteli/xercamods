@@ -44,7 +44,7 @@ public abstract class BetterSlider extends AbstractSliderButton {
         return value * interval + minValue;
     }
 
-    public void setValue(double newValue) {
+    public void setSliderValue(double newValue) {
         value = snapToNearest((newValue - minValue) / interval);
         updateMessage();
     }
@@ -58,16 +58,16 @@ public abstract class BetterSlider extends AbstractSliderButton {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        this.setValueFromMouse(mouseX);
+        this.updateFromMouse(mouseX);
     }
 
     @Override
     protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
         super.onDrag(mouseX, mouseY, dragX, dragY);
-        this.setValueFromMouse(mouseX);
+        this.updateFromMouse(mouseX);
     }
 
-    private void setValueFromMouse(double mouseX) {
+    private void updateFromMouse(double mouseX) {
         double newValue = (mouseX - (this.getX() + 4)) / (this.width - 8);
         double oldValue = value;
         value = snapToNearest(newValue);

@@ -141,10 +141,11 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     @Nullable
+    @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
             if (t instanceof BlockEntityDoner blockEntityDoner) {
-                BlockEntityDoner.tick(level1, blockPos, blockState1, blockEntityDoner);
+                BlockEntityDoner.tick(level1, blockEntityDoner);
             }
         };
     }

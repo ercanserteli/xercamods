@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import org.jetbrains.annotations.NotNull;
 import xerca.xercacushion.entity.EntityCushion;
 
@@ -34,6 +34,6 @@ public class CushionRenderer extends EntityRenderer<EntityCushion> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull EntityCushion entity) {
-        return TextureAtlas.LOCATION_BLOCKS;
+        return InventoryMenu.BLOCK_ATLAS;
     }
 }

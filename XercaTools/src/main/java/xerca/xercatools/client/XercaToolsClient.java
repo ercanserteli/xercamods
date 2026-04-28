@@ -30,7 +30,8 @@ public final class XercaToolsClient implements ClientModInitializer {
                 Minecraft.getInstance().getSoundManager().play(new HookSound(hook));
             }
         });
-        registerGrabHookProperties(Items.GRAB_HOOK);
+        registerBowLikeProperties(Items.GRAB_HOOK);
+        registerProperty(Items.GRAB_HOOK, CAST, (stack, level, entity, seed) -> ItemGrabHook.isCast(stack) ? 1.0F : 0.0F);
         registerBowLikeProperties(Items.WOODEN_SCYTHE);
         registerBowLikeProperties(Items.STONE_SCYTHE);
         registerBowLikeProperties(Items.IRON_SCYTHE);
@@ -53,17 +54,12 @@ public final class XercaToolsClient implements ClientModInitializer {
             }
 
             int remaining = entity.getUseItemRemainingTicks();
-            float useTime = stack.getUseDuration(entity) - remaining;
+            float useTime = (float) stack.getUseDuration(entity) - remaining;
             float fullUseTime = stack.getItem() instanceof ItemWarhammer
                     ? ItemWarhammer.getFullUseSeconds(entity.level().registryAccess(), stack) * 20.0F
                     : ItemScythe.FULL_USE_SECONDS * 20.0F;
             return Mth.clamp(useTime / fullUseTime, 0.0F, 1.0F);
         });
-    }
-
-    private static void registerGrabHookProperties(Item item) {
-        registerBowLikeProperties(item);
-        registerProperty(item, CAST, (stack, level, entity, seed) -> ItemGrabHook.isCast(stack) ? 1.0F : 0.0F);
     }
 
     private static boolean isUsingThisStack(LivingEntity entity, ItemStack stack) {

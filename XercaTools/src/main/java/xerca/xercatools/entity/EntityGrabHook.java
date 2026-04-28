@@ -31,6 +31,8 @@ import xerca.xercatools.SoundEvents;
 import xerca.xercatools.enchantment.GrabHookEnchantments;
 import xerca.xercatools.item.ItemGrabHook;
 
+import java.util.Objects;
+
 public class EntityGrabHook extends Entity {
     private static final EntityDataAccessor<Integer> DATA_OWNER = SynchedEntityData.defineId(EntityGrabHook.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_CAUGHT = SynchedEntityData.defineId(EntityGrabHook.class, EntityDataSerializers.INT);
@@ -80,6 +82,22 @@ public class EntityGrabHook extends Entity {
         this.setXRot((float) (Mth.atan2(velocity.y, Math.sqrt(this.distanceToSqr(velocity))) * (180F / Math.PI)));
         this.yRotO = this.getYRot();
         this.xRotO = this.getXRot();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityGrabHook other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityGrabHook.class, this.getUUID());
     }
 
     @Override

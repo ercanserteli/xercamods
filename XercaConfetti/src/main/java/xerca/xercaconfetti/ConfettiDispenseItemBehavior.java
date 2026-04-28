@@ -22,6 +22,7 @@ public class ConfettiDispenseItemBehavior extends DefaultDispenseItemBehavior {
     /**
      * Play the dispense sound from the specified block.
      */
+    @Override
     protected void playSound(BlockSource source) {
         var pos = DispenserBlock.getDispensePosition(source);
         ItemConfetti.playSound(source.level(), null, pos.x(), pos.y(), pos.z());
@@ -30,6 +31,7 @@ public class ConfettiDispenseItemBehavior extends DefaultDispenseItemBehavior {
     /**
      * Order clients to display dispense particles from the specified block and facing.
      */
+    @Override
     protected void playAnimation(BlockSource source, Direction facingIn) {
         var pos = DispenserBlock.getDispensePosition(source);
         double x = pos.x() + facingIn.getStepX();

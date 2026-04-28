@@ -157,8 +157,6 @@ public class GuiMusicSheet extends Screen {
     private int helpPanelY;
     private int helpPanelW;
     private int helpPanelBottom;
-    private int helpContentTop;
-    private int helpContentBottomY;
     private int helpTabY;
     private final int[] helpTabX = new int[7];
     private final int[] helpTabW = new int[7];
@@ -496,7 +494,7 @@ public class GuiMusicSheet extends Screen {
                         previewCursor = previewCursorStart;
                         for (NoteEvent note : notes) {
                             note.time *= (short) mult;
-                            note.length = (byte) Math.min(MAX_NOTE_LENGTH, note.length * mult);
+                            note.length = (byte) Math.clamp((long) note.length * mult, 0, MAX_NOTE_LENGTH);
                         }
                         updateLength();
                     }
@@ -654,8 +652,10 @@ public class GuiMusicSheet extends Screen {
         this.hlUp.active = editable && notRecording;
         this.hlDown.visible = showNormal && editable;
         this.hlDown.active = editable && notRecording;
-        this.sliderNoteVolume.active = (this.sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned) && notRecording;
-        this.buttonHelp.active = (this.buttonHelp.visible = !this.isSigned && !this.gettingSigned) && notRecording;
+        this.sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned;
+        this.sliderNoteVolume.active = this.sliderNoteVolume.visible && notRecording;
+        this.buttonHelp.visible = !this.isSigned && !this.gettingSigned;
+        this.buttonHelp.active = this.buttonHelp.visible && notRecording;
         this.buttonHideNeighbors.visible = showNormal && !this.neighborNotes.isEmpty();
         this.buttonHideNeighbors.active = notRecording;
         this.buttonRecord.visible = showNormal && !this.isSigned;
@@ -859,9 +859,10 @@ public class GuiMusicSheet extends Screen {
     }
 
     public void midiControlCommand(MidiControl controlType) {
+        boolean canEditCursor = !previewing && !recording && !preRecording;
         switch (controlType) {
             case BEGINNING -> {
-                if (!previewing && !recording && !preRecording) {
+                if (canEditCursor) {
                     editCursor = 0;
                     editCursorEnd = 0;
                     if (!inScreen(editCursor)) {
@@ -870,7 +871,7 @@ public class GuiMusicSheet extends Screen {
                 }
             }
             case END -> {
-                if (!previewing && !recording && !preRecording) {
+                if (canEditCursor) {
                     editCursor = lengthBeats - 1;
                     editCursorEnd = lengthBeats - 1;
                     if (!inScreen(editCursor)) {
@@ -1136,8 +1137,8 @@ public class GuiMusicSheet extends Screen {
             }
 
             // Content area
-            helpContentTop = helpTabY + HELP_TAB_H + 2;
-            helpContentBottomY = helpPanelBottom - 2;
+            int helpContentTop = helpTabY + HELP_TAB_H + 2;
+            int helpContentBottomY = helpPanelBottom - 2;
             int contentX = helpPanelX + 6;
             int lineH = 10;
             int sectionGap = 8;
@@ -1145,7 +1146,7 @@ public class GuiMusicSheet extends Screen {
 
             // Clamp scroll
             int maxScroll = Math.max(0, helpContentHeight - scrollAreaH);
-            helpScrollOffset = Math.max(0, Math.min(helpScrollOffset, maxScroll));
+            helpScrollOffset = Math.clamp(helpScrollOffset, 0, maxScroll);
 
             // Scissored scrollable content
             guiGraphics.enableScissor(helpPanelX + 1, helpContentTop, helpPanelX + panelW - 6, helpContentBottomY);
@@ -1332,7 +1333,7 @@ public class GuiMusicSheet extends Screen {
         if (inScreen(editCursor) || inScreen(editCursorEnd) || (editCursor < sliderPosition && editCursorEnd >= sliderPosition + BEATS_IN_SCREEN)) {
             final int selectionColor = 0x882222AA;
             int timeDrawBeginning = Math.max(editCursor - sliderPosition, 0);
-            int timeDrawEnd = Math.min(editCursorEnd - sliderPosition, BEATS_IN_SCREEN);
+            int timeDrawEnd = Math.clamp((long) editCursorEnd - sliderPosition, 0, BEATS_IN_SCREEN);
 
             int x1 = noteToPixelX(timeDrawBeginning);
             int x2 = noteToPixelX(timeDrawEnd);
@@ -1548,7 +1549,7 @@ public class GuiMusicSheet extends Screen {
                 guiGraphics.fill(px, py, px + 1, py + 1, lineColor);
             }
 
-            int dotX = Math.max(xBegin, Math.min(xEnd - 1, segEndX - 1));
+            int dotX = Math.clamp(segEndX - 1L, xBegin, xEnd - 1);
             int dotColor = seg == hoverIndex ? 0xFF99D6FF : 0xCC66BBFF;
             guiGraphics.fill(dotX - 1, targetY - 1, dotX + 2, targetY + 2, dotColor);
             prevY = targetY;
@@ -1571,7 +1572,7 @@ public class GuiMusicSheet extends Screen {
         int noteRegionX = mouseRelX - NOTE_REGION_LEFT;
         float exactTime = noteRegionX / 3.0f + sliderPosition;
         int relativeBeat = (int) Math.floor(exactTime - event.time);
-        int beatIndex = Math.max(1, Math.min(noteLength, relativeBeat + 1));
+        int beatIndex = Math.clamp(relativeBeat + 1L, 1, noteLength);
         byte hoveredNote = (byte) (47 - ((mouseRelY - NOTE_REGION_TOP) / 3) + IItemInstrument.MIN_NOTE + currentOctavePos * 12);
         return new GlissandoPreviewPoint(beatIndex, (byte) (hoveredNote - event.note));
     }
@@ -1681,9 +1682,9 @@ public class GuiMusicSheet extends Screen {
     }
 
     void setSliderPos(int time) {
-        time = Math.min(Math.max(time, 0), maxSliderPosition);
+        time = Math.clamp(time, 0, maxSliderPosition);
 
-        sliderTime.setValue((float) time / (float) maxSliderPosition);
+        sliderTime.setSliderValue((float) time / (float) maxSliderPosition);
         sliderTime.applyValue();
     }
 
@@ -1733,7 +1734,7 @@ public class GuiMusicSheet extends Screen {
             if (updateSliderPos) {
                 // Update slider
                 int oldMaxSliderPos = maxSliderPosition;
-                maxSliderPosition = Math.min(Math.max(lengthBeats + BEATS_IN_SCREEN, 680), MAX_LENGTH_BEATS);
+                maxSliderPosition = Math.clamp((long) lengthBeats + BEATS_IN_SCREEN, 680, MAX_LENGTH_BEATS);
                 if (maxSliderPosition > oldMaxSliderPos) {
                     setSliderPos(sliderPosition);
                 } else if (maxSliderPosition < oldMaxSliderPos) {
@@ -1838,7 +1839,7 @@ public class GuiMusicSheet extends Screen {
                             noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
                     NotesPartAckFromServerPacketHandler.addCallback(id, ()-> sendToServer(pack));
                     for(int i=0; i<partsCount; i++) {
-                        SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(id, partsCount, i, notes.subList(i*MAX_NOTES_IN_PACKET, Math.min((i+1)*MAX_NOTES_IN_PACKET, notes.size())));
+                        SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(id, partsCount, i, notes.subList(i * MAX_NOTES_IN_PACKET, Math.clamp((long) (i + 1) * MAX_NOTES_IN_PACKET, 0, notes.size())));
                         sendToServer(partPack);
                     }
                 } catch (ImportMusicSendPacket.NotesTooLargeException ex) {
@@ -2069,7 +2070,7 @@ public class GuiMusicSheet extends Screen {
             sliderVelocity.setX(x + 10);
             int sliderY = 41;
             sliderVelocity.setY(y + sliderY);
-            sliderVelocity.setValue(event.floatVolume() * 100.0f);
+            sliderVelocity.setSliderValue(event.floatVolume() * 100.0f);
             sliderVelocity.applyValue();
 
             buttonNoteDown.setX(x + 3);
@@ -2222,11 +2223,11 @@ public class GuiMusicSheet extends Screen {
             
             sliderStartVolume.setX(x + 10);
             sliderStartVolume.setY(y + 30);
-            sliderStartVolume.setValue(marker.startVolume / 127.0f * 100.0f);
+            sliderStartVolume.setSliderValue(marker.startVolume / 127.0f * 100.0f);
             
             sliderEndVolume.setX(x + 10);
             sliderEndVolume.setY(y + 45);
-            sliderEndVolume.setValue(marker.endVolume / 127.0f * 100.0f);
+            sliderEndVolume.setSliderValue(marker.endVolume / 127.0f * 100.0f);
 
             buttonDelete.setX(x + 5);
             buttonDelete.setY(y + 60);

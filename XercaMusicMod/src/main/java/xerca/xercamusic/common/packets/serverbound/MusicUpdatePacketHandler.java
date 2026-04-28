@@ -14,15 +14,15 @@ import java.util.UUID;
 
 public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<MusicUpdatePacket> {
     private static byte sanitizeBps(byte bps) {
-        return (byte) Math.max(1, Math.min(50, bps & 0xFF));
+        return (byte) Math.clamp(bps & 0xFF, 1, 50);
     }
 
     private static float sanitizeVolume(float volume) {
-        return Math.max(0.0f, Math.min(1.0f, volume));
+        return Math.clamp(volume, 0.0f, 1.0f);
     }
 
     private static byte sanitizeHighlightInterval(byte interval) {
-        return (byte) Math.max(1, Math.min(24, interval & 0xFF));
+        return (byte) Math.clamp(interval & 0xFF, 1, 24);
     }
 
     private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {

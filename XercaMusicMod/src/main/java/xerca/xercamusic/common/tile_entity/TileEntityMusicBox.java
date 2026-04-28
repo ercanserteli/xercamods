@@ -53,11 +53,11 @@ public class TileEntityMusicBox extends BlockEntity {
     private static final String KEY_INS_ID = "instrument_id";
 
     private static byte sanitizeBps(int bps) {
-        return (byte) Math.max(1, Math.min(50, bps));
+        return (byte) Math.clamp(bps, 1, 50);
     }
 
     private static float sanitizeVolume(float volume) {
-        return Math.max(0.0f, Math.min(1.0f, volume));
+        return Math.clamp(volume, 0.0f, 1.0f);
     }
 
     public TileEntityMusicBox(BlockPos blockPos, BlockState blockState) {

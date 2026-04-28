@@ -240,7 +240,7 @@ public class BlockGameTests {
 
         xerca.xercafood.common.block_entity.BlockEntityDoner be = (xerca.xercafood.common.block_entity.BlockEntityDoner) helper.getLevel().getBlockEntity(donerPos);
         for (int i = 0; i < 510; i++) {
-            xerca.xercafood.common.block_entity.BlockEntityDoner.tick(helper.getLevel(), donerPos, helper.getLevel().getBlockState(donerPos), be);
+            xerca.xercafood.common.block_entity.BlockEntityDoner.tick(helper.getLevel(), be);
         }
         helper.assertFalse(helper.getLevel().getBlockState(donerPos).getValue(xerca.xercafood.common.block.BlockDoner.IS_RAW), "Expected doner to cook when heated and powered");
 

@@ -200,7 +200,7 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
         if (level.isClientSide) {
             return (tickerLevel, tickerPos, tickerState, blockEntity) -> {
                 if (blockEntity instanceof BlockEntityOmniChest omniChest) {
-                    BlockEntityOmniChest.lidAnimateTick(tickerLevel, tickerPos, tickerState, omniChest);
+                    BlockEntityOmniChest.lidAnimateTick(omniChest);
                 }
             };
         }

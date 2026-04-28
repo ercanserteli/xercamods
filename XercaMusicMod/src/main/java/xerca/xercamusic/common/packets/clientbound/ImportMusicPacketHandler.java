@@ -7,11 +7,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import xerca.xercamusic.common.Mod;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 import static xerca.xercamusic.client.ClientStuff.sendToServer;
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
@@ -43,12 +45,13 @@ public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayPayloa
             if (e.id == null) {
                 throw new IOException("Music has many notes, but no UUID!");
             }
-            int partsCount = (int) Math.ceil((double) e.notes.size() / (double) MAX_NOTES_IN_PACKET);
+            List<NoteEvent> notes = e.getNotes();
+            int partsCount = (int) Math.ceil((double) notes.size() / (double) MAX_NOTES_IN_PACKET);
             tag.remove(KEY_NOTES);
             ImportMusicSendPacket pack = ImportMusicSendPacket.create(tag);
             NotesPartAckFromServerPacketHandler.addCallback(e.id, () -> sendToServer(pack));
             for (int i = 0; i < partsCount; i++) {
-                SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(e.id, partsCount, i, e.notes.subList(i * MAX_NOTES_IN_PACKET, Math.min((i + 1) * MAX_NOTES_IN_PACKET, e.notes.size())));
+                SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(e.id, partsCount, i, notes.subList(i * MAX_NOTES_IN_PACKET, Math.min((i + 1) * MAX_NOTES_IN_PACKET, notes.size())));
                 sendToServer(partPack);
             }
         }

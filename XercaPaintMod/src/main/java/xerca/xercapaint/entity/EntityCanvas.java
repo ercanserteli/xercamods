@@ -84,6 +84,22 @@ public class EntityCanvas extends HangingEntity {
         clientPictureInit(level);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityCanvas other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityCanvas.class, this.getUUID());
+    }
+
     private void clientPictureInit(Level level) {
         if (!level.isClientSide) {
             return;

@@ -84,7 +84,7 @@ public class ItemMusicSheet extends Item {
         byte[] music = nbt.getByteArray(KEY_MUSIC_OLD);
 
         int safePause = Math.max(1, pause);
-        byte bps = (byte) Math.min(50, Math.max(1, Math.round(20.f / safePause)));
+        byte bps = (byte) Math.clamp(Math.round(20.f / safePause), 1, 50);
         List<NoteEvent> notes = oldMusicToNotes(music);
 
         nbt.putInt(KEY_LENGTH, length + ADD_TO_OLD_END);

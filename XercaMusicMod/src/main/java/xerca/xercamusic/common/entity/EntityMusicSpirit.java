@@ -48,7 +48,7 @@ public class EntityMusicSpirit extends Entity {
     private SoundController soundController;
 
     private static byte sanitizeBps(int bps) {
-        return (byte) Math.max(1, Math.min(50, bps));
+        return (byte) Math.clamp(bps, 1, 50);
     }
 
     private static int sanitizeLengthBeats(int beats) {
@@ -56,7 +56,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     private static float sanitizeVolume(float volume) {
-        return Math.max(0.0f, Math.min(1.0f, volume));
+        return Math.clamp(volume, 0.0f, 1.0f);
     }
 
     public EntityMusicSpirit(Level worldIn) {
@@ -78,6 +78,22 @@ public class EntityMusicSpirit extends Entity {
 
     public EntityMusicSpirit(EntityType<EntityMusicSpirit> type, Level world) {
         super(type, world);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityMusicSpirit other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityMusicSpirit.class, this.getUUID());
     }
 
     private void setBlockPosAndInstrument(BlockPos pos, int instrumentId) {
