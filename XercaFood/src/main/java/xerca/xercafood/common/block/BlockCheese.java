@@ -143,7 +143,7 @@ class BlockCheese extends Block {
     }
 
     @Override
-    protected boolean isPathfindable(BlockState p_51193_, PathComputationType p_51196_) {
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
         return false;
     }
 }

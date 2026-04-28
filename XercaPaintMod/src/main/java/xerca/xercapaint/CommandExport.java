@@ -62,7 +62,7 @@ public class CommandExport {
         }
 
         for (ItemStack s : player.getHandSlots()) {
-            if (s.getItem() instanceof ItemCanvas) {
+            if (s.getItem() instanceof ItemCanvas itemCanvas) {
                 List<Integer> pixels = s.get(Items.CANVAS_PIXELS);
                 String canvasId = s.get(Items.CANVAS_ID);
                 if (pixels != null && canvasId != null) {
@@ -75,7 +75,7 @@ public class CommandExport {
                         CompoundTag tag = new CompoundTag();
 
                         tag.putIntArray("pixels", pixels);
-                        tag.putByte("ct", ((ItemCanvas) s.getItem()).getCanvasType().toByte());
+                        tag.putByte("ct", itemCanvas.getCanvasType().toByte());
                         if (title != null && author != null) {
                             tag.putString("title", title);
                             tag.putString("author", author);

@@ -117,10 +117,10 @@ public class SoundController extends Thread {
 
         // Music over
         if (spiritID >= 0 && minecraft.player != null) {
-            var unused = minecraft.submit(() -> ClientStuff.endMusic(spiritID, minecraft.player.getId()))
+            minecraft.submit(() -> ClientStuff.endMusic(spiritID, minecraft.player.getId()))
                     .whenComplete((v, t) -> {
                         if (t != null) Mod.LOGGER.error("Failed to end music", t);
-                    });
+                    }).isDone();
         }
     }
 
@@ -129,83 +129,83 @@ public class SoundController extends Thread {
      * main-thread submission. Only spawns one particle per batch to reduce overhead.
      */
     private void playNotes(int fromIdx, int toIdx) {
-        var unused = Minecraft.getInstance().submit(() -> {
+        Minecraft.getInstance().submit(() -> {
             ClientLevel level = Minecraft.getInstance().level;
             if (level == null) return;
 
             boolean particleSpawned = false;
             for (int i = fromIdx; i < toIdx; i++) {
                 NoteEvent event = notes.get(i);
-                if (event.note < IItemInstrument.MIN_NOTE || event.note > IItemInstrument.MAX_NOTE) continue;
-
-                IItemInstrument.InsSound insSound = instrument.getSound(event.note);
-                if (insSound == null) continue;
-
-                // Check if any volume marker fully contains this note
-                float noteVolume = event.floatVolume();
-                VolumeMarker activeMarker = null;
-                for (VolumeMarker marker : volumeMarkers) {
-                    if (marker.fullyContains(event.time, event.length, event.note)) {
-                        noteVolume = marker.getVolumeAt(event.time);
-                        activeMarker = marker;
-                        break;  // First matching marker wins
-                    }
-                }
-
-                NoteSound sound;
-                if (musicBox == null) {
-                    sound = ClientStuff.playNote(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
-                } else {
-                    sound = ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
-                }
-
-                // Spawn at most one particle per beat per controller
-                if (!particleSpawned) {
-                    if (musicBox == null) {
-                        level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, event.note / 24.0D, 0.0D, 0.0D);
-                    } else {
-                        level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, event.note / 24.0D, 0.0D, 0.0D);
-                    }
-                    particleSpawned = true;
-                }
-
-                // Apply glissando (smooth pitch slide)
-                if (event.hasGlissando() && sound != null) {
-                    byte[] wps = event.getEffectiveWaypoints();
-                    if (wps != null && wps.length > 0) {
-                        float[] pitchWaypoints = new float[wps.length];
-                        for (int j = 0; j < wps.length; j++) {
-                            pitchWaypoints[j] = insSound.pitch() * (float) Math.pow(2.0, wps[j] / 12.0);
-                        }
-                        byte[] posBuf = event.getEffectivePositions();
-                        if (posBuf != null && posBuf.length == wps.length) {
-                            float[] posFloats = new float[posBuf.length];
-                            for (int j = 0; j < posBuf.length; j++) {
-                                posFloats[j] = (posBuf[j] & 0xFF) / 100.0f;
+                if (event.note >= IItemInstrument.MIN_NOTE && event.note <= IItemInstrument.MAX_NOTE) {
+                    IItemInstrument.InsSound insSound = instrument.getSound(event.note);
+                    if (insSound != null) {
+                        // Check if any volume marker fully contains this note
+                        float noteVolume = event.floatVolume();
+                        VolumeMarker activeMarker = null;
+                        for (VolumeMarker marker : volumeMarkers) {
+                            if (marker.fullyContains(event.time, event.length, event.note)) {
+                                noteVolume = marker.getVolumeAt(event.time);
+                                activeMarker = marker;
+                                break;  // First matching marker wins
                             }
-                            sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
-                        } else {
-                            sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
                         }
-                    }
-                }
 
-                // Track sustained notes inside volume markers for dynamic volume
-                if (sound != null && activeMarker != null && event.length > 1) {
-                    synchronized (activeSounds) {
-                        activeSounds.add(new ActiveSound(sound, event, activeMarker, event.time + event.length));
+                        NoteSound sound;
+                        if (musicBox == null) {
+                            sound = ClientStuff.playNote(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
+                        } else {
+                            sound = ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
+                        }
+
+                        // Spawn at most one particle per beat per controller
+                        if (!particleSpawned) {
+                            if (musicBox == null) {
+                                level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, event.note / 24.0D, 0.0D, 0.0D);
+                            } else {
+                                level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, event.note / 24.0D, 0.0D, 0.0D);
+                            }
+                            particleSpawned = true;
+                        }
+
+                        // Apply glissando (smooth pitch slide)
+                        if (event.hasGlissando() && sound != null) {
+                            byte[] wps = event.getEffectiveWaypoints();
+                            if (wps != null && wps.length > 0) {
+                                float[] pitchWaypoints = new float[wps.length];
+                                for (int j = 0; j < wps.length; j++) {
+                                    pitchWaypoints[j] = insSound.pitch() * (float) Math.pow(2.0, wps[j] / 12.0);
+                                }
+                                byte[] posBuf = event.getEffectivePositions();
+                                if (posBuf != null && posBuf.length == wps.length) {
+                                    float[] posFloats = new float[posBuf.length];
+                                    for (int j = 0; j < posBuf.length; j++) {
+                                        posFloats[j] = (posBuf[j] & 0xFF) / 100.0f;
+                                    }
+                                    sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
+                                } else {
+                                    sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
+                                }
+                            }
+                        }
+
+                        // Track sustained notes inside volume markers for dynamic volume
+                        if (sound != null && activeMarker != null && event.length > 1) {
+                            synchronized (activeSounds) {
+                                activeSounds.add(new ActiveSound(sound, event, activeMarker, event.time + event.length));
+                            }
+                        }
                     }
                 }
             }
         }).whenComplete((v, t) -> {
             if (t != null) Mod.LOGGER.error("Failed to play notes", t);
-        });
+        }).isDone();
     }
 
     private void updateActiveSounds(int currentBeat) {
         if (activeSounds.isEmpty()) return;
         final int beat = currentBeat;
-        var unused = Minecraft.getInstance().submit(() -> {
+        Minecraft.getInstance().submit(() -> {
             synchronized (activeSounds) {
                 Iterator<ActiveSound> it = activeSounds.iterator();
                 while (it.hasNext()) {
@@ -222,7 +222,7 @@ public class SoundController extends Thread {
             }
         }).whenComplete((v, t) -> {
             if (t != null) Mod.LOGGER.error("Failed to update active sounds", t);
-        });
+        }).isDone();
     }
 
     public void setStop() {

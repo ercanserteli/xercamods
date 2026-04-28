@@ -215,9 +215,7 @@ public class EntityGrabHook extends Entity {
                 return false;
             }
 
-            if (!setCaughtEntity(caught, angler)) {
-                return true;
-            }
+            setCaughtEntity(caught, angler);
             return true;
         }
         if (hitResult.getType() == HitResult.Type.BLOCK) {

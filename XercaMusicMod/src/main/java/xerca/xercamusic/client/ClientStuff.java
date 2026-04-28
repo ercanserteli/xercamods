@@ -49,8 +49,8 @@ public class ClientStuff implements ClientModInitializer {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
-            if (!heldItem.isEmpty() && heldItem.getItem() instanceof IItemInstrument) {
-                Minecraft.getInstance().setScreen(new GuiInstrument(player, (IItemInstrument) heldItem.getItem(), Component.translatable("item.xercamusic.instrument_gui"), null));
+            if (!heldItem.isEmpty() && heldItem.getItem() instanceof IItemInstrument iItemInstrument) {
+                Minecraft.getInstance().setScreen(new GuiInstrument(player, iItemInstrument, Component.translatable("item.xercamusic.instrument_gui"), null));
             }
         }
     }

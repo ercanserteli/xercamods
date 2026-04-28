@@ -63,7 +63,7 @@ public class EntityHealthOrb extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-
+        // This entity does not need synced data beyond the base Entity state.
     }
 
     @Override
@@ -191,6 +191,7 @@ public class EntityHealthOrb extends Entity {
 
     @Override
     protected void doWaterSplashEffect() {
+        // Orbs do not create a splash effect.
     }
 
     @Override

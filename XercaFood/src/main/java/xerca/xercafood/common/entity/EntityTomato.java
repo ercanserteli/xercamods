@@ -2,7 +2,6 @@ package xerca.xercafood.common.entity;
 
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,11 +44,6 @@ public class EntityTomato extends ThrowableItemProjectile {
             this.level().playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, SoundEvents.TOMATO_SPLASH, SoundSource.PLAYERS, 1.0f, this.random.nextFloat() * 0.2F + 0.9F);
             this.remove(RemovalReason.DISCARDED);
         }
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
     }
 
     public void handleEntityEvent(byte id) {

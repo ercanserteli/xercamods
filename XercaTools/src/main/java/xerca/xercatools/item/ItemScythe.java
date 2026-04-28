@@ -48,6 +48,7 @@ import java.util.UUID;
 
 public class ItemScythe extends Item {
     private final Tier tier;
+    public static final float FULL_USE_SECONDS = 1.0F;
     private static final Map<EntityType<?>, Item> VANILLA_HEADS = Map.of(
             EntityType.ZOMBIE, net.minecraft.world.item.Items.ZOMBIE_HEAD,
             EntityType.CREEPER, net.minecraft.world.item.Items.CREEPER_HEAD,
@@ -88,10 +89,6 @@ public class ItemScythe extends Item {
                 ? new Item.Properties().durability(tier.getUses()).fireResistant().attributes(createAttributes(tier))
                 : new Item.Properties().durability(tier.getUses()).attributes(createAttributes(tier)));
         this.tier = tier;
-    }
-
-    public static float getFullUseSeconds(ItemStack stack) {
-        return 1.0F;
     }
 
     @Override

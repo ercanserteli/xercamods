@@ -194,7 +194,8 @@ public class ItemMusicSheet extends Item {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         BlockState blockState = world.getBlockState(blockpos);
-        if (blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_MUSIC)) {
+        boolean hasMusic = blockState.getValue(BlockMusicBox.HAS_MUSIC);
+        if (blockState.getBlock() == Blocks.MUSIC_BOX && !hasMusic) {
             ItemStack itemstack = context.getItemInHand();
             if (!world.isClientSide && itemstack.get(Items.SHEET_ID) != null) {
                 BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());

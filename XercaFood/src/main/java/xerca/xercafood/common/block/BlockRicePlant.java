@@ -33,13 +33,13 @@ class BlockRicePlant extends CropBlock implements BonemealableBlock {
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
         if (state.getBlock() == Blocks.FARMLAND && state.getValue(FarmBlock.MOISTURE) > 6) {
-            int water_count = 0;
+            int waterCount = 0;
             for (Direction direction : Direction.Plane.HORIZONTAL) {
                 BlockState blockstate = worldIn.getBlockState(pos.relative(direction));
                 FluidState fluidstate = worldIn.getFluidState(pos.relative(direction));
                 if (fluidstate.is(FluidTags.WATER) || blockstate.getBlock() == net.minecraft.world.level.block.Blocks.FROSTED_ICE) {
-                    water_count++;
-                    if (water_count >= 2) {
+                    waterCount++;
+                    if (waterCount >= 2) {
                         return true;
                     }
                 }

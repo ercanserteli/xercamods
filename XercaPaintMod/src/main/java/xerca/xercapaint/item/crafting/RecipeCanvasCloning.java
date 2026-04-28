@@ -30,20 +30,20 @@ public class RecipeCanvasCloning extends CustomRecipe {
         for (int j = 0; j < inv.size(); ++j) {
             ItemStack stack = inv.getItem(j);
             if (!stack.isEmpty()) {
-                if (stack.getItem() instanceof ItemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
+                if (stack.getItem() instanceof ItemCanvas itemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
                     if (!orgCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!freshCanvas.isEmpty() && ((ItemCanvas) freshCanvas.getItem()).getCanvasType() != ((ItemCanvas) stack.getItem()).getCanvasType()) {
+                    if (!freshCanvas.isEmpty() && ((ItemCanvas) freshCanvas.getItem()).getCanvasType() != itemCanvas.getCanvasType()) {
                         return false;
                     }
 
                     orgCanvas = stack;
-                } else if (stack.getItem() instanceof ItemCanvas && stack.get(Items.CANVAS_GENERATION) == null) {
+                } else if (stack.getItem() instanceof ItemCanvas itemCanvas && stack.get(Items.CANVAS_GENERATION) == null) {
                     if (!freshCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!orgCanvas.isEmpty() && ((ItemCanvas) orgCanvas.getItem()).getCanvasType() != ((ItemCanvas) stack.getItem()).getCanvasType()) {
+                    if (!orgCanvas.isEmpty() && ((ItemCanvas) orgCanvas.getItem()).getCanvasType() != itemCanvas.getCanvasType()) {
                         return false;
                     }
 
@@ -66,20 +66,20 @@ public class RecipeCanvasCloning extends CustomRecipe {
         for (int j = 0; j < inv.size(); ++j) {
             ItemStack stack = inv.getItem(j);
             if (!stack.isEmpty()) {
-                if (stack.getItem() instanceof ItemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
+                if (stack.getItem() instanceof ItemCanvas itemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
                     if (!orgCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!freshCanvas.isEmpty() && ((ItemCanvas) freshCanvas.getItem()).getCanvasType() != ((ItemCanvas) stack.getItem()).getCanvasType()) {
+                    if (!freshCanvas.isEmpty() && ((ItemCanvas) freshCanvas.getItem()).getCanvasType() != itemCanvas.getCanvasType()) {
                         return ItemStack.EMPTY;
                     }
 
                     orgCanvas = stack;
-                } else if (stack.getItem() instanceof ItemCanvas && stack.get(Items.CANVAS_GENERATION) == null) {
+                } else if (stack.getItem() instanceof ItemCanvas itemCanvas && stack.get(Items.CANVAS_GENERATION) == null) {
                     if (!freshCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!orgCanvas.isEmpty() && ((ItemCanvas) orgCanvas.getItem()).getCanvasType() != ((ItemCanvas) stack.getItem()).getCanvasType()) {
+                    if (!orgCanvas.isEmpty() && ((ItemCanvas) orgCanvas.getItem()).getCanvasType() != itemCanvas.getCanvasType()) {
                         return ItemStack.EMPTY;
                     }
 

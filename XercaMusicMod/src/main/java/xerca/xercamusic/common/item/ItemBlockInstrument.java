@@ -90,7 +90,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
                 Mod.LOGGER.error("Invalid sound index in Instrument construction");
             } else {
                 IItemInstrument.Pair<Integer, SoundEvent> base = sounds.get(index);
-                float pitch = (float) Math.pow(1.05946314465679, note - base.first());
+                float pitch = (float) Math.pow(1.05946314465679, (double) note - base.first());
                 insSounds[i] = new IItemInstrument.InsSound(base.second(), pitch);
             }
         }

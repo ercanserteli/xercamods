@@ -99,7 +99,7 @@ public class Foods {
     public static final FoodProperties GOLDEN_CUPCAKE = makeFood(16, 1.f).alwaysEdible().build();
 
 
-    static private FoodProperties.Builder makeFood(int hunger, float saturation) {
-        return (new FoodProperties.Builder()).nutrition(hunger).saturationModifier(saturation);
+    private static FoodProperties.Builder makeFood(int hunger, float saturation) {
+        return new FoodProperties.Builder().nutrition(hunger).saturationModifier(saturation);
     }
 }

@@ -35,7 +35,8 @@ public class TileEntityMetronome extends BlockEntity {
     public static void tick(Level level, TileEntityMetronome metronome) {
         if (level != null) {
             BlockState state = metronome.getBlockState();
-            if (state.getValue(BlockMetronome.POWERED)) {
+            boolean powered = state.getValue(BlockMetronome.POWERED);
+            if (powered) {
                 if (!metronome.oldPoweredState) {
                     metronome.age = 0;
                     metronome.countDown = 0;

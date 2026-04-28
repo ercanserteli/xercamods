@@ -35,7 +35,7 @@ public class ItemPotionLauncher extends Item {
             return InteractionResultHolder.fail(stack);
         }
 
-        float range = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.rangeEnchantment(level.registryAccess()), stack) + 1;
+        float range = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.rangeEnchantment(level.registryAccess()), stack) + 1.0F;
         if (range > 1.0F) {
             range *= 0.8F;
         }

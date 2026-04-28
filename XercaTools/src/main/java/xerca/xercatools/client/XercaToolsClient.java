@@ -56,7 +56,7 @@ public final class XercaToolsClient implements ClientModInitializer {
             float useTime = stack.getUseDuration(entity) - remaining;
             float fullUseTime = stack.getItem() instanceof ItemWarhammer
                     ? ItemWarhammer.getFullUseSeconds(entity.level().registryAccess(), stack) * 20.0F
-                    : ItemScythe.getFullUseSeconds(stack) * 20.0F;
+                    : ItemScythe.FULL_USE_SECONDS * 20.0F;
             return Mth.clamp(useTime / fullUseTime, 0.0F, 1.0F);
         });
     }

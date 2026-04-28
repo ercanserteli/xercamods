@@ -41,9 +41,6 @@ public class Mod implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger();
     private static final ResourceKey<LootTable> GRASS_LOOT_TABLE_ID = net.minecraft.world.level.block.Blocks.SHORT_GRASS.getLootTable();
 
-    public Mod() {
-
-    }
     public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
@@ -81,7 +78,7 @@ public class Mod implements ModInitializer {
     }
 
     private void registerTradeOffers() {
-        TradeOfferHelper.registerVillagerOffers(VillagerProfession.FARMER, 1, (a) -> a.addAll(List.of(
+        TradeOfferHelper.registerVillagerOffers(VillagerProfession.FARMER, 1, a -> a.addAll(List.of(
                 new VillagerTrades.EmeraldForItems(Items.RICE_SEEDS, 24, 16, 2),
                 new VillagerTrades.EmeraldForItems(Items.TOMATO, 22, 16, 2),
                 new VillagerTrades.EmeraldForItems(Items.TEA_SEEDS, 18, 16, 2))

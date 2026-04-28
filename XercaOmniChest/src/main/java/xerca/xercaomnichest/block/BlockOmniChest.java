@@ -71,9 +71,10 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
+        boolean waterlogged = fluidState.getType() == Fluids.WATER;
         return defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+                .setValue(WATERLOGGED, waterlogged);
     }
 
     @Override
@@ -157,12 +158,14 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
 
     @Override
     protected @NotNull FluidState getFluidState(@NotNull BlockState state) {
-        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        boolean waterlogged = state.getValue(WATERLOGGED);
+        return waterlogged ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
     protected @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor level, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
-        if (state.getValue(WATERLOGGED)) {
+        boolean waterlogged = state.getValue(WATERLOGGED);
+        if (waterlogged) {
             level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);

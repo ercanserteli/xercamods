@@ -281,7 +281,7 @@ public class GuiCanvasEdit extends BasePalette {
     private void resetPositions() {
         final int padding = 40;
         final int paletteCanvasX = (this.width - (PALETTE_WIDTH + canvasWidth + padding)) / 2;
-        canvasX = paletteCanvasX + PALETTE_WIDTH + padding;
+        canvasX = (double) paletteCanvasX + PALETTE_WIDTH + padding;
         if (canvasType == CanvasType.LONG) {
             canvasY = 80;
         } else {

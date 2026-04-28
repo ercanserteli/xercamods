@@ -71,12 +71,14 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     private boolean tryAddMeat(ItemStack heldItem, BlockState state, Level world, BlockPos pos) {
-        if (heldItem.getItem() != Items.MUTTON || !state.getValue(IS_RAW) || state.getValue(MEAT_AMOUNT) >= 4) {
+        boolean isRaw = state.getValue(IS_RAW);
+        int meatAmount = state.getValue(MEAT_AMOUNT);
+        if (heldItem.getItem() != Items.MUTTON || !isRaw || meatAmount >= 4) {
             return false;
         }
 
         if (!world.isClientSide) {
-            world.setBlockAndUpdate(pos, state.setValue(MEAT_AMOUNT, state.getValue(MEAT_AMOUNT) + 1));
+            world.setBlockAndUpdate(pos, state.setValue(MEAT_AMOUNT, meatAmount + 1));
             heldItem.shrink(1);
         }
         world.playSound(null, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8f, 0.9f + world.random.nextFloat() * 0.1f);
@@ -84,7 +86,8 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     private boolean trySliceDoner(ItemStack heldItem, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
-        if (!KnifeCompat.isKnife(heldItem) || state.getValue(IS_RAW)) {
+        boolean isRaw = state.getValue(IS_RAW);
+        if (!KnifeCompat.isKnife(heldItem) || isRaw) {
             return false;
         }
 
@@ -140,8 +143,8 @@ public class BlockDoner extends Block implements EntityBlock {
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
-            if (t instanceof BlockEntityDoner) {
-                BlockEntityDoner.tick(level1, blockPos, blockState1, (BlockEntityDoner) t);
+            if (t instanceof BlockEntityDoner blockEntityDoner) {
+                BlockEntityDoner.tick(level1, blockPos, blockState1, blockEntityDoner);
             }
         };
     }

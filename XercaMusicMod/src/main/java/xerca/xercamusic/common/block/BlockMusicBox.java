@@ -51,7 +51,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
         BlockEntity blockEntity = worldIn.getBlockEntity(pos);
         if (blockEntity instanceof TileEntityMusicBox tileEntityMusicBox) {
             tileEntityMusicBox.setSheetStack(sheetStack, true);
-            worldIn.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.TRUE), 3);
+            worldIn.setBlock(pos, state.setValue(HAS_MUSIC, true), 3);
         }
     }
 
@@ -59,7 +59,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
         BlockEntity blockEntity = worldIn.getBlockEntity(pos);
         if (blockEntity instanceof TileEntityMusicBox tileEntityMusicBox) {
             tileEntityMusicBox.setInstrument(instrument);
-            worldIn.setBlock(pos, state.setValue(HAS_INSTRUMENT, Boolean.TRUE), 3);
+            worldIn.setBlock(pos, state.setValue(HAS_INSTRUMENT, true), 3);
         }
         worldIn.playSound(null, pos, SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 1.0F, worldIn.getRandom().nextFloat() * 0.1F + 0.9F);
     }
@@ -79,10 +79,12 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     public void neighborChanged(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
         if (!worldIn.isClientSide) {
             boolean powered = worldIn.hasNeighborSignal(pos);
-            if (powered && state.getValue(POWERING)) {
+            boolean powering = state.getValue(POWERING);
+            boolean poweredState = state.getValue(POWERED);
+            if (powered && powering) {
                 return;
             }
-            if (powered != state.getValue(POWERED)) {
+            if (powered != poweredState) {
                 worldIn.setBlock(pos, state.setValue(POWERED, powered), 2);
             }
         }
@@ -166,14 +168,17 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     @Override
     public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, BlockHitResult hitResult) {
         ItemStack heldItem = player.getItemInHand(hand);
-        if (hitResult.getDirection() == Direction.UP && state.getValue(HAS_MUSIC)) {
-            if (heldItem.getItem() instanceof IItemInstrument && !state.getValue(HAS_INSTRUMENT)) {
+        boolean hasMusic = state.getValue(HAS_MUSIC);
+        boolean hasInstrument = state.getValue(HAS_INSTRUMENT);
+        Direction facing = state.getValue(FACING);
+        if (hitResult.getDirection() == Direction.UP && hasMusic) {
+            if (heldItem.getItem() instanceof IItemInstrument && !hasInstrument) {
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
             ejectItem(level, pos, state, true, false);
             return ItemInteractionResult.SUCCESS;
-        } else if (hitResult.getDirection() == state.getValue(FACING).getOpposite() && state.getValue(HAS_INSTRUMENT)) {
-            if (heldItem.getItem() == Items.MUSIC_SHEET && !state.getValue(HAS_MUSIC)) {
+        } else if (hitResult.getDirection() == facing.getOpposite() && hasInstrument) {
+            if (heldItem.getItem() == Items.MUSIC_SHEET && !hasMusic) {
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
             level.playSound(player, pos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
@@ -210,11 +215,11 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public int getSignal(BlockState blockState, @NotNull BlockGetter blockAccess, @NotNull BlockPos pos, @NotNull Direction side) {
-        if (!blockState.getValue(POWERING)) {
+        boolean powering = blockState.getValue(POWERING);
+        if (!powering) {
             return 0;
-        } else {
-            return blockState.getValue(FACING).getCounterClockWise() == side ? 15 : 0;
         }
+        return blockState.getValue(FACING).getCounterClockWise() == side ? 15 : 0;
     }
 
     @Nullable

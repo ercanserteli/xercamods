@@ -62,7 +62,8 @@ public class TileEntityMusicBox extends BlockEntity {
 
     public TileEntityMusicBox(BlockPos blockPos, BlockState blockState) {
         super(BlockEntities.MUSIC_BOX, blockPos, blockState);
-        if (blockState.getValue(BlockMusicBox.POWERED)) {
+        boolean powered = blockState.getValue(BlockMusicBox.POWERED);
+        if (powered) {
             oldPoweredState = true;
         }
     }
@@ -124,7 +125,8 @@ public class TileEntityMusicBox extends BlockEntity {
             return;
         }
 
-        if (state.getValue(BlockMusicBox.POWERED)) {
+        boolean powered = state.getValue(BlockMusicBox.POWERED);
+        if (powered) {
             if (!t.oldPoweredState) {
                 // unpowered to powered
                 t.isPlaying = !t.isPlaying;

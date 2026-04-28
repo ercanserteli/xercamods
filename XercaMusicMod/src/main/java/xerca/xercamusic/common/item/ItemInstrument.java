@@ -70,7 +70,8 @@ public class ItemInstrument extends Item implements IItemInstrument {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         BlockState blockState = world.getBlockState(blockpos);
-        if (blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_INSTRUMENT)) {
+        boolean hasInstrument = blockState.getValue(BlockMusicBox.HAS_INSTRUMENT);
+        if (blockState.getBlock() == Blocks.MUSIC_BOX && !hasInstrument) {
             ItemStack itemstack = context.getItemInHand();
             if (!world.isClientSide) {
                 BlockMusicBox.insertInstrument(world, blockpos, blockState, itemstack.getItem());
@@ -91,7 +92,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
             int note2 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
             int note3 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
 
-            Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level(), target.position(), 24.D);
+            Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level(), target.position(), 24.0D);
             TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, instrument, target);
             for (ServerPlayer player : players) {
                 sendToClient(player, packet);
@@ -132,7 +133,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
             }
             int octave = i / 12;
             if (octave >= minOctave && octave <= maxOctave) {
-                float pitch = (float) Math.pow(1.05946314465679, note - sounds.get(index).first());
+                float pitch = (float) Math.pow(1.05946314465679, note - (double) sounds.get(index).first());
                 insSounds[i] = new InsSound(sounds.get(index).second(), pitch);
             }
         }

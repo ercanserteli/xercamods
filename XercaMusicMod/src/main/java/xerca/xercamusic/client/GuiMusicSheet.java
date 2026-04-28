@@ -153,8 +153,12 @@ public class GuiMusicSheet extends Screen {
     int helpScrollOffset;
     private int helpContentHeight;
     private final int[] helpSectionContentY = new int[7];
-    private int helpPanelX, helpPanelY, helpPanelW, helpPanelBottom;
-    private int helpContentTop, helpContentBottomY;
+    private int helpPanelX;
+    private int helpPanelY;
+    private int helpPanelW;
+    private int helpPanelBottom;
+    private int helpContentTop;
+    private int helpContentBottomY;
     private int helpTabY;
     private final int[] helpTabX = new int[7];
     private final int[] helpTabW = new int[7];
@@ -1291,8 +1295,8 @@ public class GuiMusicSheet extends Screen {
                 }
             }
         }
-        
-        if (line2.length() == 0) {
+
+        if (line2.isEmpty()) {
             return new String[]{line1.toString()};
         }
         return new String[]{line1.toString(), line2.toString()};
@@ -1332,7 +1336,8 @@ public class GuiMusicSheet extends Screen {
 
             int x1 = noteToPixelX(timeDrawBeginning);
             int x2 = noteToPixelX(timeDrawEnd);
-            int y1, y2;
+            int y1;
+            int y2;
             if (rectSelection) {
                 // Rectangular selection: only cover the selected note range
                 y1 = noteImageY + NOTE_REGION_TOP + (47 - (rectSelectNoteTop - IItemInstrument.MIN_NOTE - currentOctavePos * 12)) * 3;
@@ -1391,7 +1396,8 @@ public class GuiMusicSheet extends Screen {
                         if (targetOctave < currentOctavePos || targetOctave >= currentOctavePos + 4) continue;
                         int targetY = noteImageY + NOTE_REGION_TOP + (47 - targetNote + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36 + 1;
                         // Calculate x range for this segment
-                        int segStartX, segEndX;
+                        int segStartX;
+                        int segEndX;
                         if (positions != null && positions.length == numSegments) {
                             segStartX = xBegin + (seg == 0 ? 0 : (positions[seg - 1] & 0xFF) * notePixelWidth / 100);
                             segEndX = xBegin + (positions[seg] & 0xFF) * notePixelWidth / 100;
@@ -1759,7 +1765,8 @@ public class GuiMusicSheet extends Screen {
     }
 
     void insertNoteSorted(NoteEvent newEvent) {
-        int lo = 0, hi = notes.size();
+        int lo = 0;
+        int hi = notes.size();
         while (lo < hi) {
             int mid = (lo + hi) >>> 1;
             if (notes.get(mid).time <= newEvent.time) lo = mid + 1;
@@ -2159,13 +2166,13 @@ public class GuiMusicSheet extends Screen {
                     marker.endVolume = (byte)Math.round(value * 127.0f);
                 }
             };
-            buttonDelete = Button.builder(Component.literal("Del"), (button) -> {
+            buttonDelete = Button.builder(Component.literal("Del"), button -> {
                 volumeMarkers.remove(marker);
                 dirtyFlag.hasNotes = true;
                 this.visible = false;
                 this.active = false;
             }).bounds(0, 0, 25, 12).build();
-            buttonExit = Button.builder(Component.translatable("note.exitButton"), (button) -> {
+            buttonExit = Button.builder(Component.translatable("note.exitButton"), button -> {
                 this.visible = false;
                 this.active = false;
             }).bounds(0, 0, 10, 10).build();

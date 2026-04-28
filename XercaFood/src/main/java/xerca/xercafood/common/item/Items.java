@@ -644,8 +644,6 @@ public final class Items {
             entries.accept(RICE_SEEDS);
             entries.accept(TEA_SEEDS);
         });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> {
-            entries.accept(VAT);
-        });
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> entries.accept(VAT));
     }
 }
