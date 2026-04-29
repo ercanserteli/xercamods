@@ -141,7 +141,6 @@ public class BlockTeapot extends Block {
 
     public ItemTeapot getItemHotTeapot(int teaAmount) {
         return switch (teaAmount) {
-            case 1 -> Items.HOT_TEAPOT_1;
             case 2 -> Items.HOT_TEAPOT_2;
             case 3 -> Items.HOT_TEAPOT_3;
             case 4 -> Items.HOT_TEAPOT_4;

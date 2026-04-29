@@ -1,7 +1,6 @@
 package xerca.xercaomnichest.block;
 
 import com.mojang.serialization.MapCodec;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -87,7 +86,6 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
         return result.consumesAction() ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
-    @SuppressFBWarnings(value = "NP", justification = "Server nullability is checked before container lookup")
     private ItemInteractionResult openMenu(Level level, BlockPos pos, Player player) {
         if (level.isClientSide) {
             return ItemInteractionResult.SUCCESS;

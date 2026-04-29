@@ -19,10 +19,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import xerca.xercafood.common.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-class BlockTomatoPlant extends CropBlock implements BonemealableBlock {
+public class BlockTomatoPlant extends CropBlock implements BonemealableBlock {
     public static final IntegerProperty TOMATO_AGE = BlockStateProperties.AGE_3;
     private static final VoxelShape[] SHAPE = {box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
 

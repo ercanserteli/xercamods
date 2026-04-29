@@ -27,10 +27,8 @@ public class NoteEvent implements Serializable {
     public byte length;
     public byte flags;              // Articulation flags (see FLAG_* constants)
     public byte glissandoInterval;  // Signed semitones to slide for glissando (+up, -down); used for single-point
-    @Nullable
-    public byte[] glissandoWaypoints; // Multi-point glissando: array of semitone offsets. null = use glissandoInterval
-    @Nullable
-    public byte[] glissandoWaypointPositions; // Parallel to glissandoWaypoints: beat position as % of note length (1-100). null = evenly spaced.
+    public byte @Nullable [] glissandoWaypoints; // Multi-point glissando: array of semitone offsets. null = use glissandoInterval
+    public byte @Nullable [] glissandoWaypointPositions; // Parallel to glissandoWaypoints: beat position as % of note length (1-100). null = evenly spaced.
 
     public NoteEvent(byte note, short time, byte volume, byte length) {
         this(note, time, volume, length, FLAG_NONE, (byte) 0);
@@ -172,15 +170,6 @@ public class NoteEvent implements Serializable {
     }
 
     /**
-     * Set multi-point glissando waypoints. Each byte is a semitone offset from the original note.
-     * Waypoints are evenly distributed across the note duration.
-     * Segment 0: original pitch → waypoints[0], Segment 1: waypoints[0] → waypoints[1], etc.
-     */
-    public void setGlissandoWaypoints(byte[] waypoints) {
-        setGlissandoWaypoints(waypoints, null);
-    }
-
-    /**
      * Set multi-point glissando with optional custom timing positions.
      * @param waypoints  semitone offsets from the note; null to clear
      * @param positions  parallel array of beat positions as % of note length (1-100); null = evenly spaced
@@ -224,13 +213,6 @@ public class NoteEvent implements Serializable {
             return glissandoWaypointPositions;
         }
         return null;
-    }
-
-    /**
-     * Returns the target note for glissando (note + glissandoInterval).
-     */
-    public byte glissandoTargetNote() {
-        return (byte)(note + glissandoInterval);
     }
 
     public CompoundTag serializeNBT() {

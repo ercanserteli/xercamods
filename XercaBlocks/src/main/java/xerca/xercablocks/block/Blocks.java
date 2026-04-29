@@ -100,10 +100,6 @@ public final class Blocks {
         BLOCKS.forEach((id, block) -> Registry.register(BuiltInRegistries.BLOCK, Mod.id(id), block));
     }
 
-    public static Map<String, Block> allBlocks() {
-        return BLOCKS;
-    }
-
     public static Map<String, Block> terratiles() {
         return TERRATILES;
     }

@@ -11,7 +11,7 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "xerca.xercacushion.client.ClientStuff"
+      "xerca.xercacushion.client.ModClient"
     ],
     "main": [
       "xerca.xercacushion.Mod"

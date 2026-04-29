@@ -17,7 +17,7 @@ import xerca.xercafood.common.block_entity.BlockEntityDoner;
 public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityDoner> {
     protected static @Nullable BlockRenderDispatcher blockRenderer;
 
-    public DonerTileEntityRenderer(BlockEntityRendererProvider.Context ctx) {
+    public DonerTileEntityRenderer(BlockEntityRendererProvider.Context ignoredCtx) {
     }
 
     @Override

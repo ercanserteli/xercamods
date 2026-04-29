@@ -1,6 +1,5 @@
 package xerca.xercablocks.block_entity;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -60,7 +59,6 @@ public class FunctionalBookcaseBlockEntity extends BlockEntity implements Contai
         syncVisualState();
     }
 
-    @SuppressFBWarnings(value = "NP", justification = "level is guarded against null at method entry.")
     private void syncVisualState() {
         if (level == null || level.isClientSide) {
             return;

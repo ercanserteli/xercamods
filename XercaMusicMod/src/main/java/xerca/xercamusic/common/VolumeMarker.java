@@ -37,14 +37,8 @@ public class VolumeMarker {
     public VolumeMarker() {
     }
 
-
     public boolean isCrescendo() {
         return endVolume > startVolume;
-    }
-
-
-    public boolean isDecrescendo() {
-        return endVolume < startVolume;
     }
 
     public boolean isValid() {

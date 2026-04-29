@@ -21,5 +21,6 @@ public final class Mod implements ModInitializer {
         Blocks.registerBlocks();
         BlockEntities.registerBlockEntities();
         Items.registerItems();
+        LOGGER.info(MOD_ID + " initialized");
     }
 }

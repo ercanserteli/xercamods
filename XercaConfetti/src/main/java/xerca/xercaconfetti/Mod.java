@@ -84,6 +84,7 @@ public class Mod implements ModInitializer {
             }
         });
         DispenserBlock.registerBehavior(CONFETTI, new ConfettiDispenseItemBehavior());
+        LOGGER.info(MOD_ID + " initialized");
     }
 
     public static void sendToClient(ServerPlayer player, ConfettiParticlePacket packet) {

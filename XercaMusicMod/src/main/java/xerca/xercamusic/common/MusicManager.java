@@ -7,7 +7,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
@@ -112,7 +111,7 @@ public final class MusicManager {
             this(new HashMap<>());
         }
 
-        public static SavedDataMusic load(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        public static SavedDataMusic load(CompoundTag tag, HolderLookup.Provider ignoredRegistries) {
             Tag musicTag = tag.get("MusicDataList");
             if (musicTag instanceof ListTag musicDataList) {
                 Map<UUID, MusicData> musicDataMap = new HashMap<>();
@@ -133,7 +132,7 @@ public final class MusicManager {
         }
 
         @Override
-        public CompoundTag save(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
             ListTag musicDataList = new ListTag();
             for (Map.Entry<UUID, MusicData> entry : musicMap.entrySet()) {
                 CompoundTag nbt = new CompoundTag();

@@ -32,7 +32,7 @@ public class ItemRawPizza extends Item {
     @Override
     public Component getName(ItemStack stack) {
         if (BlockPizza.isAllEmpty(slot1, slot2, slot3))
-            return Component.translatable(Mod.MODID + ".pizza_raw_plain");
-        return Component.translatable(Mod.MODID + ".pizza_raw");
+            return Component.translatable(Mod.MOD_ID + ".pizza_raw_plain");
+        return Component.translatable(Mod.MOD_ID + ".pizza_raw");
     }
 }

@@ -1,6 +1,5 @@
 package xerca.xercatools.crafting;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -65,7 +64,6 @@ public class RecipeFlaskFilling extends CustomRecipe {
     }
 
     @Override
-    @SuppressFBWarnings(value = "NP", justification = "hasCraftingRemainingItem() guarantees non-null crafting remainder in this API usage.")
     public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
         NonNullList<ItemStack> remainingItems = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 

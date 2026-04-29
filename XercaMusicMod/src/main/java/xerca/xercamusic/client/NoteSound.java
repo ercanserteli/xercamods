@@ -49,15 +49,6 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
     }
 
     /**
-     * Enable single-point glissando (smooth pitch slide) to target pitch.
-     */
-    public void setGlissando(float targetPitch, int durationTicks) {
-        this.pitchWaypoints = new float[] { targetPitch };
-        this.glissandoTotalTicks = Math.max(1, durationTicks);
-        this.glissandoTicksElapsed = 0;
-    }
-
-    /**
      * Enable multi-point glissando. Waypoints are evenly distributed across the duration.
      * Segment 0: originalPitch → waypoints[0], Segment 1: waypoints[0] → waypoints[1], etc.
      */
@@ -74,7 +65,7 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
      * @param positions     parallel array of fractional positions (0.0-1.0) when each waypoint is reached; null = evenly spaced
      * @param durationTicks total glissando duration
      */
-    public void setGlissando(float[] targetPitches, @Nullable float[] positions, int durationTicks) {
+    public void setGlissando(float[] targetPitches, float @Nullable [] positions, int durationTicks) {
         this.pitchWaypoints = targetPitches;
         this.waypointPositions = (positions != null && positions.length == targetPitches.length) ? positions : null;
         this.glissandoTotalTicks = Math.max(1, durationTicks);

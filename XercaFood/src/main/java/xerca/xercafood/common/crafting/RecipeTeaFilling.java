@@ -1,6 +1,5 @@
 package xerca.xercafood.common.crafting;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +21,6 @@ public class RecipeTeaFilling extends CustomRecipe {
     }
 
 
-    @SuppressFBWarnings(value = "SF", justification = "teaAmount is constrained to 1..7 by recipe matching.")
     public static Item getFullTeapot(int teaAmount) {
         return switch (teaAmount) {
             case 1 -> Items.FULL_TEAPOT_1;

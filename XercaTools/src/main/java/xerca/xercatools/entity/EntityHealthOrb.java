@@ -1,6 +1,5 @@
 package xerca.xercatools.entity;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -79,7 +78,6 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    @SuppressFBWarnings(value = "NP", justification = "followingPlayer and donorPlayer are null-guarded before dereference/use.")
     public void tick() {
         super.tick();
         this.xo = this.getX();
@@ -137,7 +135,6 @@ public class EntityHealthOrb extends Entity {
         }
     }
 
-    @SuppressFBWarnings(value = "NP", justification = "donorPlayer is checked for null before getNearestPlayer(..., donorPlayer).")
     private void scanForEntities() {
         if (this.followingPlayer == null || this.followingPlayer.distanceToSqr(this) > 36.0D) {
             if (attackingPlayer != null && attackingPlayer.distanceToSqr(this) <= 36.0D) {

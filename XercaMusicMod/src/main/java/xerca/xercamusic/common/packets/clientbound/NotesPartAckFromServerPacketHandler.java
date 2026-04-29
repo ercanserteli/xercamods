@@ -23,9 +23,7 @@ public class NotesPartAckFromServerPacketHandler implements ClientPlayNetworking
 
     @Override
     public void receive(NotesPartAckFromServerPacket packet, ClientPlayNetworking.Context context) {
-        if (packet != null) {
-            context.client().execute(() -> processMessage(packet));
-        }
+        context.client().execute(() -> processMessage(packet));
     }
 }
 

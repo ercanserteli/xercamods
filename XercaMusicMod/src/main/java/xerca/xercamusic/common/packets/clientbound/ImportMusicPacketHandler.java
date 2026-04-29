@@ -31,9 +31,7 @@ public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayPayloa
             sendMusic(tag);
         } catch (IOException | ImportMusicSendPacket.NotesTooLargeException e) {
             Mod.LOGGER.error("Exception while reading music sheet: ", e);
-            if (player != null) {
-                player.sendSystemMessage(Component.translatable("xercamusic.import.fail.4", filepath).withStyle(ChatFormatting.RED));
-            }
+            player.sendSystemMessage(Component.translatable("xercamusic.import.fail.4", filepath).withStyle(ChatFormatting.RED));
         }
     }
 
@@ -59,8 +57,6 @@ public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayPayloa
 
     @Override
     public void receive(ImportMusicPacket packet, ClientPlayNetworking.Context context) {
-        if (packet != null) {
-            context.client().execute(() -> processMessage(packet, context.player()));
-        }
+        context.client().execute(() -> processMessage(packet, context.player()));
     }
 }

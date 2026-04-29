@@ -55,15 +55,6 @@ public class SoundController extends Thread {
         this.musicBox = musicBox;
     }
 
-    public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
-        this(notes, null, x, y, z, instrument, bps, volume, spiritID);
-    }
-
-    public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
-        this(notes, null, x, y, z, instrument, bps, volume, -1);
-        this.musicBox = musicBox;
-    }
-
     private int beatsToTicks(int beats) {
         return Math.max(1, Math.round(beats * 20.0f / bps));
     }

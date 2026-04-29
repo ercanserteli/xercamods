@@ -33,7 +33,4 @@ public final class ScytheEnchantments {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(DEVOUR);
     }
 
-    public static Holder<Enchantment> devourEnchantment(HolderLookup.Provider registries) {
-        return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(DEVOUR);
-    }
 }

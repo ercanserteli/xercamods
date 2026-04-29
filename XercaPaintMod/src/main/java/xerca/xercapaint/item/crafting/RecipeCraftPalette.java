@@ -1,6 +1,5 @@
 package xerca.xercapaint.item.crafting;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.tags.ItemTags;
@@ -14,10 +13,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class RecipeCraftPalette extends CustomRecipe {
     private static final byte[] EMPTY_BASIC_COLORS = new byte[0];
 
@@ -34,7 +29,7 @@ public class RecipeCraftPalette extends CustomRecipe {
             return -1;
         }
         DyeColor dyeColor = dyeItem.getDyeColor();
-        if (dyeColor == null || !DyeItem.byColor(dyeColor).equals(stack.getItem())) {
+        if (!DyeItem.byColor(dyeColor).equals(stack.getItem())) {
             return -1;
         }
         int colorId = dyeColor.getId();

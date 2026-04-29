@@ -51,8 +51,10 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
                     Mod.LOGGER.error("Exception while playing note: ", e);
                     return;
                 }
-                NOTE_SOUNDS.put(Pair.of(playerEntity, msg.note()), new NoteSoundEntry(noteSound, playerEntity));
-                playerEntity.level().addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, msg.note() / 24.0D, 0.0D, 0.0D);
+                if (noteSound != null) {
+                    NOTE_SOUNDS.put(Pair.of(playerEntity, msg.note()), new NoteSoundEntry(noteSound, playerEntity));
+                    playerEntity.level().addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, msg.note() / 24.0D, 0.0D, 0.0D);
+                }
             } else {
                 NoteSoundEntry oldNoteSoundEntry = NOTE_SOUNDS.get(Pair.of(playerEntity, msg.note()));
                 if (oldNoteSoundEntry != null && !oldNoteSoundEntry.noteSound.isStopped()) {
@@ -64,9 +66,7 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
 
     @Override
     public void receive(SingleNoteClientPacket packet, ClientPlayNetworking.Context context) {
-        if (packet != null) {
-            context.client().execute(() -> processMessage(packet));
-        }
+        context.client().execute(() -> processMessage(packet));
     }
 
     private record NoteSoundEntry(NoteSound noteSound, Player playerEntity) {

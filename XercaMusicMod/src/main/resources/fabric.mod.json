@@ -11,7 +11,7 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "xerca.xercamusic.client.ClientStuff"
+      "xerca.xercamusic.client.ModClient"
     ],
     "main": [
       "xerca.xercamusic.common.Mod"

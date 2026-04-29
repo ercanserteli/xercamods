@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import xerca.xercablocks.block.Blocks;
 import xerca.xercablocks.block_entity.BlockEntities;
 import xerca.xercablocks.item.Items;
+import xerca.xercablocks.menu.Menus;
 import xerca.xercablocks.recipe.Recipes;
 
 public final class Mod implements ModInitializer {
@@ -22,6 +23,8 @@ public final class Mod implements ModInitializer {
         Blocks.registerBlocks();
         BlockEntities.registerBlockEntities();
         Items.registerItems();
+        Menus.register();
         Recipes.register();
+        LOGGER.info(MOD_ID + " initialized");
     }
 }

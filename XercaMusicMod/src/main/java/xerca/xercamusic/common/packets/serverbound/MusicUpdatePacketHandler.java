@@ -77,8 +77,6 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
 
     @Override
     public void receive(MusicUpdatePacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

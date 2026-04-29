@@ -32,18 +32,12 @@ import xerca.xercafood.common.item.Items;
 import java.util.List;
 
 public class Mod implements ModInitializer {
-    public static final String MODID = "xercafood";
-    public static final String NAME = "Xerca Food";
-
+    public static final String MOD_ID = "xercafood";
     public static final Logger LOGGER = LogManager.getLogger();
     private static final ResourceKey<LootTable> GRASS_LOOT_TABLE_ID = net.minecraft.world.level.block.Blocks.SHORT_GRASS.getLootTable();
 
     public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
-    }
-
-    public static boolean isColaExtract(ItemStack stack) {
-        return stack.is(Items.COLA_EXTRACT);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     @Override
@@ -71,6 +65,7 @@ public class Mod implements ModInitializer {
         registerSeedDrops();
         registerDonerEvent();
         registerTradeOffers();
+        LOGGER.info(MOD_ID + " initialized");
     }
 
     private void registerTradeOffers() {

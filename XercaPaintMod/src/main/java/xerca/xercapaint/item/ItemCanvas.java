@@ -16,13 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityCanvas;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 @NonnullDefault

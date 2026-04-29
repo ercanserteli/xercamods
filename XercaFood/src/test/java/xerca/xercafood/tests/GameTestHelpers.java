@@ -28,11 +28,11 @@ class GameTestHelpers {
     static final String RECIPE_BATCH = "xercafood_recipes";
 
     static ResourceLocation recipeId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Mod.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);
     }
 
     static ResourceLocation advancementId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Mod.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);
     }
 
     static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation id) {
@@ -40,6 +40,7 @@ class GameTestHelpers {
         helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
         helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + id);
+        assert recipe instanceof CraftingRecipe;
         return (CraftingRecipe) recipe;
     }
 
@@ -48,6 +49,7 @@ class GameTestHelpers {
         helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
         helper.assertTrue(recipe instanceof CampfireCookingRecipe, "Expected campfire cooking recipe for " + id);
+        assert recipe instanceof CampfireCookingRecipe;
         return (CampfireCookingRecipe) recipe;
     }
 
@@ -56,6 +58,7 @@ class GameTestHelpers {
         helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
         helper.assertTrue(recipe instanceof SmeltingRecipe, "Expected smelting recipe for " + id);
+        assert recipe instanceof SmeltingRecipe;
         return (SmeltingRecipe) recipe;
     }
 
@@ -64,6 +67,7 @@ class GameTestHelpers {
         helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
         helper.assertTrue(recipe instanceof SmokingRecipe, "Expected smoking recipe for " + id);
+        assert recipe instanceof SmokingRecipe;
         return (SmokingRecipe) recipe;
     }
 
@@ -92,6 +96,7 @@ class GameTestHelpers {
     }
 
     static ServerPlayer makeServerPlayer(GameTestHelper helper) {
+        //noinspection removal
         return helper.makeMockServerPlayerInLevel();  // NOSONAR
     }
 

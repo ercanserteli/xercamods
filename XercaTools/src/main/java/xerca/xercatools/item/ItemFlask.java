@@ -121,11 +121,6 @@ public class ItemFlask extends Item {
         return BASE_MAX_CHARGES * (cap + 1);
     }
 
-    public static int getMaxCharges(ItemStack stack, net.minecraft.core.RegistryAccess registryAccess) {
-        int cap = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.capacityEnchantment(registryAccess), stack);
-        return BASE_MAX_CHARGES * (cap + 1);
-    }
-
     public static void setCharges(ItemStack stack, int charges) {
         if (charges < 0) {
             return;

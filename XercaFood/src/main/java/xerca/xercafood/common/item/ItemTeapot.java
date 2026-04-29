@@ -7,9 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.block.BlockTeapot;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemTeapot extends BlockItem {

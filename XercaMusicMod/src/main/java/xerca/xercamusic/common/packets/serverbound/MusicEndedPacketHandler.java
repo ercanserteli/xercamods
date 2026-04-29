@@ -15,8 +15,6 @@ public class MusicEndedPacketHandler implements ServerPlayNetworking.PlayPayload
 
     @Override
     public void receive(MusicEndedPacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

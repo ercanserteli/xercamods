@@ -9,11 +9,12 @@ public record CloseGuiPacket() implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<CloseGuiPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("close_gui"));
     public static final StreamCodec<FriendlyByteBuf, CloseGuiPacket> PACKET_CODEC = StreamCodec.ofMember(CloseGuiPacket::encode, CloseGuiPacket::decode);
 
-    public void encode(FriendlyByteBuf buf) {
+    @SuppressWarnings("EmptyMethod")
+    public void encode(FriendlyByteBuf ignoredBuf) {
         // No data
     }
 
-    public static CloseGuiPacket decode(FriendlyByteBuf buf) {
+    public static CloseGuiPacket decode(FriendlyByteBuf ignoredBuf) {
         return new CloseGuiPacket();
     }
 

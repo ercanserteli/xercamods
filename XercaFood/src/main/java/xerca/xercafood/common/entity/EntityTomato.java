@@ -28,10 +28,6 @@ public class EntityTomato extends ThrowableItemProjectile {
         super(Entities.TOMATO, x, y, z, worldIn);
     }
 
-    public EntityTomato(Level worldIn) {
-        super(Entities.TOMATO, worldIn);
-    }
-
     @Override
     protected void onHit(HitResult result) {
         if (result.getType() == HitResult.Type.ENTITY) {

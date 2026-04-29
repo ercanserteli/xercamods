@@ -39,5 +39,6 @@ public final class Mod implements ModInitializer {
                 entries.accept(item);
             }
         });
+        LOGGER.info(MOD_ID + " initialized");
     }
 }

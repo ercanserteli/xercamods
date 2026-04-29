@@ -11,13 +11,13 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.packets.serverbound.SingleNotePacket;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static xerca.xercamusic.client.ModClient.sendToServer;

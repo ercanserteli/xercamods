@@ -25,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
@@ -32,7 +33,6 @@ import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.CloseGuiPacket;
 import xerca.xercapaint.packets.OpenGuiPacket;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 

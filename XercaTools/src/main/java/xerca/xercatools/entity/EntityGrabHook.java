@@ -1,6 +1,5 @@
 package xerca.xercatools.entity;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -78,6 +77,7 @@ public class EntityGrabHook extends Entity {
         double length = velocity.length();
         velocity = velocity.scale(this.speed / length);
         this.setDeltaMovement(velocity);
+        //noinspection SuspiciousNameCombination
         this.setYRot((float) (Mth.atan2(velocity.x, velocity.z) * (180F / Math.PI)));
         this.setXRot((float) (Mth.atan2(velocity.y, Math.sqrt(this.distanceToSqr(velocity))) * (180F / Math.PI)));
         this.yRotO = this.getYRot();
@@ -124,10 +124,6 @@ public class EntityGrabHook extends Entity {
 
     public @Nullable Entity getCaughtEntity() {
         return this.caughtEntity;
-    }
-
-    public int getAge() {
-        return this.age;
     }
 
     @Override
@@ -227,7 +223,6 @@ public class EntityGrabHook extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
     }
 
-    @SuppressFBWarnings(value = "NP", justification = "caughtEntity is assigned from hit result before same-branch dereference.")
     private boolean checkCollision(Player angler) {
         HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this,
                 entity -> !entity.isSpectator() && (entity.isPickable() || entity instanceof ItemEntity) && entity != angler);

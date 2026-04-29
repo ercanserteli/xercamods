@@ -92,6 +92,7 @@ public class Mod implements ModInitializer {
             entries.accept(Items.KNIFE);
             entries.accept(Items.GRAB_HOOK);
         });
+        LOGGER.info(MOD_ID + " initialized");
     }
 
     private void registerEnchantmentRules() {

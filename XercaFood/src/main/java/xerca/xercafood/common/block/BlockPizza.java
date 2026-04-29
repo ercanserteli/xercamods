@@ -119,12 +119,4 @@ public class BlockPizza extends Block {
     public static boolean isAllEmpty(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
         return slot1 == Ingredient.EMPTY && slot2 == Ingredient.EMPTY && slot3 == Ingredient.EMPTY;
     }
-
-    public static String postfix(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
-        return itn(slot1) + itn(slot2) + itn(slot3);
-    }
-
-    private static String itn(BlockPizza.Ingredient ingredient) {
-        return ingredient == Ingredient.EMPTY ? "" : "_" + ingredient.name().toLowerCase();
-    }
 }

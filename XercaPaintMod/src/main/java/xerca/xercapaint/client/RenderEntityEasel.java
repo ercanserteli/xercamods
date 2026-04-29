@@ -22,11 +22,9 @@ import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-@ParametersAreNonnullByDefault
 public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
     protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();

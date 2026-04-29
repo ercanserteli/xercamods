@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.CakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-class BlockSweetBerryPie extends CakeBlock {
+public class BlockSweetBerryPie extends CakeBlock {
     public BlockSweetBerryPie() {
         super(Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.CAKE));
     }

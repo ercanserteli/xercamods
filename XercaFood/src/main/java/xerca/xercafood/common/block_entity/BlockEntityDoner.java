@@ -1,6 +1,5 @@
 package xerca.xercafood.common.block_entity;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
@@ -47,7 +46,6 @@ public class BlockEntityDoner extends BlockEntity {
         return this.isSpinning ? this.spinTicks + partialTicks : this.spinTicks;
     }
 
-    @SuppressFBWarnings(value = "NP", justification = "gettingRoasted is used during block entity ticking when level is attached.")
     private boolean gettingRoasted() {
         if (level == null) {
             return false;

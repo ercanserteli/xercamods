@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xerca.xercafood.common.item.Items;
 
+@SuppressWarnings({"UnusedMethod", "UnusedVariable", "unused"})
 @Mixin(BrewingStandBlockEntity.class)
 public abstract class MixinBrewingStandBlockEntity {
     private MixinBrewingStandBlockEntity() {

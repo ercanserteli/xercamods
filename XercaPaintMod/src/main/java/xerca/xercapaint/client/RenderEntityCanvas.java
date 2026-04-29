@@ -17,18 +17,16 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.entity.EntityCanvas;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-@ParametersAreNonnullByDefault
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     static @Nullable RenderEntityCanvas theInstance;
     private static final ResourceLocation BACK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");

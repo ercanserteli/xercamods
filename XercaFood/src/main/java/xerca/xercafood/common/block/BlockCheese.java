@@ -31,7 +31,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.item.Items;
 
-class BlockCheese extends Block {
+public class BlockCheese extends Block {
     public static final int MAX_BITES = 3;
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, MAX_BITES);
     protected static final VoxelShape[] SHAPE_BY_BITE = {

@@ -24,7 +24,7 @@ public class BlockGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void tomatoPlantDropsTomatoWhenGrown(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
-        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_tomato_plant"));
+        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "block_tomato_plant"));
         net.minecraft.world.level.block.state.BlockState grownTomato = block.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_3, 3);
 
         helper.setBlock(pos, grownTomato);
@@ -37,7 +37,7 @@ public class BlockGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void ricePlantDropsRiceSeedsWhenGrown(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
-        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_rice_plant"));
+        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "block_rice_plant"));
         net.minecraft.world.level.block.state.BlockState grownRice = block.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_7, 7);
 
         helper.setBlock(pos, grownRice);
@@ -50,7 +50,7 @@ public class BlockGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void teaPlantDropsTeaLeafWhenGrown(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
-        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_tea_plant"));
+        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "block_tea_plant"));
         net.minecraft.world.level.block.state.BlockState grownTea = block.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_3, 3);
 
         helper.setBlock(pos, grownTea);
@@ -63,7 +63,7 @@ public class BlockGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void vatDropsVat(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
-        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "vat"));
+        net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "vat"));
         net.minecraft.world.level.block.state.BlockState vat = block.defaultBlockState();
 
         helper.setBlock(pos, vat);
@@ -107,7 +107,7 @@ public class BlockGameTests {
         );
 
         helper.assertTrue(drops.size() == 1, "Expected curdling vat to have one drop without tools");
-        helper.assertTrue(drops.get(0).is(Items.VAT), "Expected curdling vat to drop itself without tools");
+        helper.assertTrue(drops.getFirst().is(Items.VAT), "Expected curdling vat to drop itself without tools");
         helper.succeed();
     }
 
@@ -117,9 +117,9 @@ public class BlockGameTests {
         BlockPos applePiePos = helper.absolutePos(new BlockPos(2, 2, 1));
         BlockPos berryPiePos = helper.absolutePos(new BlockPos(3, 2, 1));
         net.minecraft.world.level.block.Block applePieBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK
-                .get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_apple_pie"));
+                .get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "block_apple_pie"));
         net.minecraft.world.level.block.Block berryPieBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK
-                .get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_sweet_berry_pie"));
+                .get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "block_sweet_berry_pie"));
 
         helper.getLevel().setBlockAndUpdate(cakePos, Blocks.CAKE.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(applePiePos, applePieBlock.defaultBlockState());
@@ -144,9 +144,9 @@ public class BlockGameTests {
         BlockPos applePiePos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos berryPiePos = helper.absolutePos(new BlockPos(2, 2, 1));
         net.minecraft.world.level.block.Block applePieBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK
-                .get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_apple_pie"));
+                .get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "block_apple_pie"));
         net.minecraft.world.level.block.Block berryPieBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK
-                .get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_sweet_berry_pie"));
+                .get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "block_sweet_berry_pie"));
         helper.getLevel().setBlockAndUpdate(applePiePos, applePieBlock.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(berryPiePos, berryPieBlock.defaultBlockState());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -169,7 +169,7 @@ public class BlockGameTests {
     public static void cheeseWheelAndPizzaConsumeByQuarters(GameTestHelper helper) {
         BlockPos cheesePos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos pizzaPos = helper.absolutePos(new BlockPos(2, 2, 1));
-        net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "cheese_wheel"));
+        net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "cheese_wheel"));
         helper.getLevel().setBlockAndUpdate(cheesePos, cheeseBlock.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(pizzaPos, xerca.xercafood.common.block.Blocks.PIZZA.defaultBlockState());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -191,7 +191,7 @@ public class BlockGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void cheeseWheelSlicingWithKnifeDropsSlice(GameTestHelper helper) {
         BlockPos cheesePos = helper.absolutePos(new BlockPos(1, 2, 1));
-        net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "cheese_wheel"));
+        net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "cheese_wheel"));
         helper.getLevel().setBlockAndUpdate(cheesePos, cheeseBlock.defaultBlockState());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack knife = new ItemStack(requireKnifeItem());
@@ -260,7 +260,7 @@ public class BlockGameTests {
         level.setBlockAndUpdate(soilTea, Blocks.FARMLAND.defaultBlockState());
         level.setBlockAndUpdate(soilTomato, Blocks.FARMLAND.defaultBlockState());
         level.setBlockAndUpdate(teaPos, xerca.xercafood.common.block.Blocks.BLOCK_TEA_PLANT.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_3, 0));
-        level.setBlockAndUpdate(tomatoPos, net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MODID, "block_tomato_plant")).defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_3, 0));
+        level.setBlockAndUpdate(tomatoPos, net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, "block_tomato_plant")).defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.AGE_3, 0));
 
         net.minecraft.world.level.block.BonemealableBlock tea = (net.minecraft.world.level.block.BonemealableBlock) level.getBlockState(teaPos).getBlock();
         net.minecraft.world.level.block.BonemealableBlock tomato = (net.minecraft.world.level.block.BonemealableBlock) level.getBlockState(tomatoPos).getBlock();

@@ -26,5 +26,6 @@ public class Mod implements ModInitializer {
             entries.accept(Items.ATTORNEY_BADGE);
             entries.accept(Items.PROSECUTOR_BADGE);
         });
+        LOGGER.info(MOD_ID + " initialized");
     }
 }

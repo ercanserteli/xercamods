@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings({"PMD.AvoidAccessibilityAlteration", "removal"})
+@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 public final class MusicRegressionGameTests {
     private static final String BASIC_TEMPLATE = Mod.MODID + ":basic_test";
     private static final Field MUSIC_BOX_IS_PLAYING_FIELD;

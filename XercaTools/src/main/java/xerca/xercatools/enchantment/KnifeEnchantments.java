@@ -1,7 +1,6 @@
 package xerca.xercatools.enchantment;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -25,15 +24,8 @@ public final class KnifeEnchantments {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(POISON);
     }
 
-    public static Holder<Enchantment> poisonEnchantment(HolderLookup.Provider registries) {
-        return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(POISON);
-    }
-
     public static Holder<Enchantment> stealthEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(STEALTH);
     }
 
-    public static Holder<Enchantment> stealthEnchantment(HolderLookup.Provider registries) {
-        return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(STEALTH);
-    }
 }

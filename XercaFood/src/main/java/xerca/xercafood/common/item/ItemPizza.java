@@ -33,14 +33,14 @@ public class ItemPizza extends BlockItem {
 
     static void addPizzaIngredientToTooltip(List<Component> tooltip, BlockPizza.Ingredient ingredient) {
         if (ingredient != BlockPizza.Ingredient.EMPTY) {
-            tooltip.add(Component.translatable(Mod.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable(Mod.MOD_ID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
         }
     }
 
     @Override
     public Component getName(ItemStack stack) {
         if (slot1 == BlockPizza.Ingredient.EMPTY && slot2 == BlockPizza.Ingredient.EMPTY && slot3 == BlockPizza.Ingredient.EMPTY)
-            return Component.translatable(Mod.MODID + ".pizza_plain");
-        return Component.translatable(Mod.MODID + ".pizza");
+            return Component.translatable(Mod.MOD_ID + ".pizza_plain");
+        return Component.translatable(Mod.MOD_ID + ".pizza");
     }
 }

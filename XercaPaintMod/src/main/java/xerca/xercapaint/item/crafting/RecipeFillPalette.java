@@ -1,6 +1,5 @@
 package xerca.xercapaint.item.crafting;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -12,12 +11,9 @@ import net.minecraft.world.level.Level;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class RecipeFillPalette extends CustomRecipe {
     public RecipeFillPalette(CraftingBookCategory category) {
         super(category);

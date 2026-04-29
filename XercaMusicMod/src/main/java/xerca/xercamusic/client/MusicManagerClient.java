@@ -27,16 +27,16 @@ public final class MusicManagerClient {
     private MusicManagerClient() {
     }
 
-    private static boolean ensureDirectoryExists(File directory, String purpose) {
+    private static boolean ensureDirectoryExists(File directory) {
         if (directory.exists()) {
             if (!directory.isDirectory()) {
-                Mod.LOGGER.warn("{} path exists but is not a directory: {}", purpose, directory.getAbsolutePath());
+                Mod.LOGGER.warn("music cache path exists but is not a directory: {}", directory.getAbsolutePath());
                 return false;
             }
             return true;
         }
         if (!directory.mkdirs()) {
-            Mod.LOGGER.warn("Could not create {} directory: {}", purpose, directory.getAbsolutePath());
+            Mod.LOGGER.warn("Could not create music cache directory: {}", directory.getAbsolutePath());
             return false;
         }
         return true;
@@ -45,7 +45,7 @@ public final class MusicManagerClient {
     public static void load() {
         // Load from disk
         File directory = new File(CACHE_DIR);
-        if (!ensureDirectoryExists(directory, "music cache")) {
+        if (!ensureDirectoryExists(directory)) {
             return;
         }
         File[] directoryListing = directory.listFiles();
@@ -126,7 +126,7 @@ public final class MusicManagerClient {
         String filename = id.toString();
         String filepath = CACHE_DIR + "/" + filename;
         File directory = new File(CACHE_DIR);
-        if (!ensureDirectoryExists(directory, "music cache")) {
+        if (!ensureDirectoryExists(directory)) {
             return;
         }
 

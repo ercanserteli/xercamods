@@ -27,7 +27,6 @@ tasks.register('buildCopy', Copy) {
 }
 
 dependencies {
-    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
@@ -74,6 +73,10 @@ java {
     withSourcesJar()
 }
 
+SourceSet mainSourceSet = sourceSets.main
+SourceSet testSourceSet = sourceSets.test
+SoftwareComponent javaComponent = components.named("java").get()
+
 jar {
     from("LICENSE") {
         rename { "${it}_${project.base.archivesName.get()}" }
@@ -87,8 +90,8 @@ loom {
             name "Game Test Server"
             vmArg "-Dfabric-api.gametest"
             vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
-            source sourceSets.main
-            source sourceSets.test
+            source(mainSourceSet)
+            source(testSourceSet)
             ideConfigGenerated = true
             runDir "build/gametest"
         }
@@ -120,8 +123,8 @@ tasks.named('runGameTest').configure {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            from components.java
+        create("mavenJava", MavenPublication) {
+            from(javaComponent)
         }
     }
 

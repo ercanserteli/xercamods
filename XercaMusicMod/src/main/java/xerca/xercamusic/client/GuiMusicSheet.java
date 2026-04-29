@@ -1441,7 +1441,7 @@ public class GuiMusicSheet extends Screen {
                         int dy = targetY - fromY;
                         for (int step = 0; step < segWidth; step++) {
                             int px = segStartX + step;
-                            int py = fromY + (step * dy) / Math.max(segWidth, 1);
+                            int py = fromY + (step * dy) / segWidth;
                             guiGraphics.fill(px, py, px + 1, py + 1, 0xFF4488FF);
                         }
                         prevSegY = targetY;
@@ -1573,7 +1573,7 @@ public class GuiMusicSheet extends Screen {
 
             for (int step = 0; step < segWidth; step++) {
                 int px = segStartX + step;
-                int py = fromY + (step * dy) / Math.max(segWidth, 1);
+                int py = fromY + (step * dy) / segWidth;
                 guiGraphics.fill(px, py, px + 1, py + 1, lineColor);
             }
 

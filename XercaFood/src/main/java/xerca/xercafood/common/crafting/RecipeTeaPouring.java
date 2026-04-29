@@ -1,6 +1,5 @@
 package xerca.xercafood.common.crafting;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
@@ -18,7 +17,6 @@ public class RecipeTeaPouring extends CustomRecipe {
     private record ParsedInput(ItemStack teapotStack, @Nullable ItemTeapot teapot, int teacupCount, boolean valid) {
     }
 
-    @SuppressFBWarnings(value = "SF", justification = "teaAmount is validated to 1..7 by recipe logic.")
     public static Item getHotTeapot(int teaAmount) {
         return switch (teaAmount) {
             case 1 -> Items.HOT_TEAPOT_1;
@@ -65,7 +63,6 @@ public class RecipeTeaPouring extends CustomRecipe {
     }
 
     @Override
-    @SuppressFBWarnings(value = "NP", justification = "hasCraftingRemainingItem() is checked before using crafting remainder item.")
     public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
         NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
         int teacupCount = countTeacups(inv);

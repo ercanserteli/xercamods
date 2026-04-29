@@ -1,6 +1,5 @@
 package xerca.xercafood.common.item;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,7 +39,6 @@ public class ItemGoldenCupcake extends Item {
     }
 
     @Override
-    @SuppressFBWarnings(value = "SF", justification = "n is bounded by nextInt(5); all values are covered.")
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entity) {
         if (!(entity instanceof Player player)) {
             return stack;

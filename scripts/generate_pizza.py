@@ -387,7 +387,7 @@ block_models_dir = "../XercaMod/src/main/resources/assets/xercamod/models/block/
 blockstates_dir = "../XercaMod/src/main/resources/assets/xercamod/blockstates/"
 blocks_java_path = "../XercaMod/src/main/java/xerca/xercamod/common/block/Blocks.java"
 items_java_path = "../XercaMod/src/main/java/xerca/xercamod/common/item/Items.java"
-client_stuff_java_path = "../XercaMod/src/main/java/xerca/xercamod/client/ClientStuff.java"
+client_stuff_java_path = "../XercaMod/src/main/java/xerca/xercamod/client/ModClient.java"
 recipe_gen_py_path = "recipes_xercamod.py"
 
 
@@ -461,7 +461,7 @@ def generate_stuff(pizzas):
         #     f.write(content)
         #     f.truncate()
         #
-        # # Insert into ClientStuff renderLayers
+        # # Insert into ModClient renderLayers
         # with open(client_stuff_java_path, 'r+') as f:
         #     content = f.read()
         #

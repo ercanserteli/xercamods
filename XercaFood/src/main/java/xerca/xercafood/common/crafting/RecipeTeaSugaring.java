@@ -1,6 +1,5 @@
 package xerca.xercafood.common.crafting;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +16,6 @@ public class RecipeTeaSugaring extends CustomRecipe {
     private record ParsedInput(ItemStack teacupStack, @Nullable ItemTeacup teacup, int sugarCount, boolean valid) {
     }
 
-    @SuppressFBWarnings(value = "SF", justification = "sugarAmount is constrained to 0..6 by recipe logic.")
     public static Item getTeacup(int sugarAmount) {
         return switch (sugarAmount) {
             case 0 -> Items.FULL_TEACUP_0;

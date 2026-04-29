@@ -66,8 +66,6 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
 
     @Override
     public void receive(CanvasMiniUpdatePacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

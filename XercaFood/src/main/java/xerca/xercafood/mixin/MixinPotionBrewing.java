@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xerca.xercafood.common.item.Items;
 
+@SuppressWarnings({"UnusedMethod", "UnusedVariable", "unused"})
 @Mixin(PotionBrewing.class)
 public abstract class MixinPotionBrewing {
     @Inject(method = "isIngredient", at = @At("HEAD"), cancellable = true)

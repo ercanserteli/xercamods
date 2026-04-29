@@ -14,6 +14,7 @@ import xerca.xercafood.common.item.Items;
 
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("unused")
 public class XercaFoodDatagen implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {

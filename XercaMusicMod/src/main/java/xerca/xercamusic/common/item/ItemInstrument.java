@@ -149,8 +149,9 @@ public class ItemInstrument extends Item implements IItemInstrument {
         return bestIndex;
     }
 
+    @Nullable
     @Override
-    public @Nullable InsSound getSound(int note) {
+    public InsSound getSound(int note) {
         int id = IItemInstrument.noteToId(note);
         if (insSounds != null && id >= 0 && id < TOTAL_NOTES) {
             return insSounds[id];

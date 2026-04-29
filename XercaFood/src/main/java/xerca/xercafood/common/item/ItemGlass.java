@@ -1,6 +1,5 @@
 package xerca.xercafood.common.item;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -22,7 +21,6 @@ public class ItemGlass extends Item {
         return getCarbonatedWater(ctx) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
-    @SuppressFBWarnings(value = "NP", justification = "ctx.getPlayer() is checked for null before dereference.")
     public static boolean getCarbonatedWater(UseOnContext ctx) {
         BlockPos pos = ctx.getClickedPos();
         BlockState state = ctx.getLevel().getBlockState(pos);

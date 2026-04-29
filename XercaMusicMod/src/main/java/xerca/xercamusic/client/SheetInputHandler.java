@@ -223,20 +223,7 @@ class SheetInputHandler {
         } else if (mouseButton == 0) {
             if (gui.currentlyAddedMarker != null && validClick(mx, my)) {
                 // Update volume marker being created
-                int nrx = mx - GuiMusicSheet.NOTE_REGION_LEFT;
-                int nry = my - GuiMusicSheet.NOTE_REGION_TOP;
-                int time = (nrx / 3) + gui.sliderPosition;
-                int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + gui.currentOctavePos * 12;
-
-                // Update marker bounds
-                short newStartTime = (short) Math.min(gui.markerStartTime, time);
-                short newEndTime = (short) Math.max(gui.markerStartTime + 1, time + 1);
-                byte newLowNote = (byte) Math.min(gui.markerStartNote, note);
-                byte newHighNote = (byte) Math.max(gui.markerStartNote, note);
-
-                VolumeMarker marker = new VolumeMarker(newStartTime, newEndTime,
-                        gui.currentlyAddedMarker.startVolume, gui.currentlyAddedMarker.endVolume,
-                        newLowNote, newHighNote);
+                VolumeMarker marker = getVolumeMarker(mx, my);
                 if (isMarkerPlacementAvailable(marker)) {
                     gui.currentlyAddedMarker = marker;
                 }
@@ -249,6 +236,24 @@ class SheetInputHandler {
         }
 
         return true;
+    }
+
+    private VolumeMarker getVolumeMarker(int mx, int my) {
+        assert gui.currentlyAddedMarker != null;
+
+        int nrx = mx - GuiMusicSheet.NOTE_REGION_LEFT;
+        int nry = my - GuiMusicSheet.NOTE_REGION_TOP;
+        int time = (nrx / 3) + gui.sliderPosition;
+        int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + gui.currentOctavePos * 12;
+
+        // Update marker bounds
+        short newStartTime = (short) Math.min(gui.markerStartTime, time);
+        short newEndTime = (short) Math.max(gui.markerStartTime + 1, time + 1);
+        byte newLowNote = (byte) Math.min(gui.markerStartNote, note);
+        byte newHighNote = (byte) Math.max(gui.markerStartNote, note);
+
+        return new VolumeMarker(newStartTime, newEndTime, gui.currentlyAddedMarker.startVolume,
+                gui.currentlyAddedMarker.endVolume, newLowNote, newHighNote);
     }
 
     boolean handleMouseReleased(double posX, double posY, int mouseButton) {
@@ -620,7 +625,7 @@ class SheetInputHandler {
             if (m.startTime > x) {
                 m.startTime--;
                 m.endTime--;
-            } else if (m.startTime <= x && m.endTime > x) {
+            } else if (m.endTime > x) {
                 m.endTime--;
                 if (m.endTime - m.startTime < 2) {
                     gui.volumeMarkers.remove(i);
@@ -667,11 +672,11 @@ class SheetInputHandler {
                 // Spans entire selection: shrink
                 m.endTime -= (short) selLen;
                 if (m.endTime - m.startTime < 2) gui.volumeMarkers.remove(i);
-            } else if (m.startTime < gui.editCursor && m.endTime > gui.editCursor && m.endTime <= selectionEndExclusive) {
+            } else if (m.startTime < gui.editCursor && m.endTime > gui.editCursor) {
                 // Starts before, ends inside: trim end
                 m.endTime = (short) gui.editCursor;
                 if (m.endTime - m.startTime < 2) gui.volumeMarkers.remove(i);
-            } else if (m.startTime >= gui.editCursor && m.startTime < selectionEndExclusive && m.endTime > selectionEndExclusive) {
+            } else if (m.startTime >= gui.editCursor && m.startTime < selectionEndExclusive) {
                 // Starts inside selection, ends after: keep the tail, shift to editCursor
                 short origEnd = m.endTime;
                 m.startTime = (short) gui.editCursor;

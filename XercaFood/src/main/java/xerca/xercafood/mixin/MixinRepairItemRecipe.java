@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xerca.xercafood.common.KnifeCompat;
 
+@SuppressWarnings({"UnusedMethod", "UnusedVariable", "unused"})
 @Mixin(RepairItemRecipe.class)
 public abstract class MixinRepairItemRecipe {
     private MixinRepairItemRecipe() {

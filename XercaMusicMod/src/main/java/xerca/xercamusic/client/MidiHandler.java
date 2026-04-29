@@ -36,8 +36,7 @@ public class MidiHandler {
                 transmitters.add(trans);
                 devices.add(device);
 
-                Mod.LOGGER.debug("{} was opened", device::getDeviceInfo);
-
+                Mod.LOGGER.debug("{} was opened", device.getDeviceInfo());
             } catch (MidiUnavailableException exception) {
                 Mod.LOGGER.debug("Midi unavailable: ", exception);
             }
@@ -46,10 +45,6 @@ public class MidiHandler {
 
     public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler) {
         this(noteOnHandler, noteOffHandler, null);
-    }
-
-    public int getCurrentOctave() {
-        return currentOctave;
     }
 
     public void setCurrentOctave(int currentOctave) {

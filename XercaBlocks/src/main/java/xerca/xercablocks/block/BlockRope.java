@@ -1,7 +1,6 @@
 package xerca.xercablocks.block;
 
 import com.mojang.serialization.MapCodec;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -57,7 +56,6 @@ public class BlockRope extends PipeBlock {
     }
 
     @Override
-    @SuppressFBWarnings(value = "NP", justification = "PROPERTY_BY_DIRECTION is defined for all Direction values.")
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
         return state.setValue(PROPERTY_BY_DIRECTION.get(direction), isConnectable(level, currentPos, direction));
     }

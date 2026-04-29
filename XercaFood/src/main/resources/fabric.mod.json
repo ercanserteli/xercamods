@@ -11,7 +11,7 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "xerca.xercafood.client.ClientStuff"
+      "xerca.xercafood.client.ModClient"
     ],
     "main": [
       "xerca.xercafood.common.Mod"

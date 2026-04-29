@@ -13,9 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercaomnichest.block.Blocks;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 public final class OmniChestItemRenderer extends BlockEntityWithoutLevelRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
     private final BlockEntityOmniChest chest;
 

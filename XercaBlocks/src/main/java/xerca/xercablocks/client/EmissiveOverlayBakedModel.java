@@ -1,6 +1,5 @@
 package xerca.xercablocks.client;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -124,7 +123,6 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
         }
     }
 
-    @SuppressFBWarnings(value = "NP", justification = "Renderer nullability is checked; SpotBugs loses flow through chained calls.")
     private static @Nullable RenderMaterial overlayMaterial() {
         if (emissiveOverlayMaterial == null && RendererAccess.INSTANCE.getRenderer() != null) {
             emissiveOverlayMaterial = RendererAccess.INSTANCE.getRenderer()

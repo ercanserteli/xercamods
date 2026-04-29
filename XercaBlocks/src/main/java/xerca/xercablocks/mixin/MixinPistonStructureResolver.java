@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xerca.xercablocks.block.Blocks;
 
+@SuppressWarnings({"UnusedMethod", "UnusedVariable", "unused"})
 @Mixin(PistonStructureResolver.class)
 public abstract class MixinPistonStructureResolver {
     private MixinPistonStructureResolver() {

@@ -22,9 +22,6 @@ public record CanvasMiniUpdatePacket(int[] pixels, String canvasId, int version,
     public static CanvasMiniUpdatePacket decode(FriendlyByteBuf buf) {
         int easelId = buf.readInt();
         CanvasType canvasType = CanvasType.fromByte(buf.readByte());
-        if (canvasType == null) {
-            throw new IllegalArgumentException("Invalid canvas type in CanvasMiniUpdatePacket");
-        }
         int version = buf.readInt();
         String canvasId = buf.readUtf(64);
         int area = CanvasType.getHeight(canvasType) * CanvasType.getWidth(canvasType);
