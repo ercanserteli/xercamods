@@ -223,9 +223,8 @@ public class EntityMusicSpirit extends Entity {
             setBlockPosAndInstrument(new BlockPos(bx, by, bz), bIns);
         }
 
-        BlockInstrument blockInstrument = this.blockInstrument;
-        if (blockInstrument != null && blockInsPos != null) {
-            this.instrument = blockInstrument.getItemInstrument();
+        if (this.blockInstrument != null && blockInsPos != null) {
+            this.instrument = this.blockInstrument.getItemInstrument();
             this.setNoteFromBody();
         } else if (body != null) {
             Item item = body.getMainHandItem().getItem();
@@ -239,19 +238,18 @@ public class EntityMusicSpirit extends Entity {
             }
         }
 
-        ItemStack note = this.note;
-        if (note == null || !level().isClientSide) {
+        if (this.note == null || !level().isClientSide) {
             return;
         }
-        UUID id = note.get(Items.SHEET_ID);
-        int ver = note.getOrDefault(Items.SHEET_VERSION, -1);
-        length = note.getOrDefault(Items.SHEET_LENGTH, 0);
+        UUID id = this.note.get(Items.SHEET_ID);
+        int ver = this.note.getOrDefault(Items.SHEET_VERSION, -1);
+        length = this.note.getOrDefault(Items.SHEET_LENGTH, 0);
         if (id == null || ver < 0 || length <= 0) {
             return;
         }
 
-        bps = sanitizeBps(note.getOrDefault(Items.SHEET_BPS, (byte) 8));
-        volume = sanitizeVolume(note.getOrDefault(Items.SHEET_VOLUME, 1.f));
+        bps = sanitizeBps(this.note.getOrDefault(Items.SHEET_BPS, (byte) 8));
+        volume = sanitizeVolume(this.note.getOrDefault(Items.SHEET_VOLUME, 1.f));
         MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
             MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
             if (data != null) {
@@ -261,11 +259,10 @@ public class EntityMusicSpirit extends Entity {
                 }
             }
 
-            IItemInstrument instrument = this.instrument;
-            if (instrument == null) {
+            if (this.instrument == null) {
                 return;
             }
-            soundController = new SoundController(notes, volumeMarkers, getX(), getY(), getZ(), instrument, bps, volume, getId());
+            soundController = new SoundController(notes, volumeMarkers, getX(), getY(), getZ(), this.instrument, bps, volume, getId());
             soundController.start();
         });
     }
@@ -286,8 +283,7 @@ public class EntityMusicSpirit extends Entity {
         if (this.level().isClientSide) {
             return false;
         }
-        Player body = this.body;
-        if (body == null || !isPlaying) {
+        if (this.body == null || !isPlaying) {
             this.remove(RemovalReason.DISCARDED);
             return true;
         }
@@ -296,14 +292,12 @@ public class EntityMusicSpirit extends Entity {
             this.remove(RemovalReason.DISCARDED);
             return true;
         }
-        BlockPos blockInsPos = this.blockInsPos;
-        BlockInstrument blockInstrument = this.blockInstrument;
-        if (blockInsPos != null && blockInstrument != null) {
-            if (!Objects.equals(level().getBlockState(blockInsPos).getBlock(), blockInstrument)) {
+        if (this.blockInsPos != null && this.blockInstrument != null) {
+            if (!Objects.equals(level().getBlockState(this.blockInsPos).getBlock(), this.blockInstrument)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
             }
-            if (this.position().distanceToSqr(body.position()) > 16) {
+            if (this.position().distanceToSqr(this.body.position()) > 16) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
             }

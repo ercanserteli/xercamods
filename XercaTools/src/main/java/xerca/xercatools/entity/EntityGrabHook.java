@@ -184,9 +184,7 @@ public class EntityGrabHook extends Entity {
 
         Player angler = this.getAngler();
         if (this.level().isClientSide) {
-            if (handleClientTick(angler)) {
-                return;
-            }
+            handleClientTick(angler);
         } else if (shouldDiscardOnServer(angler)) {
             discardHook();
             return;
@@ -248,16 +246,15 @@ public class EntityGrabHook extends Entity {
         return false;
     }
 
-    private boolean handleClientTick(@Nullable Player angler) {
+    private void handleClientTick(@Nullable Player angler) {
         if (angler == null) {
             this.move(MoverType.SELF, this.getDeltaMovement());
-            return true;
+        } else {
+            int caughtId = this.entityData.get(DATA_CAUGHT);
+            if (caughtId > 0 && this.caughtEntity == null) {
+                this.caughtEntity = this.level().getEntity(caughtId - 1);
+            }
         }
-        int caughtId = this.entityData.get(DATA_CAUGHT);
-        if (caughtId > 0 && this.caughtEntity == null) {
-            this.caughtEntity = this.level().getEntity(caughtId - 1);
-        }
-        return false;
     }
 
     private boolean shouldDiscardOnServer(@Nullable Player angler) {

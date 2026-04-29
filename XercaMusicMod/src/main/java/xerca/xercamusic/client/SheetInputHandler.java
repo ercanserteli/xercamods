@@ -160,12 +160,14 @@ class SheetInputHandler {
                     int i = findNote((byte) note, (short) time);
                     if (i >= 0) {
                         NoteEvent event = gui.notes.get(i);
-                        gui.requireNoteEditBox().appear(mouseX, mouseY, event);
+                        GuiMusicSheet.requireWidget(gui.noteEditBox, "noteEditBox");
+                        gui.noteEditBox.appear(mouseX, mouseY, event);
                     } else {
                         // Check if clicking on a volume marker
                         VolumeMarker clickedMarker = findVolumeMarker((byte) note, (short) time);
                         if (clickedMarker != null) {
-                            gui.requireMarkerEditBox().appear(mouseX, mouseY, clickedMarker);
+                            GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox");
+                            gui.markerEditBox.appear(mouseX, mouseY, clickedMarker);
                         }
                     }
                 }
@@ -258,14 +260,14 @@ class SheetInputHandler {
 
     boolean handleMouseReleased(double posX, double posY, int mouseButton) {
         gui.setDragging(false);
-        GuiMusicSheet.NoteEditBox noteEditBox = gui.requireNoteEditBox();
-        if (noteEditBox.active) {
-            noteEditBox.mouseReleased(posX, posY, mouseButton);
+        GuiMusicSheet.requireWidget(gui.noteEditBox, "noteEditBox");
+        if (gui.noteEditBox.active) {
+            gui.noteEditBox.mouseReleased(posX, posY, mouseButton);
             return true;
         }
-        GuiMusicSheet.MarkerEditBox markerEditBox = gui.requireMarkerEditBox();
-        if (markerEditBox.active) {
-            markerEditBox.mouseReleased(posX, posY, mouseButton);
+        GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox");
+        if (gui.markerEditBox.active) {
+            gui.markerEditBox.mouseReleased(posX, posY, mouseButton);
             return true;
         }
         if (mouseButton == 0) {
@@ -451,7 +453,7 @@ class SheetInputHandler {
                     }
                     case GLFW.GLFW_KEY_Z -> {
                         if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                            if (gui.requireNoteEditBox().active) {
+                            if (gui.noteEditBox != null && gui.noteEditBox.active) {
                                 break;
                             }
                             // Exit glissando mode on undo so state stays consistent
@@ -948,7 +950,8 @@ class SheetInputHandler {
             // Add the marker to the list and show the edit box
             gui.volumeMarkers.add(marker);
             gui.dirtyFlag.hasNotes = true;  // Volume markers are saved with notes
-            gui.requireMarkerEditBox().appear(mouseX, mouseY, marker);
+            GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox");
+            gui.markerEditBox.appear(mouseX, mouseY, marker);
         }
         gui.currentlyAddedMarker = null;
     }

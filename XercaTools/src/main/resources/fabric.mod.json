@@ -14,7 +14,7 @@
       "xerca.xercatools.Mod"
     ],
     "client": [
-      "xerca.xercatools.client.XercaToolsClient"
+      "xerca.xercatools.client.ModClient"
     ]
   },
   "accessWidener": "xercatools.accesswidener",

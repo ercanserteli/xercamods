@@ -624,61 +624,61 @@ public class GuiMusicSheet extends Screen {
         boolean hideForHelp = helpOn;
         boolean hideForGlissando = glissandoMode;
         boolean showNormal = !hideForHelp && !hideForGlissando && !this.gettingSigned;
-        Button bpmDown = requireWidget(this.bpmDown, "bpmDown");
-        Button bpmUp = requireWidget(this.bpmUp, "bpmUp");
-        ChangeableImageButton buttonPreview = requireWidget(this.buttonPreview, "buttonPreview");
-        LockImageButton buttonLockPrevIns = requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns");
-        BetterSlider sliderSheetVolume = requireWidget(this.sliderSheetVolume, "sliderSheetVolume");
-        NoteEditBox noteEditBox = requireNoteEditBox();
-        MarkerEditBox markerEditBox = requireMarkerEditBox();
-        Button octaveDown = requireWidget(this.octaveDown, "octaveDown");
-        Button octaveUp = requireWidget(this.octaveUp, "octaveUp");
-        BetterSlider sliderTime = requireWidget(this.sliderTime, "sliderTime");
-        Button hlUp = requireWidget(this.hlUp, "hlUp");
-        Button hlDown = requireWidget(this.hlDown, "hlDown");
-        BetterSlider sliderNoteVolume = requireWidget(this.sliderNoteVolume, "sliderNoteVolume");
-        Button buttonHelp = requireWidget(this.buttonHelp, "buttonHelp");
-        ChangeableImageButton buttonHideNeighbors = requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors");
-        ChangeableImageButton buttonRecord = requireWidget(this.buttonRecord, "buttonRecord");
+        requireWidget(this.bpmDown, "bpmDown");
+        requireWidget(this.bpmUp, "bpmUp");
+        requireWidget(this.buttonPreview, "buttonPreview");
+        requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns");
+        requireWidget(this.sliderSheetVolume, "sliderSheetVolume");
+        requireWidget(this.noteEditBox, "noteEditBox");
+        requireWidget(this.markerEditBox, "markerEditBox");
+        requireWidget(this.octaveDown, "octaveDown");
+        requireWidget(this.octaveUp, "octaveUp");
+        requireWidget(this.sliderTime, "sliderTime");
+        requireWidget(this.hlUp, "hlUp");
+        requireWidget(this.hlDown, "hlDown");
+        requireWidget(this.sliderNoteVolume, "sliderNoteVolume");
+        requireWidget(this.buttonHelp, "buttonHelp");
+        requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors");
+        requireWidget(this.buttonRecord, "buttonRecord");
 
         if (!this.isSigned) {
-            Button buttonSign = requireWidget(this.buttonSign, "buttonSign");
-            Button buttonCancel = requireWidget(this.buttonCancel, "buttonCancel");
-            Button buttonFinalize = requireWidget(this.buttonFinalize, "buttonFinalize");
-            buttonSign.visible = !this.gettingSigned;
-            buttonSign.active = !helpOn && notRecording;
-            buttonCancel.visible = this.gettingSigned;
-            buttonFinalize.visible = this.gettingSigned;
-            buttonFinalize.active = !this.noteTitle.trim().isEmpty();
+            requireWidget(this.buttonSign, "buttonSign");
+            requireWidget(this.buttonCancel, "buttonCancel");
+            requireWidget(this.buttonFinalize, "buttonFinalize");
+            this.buttonSign.visible = !this.gettingSigned;
+            this.buttonSign.active = !this.helpOn && notRecording;
+            this.buttonCancel.visible = this.gettingSigned;
+            this.buttonFinalize.visible = this.gettingSigned;
+            this.buttonFinalize.active = !this.noteTitle.trim().isEmpty();
         }
-        bpmDown.visible = bpmUp.visible = showNormal && editable;
-        bpmDown.active = bpmUp.active = notRecording;
-        buttonPreview.visible = showNormal;
-        buttonPreview.active = notRecording;
-        buttonLockPrevIns.visible = showNormal;
-        buttonLockPrevIns.active = editable && notRecording;
-        sliderSheetVolume.visible = showNormal;
-        sliderSheetVolume.active = editable && notRecording;
-        noteEditBox.visible = false;
-        noteEditBox.active = false;
-        markerEditBox.visible = false;
-        markerEditBox.active = false;
-        octaveDown.visible = showNormal;
-        octaveUp.visible = showNormal;
-        sliderTime.visible = showNormal;
-        sliderTime.active = notRecording;
-        hlUp.visible = showNormal && editable;
-        hlUp.active = editable && notRecording;
-        hlDown.visible = showNormal && editable;
-        hlDown.active = editable && notRecording;
-        sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned;
-        sliderNoteVolume.active = sliderNoteVolume.visible && notRecording;
-        buttonHelp.visible = !this.isSigned && !this.gettingSigned;
-        buttonHelp.active = buttonHelp.visible && notRecording;
-        buttonHideNeighbors.visible = showNormal && !this.neighborNotes.isEmpty();
-        buttonHideNeighbors.active = notRecording;
-        buttonRecord.visible = showNormal && !this.isSigned;
-        buttonRecord.active = this.recording || this.preRecording || !this.previewing;
+        this.bpmDown.visible = this.bpmUp.visible = showNormal && editable;
+        this.bpmDown.active = this.bpmUp.active = notRecording;
+        this.buttonPreview.visible = showNormal;
+        this.buttonPreview.active = notRecording;
+        this.buttonLockPrevIns.visible = showNormal;
+        this.buttonLockPrevIns.active = editable && notRecording;
+        this.sliderSheetVolume.visible = showNormal;
+        this.sliderSheetVolume.active = editable && notRecording;
+        this.noteEditBox.visible = false;
+        this.noteEditBox.active = false;
+        this.markerEditBox.visible = false;
+        this.markerEditBox.active = false;
+        this.octaveDown.visible = showNormal;
+        this.octaveUp.visible = showNormal;
+        this.sliderTime.visible = showNormal;
+        this.sliderTime.active = notRecording;
+        this.hlUp.visible = showNormal && editable;
+        this.hlUp.active = editable && notRecording;
+        this.hlDown.visible = showNormal && editable;
+        this.hlDown.active = editable && notRecording;
+        this.sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned;
+        this.sliderNoteVolume.active = this.sliderNoteVolume.visible && notRecording;
+        this.buttonHelp.visible = !this.isSigned && !this.gettingSigned;
+        this.buttonHelp.active = buttonHelp.visible && notRecording;
+        this.buttonHideNeighbors.visible = showNormal && !this.neighborNotes.isEmpty();
+        this.buttonHideNeighbors.active = notRecording;
+        this.buttonRecord.visible = showNormal && !this.isSigned;
+        this.buttonRecord.active = this.recording || this.preRecording || !this.previewing;
     }
 
     void toggleHelp() {
@@ -1105,8 +1105,7 @@ public class GuiMusicSheet extends Screen {
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        Button buttonHelp = requireWidget(this.buttonHelp, "buttonHelp");
-        if (buttonHelp.isHovered()) {
+        if (requireWidget(this.buttonHelp, "buttonHelp").isHovered()) {
             guiGraphics.renderTooltip(font, Component.translatable("note.helpTooltip"), mouseX, mouseY);
         }
 
@@ -1204,31 +1203,21 @@ public class GuiMusicSheet extends Screen {
             }
         }
         else{
-            ChangeableImageButton buttonHideNeighbors = requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors");
-            LockImageButton buttonLockPrevIns = requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns");
-            ChangeableImageButton buttonPreview = requireWidget(this.buttonPreview, "buttonPreview");
-            ChangeableImageButton buttonRecord = requireWidget(this.buttonRecord, "buttonRecord");
-            Button bpmDown = requireWidget(this.bpmDown, "bpmDown");
-            Button bpmUp = requireWidget(this.bpmUp, "bpmUp");
-            Button hlDown = requireWidget(this.hlDown, "hlDown");
-            Button hlUp = requireWidget(this.hlUp, "hlUp");
-            BetterSlider sliderSheetVolume = requireWidget(this.sliderSheetVolume, "sliderSheetVolume");
-            BetterSlider sliderNoteVolume = requireWidget(this.sliderNoteVolume, "sliderNoteVolume");
-            if(buttonHideNeighbors.isHovered()){
+            if (requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors").isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.toggleTooltip"), mouseX, mouseY);
-            } else if (buttonLockPrevIns.isHovered()) {
+            } else if (requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns").isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.lockTooltip"), mouseX, mouseY);
-            } else if (buttonPreview.isHovered()) {
+            } else if (requireWidget(this.buttonPreview, "buttonPreview").isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.previewTooltip"), mouseX, mouseY);
-            } else if (buttonRecord.isHovered()) {
+            } else if (requireWidget(this.buttonRecord, "buttonRecord").isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.recordTooltip"), mouseX, mouseY);
-            } else if (bpmDown.isHovered() || bpmUp.isHovered()) {
+            } else if (requireWidget(this.bpmDown, "bpmDown").isHovered() || requireWidget(this.bpmUp, "bpmUp").isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.tempoTooltip"), mouseX, mouseY);
-            } else if (hlDown.isHovered() || hlUp.isHovered()) {
+            } else if (requireWidget(this.hlDown, "hlDown").isHovered() || requireWidget(this.hlUp, "hlUp").isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.measureTooltip"), mouseX, mouseY);
-            } else if (sliderSheetVolume.isHovered()) {
+            } else if (requireWidget(this.sliderSheetVolume, "sliderSheetVolume").isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.sheetVolumeTooltip"), mouseX, mouseY);
-            } else if (sliderNoteVolume.isHovered()) {
+            } else if (requireWidget(this.sliderNoteVolume, "sliderNoteVolume").isHovered()) {
                 guiGraphics.renderTooltip(font, Component.translatable("note.noteVolumeTooltip"), mouseX, mouseY);
             }
         }
@@ -1710,11 +1699,11 @@ public class GuiMusicSheet extends Screen {
     }
 
     void setSliderPos(int time) {
-        time = Math.clamp(time, 0, maxSliderPosition);
+        time = Math.clamp(time, 0, this.maxSliderPosition);
 
-        BetterSlider sliderTime = requireWidget(this.sliderTime, "sliderTime");
-        sliderTime.setSliderValue((float) time / (float) maxSliderPosition);
-        sliderTime.applyValue();
+        requireWidget(this.sliderTime, "sliderTime");
+        this.sliderTime.setSliderValue((float) time / (float) this.maxSliderPosition);
+        this.sliderTime.applyValue();
     }
 
     void stopPreview() {
@@ -1879,14 +1868,6 @@ public class GuiMusicSheet extends Screen {
 
         midiHandler.closeDevices();
         editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.level().random.nextFloat() * 0.4f);
-    }
-
-    NoteEditBox requireNoteEditBox() {
-        return requireWidget(this.noteEditBox, "noteEditBox");
-    }
-
-    MarkerEditBox requireMarkerEditBox() {
-        return requireWidget(this.markerEditBox, "markerEditBox");
     }
 
     static <T> T requireWidget(@Nullable T widget, String name) {
