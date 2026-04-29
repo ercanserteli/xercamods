@@ -9,9 +9,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.item.Items;
 
@@ -20,6 +24,17 @@ import java.util.List;
 import static xerca.xercafood.tests.GameTestHelpers.*;
 
 public class BlockGameTests {
+    @Nullable
+    private static BlockState invokePlacementState(GameTestHelper helper, net.minecraft.world.item.Item item, BlockPlaceContext context) {
+        try {
+            java.lang.reflect.Method method = net.minecraft.world.item.BlockItem.class.getDeclaredMethod("getPlacementState", BlockPlaceContext.class);
+            method.setAccessible(true);
+            return (BlockState) method.invoke(item, context);
+        } catch (Exception e) {
+            helper.fail("Failed to invoke teapot placement state: " + e.getMessage());
+            return null;
+        }
+    }
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void tomatoPlantDropsTomatoWhenGrown(GameTestHelper helper) {
@@ -44,6 +59,47 @@ public class BlockGameTests {
         helper.getLevel().destroyBlock(helper.absolutePos(pos), true);
 
         helper.assertItemEntityPresent(Items.RICE_SEEDS, pos, 2.0);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void ricePlantRequiresTwoAdjacentWaterSourcesToSurvive(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos unsupportedPlantPos = helper.absolutePos(new BlockPos(1, 2, 1));
+        BlockPos unsupportedSoilPos = unsupportedPlantPos.below();
+        BlockPos supportedPlantPos = helper.absolutePos(new BlockPos(4, 2, 1));
+        BlockPos supportedSoilPos = supportedPlantPos.below();
+        BlockState moistFarmland = Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7);
+
+        level.setBlockAndUpdate(unsupportedSoilPos, moistFarmland);
+        level.setBlockAndUpdate(unsupportedSoilPos.north(), Blocks.WATER.defaultBlockState());
+
+        level.setBlockAndUpdate(supportedSoilPos, moistFarmland);
+        level.setBlockAndUpdate(supportedSoilPos.north(), Blocks.WATER.defaultBlockState());
+        level.setBlockAndUpdate(supportedSoilPos.south(), Blocks.FROSTED_ICE.defaultBlockState());
+
+        BlockState ricePlant = xerca.xercafood.common.block.Blocks.BLOCK_RICE_PLANT.defaultBlockState();
+        helper.assertFalse(ricePlant.canSurvive(level, unsupportedPlantPos), "Expected rice plant to reject farmland with only one adjacent water source");
+        helper.assertTrue(ricePlant.canSurvive(level, supportedPlantPos), "Expected rice plant to survive with two adjacent water sources, including frosted ice");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void ricePlantTickBreaksWhenSupportWaterDropsBelowRequirement(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos plantPos = helper.absolutePos(new BlockPos(1, 2, 1));
+        BlockPos soilPos = plantPos.below();
+        BlockState moistFarmland = Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7);
+
+        level.setBlockAndUpdate(soilPos, moistFarmland);
+        level.setBlockAndUpdate(soilPos.north(), Blocks.WATER.defaultBlockState());
+        level.setBlockAndUpdate(soilPos.south(), Blocks.WATER.defaultBlockState());
+        level.setBlockAndUpdate(plantPos, xerca.xercafood.common.block.Blocks.BLOCK_RICE_PLANT.defaultBlockState());
+
+        level.setBlockAndUpdate(soilPos.south(), Blocks.AIR.defaultBlockState());
+        xerca.xercafood.common.block.Blocks.BLOCK_RICE_PLANT.tick(level.getBlockState(plantPos), level, plantPos, level.random);
+
+        helper.assertTrue(level.getBlockState(plantPos).isAir(), "Expected unsupported rice plant tick to destroy the crop");
         helper.succeed();
     }
 
@@ -303,6 +359,51 @@ public class BlockGameTests {
         useBlockWithItem(helper, teapotPos, player, cup);
         helper.assertTrue(player.getInventory().contains(new ItemStack(Items.FULL_TEACUP_0)), "Expected teapot block interaction to fill a cup");
         helper.assertTrue(helper.getLevel().getBlockState(teapotPos).getValue(xerca.xercafood.common.block.BlockTeapot.TEA_AMOUNT) == 1, "Expected teapot block tea amount to decrease");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void hotTeapotPlacementPreservesTeaAmountAndDropsMatchingHotItem(GameTestHelper helper) {
+        BlockPos supportPos = helper.absolutePos(new BlockPos(1, 1, 1));
+        BlockPos teapotPos = supportPos.above();
+        helper.getLevel().setBlockAndUpdate(supportPos, Blocks.STONE.defaultBlockState());
+
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack hotTeapot = new ItemStack(Items.HOT_TEAPOT_4);
+        player.setItemInHand(InteractionHand.MAIN_HAND, hotTeapot);
+        BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(player, InteractionHand.MAIN_HAND, hitTopOf(supportPos)));
+
+        BlockState placedState = invokePlacementState(helper, Items.HOT_TEAPOT_4, context);
+        helper.assertTrue(placedState != null, "Expected hot teapot item to provide a placement state");
+        assert placedState != null;
+        helper.assertTrue(placedState.is(xerca.xercafood.common.block.Blocks.BLOCK_TEAPOT), "Expected hot teapot placement state to target the teapot block");
+        helper.assertTrue(placedState.getValue(xerca.xercafood.common.block.BlockTeapot.TEA_AMOUNT) == 4, "Expected teapot placement state to keep the hot teapot's tea amount");
+        helper.getLevel().setBlockAndUpdate(teapotPos, placedState);
+
+        List<ItemStack> drops = net.minecraft.world.level.block.Block.getDrops(
+                placedState,
+                helper.getLevel(),
+                teapotPos,
+                helper.getLevel().getBlockEntity(teapotPos)
+        );
+        helper.assertTrue(drops.size() == 1, "Expected placed teapot block to drop a single item");
+        helper.assertTrue(drops.getFirst().is(Items.HOT_TEAPOT_4), "Expected placed teapot block to drop the matching hot teapot item");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
+    public static void coldFilledTeapotCannotBePlacedAsBlock(GameTestHelper helper) {
+        BlockPos supportPos = helper.absolutePos(new BlockPos(1, 1, 1));
+        helper.getLevel().setBlockAndUpdate(supportPos, Blocks.STONE.defaultBlockState());
+
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack coldTeapot = new ItemStack(Items.FULL_TEAPOT_4);
+        player.setItemInHand(InteractionHand.MAIN_HAND, coldTeapot);
+        BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(player, InteractionHand.MAIN_HAND, hitTopOf(supportPos)));
+
+        BlockState placedState = invokePlacementState(helper, Items.FULL_TEAPOT_4, context);
+
+        helper.assertTrue(placedState == null, "Expected cold filled teapot items not to provide a placement state");
         helper.succeed();
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +51,7 @@ public final class ConfettiBallGameTests {
         AABB searchBox = new AABB(helper.absolutePos(relativePos)).inflate(3.0D, 3.0D, 3.0D);
         List<EntityConfettiBall> balls = helper.getLevel().getEntitiesOfClass(EntityConfettiBall.class, searchBox, Entity::isAlive);
         helper.assertTrue(!balls.isEmpty(), message);
-        return balls.get(0);
+        return balls.getFirst();
     }
 
     private static ResourceLocation recipeId(String path) {
@@ -62,6 +63,7 @@ public final class ConfettiBallGameTests {
         helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
         helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
+        assert recipe instanceof CraftingRecipe;
         return (CraftingRecipe) recipe;
     }
 
@@ -175,6 +177,51 @@ public final class ConfettiBallGameTests {
         );
 
         helper.assertFalse(recipe.matches(grid, helper.getLevel()), "Expected confetti ball recipe to reject a pattern with a missing confetti arm");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CONFETTI_BATCH)
+    public static void confettiUseConsumesOneItemForSurvivalPlayers(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack stack = new ItemStack(Mod.CONFETTI, 2);
+        player.setItemSlot(EquipmentSlot.MAINHAND, stack);
+
+        InteractionResult result = Mod.CONFETTI.use(helper.getLevel(), player, InteractionHand.MAIN_HAND).getResult();
+
+        helper.assertTrue(result == InteractionResult.SUCCESS, "Expected confetti use to succeed");
+        helper.assertTrue(player.getMainHandItem().getCount() == 1, "Expected survival confetti use to consume one item");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CONFETTI_BATCH)
+    public static void confettiUseDoesNotConsumeItemForCreativePlayers(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        ItemStack stack = new ItemStack(Mod.CONFETTI, 2);
+        player.setItemSlot(EquipmentSlot.MAINHAND, stack);
+
+        InteractionResult result = Mod.CONFETTI.use(helper.getLevel(), player, InteractionHand.MAIN_HAND).getResult();
+
+        helper.assertTrue(result == InteractionResult.SUCCESS, "Expected confetti use to succeed for creative players");
+        helper.assertTrue(player.getMainHandItem().getCount() == 2, "Expected creative confetti use not to consume the item");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CONFETTI_BATCH)
+    public static void confettiDispenseBehaviorConsumesOneItem(GameTestHelper helper) {
+        BlockPos dispenserPos = new BlockPos(1, 2, 1);
+        BlockPos absolutePos = helper.absolutePos(dispenserPos);
+        BlockState state = net.minecraft.world.level.block.Blocks.DISPENSER.defaultBlockState()
+                .setValue(DispenserBlock.FACING, Direction.NORTH);
+        helper.getLevel().setBlockAndUpdate(absolutePos, state);
+
+        DispenserBlockEntity dispenser = requireDispenser(helper, absolutePos);
+        ItemStack stack = new ItemStack(Mod.CONFETTI);
+        dispenser.setItem(0, stack);
+
+        ItemStack remaining = new xerca.xercaconfetti.ConfettiDispenseItemBehavior()
+                .dispense(new BlockSource(helper.getLevel(), absolutePos, state, dispenser), stack);
+
+        helper.assertTrue(remaining.isEmpty() || remaining.getCount() == 0, "Expected confetti dispenser behavior to consume the loaded item");
         helper.succeed();
     }
 }
