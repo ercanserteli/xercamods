@@ -20,7 +20,7 @@ import xerca.xercamusic.common.packets.serverbound.SingleNotePacket;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.client.ModClient.sendToServer;
 
 public class GuiInstrument extends Screen {
     private static final ResourceLocation INS_GUI_TEXTURES = Mod.id("textures/gui/instrument_gui.png");
@@ -181,7 +181,7 @@ public class GuiInstrument extends Screen {
             if (noteSound == null) {
                 return;
             }
-            noteSounds[noteId] = ClientStuff.playNote(noteSound.sound(), player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch());
+            noteSounds[noteId] = ModClient.playNote(noteSound.sound(), player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch());
             player.level().addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
             buttonPushStates[noteId] = true;
 

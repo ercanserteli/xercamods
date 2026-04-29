@@ -1,6 +1,8 @@
 package xerca.xercapaint.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -21,7 +23,7 @@ import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.*;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ModClient implements ClientModInitializer {
     public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(Mod.id("easel"), "main");
     public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(Mod.id("easel"), "canvas");

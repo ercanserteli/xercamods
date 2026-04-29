@@ -38,6 +38,8 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 public class TileEntityMusicBox extends BlockEntity {
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
     private final ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
+    private @Nullable UUID warnedMissingSheetId;
+    private int warnedMissingSheetVersion = -1;
     private boolean isPlaying;
     private boolean oldPoweredState;
     private boolean isPowering;
@@ -99,8 +101,9 @@ public class TileEntityMusicBox extends BlockEntity {
                             if (data.volumeMarkers() != null) {
                                 t.volumeMarkers.addAll(data.volumeMarkers());
                             }
+                            t.clearWarnedMissingSheet();
                         } else {
-                            Mod.LOGGER.warn("Unknown music sheet (id: {})", id);
+                            t.warnMissingSheetOnce(id, ver);
                         }
                     }
                 }
@@ -234,6 +237,19 @@ public class TileEntityMusicBox extends BlockEntity {
         return sheetStack;
     }
 
+    private void warnMissingSheetOnce(UUID id, int version) {
+        if (!id.equals(warnedMissingSheetId) || warnedMissingSheetVersion != version) {
+            Mod.LOGGER.warn("Unknown music sheet (id: {}, version: {})", id, version);
+            warnedMissingSheetId = id;
+            warnedMissingSheetVersion = version;
+        }
+    }
+
+    private void clearWarnedMissingSheet() {
+        warnedMissingSheetId = null;
+        warnedMissingSheetVersion = -1;
+    }
+
     public void setSheetStack(ItemStack sheetStack, boolean updateClient) {
         if (sheetStack.getItem() instanceof ItemMusicSheet) {
             if (updateClient && level != null && !level.isClientSide) {
@@ -241,12 +257,13 @@ public class TileEntityMusicBox extends BlockEntity {
             }
 
             this.sheetStack = sheetStack;
+            clearWarnedMissingSheet();
+            this.notes.clear();
+            this.volumeMarkers.clear();
             if (!ItemMusicSheet.isEmptySheet(sheetStack)) {
                 bps = sanitizeBps(sheetStack.getOrDefault(Items.SHEET_BPS, (byte) 8));
                 volume = sanitizeVolume(sheetStack.getOrDefault(Items.SHEET_VOLUME, 1.f));
                 length = sheetStack.getOrDefault(Items.SHEET_LENGTH, 0);
-            } else {
-                this.notes.clear();
             }
             setChanged();
         }
@@ -259,7 +276,9 @@ public class TileEntityMusicBox extends BlockEntity {
             }
 
             this.sheetStack = ItemStack.EMPTY;
+            clearWarnedMissingSheet();
             this.notes.clear();
+            this.volumeMarkers.clear();
             setChanged();
         }
     }

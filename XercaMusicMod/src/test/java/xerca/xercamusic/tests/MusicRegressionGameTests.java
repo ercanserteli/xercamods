@@ -54,6 +54,8 @@ public final class MusicRegressionGameTests {
     private static final Field MUSIC_BOX_IS_PLAYING_FIELD;
     private static final Field MUSIC_BOX_BPS_FIELD;
     private static final Field MUSIC_BOX_VOLUME_FIELD;
+    private static final Field MUSIC_BOX_WARNED_MISSING_SHEET_ID_FIELD;
+    private static final Field MUSIC_BOX_WARNED_MISSING_SHEET_VERSION_FIELD;
     private static final Field METRONOME_AGE_FIELD;
     private static final Field METRONOME_OLD_POWERED_STATE_FIELD;
     private static final Field METRONOME_COUNTDOWN_FIELD;
@@ -66,6 +68,10 @@ public final class MusicRegressionGameTests {
             MUSIC_BOX_BPS_FIELD.setAccessible(true);
             MUSIC_BOX_VOLUME_FIELD = TileEntityMusicBox.class.getDeclaredField("volume");
             MUSIC_BOX_VOLUME_FIELD.setAccessible(true);
+            MUSIC_BOX_WARNED_MISSING_SHEET_ID_FIELD = TileEntityMusicBox.class.getDeclaredField("warnedMissingSheetId");
+            MUSIC_BOX_WARNED_MISSING_SHEET_ID_FIELD.setAccessible(true);
+            MUSIC_BOX_WARNED_MISSING_SHEET_VERSION_FIELD = TileEntityMusicBox.class.getDeclaredField("warnedMissingSheetVersion");
+            MUSIC_BOX_WARNED_MISSING_SHEET_VERSION_FIELD.setAccessible(true);
             METRONOME_AGE_FIELD = TileEntityMetronome.class.getDeclaredField("age");
             METRONOME_AGE_FIELD.setAccessible(true);
             METRONOME_OLD_POWERED_STATE_FIELD = TileEntityMetronome.class.getDeclaredField("oldPoweredState");
@@ -359,6 +365,24 @@ public final class MusicRegressionGameTests {
         }
     }
 
+    private static @Nullable UUID getWarnedMissingSheetId(GameTestHelper helper, TileEntityMusicBox musicBox) {
+        try {
+            return (UUID) MUSIC_BOX_WARNED_MISSING_SHEET_ID_FIELD.get(musicBox);
+        } catch (IllegalAccessException e) {
+            helper.assertTrue(false, "Failed to read music box warnedMissingSheetId field: " + e);
+            return null;
+        }
+    }
+
+    private static int getWarnedMissingSheetVersion(GameTestHelper helper, TileEntityMusicBox musicBox) {
+        try {
+            return MUSIC_BOX_WARNED_MISSING_SHEET_VERSION_FIELD.getInt(musicBox);
+        } catch (IllegalAccessException e) {
+            helper.assertTrue(false, "Failed to read music box warnedMissingSheetVersion field: " + e);
+            return -2;
+        }
+    }
+
     private static int getMetronomeAge(GameTestHelper helper, TileEntityMetronome metronome) {
         try {
             return METRONOME_AGE_FIELD.getInt(metronome);
@@ -467,6 +491,36 @@ public final class MusicRegressionGameTests {
 
         helper.assertTrue(getMusicBoxBps(helper, musicBox) == 1, "Expected music box bps to clamp to minimum of 1");
         helper.assertTrue(getMusicBoxVolume(helper, musicBox) == 1.0f, "Expected music box volume to clamp to maximum of 1.0");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "music_regressions")
+    public static void musicBoxUnknownSheetWarningStateIsDeduplicatedAndReset(GameTestHelper helper) {
+        BlockPos boxPos = new BlockPos(1, 2, 1);
+        placeMusicBox(helper, boxPos, Direction.NORTH);
+        TileEntityMusicBox musicBox = requireMusicBox(helper, boxPos);
+
+        UUID missingId = UUID.randomUUID();
+        int missingVersion = 7;
+        musicBox.setSheetStack(createSheetStack(missingId, missingVersion, 0, 8, 8, 1.0f, "missing", null), false);
+
+        tickMusicBox(helper, boxPos);
+        helper.assertTrue(missingId.equals(getWarnedMissingSheetId(helper, musicBox)),
+                "Expected music box to remember the missing sheet id after first failed lookup");
+        helper.assertTrue(getWarnedMissingSheetVersion(helper, musicBox) == missingVersion,
+                "Expected music box to remember the missing sheet version after first failed lookup");
+
+        tickMusicBox(helper, boxPos);
+        helper.assertTrue(missingId.equals(getWarnedMissingSheetId(helper, musicBox)),
+                "Expected repeated failed lookups for the same sheet to keep the same warning state");
+        helper.assertTrue(getWarnedMissingSheetVersion(helper, musicBox) == missingVersion,
+                "Expected repeated failed lookups for the same sheet to keep the same warning version");
+
+        musicBox.removeSheetStack();
+        helper.assertTrue(getWarnedMissingSheetId(helper, musicBox) == null,
+                "Expected removing the sheet to clear the missing-sheet warning state");
+        helper.assertTrue(getWarnedMissingSheetVersion(helper, musicBox) == -1,
+                "Expected removing the sheet to reset the missing-sheet warning version");
         helper.succeed();
     }
 

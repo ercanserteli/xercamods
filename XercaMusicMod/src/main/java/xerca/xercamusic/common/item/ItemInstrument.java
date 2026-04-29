@@ -16,7 +16,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
@@ -59,7 +59,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
             }
         } else {
             if (worldIn.isClientSide) {
-                onlyRunOnClient(() -> ClientStuff::showInstrumentGui);
+                onlyRunOnClient(() -> ModClient::showInstrumentGui);
             }
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);

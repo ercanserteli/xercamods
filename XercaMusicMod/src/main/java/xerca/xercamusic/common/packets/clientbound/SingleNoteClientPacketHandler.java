@@ -7,7 +7,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.client.NoteSound;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -46,7 +46,7 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
                 NoteSound noteSound;
                 try {
                     noteSound = Mod.onlyCallOnClient(() -> () ->
-                            ClientStuff.playNote(sound.sound(), x, y, z, SoundSource.PLAYERS, msg.volume() * 1.5f, sound.pitch(), (byte) -1));
+                            ModClient.playNote(sound.sound(), x, y, z, SoundSource.PLAYERS, msg.volume() * 1.5f, sound.pitch(), (byte) -1));
                 } catch (Exception e) {
                     Mod.LOGGER.error("Exception while playing note: ", e);
                     return;

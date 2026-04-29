@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.block.BlockMetronome;
@@ -48,7 +48,7 @@ public class TileEntityMetronome extends BlockEntity {
                     if (level.isClientSide) {// note: doesn't work if this function is only called in server
                         try {
                             onlyCallOnClient(() -> () ->
-                                    ClientStuff.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat() * 0.1f, (byte) -1));
+                                    ModClient.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat() * 0.1f, (byte) -1));
                         } catch (Exception e) {
                             Mod.LOGGER.error("Error playing metronome note", e);
                         }

@@ -1,6 +1,8 @@
 package xerca.xercamusic.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -25,8 +27,8 @@ import xerca.xercamusic.common.packets.serverbound.MusicEndedPacket;
 
 import java.util.UUID;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-public class ClientStuff implements ClientModInitializer {
+@Environment(EnvType.CLIENT)
+public class ModClient implements ClientModInitializer {
 
     public static void showMusicGui() {
         LocalPlayer player = Minecraft.getInstance().player;

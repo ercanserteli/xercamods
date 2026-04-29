@@ -1,6 +1,8 @@
 package xerca.xercafood.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.RenderType;
@@ -10,8 +12,8 @@ import xerca.xercafood.common.block_entity.BlockEntities;
 import xerca.xercafood.common.entity.Entities;
 
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-public class ClientStuff implements ClientModInitializer {
+@Environment(EnvType.CLIENT)
+public class ModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         EntityRendererRegistry.register(Entities.TOMATO, new RenderTomatoFactory());

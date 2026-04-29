@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -47,7 +47,7 @@ public abstract class BlockInstrument extends Block {
             return InteractionResult.PASS;
         }
         if (level.isClientSide) {
-            onlyRunOnClient(() -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
+            onlyRunOnClient(() -> () -> ModClient.showInstrumentGui(getItemInstrument(), pos));
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;

@@ -16,7 +16,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.block.BlockMusicBox;
@@ -138,7 +138,7 @@ public class ItemMusicSheet extends Item {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         if (worldIn.isClientSide) {
-            onlyRunOnClient(() -> ClientStuff::showMusicGui);
+            onlyRunOnClient(() -> ModClient::showMusicGui);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }

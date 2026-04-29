@@ -1,6 +1,8 @@
 package xerca.xercatools.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -16,7 +18,8 @@ import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityGrabHook;
 import xerca.xercatools.item.*;
 
-public final class XercaToolsClient implements ClientModInitializer {
+@Environment(EnvType.CLIENT)
+public final class ModClient implements ClientModInitializer {
     private static final ResourceLocation PULLING = ResourceLocation.fromNamespaceAndPath("minecraft", "pulling");
     private static final ResourceLocation PULL = ResourceLocation.fromNamespaceAndPath("minecraft", "pull");
     private static final ResourceLocation CAST = Mod.id("cast");

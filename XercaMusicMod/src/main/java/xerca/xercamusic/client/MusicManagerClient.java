@@ -16,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.client.ModClient.sendToServer;
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 public final class MusicManagerClient {

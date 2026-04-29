@@ -30,7 +30,7 @@ import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
 import java.util.*;
 
-import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.client.ModClient.sendToServer;
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
@@ -352,7 +352,7 @@ public class GuiMusicSheet extends Screen {
                 return;
             }
             try {
-                notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ClientStuff.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), volume / 128.f, noteSound.pitch()));
+                notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ModClient.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), volume / 128.f, noteSound.pitch()));
             } catch (Exception e) {
                 Mod.LOGGER.error("Error playing sound", e);
             }
@@ -714,7 +714,7 @@ public class GuiMusicSheet extends Screen {
     private void playMetronomeTick() {
         try {
             onlyCallOnClient(() -> () ->
-                    ClientStuff.playNote(SoundEvents.TICK, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), SoundSource.PLAYERS, 1.0f, 0.975f + editingPlayer.level().random.nextFloat() * 0.05f, (byte) -1));
+                    ModClient.playNote(SoundEvents.TICK, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), SoundSource.PLAYERS, 1.0f, 0.975f + editingPlayer.level().random.nextFloat() * 0.05f, (byte) -1));
         } catch (Exception e) {
             Mod.LOGGER.error("Exception in playMetronomeTick", e);
         }
@@ -754,7 +754,7 @@ public class GuiMusicSheet extends Screen {
         NoteSound sound;
         try {
             sound = onlyCallOnClient(() -> () ->
-                    ClientStuff.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
+                    ModClient.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
                             sheetVolume*effectiveVolume, insSound.pitch(), (byte)beatsToTicks(event.length)));
         } catch (Exception e) {
             Mod.LOGGER.error("Error playing preview sound", e);

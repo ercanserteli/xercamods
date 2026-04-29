@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.client.ModClient.sendToServer;
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_NOTES;
 

@@ -118,7 +118,7 @@ public class SoundController extends Thread {
 
         // Music over
         if (spiritID >= 0 && minecraft.player != null) {
-            minecraft.submit(() -> ClientStuff.endMusic(spiritID, minecraft.player.getId()))
+            minecraft.submit(() -> ModClient.endMusic(spiritID, minecraft.player.getId()))
                     .whenComplete((v, t) -> {
                         if (t != null) Mod.LOGGER.error("Failed to end music", t);
                     }).isDone();
@@ -153,9 +153,9 @@ public class SoundController extends Thread {
 
                         NoteSound sound;
                         if (musicBox == null) {
-                            sound = ClientStuff.playNote(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
+                            sound = ModClient.playNote(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
                         } else {
-                            sound = ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
+                            sound = ModClient.playNoteTE(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
                         }
 
                         // Spawn at most one particle per beat per controller

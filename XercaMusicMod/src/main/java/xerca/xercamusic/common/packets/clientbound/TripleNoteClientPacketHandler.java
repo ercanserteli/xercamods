@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import xerca.xercamusic.client.ClientStuff;
+import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
 
@@ -38,9 +38,9 @@ public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
         double z = entity.getZ();
 
         try {
-            onlyCallOnClient(() -> () -> ClientStuff.playNote(sound1.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound1.pitch(), (byte) 10));
-            onlyCallOnClient(() -> () -> ClientStuff.playNote(sound2.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound2.pitch(), (byte) 10));
-            onlyCallOnClient(() -> () -> ClientStuff.playNote(sound3.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound3.pitch(), (byte) 10));
+            onlyCallOnClient(() -> () -> ModClient.playNote(sound1.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound1.pitch(), (byte) 10));
+            onlyCallOnClient(() -> () -> ModClient.playNote(sound2.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound2.pitch(), (byte) 10));
+            onlyCallOnClient(() -> () -> ModClient.playNote(sound3.sound(), x, y, z, SoundSource.PLAYERS, 1.5f, sound3.pitch(), (byte) 10));
         } catch (Exception e) {
             Mod.LOGGER.warn("Exception while playing triple note", e);
         }
