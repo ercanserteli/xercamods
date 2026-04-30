@@ -16,7 +16,7 @@ public class Entities {
 
     public static final EntityType<EntityCanvas> CANVAS = EntityType.Builder.<EntityCanvas>of(EntityCanvas::new, MobCategory.MISC)
             .sized(0.5f, 0.5f)
-            .eyeHeight(0.5f)
+            .eyeHeight(0.25f)
             .updateInterval(Integer.MAX_VALUE)
             .build(CANVAS_ID.toString());
 
