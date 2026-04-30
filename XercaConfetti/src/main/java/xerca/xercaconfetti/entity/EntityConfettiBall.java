@@ -1,7 +1,5 @@
 package xerca.xercaconfetti.entity;
 
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -14,10 +12,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import xerca.xercaconfetti.Mod;
+import xerca.xercaconfetti.particle.ConfettiParticles;
 
 public class EntityConfettiBall extends ThrowableItemProjectile {
+    private static final byte IMPACT_PARTICLES_EVENT = 3;
+
     public EntityConfettiBall(EntityType<? extends EntityConfettiBall> type, Level world) {
         super(type, world);
     }
@@ -30,23 +30,22 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
         super(Mod.ENTITY_CONFETTI_BALL, x, y, z, worldIn);
     }
 
-    private void spawnConfetti(double x, double y, double z) {
-        for (int j = 0; j < 18; ++j) {
-            this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Mod.CONFETTI)), x, y, z, (this.random.nextFloat() - 0.5D) * 0.3D, (this.random.nextFloat()) * 0.5D, (this.random.nextFloat() - 0.5D) * 0.3D);
+    @Override
+    protected void onHit(HitResult result) {
+        if (!this.level().isClientSide) {
+            this.level().broadcastEntityEvent(this, IMPACT_PARTICLES_EVENT);
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 3.0f, this.random.nextFloat() * 0.4F + 0.8F);
+            this.remove(RemovalReason.DISCARDED);
         }
-    }
-
-    private void spawnConfetti(Vec3 vec) {
-        spawnConfetti(vec.x, vec.y, vec.z);
     }
 
     @Override
-    protected void onHit(HitResult result) {
-        spawnConfetti(result.getLocation());
-        if (!this.level().isClientSide) {
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
-            this.remove(RemovalReason.DISCARDED);
+    public void handleEntityEvent(byte id) {
+        if (id == IMPACT_PARTICLES_EVENT) {
+            ConfettiParticles.spawnBallBurst(this.level(), this.random, this.position());
+            return;
         }
+        super.handleEntityEvent(id);
     }
 
     @Override
@@ -56,7 +55,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
             if (!this.level().isClientSide) {
                 this.level().playSound(null, this.getX(), this.getY(), this.getZ(), Mod.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             } else {
-                spawnConfetti(this.getX(), this.getY(), this.getZ());
+                ConfettiParticles.spawnBallTrail(this.level(), this.random, this.getX(), this.getY(), this.getZ(), this.getDeltaMovement().normalize());
             }
         }
     }

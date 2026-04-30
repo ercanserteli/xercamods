@@ -5,10 +5,12 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Position;
 import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -46,6 +48,9 @@ public class Mod implements ModInitializer {
     public static final EntityType<EntityConfettiBall> ENTITY_CONFETTI_BALL = EntityType.Builder.<EntityConfettiBall>of(EntityConfettiBall::new, MobCategory.MISC)
             .sized(0.25f, 0.25f).updateInterval(10).build();
 
+    // Particle Definitions
+    public static final SimpleParticleType CONFETTI_PARTICLE = FabricParticleTypes.simple();
+
     // Sound Definitions
     public static final SoundEvent SOUND_CRACK = SoundEvent.createVariableRangeEvent(id("crack"));
     public static final SoundEvent SOUND_CONFETTI = SoundEvent.createVariableRangeEvent(id("confetti"));
@@ -61,6 +66,9 @@ public class Mod implements ModInitializer {
 
         // Entity Registration
         Registry.register(BuiltInRegistries.ENTITY_TYPE, id("confetti_ball"), ENTITY_CONFETTI_BALL);
+
+        // Particle Registration
+        Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("confetti_particle"), CONFETTI_PARTICLE);
 
         // Item Registration
         Registry.register(BuiltInRegistries.ITEM, id("confetti_ball"), CONFETTI_BALL);
