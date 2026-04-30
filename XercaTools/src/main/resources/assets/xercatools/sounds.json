@@ -27,6 +27,20 @@
       { "name": "xercatools:hook_impact" }
     ]
   },
+  "hook_return": {
+    "sounds": [
+      {
+        "name": "xercatools:hook_return"
+      }
+    ]
+  },
+  "hook_clink": {
+    "sounds": [
+      {
+        "name": "xercatools:hook_clink"
+      }
+    ]
+  },
   "behead": {
     "sounds": [
       { "name": "xercatools:behead" }
@@ -35,6 +49,29 @@
   "absorb": {
     "sounds": [
       { "name": "xercatools:absorb" }
+    ]
+  },
+  "crack": {
+    "sounds": [
+      {
+        "name": "xercatools:crack1"
+      },
+      {
+        "name": "xercatools:crack2"
+      },
+      {
+        "name": "xercatools:crack3"
+      },
+      {
+        "name": "xercatools:crack4"
+      }
+    ]
+  },
+  "confetti": {
+    "sounds": [
+      {
+        "name": "xercatools:confetti"
+      }
     ]
   }
 }

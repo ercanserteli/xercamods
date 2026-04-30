@@ -3,35 +3,47 @@ package xerca.xercatools.client;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercatools.SoundEvents;
 import xerca.xercatools.entity.EntityGrabHook;
 
 public final class HookSound extends AbstractTickableSoundInstance {
+    private final @Nullable Player angler;
     private final EntityGrabHook hook;
 
     public HookSound(EntityGrabHook hook) {
         super(SoundEvents.HOOK_CHAIN, SoundSource.PLAYERS, SoundInstance.createUnseededRandom());
         this.hook = hook;
-        this.looping = true;
+        this.angler = hook.getAngler();
+        if (angler == null) {
+            this.stop();
+            return;
+        }
+        this.looping = false;
         this.delay = 0;
         this.volume = 1.0F;
         this.pitch = 1.0F;
         this.attenuation = Attenuation.LINEAR;
-        this.x = hook.getX();
-        this.y = hook.getY();
-        this.z = hook.getZ();
+        this.x = this.angler.getX();
+        this.y = this.angler.getY();
+        this.z = this.angler.getZ();
     }
 
     @Override
     public void tick() {
-        if (this.hook.isRemoved() || !this.hook.isAlive()) {
+        if (this.angler == null || this.hook.isRemoved() || !this.hook.isAlive()) {
             this.stop();
             return;
         }
 
-        this.x = this.hook.getX();
-        this.y = this.hook.getY();
-        this.z = this.hook.getZ();
+        if (this.hook.isReturning()) {
+            this.pitch = 1.1F;
+        }
+
+        this.x = this.angler.getX();
+        this.y = this.angler.getY();
+        this.z = this.angler.getZ();
     }
 
     @Override

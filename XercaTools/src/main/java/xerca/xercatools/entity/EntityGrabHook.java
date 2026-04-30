@@ -209,12 +209,12 @@ public class EntityGrabHook extends Entity {
             }
             if (this.returning) {
                 Vec3 target = angler.position().add(0.0D, angler.getEyeHeight(), 0.0D);
-                Vec3 velocity = target.subtract(this.position());
-                if (velocity.length() < 3.0D) {
+                Vec3 distance = target.subtract(this.position());
+                if (distance.length() < 3.0D) {
                     discardHook();
                     return;
                 }
-                this.setDeltaMovement(velocity.normalize().scale(this.speed).subtract(0.0D, 0.1D, 0.0D));
+                this.setDeltaMovement(distance.normalize().scale(this.speed).subtract(0.0D, 0.1D, 0.0D));
             }
         }
 
@@ -235,7 +235,10 @@ public class EntityGrabHook extends Entity {
         }
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             this.inGround = true;
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 0.8F, 0.9F);
+            float pitch = 0.9F + random.nextFloat() * 0.2F;
+            this.level().playSound(null, this, net.minecraft.sounds.SoundEvents.GOAT_RAM_IMPACT, SoundSource.PLAYERS, 1.0F, pitch);
+            this.level().playSound(null, angler, net.minecraft.sounds.SoundEvents.GOAT_RAM_IMPACT, SoundSource.PLAYERS, 0.75F, pitch);
+            this.level().playSound(null, angler, SoundEvents.HOOK_CLINK, SoundSource.PLAYERS, 0.5F, pitch);
             if (this.hasGrappling) {
                 this.setDeltaMovement(Vec3.ZERO);
                 angler.noPhysics = true;
@@ -280,25 +283,31 @@ public class EntityGrabHook extends Entity {
     private void setCaughtEntity(Entity caught, Player angler) {
         this.caughtEntity = caught;
         this.entityData.set(DATA_CAUGHT, caught.getId() + 1);
+        float pitch = 0.9F + random.nextFloat() * 0.2F;
         if (!this.hasGentle) {
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 1.0F, this.level().random.nextFloat() * 0.2F + 0.9F);
+            this.level().playSound(null, this, net.minecraft.sounds.SoundEvents.BEE_STING, SoundSource.PLAYERS, 3.0F, pitch);
+            this.level().playSound(null, angler, net.minecraft.sounds.SoundEvents.BEE_STING, SoundSource.PLAYERS, 1.0F, pitch);
+            this.level().playSound(null, angler, SoundEvents.HOOK_CLINK, SoundSource.PLAYERS, 0.25F, pitch);
             caught.hurt(this.damageSources().thrown(this, angler), 3.0F);
             if (!caught.isAlive()) {
                 discardHook();
                 return;
             }
         } else {
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HOOK_IMPACT, SoundSource.PLAYERS, 0.6F, this.level().random.nextFloat() * 0.2F + 1.5F);
+            this.level().playSound(null, this, net.minecraft.sounds.SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 2.0F, pitch);
+            this.level().playSound(null, angler, net.minecraft.sounds.SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, pitch);
+            this.level().playSound(null, angler, SoundEvents.HOOK_CLINK, SoundSource.PLAYERS, 0.25F, pitch);
         }
+
         this.caughtEntity.noPhysics = true;
         this.caughtEntity.stopRiding();
     }
 
     private void pullCaughtEntity(Player angler) {
         if (this.caughtEntity != null && this.caughtEntity.isAlive()) {
-            Vec3 velocity = angler.position().subtract(this.caughtEntity.position());
-            if (velocity.length() > 2.0D) {
-                Vec3 pullVelocity = velocity.normalize().scale(this.speed);
+            Vec3 distance = angler.position().subtract(this.caughtEntity.position());
+            if (distance.length() > 2.0D) {
+                Vec3 pullVelocity = distance.normalize().scale(this.speed);
                 this.caughtEntity.setDeltaMovement(pullVelocity);
                 this.caughtEntity.hurtMarked = true;
                 this.caughtEntity.hasImpulse = true;
@@ -314,9 +323,9 @@ public class EntityGrabHook extends Entity {
     }
 
     private void pullUser(Player angler) {
-        Vec3 velocity = this.position().subtract(angler.position());
-        if (velocity.length() > 2.0D) {
-            angler.setDeltaMovement(velocity.normalize().scale(this.speed));
+        Vec3 distance = this.position().subtract(angler.position());
+        if (distance.length() > 2.0D) {
+            angler.setDeltaMovement(distance.normalize().scale(this.speed));
             angler.noPhysics = true;
             angler.hasImpulse = true;
             angler.hurtMarked = true;
@@ -343,6 +352,7 @@ public class EntityGrabHook extends Entity {
             angler.noPhysics = false;
             clearCastFlag(angler.getMainHandItem());
             clearCastFlag(angler.getOffhandItem());
+            angler.level().playSound(null, angler, SoundEvents.HOOK_RETURN, SoundSource.PLAYERS, 1.0f, 0.9f + random.nextFloat() * 0.2f);
         }
         this.discard();
     }

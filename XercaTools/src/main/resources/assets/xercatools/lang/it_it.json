@@ -61,5 +61,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "Incantamento per martello da guerra. Aggiunge una componente di lancio verso l'alto al martello da guerra, scagliando il bersaglio in aria.",
   "enchantment.xercatools.enchantment_capacity.desc": "Incantamento per fiaschetta dell'End e lanciatore di pozioni. Aumenta la capacità di pozioni.",
   "enchantment.xercatools.enchantment_range.desc": "Incantamento per lanciatore di pozioni. Aumenta la portata e la velocità del proiettile.",
-  "enchantment.xercatools.enchantment_chug.desc": "Incantamento per fiaschetta dell'End. Aumenta la velocità di bevuta."
+  "enchantment.xercatools.enchantment_chug.desc": "Incantamento per fiaschetta dell'End. Aumenta la velocità di bevuta.",
+  "item.xercatools.confetti_ball": "Pallina di Coriandoli",
+  "item.xercatools.confetti": "Coriandoli"
 }

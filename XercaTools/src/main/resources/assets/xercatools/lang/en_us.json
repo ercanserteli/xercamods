@@ -61,5 +61,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "Warhammer enchantment. Adds a knock up component to the Warhammer, launching the target upwards.",
   "enchantment.xercatools.enchantment_capacity.desc": "Ender Flask and Potion Launcher enchantment. Increases the potion capacity.",
   "enchantment.xercatools.enchantment_range.desc": "Potion Launcher enchantment. Increases range and projectile speed.",
-  "enchantment.xercatools.enchantment_chug.desc": "Ender Flask enchantment. Increases drinking speed."
+  "enchantment.xercatools.enchantment_chug.desc": "Ender Flask enchantment. Increases drinking speed.",
+  "item.xercatools.confetti_ball": "Confetti Ball",
+  "item.xercatools.confetti": "Confetti"
 }

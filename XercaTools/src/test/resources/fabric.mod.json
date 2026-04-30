@@ -6,6 +6,7 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
+      "xerca.xercatools.tests.ConfettiBallGameTests",
       "xerca.xercatools.tests.WeaponsGameTests",
       "xerca.xercatools.tests.ScytheGameTests",
       "xerca.xercatools.tests.GrabHookGameTests",
@@ -19,4 +20,3 @@
     "xercatools": "*"
   }
 }
-

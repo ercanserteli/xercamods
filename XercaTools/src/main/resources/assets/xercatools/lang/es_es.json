@@ -61,5 +61,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "Encantamiento de mazo de guerra. Añade un componente de golpe hacia arriba al Mazo de Guerra, lanzando al objetivo hacia arriba.",
   "enchantment.xercatools.enchantment_capacity.desc": "Encantamiento de Frasco del Éter y Lanzador de Pociones. Aumenta la capacidad de pociones.",
   "enchantment.xercatools.enchantment_range.desc": "Encantamiento de Lanzador de Pociones. Aumenta el alcance y la velocidad del proyectil.",
-  "enchantment.xercatools.enchantment_chug.desc": "Encantamiento de Frasco del Éter. Aumenta la velocidad de bebida."
+  "enchantment.xercatools.enchantment_chug.desc": "Encantamiento de Frasco del Éter. Aumenta la velocidad de bebida.",
+  "item.xercatools.confetti_ball": "Bola de Confeti",
+  "item.xercatools.confetti": "Confeti"
 }

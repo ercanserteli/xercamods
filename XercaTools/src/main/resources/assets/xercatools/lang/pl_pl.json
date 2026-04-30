@@ -61,5 +61,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "Zaklęcie młota bojowego. Dodaje do młota bojowego wybicie w górę, wyrzucając cel w powietrze.",
   "enchantment.xercatools.enchantment_capacity.desc": "Zaklęcie Butli Endu i Wyrzutni mikstur. Zwiększa pojemność mikstur.",
   "enchantment.xercatools.enchantment_range.desc": "Zaklęcie Wyrzutni mikstur. Zwiększa zasięg i prędkość pocisku.",
-  "enchantment.xercatools.enchantment_chug.desc": "Zaklęcie Butli Endu. Zwiększa szybkość picia."
+  "enchantment.xercatools.enchantment_chug.desc": "Zaklęcie Butli Endu. Zwiększa szybkość picia.",
+  "item.xercatools.confetti_ball": "Kula Konfetti",
+  "item.xercatools.confetti": "Konfetti"
 }

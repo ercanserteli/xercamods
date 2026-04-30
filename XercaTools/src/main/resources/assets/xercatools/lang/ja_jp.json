@@ -61,5 +61,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "ウォーハンマーエンチャント。ウォーハンマーにノックアップを追加し、ターゲットを上方向に打ち上げます。",
   "enchantment.xercatools.enchantment_capacity.desc": "エンダーフラスコとポーションランチャーのエンチャント。ポーション容量を増加します。",
   "enchantment.xercatools.enchantment_range.desc": "ポーションランチャーエンチャント。射程と発射物速度を増加します。",
-  "enchantment.xercatools.enchantment_chug.desc": "エンダーフラスコエンチャント。飲む速度を増加します。"
+  "enchantment.xercatools.enchantment_chug.desc": "エンダーフラスコエンチャント。飲む速度を増加します。",
+  "item.xercatools.confetti_ball": "紙吹雪ボール",
+  "item.xercatools.confetti": "紙吹雪"
 }

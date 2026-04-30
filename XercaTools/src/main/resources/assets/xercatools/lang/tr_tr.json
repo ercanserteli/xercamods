@@ -14,7 +14,6 @@
   "item.xercatools.netherite_warhammer": "Netherite Savaş Çekici",
   "item.xercatools.flask": "Sondur Matara",
   "item.xercatools.ender_bow": "Iksir Atar",
-
   "xercatools.grab_hook_tooltip": "Canlıları kendine çekmeni sağlar. Sağ tuşa basılı tutarak menzili arttır",
   "xercatools.scythe_tooltip": "Ham ekinleri kırmaz",
   "xercatools.guillotine_tooltip": "Giyotini kullanmak için düşmanı sağ tuşa uzun basmalı saldırı ile öldür",
@@ -22,7 +21,6 @@
   "xercatools.grappling_tooltip": "Bloklara nişan alarak kendini oraya fırlat",
   "xercatools.ender_flask_tooltip": "İksirlerle doldur",
   "xercatools.ender_bow_tooltip": "Atmalık veya kalıcı iksirler ile doldur",
-
   "enchantment.xercatools.enchantment_poison": "Zehirli",
   "enchantment.xercatools.enchantment_stealth": "Sessiz katil",
   "enchantment.xercatools.enchantment_grappling": "Tutucu",
@@ -38,7 +36,6 @@
   "enchantment.xercatools.enchantment_capacity": "Kapasite",
   "enchantment.xercatools.enchantment_range": "Menzil",
   "enchantment.xercatools.enchantment_chug": "Tıksırana kadar",
-
   "enchantment.xercatools.enchantment_poison.desc": "Bıçak büyüsü. Vuruşta zehirleme etkisi uygular.",
   "enchantment.xercatools.enchantment_stealth.desc": "Bıçak büyüsü. Arkadan gizlice vurma hasarını artırır.",
   "enchantment.xercatools.enchantment_grappling.desc": "Kanca büyüsü. Bloklara nişan alarak kendini oraya fırlatmanı sağlar.",
@@ -53,5 +50,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "Savaş çekici büyüsü. Hedefe yukarı fırlatma bileşeni ekler.",
   "enchantment.xercatools.enchantment_capacity.desc": "Sondur Matara ve İksir Atar büyüsü. İksir kapasitesini artırır.",
   "enchantment.xercatools.enchantment_range.desc": "İksir Atar büyüsü. Fırlatılan iksirlerin menzilini ve hızını artırır.",
-  "enchantment.xercatools.enchantment_chug.desc": "Sondur Matara büyüsü. İçme hızını artırır."
+  "enchantment.xercatools.enchantment_chug.desc": "Sondur Matara büyüsü. İçme hızını artırır.",
+  "item.xercatools.confetti": "Konfeti",
+  "item.xercatools.confetti_ball": "Konfeti Topu"
 }

@@ -61,5 +61,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "Herhamarsálög. Bætir upphöggsþætti við herhamarinn og skýtur skotmarkinu upp í loftið.",
   "enchantment.xercatools.enchantment_capacity.desc": "Álög fyrir Enda-brúsa og drykkjuskotara. Eykur drykkjarúmtak.",
   "enchantment.xercatools.enchantment_range.desc": "Álög fyrir drykkjuskotara. Eykur drægi og hraða skeytisins.",
-  "enchantment.xercatools.enchantment_chug.desc": "Álög fyrir Enda-brúsa. Eykur drykkjarhraða."
+  "enchantment.xercatools.enchantment_chug.desc": "Álög fyrir Enda-brúsa. Eykur drykkjarhraða.",
+  "item.xercatools.confetti_ball": "Konfettíkúla",
+  "item.xercatools.confetti": "Konfetti"
 }

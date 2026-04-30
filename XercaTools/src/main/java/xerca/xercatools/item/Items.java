@@ -26,6 +26,8 @@ public final class Items {
     public static final Item IRON_WARHAMMER = new ItemWarhammer(Tiers.IRON);
     public static final Item STONE_WARHAMMER = new ItemWarhammer(Tiers.STONE);
     public static final Item NETHERITE_WARHAMMER = new ItemWarhammer(Tiers.NETHERITE);
+    public static final ItemConfettiBall CONFETTI_BALL = new ItemConfettiBall();
+    public static final ItemConfetti CONFETTI = new ItemConfetti();
     public static final RecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_FLASK_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeFlaskFilling::new);
     public static final RecipeSerializer<RecipeEnderBowFilling> CRAFTING_SPECIAL_ENDER_BOW_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeEnderBowFilling::new);
 
@@ -50,5 +52,7 @@ public final class Items {
         Registry.register(BuiltInRegistries.ITEM, Mod.id("netherite_warhammer"), NETHERITE_WARHAMMER);
         Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_flask_filling"), CRAFTING_SPECIAL_FLASK_FILLING);
         Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_ender_bow_filling"), CRAFTING_SPECIAL_ENDER_BOW_FILLING);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("confetti"), CONFETTI);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("confetti_ball"), CONFETTI_BALL);
     }
 }

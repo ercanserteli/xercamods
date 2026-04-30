@@ -14,7 +14,6 @@
   "item.xercatools.netherite_warhammer": "Незеритовая кувалда",
   "item.xercatools.flask": "Эндер-бутылочка",
   "item.xercatools.ender_bow": "Зельемет",
-
   "xercatools.grab_hook_tooltip": "Притянет противника к вам. Удерживайте ПКМ для увеличения дальности броска.",
   "xercatools.grappling_tooltip": "Цельтесь в блоки, чтобы притянуться к этой точке.",
   "xercatools.scythe_tooltip": "Не жнет недозревшие ростки",
@@ -22,7 +21,6 @@
   "xercatools.warhammer_tooltip": "Удерживайте ПКМ для мощной атаки.",
   "xercatools.ender_flask_tooltip": "Залейте зельями - объедините бутылочки с зельями с эндер-флаской на верстаке.",
   "xercatools.ender_bow_tooltip": "Зарядите взрывными или туманными зельями.",
-
   "enchantment.xercatools.enchantment_poison": "Ядовитый",
   "enchantment.xercatools.enchantment_stealth": "Бесшумный Убийца",
   "enchantment.xercatools.enchantment_grappling": "Крюк-кошка",
@@ -38,7 +36,6 @@
   "enchantment.xercatools.enchantment_capacity": "Вместимость",
   "enchantment.xercatools.enchantment_range": "Дальность",
   "enchantment.xercatools.enchantment_chug": "Скорость питья",
-
   "enchantment.xercatools.enchantment_poison.desc": "Зачарование ножа. Отравляет противника при попадании.",
   "enchantment.xercatools.enchantment_stealth.desc": "Зачарование ножа. Увеличивает бонусный урон от стелс-ударов в спину.",
   "enchantment.xercatools.enchantment_grappling.desc": "Зачарование метательного крюка. Если гора не идет к Магомету, Магомет идет к горе.",
@@ -53,5 +50,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "Зачарование кувалды. В комбинации с алмазной кувалдой делает космическую программу Minecraft реальностью!",
   "enchantment.xercatools.enchantment_capacity.desc": "Зачарование Эндер-бутылочки и Зельемета. Увеличивает емкость зелья.",
   "enchantment.xercatools.enchantment_range.desc": "Зачарование Зельемета. Увеличивает дальность и скорость броска зелья.",
-  "enchantment.xercatools.enchantment_chug.desc": "Зачарование Эндер-бутылочки. Увеличивает скорость питья."
+  "enchantment.xercatools.enchantment_chug.desc": "Зачарование Эндер-бутылочки. Увеличивает скорость питья.",
+  "item.xercatools.confetti": "Конфетти",
+  "item.xercatools.confetti_ball": "Шарик конфетти"
 }

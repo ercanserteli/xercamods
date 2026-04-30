@@ -61,5 +61,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "Stridshammarförtrollning. Lägger till en uppåtkastning till Stridshammarens slag, vilket skjuter upp målet.",
   "enchantment.xercatools.enchantment_capacity.desc": "Enderflask- och Trolldryckskastareförtrollning. Ökar trolldryckskapaciteten.",
   "enchantment.xercatools.enchantment_range.desc": "Trolldryckskastareförtrollning. Ökar räckvidd och projektilfart.",
-  "enchantment.xercatools.enchantment_chug.desc": "Enderflaskförtrollning. Ökar drickshastigheten."
+  "enchantment.xercatools.enchantment_chug.desc": "Enderflaskförtrollning. Ökar drickshastigheten.",
+  "item.xercatools.confetti_ball": "Konfettiboll",
+  "item.xercatools.confetti": "Konfetti"
 }

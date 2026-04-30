@@ -4,6 +4,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.Minecraft;
@@ -17,6 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityGrabHook;
 import xerca.xercatools.item.*;
+import xerca.xercatools.packet.ConfettiParticlePacket;
+import xerca.xercatools.packet.ConfettiParticlePacketHandler;
 
 @Environment(EnvType.CLIENT)
 public final class ModClient implements ClientModInitializer {
@@ -28,9 +32,12 @@ public final class ModClient implements ClientModInitializer {
     public void onInitializeClient() {
         EntityRendererRegistry.register(Mod.HOOK, RenderGrabHook::new);
         EntityRendererRegistry.register(Mod.HEALTH_ORB, RenderHealthOrb::new);
+        EntityRendererRegistry.register(Mod.ENTITY_CONFETTI_BALL, new RenderConfettiBallFactory());
+        ClientPlayNetworking.registerGlobalReceiver(ConfettiParticlePacket.PACKET_ID, new ConfettiParticlePacketHandler());
+        ParticleFactoryRegistry.getInstance().register(Mod.CONFETTI_PARTICLE, ConfettiParticle.Provider::new);
         ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if (entity instanceof EntityGrabHook hook) {
-                Minecraft.getInstance().getSoundManager().play(new HookSound(hook));
+                Minecraft.getInstance().getSoundManager().queueTickingSound(new HookSound(hook));
             }
         });
         registerBowLikeProperties(Items.GRAB_HOOK);

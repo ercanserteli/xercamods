@@ -14,7 +14,6 @@
   "item.xercatools.netherite_warhammer": "下界合金战锤",
   "item.xercatools.flask": "末影烧瓶",
   "item.xercatools.ender_bow": "药水弩",
-
   "xercatools.grab_hook_tooltip": "长按右键蓄力，会把实体拉到你面前",
   "xercatools.grappling_tooltip": "可以把自己勾到你盯着的方块上",
   "xercatools.scythe_tooltip": "不会破坏未成熟的农作物",
@@ -22,7 +21,6 @@
   "xercatools.warhammer_tooltip": "长按右键蓄力",
   "xercatools.ender_flask_tooltip": "可装填药水和牛奶（不可叠加）",
   "xercatools.ender_bow_tooltip": "可装填喷溅和滞留型药水（不可叠加）",
-
   "enchantment.xercatools.enchantment_poison": "剧毒",
   "enchantment.xercatools.enchantment_stealth": "谧刺",
   "enchantment.xercatools.enchantment_grappling": "抓缚",
@@ -38,7 +36,6 @@
   "enchantment.xercatools.enchantment_capacity": "扩容",
   "enchantment.xercatools.enchantment_range": "抛射",
   "enchantment.xercatools.enchantment_chug": "畅饮",
-
   "enchantment.xercatools.enchantment_poison.desc": "匕首附魔：对生物造成中毒效果。",
   "enchantment.xercatools.enchantment_stealth.desc": "匕首附魔：增加背刺的伤害。",
   "enchantment.xercatools.enchantment_grappling.desc": "抓钩附魔：使抓钩能够抓住方块。",
@@ -53,5 +50,7 @@
   "enchantment.xercatools.enchantment_uppercut.desc": "战锤附魔：被蓄力击打的生物会飞跃一段距离。",
   "enchantment.xercatools.enchantment_capacity.desc": "末影烧瓶和药水弩附魔：增加药水容量。",
   "enchantment.xercatools.enchantment_range.desc": "药水弩附魔：增加发射药水的速度和距离。",
-  "enchantment.xercatools.enchantment_chug.desc": "末影烧瓶附魔：增加饮用速度。"
+  "enchantment.xercatools.enchantment_chug.desc": "末影烧瓶附魔：增加饮用速度。",
+  "item.xercatools.confetti": "五彩纸屑",
+  "item.xercatools.confetti_ball": "五彩纸屑球"
 }
