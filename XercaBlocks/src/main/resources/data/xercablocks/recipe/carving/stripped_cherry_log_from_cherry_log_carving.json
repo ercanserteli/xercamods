@@ -1,0 +1,10 @@
+{
+  "type": "xercablocks:carving",
+  "ingredient": {
+    "item": "minecraft:cherry_log"
+  },
+  "result": {
+    "id": "minecraft:stripped_cherry_log",
+    "count": 1
+  }
+}

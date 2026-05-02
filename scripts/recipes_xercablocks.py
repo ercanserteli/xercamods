@@ -51,6 +51,8 @@ for wood, log_type in wood_types:
         carving_recipes.append(CarvingRecipe(log, f"xercablocks:carved_{wood}_{i}", 1, "", "carving"))
         carving_recipes.append(CarvingRecipe(stripped, f"xercablocks:carved_{wood}_{i}", 1, "", "carving"))
 
+carving_recipes.append(CarvingRecipe("minecraft:cherry_log", "minecraft:stripped_cherry_log", 1, "", "carving"))
+
 all_recipes = [r for lst in [shaped_recipes, shapeless_recipes, stonecutting_recipes, carving_recipes] for r in lst]
 
 clean_recipe_jsons("xercablocks")
