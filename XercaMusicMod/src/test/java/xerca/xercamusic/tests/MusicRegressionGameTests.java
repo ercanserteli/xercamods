@@ -45,6 +45,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,6 +60,8 @@ public final class MusicRegressionGameTests {
     private static final Field METRONOME_AGE_FIELD;
     private static final Field METRONOME_OLD_POWERED_STATE_FIELD;
     private static final Field METRONOME_COUNTDOWN_FIELD;
+    private static final String PRE_GLISSANDO_CLIPBOARD_SAMPLE = "MgAAAD8AAAAEKAAAQBApABBAECgAIEAQKwAwQBA=";
+    private static final String VERY_OLD_CLIPBOARD_SAMPLE = "JCAiGwAAGyIkIA==";
 
     static {
         try {
@@ -322,6 +325,12 @@ public final class MusicRegressionGameTests {
         return markers;
     }
 
+    private static byte[] copyWrittenBytes(FriendlyByteBuf buf) {
+        byte[] bytes = new byte[buf.writerIndex()];
+        buf.getBytes(0, bytes);
+        return bytes;
+    }
+
     private static ItemStack findImportedSheet(Player player) {
         for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
             ItemStack stack = player.getInventory().getItem(slot);
@@ -563,6 +572,74 @@ public final class MusicRegressionGameTests {
 
         TripleNoteClientPacket packet = TripleNoteClientPacket.decode(buf);
         helper.assertTrue(packet.entityId() == 54321, "Expected entity id to be preserved in decoded packet");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "music_regressions")
+    public static void clipboardDecodeAcceptsCurrentCopyFormat(GameTestHelper helper) {
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeByte(MusicClipboard.COPY_BEGIN_BYTE);
+        buf.writeInt(7);
+        buf.writeInt(2);
+
+        NoteEvent glissando = new NoteEvent((byte) 64, (short) 0, (byte) 96, (byte) 4);
+        glissando.setGlissandoWaypoints(new byte[]{2, 5}, new byte[]{25, 75});
+        glissando.encodeToBuffer(buf);
+        new NoteEvent((byte) 67, (short) 5, (byte) 110, (byte) 2).encodeToBuffer(buf);
+
+        buf.writeInt(1);
+        new VolumeMarker((short) 0, (short) 8, (byte) 32, (byte) 96, (byte) 60, (byte) 72).encodeToBuffer(buf);
+
+        MusicClipboard.ParsedMusic parsed = MusicClipboard.decode(Base64.getEncoder().encodeToString(copyWrittenBytes(buf)));
+        helper.assertTrue(parsed != null, "Expected current clipboard payload to parse");
+        assert parsed != null;
+        helper.assertTrue(parsed.length() == 8, "Expected current clipboard length to be preserved");
+        helper.assertTrue(parsed.notes().size() == 2, "Expected current clipboard notes to be preserved");
+        helper.assertTrue(parsed.notes().getFirst().hasGlissando(), "Expected current clipboard glissando data to be preserved");
+        helper.assertTrue(parsed.volumeMarkers().size() == 1, "Expected current clipboard volume markers to be preserved");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "music_regressions")
+    public static void clipboardDecodeAcceptsPreGlissandoCopyFormat(GameTestHelper helper) {
+        MusicClipboard.ParsedMusic parsed = MusicClipboard.decode(PRE_GLISSANDO_CLIPBOARD_SAMPLE);
+        helper.assertTrue(parsed != null, "Expected pre-glissando clipboard sample to parse");
+        assert parsed != null;
+        helper.assertTrue(parsed.length() == 64, "Expected pre-glissando clipboard length to be preserved");
+        helper.assertTrue(parsed.notes().size() == 4, "Expected pre-glissando clipboard notes to be preserved");
+        helper.assertTrue(parsed.volumeMarkers().isEmpty(), "Expected pre-glissando clipboard sample to have no volume markers");
+        helper.assertTrue(MusicClipboard.decode(PRE_GLISSANDO_CLIPBOARD_SAMPLE + "\n") != null,
+                "Expected copied sample text with trailing newline to parse");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "music_regressions")
+    public static void clipboardDecodeAcceptsVeryOldMusicFormat(GameTestHelper helper) {
+        MusicClipboard.ParsedMusic parsed = MusicClipboard.decode(VERY_OLD_CLIPBOARD_SAMPLE);
+        helper.assertTrue(parsed != null, "Expected very old clipboard sample to parse");
+        assert parsed != null;
+        helper.assertTrue(parsed.length() == 17, "Expected very old clipboard length to be inferred from notes");
+        helper.assertTrue(parsed.notes().size() == 8, "Expected very old clipboard notes to be preserved");
+        helper.assertTrue(parsed.volumeMarkers().isEmpty(), "Expected very old clipboard sample to have no volume markers");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "music_regressions")
+    public static void clipboardDecodeRejectsNonsenseWithoutThrowing(GameTestHelper helper) {
+        helper.assertTrue(MusicClipboard.decode("this is not base64") == null,
+                "Expected non-base64 clipboard data to be ignored");
+        helper.assertTrue(MusicClipboard.decodeBytes(new byte[0]) == null,
+                "Expected empty clipboard data to be ignored");
+        helper.assertTrue(MusicClipboard.decodeBytes(new byte[]{MusicClipboard.COPY_BEGIN_BYTE}) == null,
+                "Expected truncated current clipboard data to be ignored");
+
+        FriendlyByteBuf truncated = new FriendlyByteBuf(Unpooled.buffer());
+        truncated.writeByte(MusicClipboard.COPY_BEGIN_BYTE);
+        truncated.writeInt(3);
+        truncated.writeInt(1);
+        truncated.writeByte(64);
+        helper.assertTrue(MusicClipboard.decodeBytes(copyWrittenBytes(truncated)) == null,
+                "Expected truncated note data to be ignored");
         helper.succeed();
     }
 

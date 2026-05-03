@@ -61,7 +61,6 @@ public class GuiMusicSheet extends Screen {
     private static final int[] OCTAVE_COLORS = {0xFF5B3200, 0xFFFF0000, 0xFF0AEE00, 0xFF0059FF, 0xFF7B00FF, 0xFFEF00B7, 0xFF00E2DF, 0XFFF4E800};
     private static final int[] OCTAVE_COLORS_TRANS = {0x165B3200, 0x16FF0000, 0x160AEE00, 0x160059FF, 0x167B00FF, 0x16EF00B7, 0x1600E2DF, 0X16F4E800};
     static final int MAX_LENGTH_BEATS = 32000;
-    static final byte COPY_BEGIN_BYTE = (byte) 50;
     private static final int MAX_NOTE_LENGTH = 60;
     static final int MAX_UNDO_LENGTH = 16;
     private static final String NOTE_LEFT_STR_KEY = "note.leftButton";
@@ -2025,13 +2024,7 @@ public class GuiMusicSheet extends Screen {
                     playPrev();
                 }
             }).bounds(0, 0, 10, 8).build();
-            buttonExit = Button.builder(Component.translatable("note.exitButton"), button -> {
-                this.visible = false;
-                this.active = false;
-                if (previewSound != null && !previewSound.isStopped()) {
-                    previewSound.stopSound();
-                }
-            }).bounds(0, 0, 10, 10).build();
+            buttonExit = Button.builder(Component.translatable("note.exitButton"), button -> close()).bounds(0, 0, 10, 10).build();
             buttonPrev = Button.builder(Component.translatable("note.startPreviewButton"), button -> playPrev()).
                     bounds(0, 0, 10, 10).build();
 
@@ -2085,6 +2078,9 @@ public class GuiMusicSheet extends Screen {
         }
 
         public void appear(int x, int y, NoteEvent event) {
+            if (markerEditBox != null) {
+                markerEditBox.close();
+            }
             changed = false;
             this.setX(x);
             this.setY(y);
@@ -2120,8 +2116,7 @@ public class GuiMusicSheet extends Screen {
         public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
             if (this.active && this.visible) {
                 if (mouseButton == 2) {
-                    this.visible = false;
-                    this.active = false;
+                    close();
                 }
 
                 for (AbstractWidget widget : children) {
@@ -2136,8 +2131,7 @@ public class GuiMusicSheet extends Screen {
                 if (flag) {
                     this.onClick(mouseX, mouseY);
                 } else {
-                    this.visible = false;
-                    this.active = false;
+                    close();
                 }
                 return true;
             }
@@ -2162,6 +2156,14 @@ public class GuiMusicSheet extends Screen {
         public boolean mouseReleased(double posX, double posY, int mouseButton) {
             sliderVelocity.onRelease(posX, posY);
             return true;
+        }
+
+        private void close() {
+            this.visible = false;
+            this.active = false;
+            if (previewSound != null && !previewSound.isStopped()) {
+                previewSound.stopSound();
+            }
         }
 
         private NoteEvent requireEvent() {
@@ -2198,13 +2200,9 @@ public class GuiMusicSheet extends Screen {
             buttonDelete = Button.builder(Component.literal("Del"), button -> {
                 volumeMarkers.remove(requireMarker());
                 dirtyFlag.hasNotes = true;
-                this.visible = false;
-                this.active = false;
+                close();
             }).bounds(0, 0, 25, 12).build();
-            buttonExit = Button.builder(Component.translatable("note.exitButton"), button -> {
-                this.visible = false;
-                this.active = false;
-            }).bounds(0, 0, 10, 10).build();
+            buttonExit = Button.builder(Component.translatable("note.exitButton"), button -> close()).bounds(0, 0, 10, 10).build();
 
             children[0] = sliderStartVolume;
             children[1] = sliderEndVolume;
@@ -2242,6 +2240,9 @@ public class GuiMusicSheet extends Screen {
         }
 
         public void appear(int x, int y, VolumeMarker marker) {
+            if (noteEditBox != null) {
+                noteEditBox.close();
+            }
             changed = false;
             this.setX(x);
             this.setY(y);
@@ -2268,8 +2269,7 @@ public class GuiMusicSheet extends Screen {
         public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
             if (this.active && this.visible) {
                 if(mouseButton == 2){
-                    this.visible = false;
-                    this.active = false;
+                    close();
                 }
 
                 for(AbstractWidget widget : children) {
@@ -2282,8 +2282,7 @@ public class GuiMusicSheet extends Screen {
 
                 boolean flag = this.clicked(mouseX, mouseY);
                 if (!flag) {
-                    this.visible = false;
-                    this.active = false;
+                    close();
                 }
                 return true;
             }
@@ -2313,6 +2312,11 @@ public class GuiMusicSheet extends Screen {
             sliderStartVolume.onRelease(posX, posY);
             sliderEndVolume.onRelease(posX, posY);
             return true;
+        }
+
+        private void close() {
+            this.visible = false;
+            this.active = false;
         }
 
         private VolumeMarker requireMarker() {

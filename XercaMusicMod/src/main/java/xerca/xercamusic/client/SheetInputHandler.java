@@ -8,11 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringUtil;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-import xerca.xercamusic.common.Mod;
+import xerca.xercamusic.common.MusicClipboard;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.IItemInstrument;
-import xerca.xercamusic.common.item.ItemMusicSheet;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -40,6 +39,10 @@ class SheetInputHandler {
                 gui.helpOn = false;
                 gui.updateButtons();
             }
+            return true;
+        }
+
+        if (handleTopLevelMouseClicked(dmouseX, dmouseY, mouseButton)) {
             return true;
         }
 
@@ -191,6 +194,10 @@ class SheetInputHandler {
     }
 
     boolean handleMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        if (handleTopLevelMouseDragged(posX, posY, mouseButton, deltaX, deltaY)) {
+            return true;
+        }
+
         GuiEventListener focused = gui.getFocused();
         if (focused != null && gui.isDragging()) {
             focused.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
@@ -260,22 +267,60 @@ class SheetInputHandler {
 
     boolean handleMouseReleased(double posX, double posY, int mouseButton) {
         gui.setDragging(false);
-        GuiMusicSheet.requireWidget(gui.noteEditBox, "noteEditBox");
-        if (gui.noteEditBox.active) {
-            gui.noteEditBox.mouseReleased(posX, posY, mouseButton);
+        if (handleTopLevelMouseReleased(posX, posY, mouseButton)) {
             return true;
         }
-        GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox");
-        if (gui.markerEditBox.active) {
-            gui.markerEditBox.mouseReleased(posX, posY, mouseButton);
-            return true;
-        }
+
         if (mouseButton == 0) {
             finishAddingNote();
             finishAddingMarker((int) posX, (int) posY);
         }
 
         return true;
+    }
+
+    private boolean handleTopLevelMouseClicked(double mouseX, double mouseY, int mouseButton) {
+        if (isActive(gui.markerEditBox)) {
+            gui.markerEditBox.mouseClicked(mouseX, mouseY, mouseButton);
+            return true;
+        }
+        if (isActive(gui.noteEditBox)) {
+            gui.noteEditBox.mouseClicked(mouseX, mouseY, mouseButton);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleTopLevelMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        if (isActive(gui.markerEditBox)) {
+            gui.markerEditBox.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return true;
+        }
+        if (isActive(gui.noteEditBox)) {
+            gui.noteEditBox.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleTopLevelMouseReleased(double posX, double posY, int mouseButton) {
+        if (isActive(gui.markerEditBox)) {
+            gui.markerEditBox.mouseReleased(posX, posY, mouseButton);
+            return true;
+        }
+        if (isActive(gui.noteEditBox)) {
+            gui.noteEditBox.mouseReleased(posX, posY, mouseButton);
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isActive(@Nullable GuiMusicSheet.NoteEditBox editBox) {
+        return editBox != null && editBox.active && editBox.visible;
+    }
+
+    private static boolean isActive(@Nullable GuiMusicSheet.MarkerEditBox editBox) {
+        return editBox != null && editBox.active && editBox.visible;
     }
 
     boolean handleMouseScrolled(double x, double y, double scrollX, double scrollY) {
@@ -761,7 +806,7 @@ class SheetInputHandler {
                 toBeCopied.add(event);
             }
         }
-        buffer.writeByte(GuiMusicSheet.COPY_BEGIN_BYTE);
+        buffer.writeByte(MusicClipboard.COPY_BEGIN_BYTE);
         buffer.writeInt(gui.editCursorEnd - gui.editCursor);
         buffer.writeInt(toBeCopied.size());
         for (NoteEvent event : toBeCopied) {
@@ -797,58 +842,13 @@ class SheetInputHandler {
     private void decodeFromClipboard(boolean pushBack) {
         String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getWindow().getWindow());
         if (encodedMusic != null && !encodedMusic.isEmpty()) {
-            byte[] byteArray;
-            try { // Try because this can fail with weird clipboard content
-                byteArray = Base64.getDecoder().decode(encodedMusic);
-            } catch (IllegalArgumentException ex) {
+            MusicClipboard.ParsedMusic parsedMusic = MusicClipboard.decode(encodedMusic);
+            if (parsedMusic == null) {
                 return;
             }
-
-            int length = 0;
-            List<NoteEvent> toBePasted;
-            List<VolumeMarker> markersToPaste = new ArrayList<>();
-            // Check begin byte
-            if (byteArray[0] != GuiMusicSheet.COPY_BEGIN_BYTE) {
-                // Old version
-
-                // Check if all values are valid
-                for (byte b : byteArray) {
-                    if (b < 0 || b > 48) {
-                        Mod.LOGGER.info("User tried to copy invalid data into music: {}", b);
-                        return;
-                    }
-                }
-
-                // Copy values
-                toBePasted = ItemMusicSheet.oldMusicToNotes(byteArray);
-                if (!toBePasted.isEmpty()) {
-                    for (NoteEvent event : toBePasted) {
-                        length = (short) (event.time + event.length) > length ? (short) (event.time + event.length) : length;
-                    }
-                }
-            } else {
-                // New version
-                FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.copiedBuffer(byteArray));
-                buffer.readByte();
-
-                // Read copied time length and note event count
-                length = buffer.readInt() + 1;
-                int count = buffer.readInt();
-
-                // Read the note events into an array
-                toBePasted = new ArrayList<>(count);
-                for (int i = 0; i < count; i++) {
-                    toBePasted.add(NoteEvent.fromBuffer(buffer));
-                }
-
-                // Read volume markers if present (backward compatible)
-                if (buffer.isReadable() && buffer.readableBytes() >= 4) {
-                    int markerCount = buffer.readInt();
-                    for (int i = 0; i < markerCount; i++) {
-                        markersToPaste.add(VolumeMarker.fromBuffer(buffer));
-                    }
-                }
-            }
+            int length = parsedMusic.length();
+            List<NoteEvent> toBePasted = parsedMusic.notes();
+            List<VolumeMarker> markersToPaste = parsedMusic.volumeMarkers();
 
             pushUndo();
             if (pushBack) {
