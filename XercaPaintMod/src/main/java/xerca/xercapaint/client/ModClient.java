@@ -97,7 +97,8 @@ public class ModClient implements ClientModInitializer {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             for (File file : files) {
-                if (!file.getName().toLowerCase().endsWith(".jar")) {
+                String fileName = file.getName().toLowerCase();
+                if (!fileName.endsWith(".jar") && !fileName.endsWith(".zip")) {
                     continue;
                 }
                 try (InputStream is = Files.newInputStream(file.toPath())) {
