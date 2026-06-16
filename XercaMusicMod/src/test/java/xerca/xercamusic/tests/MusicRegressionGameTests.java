@@ -18,6 +18,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,6 +36,7 @@ import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
+import xerca.xercamusic.common.item.RecipeNoteCloning;
 import xerca.xercamusic.common.packets.clientbound.SingleNoteClientPacket;
 import xerca.xercamusic.common.packets.clientbound.TripleNoteClientPacket;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
@@ -44,10 +47,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 public final class MusicRegressionGameTests {
@@ -226,6 +226,35 @@ public final class MusicRegressionGameTests {
             return instrumentBlock.useWithoutItem(state, helper.getLevel(), absolutePos, player, hit);
         }
         helper.assertTrue(false, "Unsupported block for useBlockWithoutItem: " + state.getBlock());
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Mirrors the vanilla server-side resolution order in
+     * {@code ServerPlayerGameMode#useItemOn}: try the block's item interaction, fall back to the
+     * block's item-less interaction, and only then let the held item place its block. Used to verify
+     * that opening an instrument GUI suppresses block placement from a held block instrument.
+     */
+    private static InteractionResult simulateServerUseItemOn(GameTestHelper helper, Player player, ItemStack stack, BlockPos relativePos, Direction face) {
+        player.setItemSlot(EquipmentSlot.MAINHAND, stack);
+        BlockPos absolutePos = helper.absolutePos(relativePos);
+        BlockState state = helper.getLevel().getBlockState(absolutePos);
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(absolutePos), face, absolutePos, false);
+        if (state.getBlock() instanceof xerca.xercamusic.common.block.BlockInstrument instrumentBlock) {
+            ItemInteractionResult itemResult = instrumentBlock.useItemOn(stack, state, helper.getLevel(), absolutePos, player, InteractionHand.MAIN_HAND, hit);
+            if (itemResult.consumesAction()) {
+                return itemResult.result();
+            }
+            if (itemResult == ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION) {
+                InteractionResult blockResult = instrumentBlock.useWithoutItem(state, helper.getLevel(), absolutePos, player, hit);
+                if (blockResult.consumesAction()) {
+                    return blockResult;
+                }
+            }
+        }
+        if (!stack.isEmpty()) {
+            return stack.useOn(new net.minecraft.world.item.context.UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+        }
         return InteractionResult.PASS;
     }
 
@@ -1069,8 +1098,66 @@ public final class MusicRegressionGameTests {
         player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
 
         InteractionResult result = useBlockWithoutItem(helper, player, pianoPos, Direction.UP);
-        helper.assertTrue(result == InteractionResult.PASS, "Expected empty-hand piano use to fall through on the server");
+        helper.assertTrue(result.consumesAction(),
+                "Expected empty-hand piano use to consume the interaction on the server so a held block item cannot also place a block");
         helper.assertTrue(countSpiritsNear(helper, pianoPos) == 0, "Expected piano use without a sheet to not start playback");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "piano")
+    public static void pianoUseWithBlockInstrumentOpensGuiWithoutPlacingBlock(GameTestHelper helper) {
+        BlockPos pianoPos = new BlockPos(1, 2, 1);
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        placePiano(helper, pianoPos, Direction.NORTH);
+
+        BlockPos absolutePos = helper.absolutePos(pianoPos);
+        player.moveTo(Vec3.atCenterOf(absolutePos).add(1.0D, 0.0D, 0.0D));
+
+        ItemStack blockInstrument = new ItemStack(Items.PIANO);
+        int initialCount = blockInstrument.getCount();
+        InteractionResult result = simulateServerUseItemOn(helper, player, blockInstrument, pianoPos, Direction.UP);
+
+        helper.assertTrue(result.consumesAction(),
+                "Expected using a block instrument on an existing instrument to be consumed by the GUI interaction");
+        helper.assertTrue(helper.getLevel().getBlockState(helper.absolutePos(pianoPos.above())).isAir(),
+                "Expected no instrument block to be placed on top of the existing instrument");
+        helper.assertTrue(player.getMainHandItem().getCount() == initialCount,
+                "Expected the held block instrument to not be consumed by a block placement");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "music_stacking")
+    public static void signedMusicSheetsStackToSixteenBySameGeneration(GameTestHelper helper) {
+        RecipeNoteCloning recipe = new RecipeNoteCloning(CraftingBookCategory.MISC);
+        UUID id = UUID.randomUUID();
+        ItemStack original = createSheetStack(id, 1, 1, 8, 8, 1.0f, "song", "composer");
+
+        List<ItemStack> items = new ArrayList<>(Collections.nCopies(9, ItemStack.EMPTY));
+        items.set(0, original.copy());
+        items.set(1, new ItemStack(Items.MUSIC_SHEET));
+        CraftingInput grid = CraftingInput.of(3, 3, items);
+
+        ItemStack clone = recipe.assemble(grid, helper.getLevel().registryAccess());
+        helper.assertTrue(!clone.isEmpty(), "Expected the clone recipe to produce a signed sheet");
+        helper.assertTrue(clone.getMaxStackSize() == ItemMusicSheet.SIGNED_STACK_SIZE,
+                "Expected a cloned (signed) music sheet to stack up to 16");
+
+        ItemStack cloneAgain = recipe.assemble(grid, helper.getLevel().registryAccess());
+        helper.assertTrue(ItemStack.isSameItemSameComponents(clone, cloneAgain),
+                "Expected two identical signed sheets of the same generation to be stackable");
+
+        ItemStack signedOriginal = createSheetStack(id, 1, 1, 8, 8, 1.0f, "song", "composer");
+        ItemMusicSheet.updateStackSize(signedOriginal);
+        helper.assertTrue(signedOriginal.getMaxStackSize() == ItemMusicSheet.SIGNED_STACK_SIZE,
+                "Expected a signed original sheet to stack up to 16");
+        helper.assertTrue(!ItemStack.isSameItemSameComponents(clone, signedOriginal),
+                "Expected signed sheets of different generations to not stack together");
+
+        ItemStack empty1 = new ItemStack(Items.MUSIC_SHEET);
+        ItemStack empty2 = new ItemStack(Items.MUSIC_SHEET);
+        helper.assertTrue(empty1.getMaxStackSize() == 1, "Expected an empty music sheet to keep stack size 1");
+        helper.assertTrue(ItemStack.isSameItemSameComponents(empty1, empty2),
+                "Expected empty music sheets to remain stackable with each other");
         helper.succeed();
     }
 

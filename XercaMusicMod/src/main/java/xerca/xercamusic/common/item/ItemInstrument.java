@@ -69,8 +69,9 @@ public class ItemInstrument extends Item implements IItemInstrument {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         BlockState blockState = world.getBlockState(blockpos);
-        boolean hasInstrument = blockState.getValue(BlockMusicBox.HAS_INSTRUMENT);
-        if (blockState.getBlock() == Blocks.MUSIC_BOX && !hasInstrument) {
+        if (blockState.getBlock() == Blocks.MUSIC_BOX &&
+                blockState.hasProperty(BlockMusicBox.HAS_INSTRUMENT) &&
+                !blockState.getValue(BlockMusicBox.HAS_INSTRUMENT)) {
             ItemStack itemstack = context.getItemInHand();
             if (!world.isClientSide) {
                 BlockMusicBox.insertInstrument(world, blockpos, blockState, itemstack.getItem());

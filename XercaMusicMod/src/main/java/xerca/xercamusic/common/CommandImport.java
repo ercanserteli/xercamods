@@ -114,7 +114,7 @@ public final class CommandImport {
             }
         }
 
-        if (tag.getInt(KEY_GENERATION) > 0) {
+        if (tag.getInt(KEY_GENERATION) > 0 && tag.getInt(KEY_GENERATION) < 3) {
             tag.putInt(KEY_GENERATION, tag.getInt(KEY_GENERATION) + 1);
         }
 
@@ -257,5 +257,6 @@ public final class CommandImport {
         if (tag.contains(KEY_VOLUME, Tag.TAG_FLOAT)) {
             sheet.set(Items.SHEET_VOLUME, tag.getFloat(KEY_VOLUME));
         }
+        updateStackSize(sheet);
     }
 }

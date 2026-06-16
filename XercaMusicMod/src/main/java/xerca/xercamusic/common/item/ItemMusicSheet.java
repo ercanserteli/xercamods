@@ -2,6 +2,7 @@ package xerca.xercamusic.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -164,7 +165,7 @@ public class ItemMusicSheet extends Item {
         }
 
         int generation = stack.getOrDefault(Items.SHEET_GENERATION, 0);
-        // generation = 0 means empty, 1 means original, more means copy
+        // generation = 0=empty, 1=original, 2=copy of org, 3=copy of copy
         if (generation > 0) {
             tooltip.add(Component.translatable("note.generation." + (generation - 1))
                     .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
@@ -190,11 +191,12 @@ public class ItemMusicSheet extends Item {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         BlockState blockState = world.getBlockState(blockpos);
-        boolean hasMusic = blockState.getValue(BlockMusicBox.HAS_MUSIC);
-        if (blockState.getBlock() == Blocks.MUSIC_BOX && !hasMusic) {
+        if (blockState.getBlock() == Blocks.MUSIC_BOX &&
+                blockState.hasProperty(BlockMusicBox.HAS_MUSIC) &&
+                !blockState.getValue(BlockMusicBox.HAS_MUSIC)) {
             ItemStack itemstack = context.getItemInHand();
             if (!world.isClientSide && itemstack.get(Items.SHEET_ID) != null) {
-                BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());
+                BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copyWithCount(1));
                 Player player = context.getPlayer();
                 if (player != null && !player.getAbilities().instabuild) {
                     itemstack.shrink(1);
@@ -210,5 +212,23 @@ public class ItemMusicSheet extends Item {
     @Override
     public boolean isFoil(ItemStack stack) {
         return stack.getOrDefault(Items.SHEET_GENERATION, 0) > 0;
+    }
+
+    public static final int SIGNED_STACK_SIZE = 16;
+
+    /**
+     * Signed sheets that are the same can be stacked
+     */
+    public static void updateStackSize(ItemStack stack) {
+        if (stack.getOrDefault(Items.SHEET_GENERATION, 0) > 0) {
+            stack.set(DataComponents.MAX_STACK_SIZE, SIGNED_STACK_SIZE);
+        } else if (stack.getOrDefault(DataComponents.MAX_STACK_SIZE, 1) > 1) {
+            stack.remove(DataComponents.MAX_STACK_SIZE);
+        }
+    }
+
+    @Override
+    public void verifyComponentsAfterLoad(ItemStack stack) {
+        updateStackSize(stack);
     }
 }

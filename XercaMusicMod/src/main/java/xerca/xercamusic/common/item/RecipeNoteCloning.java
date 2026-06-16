@@ -83,6 +83,7 @@ public class RecipeNoteCloning extends CustomRecipe {
             resultStack.set(Items.SHEET_VOLUME, orgNote.get(Items.SHEET_VOLUME));
             resultStack.set(Items.SHEET_AUTHOR, orgNote.get(Items.SHEET_AUTHOR));
             resultStack.set(Items.SHEET_TITLE, orgNote.get(Items.SHEET_TITLE));
+            ItemMusicSheet.updateStackSize(resultStack);
             return resultStack;
         } else {
             return ItemStack.EMPTY;

@@ -7,6 +7,7 @@ import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.VolumeMarker;
+import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
                 note.set(Items.SHEET_TITLE, title.trim());
                 note.set(Items.SHEET_AUTHOR, pl.getName().getString());
                 note.set(Items.SHEET_GENERATION, 1);
+                ItemMusicSheet.updateStackSize(note);
                 Triggers.BECOME_MUSICIAN.trigger(pl);
             }
             if (flag.hasNotes) {
