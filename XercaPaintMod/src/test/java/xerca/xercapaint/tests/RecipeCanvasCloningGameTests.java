@@ -89,6 +89,36 @@ public class RecipeCanvasCloningGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
+    public static void cloningRejectsMixedMaterials(GameTestHelper helper) {
+        // A painted paper original with a fresh glass canvas of the same size must not clone
+        CraftingInput grid = createGrid(
+                2, 2,
+                createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "paper"),
+                new ItemStack(Items.ITEM_CANVAS_GLASS)
+        );
+
+        helper.assertTrue(!RECIPE.matches(grid, helper.getLevel()),
+                "Expected cloning to fail for mixed paper/glass canvases");
+        helper.assertTrue(RECIPE.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+                "Expected cloning to assemble empty for mixed paper/glass canvases");
+
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
+    public static void cloningGlassCanvasProducesGlassCanvas(GameTestHelper helper) {
+        ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS_GLASS), 1, "glass_clone");
+        CraftingInput grid = createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS_GLASS));
+
+        helper.assertTrue(RECIPE.matches(grid, helper.getLevel()), "Expected glass+glass clone to match");
+        ItemStack result = RECIPE.assemble(grid, helper.getLevel().registryAccess());
+        helper.assertTrue(result.is(Items.ITEM_CANVAS_GLASS), "Expected glass clone result to stay a glass canvas");
+        helper.assertTrue(result.getOrDefault(Items.CANVAS_GENERATION, 0) == 2, "Expected glass clone generation to increase to 2");
+
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
     public static void signedCanvasesStackToSixteenBySameGeneration(GameTestHelper helper) {
         ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "stackable");
         ItemStack clone = RECIPE.assemble(createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS)),

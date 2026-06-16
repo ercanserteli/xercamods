@@ -19,6 +19,13 @@ public class RecipeCanvasCloning extends CustomRecipe {
     }
 
     /**
+     * Two canvases clone together only if they share both size and material
+     */
+    private static boolean sameKind(ItemCanvas a, ItemCanvas b) {
+        return a.getCanvasType() == b.getCanvasType() && a.isGlass() == b.isGlass();
+    }
+
+    /**
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
@@ -33,7 +40,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!orgCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!freshCanvas.isEmpty() && ((ItemCanvas) freshCanvas.getItem()).getCanvasType() != itemCanvas.getCanvasType()) {
+                    if (!freshCanvas.isEmpty() && !sameKind((ItemCanvas) freshCanvas.getItem(), itemCanvas)) {
                         return false;
                     }
 
@@ -42,7 +49,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!freshCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!orgCanvas.isEmpty() && ((ItemCanvas) orgCanvas.getItem()).getCanvasType() != itemCanvas.getCanvasType()) {
+                    if (!orgCanvas.isEmpty() && !sameKind((ItemCanvas) orgCanvas.getItem(), itemCanvas)) {
                         return false;
                     }
 
@@ -69,7 +76,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!orgCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!freshCanvas.isEmpty() && ((ItemCanvas) freshCanvas.getItem()).getCanvasType() != itemCanvas.getCanvasType()) {
+                    if (!freshCanvas.isEmpty() && !sameKind((ItemCanvas) freshCanvas.getItem(), itemCanvas)) {
                         return ItemStack.EMPTY;
                     }
 
@@ -78,7 +85,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!freshCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!orgCanvas.isEmpty() && ((ItemCanvas) orgCanvas.getItem()).getCanvasType() != itemCanvas.getCanvasType()) {
+                    if (!orgCanvas.isEmpty() && !sameKind((ItemCanvas) orgCanvas.getItem(), itemCanvas)) {
                         return ItemStack.EMPTY;
                     }
 

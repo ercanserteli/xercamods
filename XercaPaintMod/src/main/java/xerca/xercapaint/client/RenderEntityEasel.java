@@ -92,8 +92,9 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     public static class RenderEntityEaselFactory implements EntityRendererProvider<EntityEasel> {
         @Override
         public EntityRenderer<EntityEasel> create(Context ctx) {
-            theInstance = new RenderEntityEasel(ctx);
-            return theInstance;
+            RenderEntityEasel instance = new RenderEntityEasel(ctx);
+            theInstance = instance;
+            return instance;
         }
     }
 }

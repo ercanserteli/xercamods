@@ -1,8 +1,11 @@
 package xerca.xercapaint.tests;
 
 import io.netty.buffer.Unpooled;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -10,6 +13,8 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.PaletteUtil;
+import xerca.xercapaint.entity.Entities;
+import xerca.xercapaint.entity.EntityCanvas;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.item.crafting.RecipeCanvasCloning;
@@ -35,7 +40,7 @@ public class CanvasSidesGameTests {
     }
 
     private static int[] sampleSidePixels(CanvasType type) {
-        int[] sides = CanvasSides.defaultPixels(type);
+        int[] sides = CanvasSides.defaultPixels(type, false);
         for (int i = 0; i < sides.length; i++) {
             // Deterministic, distinct-looking colors per side pixel
             sides[i] = 0xFF000000 | (i * 7 + 13) % 0xFFFFFF;
@@ -50,14 +55,16 @@ public class CanvasSidesGameTests {
             int height = CanvasType.getHeight(type);
             helper.assertTrue(CanvasSides.count(type) == 2 * width + 2 * height,
                     "Side pixel count must cover all four edges for " + type);
-            helper.assertTrue(CanvasSides.topOffset(type) == 0, "Top offset must be 0");
+            helper.assertTrue(CanvasSides.topOffset() == 0, "Top offset must be 0");
             helper.assertTrue(CanvasSides.bottomOffset(type) == width, "Bottom offset must follow the top row");
             helper.assertTrue(CanvasSides.leftOffset(type) == 2 * width, "Left offset must follow both rows");
             helper.assertTrue(CanvasSides.rightOffset(type) == 2 * width + height, "Right offset must follow the left column");
-            helper.assertTrue(CanvasSides.defaultPixels(type).length == CanvasSides.count(type),
+            helper.assertTrue(CanvasSides.defaultPixels(type, false).length == CanvasSides.count(type),
                     "Default side pixels must be fully populated");
-            helper.assertTrue(CanvasSides.defaultPixels(type)[0] == CanvasSides.DEFAULT_COLOR,
-                    "Default side pixels must be white");
+            helper.assertTrue(CanvasSides.defaultPixels(type, false)[0] == CanvasSides.DEFAULT_COLOR,
+                    "Default paper side pixels must be white");
+            helper.assertTrue(CanvasSides.defaultPixels(type, true)[0] == 0,
+                    "Default glass side pixels must be transparent");
         }
         helper.succeed();
     }
@@ -106,6 +113,30 @@ public class CanvasSidesGameTests {
         helper.assertTrue(!result.isEmpty(), "Expected a clone result");
         helper.assertTrue(Boolean.TRUE.equals(result.get(Items.CANVAS_SIDES_ACTIVE)), "Clone must copy sidesActive");
         helper.assertTrue(sideList.equals(result.get(Items.CANVAS_SIDE_PIXELS)), "Clone must copy side pixels");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = SIDES_BATCH)
+    public static void glassFlagSurvivesEntityNbtRoundTrip(GameTestHelper helper) {
+        ItemStack glassStack = new ItemStack(Items.ITEM_CANVAS_GLASS);
+        ItemCanvas itemCanvas = (ItemCanvas) glassStack.getItem();
+        helper.assertTrue(itemCanvas.isGlass(), "ITEM_CANVAS_GLASS must report glass");
+        int area = itemCanvas.getWidth() * itemCanvas.getHeight();
+        glassStack.set(Items.CANVAS_ID, "glass_entity");
+        glassStack.set(Items.CANVAS_VERSION, 1);
+        glassStack.set(Items.CANVAS_PIXELS, new ArrayList<>(Collections.nCopies(area, 0)));
+
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        EntityCanvas canvas = new EntityCanvas(helper.getLevel(), glassStack, pos, Direction.NORTH, CanvasType.SMALL, 0);
+        helper.assertTrue(canvas.isGlass(), "Placed glass canvas entity must be glass");
+
+        CompoundTag tag = new CompoundTag();
+        canvas.addAdditionalSaveData(tag);
+        helper.assertTrue(tag.getBoolean("glass"), "NBT must record the glass flag");
+
+        EntityCanvas reloaded = new EntityCanvas(Entities.CANVAS, helper.getLevel());
+        reloaded.readAdditionalSaveData(tag);
+        helper.assertTrue(reloaded.isGlass(), "Glass flag must survive an NBT round-trip");
         helper.succeed();
     }
 }

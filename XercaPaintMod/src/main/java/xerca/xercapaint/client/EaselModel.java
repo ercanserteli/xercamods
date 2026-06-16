@@ -69,7 +69,7 @@ public class EaselModel extends EntityModel<EntityEasel> {
                 return;
             }
             if (itemCanvas.getCanvasType() == CanvasType.LARGE || itemCanvas.getCanvasType() == CanvasType.TALL) {
-                bottomBar.y = 16.5f;
+                bottomBar.y = 16.6f;
                 bottomBar.z = -4.0f;
                 topBar.y = 9.8f;
                 topBar.z = -2.25f;

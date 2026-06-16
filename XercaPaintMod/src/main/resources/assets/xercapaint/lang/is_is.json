@@ -27,6 +27,16 @@
   "xercapaint.import.fail.4": "Ekki tókst að lesa skipun eða málverksskrána (%1$s)",
   "xercapaint.import.fail.5": "Málverksskráin er skemmd",
   "easel.deny": "Einhver annar er að vinna í þessu málverki núna",
+  "canvas.help.toggleHelp": "Kveikja/slökkva á hjálparábendingum",
+  "canvas.help.brushSize": "Pensilstærð (%1$s)",
+  "canvas.help.brushOpacity": "Ógagnsæi pensils (%1$s%%)",
+  "canvas.help.colorPicker": "Litaplokkari",
+  "canvas.help.colorPicker.desc": "Veldu tólið, taktu lit af striganum og dragðu hann í sérlitarauf.",
+  "canvas.help.colorRemover": "Litaeyðir",
+  "canvas.help.colorRemover.desc": "Taktu smá vatn og dragðu það í sérlitarauf til að tæma hana.",
+  "canvas.help.canvasHolder": "Strigahaldari",
+  "canvas.help.canvasHolder.desc": "Taktu strigann og færðu hann. Þú getur fært litaspjaldið á sama hátt.",
+  "canvas.help.toggleSides": "Skipta um ramma",
   "entity.xercapaint.canvas": "Strigi",
   "entity.xercapaint.easel": "Trönur"
 }

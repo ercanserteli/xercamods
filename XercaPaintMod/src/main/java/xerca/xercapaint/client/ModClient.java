@@ -37,17 +37,18 @@ public class ModClient implements ClientModInitializer {
 
     public static void showCanvasGui(EntityEasel easel, ItemStack paletteStack, Minecraft minecraft) {
         ItemStack canvasStack = easel.getItem();
+        ItemCanvas canvasItem = (ItemCanvas) canvasStack.getItem();
         if ((canvasStack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) || paletteStack.isEmpty()) {
             minecraft.setScreen(new GuiCanvasView(canvasStack,
                     Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
-                    ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
+                    canvasItem.getCanvasType(), canvasItem.isGlass(), easel));
         } else {
             if (minecraft.player == null) {
                 return;
             }
             minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvasStack, paletteStack,
                     Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
-                    ((ItemCanvas) canvasStack.getItem()).getCanvasType(), easel));
+                    canvasItem.getCanvasType(), canvasItem.isGlass(), easel));
         }
     }
 
@@ -62,18 +63,18 @@ public class ModClient implements ClientModInitializer {
 
         if (heldItem.getItem() instanceof ItemCanvas itemCanvas) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemPalette) || (heldItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0)) {
-                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), itemCanvas.isGlass(), null));
             } else {
-                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), null));
+                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), itemCanvas.isGlass(), null));
             }
         } else if (heldItem.getItem() instanceof ItemPalette) {
-            if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas)) {
+            if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas offhandCanvas)) {
                 minecraft.setScreen(new GuiPalette(heldItem, Component.translatable("item.xercapaint.item_palette")));
             } else {
                 if (offhandItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
-                    minecraft.setScreen(new GuiCanvasView(offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), ((ItemCanvas) offhandItem.getItem()).getCanvasType(), null));
+                    minecraft.setScreen(new GuiCanvasView(offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), offhandCanvas.getCanvasType(), offhandCanvas.isGlass(), null));
                 } else {
-                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player, offhandItem, heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), ((ItemCanvas) offhandItem.getItem()).getCanvasType(), null));
+                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player, offhandItem, heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), offhandCanvas.getCanvasType(), offhandCanvas.isGlass(), null));
                 }
             }
         }
@@ -93,6 +94,10 @@ public class ModClient implements ClientModInitializer {
         BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LARGE, canvasItemRenderer);
         BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LONG, canvasItemRenderer);
         BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_TALL, canvasItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_GLASS, canvasItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_GLASS_LARGE, canvasItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_GLASS_LONG, canvasItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_GLASS_TALL, canvasItemRenderer);
 
         EntityRendererRegistry.register(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
         EntityRendererRegistry.register(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
@@ -109,6 +114,10 @@ public class ModClient implements ClientModInitializer {
         ItemProperties.register(Items.ITEM_CANVAS_LARGE, Mod.id(DRAWN_PREDICATE_ID), drawn);
         ItemProperties.register(Items.ITEM_CANVAS_LONG, Mod.id(DRAWN_PREDICATE_ID), drawn);
         ItemProperties.register(Items.ITEM_CANVAS_TALL, Mod.id(DRAWN_PREDICATE_ID), drawn);
+        ItemProperties.register(Items.ITEM_CANVAS_GLASS, Mod.id(DRAWN_PREDICATE_ID), drawn);
+        ItemProperties.register(Items.ITEM_CANVAS_GLASS_LARGE, Mod.id(DRAWN_PREDICATE_ID), drawn);
+        ItemProperties.register(Items.ITEM_CANVAS_GLASS_LONG, Mod.id(DRAWN_PREDICATE_ID), drawn);
+        ItemProperties.register(Items.ITEM_CANVAS_GLASS_TALL, Mod.id(DRAWN_PREDICATE_ID), drawn);
         ItemProperties.register(Items.ITEM_PALETTE, Mod.id("colors"), colors);
 
         ClientPlayNetworking.registerGlobalReceiver(CloseGuiPacket.PACKET_ID, new CloseGuiPacketHandler());

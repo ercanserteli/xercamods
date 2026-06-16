@@ -35,6 +35,12 @@ public class CanvasRecipeGameTests {
             new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_large"), 2, 2, Items.ITEM_CANVAS_LARGE)
     };
 
+    private static final CanvasRecipeSpec[] SMALL_GLASS_CANVAS_RECIPES = {
+            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_long"), 2, 1, Items.ITEM_CANVAS_GLASS_LONG),
+            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_tall"), 1, 2, Items.ITEM_CANVAS_GLASS_TALL),
+            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_large"), 2, 2, Items.ITEM_CANVAS_GLASS_LARGE)
+    };
+
     private static CraftingInput createFilledGrid(int width, int height, ItemStack fillStack) {
         List<ItemStack> stacks = new ArrayList<>(width * height);
         for (int i = 0; i < width * height; i++) {
@@ -89,6 +95,41 @@ public class CanvasRecipeGameTests {
             ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
             helper.assertTrue(result.is(spec.expectedResult()), "Expected " + spec.recipeId() + " result item");
         }
+
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
+    public static void smallFreshGlassCanvasesCraftLongTallAndLarge(GameTestHelper helper) {
+        ItemStack freshGlass = new ItemStack(Items.ITEM_CANVAS_GLASS);
+        for (CanvasRecipeSpec spec : SMALL_GLASS_CANVAS_RECIPES) {
+            CraftingRecipe recipe = requireCraftingRecipe(helper, spec.recipeId());
+            CraftingInput grid = createFilledGrid(spec.width(), spec.height(), freshGlass);
+
+            helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected glass recipe to match for " + spec.recipeId());
+            ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+            helper.assertTrue(result.is(spec.expectedResult()), "Expected " + spec.recipeId() + " result item");
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
+    public static void glassCanvasCraftsFromGlassPaneAndSticks(GameTestHelper helper) {
+        ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass");
+        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId);
+
+        ItemStack stick = new ItemStack(net.minecraft.world.item.Items.STICK);
+        ItemStack pane = new ItemStack(net.minecraft.world.item.Items.GLASS_PANE);
+        List<ItemStack> stacks = new ArrayList<>(List.of(
+                stick.copy(), stick.copy(), stick.copy(),
+                stick.copy(), pane.copy(), stick.copy(),
+                stick.copy(), stick.copy(), stick.copy()));
+        CraftingInput grid = CraftingInput.of(3, 3, stacks);
+
+        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected glass canvas recipe to match");
+        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        helper.assertTrue(result.is(Items.ITEM_CANVAS_GLASS), "Expected glass canvas result item");
 
         helper.succeed();
     }

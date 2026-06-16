@@ -27,6 +27,16 @@
   "xercapaint.import.fail.4": "Impossibile elaborare il comando o leggere il file del dipinto (%1$s)",
   "xercapaint.import.fail.5": "Il file del dipinto è danneggiato",
   "easel.deny": "Qualcun altro sta lavorando a questo dipinto in questo momento",
+  "canvas.help.toggleHelp": "Attiva/disattiva i suggerimenti",
+  "canvas.help.brushSize": "Dimensione del pennello (%1$s)",
+  "canvas.help.brushOpacity": "Opacità del pennello (%1$s%%)",
+  "canvas.help.colorPicker": "Selettore di colore",
+  "canvas.help.colorPicker.desc": "Seleziona lo strumento, preleva un colore dalla tela e trascinalo in uno slot di colore personalizzato.",
+  "canvas.help.colorRemover": "Rimozione colore",
+  "canvas.help.colorRemover.desc": "Preleva un po' d'acqua e trascinala in uno slot di colore personalizzato per svuotarlo.",
+  "canvas.help.canvasHolder": "Supporto della tela",
+  "canvas.help.canvasHolder.desc": "Preleva la tela e spostala. Puoi spostare la tavolozza nello stesso modo.",
+  "canvas.help.toggleSides": "Cambia cornice",
   "entity.xercapaint.canvas": "Tela",
   "entity.xercapaint.easel": "Cavalletto"
 }

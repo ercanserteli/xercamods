@@ -79,6 +79,9 @@ public class CommandExport {
 
                         tag.putIntArray("pixels", pixels);
                         tag.putByte("ct", itemCanvas.getCanvasType().toByte());
+                        if (itemCanvas.isGlass()) {
+                            tag.putBoolean("glass", true);
+                        }
 
                         List<Integer> sidePixels = s.get(Items.CANVAS_SIDE_PIXELS);
                         if (sidePixels != null) {

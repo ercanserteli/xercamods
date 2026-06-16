@@ -107,7 +107,8 @@ public abstract class BasePalette extends Screen {
     boolean paletteDirty;
     @Nullable PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
-    PaletteUtil.Color currentColor = BASIC_COLORS[0];
+    // Static so the last picked color is remembered across GUI openings
+    static PaletteUtil.Color currentColor = BASIC_COLORS[0];
     final PaletteUtil.CustomColor[] customColors;
     final boolean[] basicColorFlags;
     boolean paletteComplete;

@@ -33,6 +33,10 @@ public final class Items {
     public static final ItemCanvas ITEM_CANVAS_LARGE = new ItemCanvas(CanvasType.LARGE);
     public static final ItemCanvas ITEM_CANVAS_LONG = new ItemCanvas(CanvasType.LONG);
     public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL);
+    public static final ItemCanvas ITEM_CANVAS_GLASS = new ItemCanvas(CanvasType.SMALL, true);
+    public static final ItemCanvas ITEM_CANVAS_GLASS_LARGE = new ItemCanvas(CanvasType.LARGE, true);
+    public static final ItemCanvas ITEM_CANVAS_GLASS_LONG = new ItemCanvas(CanvasType.LONG, true);
+    public static final ItemCanvas ITEM_CANVAS_GLASS_TALL = new ItemCanvas(CanvasType.TALL, true);
     public static final ItemEasel ITEM_EASEL = new ItemEasel(new Item.Properties().stacksTo(1));
 
     public static final RecipeSerializer<RecipeFillPalette> CRAFTING_SPECIAL_PALETTE_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeFillPalette::new);
@@ -63,6 +67,10 @@ public final class Items {
                 output.accept(ITEM_CANVAS_LONG);
                 output.accept(ITEM_CANVAS_TALL);
                 output.accept(ITEM_CANVAS_LARGE);
+                output.accept(ITEM_CANVAS_GLASS);
+                output.accept(ITEM_CANVAS_GLASS_LONG);
+                output.accept(ITEM_CANVAS_GLASS_TALL);
+                output.accept(ITEM_CANVAS_GLASS_LARGE);
                 output.accept(ITEM_EASEL);
             })
             .title(Component.translatable("itemGroup.xercapaint.paint_tab"))
@@ -80,6 +88,10 @@ public final class Items {
         registerItem("item_canvas_large", ITEM_CANVAS_LARGE);
         registerItem("item_canvas_long", ITEM_CANVAS_LONG);
         registerItem("item_canvas_tall", ITEM_CANVAS_TALL);
+        registerItem("item_canvas_glass", ITEM_CANVAS_GLASS);
+        registerItem("item_canvas_glass_large", ITEM_CANVAS_GLASS_LARGE);
+        registerItem("item_canvas_glass_long", ITEM_CANVAS_GLASS_LONG);
+        registerItem("item_canvas_glass_tall", ITEM_CANVAS_GLASS_TALL);
         registerItem("item_easel", ITEM_EASEL);
 
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Mod.id("paint_tab"), PAINT_TAB);

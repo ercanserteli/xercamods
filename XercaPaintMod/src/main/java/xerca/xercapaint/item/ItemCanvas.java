@@ -31,10 +31,20 @@ public class ItemCanvas extends HangingEntityItem {
     private static final int ORIGINAL_GENERATION = 1;
     private static final int COPY_GENERATION = 3;
     private final CanvasType canvasType;
+    private final boolean glass;
 
     ItemCanvas(CanvasType canvasType) {
+        this(canvasType, false);
+    }
+
+    ItemCanvas(CanvasType canvasType, boolean glass) {
         super(Entities.CANVAS, new Item.Properties().stacksTo(1));
         this.canvasType = canvasType;
+        this.glass = glass;
+    }
+
+    public boolean isGlass() {
+        return glass;
     }
 
     @Override
@@ -219,5 +229,14 @@ public class ItemCanvas extends HangingEntityItem {
 
     public static String generateName(Player player) {
         return player.getUUID() + "_" + System.currentTimeMillis() / 100;
+    }
+
+    public static Item canvasItemFor(CanvasType type, boolean glass) {
+        return switch (type) {
+            case SMALL -> glass ? Items.ITEM_CANVAS_GLASS : Items.ITEM_CANVAS;
+            case LONG -> glass ? Items.ITEM_CANVAS_GLASS_LONG : Items.ITEM_CANVAS_LONG;
+            case TALL -> glass ? Items.ITEM_CANVAS_GLASS_TALL : Items.ITEM_CANVAS_TALL;
+            case LARGE -> glass ? Items.ITEM_CANVAS_GLASS_LARGE : Items.ITEM_CANVAS_LARGE;
+        };
     }
 }

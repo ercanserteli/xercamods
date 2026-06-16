@@ -27,6 +27,16 @@
   "xercapaint.import.fail.4": "No se pudo analizar el comando o leer el archivo de la pintura (%1$s)",
   "xercapaint.import.fail.5": "El archivo de la pintura está dañado",
   "easel.deny": "Alguien más está trabajando en esta pintura en este momento",
+  "canvas.help.toggleHelp": "Alternar consejos de ayuda",
+  "canvas.help.brushSize": "Tamaño del pincel (%1$s)",
+  "canvas.help.brushOpacity": "Opacidad del pincel (%1$s%%)",
+  "canvas.help.colorPicker": "Selector de color",
+  "canvas.help.colorPicker.desc": "Selecciona la herramienta, toma un color del lienzo y arrástralo a una ranura de color personalizado.",
+  "canvas.help.colorRemover": "Eliminador de color",
+  "canvas.help.colorRemover.desc": "Toma un poco de agua y arrástrala a una ranura de color personalizado para vaciarla.",
+  "canvas.help.canvasHolder": "Soporte del lienzo",
+  "canvas.help.canvasHolder.desc": "Toma el lienzo y muévelo. Puedes mover la paleta de la misma forma.",
+  "canvas.help.toggleSides": "Alternar marcos",
   "entity.xercapaint.canvas": "Lienzo",
   "entity.xercapaint.easel": "Caballete"
 }

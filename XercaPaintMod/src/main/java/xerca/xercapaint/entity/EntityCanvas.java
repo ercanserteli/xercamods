@@ -48,6 +48,7 @@ public class EntityCanvas extends HangingEntity {
     private static final EntityDataAccessor<Integer> CANVAS_VERSION = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Byte> CANVAS_TYPE_KEY = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> CANVAS_ROTATION = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Boolean> CANVAS_GLASS = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BOOLEAN);
     public static final Map<String, Picture> PICTURES = Maps.newHashMap();
     private static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
 
@@ -68,6 +69,7 @@ public class EntityCanvas extends HangingEntity {
             this.canvasSigned = false;
         }
         this.setCanvasType(canvasType);
+        this.setGlass(stack.getItem() instanceof ItemCanvas itemCanvas && itemCanvas.isGlass());
         this.setRotation(rotation);
         this.setDirection(facing);
 
@@ -143,6 +145,7 @@ public class EntityCanvas extends HangingEntity {
         builder.define(CANVAS_VERSION, 0);
         builder.define(CANVAS_TYPE_KEY, (byte) 0);
         builder.define(CANVAS_ROTATION, (byte) 0);
+        builder.define(CANVAS_GLASS, false);
     }
 
     @Override
@@ -165,17 +168,12 @@ public class EntityCanvas extends HangingEntity {
     @Override
     public void dropItem(@Nullable Entity brokenEntity) {
         if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
+            this.playSound(isGlass() ? SoundEvents.GLASS_BREAK : SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             if (brokenEntity instanceof Player playerEntity && playerEntity.getAbilities().instabuild) {
                 return;
             }
             CanvasType canvasType = requireCanvasType();
-            ItemStack canvasItem = switch (canvasType) {
-                case SMALL -> new ItemStack(Items.ITEM_CANVAS);
-                case LARGE -> new ItemStack(Items.ITEM_CANVAS_LARGE);
-                case LONG -> new ItemStack(Items.ITEM_CANVAS_LONG);
-                case TALL -> new ItemStack(Items.ITEM_CANVAS_TALL);
-            };
+            ItemStack canvasItem = new ItemStack(ItemCanvas.canvasItemFor(canvasType, isGlass()));
 
             canvasItem.set(Items.CANVAS_ID, getCanvasID());
             canvasItem.set(Items.CANVAS_VERSION, getVersion());
@@ -215,7 +213,7 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     public void playPlacementSound() {
-        this.playSound(SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
+        this.playSound(isGlass() ? SoundEvents.GLASS_PLACE : SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
     }
 
     @Override
@@ -332,6 +330,14 @@ public class EntityCanvas extends HangingEntity {
         this.getEntityData().set(CANVAS_TYPE_KEY, canvasType.toByte());
     }
 
+    public boolean isGlass() {
+        return this.getEntityData().get(CANVAS_GLASS);
+    }
+
+    private void setGlass(boolean glass) {
+        this.getEntityData().set(CANVAS_GLASS, glass);
+    }
+
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
         return new ClientboundAddEntityPacket(this, this.direction.get3DDataValue(), this.getPos());
@@ -369,6 +375,7 @@ public class EntityCanvas extends HangingEntity {
         }
 
         this.setCanvasType(CanvasType.fromByte(tagCompound.getByte("ctype")));
+        this.setGlass(tagCompound.getBoolean("glass"));
         if (tagCompound.contains("Facing") && !tagCompound.contains("RealFace")) {
             int facing = tagCompound.getByte("Facing");
             Direction horizontal = Direction.from2DDataValue(facing);
@@ -393,6 +400,7 @@ public class EntityCanvas extends HangingEntity {
             tagCompound.putInt("generation", canvasGeneration);
         }
         tagCompound.putByte("ctype", getCanvasTypeKey());
+        tagCompound.putBoolean("glass", isGlass());
         tagCompound.putByte("RealFace", (byte) this.direction.get3DDataValue());
         tagCompound.putByte("Rotation", (byte) this.getRotation());
 
@@ -420,10 +428,6 @@ public class EntityCanvas extends HangingEntity {
     }
 
     public record Picture(int version, int[] pixels, boolean sidesActive, int[] sidePixels) {
-        public Picture(int version, int[] pixels) {
-            this(version, pixels, false, new int[0]);
-        }
-
         public Picture {
             pixels = pixels.clone();
             sidePixels = sidePixels.clone();
@@ -442,10 +446,13 @@ public class EntityCanvas extends HangingEntity {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof Picture other)) return false;
-            return version == other.version && sidesActive == other.sidesActive
-                    && java.util.Arrays.equals(pixels, other.pixels)
-                    && java.util.Arrays.equals(sidePixels, other.sidePixels);
+            if (!(o instanceof Picture(
+                    int otherVersion, int[] otherPixels, boolean otherSidesActive, int[] otherSidePixels
+            )))
+                return false;
+            return version == otherVersion && sidesActive == otherSidesActive
+                    && java.util.Arrays.equals(pixels, otherPixels)
+                    && java.util.Arrays.equals(sidePixels, otherSidePixels);
         }
 
         @Override

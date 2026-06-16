@@ -90,7 +90,9 @@ public class CommandImport {
 
         byte canvasType = tag.getByte("ct");
         CanvasType importedCanvasType = CanvasType.fromByte(canvasType);
+        boolean importedGlass = tag.getBoolean("glass");
         tag.remove("ct");
+        tag.remove("glass");
         if (tag.getInt(TAG_GENERATION) > 0 && tag.getInt(TAG_GENERATION) < 3) {
             tag.putInt(TAG_GENERATION, tag.getInt(TAG_GENERATION) + 1);
         }
@@ -98,34 +100,24 @@ public class CommandImport {
         ItemStack itemStack;
         boolean doAddItem = false;
         if (player.isCreative()) {
-            switch (importedCanvasType) {
-                case SMALL -> itemStack = new ItemStack(Items.ITEM_CANVAS);
-                case LONG -> itemStack = new ItemStack(Items.ITEM_CANVAS_LONG);
-                case TALL -> itemStack = new ItemStack(Items.ITEM_CANVAS_TALL);
-                case LARGE -> itemStack = new ItemStack(Items.ITEM_CANVAS_LARGE);
-                default -> {
-                    Mod.LOGGER.error("Unknown canvas type");
-                    return;
-                }
-            }
+            itemStack = new ItemStack(ItemCanvas.canvasItemFor(importedCanvasType, importedGlass));
             doAddItem = true;
         } else {
             ItemStack mainHand = player.getMainHandItem();
             ItemStack offHand = player.getOffhandItem();
 
-            if (!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.get(Items.CANVAS_PIXELS) != null || mainHand.get(Items.CANVAS_ID) != null)) {
+            if (!(mainHand.getItem() instanceof ItemCanvas heldCanvas) || (mainHand.get(Items.CANVAS_PIXELS) != null || mainHand.get(Items.CANVAS_ID) != null)) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
-            if (((ItemCanvas) mainHand.getItem()).getCanvasType() != importedCanvasType) {
-                Component typeName;
-                switch (importedCanvasType) {
-                    case LONG -> typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
-                    case TALL -> typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
-                    case LARGE -> typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
-                    default -> typeName = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
-                }
+            if (heldCanvas.getCanvasType() != importedCanvasType) {
+                Component typeName = ItemCanvas.canvasItemFor(importedCanvasType, importedGlass).getName(ItemStack.EMPTY);
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", typeName).withStyle(ChatFormatting.RED));
+                return;
+            }
+            if (heldCanvas.isGlass() != importedGlass) {
+                Component typeName = ItemCanvas.canvasItemFor(importedCanvasType, importedGlass).getName(ItemStack.EMPTY);
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.material", typeName).withStyle(ChatFormatting.RED));
                 return;
             }
             if (!ItemPalette.isFull(offHand)) {

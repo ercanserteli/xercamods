@@ -27,6 +27,16 @@
   "xercapaint.import.fail.4": "Kunde inte tolka kommandot eller läsa målningens fil (%1$s)",
   "xercapaint.import.fail.5": "Målningsfilen är trasig",
   "easel.deny": "Någon annan håller på med den här målningen just nu",
+  "canvas.help.toggleHelp": "Växla hjälpverktygstips",
+  "canvas.help.brushSize": "Penselstorlek (%1$s)",
+  "canvas.help.brushOpacity": "Penselns opacitet (%1$s%%)",
+  "canvas.help.colorPicker": "Färgväljare",
+  "canvas.help.colorPicker.desc": "Välj verktyget, plocka upp en färg från målarduken och dra och släpp den i en anpassad färgruta.",
+  "canvas.help.colorRemover": "Färgborttagare",
+  "canvas.help.colorRemover.desc": "Plocka upp lite vatten och dra och släpp det i en anpassad färgruta för att tömma den.",
+  "canvas.help.canvasHolder": "Målarduksgrepp",
+  "canvas.help.canvasHolder.desc": "Plocka upp målarduken och flytta den. Du kan flytta paletten på samma sätt.",
+  "canvas.help.toggleSides": "Växla ramar",
   "entity.xercapaint.canvas": "Målarduk",
   "entity.xercapaint.easel": "Staffli"
 }

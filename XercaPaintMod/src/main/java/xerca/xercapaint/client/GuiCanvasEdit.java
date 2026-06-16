@@ -3,11 +3,13 @@ package xerca.xercapaint.client;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.PaletteUtil;
@@ -78,6 +81,7 @@ public class GuiCanvasEdit extends BasePalette {
     private final Player editingPlayer;
 
     private final CanvasType canvasType;
+    private final boolean glass;
     private boolean isSigned;
     private int[] pixels;
     private String canvasTitle = "";
@@ -107,14 +111,15 @@ public class GuiCanvasEdit extends BasePalette {
     /**
      * A snapshot of the editable canvas state for both front and side pixels
      */
-    private record Snapshot(int[] pixels, int @Nullable [] sidePixels) {
+    private record Snapshot(int[] pixels, int[] sidePixels) {
     }
 
-    protected GuiCanvasEdit(Player player, ItemStack canvasStack, ItemStack paletteStack, Component title, CanvasType canvasType, @Nullable EntityEasel easel) {
+    protected GuiCanvasEdit(Player player, ItemStack canvasStack, ItemStack paletteStack, Component title, CanvasType canvasType, boolean glass, @Nullable EntityEasel easel) {
         super(title, paletteStack);
         updateCount = 0;
 
         this.canvasType = canvasType;
+        this.glass = glass;
         this.canvasPixelScale = canvasType == CanvasType.SMALL ? 10 : 5;
         this.canvasPixelWidth = CanvasType.getWidth(canvasType);
         this.canvasPixelHeight = CanvasType.getHeight(canvasType);
@@ -135,7 +140,7 @@ public class GuiCanvasEdit extends BasePalette {
             isSigned = !canvasTitle.isEmpty();
         } else {
             this.pixels = new int[canvasPixelArea];
-            Arrays.fill(this.pixels, BASIC_COLORS[15].rgbVal());
+            Arrays.fill(this.pixels, glass ? 0 : BASIC_COLORS[15].rgbVal());
 
             this.canvasId = ItemCanvas.generateName(player);
         }
@@ -149,7 +154,7 @@ public class GuiCanvasEdit extends BasePalette {
 
     private void ensureSidePixels() {
         if (sidePixels == null || sidePixels.length != CanvasSides.count(canvasType)) {
-            sidePixels = CanvasSides.defaultPixels(canvasType);
+            sidePixels = CanvasSides.defaultPixels(canvasType, glass);
         }
     }
 
@@ -220,7 +225,7 @@ public class GuiCanvasEdit extends BasePalette {
         y = (int) (window.getGuiScaledHeight() * 0.05);
         ToggleHelpButton toggleHelpButton = this.addRenderableWidget(new ToggleHelpButton(x, y, 21, 21, 197, 0, 21,
                 PALETTE_TEXTURES, 256, 256, button -> showHelp = !showHelp));
-        toggleHelpButton.setTooltip(Tooltip.create(Component.literal("Toggle help tooltips")));
+        toggleHelpButton.setTooltip(Tooltip.create(Component.translatable("canvas.help.toggleHelp")));
 
         updateButtons();
     }
@@ -274,7 +279,7 @@ public class GuiCanvasEdit extends BasePalette {
         int w = canvasPixelWidth;
         int h = canvasPixelHeight;
         if (row == -1 && col >= 0 && col < w) {
-            return CanvasSides.topOffset(canvasType) + col;
+            return CanvasSides.topOffset() + col;
         }
         if (row == h && col >= 0 && col < w) {
             return CanvasSides.bottomOffset(canvasType) + col;
@@ -288,7 +293,7 @@ public class GuiCanvasEdit extends BasePalette {
         return -1;
     }
 
-    private void paintCell(int col, int row, PaletteUtil.Color color, float opacity) {
+    private void paintCell(int col, int row, PaletteUtil.Color color, float opacity, boolean erase) {
         boolean onCanvas = col >= 0 && col < canvasPixelWidth && row >= 0 && row < canvasPixelHeight;
         int sideIndex = -1;
         if (!onCanvas) {
@@ -306,14 +311,29 @@ public class GuiCanvasEdit extends BasePalette {
         }
         if (onCanvas) {
             int i = row * canvasPixelWidth + col;
-            pixels[i] = PaletteUtil.Color.mix(color, new PaletteUtil.Color(pixels[i]), opacity).rgbVal();
+            pixels[i] = blendPixel(pixels[i], color, opacity, erase);
         } else {
             ensureSidePixels();
             if (sidePixels == null) {
                 return;
             }
-            sidePixels[sideIndex] = PaletteUtil.Color.mix(color, new PaletteUtil.Color(sidePixels[sideIndex]), opacity).rgbVal();
+            sidePixels[sideIndex] = blendPixel(sidePixels[sideIndex], color, opacity, erase);
         }
+    }
+
+    /**
+     * Combines a brush stroke with an existing pixel; glass uses binary transparency (erase clears, paint is opaque).
+     */
+    private int blendPixel(int old, PaletteUtil.Color color, float opacity, boolean erase) {
+        if (glass) {
+            if (erase) {
+                return 0;
+            }
+            if (((old >> 24) & 0xFF) == 0) {
+                return color.rgbVal();
+            }
+        }
+        return PaletteUtil.Color.mix(color, new PaletteUtil.Color(old), opacity).rgbVal();
     }
 
     private void paintAt(int mouseX, int mouseY, int mouseButton) {
@@ -325,7 +345,7 @@ public class GuiCanvasEdit extends BasePalette {
         int anchorCol = brushAnchor(mouseX, (int) canvasX, corner);
         int anchorRow = brushAnchor(mouseY, (int) canvasY, corner);
         for (int[] offset : BRUSH_OFFSETS[brushSize]) {
-            paintCell(anchorCol + offset[0], anchorRow + offset[1], color, opacity);
+            paintCell(anchorCol + offset[0], anchorRow + offset[1], color, opacity, erase);
         }
         canvasDirty = true;
     }
@@ -394,6 +414,11 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
+    protected void renderBlurredBackground(float partialTick) {
+        // Skip vanilla's world-blur behind the painting GUI so the scene stays crisp
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         if (!gettingSigned) {
             super.render(guiGraphics, mouseX, mouseY, f);
@@ -401,23 +426,36 @@ public class GuiCanvasEdit extends BasePalette {
             super.superRender(guiGraphics, mouseX, mouseY, f);
         }
 
+        // Write cells straight into the shared GUI buffer (guiGraphics.fill flushes per quad and tanks the FPS)
+        Matrix4f matrix = guiGraphics.pose().last().pose();
+        VertexConsumer canvasBuffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
+
         // Draw the canvas holder
         int holderMargin = sideMargin();
-        guiGraphics.fill((int) (canvasX + canvasWidth * 0.25), (int) canvasY - CANVAS_HOLDER_HEIGHT - holderMargin, (int) (canvasX + canvasWidth * 0.75), (int) canvasY - holderMargin, 0xffe1e1e1);
+        batchFill(canvasBuffer, matrix, (int) (canvasX + canvasWidth * 0.25), (int) canvasY - CANVAS_HOLDER_HEIGHT - holderMargin, (int) (canvasX + canvasWidth * 0.75), (int) canvasY - holderMargin, 0xffe1e1e1);
+
+        // For glass canvases, draw a transparency checkerboard so empty cells are visible
+        if (glass) {
+            for (int i = 0; i < canvasPixelHeight; i++) {
+                for (int j = 0; j < canvasPixelWidth; j++) {
+                    fillChecker(canvasBuffer, matrix, (int) canvasX + j * canvasPixelScale, (int) canvasY + i * canvasPixelScale, i + j);
+                }
+            }
+        }
 
         // Draw the canvas
         for (int i = 0; i < canvasPixelHeight; i++) {
             for (int j = 0; j < canvasPixelWidth; j++) {
                 int y = (int) canvasY + i * canvasPixelScale;
                 int x = (int) canvasX + j * canvasPixelScale;
-                guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
+                batchFill(canvasBuffer, matrix, x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
             }
         }
 
         if (!gettingSigned) {
             // Draw the paintable sides and the toggle button
             if (sidesActive) {
-                drawSideLines(guiGraphics);
+                drawSideLines(canvasBuffer, matrix);
             }
             drawSidesToggle(guiGraphics);
 
@@ -441,26 +479,26 @@ public class GuiCanvasEdit extends BasePalette {
                 if (inBrushMeter(mouseX, mouseY)) {
                     int selectedSize = 3 - (mouseY - brushMeterY) / BRUSH_SPRITE_SIZE;
                     if (selectedSize <= 3 && selectedSize >= 0) {
-                        guiGraphics.renderTooltip(font, Component.literal("Brush size (" + (selectedSize + 1) + ")"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(font, Component.translatable("canvas.help.brushSize", selectedSize + 1), mouseX, mouseY);
                     }
                 } else if (inBrushOpacityMeter(mouseX, mouseY)) {
                     int relativeY = mouseY - brushOpacityMeterY;
                     int selectedOpacity = relativeY / (BRUSH_OPACITY_SPRITE_SIZE + 1);
                     if (selectedOpacity >= 0 && selectedOpacity <= 3) {
                         int percentage = 100 - 25 * selectedOpacity;
-                        guiGraphics.renderTooltip(font, Component.literal("Brush opacity (" + percentage + "%)"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(font, Component.translatable("canvas.help.brushOpacity", percentage), mouseX, mouseY);
                     }
                 } else if (inColorPicker(mouseX - (int) paletteX, mouseY - (int) paletteY)) {
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Color picker"),
-                            Component.literal("Select the tool, then pick up a color from the canvas and drag-and-drop it to a custom color slot.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.translatable("canvas.help.colorPicker"),
+                            Component.translatable("canvas.help.colorPicker.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 } else if (inWater(mouseX - (int) paletteX, mouseY - (int) paletteY)) {
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Color remover"),
-                            Component.literal("Pick up some water and drag-and-drop it to a custom color slot to clear it.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.translatable("canvas.help.colorRemover"),
+                            Component.translatable("canvas.help.colorRemover.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 } else if (inCanvasHolder(mouseX, mouseY)) {
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.literal("Canvas holder"),
-                            Component.literal("Pick up the canvas and move it wherever you want. You can move the palette in the same way.").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
+                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.translatable("canvas.help.canvasHolder"),
+                            Component.translatable("canvas.help.canvasHolder.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 } else if (inSidesToggle(mouseX, mouseY)) {
-                    guiGraphics.renderTooltip(font, Component.literal("Toggle sides"), mouseX, mouseY);
+                    guiGraphics.renderTooltip(font, Component.translatable("canvas.help.toggleSides"), mouseX, mouseY);
                 }
             }
         } else {
@@ -639,7 +677,8 @@ public class GuiCanvasEdit extends BasePalette {
         if (undoStack.size() >= MAX_UNDO_LENGTH) {
             undoStack.removeLast();
         }
-        undoStack.push(new Snapshot(pixels.clone(), sidePixels == null ? null : sidePixels.clone()));
+        int[] sideSnapshot = sidePixels != null ? sidePixels.clone() : CanvasSides.defaultPixels(canvasType, glass);
+        undoStack.push(new Snapshot(pixels.clone(), sideSnapshot));
 
         if (inSidesToggle(mouseX, mouseY)) {
             toggleSides();
@@ -773,19 +812,44 @@ public class GuiCanvasEdit extends BasePalette {
         return x >= sidesToggleX && x < sidesToggleX + SIDES_TOGGLE_SIZE && y >= sidesToggleY && y < sidesToggleY + SIDES_TOGGLE_SIZE;
     }
 
-    private void drawSideLines(GuiGraphics guiGraphics) {
+    private static final int CHECKER_LIGHT = 0xFFBFBFBF;
+    private static final int CHECKER_DARK = 0xFF7F7F7F;
+
+    /**
+     * Writes one coloured quad into the shared GUI buffer, like {@link GuiGraphics#fill} but without flushing.
+     */
+    private static void batchFill(VertexConsumer buffer, Matrix4f matrix, int x1, int y1, int x2, int y2, int color) {
+        buffer.addVertex(matrix, x1, y1, 0.0f).setColor(color);
+        buffer.addVertex(matrix, x1, y2, 0.0f).setColor(color);
+        buffer.addVertex(matrix, x2, y2, 0.0f).setColor(color);
+        buffer.addVertex(matrix, x2, y1, 0.0f).setColor(color);
+    }
+
+    private void fillChecker(VertexConsumer buffer, Matrix4f matrix, int x, int y, int parity) {
+        batchFill(buffer, matrix, x, y, x + canvasPixelScale, y + canvasPixelScale, (parity & 1) == 0 ? CHECKER_LIGHT : CHECKER_DARK);
+    }
+
+    private void drawSideLines(VertexConsumer buffer, Matrix4f matrix) {
         int scale = canvasPixelScale;
         int cx = (int) canvasX;
         int cy = (int) canvasY;
         for (int k = 0; k < canvasPixelWidth; k++) {
             int x = cx + k * scale;
-            guiGraphics.fill(x, cy - scale, x + scale, cy, getSidePixel(CanvasSides.topOffset(canvasType) + k));
-            guiGraphics.fill(x, cy + canvasHeight, x + scale, cy + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
+            if (glass) {
+                fillChecker(buffer, matrix, x, cy - scale, k - 1);
+                fillChecker(buffer, matrix, x, cy + canvasHeight, k + canvasPixelHeight);
+            }
+            batchFill(buffer, matrix, x, cy - scale, x + scale, cy, getSidePixel(CanvasSides.topOffset() + k));
+            batchFill(buffer, matrix, x, cy + canvasHeight, x + scale, cy + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
         }
         for (int i = 0; i < canvasPixelHeight; i++) {
             int y = cy + i * scale;
-            guiGraphics.fill(cx - scale, y, cx, y + scale, getSidePixel(CanvasSides.leftOffset(canvasType) + i));
-            guiGraphics.fill(cx + canvasWidth, y, cx + canvasWidth + scale, y + scale, getSidePixel(CanvasSides.rightOffset(canvasType) + i));
+            if (glass) {
+                fillChecker(buffer, matrix, cx - scale, y, i - 1);
+                fillChecker(buffer, matrix, cx + canvasWidth, y, i + canvasPixelWidth);
+            }
+            batchFill(buffer, matrix, cx - scale, y, cx, y + scale, getSidePixel(CanvasSides.leftOffset(canvasType) + i));
+            batchFill(buffer, matrix, cx + canvasWidth, y, cx + canvasWidth + scale, y + scale, getSidePixel(CanvasSides.rightOffset(canvasType) + i));
         }
     }
 

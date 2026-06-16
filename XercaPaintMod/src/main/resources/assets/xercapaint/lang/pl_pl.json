@@ -27,6 +27,16 @@
   "xercapaint.import.fail.4": "Nie udało się przetworzyć polecenia lub odczytać pliku obrazu (%1$s)",
   "xercapaint.import.fail.5": "Plik obrazu jest uszkodzony",
   "easel.deny": "Ktoś inny pracuje teraz nad tym obrazem",
+  "canvas.help.toggleHelp": "Przełącz podpowiedzi pomocy",
+  "canvas.help.brushSize": "Rozmiar pędzla (%1$s)",
+  "canvas.help.brushOpacity": "Krycie pędzla (%1$s%%)",
+  "canvas.help.colorPicker": "Pipeta",
+  "canvas.help.colorPicker.desc": "Wybierz narzędzie, pobierz kolor z płótna i przeciągnij go do slotu własnego koloru.",
+  "canvas.help.colorRemover": "Usuwanie koloru",
+  "canvas.help.colorRemover.desc": "Pobierz trochę wody i przeciągnij ją do slotu własnego koloru, aby go wyczyścić.",
+  "canvas.help.canvasHolder": "Uchwyt płótna",
+  "canvas.help.canvasHolder.desc": "Chwyć płótno i przesuń je. W ten sam sposób możesz przesunąć paletę.",
+  "canvas.help.toggleSides": "Przełącz ramki",
   "entity.xercapaint.canvas": "Płótno",
   "entity.xercapaint.easel": "Sztaluga"
 }

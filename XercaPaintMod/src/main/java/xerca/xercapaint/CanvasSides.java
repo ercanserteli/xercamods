@@ -15,7 +15,7 @@ public final class CanvasSides {
         return 2 * CanvasType.getWidth(type) + 2 * CanvasType.getHeight(type);
     }
 
-    public static int topOffset(CanvasType type) {
+    public static int topOffset() {
         return 0;
     }
 
@@ -31,9 +31,9 @@ public final class CanvasSides {
         return 2 * CanvasType.getWidth(type) + CanvasType.getHeight(type);
     }
 
-    public static int[] defaultPixels(CanvasType type) {
+    public static int[] defaultPixels(CanvasType type, boolean isGlass) {
         int[] pixels = new int[count(type)];
-        Arrays.fill(pixels, DEFAULT_COLOR);
+        Arrays.fill(pixels, isGlass ? 0 : DEFAULT_COLOR);
         return pixels;
     }
 }
