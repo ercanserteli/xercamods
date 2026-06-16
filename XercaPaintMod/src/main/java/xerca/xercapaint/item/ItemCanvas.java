@@ -3,6 +3,7 @@ package xerca.xercapaint.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringUtil;
@@ -161,9 +162,10 @@ public class ItemCanvas extends HangingEntityItem {
             }
 
             int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
-            // generation = 0 means empty, 1 means original, more means copy
+            // generation = 0=empty, 1=original, 2=copy of org, 3=copy of copy
             if (generation > 0) {
-                tooltipComponents.add(Component.translatable("canvas.generation." + (generation - 1)).withStyle(ChatFormatting.GRAY));
+                tooltipComponents.add(Component.translatable("canvas.generation." + (generation - 1))
+                        .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
             }
         } else {
             tooltipComponents.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
@@ -174,6 +176,24 @@ public class ItemCanvas extends HangingEntityItem {
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public boolean isFoil(ItemStack stack) {
         return stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0;
+    }
+
+    public static final int SIGNED_STACK_SIZE = 16;
+
+    /**
+     * Signed canvases that are the same can be stacked
+     */
+    public static void updateStackSize(ItemStack stack) {
+        if (stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
+            stack.set(DataComponents.MAX_STACK_SIZE, SIGNED_STACK_SIZE);
+        } else if (stack.getOrDefault(DataComponents.MAX_STACK_SIZE, 1) > 1) {
+            stack.remove(DataComponents.MAX_STACK_SIZE);
+        }
+    }
+
+    @Override
+    public void verifyComponentsAfterLoad(ItemStack stack) {
+        updateStackSize(stack);
     }
 
     public int getWidth() {

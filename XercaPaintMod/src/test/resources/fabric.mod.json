@@ -6,9 +6,9 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "xerca.xercapaint.tests.RecipeCraftPaletteGameTests",
       "xerca.xercapaint.tests.RecipeFillPaletteGameTests",
       "xerca.xercapaint.tests.RecipeCanvasCloningGameTests",
+      "xerca.xercapaint.tests.CanvasSidesGameTests",
       "xerca.xercapaint.tests.CanvasTagCompatibilityGameTests",
       "xerca.xercapaint.tests.CanvasRecipeGameTests",
       "xerca.xercapaint.tests.PaletteDropperGameTests",

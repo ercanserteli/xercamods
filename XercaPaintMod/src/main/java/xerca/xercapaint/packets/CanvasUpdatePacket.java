@@ -9,7 +9,8 @@ import xerca.xercapaint.PaletteUtil;
 
 public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, String canvasId, int version, int easelId,
                                  PaletteUtil.CustomColor[] paletteColors,
-                                 CanvasType canvasType) implements CustomPacketPayload {
+                                 CanvasType canvasType, boolean sidesActive,
+                                 int[] sidePixels) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<CanvasUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("canvas_update"));
     public static final StreamCodec<FriendlyByteBuf, CanvasUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(CanvasUpdatePacket::encode, CanvasUpdatePacket::decode);
 
@@ -24,6 +25,8 @@ public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, Str
         buf.writeUtf(title);
         buf.writeBoolean(signed);
         buf.writeVarIntArray(pixels);
+        buf.writeBoolean(sidesActive);
+        buf.writeVarIntArray(sidePixels);
     }
 
     public static CanvasUpdatePacket decode(FriendlyByteBuf buf) {
@@ -39,12 +42,15 @@ public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, Str
         boolean signed = buf.readBoolean();
         int area = CanvasType.getHeight(canvasType) * CanvasType.getWidth(canvasType);
         int[] pixels = buf.readVarIntArray(area);
-        return new CanvasUpdatePacket(pixels, signed, title, canvasId, version, easelId, paletteColors, canvasType);
+        boolean sidesActive = buf.readBoolean();
+        int[] sidePixels = buf.readVarIntArray(xerca.xercapaint.CanvasSides.count(canvasType));
+        return new CanvasUpdatePacket(pixels, signed, title, canvasId, version, easelId, paletteColors, canvasType, sidesActive, sidePixels);
     }
 
     public CanvasUpdatePacket {
         pixels = pixels.clone();
         paletteColors = paletteColors.clone();
+        sidePixels = sidePixels.clone();
     }
 
     @Override
@@ -55,6 +61,11 @@ public record CanvasUpdatePacket(int[] pixels, boolean signed, String title, Str
     @Override
     public PaletteUtil.CustomColor[] paletteColors() {
         return paletteColors.clone();
+    }
+
+    @Override
+    public int[] sidePixels() {
+        return sidePixels.clone();
     }
 
     @Override

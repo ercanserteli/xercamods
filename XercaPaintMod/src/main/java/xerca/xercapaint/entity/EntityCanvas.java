@@ -29,6 +29,7 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.CanvasType;
+import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.PictureRequestPacket;
 
@@ -77,7 +78,13 @@ public class EntityCanvas extends HangingEntity {
             if (pixelList != null) {
                 pixels = pixelList.stream().mapToInt(i -> i).toArray();
             }
-            PICTURES.put(id, new Picture(version, pixels));
+            boolean sidesActive = stack.getOrDefault(Items.CANVAS_SIDES_ACTIVE, false);
+            int[] sidePixels = new int[0];
+            List<Integer> sideList = stack.get(Items.CANVAS_SIDE_PIXELS);
+            if (sideList != null) {
+                sidePixels = sideList.stream().mapToInt(i -> i).toArray();
+            }
+            PICTURES.put(id, new Picture(version, pixels, sidesActive, sidePixels));
         }
     }
 
@@ -177,9 +184,14 @@ public class EntityCanvas extends HangingEntity {
                 canvasItem.set(Items.CANVAS_TITLE, canvasTitle);
                 canvasItem.set(Items.CANVAS_GENERATION, canvasGeneration);
             }
+            ItemCanvas.updateStackSize(canvasItem);
             Picture picture = PICTURES.get(getCanvasID());
             if (picture != null) {
                 canvasItem.set(Items.CANVAS_PIXELS, Arrays.stream(picture.pixels).boxed().toList());
+                if (picture.sidePixels().length > 0) {
+                    canvasItem.set(Items.CANVAS_SIDES_ACTIVE, picture.sidesActive());
+                    canvasItem.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(picture.sidePixels()).boxed().toList());
+                }
             }
             this.spawnAtLocation(canvasItem);
         }
@@ -351,7 +363,9 @@ public class EntityCanvas extends HangingEntity {
 
         Picture picture = PICTURES.get(canvasId);
         if (picture == null || picture.version < version) {
-            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels")));
+            boolean sidesActive = canvasNBT.getBoolean("sidesActive");
+            int[] sidePixels = canvasNBT.getIntArray("sidePixels");
+            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels"), sidesActive, sidePixels));
         }
 
         this.setCanvasType(CanvasType.fromByte(tagCompound.getByte("ctype")));
@@ -385,6 +399,10 @@ public class EntityCanvas extends HangingEntity {
         Picture picture = PICTURES.get(getCanvasID());
         if (picture != null) {
             tagCompound.putIntArray("pixels", picture.pixels);
+            if (picture.sidePixels().length > 0) {
+                tagCompound.putBoolean("sidesActive", picture.sidesActive());
+                tagCompound.putIntArray("sidePixels", picture.sidePixels());
+            }
         }
     }
 
@@ -401,9 +419,14 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
-    public record Picture(int version, int[] pixels) {
+    public record Picture(int version, int[] pixels, boolean sidesActive, int[] sidePixels) {
+        public Picture(int version, int[] pixels) {
+            this(version, pixels, false, new int[0]);
+        }
+
         public Picture {
             pixels = pixels.clone();
+            sidePixels = sidePixels.clone();
         }
 
         @Override
@@ -412,16 +435,25 @@ public class EntityCanvas extends HangingEntity {
         }
 
         @Override
+        public int[] sidePixels() {
+            return sidePixels.clone();
+        }
+
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof Picture(int otherVersion, int[] otherPixels))) return false;
-            return version == otherVersion && java.util.Arrays.equals(pixels, otherPixels);
+            if (!(o instanceof Picture other)) return false;
+            return version == other.version && sidesActive == other.sidesActive
+                    && java.util.Arrays.equals(pixels, other.pixels)
+                    && java.util.Arrays.equals(sidePixels, other.sidePixels);
         }
 
         @Override
         public int hashCode() {
             int result = Integer.hashCode(version);
             result = 31 * result + java.util.Arrays.hashCode(pixels);
+            result = 31 * result + Boolean.hashCode(sidesActive);
+            result = 31 * result + java.util.Arrays.hashCode(sidePixels);
             return result;
         }
 
@@ -430,6 +462,8 @@ public class EntityCanvas extends HangingEntity {
             return "Picture{" +
                     "version=" + version +
                     ", pixels=" + java.util.Arrays.toString(pixels) +
+                    ", sidesActive=" + sidesActive +
+                    ", sidePixels=" + java.util.Arrays.toString(sidePixels) +
                     '}';
         }
     }

@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.Items;
@@ -17,7 +18,7 @@ import java.util.List;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiCanvasView extends Screen {
     private int canvasX;
-    private int canvasY = 40;
+    private int canvasY = 50;
     private final int canvasWidth;
     private final int canvasPixelScale;
     private final int canvasPixelWidth;
@@ -25,6 +26,8 @@ public class GuiCanvasView extends Screen {
     private final CanvasType canvasType;
 
     private int @Nullable [] pixels;
+    private final boolean sidesActive;
+    private int @Nullable [] sidePixels;
     private @Nullable String authorName = "";
     private String canvasTitle = "";
     private int generation;
@@ -50,6 +53,19 @@ public class GuiCanvasView extends Screen {
 
             this.pixels = stackPixels.stream().mapToInt(i -> i).toArray();
         }
+
+        this.sidesActive = canvasStack.getOrDefault(Items.CANVAS_SIDES_ACTIVE, false);
+        List<Integer> stackSidePixels = canvasStack.get(Items.CANVAS_SIDE_PIXELS);
+        if (stackSidePixels != null && stackSidePixels.size() == CanvasSides.count(canvasType)) {
+            this.sidePixels = stackSidePixels.stream().mapToInt(i -> i).toArray();
+        }
+    }
+
+    private int getSidePixel(int index) {
+        if (sidePixels != null && index >= 0 && index < sidePixels.length) {
+            return sidePixels[index];
+        }
+        return CanvasSides.DEFAULT_COLOR;
     }
 
     @Override
@@ -79,6 +95,21 @@ public class GuiCanvasView extends Screen {
             }
         }
 
+        if (sidesActive) {
+            int scale = canvasPixelScale;
+            int canvasHeight = canvasPixelHeight * scale;
+            for (int k = 0; k < canvasPixelWidth; k++) {
+                int x = canvasX + k * scale;
+                guiGraphics.fill(x, canvasY - scale, x + scale, canvasY, getSidePixel(CanvasSides.topOffset(canvasType) + k));
+                guiGraphics.fill(x, canvasY + canvasHeight, x + scale, canvasY + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
+            }
+            for (int i = 0; i < canvasPixelHeight; i++) {
+                int y = canvasY + i * scale;
+                guiGraphics.fill(canvasX - scale, y, canvasX, y + scale, getSidePixel(CanvasSides.leftOffset(canvasType) + i));
+                guiGraphics.fill(canvasX + canvasWidth, y, canvasX + canvasWidth + scale, y + scale, getSidePixel(CanvasSides.rightOffset(canvasType) + i));
+            }
+        }
+
         if (generation > 0 && !canvasTitle.isEmpty()) {
             String title = canvasTitle + " " + I18n.get("canvas.byAuthor", authorName);
             String gen = "(" + I18n.get("canvas.generation." + (generation - 1)) + ")";
@@ -91,10 +122,10 @@ public class GuiCanvasView extends Screen {
             float minX = Math.min(genX, titleX);
             float maxX = Math.max(genX + genWidth, titleX + titleWidth);
 
-            guiGraphics.fill((int) (minX - 10), canvasY - 30, (int) (maxX + 10), canvasY - 4, 0xFFEEEEEE);
+            guiGraphics.fill((int) (minX - 10), canvasY - 40, (int) (maxX + 10), canvasY - 14, 0xFFEEEEEE);
 
-            guiGraphics.drawString(font, title, (int) titleX, (canvasY - 25), 0xFF111111, false);
-            guiGraphics.drawString(font, gen, (int) genX, canvasY - 14, 0xFF444444, false);
+            guiGraphics.drawString(font, title, (int) titleX, (canvasY - 35), 0xFF111111, false);
+            guiGraphics.drawString(font, gen, (int) genX, canvasY - 24, 0xFF444444, false);
         }
     }
 

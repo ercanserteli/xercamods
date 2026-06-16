@@ -91,7 +91,7 @@ public class CommandImport {
         byte canvasType = tag.getByte("ct");
         CanvasType importedCanvasType = CanvasType.fromByte(canvasType);
         tag.remove("ct");
-        if (tag.getInt(TAG_GENERATION) > 0) {
+        if (tag.getInt(TAG_GENERATION) > 0 && tag.getInt(TAG_GENERATION) < 3) {
             tag.putInt(TAG_GENERATION, tag.getInt(TAG_GENERATION) + 1);
         }
 
@@ -139,10 +139,18 @@ public class CommandImport {
         itemStack.set(Items.CANVAS_ID, canvasId);
         itemStack.set(Items.CANVAS_PIXELS, Arrays.stream(tag.getIntArray("pixels")).boxed().toList());
         itemStack.set(Items.CANVAS_GENERATION, tag.getInt(TAG_GENERATION));
+        if (tag.contains("sidePixels")) {
+            int[] sidePixels = tag.getIntArray("sidePixels");
+            if (sidePixels.length == CanvasSides.count(importedCanvasType)) {
+                itemStack.set(Items.CANVAS_SIDES_ACTIVE, tag.getBoolean("sidesActive"));
+                itemStack.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(sidePixels).boxed().toList());
+            }
+        }
         if (tag.contains(TAG_TITLE, 8) && tag.contains(TAG_AUTHOR, 8)) {
             itemStack.set(Items.CANVAS_TITLE, tag.getString(TAG_TITLE));
             itemStack.set(Items.CANVAS_AUTHOR, tag.getString(TAG_AUTHOR));
         }
+        ItemCanvas.updateStackSize(itemStack);
         if (doAddItem) {
             player.addItem(itemStack);
         }

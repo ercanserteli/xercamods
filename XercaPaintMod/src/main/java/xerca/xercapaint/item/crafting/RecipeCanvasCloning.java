@@ -96,6 +96,11 @@ public class RecipeCanvasCloning extends CustomRecipe {
             resultStack.set(Items.CANVAS_VERSION, orgCanvas.get(Items.CANVAS_VERSION));
             resultStack.set(Items.CANVAS_TITLE, orgCanvas.get(Items.CANVAS_TITLE));
             resultStack.set(Items.CANVAS_AUTHOR, orgCanvas.get(Items.CANVAS_AUTHOR));
+            if (orgCanvas.get(Items.CANVAS_SIDE_PIXELS) != null) {
+                resultStack.set(Items.CANVAS_SIDES_ACTIVE, orgCanvas.getOrDefault(Items.CANVAS_SIDES_ACTIVE, false));
+                resultStack.set(Items.CANVAS_SIDE_PIXELS, orgCanvas.get(Items.CANVAS_SIDE_PIXELS));
+            }
+            ItemCanvas.updateStackSize(resultStack);
             return resultStack;
         } else {
             return ItemStack.EMPTY;

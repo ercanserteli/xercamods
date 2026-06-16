@@ -79,6 +79,12 @@ public class CommandExport {
 
                         tag.putIntArray("pixels", pixels);
                         tag.putByte("ct", itemCanvas.getCanvasType().toByte());
+
+                        List<Integer> sidePixels = s.get(Items.CANVAS_SIDE_PIXELS);
+                        if (sidePixels != null) {
+                            tag.putBoolean("sidesActive", s.getOrDefault(Items.CANVAS_SIDES_ACTIVE, false));
+                            tag.putIntArray("sidePixels", sidePixels.stream().mapToInt(Integer::intValue).toArray());
+                        }
                         if (title != null && author != null) {
                             tag.putString("title", title);
                             tag.putString("author", author);

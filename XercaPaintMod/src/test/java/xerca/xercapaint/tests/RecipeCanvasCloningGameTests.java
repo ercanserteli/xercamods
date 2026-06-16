@@ -89,6 +89,35 @@ public class RecipeCanvasCloningGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
+    public static void signedCanvasesStackToSixteenBySameGeneration(GameTestHelper helper) {
+        ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "stackable");
+        ItemStack clone = RECIPE.assemble(createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS)),
+                helper.getLevel().registryAccess());
+        helper.assertTrue(!clone.isEmpty(), "Expected the clone recipe to produce a signed canvas");
+        helper.assertTrue(clone.getMaxStackSize() == ItemCanvas.SIGNED_STACK_SIZE,
+                "Expected a cloned (signed) canvas to stack up to 16");
+
+        ItemStack cloneAgain = RECIPE.assemble(createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS)),
+                helper.getLevel().registryAccess());
+        helper.assertTrue(ItemStack.isSameItemSameComponents(clone, cloneAgain),
+                "Expected two identical signed canvases of the same generation to be stackable");
+
+        ItemStack signedOriginal = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "stackable");
+        ItemCanvas.updateStackSize(signedOriginal);
+        helper.assertTrue(signedOriginal.getMaxStackSize() == ItemCanvas.SIGNED_STACK_SIZE,
+                "Expected a signed original canvas to stack up to 16");
+        helper.assertTrue(!ItemStack.isSameItemSameComponents(clone, signedOriginal),
+                "Expected signed canvases of different generations to not stack together");
+
+        ItemStack empty1 = new ItemStack(Items.ITEM_CANVAS);
+        ItemStack empty2 = new ItemStack(Items.ITEM_CANVAS);
+        helper.assertTrue(empty1.getMaxStackSize() == 1, "Expected an empty canvas to keep stack size 1");
+        helper.assertTrue(ItemStack.isSameItemSameComponents(empty1, empty2),
+                "Expected empty canvases to remain stackable with each other");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_CLONE_BATCH)
     public static void cloningConsumesFreshCanvasAndKeepsOriginalAsRemainder(GameTestHelper helper) {
         ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "original");
         CraftingInput grid = createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS));

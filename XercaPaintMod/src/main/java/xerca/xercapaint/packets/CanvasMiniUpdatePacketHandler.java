@@ -55,6 +55,10 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
             canvas.set(Items.CANVAS_ID, msg.canvasId());
             canvas.set(Items.CANVAS_VERSION, msg.version());
             canvas.set(Items.CANVAS_GENERATION, 0);
+            canvas.set(Items.CANVAS_SIDES_ACTIVE, msg.sidesActive());
+            if (msg.sidePixels().length > 0) {
+                canvas.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(msg.sidePixels()).boxed().toList());
+            }
 
             if (easel != null) {
                 easel.setItem(canvas, false);

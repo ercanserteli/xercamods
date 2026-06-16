@@ -17,7 +17,6 @@ import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.crafting.RecipeCanvasCloning;
-import xerca.xercapaint.item.crafting.RecipeCraftPalette;
 import xerca.xercapaint.item.crafting.RecipeFillPalette;
 import xerca.xercapaint.item.crafting.RecipeTaglessShaped;
 
@@ -36,11 +35,12 @@ public final class Items {
     public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL);
     public static final ItemEasel ITEM_EASEL = new ItemEasel(new Item.Properties().stacksTo(1));
 
-    public static final RecipeSerializer<RecipeCraftPalette> CRAFTING_SPECIAL_PALETTE_CRAFTING = new SimpleCraftingRecipeSerializer<>(RecipeCraftPalette::new);
     public static final RecipeSerializer<RecipeFillPalette> CRAFTING_SPECIAL_PALETTE_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeFillPalette::new);
     public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = new SimpleCraftingRecipeSerializer<>(RecipeCanvasCloning::new);
     public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = new RecipeTaglessShaped.TaglessSerializer();
     public static final DataComponentType<List<Integer>> CANVAS_PIXELS = DataComponentType.<List<Integer>>builder().persistent(Codec.list(Codec.INT)).networkSynchronized(ByteBufCodecs.fromCodec(Codec.list(Codec.INT))).build();
+    public static final DataComponentType<Boolean> CANVAS_SIDES_ACTIVE = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
+    public static final DataComponentType<List<Integer>> CANVAS_SIDE_PIXELS = DataComponentType.<List<Integer>>builder().persistent(Codec.list(Codec.INT)).networkSynchronized(ByteBufCodecs.fromCodec(Codec.list(Codec.INT))).build();
     public static final DataComponentType<Integer> CANVAS_VERSION = DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build();
     public static final DataComponentType<String> CANVAS_ID = DataComponentType.<String>builder().persistent(ExtraCodecs.NON_EMPTY_STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build();
     public static final DataComponentType<String> CANVAS_TITLE = DataComponentType.<String>builder().persistent(Codec.STRING).build();
@@ -69,7 +69,6 @@ public final class Items {
             .build();
 
     public static void registerRecipes() {
-        registerRecipeSerializer("crafting_special_palette_crafting", CRAFTING_SPECIAL_PALETTE_CRAFTING);
         registerRecipeSerializer("crafting_special_palette_filling", CRAFTING_SPECIAL_PALETTE_FILLING);
         registerRecipeSerializer("crafting_special_canvas_cloning", CRAFTING_SPECIAL_CANVAS_CLONING);
         registerRecipeSerializer("crafting_tagless_shaped", CRAFTING_TAGLESS_SHAPED);
@@ -93,6 +92,8 @@ public final class Items {
         registerComponentType("canvas_title", CANVAS_TITLE);
         registerComponentType("canvas_author", CANVAS_AUTHOR);
         registerComponentType("canvas_pixels", CANVAS_PIXELS);
+        registerComponentType("canvas_sides_active", CANVAS_SIDES_ACTIVE);
+        registerComponentType("canvas_side_pixels", CANVAS_SIDE_PIXELS);
         registerComponentType("palette_basic_colors", PALETTE_BASIC_COLORS);
         registerComponentType("palette_custom_colors", PALETTE_CUSTOM_COLORS);
     }

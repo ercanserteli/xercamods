@@ -68,11 +68,16 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
             canvas.set(Items.CANVAS_ID, msg.canvasId());
             canvas.set(Items.CANVAS_VERSION, msg.version());
             canvas.set(Items.CANVAS_GENERATION, 0);
+            canvas.set(Items.CANVAS_SIDES_ACTIVE, msg.sidesActive());
+            if (msg.sidePixels().length > 0) {
+                canvas.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(msg.sidePixels()).boxed().toList());
+            }
             if (msg.signed()) {
                 canvas.set(Items.CANVAS_AUTHOR, pl.getName().getString());
                 canvas.set(Items.CANVAS_TITLE, msg.title().trim());
                 canvas.set(Items.CANVAS_GENERATION, 1);
             }
+            ItemCanvas.updateStackSize(canvas);
 
             if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
                 palette.set(Items.PALETTE_CUSTOM_COLORS, new ItemPalette.ComponentCustomColor(msg.paletteColors()));

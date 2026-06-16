@@ -18,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.entity.EntityCanvas;
@@ -41,10 +42,25 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
 
     private final TextureManager textureManager;
     private final Map<String, Instance> loadedCanvases = Maps.newHashMap();
+    /**
+     * 1x1 white texture used to render painted sides
+     */
+    private final ResourceLocation whiteLocation;
 
     RenderEntityCanvas(EntityRendererProvider.Context ctx) {
         super(ctx);
         this.textureManager = Minecraft.getInstance().getTextureManager();
+        this.whiteLocation = createWhiteTexture();
+    }
+
+    private ResourceLocation createWhiteTexture() {
+        DynamicTexture texture = new DynamicTexture(1, 1, false);
+        NativeImage image = texture.getPixels();
+        if (image != null) {
+            image.setPixelRGBA(0, 0, 0xFFFFFFFF);
+            texture.upload();
+        }
+        return textureManager.register("canvas_side_white", texture);
     }
 
     @Override
@@ -70,7 +86,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         return getCanvasRendererInstance(canvas.getCanvasID(), canvas.getVersion(), canvas.getWidth(), canvas.getHeight());
     }
 
-    @org.jetbrains.annotations.Nullable Instance getCanvasRendererInstance(ItemStack canvasStack, int width, int height) {
+    @Nullable Instance getCanvasRendererInstance(ItemStack canvasStack, int width, int height) {
         String canvasId = canvasStack.get(Items.CANVAS_ID);
         List<Integer> pixels = canvasStack.get(Items.CANVAS_PIXELS);
         if (canvasId == null || pixels == null) {
@@ -78,8 +94,12 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         }
         int version = canvasStack.getOrDefault(Items.CANVAS_VERSION, 1);
 
+        boolean sidesActive = canvasStack.getOrDefault(Items.CANVAS_SIDES_ACTIVE, false);
+        List<Integer> sideList = canvasStack.get(Items.CANVAS_SIDE_PIXELS);
+        int[] sidePixels = sideList != null ? sideList.stream().mapToInt(i -> i).toArray() : new int[0];
+
         EntityCanvas.PICTURES.compute(canvasId, (n, existing) ->
-                (existing == null || existing.version() < version) ? new EntityCanvas.Picture(version, pixels.stream().mapToInt(i -> i).toArray()) : existing
+                (existing == null || existing.version() < version) ? new EntityCanvas.Picture(version, pixels.stream().mapToInt(i -> i).toArray(), sidesActive, sidePixels) : existing
         );
 
         return getCanvasRendererInstance(canvasId, version, width, height);
@@ -111,6 +131,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         final int height;
         boolean loaded;
         boolean started;
+        boolean sidesActive;
+        int[] sidePixels = new int[0];
         public final DynamicTexture canvasTexture;
         public final ResourceLocation location;
 
@@ -135,7 +157,10 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         private void updateCanvasTexture(String name, int version) {
             int[] pixels = EMPTY_PIXELS;
             if (EntityCanvas.PICTURES.containsKey(name)) {
-                pixels = EntityCanvas.PICTURES.get(name).pixels();
+                EntityCanvas.Picture picture = EntityCanvas.PICTURES.get(name);
+                pixels = picture.pixels();
+                this.sidesActive = picture.sidesActive();
+                this.sidePixels = picture.sidePixels();
                 loaded = true;
             }
             if (loaded || !started) {
@@ -216,29 +241,36 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
             addVertex(back, pose, 0.0D, 32.0D * hScale, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
 
-            // LEFT SIDE (x = 0, normal -X)
-            addVertex(back, pose, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
-            addVertex(back, pose, 0.0D, 32.0D * hScale, 1.0D, sideWidth, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
-            addVertex(back, pose, 0.0D, 32.0D * hScale, -1.0D, 0.0F, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
-            addVertex(back, pose, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
+            boolean paintedSides = sidesActive;
+            if (!paintedSides) {
+                // LEFT SIDE (x = 0, normal -X)
+                addVertex(back, pose, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
+                addVertex(back, pose, 0.0D, 32.0D * hScale, 1.0D, sideWidth, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+                addVertex(back, pose, 0.0D, 32.0D * hScale, -1.0D, 0.0F, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+                addVertex(back, pose, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
 
-            // TOP SIDE (y = 32*hScale, normal +Y)
-            addVertex(back, pose, 0.0D, 32.0D * hScale, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
-            addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
-            addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, -1.0D, 1.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
-            addVertex(back, pose, 0.0D, 32.0D * hScale, -1.0D, 0.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
+                // TOP SIDE (y = 32*hScale, normal +Y)
+                addVertex(back, pose, 0.0D, 32.0D * hScale, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+                addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+                addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, -1.0D, 1.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
+                addVertex(back, pose, 0.0D, 32.0D * hScale, -1.0D, 0.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
 
-            // RIGHT SIDE (x = 32*wScale, normal +X)
-            addVertex(back, pose, 32.0D * wScale, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
-            addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, -1.0F, 0.0F, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
-            addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, 1.0F, sideWidth, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
-            addVertex(back, pose, 32.0D * wScale, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+                // RIGHT SIDE (x = 32*wScale, normal +X)
+                addVertex(back, pose, 32.0D * wScale, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+                addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, -1.0F, 0.0F, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+                addVertex(back, pose, 32.0D * wScale, 32.0D * hScale, 1.0F, sideWidth, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+                addVertex(back, pose, 32.0D * wScale, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
 
-            // BOTTOM SIDE (y = 0, normal -Y)
-            addVertex(back, pose, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
-            addVertex(back, pose, 32.0D * wScale, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
-            addVertex(back, pose, 32.0D * wScale, 0.0D, 1.0F, 1.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
-            addVertex(back, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
+                // BOTTOM SIDE (y = 0, normal -Y)
+                addVertex(back, pose, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
+                addVertex(back, pose, 32.0D * wScale, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
+                addVertex(back, pose, 32.0D * wScale, 0.0D, 1.0F, 1.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
+                addVertex(back, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
+            } else {
+                RenderSystem.setShaderTexture(0, RenderEntityCanvas.this.whiteLocation);
+                VertexConsumer sides = buffer.getBuffer(RenderType.entitySolid(RenderEntityCanvas.this.whiteLocation));
+                renderPaintedSides(sides, pose, 32.0F * wScale, 32.0F * hScale, packedLight);
+            }
 
             ms.popPose();
         }
@@ -250,6 +282,78 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                     .setOverlay(OverlayTexture.NO_OVERLAY)
                     .setLight(lightmap)
                     .setNormal(pose, nx, ny, nz);
+        }
+
+        private int sidePixelColor(int index) {
+            if (sidePixels != null && index >= 0 && index < sidePixels.length) {
+                return sidePixels[index];
+            }
+            return CanvasSides.DEFAULT_COLOR;
+        }
+
+        private void addSideVertex(VertexConsumer vb, PoseStack.Pose pose, double x, double y, double z, int color, int lightmap, float nx, float ny, float nz) {
+            int r = (color >> 16) & 0xFF;
+            int g = (color >> 8) & 0xFF;
+            int b = color & 0xFF;
+            vb.addVertex(pose, (float) x, (float) y, (float) z)
+                    .setColor(r, g, b, 255)
+                    .setUv(0.0F, 0.0F)
+                    .setOverlay(OverlayTexture.NO_OVERLAY)
+                    .setLight(lightmap)
+                    .setNormal(pose, nx, ny, nz);
+        }
+
+        /**
+         * Renders the four canvas edges as a strip of solid-colored, one-pixel quads. The pixel
+         * ordering matches {@link CanvasSides} so painted sides line up with the adjacent front pixels.
+         */
+        private void renderPaintedSides(VertexConsumer vb, PoseStack.Pose pose, float w32, float h32, int packedLight) {
+            final float unit = 2.0F; // one image pixel spans two local units along an edge
+            final int topOffset = 0;
+            final int bottomOffset = width;
+            final int leftOffset = 2 * width;
+            final int rightOffset = 2 * width + height;
+
+            // TOP edge (y = h32, normal +Y): pixel k maps to image column k -> x in [w32-(k+1)u, w32-k*u]
+            for (int k = 0; k < width; k++) {
+                int c = sidePixelColor(topOffset + k);
+                float x0 = w32 - (k + 1) * unit;
+                float x1 = w32 - k * unit;
+                addSideVertex(vb, pose, x0, h32, 1.0D, c, packedLight, 0.0F, 1.0F, 0.0F);
+                addSideVertex(vb, pose, x1, h32, 1.0D, c, packedLight, 0.0F, 1.0F, 0.0F);
+                addSideVertex(vb, pose, x1, h32, -1.0D, c, packedLight, 0.0F, 1.0F, 0.0F);
+                addSideVertex(vb, pose, x0, h32, -1.0D, c, packedLight, 0.0F, 1.0F, 0.0F);
+            }
+            // BOTTOM edge (y = 0, normal -Y): same x mapping as the top
+            for (int k = 0; k < width; k++) {
+                int c = sidePixelColor(bottomOffset + k);
+                float x0 = w32 - (k + 1) * unit;
+                float x1 = w32 - k * unit;
+                addSideVertex(vb, pose, x0, 0.0D, -1.0D, c, packedLight, 0.0F, -1.0F, 0.0F);
+                addSideVertex(vb, pose, x1, 0.0D, -1.0D, c, packedLight, 0.0F, -1.0F, 0.0F);
+                addSideVertex(vb, pose, x1, 0.0D, 1.0D, c, packedLight, 0.0F, -1.0F, 0.0F);
+                addSideVertex(vb, pose, x0, 0.0D, 1.0D, c, packedLight, 0.0F, -1.0F, 0.0F);
+            }
+            // LEFT edge (image left, x = w32, normal +X): pixel i maps to image row i -> y in [h32-(i+1)u, h32-i*u]
+            for (int i = 0; i < height; i++) {
+                int c = sidePixelColor(leftOffset + i);
+                float y0 = h32 - (i + 1) * unit;
+                float y1 = h32 - i * unit;
+                addSideVertex(vb, pose, w32, y0, -1.0D, c, packedLight, 1.0F, 0.0F, 0.0F);
+                addSideVertex(vb, pose, w32, y1, -1.0D, c, packedLight, 1.0F, 0.0F, 0.0F);
+                addSideVertex(vb, pose, w32, y1, 1.0D, c, packedLight, 1.0F, 0.0F, 0.0F);
+                addSideVertex(vb, pose, w32, y0, 1.0D, c, packedLight, 1.0F, 0.0F, 0.0F);
+            }
+            // RIGHT edge (image right, x = 0, normal -X): same y mapping as the left
+            for (int i = 0; i < height; i++) {
+                int c = sidePixelColor(rightOffset + i);
+                float y0 = h32 - (i + 1) * unit;
+                float y1 = h32 - i * unit;
+                addSideVertex(vb, pose, 0.0D, y0, 1.0D, c, packedLight, -1.0F, 0.0F, 0.0F);
+                addSideVertex(vb, pose, 0.0D, y1, 1.0D, c, packedLight, -1.0F, 0.0F, 0.0F);
+                addSideVertex(vb, pose, 0.0D, y1, -1.0D, c, packedLight, -1.0F, 0.0F, 0.0F);
+                addSideVertex(vb, pose, 0.0D, y0, -1.0D, c, packedLight, -1.0F, 0.0F, 0.0F);
+            }
         }
 
         @Override

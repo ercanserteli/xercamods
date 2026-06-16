@@ -2,6 +2,8 @@ package xerca.xercapaint.item.crafting;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -17,6 +19,25 @@ import java.util.List;
 public class RecipeFillPalette extends CustomRecipe {
     public RecipeFillPalette(CraftingBookCategory category) {
         super(category);
+    }
+
+    static int getBasicColorIndex(ItemStack stack) {
+        if (!(stack.getItem() instanceof DyeItem dyeItem)) {
+            return -1;
+        }
+        DyeColor dyeColor = dyeItem.getDyeColor();
+        if (!DyeItem.byColor(dyeColor).equals(stack.getItem())) {
+            return -1;
+        }
+        int colorId = dyeColor.getId();
+        if (colorId < 0 || colorId >= 16) {
+            return -1;
+        }
+        return 15 - colorId;
+    }
+
+    static boolean isDye(ItemStack stack) {
+        return getBasicColorIndex(stack) >= 0;
     }
 
     private boolean isPalette(ItemStack stack) {
@@ -40,7 +61,7 @@ public class RecipeFillPalette extends CustomRecipe {
                 continue;
             }
             ItemStack stack = inv.getItem(i);
-            if (RecipeCraftPalette.isDye(stack)) {
+            if (isDye(stack)) {
                 dyes.add(stack);
             } else if (!stack.isEmpty()) {
                 return new ArrayList<>();
@@ -87,7 +108,7 @@ public class RecipeFillPalette extends CustomRecipe {
         byte[] basicColors = loadBasicColors(inputPalette);
 
         for (ItemStack dye : dyes) {
-            int realColorId = RecipeCraftPalette.getBasicColorIndex(dye);
+            int realColorId = getBasicColorIndex(dye);
             if (realColorId < 0 || basicColors[realColorId] > 0) {
                 return ItemStack.EMPTY;
             }
