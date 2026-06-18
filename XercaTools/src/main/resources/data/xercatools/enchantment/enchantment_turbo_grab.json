@@ -1,0 +1,22 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.xercatools.enchantment_turbo_grab"
+  },
+  "effects": {},
+  "max_cost": {
+    "base": 20,
+    "per_level_above_first": 10
+  },
+  "max_level": 2,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 10
+  },
+  "primary_items": "#xercatools:grab_hook",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#xercatools:grab_hook",
+  "weight": 10
+}

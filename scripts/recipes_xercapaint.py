@@ -2,15 +2,35 @@ from recipe_generator import *
 
 
 recipes = [
-    ShapedRecipe(['sss', 'sps', 'sss'], {'id': 'xercapaint:item_canvas'}, {'p': 'minecraft:paper', 's': 'minecraft:stick'}, {'item': 'minecraft:paper'}, ""),
-    ShapedRecipe(['cc', 'cc'], {'id': 'xercapaint:item_canvas_large'}, {'c': 'xercapaint:item_canvas'}, {'item': 'xercapaint:item_canvas'}, "", type="xercapaint:crafting_tagless_shaped"),
-    ShapedRecipe(['cc'], {'id': 'xercapaint:item_canvas_long'}, {'c': 'xercapaint:item_canvas'}, {'item': 'xercapaint:item_canvas'}, "", type="xercapaint:crafting_tagless_shaped"),
-    ShapedRecipe(['cc'], {'id': 'xercapaint:item_canvas_large'}, {'c': 'xercapaint:item_canvas_tall'}, {'item': 'xercapaint:item_canvas_tall'}, "", type="xercapaint:crafting_tagless_shaped"),
-    ShapedRecipe(['c', 'c'], {'id': 'xercapaint:item_canvas_tall'}, {'c': 'xercapaint:item_canvas'}, {'item': 'xercapaint:item_canvas'}, "", type="xercapaint:crafting_tagless_shaped"),
-    ShapedRecipe(['c', 'c'], {'id': 'xercapaint:item_canvas_large'}, {'c': 'xercapaint:item_canvas_long'}, {'item': 'xercapaint:item_canvas_long'}, "", type="xercapaint:crafting_tagless_shaped"),
-    ShapedRecipe([' s ', ' s ', 's s'], {'id': 'xercapaint:item_easel'}, {'s': 'minecraft:stick'}, {'item': 'minecraft:stick'}, ""),
+    ShapedRecipe(['sss', 'sps', 'sss'], {'id': 'xercapaint:item_canvas'}, {'p': {'item': 'minecraft:paper'}, 's': {'item': 'minecraft:stick'}}, {'item': 'minecraft:paper'}, ""),
+    ShapedRecipe(['cc', 'cc'], {'id': 'xercapaint:item_canvas_large'}, {'c': {'item': 'xercapaint:item_canvas'}}, {'item': 'xercapaint:item_canvas'}, "", type="xercapaint:crafting_tagless_shaped"),
+    ShapedRecipe(['cc'], {'id': 'xercapaint:item_canvas_long'}, {'c': {'item': 'xercapaint:item_canvas'}}, {'item': 'xercapaint:item_canvas'}, "", type="xercapaint:crafting_tagless_shaped"),
+    ShapedRecipe(['cc'], {'id': 'xercapaint:item_canvas_large'}, {'c': {'item': 'xercapaint:item_canvas_tall'}}, {'item': 'xercapaint:item_canvas_tall'}, "", type="xercapaint:crafting_tagless_shaped"),
+    ShapedRecipe(['c', 'c'], {'id': 'xercapaint:item_canvas_tall'}, {'c': {'item': 'xercapaint:item_canvas'}}, {'item': 'xercapaint:item_canvas'}, "", type="xercapaint:crafting_tagless_shaped"),
+    ShapedRecipe(['c', 'c'], {'id': 'xercapaint:item_canvas_large'}, {'c': {'item': 'xercapaint:item_canvas_long'}}, {'item': 'xercapaint:item_canvas_long'}, "", type="xercapaint:crafting_tagless_shaped"),
 
-    SpecialRecipe("xercapaint:crafting_special_palette_crafting", None, ""),
+    ShapedRecipe(['sss', 'sgs', 'sss'], {'id': 'xercapaint:item_canvas_glass'},
+                 {'g': {'item': 'minecraft:glass_pane'}, 's': {'item': 'minecraft:stick'}},
+                 {'item': 'minecraft:glass_pane'}, ""),
+    ShapedRecipe(['cc', 'cc'], {'id': 'xercapaint:item_canvas_glass_large'},
+                 {'c': {'item': 'xercapaint:item_canvas_glass'}}, {'item': 'xercapaint:item_canvas_glass'}, "",
+                 type="xercapaint:crafting_tagless_shaped"),
+    ShapedRecipe(['cc'], {'id': 'xercapaint:item_canvas_glass_long'}, {'c': {'item': 'xercapaint:item_canvas_glass'}},
+                 {'item': 'xercapaint:item_canvas_glass'}, "", type="xercapaint:crafting_tagless_shaped"),
+    ShapedRecipe(['cc'], {'id': 'xercapaint:item_canvas_glass_large'},
+                 {'c': {'item': 'xercapaint:item_canvas_glass_tall'}}, {'item': 'xercapaint:item_canvas_glass_tall'},
+                 "", type="xercapaint:crafting_tagless_shaped"),
+    ShapedRecipe(['c', 'c'], {'id': 'xercapaint:item_canvas_glass_tall'},
+                 {'c': {'item': 'xercapaint:item_canvas_glass'}}, {'item': 'xercapaint:item_canvas_glass'}, "",
+                 type="xercapaint:crafting_tagless_shaped"),
+    ShapedRecipe(['c', 'c'], {'id': 'xercapaint:item_canvas_glass_large'},
+                 {'c': {'item': 'xercapaint:item_canvas_glass_long'}}, {'item': 'xercapaint:item_canvas_glass_long'},
+                 "", type="xercapaint:crafting_tagless_shaped"),
+
+    ShapedRecipe([' s ', ' s ', 's s'], {'id': 'xercapaint:item_easel'}, {'s': {'item': 'minecraft:stick'}}, {'item': 'minecraft:stick'}, ""),
+    ShapedRecipe([' b ', 'ppp'], {'id': 'xercapaint:item_palette'},
+                 {'b': {'item': 'minecraft:brush'}, 'p': {'tag': 'minecraft:planks'}}, {'item': 'minecraft:brush'}, ""),
+
     SpecialRecipe("xercapaint:crafting_special_palette_filling", None, ""),
     SpecialRecipe("xercapaint:crafting_special_canvas_cloning", None, ""),
 ]

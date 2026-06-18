@@ -9,7 +9,7 @@ public class PictureRequestPacketHandler implements ServerPlayNetworking.PlayPay
         String canvasId = msg.canvasId();
         EntityCanvas.Picture picture = EntityCanvas.PICTURES.get(canvasId);
         if (picture != null) {
-            PictureSendPacket pack = new PictureSendPacket(canvasId, picture.version(), picture.pixels());
+            PictureSendPacket pack = new PictureSendPacket(canvasId, picture.version(), picture.pixels(), picture.sidesActive(), picture.sidePixels());
             ServerPlayNetworking.send(pl, pack);
         }
     }

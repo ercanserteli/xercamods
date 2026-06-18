@@ -1,0 +1,77 @@
+{
+  "sneak_hit": {
+    "sounds": [
+      { "name": "xercatools:sneak_hit1" },
+      { "name": "xercatools:sneak_hit2" },
+      { "name": "xercatools:sneak_hit3" },
+      { "name": "xercatools:sneak_hit4" }
+    ]
+  },
+  "hammer": {
+    "sounds": [
+      { "name": "xercatools:hammer" }
+    ]
+  },
+  "stomp": {
+    "sounds": [
+      { "name": "xercatools:stomp" }
+    ]
+  },
+  "hook_chain": {
+    "sounds": [
+      { "name": "xercatools:hook_chain" }
+    ]
+  },
+  "hook_impact": {
+    "sounds": [
+      { "name": "xercatools:hook_impact" }
+    ]
+  },
+  "hook_return": {
+    "sounds": [
+      {
+        "name": "xercatools:hook_return"
+      }
+    ]
+  },
+  "hook_clink": {
+    "sounds": [
+      {
+        "name": "xercatools:hook_clink"
+      }
+    ]
+  },
+  "behead": {
+    "sounds": [
+      { "name": "xercatools:behead" }
+    ]
+  },
+  "absorb": {
+    "sounds": [
+      { "name": "xercatools:absorb" }
+    ]
+  },
+  "crack": {
+    "sounds": [
+      {
+        "name": "xercatools:crack1"
+      },
+      {
+        "name": "xercatools:crack2"
+      },
+      {
+        "name": "xercatools:crack3"
+      },
+      {
+        "name": "xercatools:crack4"
+      }
+    ]
+  },
+  "confetti": {
+    "sounds": [
+      {
+        "name": "xercatools:confetti"
+      }
+    ]
+  }
+}

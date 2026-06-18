@@ -1,10 +1,12 @@
 */out
 */build
+build/
 */bin
-/.metadata/
 .gradle/
 run/
 .idea/
 builds/
+*.md
 desktop.ini
 **/.cache
+.sonar.ps1

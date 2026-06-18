@@ -1,0 +1,224 @@
+{
+  "parent": "xercafood:achievements/diabetes",
+  "display": {
+    "icon": {
+      "id": "xercafood:fancy_apple_cupcake"
+    },
+    "title": {
+      "translate": "advancements.xercafood.achievements.diabetes2.title"
+    },
+    "description": {
+      "translate": "advancements.xercafood.achievements.diabetes2.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 100
+  },
+  "criteria": {
+    "cookie": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:cookie"]
+        }
+      }
+    },
+    "pumpkin_pie": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:pumpkin_pie"]
+        }
+      }
+    },
+    "apple_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:apple_cupcake"]
+        }
+      }
+    },
+    "pumpkin_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:pumpkin_cupcake"]
+        }
+      }
+    },
+    "cocoa_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:cocoa_cupcake"]
+        }
+      }
+    },
+    "melon_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:melon_cupcake"]
+        }
+      }
+    },
+    "carrot_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:carrot_cupcake"]
+        }
+      }
+    },
+    "fancy_apple_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:fancy_apple_cupcake"]
+        }
+      }
+    },
+    "fancy_pumpkin_cupcake": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:fancy_pumpkin_cupcake"]
+        }
+      }
+    },
+    "donut": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:donut"]
+        }
+      }
+    },
+    "fancy_donut": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:fancy_donut"]
+        }
+      }
+    },
+    "chocolate": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:chocolate"]
+        }
+      }
+    },
+    "croissant": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:croissant"]
+        }
+      }
+    },
+    "ice_tea": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:ice_tea"]
+        }
+      }
+    },
+    "apple_juice": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:apple_juice"]
+        }
+      }
+    },
+    "carrot_juice": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:carrot_juice"]
+        }
+      }
+    },
+    "melon_juice": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:melon_juice"]
+        }
+      }
+    },
+    "pumpkin_juice": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:pumpkin_juice"]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "cookie"
+    ],
+    [
+      "pumpkin_pie"
+    ],
+    [
+      "apple_cupcake"
+    ],
+    [
+      "pumpkin_cupcake"
+    ],
+    [
+      "cocoa_cupcake"
+    ],
+    [
+      "melon_cupcake"
+    ],
+    [
+      "carrot_cupcake"
+    ],
+    [
+      "fancy_apple_cupcake"
+    ],
+    [
+      "fancy_pumpkin_cupcake"
+    ],
+    [
+      "donut"
+    ],
+    [
+      "fancy_donut"
+    ],
+    [
+      "chocolate"
+    ],
+    [
+      "croissant"
+    ],
+    [
+      "ice_tea"
+    ],
+    [
+      "apple_juice"
+    ],
+    [
+      "carrot_juice"
+    ],
+    [
+      "melon_juice"
+    ],
+    [
+      "pumpkin_juice"
+    ]
+  ]
+}
+

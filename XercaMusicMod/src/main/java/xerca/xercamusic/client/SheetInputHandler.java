@@ -2,17 +2,21 @@ package xerca.xercamusic.client;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringUtil;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-import xerca.xercamusic.common.Mod;
+import xerca.xercamusic.common.MusicClipboard;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.IItemInstrument;
-import xerca.xercamusic.common.item.ItemMusicSheet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Handles all user input (keyboard and mouse) for the music sheet GUI.
@@ -31,11 +35,14 @@ class SheetInputHandler {
         if (gui.helpOn) {
             int mx = (int) Math.round(dmouseX);
             int my = (int) Math.round(dmouseY);
-            if (gui.handleHelpClick(mx, my)) {
-                return true;
+            if (!gui.handleHelpClick(mx, my)) {
+                gui.helpOn = false;
+                gui.updateButtons();
             }
-            gui.helpOn = false;
-            gui.updateButtons();
+            return true;
+        }
+
+        if (handleTopLevelMouseClicked(dmouseX, dmouseY, mouseButton)) {
             return true;
         }
 
@@ -125,17 +132,19 @@ class SheetInputHandler {
                             // Subsequent click: add or replace a waypoint snapped to a beat within the note
                             byte interval = (byte) (note - gui.glissandoSourceNote.note);
                             int beatIndex = getGlissandoBeatIndex(nrx);
-                            int existingIndex = gui.glissandoPendingPositions.indexOf((byte) beatIndex);
+                            List<Byte> pendingPositions = requirePendingPositions();
+                            List<Byte> pendingWaypoints = requirePendingWaypoints();
+                            int existingIndex = pendingPositions.indexOf((byte) beatIndex);
                             if (existingIndex >= 0) {
-                                gui.glissandoPendingWaypoints.set(existingIndex, interval);
+                                pendingWaypoints.set(existingIndex, interval);
                             } else {
                                 int insertIndex = 0;
-                                while (insertIndex < gui.glissandoPendingPositions.size()
-                                        && (gui.glissandoPendingPositions.get(insertIndex) & 0xFF) < beatIndex) {
+                                while (insertIndex < pendingPositions.size()
+                                        && (pendingPositions.get(insertIndex) & 0xFF) < beatIndex) {
                                     insertIndex++;
                                 }
-                                gui.glissandoPendingPositions.add(insertIndex, (byte) beatIndex);
-                                gui.glissandoPendingWaypoints.add(insertIndex, interval);
+                                pendingPositions.add(insertIndex, (byte) beatIndex);
+                                pendingWaypoints.add(insertIndex, interval);
                             }
                             if (gui.glissandoSourceNote.length > 0
                                     && beatIndex >= (gui.glissandoSourceNote.length & 0xFF)) {
@@ -154,11 +163,13 @@ class SheetInputHandler {
                     int i = findNote((byte) note, (short) time);
                     if (i >= 0) {
                         NoteEvent event = gui.notes.get(i);
+                        GuiMusicSheet.requireWidget(gui.noteEditBox, "noteEditBox");
                         gui.noteEditBox.appear(mouseX, mouseY, event);
                     } else {
                         // Check if clicking on a volume marker
                         VolumeMarker clickedMarker = findVolumeMarker((byte) note, (short) time);
                         if (clickedMarker != null) {
+                            GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox");
                             gui.markerEditBox.appear(mouseX, mouseY, clickedMarker);
                         }
                     }
@@ -169,8 +180,8 @@ class SheetInputHandler {
                     final int x = GuiMusicSheet.NOTE_REGION_LEFT - 24;
                     final int y = GuiMusicSheet.NOTE_REGION_BOTTOM - 18 - i * 36;
                     if (mx >= x - 10 && mx <= x + 10 && my >= y - 4 && my <= y + 12) {
-                        GuiMusicSheet.currentOctave = gui.currentOctavePos + i;
-                        gui.midiHandler.currentOctave = GuiMusicSheet.currentOctave;
+                        GuiMusicSheet.setCurrentOctave(gui.currentOctavePos + i);
+                        gui.midiHandler.setCurrentOctave(GuiMusicSheet.getCurrentOctave());
                         if (gui.recording) {
                             gui.recordingNotes.clear();
                         }
@@ -183,6 +194,10 @@ class SheetInputHandler {
     }
 
     boolean handleMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        if (handleTopLevelMouseDragged(posX, posY, mouseButton, deltaX, deltaY)) {
+            return true;
+        }
+
         GuiEventListener focused = gui.getFocused();
         if (focused != null && gui.isDragging()) {
             focused.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
@@ -217,26 +232,13 @@ class SheetInputHandler {
         } else if (mouseButton == 0) {
             if (gui.currentlyAddedMarker != null && validClick(mx, my)) {
                 // Update volume marker being created
-                int nrx = mx - GuiMusicSheet.NOTE_REGION_LEFT;
-                int nry = my - GuiMusicSheet.NOTE_REGION_TOP;
-                int time = (nrx / 3) + gui.sliderPosition;
-                int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + gui.currentOctavePos * 12;
-
-                // Update marker bounds
-                short newStartTime = (short) Math.min(gui.markerStartTime, time);
-                short newEndTime = (short) Math.max(gui.markerStartTime + 1, time + 1);
-                byte newLowNote = (byte) Math.min(gui.markerStartNote, note);
-                byte newHighNote = (byte) Math.max(gui.markerStartNote, note);
-
-                VolumeMarker marker = new VolumeMarker(newStartTime, newEndTime,
-                        gui.currentlyAddedMarker.startVolume, gui.currentlyAddedMarker.endVolume,
-                        newLowNote, newHighNote);
+                VolumeMarker marker = getVolumeMarker(mx, my);
                 if (isMarkerPlacementAvailable(marker)) {
                     gui.currentlyAddedMarker = marker;
                 }
             } else if (gui.currentlyAddedNote != null && validClick(mx, my)) {
                 int time = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
-                if (gui.currentlyAddedNote.time < time && time - gui.currentlyAddedNote.time <= GuiMusicSheet.maxNoteLength) {
+                if (gui.currentlyAddedNote.time < time && time - gui.currentlyAddedNote.time <= GuiMusicSheet.MAX_PLACED_NOTE_LENGTH) {
                     gui.currentlyAddedNote.length = (byte) (time - gui.currentlyAddedNote.time);
                 }
             }
@@ -245,22 +247,80 @@ class SheetInputHandler {
         return true;
     }
 
+    private VolumeMarker getVolumeMarker(int mx, int my) {
+        assert gui.currentlyAddedMarker != null;
+
+        int nrx = mx - GuiMusicSheet.NOTE_REGION_LEFT;
+        int nry = my - GuiMusicSheet.NOTE_REGION_TOP;
+        int time = (nrx / 3) + gui.sliderPosition;
+        int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + gui.currentOctavePos * 12;
+
+        // Update marker bounds
+        short newStartTime = (short) Math.min(gui.markerStartTime, time);
+        short newEndTime = (short) Math.max(gui.markerStartTime + 1, time + 1);
+        byte newLowNote = (byte) Math.min(gui.markerStartNote, note);
+        byte newHighNote = (byte) Math.max(gui.markerStartNote, note);
+
+        return new VolumeMarker(newStartTime, newEndTime, gui.currentlyAddedMarker.startVolume,
+                gui.currentlyAddedMarker.endVolume, newLowNote, newHighNote);
+    }
+
     boolean handleMouseReleased(double posX, double posY, int mouseButton) {
         gui.setDragging(false);
-        if (gui.noteEditBox.active) {
-            gui.noteEditBox.mouseReleased(posX, posY, mouseButton);
+        if (handleTopLevelMouseReleased(posX, posY, mouseButton)) {
             return true;
         }
-        if (gui.markerEditBox.active) {
-            gui.markerEditBox.mouseReleased(posX, posY, mouseButton);
-            return true;
-        }
+
         if (mouseButton == 0) {
             finishAddingNote();
             finishAddingMarker((int) posX, (int) posY);
         }
 
         return true;
+    }
+
+    private boolean handleTopLevelMouseClicked(double mouseX, double mouseY, int mouseButton) {
+        if (isActive(gui.markerEditBox)) {
+            gui.markerEditBox.mouseClicked(mouseX, mouseY, mouseButton);
+            return true;
+        }
+        if (isActive(gui.noteEditBox)) {
+            gui.noteEditBox.mouseClicked(mouseX, mouseY, mouseButton);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleTopLevelMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        if (isActive(gui.markerEditBox)) {
+            gui.markerEditBox.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return true;
+        }
+        if (isActive(gui.noteEditBox)) {
+            gui.noteEditBox.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleTopLevelMouseReleased(double posX, double posY, int mouseButton) {
+        if (isActive(gui.markerEditBox)) {
+            gui.markerEditBox.mouseReleased(posX, posY, mouseButton);
+            return true;
+        }
+        if (isActive(gui.noteEditBox)) {
+            gui.noteEditBox.mouseReleased(posX, posY, mouseButton);
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isActive(@Nullable GuiMusicSheet.NoteEditBox editBox) {
+        return editBox != null && editBox.active && editBox.visible;
+    }
+
+    private static boolean isActive(@Nullable GuiMusicSheet.MarkerEditBox editBox) {
+        return editBox != null && editBox.active && editBox.visible;
     }
 
     boolean handleMouseScrolled(double x, double y, double scrollX, double scrollY) {
@@ -292,11 +352,13 @@ class SheetInputHandler {
         }
         if (scrollY != 0.d) {
             if (scrollY > 0) {
-                gui.octaveUp.playDownSound(Minecraft.getInstance().getSoundManager());
-                gui.octaveUp.onPress();
+                Button octaveUp = GuiMusicSheet.requireWidget(gui.octaveUp, "octaveUp");
+                octaveUp.playDownSound(Minecraft.getInstance().getSoundManager());
+                octaveUp.onPress();
             } else if (scrollY < 0) {
-                gui.octaveDown.playDownSound(Minecraft.getInstance().getSoundManager());
-                gui.octaveDown.onPress();
+                Button octaveDown = GuiMusicSheet.requireWidget(gui.octaveDown, "octaveDown");
+                octaveDown.playDownSound(Minecraft.getInstance().getSoundManager());
+                octaveDown.onPress();
             }
             return true;
         }
@@ -346,10 +408,7 @@ class SheetInputHandler {
                             gui.dirtyFlag.hasSigned = true;
                             gui.dirtyFlag.hasTitle = true;
                             gui.isSigned = true;
-                            Minecraft mc = Minecraft.getInstance();
-                            if (mc != null) {
-                                mc.setScreen(null);
-                            }
+                            Minecraft.getInstance().setScreen(null);
                         }
                     }
                     default -> {
@@ -439,7 +498,7 @@ class SheetInputHandler {
                     }
                     case GLFW.GLFW_KEY_Z -> {
                         if ((modifiers & GLFW.GLFW_MOD_CONTROL) == GLFW.GLFW_MOD_CONTROL) {
-                            if (gui.noteEditBox.active) {
+                            if (gui.noteEditBox != null && gui.noteEditBox.active) {
                                 break;
                             }
                             // Exit glissando mode on undo so state stays consistent
@@ -466,11 +525,11 @@ class SheetInputHandler {
                             resetEditCursorEnd = false;
                         } else {
                             if (gui.editCursor == gui.editCursorEnd) {
-                                GuiMusicSheet.currentOctave--;
-                                if (GuiMusicSheet.currentOctave < -2) {
-                                    GuiMusicSheet.currentOctave = -2;
+                                GuiMusicSheet.setCurrentOctave(GuiMusicSheet.getCurrentOctave() - 1);
+                                if (GuiMusicSheet.getCurrentOctave() < -2) {
+                                    GuiMusicSheet.setCurrentOctave(-2);
                                 }
-                                gui.midiHandler.currentOctave = GuiMusicSheet.currentOctave;
+                                gui.midiHandler.setCurrentOctave(GuiMusicSheet.getCurrentOctave());
                                 if (gui.recording) {
                                     gui.recordingNotes.clear();
                                 }
@@ -481,11 +540,11 @@ class SheetInputHandler {
                     }
                     case GLFW.GLFW_KEY_S -> {
                         if (gui.editCursor == gui.editCursorEnd) {
-                            GuiMusicSheet.currentOctave++;
-                            if (GuiMusicSheet.currentOctave > 7) {
-                                GuiMusicSheet.currentOctave = 7;
+                            GuiMusicSheet.setCurrentOctave(GuiMusicSheet.getCurrentOctave() + 1);
+                            if (GuiMusicSheet.getCurrentOctave() > 7) {
+                                GuiMusicSheet.setCurrentOctave(7);
                             }
-                            gui.midiHandler.currentOctave = GuiMusicSheet.currentOctave;
+                            gui.midiHandler.setCurrentOctave(GuiMusicSheet.getCurrentOctave());
                             if (gui.recording) {
                                 gui.recordingNotes.clear();
                             }
@@ -507,12 +566,12 @@ class SheetInputHandler {
                     default -> {
                         int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
                         int lastScanCode = firstScanCode + 11;
-                        if (scanCode >= firstScanCode && scanCode <= lastScanCode && GuiMusicSheet.currentOctave >= 0) {
+                        if (scanCode >= firstScanCode && scanCode <= lastScanCode && GuiMusicSheet.getCurrentOctave() >= 0) {
                             if (gui.recording) {
-                                gui.startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.currentOctave)), (byte) 100);
+                                gui.startSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.getCurrentOctave())), (byte) 100);
                             } else {
                                 putSpace(x - 1);
-                                addNote((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.currentOctave), (short) x, false);
+                                addNote((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.getCurrentOctave()), (short) x, false);
                                 finishAddingNote();
                             }
                         }
@@ -532,8 +591,8 @@ class SheetInputHandler {
         gui.callSuperKeyReleased(keyCode, scanCode, modifiers);
         int firstScanCode = GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_Q);
         int lastScanCode = firstScanCode + 11;
-        if (scanCode >= firstScanCode && scanCode <= lastScanCode && GuiMusicSheet.currentOctave >= 0 && gui.recording) {
-            gui.endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.currentOctave)));
+        if (scanCode >= firstScanCode && scanCode <= lastScanCode && GuiMusicSheet.getCurrentOctave() >= 0 && gui.recording) {
+            gui.endSound(IItemInstrument.noteToId((byte) ((scanCode - firstScanCode + IItemInstrument.MIN_NOTE) + 12 * GuiMusicSheet.getCurrentOctave())));
         }
         return true;
     }
@@ -613,7 +672,7 @@ class SheetInputHandler {
             if (m.startTime > x) {
                 m.startTime--;
                 m.endTime--;
-            } else if (m.startTime <= x && m.endTime > x) {
+            } else if (m.endTime > x) {
                 m.endTime--;
                 if (m.endTime - m.startTime < 2) {
                     gui.volumeMarkers.remove(i);
@@ -660,11 +719,11 @@ class SheetInputHandler {
                 // Spans entire selection: shrink
                 m.endTime -= (short) selLen;
                 if (m.endTime - m.startTime < 2) gui.volumeMarkers.remove(i);
-            } else if (m.startTime < gui.editCursor && m.endTime > gui.editCursor && m.endTime <= selectionEndExclusive) {
+            } else if (m.startTime < gui.editCursor && m.endTime > gui.editCursor) {
                 // Starts before, ends inside: trim end
                 m.endTime = (short) gui.editCursor;
                 if (m.endTime - m.startTime < 2) gui.volumeMarkers.remove(i);
-            } else if (m.startTime >= gui.editCursor && m.startTime < selectionEndExclusive && m.endTime > selectionEndExclusive) {
+            } else if (m.startTime >= gui.editCursor && m.startTime < selectionEndExclusive) {
                 // Starts inside selection, ends after: keep the tail, shift to editCursor
                 short origEnd = m.endTime;
                 m.startTime = (short) gui.editCursor;
@@ -747,11 +806,11 @@ class SheetInputHandler {
                 toBeCopied.add(event);
             }
         }
-        buffer.writeByte(GuiMusicSheet.COPY_BEGIN_BYTE);
+        buffer.writeByte(MusicClipboard.COPY_BEGIN_BYTE);
         buffer.writeInt(gui.editCursorEnd - gui.editCursor);
         buffer.writeInt(toBeCopied.size());
         for (NoteEvent event : toBeCopied) {
-            NoteEvent copy = event.clone();
+            NoteEvent copy = new NoteEvent(event);
             copy.time -= (short) gui.editCursor;
             copy.encodeToBuffer(buffer);
         }
@@ -765,9 +824,9 @@ class SheetInputHandler {
         }
         buffer.writeInt(markersToCopy.size());
         for (VolumeMarker marker : markersToCopy) {
-            VolumeMarker copy = marker.clone();
-            copy.startTime -= gui.editCursor;
-            copy.endTime -= gui.editCursor;
+            VolumeMarker copy = new VolumeMarker(marker);
+            copy.startTime = toSaturatedShort(copy.startTime - gui.editCursor);
+            copy.endTime = toSaturatedShort(copy.endTime - gui.editCursor);
             copy.encodeToBuffer(buffer);
         }
 
@@ -783,58 +842,13 @@ class SheetInputHandler {
     private void decodeFromClipboard(boolean pushBack) {
         String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getWindow().getWindow());
         if (encodedMusic != null && !encodedMusic.isEmpty()) {
-            byte[] byteArray;
-            try { // Try because this can fail with weird clipboard content
-                byteArray = Base64.getDecoder().decode(encodedMusic);
-            } catch (IllegalArgumentException ex) {
+            MusicClipboard.ParsedMusic parsedMusic = MusicClipboard.decode(encodedMusic);
+            if (parsedMusic == null) {
                 return;
             }
-
-            int length = 0;
-            List<NoteEvent> toBePasted;
-            List<VolumeMarker> markersToPaste = new ArrayList<>();
-            // Check begin byte
-            if (byteArray[0] != GuiMusicSheet.COPY_BEGIN_BYTE) {
-                // Old version
-
-                // Check if all values are valid
-                for (byte b : byteArray) {
-                    if (b < 0 || b > 48) {
-                        Mod.LOGGER.info("User tried to copy invalid data into music: {}", b);
-                        return;
-                    }
-                }
-
-                // Copy values
-                toBePasted = ItemMusicSheet.oldMusicToNotes(byteArray);
-                if (!toBePasted.isEmpty()) {
-                    for (NoteEvent event : toBePasted) {
-                        length = (short) (event.time + event.length) > length ? (short) (event.time + event.length) : length;
-                    }
-                }
-            } else {
-                // New version
-                FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.copiedBuffer(byteArray));
-                buffer.readByte();
-
-                // Read copied time length and note event count
-                length = buffer.readInt() + 1;
-                int count = buffer.readInt();
-
-                // Read the note events into an array
-                toBePasted = new ArrayList<>(count);
-                for (int i = 0; i < count; i++) {
-                    toBePasted.add(NoteEvent.fromBuffer(buffer));
-                }
-
-                // Read volume markers if present (backward compatible)
-                if (buffer.isReadable() && buffer.readableBytes() >= 4) {
-                    int markerCount = buffer.readInt();
-                    for (int i = 0; i < markerCount; i++) {
-                        markersToPaste.add(VolumeMarker.fromBuffer(buffer));
-                    }
-                }
-            }
+            int length = parsedMusic.length();
+            List<NoteEvent> toBePasted = parsedMusic.notes();
+            List<VolumeMarker> markersToPaste = parsedMusic.volumeMarkers();
 
             pushUndo();
             if (pushBack) {
@@ -847,8 +861,8 @@ class SheetInputHandler {
                 // Push back the existing future volume markers
                 for (VolumeMarker marker : gui.volumeMarkers) {
                     if (marker.startTime >= gui.editCursor) {
-                        marker.startTime += length;
-                        marker.endTime += length;
+                        marker.startTime = toSaturatedShort(marker.startTime + length);
+                        marker.endTime = toSaturatedShort(marker.endTime + length);
                     }
                 }
             }
@@ -858,8 +872,8 @@ class SheetInputHandler {
                 gui.notes.add(event);
             }
             for (VolumeMarker marker : markersToPaste) {
-                marker.startTime += gui.editCursor;
-                marker.endTime += gui.editCursor;
+                marker.startTime = toSaturatedShort(marker.startTime + gui.editCursor);
+                marker.endTime = toSaturatedShort(marker.endTime + gui.editCursor);
                 gui.volumeMarkers.add(marker);
             }
 
@@ -873,6 +887,16 @@ class SheetInputHandler {
             gui.dirtyFlag.hasNotes = true;
             gui.dirtyFlag.hasLength = true;
         }
+    }
+
+    private static short toSaturatedShort(int value) {
+        if (value > Short.MAX_VALUE) {
+            return Short.MAX_VALUE;
+        }
+        if (value < Short.MIN_VALUE) {
+            return Short.MIN_VALUE;
+        }
+        return (short) value;
     }
 
     // ----------- Undo ------------
@@ -916,16 +940,18 @@ class SheetInputHandler {
     }
 
     private void finishAddingMarker(int mouseX, int mouseY) {
-        if (gui.currentlyAddedMarker == null) {
+        VolumeMarker marker = gui.currentlyAddedMarker;
+        if (marker == null) {
             return;
         }
         // Only add if the marker has some meaningful size
-        if (gui.currentlyAddedMarker.isValid() && isMarkerPlacementAvailable(gui.currentlyAddedMarker)) {
+        if (marker.isValid() && isMarkerPlacementAvailable(marker)) {
             pushUndo();
             // Add the marker to the list and show the edit box
-            gui.volumeMarkers.add(gui.currentlyAddedMarker);
+            gui.volumeMarkers.add(marker);
             gui.dirtyFlag.hasNotes = true;  // Volume markers are saved with notes
-            gui.markerEditBox.appear(mouseX, mouseY, gui.currentlyAddedMarker);
+            GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox");
+            gui.markerEditBox.appear(mouseX, mouseY, marker);
         }
         gui.currentlyAddedMarker = null;
     }
@@ -946,7 +972,7 @@ class SheetInputHandler {
                 int noteLength = gui.glissandoSourceNote.length & 0xFF;
                 for (int i = 0; i < positions.length; i++) {
                     int beatIndex = gui.glissandoPendingPositions.get(i) & 0xFF;
-                    int posPct = Math.max(1, Math.min(100, Math.round(beatIndex * 100.0f / noteLength)));
+                    int posPct = Math.clamp(Math.round(beatIndex * 100.0f / noteLength), 1, 100);
                     positions[i] = (byte) posPct;
                 }
             }
@@ -970,7 +996,7 @@ class SheetInputHandler {
         return -1;
     }
 
-    private VolumeMarker findVolumeMarker(byte note, short time) {
+    private @Nullable VolumeMarker findVolumeMarker(byte note, short time) {
         for (VolumeMarker marker : gui.volumeMarkers) {
             if (marker.affects(time, note)) {
                 return marker;
@@ -988,6 +1014,14 @@ class SheetInputHandler {
         return true;
     }
 
+    private List<Byte> requirePendingWaypoints() {
+        return GuiMusicSheet.requireWidget(gui.glissandoPendingWaypoints, "glissandoPendingWaypoints");
+    }
+
+    private List<Byte> requirePendingPositions() {
+        return GuiMusicSheet.requireWidget(gui.glissandoPendingPositions, "glissandoPendingPositions");
+    }
+
     private int getGlissandoBeatIndex(int noteRegionX) {
         if (gui.glissandoSourceNote == null || gui.glissandoSourceNote.length <= 0) {
             return 1;
@@ -995,7 +1029,7 @@ class SheetInputHandler {
         float exactTime = noteRegionX / 3.0f + gui.sliderPosition;
         int relativeBeat = (int) Math.floor(exactTime - gui.glissandoSourceNote.time);
         int noteLength = gui.glissandoSourceNote.length & 0xFF;
-        return Math.max(1, Math.min(noteLength, relativeBeat + 1));
+        return Math.clamp(relativeBeat + 1L, 1, noteLength);
     }
 
     // ------------ Cursor & Selection ---------------

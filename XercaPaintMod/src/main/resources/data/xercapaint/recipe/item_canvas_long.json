@@ -4,7 +4,9 @@
     "cc"
   ],
   "key": {
-    "c": "xercapaint:item_canvas"
+    "c": {
+      "item": "xercapaint:item_canvas"
+    }
   },
   "result": {
     "id": "xercapaint:item_canvas_long"

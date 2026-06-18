@@ -1,14 +1,13 @@
 package xerca.xercafood.common.item;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.level.Level;
 import org.lwjgl.system.NonnullDefault;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 @NonnullDefault
@@ -16,14 +15,20 @@ public class ItemTeacup extends ItemStackableContainedFood {
     private final int sugarAmount;
 
     public ItemTeacup(int sugarAmount, Item teaCup) {
-        super(sugarAmount == 0 ? (new Item.Properties()).food(Foods.TEACUP0) :
-                sugarAmount == 1 ? (new Item.Properties()).food(Foods.TEACUP1) :
-                        sugarAmount == 2 ? (new Item.Properties()).food(Foods.TEACUP2) :
-                                sugarAmount == 3 ? (new Item.Properties()).food(Foods.TEACUP3) :
-                                        sugarAmount == 4 ? (new Item.Properties()).food(Foods.TEACUP4) :
-                                                sugarAmount == 5 ? (new Item.Properties()).food(Foods.TEACUP5) :
-                                                        (new Item.Properties()).food(Foods.TEACUP6), teaCup, 64);
+        super(createProperties(sugarAmount), teaCup, 64);
         this.sugarAmount = sugarAmount;
+    }
+
+    private static Item.Properties createProperties(int sugarAmount) {
+        return switch (sugarAmount) {
+            case 0 -> new Item.Properties().food(Foods.TEACUP0);
+            case 1 -> new Item.Properties().food(Foods.TEACUP1);
+            case 2 -> new Item.Properties().food(Foods.TEACUP2);
+            case 3 -> new Item.Properties().food(Foods.TEACUP3);
+            case 4 -> new Item.Properties().food(Foods.TEACUP4);
+            case 5 -> new Item.Properties().food(Foods.TEACUP5);
+            default -> new Item.Properties().food(Foods.TEACUP6);
+        };
     }
 
     @Override
@@ -36,7 +41,7 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         if (this.sugarAmount == 0) {
             tooltip.add(Component.literal("No sugar"));
         } else if (this.sugarAmount == 1) {
@@ -52,7 +57,7 @@ public class ItemTeacup extends ItemStackableContainedFood {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 64;
     }
 }

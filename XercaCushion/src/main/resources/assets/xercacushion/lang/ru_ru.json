@@ -1,0 +1,20 @@
+{
+  "item.xercacushion.black_cushion": "Черная подушка",
+  "item.xercacushion.blue_cushion": "Синяя подушка",
+  "item.xercacushion.brown_cushion": "Коричневая подушка",
+  "item.xercacushion.cyan_cushion": "Голубая подушка",
+  "item.xercacushion.gray_cushion": "Серая подушка",
+  "item.xercacushion.green_cushion": "Зеленая подушка",
+  "item.xercacushion.light_blue_cushion": "Светло-голубая подушка",
+  "item.xercacushion.light_gray_cushion": "Светло-серая подушка",
+  "item.xercacushion.lime_cushion": "Лаймовая подушка",
+  "item.xercacushion.magenta_cushion": "Пурпурная подушка",
+  "item.xercacushion.orange_cushion": "Оранжевая подушка",
+  "item.xercacushion.pink_cushion": "Розовая подушка",
+  "item.xercacushion.purple_cushion": "Фиолетовая подушка",
+  "item.xercacushion.red_cushion": "Красная подушка",
+  "item.xercacushion.white_cushion": "Белая подушка",
+  "item.xercacushion.yellow_cushion": "Желтая подушка",
+  "entity.xercacushion.cushion": "Подушка",
+  "xercacushion.cushion_tooltip": "Вы можете сидеть на ней."
+}

@@ -27,6 +27,16 @@
   "xercapaint.import.fail.4": "コマンドを解釈できなかったか、絵画ファイル（%1$s）を読み取れませんでした",
   "xercapaint.import.fail.5": "絵画ファイルが壊れています",
   "easel.deny": "今、この絵画を描いている人がいるんです",
+  "canvas.help.toggleHelp": "ヘルプの表示を切り替える",
+  "canvas.help.brushSize": "ブラシのサイズ（%1$s）",
+  "canvas.help.brushOpacity": "ブラシの不透明度（%1$s%%）",
+  "canvas.help.colorPicker": "スポイト",
+  "canvas.help.colorPicker.desc": "このツールを選び、キャンバスから色を拾ってカスタムカラースロットにドラッグ＆ドロップします。",
+  "canvas.help.colorRemover": "色消し",
+  "canvas.help.colorRemover.desc": "水を拾い、カスタムカラースロットにドラッグ＆ドロップするとスロットを空にできます。",
+  "canvas.help.canvasHolder": "キャンバスホルダー",
+  "canvas.help.canvasHolder.desc": "キャンバスを拾って動かせます。パレットも同じ方法で動かせます。",
+  "canvas.help.toggleSides": "額縁を切り替える",
   "entity.xercapaint.canvas": "キャンバス",
   "entity.xercapaint.easel": "イーゼル"
 }

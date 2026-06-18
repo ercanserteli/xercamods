@@ -2,18 +2,28 @@ package xerca.xercamusic.common.packets.clientbound;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
 public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPayloadHandler<MusicBoxUpdatePacket> {
     private static void processMessage(MusicBoxUpdatePacket msg) {
         Level world = Minecraft.getInstance().level;
-        if (world == null || !world.hasChunkAt(msg.pos())) {  // NOSONAR
+        if (world == null) {
+            return;
+        }
+
+        int x = SectionPos.blockToSectionCoord(msg.pos().getX());
+        int z = SectionPos.blockToSectionCoord(msg.pos().getZ());
+        ChunkAccess chunk = world.getChunk(x, z, ChunkStatus.FULL, false);
+        if (chunk == null) {
             return;
         }
 
@@ -44,8 +54,6 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPay
 
     @Override
     public void receive(MusicBoxUpdatePacket packet, ClientPlayNetworking.Context context) {
-        if (packet != null) {
-            context.client().execute(() -> processMessage(packet));
-        }
+        context.client().execute(() -> processMessage(packet));
     }
 }

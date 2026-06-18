@@ -15,8 +15,12 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+@SuppressWarnings({"UnusedMethod", "UnusedVariable", "unused"})
 @Mixin(ItemStackComponentizationFix.class)
 public class ItemStackComponentizationFixMixin {
+    private ItemStackComponentizationFixMixin() {
+    }
+
     @Inject(at = @At("TAIL"), method = "fixItemStack(Lnet/minecraft/util/datafix/fixes/ItemStackComponentizationFix$ItemStackData;Lcom/mojang/serialization/Dynamic;)V")
     private static void fixItemStackMixin(ItemStackComponentizationFix.ItemStackData itemStackData, Dynamic<?> tag, CallbackInfo info) {
         if (itemStackData.is("xercapaint:item_canvas") || itemStackData.is("xercapaint:item_canvas_large") || itemStackData.is("xercapaint:item_canvas_long") || itemStackData.is("xercapaint:item_canvas_tall")) {

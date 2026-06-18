@@ -6,7 +6,9 @@
     "s s"
   ],
   "key": {
-    "s": "minecraft:stick"
+    "s": {
+      "item": "minecraft:stick"
+    }
   },
   "result": {
     "id": "xercapaint:item_easel"

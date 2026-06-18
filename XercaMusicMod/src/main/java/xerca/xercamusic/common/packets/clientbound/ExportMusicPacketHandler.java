@@ -22,8 +22,6 @@ public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayPayloa
 
     @Override
     public void receive(ExportMusicPacket packet, ClientPlayNetworking.Context context) {
-        if (packet != null) {
-            context.client().execute(() -> processMessage(packet));
-        }
+        context.client().execute(() -> processMessage(packet));
     }
 }

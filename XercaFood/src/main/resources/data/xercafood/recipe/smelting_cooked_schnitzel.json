@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "xercafood:raw_schnitzel"
+  },
+  "result": {
+    "id": "xercafood:cooked_schnitzel"
+  },
+  "experience": 0.2,
+  "cookingtime": 200
+}

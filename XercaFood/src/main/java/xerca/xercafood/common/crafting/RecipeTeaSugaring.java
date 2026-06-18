@@ -1,99 +1,95 @@
 package xerca.xercafood.common.crafting;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.item.ItemTeacup;
 import xerca.xercafood.common.item.Items;
 
 public class RecipeTeaSugaring extends CustomRecipe {
-    public static Item getTeacup(int sugarAmount) {
-        Item res = net.minecraft.world.item.Items.AIR;
-        switch (sugarAmount) {
-            case 0 -> res = Items.ITEM_FULL_TEACUP_0;
-            case 1 -> res = Items.ITEM_FULL_TEACUP_1;
-            case 2 -> res = Items.ITEM_FULL_TEACUP_2;
-            case 3 -> res = Items.ITEM_FULL_TEACUP_3;
-            case 4 -> res = Items.ITEM_FULL_TEACUP_4;
-            case 5 -> res = Items.ITEM_FULL_TEACUP_5;
-            case 6 -> res = Items.ITEM_FULL_TEACUP_6;
-        }
-        return res;
+    private record ParsedInput(ItemStack teacupStack, @Nullable ItemTeacup teacup, int sugarCount, boolean valid) {
     }
 
-    public RecipeTeaSugaring(ResourceLocation location, CraftingBookCategory category) {
-        super(location, category);
+    public static Item getTeacup(int sugarAmount) {
+        return switch (sugarAmount) {
+            case 0 -> Items.FULL_TEACUP_0;
+            case 1 -> Items.FULL_TEACUP_1;
+            case 2 -> Items.FULL_TEACUP_2;
+            case 3 -> Items.FULL_TEACUP_3;
+            case 4 -> Items.FULL_TEACUP_4;
+            case 5 -> Items.FULL_TEACUP_5;
+            case 6 -> Items.FULL_TEACUP_6;
+            default -> net.minecraft.world.item.Items.AIR;
+        };
+    }
+
+    public RecipeTeaSugaring(CraftingBookCategory category) {
+        super(category);
     }
 
     /**
      * Used to check if a recipe matches current crafting inventory
      */
-    public boolean matches(CraftingContainer inv, Level worldIn) {
-        int i = 0;
-        ItemStack teacupStack = ItemStack.EMPTY;
-        ItemTeacup teacup = null;
-
-        for (int j = 0; j < inv.getContainerSize(); ++j) {
-            ItemStack itemstack = inv.getItem(j);
-            if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() instanceof ItemTeacup) {
-                    if (!teacupStack.isEmpty()) {
-                        return false;
-                    }
-
-                    teacupStack = itemstack;
-                    teacup = (ItemTeacup) itemstack.getItem();
-                } else {
-                    if (itemstack.getItem() != net.minecraft.world.item.Items.SUGAR || i >= 6) {
-                        return false;
-                    }
-
-                    ++i;
-                }
-            }
-        }
-
-        return !teacupStack.isEmpty() && teacup != null && i > 0 && (teacup.getSugarAmount() + i) <= 6;
+    public boolean matches(CraftingInput inv, Level worldIn) {
+        ParsedInput parsed = parseInput(inv);
+        return parsed.valid()
+                && !parsed.teacupStack().isEmpty()
+                && parsed.teacup() != null
+                && parsed.sugarCount() > 0
+                && (parsed.teacup().getSugarAmount() + parsed.sugarCount()) <= 6;
     }
 
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingContainer inv) {
-        int i = 0;
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+        ParsedInput parsed = parseInput(inv);
+        if (!parsed.valid()
+                || parsed.teacupStack().isEmpty()
+                || parsed.teacup() == null
+                || parsed.sugarCount() < 1
+                || (parsed.teacup().getSugarAmount() + parsed.sugarCount()) > 6) {
+            return ItemStack.EMPTY;
+        }
+        return new ItemStack(getTeacup(parsed.teacup().getSugarAmount() + parsed.sugarCount()));
+    }
+
+    private ParsedInput parseInput(CraftingInput inv) {
+        int sugarCount = 0;
         ItemStack teacupStack = ItemStack.EMPTY;
         ItemTeacup teacup = null;
 
-        for (int j = 0; j < inv.getContainerSize(); ++j) {
-            ItemStack itemstack = inv.getItem(j);
-            if (!itemstack.isEmpty()) {
-                if (itemstack.getItem() instanceof ItemTeacup) {
+        for (int slot = 0; slot < inv.size(); ++slot) {
+            ItemStack itemStack = inv.getItem(slot);
+            if (!itemStack.isEmpty()) {
+                if (itemStack.getItem() instanceof ItemTeacup currentTeacup) {
                     if (!teacupStack.isEmpty()) {
-                        return ItemStack.EMPTY;
+                        return invalid();
                     }
-                    teacupStack = itemstack;
-                    teacup = (ItemTeacup) itemstack.getItem();
+                    teacupStack = itemStack;
+                    teacup = currentTeacup;
+                } else if (itemStack.getItem() == net.minecraft.world.item.Items.SUGAR && sugarCount < 6) {
+                    ++sugarCount;
                 } else {
-                    if (itemstack.getItem() != net.minecraft.world.item.Items.SUGAR || i >= 6) {
-                        return ItemStack.EMPTY;
-                    }
-                    ++i;
+                    return invalid();
                 }
             }
         }
 
-        if (!teacupStack.isEmpty() && teacup != null && i >= 1 && (teacup.getSugarAmount() + i) <= 6) {
-            return new ItemStack(getTeacup(teacup.getSugarAmount() + i));
-        } else {
-            return ItemStack.EMPTY;
-        }
+        return new ParsedInput(teacupStack, teacup, sugarCount, true);
     }
 
+    private static ParsedInput invalid() {
+        return new ParsedInput(ItemStack.EMPTY, null, 0, false);
+    }
+
+    @Override
     public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_TEA_SUGARING;
     }
@@ -101,6 +97,7 @@ public class RecipeTeaSugaring extends CustomRecipe {
     /**
      * Used to determine if this recipe can fit in a grid of the given width/height
      */
+    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return width >= 3 && height >= 3;
     }

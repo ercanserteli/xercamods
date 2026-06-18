@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "group": "hot_teapot",
+  "ingredient": {
+    "item": "xercafood:full_teapot_5"
+  },
+  "result": {
+    "id": "xercafood:hot_teapot_5"
+  },
+  "experience": 0.3,
+  "cookingtime": 900
+}

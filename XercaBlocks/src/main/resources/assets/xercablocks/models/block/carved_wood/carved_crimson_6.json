@@ -1,0 +1,11 @@
+{
+  "parent": "xercablocks:block/carved_wood/carved_crimson",
+  "textures": {
+    "south": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_6_side_a",
+    "north": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_6_side_c",
+    "down": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_6_top",
+    "west": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_6_side_d",
+    "up": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_6_top",
+    "east": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_6_side_b"
+  }
+}

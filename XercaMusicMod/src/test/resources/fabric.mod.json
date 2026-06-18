@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "xercamusic_tests",
+  "version": "1.0.0",
+  "name": "XercaMusic Tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "xerca.xercamusic.tests.MusicRegressionGameTests"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "fabric-api": "*",
+    "minecraft": "1.21.1",
+    "xercamusic": "*"
+  }
+}

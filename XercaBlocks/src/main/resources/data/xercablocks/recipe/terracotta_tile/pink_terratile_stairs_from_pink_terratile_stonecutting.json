@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "xercablocks:pink_terratile"
+  },
+  "result": {
+    "id": "xercablocks:pink_terratile_stairs",
+    "count": 1
+  }
+}

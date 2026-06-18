@@ -6,17 +6,19 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.item.ItemDisplayContext;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.ItemStack;
+import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-public class EaselCanvasLayer extends RenderLayer<RenderEntityEasel.EaselRenderState, EaselModel> {
-    public EaselCanvasLayer(RenderLayerParent<RenderEntityEasel.EaselRenderState, EaselModel> renderer) {
-        super(renderer);
+public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
+    public EaselCanvasLayer(RenderLayerParent<EntityEasel, EaselModel> layerParent) {
+        super(layerParent);
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int i, RenderEntityEasel.EaselRenderState renderState, float yRot, float xRot) {
-        if (renderState.itemStack.getItem() instanceof ItemCanvas itemCanvas) {
+    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int i, EntityEasel entity, float v, float v1, float v2, float v3, float v4, float v5) {
+        ItemStack itemstack = entity.getItem();
+        if (itemstack.getItem() instanceof ItemCanvas itemCanvas) {
             poseStack.pushPose();
 
             switch (itemCanvas.getCanvasType()) {
@@ -50,7 +52,7 @@ public class EaselCanvasLayer extends RenderLayer<RenderEntityEasel.EaselRenderS
                 }
             }
 
-            ModClient.CANVAS_ITEM_RENDERER.renderByItem(renderState.itemStack, ItemDisplayContext.FIXED, poseStack, bufferSource, i, 0);
+            ModClient.requireCanvasItemRenderer().renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, bufferSource, i, 0);
 
             poseStack.popPose();
         }

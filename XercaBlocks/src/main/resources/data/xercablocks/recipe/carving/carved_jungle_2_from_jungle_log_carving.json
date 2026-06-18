@@ -1,0 +1,10 @@
+{
+  "type": "xercablocks:carving",
+  "ingredient": {
+    "item": "minecraft:jungle_log"
+  },
+  "result": {
+    "id": "xercablocks:carved_jungle_2",
+    "count": 1
+  }
+}

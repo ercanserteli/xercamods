@@ -6,12 +6,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import xerca.xercafood.common.XercaFood;
+import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.BlockPizza;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemPizza extends BlockItem {
@@ -27,22 +25,22 @@ public class ItemPizza extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         addPizzaIngredientToTooltip(tooltip, slot1);
         addPizzaIngredientToTooltip(tooltip, slot2);
         addPizzaIngredientToTooltip(tooltip, slot3);
     }
 
     static void addPizzaIngredientToTooltip(List<Component> tooltip, BlockPizza.Ingredient ingredient) {
-        if (!ingredient.equals(BlockPizza.Ingredient.EMPTY)) {
-            tooltip.add(Component.translatable(XercaFood.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
+        if (ingredient != BlockPizza.Ingredient.EMPTY) {
+            tooltip.add(Component.translatable(Mod.MOD_ID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
         }
     }
 
     @Override
     public Component getName(ItemStack stack) {
-        if (slot1.equals(BlockPizza.Ingredient.EMPTY) && slot2.equals(BlockPizza.Ingredient.EMPTY) && slot3.equals(BlockPizza.Ingredient.EMPTY))
-            return Component.translatable(XercaFood.MODID + ".pizza_plain");
-        return Component.translatable(XercaFood.MODID + ".pizza");
+        if (slot1 == BlockPizza.Ingredient.EMPTY && slot2 == BlockPizza.Ingredient.EMPTY && slot3 == BlockPizza.Ingredient.EMPTY)
+            return Component.translatable(Mod.MOD_ID + ".pizza_plain");
+        return Component.translatable(Mod.MOD_ID + ".pizza");
     }
 }

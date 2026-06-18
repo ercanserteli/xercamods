@@ -9,21 +9,27 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
 @MethodsReturnNonnullByDefault
 public class RecipeCanvasCloning extends CustomRecipe {
-    public RecipeCanvasCloning(CraftingBookCategory craftingBookCategory) {
-        super(craftingBookCategory);
+    public RecipeCanvasCloning(CraftingBookCategory category) {
+        super(category);
+    }
+
+    /**
+     * Two canvases clone together only if they share both size and material
+     */
+    private static boolean sameKind(ItemCanvas a, ItemCanvas b) {
+        return a.getCanvasType() == b.getCanvasType() && a.isGlass() == b.isGlass();
     }
 
     /**
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingInput inv, @NotNull Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 
@@ -34,7 +40,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!orgCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!freshCanvas.isEmpty() && !((ItemCanvas) freshCanvas.getItem()).getCanvasType().equals(itemCanvas.getCanvasType())) {
+                    if (!freshCanvas.isEmpty() && !sameKind((ItemCanvas) freshCanvas.getItem(), itemCanvas)) {
                         return false;
                     }
 
@@ -43,7 +49,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!freshCanvas.isEmpty()) {
                         return false;
                     }
-                    if (!orgCanvas.isEmpty() && !((ItemCanvas) orgCanvas.getItem()).getCanvasType().equals(itemCanvas.getCanvasType())) {
+                    if (!orgCanvas.isEmpty() && !sameKind((ItemCanvas) orgCanvas.getItem(), itemCanvas)) {
                         return false;
                     }
 
@@ -59,7 +65,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 
@@ -70,7 +76,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!orgCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!freshCanvas.isEmpty() && !((ItemCanvas) freshCanvas.getItem()).getCanvasType().equals(itemCanvas.getCanvasType())) {
+                    if (!freshCanvas.isEmpty() && !sameKind((ItemCanvas) freshCanvas.getItem(), itemCanvas)) {
                         return ItemStack.EMPTY;
                     }
 
@@ -79,7 +85,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
                     if (!freshCanvas.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
-                    if (!orgCanvas.isEmpty() && !((ItemCanvas) orgCanvas.getItem()).getCanvasType().equals(itemCanvas.getCanvasType())) {
+                    if (!orgCanvas.isEmpty() && !sameKind((ItemCanvas) orgCanvas.getItem(), itemCanvas)) {
                         return ItemStack.EMPTY;
                     }
 
@@ -97,6 +103,11 @@ public class RecipeCanvasCloning extends CustomRecipe {
             resultStack.set(Items.CANVAS_VERSION, orgCanvas.get(Items.CANVAS_VERSION));
             resultStack.set(Items.CANVAS_TITLE, orgCanvas.get(Items.CANVAS_TITLE));
             resultStack.set(Items.CANVAS_AUTHOR, orgCanvas.get(Items.CANVAS_AUTHOR));
+            if (orgCanvas.get(Items.CANVAS_SIDE_PIXELS) != null) {
+                resultStack.set(Items.CANVAS_SIDES_ACTIVE, orgCanvas.getOrDefault(Items.CANVAS_SIDES_ACTIVE, false));
+                resultStack.set(Items.CANVAS_SIDE_PIXELS, orgCanvas.get(Items.CANVAS_SIDE_PIXELS));
+            }
+            ItemCanvas.updateStackSize(resultStack);
             return resultStack;
         } else {
             return ItemStack.EMPTY;
@@ -105,23 +116,31 @@ public class RecipeCanvasCloning extends CustomRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
+        NonNullList<ItemStack> stacks = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 
-        for (int i = 0; i < nonnulllist.size(); ++i) {
-            ItemStack stack = inv.getItem(i);
-            if (stack.getItem() instanceof ItemCanvas && stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
-                ItemStack copyStack = stack.copy();
+        for (int i = 0; i < stacks.size(); ++i) {
+            ItemStack itemStack = inv.getItem(i);
+            if (itemStack.getItem() instanceof ItemCanvas && itemStack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
+                ItemStack copyStack = itemStack.copy();
                 copyStack.setCount(1);
-                nonnulllist.set(i, copyStack);
+                stacks.set(i, copyStack);
                 break;
             }
         }
 
-        return nonnulllist;
+        return stacks;
     }
 
     @Override
-    public RecipeSerializer<RecipeCanvasCloning> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Items.CRAFTING_SPECIAL_CANVAS_CLONING;
+    }
+
+    /**
+     * Used to determine if this recipe can fit in a grid of the given width/height
+     */
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return width >= 2 && height >= 2;
     }
 }

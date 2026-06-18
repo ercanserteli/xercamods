@@ -12,35 +12,29 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import xerca.xercafood.common.item.Items;
 
-class BlockRicePlant extends CropBlock implements BonemealableBlock {
+public class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     BlockRicePlant() {
-        super(Properties.of(Material.PLANT).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
+        super(Properties.of().sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
     }
 
     @Override
     protected ItemLike getBaseSeedId() {
-        return Items.ITEM_RICE_SEEDS;
-    }
-
-    @Override
-    public int getMaxAge() {
-        return 7;
+        return Items.RICE_SEEDS;
     }
 
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
         if (state.getBlock() == Blocks.FARMLAND && state.getValue(FarmBlock.MOISTURE) > 6) {
-            int water_count = 0;
+            int waterCount = 0;
             for (Direction direction : Direction.Plane.HORIZONTAL) {
                 BlockState blockstate = worldIn.getBlockState(pos.relative(direction));
                 FluidState fluidstate = worldIn.getFluidState(pos.relative(direction));
                 if (fluidstate.is(FluidTags.WATER) || blockstate.getBlock() == net.minecraft.world.level.block.Blocks.FROSTED_ICE) {
-                    water_count++;
-                    if (water_count >= 2) {
+                    waterCount++;
+                    if (waterCount >= 2) {
                         return true;
                     }
                 }

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "f",
+    "c"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:crossbow"
+    },
+    "f": {
+      "item": "xercatools:flask"
+    }
+  },
+  "result": {
+    "id": "xercatools:ender_bow"
+  }
+}

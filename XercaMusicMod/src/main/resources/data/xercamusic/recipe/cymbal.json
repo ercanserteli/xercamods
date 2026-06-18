@@ -1,11 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        " g ",
-        "gig",
-        " g "
-    ],
-    "key": {"g": {"item": "minecraft:gold_nugget"}, "i": {"item": "minecraft:iron_nugget"}},
-    "result": {"id": "xercamusic:cymbal"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " g ",
+    "gig",
+    " g "
+  ],
+  "key": {
+    "g": {
+      "item": "minecraft:gold_nugget"
+    },
+    "i": {
+      "item": "minecraft:iron_nugget"
+    }
+  },
+  "result": {
+    "id": "xercamusic:cymbal"
+  }
 }

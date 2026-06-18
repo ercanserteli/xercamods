@@ -5,12 +5,15 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import xerca.xercapaint.PaletteUtil;
 
 public class PaletteDropperGameTests {
+    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String PALETTE_DROPPER_BATCH = "palette_dropper";
+
     private static void assertRgb(GameTestHelper helper, PaletteUtil.Color color, int r, int g, int b, String message) {
         helper.assertTrue(color.r == r && color.g == g && color.b == b,
                 message + " (actual=" + color.r + "," + color.g + "," + color.b + ")");
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_dropper")
+    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_DROPPER_BATCH)
     public static void droppingPureBlackIntoCustomSlotDoesNotDivideByZero(GameTestHelper helper) {
         PaletteUtil.CustomColor slot = new PaletteUtil.CustomColor();
         PaletteUtil.Color pickedBlack = new PaletteUtil.Color(0xFF000000);
@@ -29,7 +32,7 @@ public class PaletteDropperGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_dropper")
+    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_DROPPER_BATCH)
     public static void droppingSingleColorKeepsExactColor(GameTestHelper helper) {
         PaletteUtil.CustomColor slot = new PaletteUtil.CustomColor();
         PaletteUtil.Color picked = new PaletteUtil.Color(0xFF0C2238);
@@ -40,7 +43,7 @@ public class PaletteDropperGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_dropper")
+    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_DROPPER_BATCH)
     public static void droppingTwoSaturatedColorsMixesPredictably(GameTestHelper helper) {
         PaletteUtil.CustomColor slot = new PaletteUtil.CustomColor();
         slot.mix(new PaletteUtil.Color(0xFFFF0000)); // red
@@ -52,7 +55,7 @@ public class PaletteDropperGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "palette_dropper")
+    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_DROPPER_BATCH)
     public static void droppingManyColorsAlwaysStaysInRgbRange(GameTestHelper helper) {
         PaletteUtil.CustomColor slot = new PaletteUtil.CustomColor();
         int[] colors = {

@@ -1,0 +1,20 @@
+{
+  "item.xercacushion.black_cushion": "Czarna Poduszka",
+  "item.xercacushion.blue_cushion": "Niebieska Poduszka",
+  "item.xercacushion.brown_cushion": "Brązowa Poduszka",
+  "item.xercacushion.cyan_cushion": "Cyjanowa Poduszka",
+  "item.xercacushion.gray_cushion": "Szara Poduszka",
+  "item.xercacushion.green_cushion": "Zielona Poduszka",
+  "item.xercacushion.light_blue_cushion": "Jasnoniebieska Poduszka",
+  "item.xercacushion.light_gray_cushion": "Jasnoszara Poduszka",
+  "item.xercacushion.lime_cushion": "Limonkowa Poduszka",
+  "item.xercacushion.magenta_cushion": "Karmazynowa Poduszka",
+  "item.xercacushion.orange_cushion": "Pomarańczowa Poduszka",
+  "item.xercacushion.pink_cushion": "Różowa Poduszka",
+  "item.xercacushion.purple_cushion": "Fioletowa Poduszka",
+  "item.xercacushion.red_cushion": "Czerwona Poduszka",
+  "item.xercacushion.white_cushion": "Biała Poduszka",
+  "item.xercacushion.yellow_cushion": "Żółta Poduszka",
+  "entity.xercacushion.cushion": "Poduszka",
+  "xercacushion.cushion_tooltip": "Możesz na niej siedzieć"
+}

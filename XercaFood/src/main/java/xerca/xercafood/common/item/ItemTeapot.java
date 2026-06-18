@@ -6,20 +6,18 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.block.BlockTeapot;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemTeapot extends BlockItem {
-    public static final int maxTea = 7;
     private final int teaAmount;
     private final boolean isHot;
 
     public ItemTeapot(BlockTeapot blockTeapot, int teaAmount, boolean isHot) {
-        super(blockTeapot, new Item.Properties().defaultDurability(maxTea));
+        super(blockTeapot, new Item.Properties());
         this.teaAmount = teaAmount;
         this.isHot = isHot;
     }
@@ -33,7 +31,7 @@ public class ItemTeapot extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(Component.literal(isHot ? "Hot" : "Cold"));
         tooltip.add(Component.literal("Tea amount: " + teaAmount));
     }
@@ -47,11 +45,14 @@ public class ItemTeapot extends BlockItem {
     @Nullable
     protected BlockState getPlacementState(BlockPlaceContext context) {
         BlockState blockstate;
-        if (context.getItemInHand().getItem() instanceof ItemTeapot) {
-            if (!((ItemTeapot) context.getItemInHand().getItem()).isHot) {
+        if (context.getItemInHand().getItem() instanceof ItemTeapot itemTeapot) {
+            if (!itemTeapot.isHot) {
                 blockstate = null;
             } else {
-                blockstate = this.getBlock().getStateForPlacement(context).setValue(BlockTeapot.TEA_AMOUNT, ((ItemTeapot) context.getItemInHand().getItem()).teaAmount);
+                BlockState baseState = this.getBlock().getStateForPlacement(context);
+                blockstate = baseState != null
+                        ? baseState.setValue(BlockTeapot.TEA_AMOUNT, ((ItemTeapot) context.getItemInHand().getItem()).teaAmount)
+                        : null;
             }
         } else {
             blockstate = this.getBlock().getStateForPlacement(context);

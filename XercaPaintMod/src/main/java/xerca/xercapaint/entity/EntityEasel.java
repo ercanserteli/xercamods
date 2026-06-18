@@ -25,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
@@ -32,14 +33,15 @@ import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.CloseGuiPacket;
 import xerca.xercapaint.packets.OpenGuiPacket;
 
-import javax.annotation.Nullable;
+import java.util.Objects;
 
 
 public class EntityEasel extends Entity {
+    private static final int MAX_PAINTER_DISTANCE_SQR = 64;
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
-    private Player painter = null;
-    private Runnable dropDeferred = null;
-    private int dropWaitTicks = 0;
+    private @Nullable Player painter;
+    private @Nullable Runnable dropDeferred;
+    private int dropWaitTicks;
 
     static {
         DATA_CANVAS = SynchedEntityData.defineId(EntityEasel.class, EntityDataSerializers.ITEM_STACK);
@@ -53,7 +55,28 @@ public class EntityEasel extends Entity {
         super(entityCanvasEntityType, world);
     }
 
-    public void setPainter(Player painter) {
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityEasel other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityEasel.class, this.getUUID());
+    }
+
+    @Nullable
+    public Player getPainter() {
+        return painter;
+    }
+
+    public void setPainter(@Nullable Player painter) {
         this.painter = painter;
     }
 
@@ -63,31 +86,33 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public boolean hurtServer(@NotNull ServerLevel level, @NotNull DamageSource damageSource, float amount) {
-        if (this.isInvulnerableToBase(damageSource)) {
+    public boolean hurt(DamageSource damageSource, float amount) {
+        if (this.isInvulnerableTo(damageSource)) {
             return false;
         }
 
-        if (!level.isClientSide && !this.isRemoved()) {
+        if (!this.level().isClientSide && !this.isRemoved()) {
             if (!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)) {
-                this.dropItem(level, damageSource.getEntity(), false);
+                this.dropItem(damageSource.getEntity(), false);
             } else {
-                this.dropItem(level, damageSource.getEntity());
-                kill(level);
+                this.dropItem(damageSource.getEntity());
+                this.kill();
                 this.markHurt();
             }
         }
         return false;
     }
 
-    private void showBreakingParticles(ServerLevel level) {
-        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
+    private void showBreakingParticles() {
+        if (this.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BIRCH_PLANKS.defaultBlockState()), this.getX(), this.getY(0.6666666666666666D), this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
+        }
     }
 
     @Override
-    public void kill(@NotNull ServerLevel level) {
-        showBreakingParticles(level);
-        super.kill(level);
+    public void kill() {
+        showBreakingParticles();
+        this.remove(RemovalReason.KILLED);
     }
 
     @Override
@@ -95,37 +120,39 @@ public class EntityEasel extends Entity {
         builder.define(DATA_CANVAS, ItemStack.EMPTY);
     }
 
-    public void dropItem(ServerLevel level, @Nullable Entity entity) {
-        this.dropItem(level, entity, true);
+    public void dropItem(@Nullable Entity entity) {
+        this.dropItem(entity, true);
     }
 
-    private void dropItem(ServerLevel level, @Nullable Entity entity, boolean dropSelf) {
+    private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if (painter != null) {
-            if (dropDeferred == null) {
-                CloseGuiPacket pack = new CloseGuiPacket();
-                ServerPlayNetworking.send((ServerPlayer) painter, pack);
-                dropDeferred = () -> doDrop(level, entity, dropSelf);
+            if (!this.level().isClientSide && dropDeferred == null) {
+                if (painter instanceof ServerPlayer serverPainter) {
+                    CloseGuiPacket pack = new CloseGuiPacket();
+                    ServerPlayNetworking.send(serverPainter, pack);
+                }
+                dropDeferred = () -> doDrop(entity, dropSelf);
             }
         } else {
-            doDrop(level, entity, dropSelf);
+            doDrop(entity, dropSelf);
         }
     }
 
-    public void doDrop(ServerLevel level, @Nullable Entity entity, boolean dropSelf) {
+    public void doDrop(@Nullable Entity entity, boolean dropSelf) {
         ItemStack canvasStack = this.getItem();
         this.setItem(ItemStack.EMPTY);
 
         if (!canvasStack.isEmpty()) {
             canvasStack = canvasStack.copy();
-            this.spawnAtLocation(level, canvasStack);
+            this.spawnAtLocation(canvasStack);
         }
 
         if (entity instanceof Player player && player.getAbilities().instabuild) {
             return;
         }
 
-        if (dropSelf && level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(level, this.getEaselItemStack());
+        if (dropSelf && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.spawnAtLocation(this.getEaselItemStack());
         }
     }
 
@@ -155,15 +182,15 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public @NotNull SlotAccess getSlot(int i) {
+    public SlotAccess getSlot(int i) {
         return i == 0 ? new SlotAccess() {
             @Override
-            public @NotNull ItemStack get() {
+            public ItemStack get() {
                 return EntityEasel.this.getItem();
             }
 
             @Override
-            public boolean set(@NotNull ItemStack itemStack) {
+            public boolean set(ItemStack itemStack) {
                 EntityEasel.this.setItem(itemStack);
                 return true;
             }
@@ -171,18 +198,18 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> accessor) {
+    public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
         super.onSyncedDataUpdated(accessor);
         if (accessor.equals(DATA_CANVAS)) {
             ItemStack itemStack = this.getItem();
-            if (!itemStack.isEmpty() && itemStack.getEntityRepresentation() != this) {
+            if (!itemStack.isEmpty() && !this.equals(itemStack.getEntityRepresentation())) {
                 itemStack.setEntityRepresentation(this);
             }
         }
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
+    public void addAdditionalSaveData(CompoundTag tag) {
         if (!this.getItem().isEmpty()) {
             tag.put("Item", this.getItem().save(this.registryAccess()));
         }
@@ -201,7 +228,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;
@@ -218,8 +245,10 @@ public class EntityEasel extends Entity {
                 boolean unused = this.painter == null;
                 boolean toEdit = handHoldsPalette && getItem().getOrDefault(Items.CANVAS_GENERATION, 0) <= 0;
                 boolean allowed = unused || !toEdit;
-                OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
-                ServerPlayNetworking.send((ServerPlayer) player, pack);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
+                    ServerPlayNetworking.send(serverPlayer, pack);
+                }
                 if (toEdit && allowed) {
                     this.painter = player;
                 }
@@ -244,7 +273,7 @@ public class EntityEasel extends Entity {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
-        if (!level().isClientSide && dropDeferred != null) {
+        if (!this.level().isClientSide && dropDeferred != null) {
             dropWaitTicks++;
             if (painter == null || dropWaitTicks > 80) {
                 dropDeferred.run();
@@ -252,8 +281,7 @@ public class EntityEasel extends Entity {
                 dropWaitTicks = 0;
             }
         }
-
-        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > 64)) {
+        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > MAX_PAINTER_DISTANCE_SQR)) {
             painter = null;
         }
     }

@@ -1,0 +1,10 @@
+{
+  "type": "xercablocks:carving",
+  "ingredient": {
+    "item": "minecraft:birch_log"
+  },
+  "result": {
+    "id": "xercablocks:carved_birch_1",
+    "count": 1
+  }
+}

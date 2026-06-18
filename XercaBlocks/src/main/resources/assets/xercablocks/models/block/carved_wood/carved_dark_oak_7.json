@@ -1,0 +1,11 @@
+{
+  "parent": "xercablocks:block/carved_wood/carved_dark_oak",
+  "textures": {
+    "up": "xercablocks:block/carved_wood/carved_dark_oak_7_top",
+    "down": "xercablocks:block/carved_wood/carved_dark_oak_7_top",
+    "north": "xercablocks:block/carved_wood/carved_dark_oak_7a",
+    "south": "xercablocks:block/carved_wood/carved_dark_oak_7c",
+    "west":  "xercablocks:block/carved_wood/carved_dark_oak_7b",
+    "east":  "xercablocks:block/carved_wood/carved_dark_oak_7d"
+  }
+}

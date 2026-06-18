@@ -1,6 +1,7 @@
 package xerca.xercamusic.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -10,16 +11,16 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.packets.serverbound.SingleNotePacket;
 
-import javax.annotation.Nullable;
+import java.util.Objects;
 
-import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.client.ModClient.sendToServer;
 
 public class GuiInstrument extends Screen {
     private static final ResourceLocation INS_GUI_TEXTURES = Mod.id("textures/gui/instrument_gui.png");
@@ -76,7 +77,7 @@ public class GuiInstrument extends Screen {
         } else if (currentKeyboardOctave > instrument.getMaxOctave()) {
             currentKeyboardOctave = instrument.getMaxOctave();
         }
-        midiHandler.currentOctave = currentKeyboardOctave;
+        midiHandler.setCurrentOctave(currentKeyboardOctave);
 
         this.addRenderableWidget(Button.builder(Component.translatable("note.upButton"), button -> increaseOctave()).
                 bounds(octaveButtonX, OCTAVE_BUTTON_Y, 10, 10).
@@ -90,24 +91,25 @@ public class GuiInstrument extends Screen {
     @Override
     public void tick() {
         super.tick();
-        if (blockInsPos != null && minecraft != null) {
+        Minecraft client = minecraft;
+        if (blockInsPos != null && client != null) {
             if (player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns) {
-                if (blockIns.getItemInstrument() != instrument) {
-                    minecraft.setScreen(null);
+                if (!Objects.equals(blockIns.getItemInstrument(), instrument)) {
+                    client.setScreen(null);
                 }
             } else {
-                minecraft.setScreen(null);
+                client.setScreen(null);
             }
         }
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         // All rendering is handled in render()
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderTexture(0, INS_GUI_TEXTURES);
 
         guiGraphics.blit(INS_GUI_TEXTURES, guiBaseX, guiBaseY, 0, 0, 0, GUI_WIDTH, GUI_HEIGHT, 512, 512);
@@ -179,7 +181,7 @@ public class GuiInstrument extends Screen {
             if (noteSound == null) {
                 return;
             }
-            noteSounds[noteId] = ClientStuff.playNote(noteSound.sound(), player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch());
+            noteSounds[noteId] = ModClient.playNote(noteSound.sound(), player.getX(), player.getY(), player.getZ(), data.volume(), noteSound.pitch());
             player.level().addParticle(ParticleTypes.NOTE, player.getX(), player.getY() + 2.2D, player.getZ(), note / 24.0D, 0.0D, 0.0D);
             buttonPushStates[noteId] = true;
 
@@ -265,7 +267,7 @@ public class GuiInstrument extends Screen {
     private void decreaseOctave() {
         if (currentKeyboardOctave > -3) {
             currentKeyboardOctave--;
-            midiHandler.currentOctave = currentKeyboardOctave;
+            midiHandler.setCurrentOctave(currentKeyboardOctave);
             stopAllSounds();
         }
     }
@@ -273,7 +275,7 @@ public class GuiInstrument extends Screen {
     private void increaseOctave() {
         if (currentKeyboardOctave < instrument.getMaxOctave()) {
             currentKeyboardOctave++;
-            midiHandler.currentOctave = currentKeyboardOctave;
+            midiHandler.setCurrentOctave(currentKeyboardOctave);
             stopAllSounds();
         }
     }

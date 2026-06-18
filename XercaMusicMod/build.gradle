@@ -1,3 +1,4 @@
+import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 
 plugins {
@@ -5,6 +6,7 @@ plugins {
     id 'maven-publish'
     id("com.github.spotbugs") version "6.4.4"
     id("net.ltgt.errorprone") version "4.3.0"
+    id "pmd"
 }
 
 version = project.mod_version
@@ -34,7 +36,7 @@ tasks.register('buildCopy', Copy) {
 }
 
 dependencies {
-    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
@@ -64,24 +66,32 @@ processResources {
     }
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
     // this fixes some edge cases with special characters not displaying correctly
     // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
     // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release = targetJavaVersion
-    }
+    it.options.release = targetJavaVersion
     options.errorprone {
         disableWarningsInGeneratedCode.set(true)
     }
 }
 
 spotbugs {
-    ignoreFailures = true
     effort = Effort.MAX
+    ignoreFailures = true
+    excludeFilter = file("config/spotbugs/excludeFilter.xml")
+    reportLevel = Confidence.valueOf("HIGH")
+}
+
+pmd {
+    toolVersion = "7.11.0"
+    ignoreFailures = true
+    consoleOutput = true
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
 java {
@@ -96,15 +106,23 @@ java {
     withSourcesJar()
 }
 
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.base.archivesName.get()}" }
-    }
-}
+SourceSet mainSourceSet = sourceSets.main
+SourceSet testSourceSet = sourceSets.test
 
 loom {
     accessWidenerPath.set(file("src/main/resources/xercamusic.accesswidener"))
     runs {
+        gameTest {
+            inherit server
+            name "Game Test Server"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
+            source(mainSourceSet)
+            source(testSourceSet)
+            ideConfigGenerated = true
+            runDir "build/gametest"
+        }
+
         // This adds a new gradle task that runs the datagen API: "gradlew runDatagenClient"
         datagenClient {
             inherit client
@@ -116,6 +134,35 @@ loom {
             ideConfigGenerated = true
             runDir "build/datagen"
         }
+    }
+}
+
+tasks.named('check') {
+    dependsOn(tasks.named('runGameTest'))
+}
+
+tasks.named('test') {
+    enabled = false
+}
+
+tasks.named('runGameTest').configure {
+    doFirst {
+        def gameTestDir = file("build/gametest")
+        gameTestDir.mkdirs()
+        def serverProperties = new File(gameTestDir, "server.properties")
+        if (!serverProperties.exists()) {
+            serverProperties.text = "online-mode=false\nmotd=GameTest\n"
+        }
+        def eulaFile = new File(gameTestDir, "eula.txt")
+        if (!eulaFile.exists()) {
+            eulaFile.text = "eula=true\n"
+        }
+    }
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
     }
 }
 

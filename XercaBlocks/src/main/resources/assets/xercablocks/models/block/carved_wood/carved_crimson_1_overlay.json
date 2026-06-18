@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "block/stripped_crimson_stem_top",
+    "up": "xercablocks:block/carved_wood/carved_crimson_1_side_a_top_o",
+    "down": "xercablocks:block/carved_wood/carved_crimson_1_side_a_top_o",
+    "north": "xercablocks:block/carved_wood/carved_crimson_1_side_c_o",
+    "south": "xercablocks:block/carved_wood/carved_crimson_1_side_a_top_o",
+    "west": "xercablocks:block/carved_wood/carved_crimson_1_side_d_o",
+    "east": "xercablocks:block/carved_wood/carved_crimson_1_side_b_o"
+  }
+}

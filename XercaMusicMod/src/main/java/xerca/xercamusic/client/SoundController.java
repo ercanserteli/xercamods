@@ -3,6 +3,7 @@ package xerca.xercamusic.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
@@ -27,7 +28,7 @@ public class SoundController extends Thread {
     private volatile double x;
     private volatile double y;
     private volatile double z;
-    private TileEntityMusicBox musicBox;
+    private @Nullable TileEntityMusicBox musicBox;
     private static final AtomicInteger CONTROLLER_COUNTER = new AtomicInteger();
 
     // Tracks sustained notes inside volume markers for dynamic volume updates
@@ -35,7 +36,7 @@ public class SoundController extends Thread {
 
     private record ActiveSound(NoteSound sound, NoteEvent event, VolumeMarker marker, int endBeat) {}
 
-    public SoundController(List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
+    public SoundController(List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
         this.notes = notes;
         this.volumeMarkers = volumeMarkers != null ? volumeMarkers : Collections.emptyList();
         this.x = x;
@@ -49,17 +50,8 @@ public class SoundController extends Thread {
         setName("XercaMusic-SoundController-" + CONTROLLER_COUNTER.incrementAndGet());
     }
 
-    public SoundController(List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
+    public SoundController(List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
         this(notes, volumeMarkers, x, y, z, instrument, bps, volume, -1);
-        this.musicBox = musicBox;
-    }
-
-    public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, int spiritID) {
-        this(notes, null, x, y, z, instrument, bps, volume, spiritID);
-    }
-
-    public SoundController(List<NoteEvent> notes, double x, double y, double z, IItemInstrument instrument, byte bps, float volume, TileEntityMusicBox musicBox) {
-        this(notes, null, x, y, z, instrument, bps, volume, -1);
         this.musicBox = musicBox;
     }
 
@@ -89,7 +81,7 @@ public class SoundController extends Thread {
             NoteEvent firstEvent = notes.get(noteIdx);
             while (firstEvent.time > currentBeat) {
                 // Sleep until the absolute target time for the next beat
-                long targetNanos = songStartNanos + (long)(currentBeat + 1) * nanosPerBeat + pausedNanos;
+                long targetNanos = songStartNanos + (currentBeat + 1) * nanosPerBeat + pausedNanos;
                 sleepUntil(targetNanos);
                 currentBeat++;
                 updateActiveSounds(currentBeat);
@@ -117,10 +109,10 @@ public class SoundController extends Thread {
 
         // Music over
         if (spiritID >= 0 && minecraft.player != null) {
-            minecraft.submit(() -> ClientStuff.endMusic(spiritID, minecraft.player.getId()))
+            minecraft.submit(() -> ModClient.endMusic(spiritID, minecraft.player.getId()))
                     .whenComplete((v, t) -> {
                         if (t != null) Mod.LOGGER.error("Failed to end music", t);
-                    });
+                    }).isDone();
         }
     }
 
@@ -136,70 +128,70 @@ public class SoundController extends Thread {
             boolean particleSpawned = false;
             for (int i = fromIdx; i < toIdx; i++) {
                 NoteEvent event = notes.get(i);
-                if (event.note < IItemInstrument.MIN_NOTE || event.note > IItemInstrument.MAX_NOTE) continue;
-
-                IItemInstrument.InsSound insSound = instrument.getSound(event.note);
-                if (insSound == null) continue;
-
-                // Check if any volume marker fully contains this note
-                float noteVolume = event.floatVolume();
-                VolumeMarker activeMarker = null;
-                for (VolumeMarker marker : volumeMarkers) {
-                    if (marker.fullyContains(event.time, event.length, event.note)) {
-                        noteVolume = marker.getVolumeAt(event.time);
-                        activeMarker = marker;
-                        break;  // First matching marker wins
-                    }
-                }
-
-                NoteSound sound;
-                if (musicBox == null) {
-                    sound = ClientStuff.playNote(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
-                } else {
-                    sound = ClientStuff.playNoteTE(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
-                }
-
-                // Spawn at most one particle per beat per controller
-                if (!particleSpawned) {
-                    if (musicBox == null) {
-                        level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, event.note / 24.0D, 0.0D, 0.0D);
-                    } else {
-                        level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, event.note / 24.0D, 0.0D, 0.0D);
-                    }
-                    particleSpawned = true;
-                }
-
-                // Apply glissando (smooth pitch slide)
-                if (event.hasGlissando() && sound != null) {
-                    byte[] wps = event.getEffectiveWaypoints();
-                    if (wps != null && wps.length > 0) {
-                        float[] pitchWaypoints = new float[wps.length];
-                        for (int j = 0; j < wps.length; j++) {
-                            pitchWaypoints[j] = insSound.pitch() * (float) Math.pow(2.0, wps[j] / 12.0);
-                        }
-                        byte[] posBuf = event.getEffectivePositions();
-                        if (posBuf != null && posBuf.length == wps.length) {
-                            float[] posFloats = new float[posBuf.length];
-                            for (int j = 0; j < posBuf.length; j++) {
-                                posFloats[j] = (posBuf[j] & 0xFF) / 100.0f;
+                if (event.note >= IItemInstrument.MIN_NOTE && event.note <= IItemInstrument.MAX_NOTE) {
+                    IItemInstrument.InsSound insSound = instrument.getSound(event.note);
+                    if (insSound != null) {
+                        // Check if any volume marker fully contains this note
+                        float noteVolume = event.floatVolume();
+                        VolumeMarker activeMarker = null;
+                        for (VolumeMarker marker : volumeMarkers) {
+                            if (marker.fullyContains(event.time, event.length, event.note)) {
+                                noteVolume = marker.getVolumeAt(event.time);
+                                activeMarker = marker;
+                                break;  // First matching marker wins
                             }
-                            sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
-                        } else {
-                            sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
                         }
-                    }
-                }
 
-                // Track sustained notes inside volume markers for dynamic volume
-                if (sound != null && activeMarker != null && event.length > 1) {
-                    synchronized (activeSounds) {
-                        activeSounds.add(new ActiveSound(sound, event, activeMarker, event.time + event.length));
+                        NoteSound sound;
+                        if (musicBox == null) {
+                            sound = ModClient.playNote(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
+                        } else {
+                            sound = ModClient.playNoteTE(insSound.sound(), x, y, z, volume * noteVolume, insSound.pitch(), (byte) beatsToTicks(event.length));
+                        }
+
+                        // Spawn at most one particle per beat per controller
+                        if (!particleSpawned) {
+                            if (musicBox == null) {
+                                level.addParticle(ParticleTypes.NOTE, x, y + 2.2D, z, event.note / 24.0D, 0.0D, 0.0D);
+                            } else {
+                                level.addParticle(ParticleTypes.NOTE, x + 0.5D, y + 2.2D, z + 0.5D, event.note / 24.0D, 0.0D, 0.0D);
+                            }
+                            particleSpawned = true;
+                        }
+
+                        // Apply glissando (smooth pitch slide)
+                        if (event.hasGlissando()) {
+                            byte[] wps = event.getEffectiveWaypoints();
+                            if (wps != null && wps.length > 0) {
+                                float[] pitchWaypoints = new float[wps.length];
+                                for (int j = 0; j < wps.length; j++) {
+                                    pitchWaypoints[j] = insSound.pitch() * (float) Math.pow(2.0, wps[j] / 12.0);
+                                }
+                                byte[] posBuf = event.getEffectivePositions();
+                                if (posBuf != null && posBuf.length == wps.length) {
+                                    float[] posFloats = new float[posBuf.length];
+                                    for (int j = 0; j < posBuf.length; j++) {
+                                        posFloats[j] = (posBuf[j] & 0xFF) / 100.0f;
+                                    }
+                                    sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
+                                } else {
+                                    sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
+                                }
+                            }
+                        }
+
+                        // Track sustained notes inside volume markers for dynamic volume
+                        if (activeMarker != null && event.length > 1) {
+                            synchronized (activeSounds) {
+                                activeSounds.add(new ActiveSound(sound, event, activeMarker, event.time + event.length));
+                            }
+                        }
                     }
                 }
             }
         }).whenComplete((v, t) -> {
             if (t != null) Mod.LOGGER.error("Failed to play notes", t);
-        });
+        }).isDone();
     }
 
     private void updateActiveSounds(int currentBeat) {
@@ -222,7 +214,7 @@ public class SoundController extends Thread {
             }
         }).whenComplete((v, t) -> {
             if (t != null) Mod.LOGGER.error("Failed to update active sounds", t);
-        });
+        }).isDone();
     }
 
     public void setStop() {
@@ -251,7 +243,7 @@ public class SoundController extends Thread {
                 sleep(remainingMs - 8);
             } catch (InterruptedException e) {
                 Mod.LOGGER.warn("Interrupted while sleeping", e);
-                Thread.currentThread().interrupt();
+                currentThread().interrupt();
             }
         }
 
@@ -262,7 +254,7 @@ public class SoundController extends Thread {
 
         // Hot spin only the final ~1ms for precise timing
         while (System.nanoTime() < targetNanos) {
-            Thread.onSpinWait();
+            onSpinWait();
         }
     }
 
@@ -273,7 +265,7 @@ public class SoundController extends Thread {
             sleep(millis);
         } catch (InterruptedException e) {
             Mod.LOGGER.warn("Interrupted while sleeping", e);
-            Thread.currentThread().interrupt();
+            currentThread().interrupt();
         }
     }
 }

@@ -17,10 +17,14 @@ import xerca.xercapaint.packets.ExportPaintingPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 public class CommandExport {
+    private CommandExport() {
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("paintexport")
@@ -52,11 +56,16 @@ public class CommandExport {
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
         if (!directory.exists()) {
-            directory.mkdir();
+            try {
+                Files.createDirectories(directory.toPath());
+            } catch (IOException e) {
+                Mod.LOGGER.error("Could not create paintings directory", e);
+                return false;
+            }
         }
 
         for (ItemStack s : player.getHandSlots()) {
-            if (s.getItem() instanceof ItemCanvas) {
+            if (s.getItem() instanceof ItemCanvas itemCanvas) {
                 List<Integer> pixels = s.get(Items.CANVAS_PIXELS);
                 String canvasId = s.get(Items.CANVAS_ID);
                 if (pixels != null && canvasId != null) {
@@ -69,7 +78,16 @@ public class CommandExport {
                         CompoundTag tag = new CompoundTag();
 
                         tag.putIntArray("pixels", pixels);
-                        tag.putByte("ct", (byte) ((ItemCanvas) s.getItem()).getCanvasType().ordinal());
+                        tag.putByte("ct", itemCanvas.getCanvasType().toByte());
+                        if (itemCanvas.isGlass()) {
+                            tag.putBoolean("glass", true);
+                        }
+
+                        List<Integer> sidePixels = s.get(Items.CANVAS_SIDE_PIXELS);
+                        if (sidePixels != null) {
+                            tag.putBoolean("sidesActive", s.getOrDefault(Items.CANVAS_SIDES_ACTIVE, false));
+                            tag.putIntArray("sidePixels", sidePixels.stream().mapToInt(Integer::intValue).toArray());
+                        }
                         if (title != null && author != null) {
                             tag.putString("title", title);
                             tag.putString("author", author);
@@ -80,7 +98,7 @@ public class CommandExport {
                         NbtIo.write(tag, Path.of(filepath));
                         return true;
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Mod.LOGGER.error("Error while exporting painting", e);
                     }
                 }
             }

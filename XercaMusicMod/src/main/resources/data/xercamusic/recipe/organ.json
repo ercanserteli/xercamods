@@ -6,14 +6,14 @@
     "ppp"
   ],
   "key": {
-    "p": {
-      "tag": "minecraft:planks"
-    },
     "s": {
       "item": "minecraft:string"
     },
     "g": {
       "item": "minecraft:gold_nugget"
+    },
+    "p": {
+      "tag": "minecraft:planks"
     }
   },
   "result": {

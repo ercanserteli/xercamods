@@ -10,30 +10,27 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import xerca.xercafood.common.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-class BlockTomatoPlant extends CropBlock implements BonemealableBlock {
+public class BlockTomatoPlant extends CropBlock implements BonemealableBlock {
     public static final IntegerProperty TOMATO_AGE = BlockStateProperties.AGE_3;
-    private static final VoxelShape[] SHAPE = new VoxelShape[]{Block.box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
+    private static final VoxelShape[] SHAPE = {box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D), box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
 
 
     BlockTomatoPlant() {
-        super(Block.Properties.of(Material.PLANT).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
+        super(BlockBehaviour.Properties.of().sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
     }
 
     @Override
     protected ItemLike getBaseSeedId() {
-        return Items.ITEM_TOMATO_SEEDS;
+        return Items.TOMATO_SEEDS;
     }
 
     @Override
@@ -65,6 +62,6 @@ class BlockTomatoPlant extends CropBlock implements BonemealableBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return SHAPE[state.getValue(this.getAgeProperty())];
+        return SHAPE[state.getValue(TOMATO_AGE)];
     }
 }

@@ -1,10 +1,18 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "c c",
-        "ddd"
-    ],
-    "key": {"c": {"item": "xercamusic:cymbal"}, "d": {"item": "xercamusic:drum"}},
-    "result": {"id": "xercamusic:drum_kit"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "c c",
+    "ddd"
+  ],
+  "key": {
+    "c": {
+      "item": "xercamusic:cymbal"
+    },
+    "d": {
+      "item": "xercamusic:drum"
+    }
+  },
+  "result": {
+    "id": "xercamusic:drum_kit"
+  }
 }

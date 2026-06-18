@@ -1,0 +1,134 @@
+plugins {
+    id 'fabric-loom' version '1.6-SNAPSHOT'
+    id 'maven-publish'
+    id("com.github.spotbugs") version "6.4.4"
+    id "pmd"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'ParchmentMC'
+        url = 'https://maven.parchmentmc.org'
+    }
+}
+
+tasks.register('buildCopy', Copy) {
+    dependsOn tasks.named('remapJar')
+    from(tasks.named('remapJar').flatMap { it.archiveFile })
+    into(rootProject.layout.projectDirectory.dir("../builds"))
+}
+
+dependencies {
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
+
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-1.21.1:2024.11.17@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+processResources {
+    inputs.property "version", project.version
+    filteringCharset "UTF-8"
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+def targetJavaVersion = 21
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = targetJavaVersion
+}
+
+spotbugs {
+    ignoreFailures = true
+    excludeFilter = file("config/spotbugs/excludeFilter.xml")
+}
+
+pmd {
+    toolVersion = "7.11.0"
+    ignoreFailures = true
+    consoleOutput = true
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/ruleset.xml")
+}
+
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+    withSourcesJar()
+}
+
+SourceSet mainSourceSet = sourceSets.main
+SourceSet testSourceSet = sourceSets.test
+SoftwareComponent javaComponent = components.named("java").get()
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+}
+
+loom {
+    runs {
+        gameTest {
+            inherit server
+            name "Game Test Server"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
+            source(mainSourceSet)
+            source(testSourceSet)
+            ideConfigGenerated = true
+            runDir "build/gametest"
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn(tasks.named('runGameTest'))
+}
+
+tasks.named('test') {
+    enabled = false
+}
+
+tasks.named('runGameTest').configure {
+    doFirst {
+        def gameTestDir = file("build/gametest")
+        gameTestDir.mkdirs()
+        def serverProperties = new File(gameTestDir, "server.properties")
+        if (!serverProperties.exists()) {
+            serverProperties.text = "online-mode=false\nmotd=GameTest\n"
+        }
+        def eulaFile = new File(gameTestDir, "eula.txt")
+        if (!eulaFile.exists()) {
+            eulaFile.text = "eula=true\n"
+        }
+    }
+}
+
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            from(javaComponent)
+        }
+    }
+
+    repositories {
+    }
+}

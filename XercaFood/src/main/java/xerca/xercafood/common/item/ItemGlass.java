@@ -25,7 +25,7 @@ public class ItemGlass extends Item {
         BlockPos pos = ctx.getClickedPos();
         BlockState state = ctx.getLevel().getBlockState(pos);
         if (ctx.getPlayer() != null && state.getBlock() == Blocks.SOUL_SAND &&
-                ctx.getClickedFace().equals(Direction.UP) &&
+                ctx.getClickedFace() == Direction.UP &&
                 ctx.getLevel().getBlockState(pos.above()).getBlock() == Blocks.BUBBLE_COLUMN
         ) {
             ctx.getItemInHand().shrink(1);

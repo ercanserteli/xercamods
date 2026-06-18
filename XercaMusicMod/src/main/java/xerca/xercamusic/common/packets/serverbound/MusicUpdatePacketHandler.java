@@ -7,6 +7,7 @@ import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.VolumeMarker;
+import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
@@ -14,22 +15,28 @@ import java.util.UUID;
 
 public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<MusicUpdatePacket> {
     private static byte sanitizeBps(byte bps) {
-        return (byte) Math.max(1, Math.min(50, bps & 0xFF));
+        return (byte) Math.clamp(bps & 0xFF, 1, 50);
     }
 
     private static float sanitizeVolume(float volume) {
-        return Math.max(0.0f, Math.min(1.0f, volume));
+        return Math.clamp(volume, 0.0f, 1.0f);
     }
 
     private static byte sanitizeHighlightInterval(byte interval) {
-        return (byte) Math.max(1, Math.min(24, interval & 0xFF));
+        return (byte) Math.clamp(interval & 0xFF, 1, 24);
     }
 
     private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {
         ItemStack note = pl.getMainHandItem();
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
             MusicUpdatePacket.FieldFlag flag = msg.availability();
-            if (flag.hasId) note.set(Items.SHEET_ID, msg.id());
+            if (flag.hasId) {
+                UUID id = msg.id();
+                if (id == null) {
+                    return;
+                }
+                note.set(Items.SHEET_ID, id);
+            }
             if (flag.hasVersion) note.set(Items.SHEET_VERSION, msg.version());
             if (flag.hasLength) note.set(Items.SHEET_LENGTH, (int) msg.lengthBeats());
             if (flag.hasBps) note.set(Items.SHEET_BPS, sanitizeBps(msg.bps()));
@@ -38,18 +45,26 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
             if (flag.hasPrevInsLocked) note.set(Items.SHEET_PREV_INSTRUMENT_LOCKED, msg.prevInsLocked());
             if (flag.hasHlInterval) note.set(Items.SHEET_HIGHLIGHT_INTERVAL, sanitizeHighlightInterval(msg.highlightInterval()));
             if (flag.hasSigned && msg.signed()) {
-                if (flag.hasTitle) note.set(Items.SHEET_TITLE, msg.title().trim());
+                String title = msg.title();
+                if (!flag.hasTitle || title == null) {
+                    return;
+                }
+                note.set(Items.SHEET_TITLE, title.trim());
                 note.set(Items.SHEET_AUTHOR, pl.getName().getString());
                 note.set(Items.SHEET_GENERATION, 1);
+                ItemMusicSheet.updateStackSize(note);
                 Triggers.BECOME_MUSICIAN.trigger(pl);
             }
             if (flag.hasNotes) {
                 List<NoteEvent> notes = msg.notes();
                 UUID id = note.get(Items.SHEET_ID);
+                if (id == null) {
+                    return;
+                }
                 if (notes == null) {
                     // Get if a large sheet was sent in parts
                     notes = MusicManager.getFinishedNotesFromBuffer(id);
-                    if (notes == null) {
+                    if (notes.isEmpty()) {
                         return;
                     }
                 }
@@ -64,8 +79,6 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
 
     @Override
     public void receive(MusicUpdatePacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

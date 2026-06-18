@@ -1,90 +1,70 @@
 package xerca.xercapaint.tests;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.item.crafting.RecipeCanvasCloning;
 
-import static xerca.xercapaint.Mod.MOD_ID;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CanvasTagCompatibilityGameTests {
+    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String CANVAS_COMPAT_BATCH = "canvas_compat";
+
     private static final RecipeCanvasCloning CLONING_RECIPE = new RecipeCanvasCloning(
-            new ResourceLocation(MOD_ID, "canvas_cloning_test"),
             CraftingBookCategory.MISC
     );
 
-    private static final class DummyMenu extends AbstractContainerMenu {
-        private DummyMenu() {
-            super(null, -1);
+    private static CraftingInput createGrid(int width, int height, ItemStack... input) {
+        List<ItemStack> stacks = new ArrayList<>(Collections.nCopies(width * height, ItemStack.EMPTY));
+        for (int i = 0; i < input.length && i < stacks.size(); i++) {
+            stacks.set(i, input[i]);
         }
-
-        @Override
-        public ItemStack quickMoveStack(Player player, int slotId) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public boolean stillValid(Player player) {
-            return true;
-        }
+        return CraftingInput.of(width, height, stacks);
     }
 
-    private static CraftingContainer createGrid(int width, int height) {
-        return new TransientCraftingContainer(new DummyMenu(), width, height);
-    }
-
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_compat")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_COMPAT_BATCH)
     public static void foreignTagAloneIsNotCanvasData(GameTestHelper helper) {
         ItemStack stack = new ItemStack(Items.ITEM_CANVAS);
-        stack.getOrCreateTag().putString("othermod:othertag", "dev");
+        CompoundTag foreign = new CompoundTag();
+        foreign.putString("othermod:othertag", "dev");
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(foreign));
 
-        helper.assertTrue(!ItemCanvas.hasCanvasData(stack), "Expected foreign-only NBT to not be treated as canvas data");
+        helper.assertTrue(stack.get(Items.CANVAS_PIXELS) == null, "Expected foreign-only data to not define pixels");
+        helper.assertTrue(stack.get(Items.CANVAS_GENERATION) == null, "Expected foreign-only data to not define generation");
         helper.succeed();
     }
 
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_compat")
-    public static void pixelsWithoutNameAreNotCanvasData(GameTestHelper helper) {
-        ItemStack stack = new ItemStack(Items.ITEM_CANVAS);
-        ItemCanvas canvas = (ItemCanvas) stack.getItem();
-        int pixelCount = canvas.getWidth() * canvas.getHeight();
-        stack.getOrCreateTag().putIntArray("pixels", new int[pixelCount]);
-
-        helper.assertTrue(!ItemCanvas.hasCanvasData(stack), "Expected missing canvas name to be treated as incomplete canvas data");
-        helper.succeed();
-    }
-
-    @GameTest(template = "xercapaint:basic_test", batch = "canvas_compat")
+    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_COMPAT_BATCH)
     public static void cloningTreatsForeignTaggedFreshCanvasAsFresh(GameTestHelper helper) {
         ItemStack original = new ItemStack(Items.ITEM_CANVAS);
         ItemCanvas originalItem = (ItemCanvas) original.getItem();
         int pixelCount = originalItem.getWidth() * originalItem.getHeight();
-
-        CompoundTag originalTag = original.getOrCreateTag();
-        originalTag.putString("name", "compat_canvas");
-        originalTag.putInt("v", 1);
-        originalTag.putInt("generation", 1);
-        originalTag.putIntArray("pixels", new int[pixelCount]);
+        original.set(Items.CANVAS_ID, "compat_canvas");
+        original.set(Items.CANVAS_VERSION, 1);
+        original.set(Items.CANVAS_GENERATION, 1);
+        original.set(Items.CANVAS_PIXELS, new ArrayList<>(Collections.nCopies(pixelCount, 0)));
 
         ItemStack freshWithForeignTag = new ItemStack(Items.ITEM_CANVAS);
-        freshWithForeignTag.getOrCreateTag().putString("othermod:othertag", "dev");
+        CompoundTag foreign = new CompoundTag();
+        foreign.putString("othermod:othertag", "dev");
+        freshWithForeignTag.set(DataComponents.CUSTOM_DATA, CustomData.of(foreign));
 
-        CraftingContainer grid = createGrid(2, 2);
-        grid.setItem(0, original);
-        grid.setItem(1, freshWithForeignTag);
+        CraftingInput grid = createGrid(2, 2, original, freshWithForeignTag);
 
         helper.assertTrue(CLONING_RECIPE.matches(grid, helper.getLevel()), "Expected recipe to match with foreign-tagged fresh canvas");
         ItemStack result = CLONING_RECIPE.assemble(grid, helper.getLevel().registryAccess());
         helper.assertTrue(!result.isEmpty(), "Expected cloning result to be present");
-        helper.assertTrue(result.getTag() != null && result.getTag().getInt("generation") == 2, "Expected generation to increment to 2");
+        helper.assertTrue(result.getOrDefault(Items.CANVAS_GENERATION, 0) == 2, "Expected generation to increment to 2");
         helper.succeed();
     }
 }

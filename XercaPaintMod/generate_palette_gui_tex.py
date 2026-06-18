@@ -1,6 +1,5 @@
-from PIL import Image
 import os
-
+from PIL import Image
 
 palette_file = "src/main/resources/assets/xercapaint/textures/gui/palette.png"
 img_folder = "dye_item_textures/"

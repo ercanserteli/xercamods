@@ -4,10 +4,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,8 +17,8 @@ import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_ID;
 import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_NOTES;
 
-public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
-                                    ArrayList<NoteEvent> notes) implements CustomPacketPayload {
+public record ImportMusicSendPacket(@Nullable UUID uuid, @Nullable CompoundTag tag,
+                                    @Nullable List<NoteEvent> notes) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ImportMusicSendPacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("import_music_send"));
     public static final StreamCodec<FriendlyByteBuf, ImportMusicSendPacket> PACKET_CODEC = StreamCodec.ofMember(ImportMusicSendPacket::encode, ImportMusicSendPacket::decode);
 
@@ -27,7 +28,7 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
 
     public static ImportMusicSendPacket create(CompoundTag tag) throws NotesTooLargeException {
         UUID uuid = null;
-        ArrayList<NoteEvent> notes = null;
+        List<NoteEvent> notes = null;
         if (tag.contains(KEY_ID)) {
             uuid = tag.getUUID(KEY_ID);
         }
@@ -43,7 +44,7 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
         return new ImportMusicSendPacket(uuid, tag, notes);
     }
 
-    public static ImportMusicSendPacket create(CompoundTag tag, ArrayList<NoteEvent> notes) {
+    public static ImportMusicSendPacket create(CompoundTag tag, @Nullable List<NoteEvent> notes) {
         UUID uuid = null;
         if (tag.contains(KEY_ID)) {
             uuid = tag.getUUID(KEY_ID);
@@ -53,22 +54,25 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
 
     public static ImportMusicSendPacket decode(FriendlyByteBuf buf) {
         try {
-            ArrayList<NoteEvent> notes = notesFromBuffer(buf);
+            List<NoteEvent> notes = notesFromBuffer(buf);
             CompoundTag tag = buf.readNbt();
             if (tag == null) {
                 Mod.LOGGER.error("CompoundTag was null in ImportMusicSendPacket");
                 return createEmpty();
             }
-            return notes == null ? ImportMusicSendPacket.create(tag) : ImportMusicSendPacket.create(tag, notes);
-        } catch (NotesTooLargeException e) {
-            Mod.LOGGER.error("NotesTooLargeException while reading ImportMusicSendPacket: ", e);
+            return notes == null ? create(tag) : create(tag, notes);
+        } catch (IllegalArgumentException | NotesTooLargeException e) {
+            Mod.LOGGER.error("Invalid ImportMusicSendPacket", e);
             return createEmpty();
         }
     }
 
-    public static ArrayList<NoteEvent> notesFromBuffer(FriendlyByteBuf buf) {
+    public static @Nullable List<NoteEvent> notesFromBuffer(FriendlyByteBuf buf) {
         int eventCount = buf.readInt();
-        ArrayList<NoteEvent> notes = null;
+        if (eventCount < 0 || eventCount > MAX_NOTES_IN_PACKET) {
+            throw new IllegalArgumentException("eventCount=" + eventCount);
+        }
+        List<NoteEvent> notes = null;
         if (eventCount > 0) {
             notes = new ArrayList<>(eventCount);
             for (int i = 0; i < eventCount; i++) {
@@ -91,15 +95,22 @@ public record ImportMusicSendPacket(UUID uuid, CompoundTag tag,
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 
     public static class NotesTooLargeException extends Exception {
-        public final List<NoteEvent> notes;
-        public final UUID id;
+        @Serial
+        private static final long serialVersionUID = 1L;
 
-        public NotesTooLargeException(List<NoteEvent> notes, UUID id) {
+        private final List<NoteEvent> notes;
+        public final @Nullable UUID id;
+
+        public List<NoteEvent> getNotes() {
+            return notes;
+        }
+
+        public NotesTooLargeException(List<NoteEvent> notes, @Nullable UUID id) {
             this.notes = notes;
             this.id = id;
         }

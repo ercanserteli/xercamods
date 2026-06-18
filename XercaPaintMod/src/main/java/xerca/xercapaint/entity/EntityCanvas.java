@@ -13,7 +13,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -28,34 +27,34 @@ import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.CanvasType;
-import xerca.xercapaint.Mod;
+import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.PictureRequestPacket;
 
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class EntityCanvas extends HangingEntity {
+    @Nullable
     private String canvasTitle;
+    @Nullable
     private String canvasAuthor;
-    private int canvasGeneration = 0;
+    private int canvasGeneration;
     private boolean canvasSigned;
-    private int tickCounter1 = 0;
+    private int tickCounter1;
     private static final EntityDataAccessor<String> CANVAS_ID = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> CANVAS_VERSION = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Byte> CANVAS_TYPE_KEY = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> CANVAS_ROTATION = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Boolean> CANVAS_GLASS = SynchedEntityData.defineId(EntityCanvas.class, EntityDataSerializers.BOOLEAN);
     public static final Map<String, Picture> PICTURES = Maps.newHashMap();
-    public static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
+    private static final Set<String> PICTURE_REQUESTS = Sets.newHashSet();
 
     public EntityCanvas(Level world, ItemStack stack, BlockPos pos, Direction facing, CanvasType canvasType, int rotation) {
         super(Entities.CANVAS, world, pos);
-        String id = stack.get(Items.CANVAS_ID);
+        String id = Objects.requireNonNullElse(stack.get(Items.CANVAS_ID), "");
         int version = stack.getOrDefault(Items.CANVAS_VERSION, 0);
         String title = stack.get(Items.CANVAS_TITLE);
         String author = stack.get(Items.CANVAS_AUTHOR);
@@ -70,23 +69,46 @@ public class EntityCanvas extends HangingEntity {
             this.canvasSigned = false;
         }
         this.setCanvasType(canvasType);
+        this.setGlass(stack.getItem() instanceof ItemCanvas itemCanvas && itemCanvas.isGlass());
         this.setRotation(rotation);
         this.setDirection(facing);
 
         Picture picture = PICTURES.get(id);
         if (picture == null || picture.version < version) {
-            int[] pixels = null;
+            int[] pixels = new int[0];
             List<Integer> pixelList = stack.get(Items.CANVAS_PIXELS);
             if (pixelList != null) {
                 pixels = pixelList.stream().mapToInt(i -> i).toArray();
             }
-            PICTURES.put(id, new Picture(version, pixels));
+            boolean sidesActive = stack.getOrDefault(Items.CANVAS_SIDES_ACTIVE, false);
+            int[] sidePixels = new int[0];
+            List<Integer> sideList = stack.get(Items.CANVAS_SIDE_PIXELS);
+            if (sideList != null) {
+                sidePixels = sideList.stream().mapToInt(i -> i).toArray();
+            }
+            PICTURES.put(id, new Picture(version, pixels, sidesActive, sidePixels));
         }
     }
 
-    public EntityCanvas(EntityType<? extends HangingEntity> entityCanvasEntityType, Level level) {
+    public EntityCanvas(EntityType<EntityCanvas> entityCanvasEntityType, Level level) {
         super(entityCanvasEntityType, level);
         clientPictureInit(level);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityCanvas other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityCanvas.class, this.getUUID());
     }
 
     private void clientPictureInit(Level level) {
@@ -98,11 +120,23 @@ public class EntityCanvas extends HangingEntity {
         int version = getVersion();
         if (!canvasID.isEmpty() && version > 0) {
             Picture picture = PICTURES.get(getCanvasID());
-            if ((picture == null || picture.version < getVersion()) && !PICTURE_REQUESTS.contains(canvasID)) {
-                PICTURE_REQUESTS.add(canvasID);
+            if ((picture == null || picture.version < getVersion()) && !isPictureRequested(canvasID)) {
+                markPictureRequested(canvasID);
                 ClientPlayNetworking.send(new PictureRequestPacket(canvasID));
             }
         }
+    }
+
+    public static boolean isPictureRequested(String canvasId) {
+        return PICTURE_REQUESTS.contains(canvasId);
+    }
+
+    public static void markPictureRequested(String canvasId) {
+        PICTURE_REQUESTS.add(canvasId);
+    }
+
+    public static void clearPictureRequest(String canvasId) {
+        PICTURE_REQUESTS.remove(canvasId);
     }
 
     @Override
@@ -111,10 +145,11 @@ public class EntityCanvas extends HangingEntity {
         builder.define(CANVAS_VERSION, 0);
         builder.define(CANVAS_TYPE_KEY, (byte) 0);
         builder.define(CANVAS_ROTATION, (byte) 0);
+        builder.define(CANVAS_GLASS, false);
     }
 
     @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         if (CANVAS_TYPE_KEY.equals(key)) {
             this.recalculateBoundingBox();
         } else if (CANVAS_ID.equals(key) || CANVAS_VERSION.equals(key)) {
@@ -123,35 +158,22 @@ public class EntityCanvas extends HangingEntity {
     }
 
     public int getWidth() {
-        return CanvasType.getWidth(getCanvasType());
+        return CanvasType.getWidth(requireCanvasType());
     }
 
     public int getHeight() {
-        return CanvasType.getHeight(getCanvasType());
+        return CanvasType.getHeight(requireCanvasType());
     }
 
     @Override
-    public void dropItem(ServerLevel serverLevel, @Nullable Entity brokenEntity) {
-        if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
-            if (brokenEntity instanceof Player player && player.getAbilities().instabuild) {
+    public void dropItem(@Nullable Entity brokenEntity) {
+        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.playSound(isGlass() ? SoundEvents.GLASS_BREAK : SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
+            if (brokenEntity instanceof Player playerEntity && playerEntity.getAbilities().instabuild) {
                 return;
             }
-
-            ItemStack canvasItem;
-            CanvasType canvasType = getCanvasType();
-            if (canvasType == CanvasType.SMALL) {
-                canvasItem = new ItemStack(Items.ITEM_CANVAS);
-            } else if (canvasType == CanvasType.LARGE) {
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_LARGE);
-            } else if (canvasType == CanvasType.LONG) {
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_LONG);
-            } else if (canvasType == CanvasType.TALL) {
-                canvasItem = new ItemStack(Items.ITEM_CANVAS_TALL);
-            } else {
-                Mod.LOGGER.error("Invalid canvas type");
-                return;
-            }
+            CanvasType canvasType = requireCanvasType();
+            ItemStack canvasItem = new ItemStack(ItemCanvas.canvasItemFor(canvasType, isGlass()));
 
             canvasItem.set(Items.CANVAS_ID, getCanvasID());
             canvasItem.set(Items.CANVAS_VERSION, getVersion());
@@ -160,11 +182,16 @@ public class EntityCanvas extends HangingEntity {
                 canvasItem.set(Items.CANVAS_TITLE, canvasTitle);
                 canvasItem.set(Items.CANVAS_GENERATION, canvasGeneration);
             }
+            ItemCanvas.updateStackSize(canvasItem);
             Picture picture = PICTURES.get(getCanvasID());
             if (picture != null) {
                 canvasItem.set(Items.CANVAS_PIXELS, Arrays.stream(picture.pixels).boxed().toList());
+                if (picture.sidePixels().length > 0) {
+                    canvasItem.set(Items.CANVAS_SIDES_ACTIVE, picture.sidesActive());
+                    canvasItem.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(picture.sidePixels()).boxed().toList());
+                }
             }
-            this.spawnAtLocation(serverLevel, canvasItem);
+            this.spawnAtLocation(canvasItem);
         }
     }
 
@@ -173,22 +200,24 @@ public class EntityCanvas extends HangingEntity {
         this.xo = this.getX();
         this.yo = this.getY();
         this.zo = this.getZ();
-        if (this.tickCounter1++ == 50 && !this.level().isClientSide) {
+        boolean shouldCheckSurvival = this.tickCounter1 == 50;
+        this.tickCounter1++;
+        if (shouldCheckSurvival && !this.level().isClientSide) {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.survives()) {
                 this.remove(RemovalReason.DISCARDED);
-                this.dropItem((ServerLevel) this.level(), null);
+                this.dropItem(null);
             }
         }
     }
 
     @Override
     public void playPlacementSound() {
-        this.playSound(SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
+        this.playSound(isGlass() ? SoundEvents.GLASS_PLACE : SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
     }
 
     @Override
-    protected void setDirection(@NotNull Direction facingDirectionIn) {
+    protected void setDirection(Direction facingDirectionIn) {
         this.direction = facingDirectionIn;
         if (facingDirectionIn.getAxis().isHorizontal()) {
             this.setXRot(0.0F);
@@ -218,7 +247,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    protected @NotNull AABB calculateBoundingBox(@NotNull BlockPos pos, @NotNull Direction direction) {
+    protected AABB calculateBoundingBox(BlockPos pos, Direction direction) {
         double d1 = pos.getX() + 0.5D - direction.getStepX() * 0.46875D;
         double d2 = pos.getY() + 0.5D - direction.getStepY() * 0.46875D;
         double d3 = pos.getZ() + 0.5D - direction.getStepZ() * 0.46875D;
@@ -298,16 +327,24 @@ public class EntityCanvas extends HangingEntity {
     }
 
     private void setCanvasType(CanvasType canvasType) {
-        this.getEntityData().set(CANVAS_TYPE_KEY, (byte) canvasType.ordinal());
+        this.getEntityData().set(CANVAS_TYPE_KEY, canvasType.toByte());
+    }
+
+    public boolean isGlass() {
+        return this.getEntityData().get(CANVAS_GLASS);
+    }
+
+    private void setGlass(boolean glass) {
+        this.getEntityData().set(CANVAS_GLASS, glass);
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity entity) {
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
         return new ClientboundAddEntityPacket(this, this.direction.get3DDataValue(), this.getPos());
     }
 
     @Override
-    public void recreateFromPacket(@NotNull ClientboundAddEntityPacket packet) {
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
         super.recreateFromPacket(packet);
         this.setDirection(Direction.from3DDataValue(packet.getData()));
     }
@@ -332,16 +369,13 @@ public class EntityCanvas extends HangingEntity {
 
         Picture picture = PICTURES.get(canvasId);
         if (picture == null || picture.version < version) {
-            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels")));
+            boolean sidesActive = canvasNBT.getBoolean("sidesActive");
+            int[] sidePixels = canvasNBT.getIntArray("sidePixels");
+            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels"), sidesActive, sidePixels));
         }
 
-        CanvasType canvasType = CanvasType.fromByte(tagCompound.getByte("ctype"));
-        if (canvasType == null) {
-            Mod.LOGGER.error("EntityCanvas invalid ctype in readAdditionalSaveData");
-            this.kill((ServerLevel) this.level());
-            return;
-        }
-        this.setCanvasType(canvasType);
+        this.setCanvasType(CanvasType.fromByte(tagCompound.getByte("ctype")));
+        this.setGlass(tagCompound.getBoolean("glass"));
         if (tagCompound.contains("Facing") && !tagCompound.contains("RealFace")) {
             int facing = tagCompound.getByte("Facing");
             Direction horizontal = Direction.from2DDataValue(facing);
@@ -360,24 +394,29 @@ public class EntityCanvas extends HangingEntity {
         tagCompound.putInt("TileZ", blockpos.getZ());
         tagCompound.putString("name", getCanvasID());
         tagCompound.putInt("v", getVersion());
-        if (canvasSigned) {
+        if (canvasSigned && canvasAuthor != null && canvasTitle != null) {
             tagCompound.putString("author", canvasAuthor);
             tagCompound.putString("title", canvasTitle);
             tagCompound.putInt("generation", canvasGeneration);
         }
         tagCompound.putByte("ctype", getCanvasTypeKey());
+        tagCompound.putBoolean("glass", isGlass());
         tagCompound.putByte("RealFace", (byte) this.direction.get3DDataValue());
         tagCompound.putByte("Rotation", (byte) this.getRotation());
 
         Picture picture = PICTURES.get(getCanvasID());
         if (picture != null) {
             tagCompound.putIntArray("pixels", picture.pixels);
+            if (picture.sidePixels().length > 0) {
+                tagCompound.putBoolean("sidesActive", picture.sidesActive());
+                tagCompound.putIntArray("sidePixels", picture.sidePixels());
+            }
         }
     }
 
     @Override
-    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
-        CanvasType canvasType = this.getCanvasType();
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        CanvasType canvasType = this.requireCanvasType();
         if (canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE) {
             if (!this.level().isClientSide) {
                 setRotation(getRotation() + 1);
@@ -388,6 +427,55 @@ public class EntityCanvas extends HangingEntity {
         }
     }
 
-    public record Picture(int version, int[] pixels) {
+    public record Picture(int version, int[] pixels, boolean sidesActive, int[] sidePixels) {
+        public Picture {
+            pixels = pixels.clone();
+            sidePixels = sidePixels.clone();
+        }
+
+        @Override
+        public int[] pixels() {
+            return pixels.clone();
+        }
+
+        @Override
+        public int[] sidePixels() {
+            return sidePixels.clone();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Picture(
+                    int otherVersion, int[] otherPixels, boolean otherSidesActive, int[] otherSidePixels
+            )))
+                return false;
+            return version == otherVersion && sidesActive == otherSidesActive
+                    && java.util.Arrays.equals(pixels, otherPixels)
+                    && java.util.Arrays.equals(sidePixels, otherSidePixels);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Integer.hashCode(version);
+            result = 31 * result + java.util.Arrays.hashCode(pixels);
+            result = 31 * result + Boolean.hashCode(sidesActive);
+            result = 31 * result + java.util.Arrays.hashCode(sidePixels);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Picture{" +
+                    "version=" + version +
+                    ", pixels=" + java.util.Arrays.toString(pixels) +
+                    ", sidesActive=" + sidesActive +
+                    ", sidePixels=" + java.util.Arrays.toString(sidePixels) +
+                    '}';
+        }
+    }
+
+    private CanvasType requireCanvasType() {
+        return java.util.Objects.requireNonNull(this.getCanvasType(), "Canvas type");
     }
 }

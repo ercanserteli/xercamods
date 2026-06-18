@@ -1,0 +1,291 @@
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
+
+import javax.xml.XMLConstants
+import javax.xml.parsers.DocumentBuilderFactory
+
+plugins {
+    id 'fabric-loom' version '1.6-SNAPSHOT' apply false
+    id 'com.github.spotbugs' version '6.4.4' apply false
+    id 'org.sonarqube' version '5.1.0.4882'
+}
+
+def modSourceDirectory = 'src/main/java'
+def testSourceDirectory = 'src/test/java'
+def gameTestReportDirectory = 'build/test-results/gametest'
+def gameTestResultsFilePath = 'test-results/gametest/TEST-gametest.xml'
+def sonarTestExecutionReportPath = 'build/reports/sonar/test-execution.xml'
+def jacocoGameTestReportPath = 'build/reports/jacoco/jacocoGameTestReport/jacocoGameTestReport.xml'
+
+def commonSonarExclusions = [
+        '**/build/**',
+        '**/.gradle/**',
+        '**/run/**',
+        '**/src/main/resources/**',
+        '**/src/test/resources/**'
+]
+def rootSonarExclusions = commonSonarExclusions + ['builds/**', 'scripts/**']
+
+def modProjects = subprojects.findAll { it.file(modSourceDirectory).isDirectory() }
+
+def configureCommonSonarProperties = { propertyTarget, List<String> exclusions ->
+    propertyTarget.property 'sonar.java.source', '21'
+    propertyTarget.property 'sonar.testExecutionReportPaths', sonarTestExecutionReportPath
+    propertyTarget.property 'sonar.issue.ignore.multicriteria', 'fabricGameTests'
+    propertyTarget.property 'sonar.issue.ignore.multicriteria.fabricGameTests.ruleKey', 'java:S2187'
+    propertyTarget.property 'sonar.issue.ignore.multicriteria.fabricGameTests.resourceKey', '**/src/test/java/**/*'
+    propertyTarget.property 'sonar.exclusions', exclusions.join(',')
+}
+
+static Document parseXmlDocument(File xmlFile) {
+    def factory = DocumentBuilderFactory.newInstance()
+    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
+    factory.setFeature('http://apache.org/xml/features/disallow-doctype-decl', true)
+    factory.setFeature('http://xml.org/sax/features/external-general-entities', false)
+    factory.setFeature('http://xml.org/sax/features/external-parameter-entities', false)
+    factory.setExpandEntityReferences(false)
+    factory.setNamespaceAware(false)
+
+    def builder = factory.newDocumentBuilder()
+    return xmlFile.withInputStream { inputStream ->
+        builder.parse(inputStream)
+    } as Document
+}
+
+static List<Element> childElementsByTagName(Element parent, String tagName) {
+    List<Element> matches = []
+    NodeList childNodes = parent.childNodes
+    for (int i = 0; i < childNodes.length; i++) {
+        Node childNode = childNodes.item(i)
+        if (childNode instanceof Element && childNode.tagName == tagName) {
+            matches << childNode
+        }
+    }
+    matches
+}
+
+static List<Element> descendantElementsByTagName(Element parent, String tagName) {
+    List<Element> matches = []
+    NodeList childNodes = parent.childNodes
+    for (int i = 0; i < childNodes.length; i++) {
+        Node childNode = childNodes.item(i)
+        if (childNode instanceof Element) {
+            if (childNode.tagName == tagName) {
+                matches << childNode
+            }
+            matches.addAll(descendantElementsByTagName(childNode, tagName))
+        }
+    }
+    matches
+}
+
+static String escapeXml(Object value) {
+    String.valueOf(value)
+            .replace('&', '&amp;')
+            .replace('<', '&lt;')
+            .replace('>', '&gt;')
+            .replace('"', '&quot;')
+            .replace("'", '&apos;')
+}
+
+static void writeTestExecutionsReport(File outputFile, Closure contentWriter) {
+    outputFile.parentFile.mkdirs()
+    outputFile.withWriter('UTF-8') { writer ->
+        writer.println('<?xml version="1.0" encoding="UTF-8"?>')
+        writer.println('<testExecutions version="1">')
+        contentWriter.call(writer)
+        writer.println('</testExecutions>')
+    }
+}
+
+def registerAggregateTask = { String name, String taskGroup, String taskDescription, String dependencyName ->
+    tasks.register(name) {
+        group = taskGroup
+        description = taskDescription
+        dependsOn(modProjects.collect { it.tasks.named(dependencyName) })
+    }
+}
+
+[
+        ['buildAll', 'build', 'Builds all mod projects.', 'build'],
+        ['buildCopyAll', 'build', 'Builds and copies all mod jars into the root builds directory.', 'buildCopy'],
+        ['checkAll', 'verification', 'Runs the check lifecycle for all mod projects.', 'check'],
+        ['testAll', 'verification', 'Runs Java test tasks for all mod projects that enable them.', 'test'],
+        ['gameTestAll', 'verification', 'Runs Fabric game tests for all mod projects.', 'runGameTest']
+].each { aggregateTask ->
+    registerAggregateTask(aggregateTask[0], aggregateTask[1], aggregateTask[2], aggregateTask[3])
+}
+
+tasks.register('staticAnalysisAll') {
+    group = 'verification'
+    description = 'Runs PMD and SpotBugs for all mod projects.'
+    dependsOn(modProjects.collect { it.tasks.named('pmdMain') })
+    dependsOn(modProjects.collect { it.tasks.named('spotbugsMain') })
+}
+
+def coverageAllTask = tasks.register('coverageAll') {
+    group = 'verification'
+    description = 'Runs Fabric game tests and generates JaCoCo XML coverage for all mod projects.'
+}
+
+tasks.register('sonarReportsAll') {
+    group = 'verification'
+    description = 'Generates all reports consumed by Sonar.'
+    dependsOn(tasks.named('coverageAll'))
+    dependsOn(tasks.named('sonarTestExecutionReport'))
+}
+
+def sonarTestExecutionReportTask = tasks.register('sonarTestExecutionReport') {
+    group = 'verification'
+    description = 'Aggregates module Fabric game test results for Sonar.'
+
+    def outputFile = layout.buildDirectory.file('reports/sonar/test-execution.xml')
+    outputs.file(outputFile)
+
+    doLast {
+        writeTestExecutionsReport(outputFile.get().asFile) { writer ->
+            modProjects.each { modProject ->
+                File moduleReport = modProject.layout.buildDirectory.file(sonarTestExecutionReportPath).get().asFile
+                if (!moduleReport.isFile()) {
+                    return
+                }
+
+                Document moduleResults = parseXmlDocument(moduleReport)
+                childElementsByTagName(moduleResults.documentElement, 'file').each { fileNode ->
+                    def modulePath = "${modProject.name}/${fileNode.getAttribute('path')}".replace('\\', '/')
+                    writer.println("  <file path=\"${escapeXml(modulePath)}\">")
+                    childElementsByTagName(fileNode, 'testCase').each { testCaseNode ->
+                        def testName = testCaseNode.getAttribute('name')
+                        def duration = testCaseNode.getAttribute('duration') ?: '0'
+                        writer.println("    <testCase name=\"${escapeXml(testName)}\" duration=\"${escapeXml(duration)}\"/>")
+                    }
+                    writer.println('  </file>')
+                }
+            }
+        }
+    }
+}
+
+gradle.projectsEvaluated {
+    coverageAllTask.configure {
+        dependsOn(modProjects.collect { it.tasks.named('jacocoGameTestReport') })
+    }
+    sonarTestExecutionReportTask.configure {
+        dependsOn(modProjects.collect { it.tasks.named('sonarGameTestExecutionReport') })
+    }
+}
+
+subprojects {
+    apply plugin: 'jacoco'
+
+    jacoco {
+        toolVersion = '0.8.12'
+    }
+
+    afterEvaluate {
+        def gameTestTask = tasks.named('runGameTest')
+        def jacocoGameTestReportTask = tasks.register('jacocoGameTestReport', JacocoReport) {
+            group = 'verification'
+            description = 'Generates JaCoCo coverage from Fabric game tests.'
+            dependsOn(gameTestTask)
+
+            executionData(layout.buildDirectory.file('jacoco/runGameTest.exec'))
+            sourceDirectories.from(files(modSourceDirectory))
+            classDirectories.from(sourceSets.main.output.classesDirs)
+
+            reports {
+                xml.required = true
+                html.required = false
+                csv.required = false
+            }
+        }
+
+        tasks.register('sonarGameTestExecutionReport') {
+            group = 'verification'
+            description = 'Converts Fabric game test results to Sonar generic test execution XML.'
+            dependsOn(gameTestTask)
+
+            def inputFile = project.layout.buildDirectory.file(gameTestResultsFilePath)
+            def outputFile = project.layout.buildDirectory.file('reports/sonar/test-execution.xml')
+            inputs.file(inputFile)
+            outputs.file(outputFile)
+
+            doLast {
+                List<File> sourceFiles = project.fileTree(project.file(testSourceDirectory)) {
+                    include '**/*.java'
+                }.files.toList()
+                Map<String, File> sourceBySimpleName = [:]
+                sourceFiles.each { File sourceFile ->
+                    String simpleName = sourceFile.name.substring(0, sourceFile.name.length() - '.java'.length()).toLowerCase(Locale.ROOT)
+                    sourceBySimpleName.put(simpleName, sourceFile)
+                }
+                Map<File, List<Element>> testCasesByFile = [:]
+
+                if (!sourceFiles.empty && inputFile.get().asFile.isFile()) {
+                    File fallbackSource = sourceFiles[0]
+                    Document testResults = parseXmlDocument(inputFile.get().asFile)
+
+                    descendantElementsByTagName(testResults.documentElement, 'testcase').each { tc ->
+                        String testName = tc.getAttribute('name')
+                        String simpleName = testName.contains('.')
+                                ? testName.substring(0, testName.lastIndexOf('.'))
+                                : testName
+                        File sourceFile = sourceBySimpleName.get(simpleName.toLowerCase(Locale.ROOT)) ?: fallbackSource
+                        testCasesByFile.computeIfAbsent(sourceFile) { [] } << tc
+                    }
+                }
+
+                writeTestExecutionsReport(outputFile.get().asFile) { writer ->
+                    for (Map.Entry<File, List<Element>> entry : testCasesByFile.entrySet()) {
+                        File sourceFile = entry.key
+                        def sourcePath = project.relativePath(sourceFile).replace('\\', '/')
+                        writer.println("  <file path=\"${escapeXml(sourcePath)}\">")
+                        entry.value.each { tc ->
+                            def seconds = new BigDecimal(String.valueOf(tc.getAttribute('time') ?: '0'))
+                            def duration = (seconds * 1000).intValue()
+                            writer.println("    <testCase name=\"${escapeXml(tc.getAttribute('name'))}\" duration=\"${duration}\"/>")
+                        }
+                        writer.println('  </file>')
+                    }
+                }
+            }
+        }
+
+        gameTestTask.configure {
+            jacoco.applyTo(it)
+            finalizedBy(jacocoGameTestReportTask)
+        }
+    }
+
+    tasks.matching { it.name == 'buildCopy' }.configureEach {
+        into(rootProject.layout.projectDirectory.dir('builds'))
+    }
+
+    sonar {
+        properties {
+            property 'sonar.sources', modSourceDirectory
+            if (file(testSourceDirectory).isDirectory()) {
+                property 'sonar.tests', testSourceDirectory
+            }
+            property 'sonar.junit.reportPaths', gameTestReportDirectory
+            property 'sonar.coverage.jacoco.xmlReportPaths', jacocoGameTestReportPath
+            configureCommonSonarProperties(delegate, commonSonarExclusions)
+        }
+    }
+}
+
+sonar {
+    properties {
+        property 'sonar.projectKey', 'XercaMods'
+        property 'sonar.projectName', 'XercaMods'
+        property 'sonar.host.url', System.getenv('SONAR_HOST_URL') ?: 'http://localhost:9000'
+        property 'sonar.token', System.getenv('SONAR_TOKEN') ?: ''
+        configureCommonSonarProperties(delegate, rootSonarExclusions)
+    }
+}
+
+tasks.named('sonar') {
+    dependsOn(tasks.named('sonarReportsAll'))
+}

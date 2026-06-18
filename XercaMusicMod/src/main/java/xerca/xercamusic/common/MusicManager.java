@@ -7,7 +7,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
 import java.util.*;
@@ -21,7 +21,7 @@ public final class MusicManager {
     private static final int MAX_PARTS_IN_TRANSFER = 1024;
     private static final Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
 
-    public static MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
+    public static @Nullable MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         if (musicMap.containsKey(id)) {
@@ -38,7 +38,7 @@ public final class MusicManager {
         return null;
     }
 
-    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers, MinecraftServer server) {
+    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers, MinecraftServer server) {
         SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         NoteEvent.sortNotes(notes);
@@ -48,8 +48,8 @@ public final class MusicManager {
     }
 
     public static List<NoteEvent> getFinishedNotesFromBuffer(UUID id) {
-        if (MusicManager.TEMP_NOTES_MAP.containsKey(id)) {
-            MusicManager.TempNotesBuffer buffer = MusicManager.TEMP_NOTES_MAP.get(id);
+        if (TEMP_NOTES_MAP.containsKey(id)) {
+            MusicManager.TempNotesBuffer buffer = TEMP_NOTES_MAP.get(id);
             if (buffer.isFinished()) {
                 try {
                     return buffer.joinParts();
@@ -62,7 +62,7 @@ public final class MusicManager {
         } else {
             Mod.LOGGER.warn("Packet did not have notes, and temp buffer was not found");
         }
-        return null;
+        return List.of();
     }
 
     public static boolean addNotesPart(SendNotesPartToServerPacket pkt) {
@@ -74,11 +74,6 @@ public final class MusicManager {
             Mod.LOGGER.warn("Invalid notes part id: {} for parts count {}", pkt.partId(), pkt.partsCount());
             return false;
         }
-        if (pkt.notes() == null) {
-            Mod.LOGGER.warn("Packet part had null note list");
-            return false;
-        }
-
         TempNotesBuffer buffer;
         if (TEMP_NOTES_MAP.containsKey(pkt.uuid())) {
             buffer = TEMP_NOTES_MAP.get(pkt.uuid());
@@ -102,7 +97,7 @@ public final class MusicManager {
         return buffer.isFinished();
     }
 
-    public record MusicData(int version, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers) {
+    public record MusicData(int version, List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers) {
     }
 
     public static class SavedDataMusic extends SavedData {
@@ -116,7 +111,7 @@ public final class MusicManager {
             this(new HashMap<>());
         }
 
-        public static SavedDataMusic load(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        public static SavedDataMusic load(CompoundTag tag, HolderLookup.Provider ignoredRegistries) {
             Tag musicTag = tag.get("MusicDataList");
             if (musicTag instanceof ListTag musicDataList) {
                 Map<UUID, MusicData> musicDataMap = new HashMap<>();
@@ -137,7 +132,7 @@ public final class MusicManager {
         }
 
         @Override
-        public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
             ListTag musicDataList = new ListTag();
             for (Map.Entry<UUID, MusicData> entry : musicMap.entrySet()) {
                 CompoundTag nbt = new CompoundTag();

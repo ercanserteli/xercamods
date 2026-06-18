@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    </Match>
+    <Match>
+        <Bug pattern="NP_NONNULL_PARAM_VIOLATION"/>
+    </Match>
+    <Match>
+        <Bug code="PA"/>
+    </Match>
+    <Match>
+        <Bug code="MS"/>
+    </Match>
+</FindBugsFilter>

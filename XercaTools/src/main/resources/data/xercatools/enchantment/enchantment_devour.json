@@ -1,0 +1,22 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.xercatools.enchantment_devour"
+  },
+  "effects": {},
+  "max_cost": {
+    "base": 18,
+    "per_level_above_first": 10
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 8,
+    "per_level_above_first": 10
+  },
+  "primary_items": "#xercatools:scythe",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#xercatools:scythe",
+  "weight": 5
+}

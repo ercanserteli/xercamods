@@ -30,17 +30,15 @@ public class VolumeMarker {
         this.highNote = highNote;
     }
 
+    public VolumeMarker(VolumeMarker marker) {
+        this(marker.startTime, marker.endTime, marker.startVolume, marker.endVolume, marker.lowNote, marker.highNote);
+    }
+
     public VolumeMarker() {
     }
 
-
     public boolean isCrescendo() {
         return endVolume > startVolume;
-    }
-
-
-    public boolean isDecrescendo() {
-        return endVolume < startVolume;
     }
 
     public boolean isValid() {
@@ -154,7 +152,7 @@ public class VolumeMarker {
         if (tag.contains(KEY_VOLUME_MARKERS)) {
             ListTag markerList = tag.getList(KEY_VOLUME_MARKERS, Tag.TAG_COMPOUND);
             for (int i = 0; i < markerList.size(); i++) {
-                markers.add(VolumeMarker.fromNBT(markerList.getCompound(i)));
+                markers.add(fromNBT(markerList.getCompound(i)));
             }
         }
     }
@@ -165,11 +163,5 @@ public class VolumeMarker {
             markerList.add(marker.serializeNBT());
         }
         tag.put(KEY_VOLUME_MARKERS, markerList);
-    }
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public VolumeMarker clone() {
-        return new VolumeMarker(startTime, endTime, startVolume, endVolume, lowNote, highNote);
     }
 }

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "xerca.xercablocks.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinPistonStructureResolver",
+    "MixinStonecutterMenu"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "xercafood:ultimate_burger"
+    },
+    "title": {
+      "translate": "advancements.xercafood.achievements.saturated.title"
+    },
+    "description": {
+      "translate": "advancements.xercafood.achievements.saturated.description"
+    }
+  },
+  "parent": "xercafood:achievements/root",
+  "criteria": {
+    "burger": {
+      "trigger": "consume_item",
+      "conditions": {
+        "item": {
+          "items": ["xercafood:ultimate_burger"]
+        }
+      }
+    }
+  }
+}
+

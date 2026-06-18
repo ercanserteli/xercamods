@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset
+        name="XercaPaintMod PMD Rules"
+>
+    <description>PMD rules for XercaPaintMod.</description>
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+        <exclude name="AvoidFieldNameMatchingTypeName"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+        <exclude name="AvoidLiteralsInIfCondition"/>
+        <exclude name="CloseResource"/>
+        <exclude name="CompareObjectsWithEquals"/>
+        <exclude name="ConstructorCallsOverridableMethod"/>
+        <exclude name="NullAssignment"/>
+        <exclude name="ReturnEmptyCollectionRatherThanNull"/>
+        <exclude name="TestClassWithoutTestCases"/>
+        <exclude name="UseLocaleWithCaseConversions"/>
+    </rule>
+</ruleset>

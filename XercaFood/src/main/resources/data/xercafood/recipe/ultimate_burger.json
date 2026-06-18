@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " t ",
+    " e ",
+    " b "
+  ],
+  "key": {
+    "b": {
+      "item": "xercafood:ultimate_bottom"
+    },
+    "t": {
+      "item": "xercafood:ultimate_top"
+    },
+    "e": {
+      "item": "xercafood:bun"
+    }
+  },
+  "result": {
+    "id": "xercafood:ultimate_burger"
+  }
+}

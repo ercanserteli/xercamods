@@ -21,8 +21,6 @@ public class SingleNotePacketHandler implements ServerPlayNetworking.PlayPayload
 
     @Override
     public void receive(SingleNotePacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

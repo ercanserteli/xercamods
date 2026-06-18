@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "xercatools:knife",
+      "required": false
+    },
+    {
+      "id": "xercafood:knife",
+      "required": false
+    }
+  ]
+}

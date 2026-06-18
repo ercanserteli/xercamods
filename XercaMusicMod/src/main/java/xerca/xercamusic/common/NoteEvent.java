@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.item.IItemInstrument;
 
 import java.io.Serial;
@@ -26,8 +27,8 @@ public class NoteEvent implements Serializable {
     public byte length;
     public byte flags;              // Articulation flags (see FLAG_* constants)
     public byte glissandoInterval;  // Signed semitones to slide for glissando (+up, -down); used for single-point
-    public byte[] glissandoWaypoints; // Multi-point glissando: array of semitone offsets. null = use glissandoInterval
-    public byte[] glissandoWaypointPositions; // Parallel to glissandoWaypoints: beat position as % of note length (1-100). null = evenly spaced.
+    public byte @Nullable [] glissandoWaypoints; // Multi-point glissando: array of semitone offsets. null = use glissandoInterval
+    public byte @Nullable [] glissandoWaypointPositions; // Parallel to glissandoWaypoints: beat position as % of note length (1-100). null = evenly spaced.
 
     public NoteEvent(byte note, short time, byte volume, byte length) {
         this(note, time, volume, length, FLAG_NONE, (byte) 0);
@@ -77,7 +78,7 @@ public class NoteEvent implements Serializable {
     public static void fillArrayFromNBT(List<NoteEvent> noteEvents, CompoundTag tag) {
         ListTag notesTag = tag.getList(KEY_NOTES, Tag.TAG_COMPOUND);
         for (int i = 0; i < notesTag.size(); i++) {
-            noteEvents.add(NoteEvent.fromNBT(notesTag.getCompound(i)));
+            noteEvents.add(fromNBT(notesTag.getCompound(i)));
         }
         sortNotes(noteEvents);
         removeDuplicates(noteEvents);
@@ -92,7 +93,7 @@ public class NoteEvent implements Serializable {
             return;
         }
 
-        short currentTime = notes.get(0).time;
+        short currentTime = notes.getFirst().time;
         long seenLo = 0L; // 0..63
         long seenHi = 0L; // 64..127
 
@@ -160,23 +161,12 @@ public class NoteEvent implements Serializable {
         if (enabled) {
             flags |= FLAG_GLISSANDO;
             glissandoInterval = interval;
-            glissandoWaypoints = null; // Clear multi-point
-            glissandoWaypointPositions = null;
         } else {
             flags &= ~FLAG_GLISSANDO;
             glissandoInterval = 0;
-            glissandoWaypoints = null;
-            glissandoWaypointPositions = null;
         }
-    }
-
-    /**
-     * Set multi-point glissando waypoints. Each byte is a semitone offset from the original note.
-     * Waypoints are evenly distributed across the note duration.
-     * Segment 0: original pitch → waypoints[0], Segment 1: waypoints[0] → waypoints[1], etc.
-     */
-    public void setGlissandoWaypoints(byte[] waypoints) {
-        setGlissandoWaypoints(waypoints, null);
+        glissandoWaypoints = null; // Clear multi-point
+        glissandoWaypointPositions = null;
     }
 
     /**
@@ -184,7 +174,7 @@ public class NoteEvent implements Serializable {
      * @param waypoints  semitone offsets from the note; null to clear
      * @param positions  parallel array of beat positions as % of note length (1-100); null = evenly spaced
      */
-    public void setGlissandoWaypoints(byte[] waypoints, byte[] positions) {
+    public void setGlissandoWaypoints(byte @Nullable [] waypoints, byte @Nullable [] positions) {
         if (waypoints != null && waypoints.length > 0) {
             flags |= FLAG_GLISSANDO;
             glissandoWaypoints = waypoints;
@@ -203,7 +193,7 @@ public class NoteEvent implements Serializable {
      * If multi-point waypoints exist, returns those; otherwise wraps glissandoInterval in a single-element array.
      * Returns null if no glissando.
      */
-    public byte[] getEffectiveWaypoints() {
+    public byte @Nullable [] getEffectiveWaypoints() {
         if (glissandoWaypoints != null && glissandoWaypoints.length > 0) {
             return glissandoWaypoints;
         }
@@ -217,19 +207,12 @@ public class NoteEvent implements Serializable {
      * Returns the waypoint position fractions (1-100) if custom positioned, or null for even distribution.
      * Only meaningful when glissandoWaypoints is non-null.
      */
-    public byte[] getEffectivePositions() {
+    public byte @Nullable [] getEffectivePositions() {
         if (glissandoWaypointPositions != null && glissandoWaypoints != null
                 && glissandoWaypointPositions.length == glissandoWaypoints.length) {
             return glissandoWaypointPositions;
         }
         return null;
-    }
-
-    /**
-     * Returns the target note for glissando (note + glissandoInterval).
-     */
-    public byte glissandoTargetNote() {
-        return (byte)(note + glissandoInterval);
     }
 
     public CompoundTag serializeNBT() {
@@ -332,19 +315,7 @@ public class NoteEvent implements Serializable {
     }
 
     public float floatVolume() {
-        return ((float)volume)/127.0f;
+        return volume/127.0f;
     }
 
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public NoteEvent clone() {
-        NoteEvent copy = new NoteEvent(note, time, volume, length, flags, glissandoInterval);
-        if (glissandoWaypoints != null) {
-            copy.glissandoWaypoints = glissandoWaypoints.clone();
-        }
-        if (glissandoWaypointPositions != null) {
-            copy.glissandoWaypointPositions = glissandoWaypointPositions.clone();
-        }
-        return copy;
-    }
 }

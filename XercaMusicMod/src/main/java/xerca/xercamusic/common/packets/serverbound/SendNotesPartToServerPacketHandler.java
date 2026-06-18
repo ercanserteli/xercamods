@@ -16,9 +16,7 @@ public class SendNotesPartToServerPacketHandler implements ServerPlayNetworking.
 
     @Override
     public void receive(SendNotesPartToServerPacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }
 

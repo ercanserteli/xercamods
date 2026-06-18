@@ -16,18 +16,27 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
     public static void processMessage(CanvasMiniUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
         ItemStack palette;
-        Entity entityEasel = null;
+        EntityEasel easel = null;
 
         if (msg.easelId() > -1) {
-            entityEasel = pl.level().getEntity(msg.easelId());
-            if (entityEasel == null) {
+            Entity entity = pl.level().getEntity(msg.easelId());
+            if (entity == null) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.easelId());
                 return;
             }
-            if (!(entityEasel instanceof EntityEasel easel)) {
+            if (!(entity instanceof EntityEasel entityEasel)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
+            if (entityEasel.getPainter() == null || !entityEasel.getPainter().getUUID().equals(pl.getUUID())) {
+                Mod.LOGGER.warn("CanvasMiniUpdatePacket: Unauthorized paint update. easelId: {} player: {}", msg.easelId(), pl.getName().getString());
+                return;
+            }
+            if (pl.distanceToSqr(entityEasel) > 64.0D) {
+                Mod.LOGGER.warn("CanvasMiniUpdatePacket: Player too far from easel. easelId: {} player: {}", msg.easelId(), pl.getName().getString());
+                return;
+            }
+            easel = entityEasel;
             canvas = easel.getItem();
             if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Canvas not found inside easel!");
@@ -46,8 +55,12 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
             canvas.set(Items.CANVAS_ID, msg.canvasId());
             canvas.set(Items.CANVAS_VERSION, msg.version());
             canvas.set(Items.CANVAS_GENERATION, 0);
+            canvas.set(Items.CANVAS_SIDES_ACTIVE, msg.sidesActive());
+            if (msg.sidePixels().length > 0) {
+                canvas.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(msg.sidePixels()).boxed().toList());
+            }
 
-            if (entityEasel instanceof EntityEasel easel) {
+            if (easel != null) {
                 easel.setItem(canvas, false);
             }
 
@@ -57,8 +70,6 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
 
     @Override
     public void receive(CanvasMiniUpdatePacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

@@ -3,6 +3,7 @@ package xerca.xercamusic.common.item;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface IItemInstrument {
     }
 
     static void playMusic(Level worldIn, Player playerIn, boolean canStop) {
-        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
+        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> playerIn.equals(entity.getBody()));
         if (musicSpirits.isEmpty()) {
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, (IItemInstrument) playerIn.getMainHandItem().getItem()));
         } else if (canStop) {
@@ -37,6 +38,7 @@ public interface IItemInstrument {
 
     void setSounds(List<Pair<Integer, SoundEvent>> sounds);
 
+    @Nullable
     InsSound getSound(int note);
 
     record InsSound(SoundEvent sound, float pitch) {
@@ -44,15 +46,7 @@ public interface IItemInstrument {
 
     record Pair<F, S>(F first, S second) {
         public static <F, S> Pair<F, S> of(F first, S second) {
-            if (first == null || second == null) {
-                throw new IllegalArgumentException("Pair.of requires non null values.");
-            }
             return new Pair<>(first, second);
-        }
-
-        @Override
-        public int hashCode() {
-            return first.hashCode() * 37 + second.hashCode();
         }
     }
 

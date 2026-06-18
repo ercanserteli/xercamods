@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "xercacourt",
+  "version": "${version}",
+  "name": "Courtroom",
+  "description": "Adds items for courtroom enthusiasts",
+  "authors": ["xerca"],
+  "contact": {},
+  "icon": "assets/xercacourt/textures/item/gavel.png",
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "xerca.xercacourt.Mod"
+    ]
+  },
+  "depends": {
+    "fabricloader": "*",
+    "fabric-api": "*",
+    "minecraft": "1.21.1"
+  }
+}

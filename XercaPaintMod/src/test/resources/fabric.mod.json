@@ -6,9 +6,9 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "xerca.xercapaint.tests.RecipeCraftPaletteGameTests",
       "xerca.xercapaint.tests.RecipeFillPaletteGameTests",
       "xerca.xercapaint.tests.RecipeCanvasCloningGameTests",
+      "xerca.xercapaint.tests.CanvasSidesGameTests",
       "xerca.xercapaint.tests.CanvasTagCompatibilityGameTests",
       "xerca.xercapaint.tests.CanvasRecipeGameTests",
       "xerca.xercapaint.tests.PaletteDropperGameTests",
@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "1.20.1",
+    "minecraft": "1.21.1",
     "xercapaint": "*"
   }
 }

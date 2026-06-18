@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -23,18 +22,16 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
-
-import javax.annotation.Nullable;
 
 public class BlockMetronome extends BaseEntityBlock {
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final MapCodec<BlockMetronome> CODEC = BlockBehaviour.simpleCodec(BlockMetronome::new);
+    public static final MapCodec<BlockMetronome> METRONOME_CODEC = simpleCodec(BlockMetronome::new);
 
     public BlockMetronome(Properties properties) {
         super(properties);
@@ -47,7 +44,7 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         boolean flag = worldIn.hasNeighborSignal(pos);
         boolean powered = state.getValue(POWERED);
         if (flag != powered) {
@@ -65,7 +62,7 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide) {
             level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
@@ -85,7 +82,7 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide) {
             state = state.cycle(BPS); //cycle
             level.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
@@ -100,13 +97,13 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new TileEntityMetronome(pos, state);
     }
 
     @Override
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
             if (t instanceof TileEntityMetronome tileEntityMetronome) {
                 TileEntityMetronome.tick(level1, tileEntityMetronome);
@@ -115,22 +112,22 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return METRONOME_CODEC;
     }
 
     @Override
-    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Override
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
+    public BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
+    public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 

@@ -1,0 +1,20 @@
+{
+  "item.xercacushion.black_cushion": "Svart kudde",
+  "item.xercacushion.blue_cushion": "Blå kudde",
+  "item.xercacushion.brown_cushion": "Brun kudde",
+  "item.xercacushion.cyan_cushion": "Cyan kudde",
+  "item.xercacushion.gray_cushion": "Grå kudde",
+  "item.xercacushion.green_cushion": "Grön kudde",
+  "item.xercacushion.light_blue_cushion": "Ljusblå kudde",
+  "item.xercacushion.light_gray_cushion": "Ljusgrå kudde",
+  "item.xercacushion.lime_cushion": "Limegrön kudde",
+  "item.xercacushion.magenta_cushion": "Magenta kudde",
+  "item.xercacushion.orange_cushion": "Orange kudde",
+  "item.xercacushion.pink_cushion": "Rosa kudde",
+  "item.xercacushion.purple_cushion": "Lila kudde",
+  "item.xercacushion.red_cushion": "Röd kudde",
+  "item.xercacushion.white_cushion": "Vit kudde",
+  "item.xercacushion.yellow_cushion": "Gul kudde",
+  "entity.xercacushion.cushion": "Kudde",
+  "xercacushion.cushion_tooltip": "Du kan sitta på den"
+}

@@ -3,7 +3,6 @@ package xerca.xercapaint.packets;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 
@@ -11,11 +10,10 @@ public record PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) imple
     public static final CustomPacketPayload.Type<PaletteUpdatePacket> PACKET_ID = new CustomPacketPayload.Type<>(Mod.id("palette_update"));
     public static final StreamCodec<FriendlyByteBuf, PaletteUpdatePacket> PACKET_CODEC = StreamCodec.ofMember(PaletteUpdatePacket::encode, PaletteUpdatePacket::decode);
 
-    public FriendlyByteBuf encode(FriendlyByteBuf buf) {
+    public void encode(FriendlyByteBuf buf) {
         for (PaletteUtil.CustomColor color : paletteColors) {
             color.writeToBuffer(buf);
         }
-        return buf;
     }
 
     public static PaletteUpdatePacket decode(FriendlyByteBuf buf) {
@@ -26,8 +24,18 @@ public record PaletteUpdatePacket(PaletteUtil.CustomColor[] paletteColors) imple
         return new PaletteUpdatePacket(paletteColors);
     }
 
+    public PaletteUpdatePacket {
+        paletteColors = paletteColors.clone();
+    }
+
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public PaletteUtil.CustomColor[] paletteColors() {
+        return paletteColors.clone();
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 }
+

@@ -10,7 +10,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["xercamusic:drum"]}
+          {
+            "items": "xercamusic:drum"
+          }
         ]
       }
     },

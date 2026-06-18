@@ -19,8 +19,6 @@ public class MusicDataResponsePacketHandler implements ClientPlayNetworking.Play
 
     @Override
     public void receive(MusicDataResponsePacket packet, ClientPlayNetworking.Context context) {
-        if (packet != null) {
-            context.client().execute(() -> processMessage(packet));
-        }
+        context.client().execute(() -> processMessage(packet));
     }
 }

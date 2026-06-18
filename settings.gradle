@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'XercaMods'
+
+include 'XercaBlocks'
+include 'XercaCourt'
+include 'XercaCushion'
+include 'XercaFood'
+include 'XercaMusicMod'
+include 'XercaOmniChest'
+include 'XercaPaintMod'
+include 'XercaTools'

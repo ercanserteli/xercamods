@@ -18,6 +18,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.Items;
@@ -25,7 +26,6 @@ import xerca.xercamusic.common.packets.clientbound.*;
 import xerca.xercamusic.common.packets.serverbound.*;
 import xerca.xercamusic.common.tile_entity.BlockEntities;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
@@ -42,14 +42,14 @@ public class Mod implements ModInitializer {
 
     @Nullable
     public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) throws Exception {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             return toRun.get().call();
         }
         return null;
     }
 
     public static void onlyRunOnClient(Supplier<Runnable> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             toRun.get().run();
         }
     }

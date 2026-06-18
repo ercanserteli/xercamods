@@ -8,8 +8,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.clientbound.ImportMusicPacket;
@@ -24,6 +27,9 @@ import static xerca.xercamusic.common.Mod.sendToClient;
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 public final class CommandImport {
+    private CommandImport() {
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicimport")
@@ -47,13 +53,18 @@ public final class CommandImport {
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, List<NoteEvent> notes, ServerPlayer player) {
+    public static void doImport(@Nullable CompoundTag tag, @Nullable List<NoteEvent> notes, @Nullable UUID importBufferId, Player player) {
+        if (tag == null) {
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+            Mod.LOGGER.warn("Broken sheet file: missing tag");
+            return;
+        }
+
         if (!sanitizeTag(tag, player)) {
             return;
         }
 
-        notes = loadAndSendMusicData(tag, notes, player);
-        if (notes == null) {
+        if (!loadAndSendMusicData(tag, notes, importBufferId, player)) {
             // load failed / broken / partial
             return;
         }
@@ -65,9 +76,10 @@ public final class CommandImport {
         player.sendSystemMessage(translatable("xercamusic.import.success").withStyle(ChatFormatting.GREEN));
     }
 
-    private static boolean sanitizeTag(CompoundTag tag, ServerPlayer player) {
+    private static boolean sanitizeTag(CompoundTag tag, Player player) {
         boolean hasAuthor = tag.contains(KEY_AUTHOR, 8);
         boolean hasTitle = tag.contains(KEY_TITLE, 8);
+        boolean hasLegacyMusic = tag.contains(KEY_MUSIC_OLD);
 
         // only one of them is present -> broken
         if (hasAuthor ^ hasTitle) {
@@ -90,11 +102,19 @@ public final class CommandImport {
             }
         }
 
-        if (!tag.contains(KEY_VERSION, 3)) {
-            tag.putInt(KEY_VERSION, 1);
+        if (!hasLegacyMusic) {
+            if (hasTitle) {
+                if (!tag.contains(KEY_VERSION, Tag.TAG_INT)) {
+                    tag.putInt(KEY_VERSION, 1);
+                }
+            } else {
+                tag.putUUID(KEY_ID, UUID.randomUUID());
+                tag.putInt(KEY_VERSION, 1);
+                tag.putInt(KEY_GENERATION, 0);
+            }
         }
 
-        if (tag.getInt(KEY_GENERATION) > 0) {
+        if (tag.getInt(KEY_GENERATION) > 0 && tag.getInt(KEY_GENERATION) < 3) {
             tag.putInt(KEY_GENERATION, tag.getInt(KEY_GENERATION) + 1);
         }
 
@@ -108,7 +128,13 @@ public final class CommandImport {
         return true;
     }
 
-    private static List<NoteEvent> loadAndSendMusicData(CompoundTag tag, List<NoteEvent> notes, ServerPlayer player) {
+    private static boolean loadAndSendMusicData(CompoundTag tag, @Nullable List<NoteEvent> notes, @Nullable UUID importBufferId, Player player) {
+        MinecraftServer server = player.level().getServer();
+        if (server == null) {
+            Mod.LOGGER.warn("Cannot import music data without a server");
+            return false;
+        }
+
         if (tag.contains(KEY_ID) && tag.contains(KEY_VERSION)) {
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
@@ -116,45 +142,50 @@ public final class CommandImport {
 
             if (notes == null) {
                 // maybe it was sent in parts
-                notes = MusicManager.getFinishedNotesFromBuffer(id);
-                if (notes == null) {
-                    return null;
+                UUID bufferId = importBufferId != null ? importBufferId : id;
+                notes = MusicManager.getFinishedNotesFromBuffer(bufferId);
+                if (notes.isEmpty()) {
+                    return false;
                 }
             }
 
             if (!validateNotes(notes, player)) {
-                return null;
+                return false;
             }
 
-            MusicManager.setMusicData(id, ver, notes, volumeMarkers, player.server);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, notes, volumeMarkers));
-            return notes;
+            MusicManager.setMusicData(id, ver, notes, volumeMarkers, server);
+            if (player instanceof ServerPlayer serverPlayer) {
+                sendToClient(serverPlayer, new MusicDataResponsePacket(id, ver, notes, volumeMarkers));
+            }
+            return true;
         }
 
         if (tag.contains(KEY_MUSIC_OLD)) {
             // old version
             Mod.LOGGER.info("Old music file version");
-            List<NoteEvent> converted = convertFromOld(tag, player.server);
+            List<NoteEvent> converted = convertFromOld(tag, server);
             if (!validateNotes(converted, player)) {
-                return null;
+                return false;
             }
             UUID id = tag.getUUID(KEY_ID);
             int ver = tag.getInt(KEY_VERSION);
-            sendToClient(player, new MusicDataResponsePacket(id, ver, converted, null));
-            return converted;
+            if (player instanceof ServerPlayer serverPlayer) {
+                sendToClient(serverPlayer, new MusicDataResponsePacket(id, ver, converted, null));
+            }
+            return true;
         }
 
         Mod.LOGGER.warn("Broken music file");
-        return null;
+        return false;
     }
 
-    private static List<VolumeMarker> readVolumeMarkers(CompoundTag tag) {
+    private static @Nullable List<VolumeMarker> readVolumeMarkers(CompoundTag tag) {
         ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
         VolumeMarker.fillArrayFromNBT(volumeMarkers, tag);
         return volumeMarkers.isEmpty() ? null : volumeMarkers;
     }
 
-    private static boolean validateNotes(List<NoteEvent> notes, ServerPlayer player) {
+    private static boolean validateNotes(List<NoteEvent> notes, Player player) {
         for (NoteEvent note : notes) {
             int noteLength = note.length & 0xFF;
             byte[] glissandoWaypoints = note.getEffectiveWaypoints();
@@ -183,7 +214,7 @@ public final class CommandImport {
         return true;
     }
 
-    private static boolean giveImportedSheetToPlayer(CompoundTag tag, ServerPlayer player) {
+    private static boolean giveImportedSheetToPlayer(CompoundTag tag, Player player) {
         if (player.isCreative()) {
             ItemStack itemStack = new ItemStack(Items.MUSIC_SHEET);
             importIntoStack(itemStack, tag);
@@ -192,7 +223,7 @@ public final class CommandImport {
         }
 
         ItemStack mainHandItem = player.getMainHandItem();
-        if (!(mainHandItem.getItem() instanceof ItemMusicSheet) || !ItemMusicSheet.isEmptySheet(mainHandItem)) {
+        if (!(mainHandItem.getItem() instanceof ItemMusicSheet) || !isEmptySheet(mainHandItem)) {
             player.sendSystemMessage(translatable("xercamusic.import.fail.1").withStyle(ChatFormatting.RED));
             return false;
         }
@@ -226,5 +257,6 @@ public final class CommandImport {
         if (tag.contains(KEY_VOLUME, Tag.TAG_FLOAT)) {
             sheet.set(Items.SHEET_VOLUME, tag.getFloat(KEY_VOLUME));
         }
+        updateStackSize(sheet);
     }
 }

@@ -6,13 +6,11 @@ import xerca.xercamusic.common.CommandImport;
 
 public class ImportMusicSendPacketHandler implements ServerPlayNetworking.PlayPayloadHandler<ImportMusicSendPacket> {
     private static void processMessage(ImportMusicSendPacket msg, ServerPlayer sender) {
-        CommandImport.doImport(msg.tag(), msg.notes(), sender);
+        CommandImport.doImport(msg.tag(), msg.notes(), msg.uuid(), sender);
     }
 
     @Override
     public void receive(ImportMusicSendPacket packet, ServerPlayNetworking.Context context) {
-        if (packet != null) {
-            context.server().execute(() -> processMessage(packet, context.player()));
-        }
+        context.server().execute(() -> processMessage(packet, context.player()));
     }
 }

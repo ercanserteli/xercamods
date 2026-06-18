@@ -1,9 +1,14 @@
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "sss"
-    ],
-    "key": {"s": {"item": "minecraft:stick"}},
-    "result": {"id": "xercamusic:flute"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "xercamusic:flute"
+  }
 }

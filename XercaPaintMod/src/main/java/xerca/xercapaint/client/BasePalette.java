@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
@@ -13,7 +12,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
@@ -101,18 +100,19 @@ public abstract class BasePalette extends Screen {
     static final float BASIC_COLOR_RADIUS = 11.f;
     static final float CUSTOM_COLOR_RADIUS = 6.5f;
 
-    boolean isPickingColor = false;
-    boolean isCarryingColor = false;
-    boolean isCarryingWater = false;
-    boolean canvasDirty = false;
-    boolean paletteDirty = false;
-    PaletteUtil.Color carriedColor;
+    boolean isPickingColor;
+    boolean isCarryingColor;
+    boolean isCarryingWater;
+    boolean canvasDirty;
+    boolean paletteDirty;
+    @Nullable PaletteUtil.Color carriedColor;
     int carriedCustomColorId = -1;
+    // Static so the last picked color is remembered across GUI openings
     static PaletteUtil.Color currentColor = BASIC_COLORS[0];
     final PaletteUtil.CustomColor[] customColors;
     final boolean[] basicColorFlags;
-    boolean paletteComplete = false;
-    boolean isCarryingPalette = false;
+    boolean paletteComplete;
+    boolean isCarryingPalette;
 
     BasePalette(Component titleIn, ItemStack paletteStack) {
         super(titleIn);
@@ -130,9 +130,8 @@ public abstract class BasePalette extends Screen {
 
         byte[] basics = paletteStack.get(Items.PALETTE_BASIC_COLORS);
         if (basics != null) {
-            paletteComplete = basics.length == basicColorFlags.length;
-            int basicLen = Math.min(basics.length, basicColorFlags.length);
-            for (int i = 0; i < basicLen; i++) {
+            paletteComplete = true;
+            for (int i = 0; i < basics.length; i++) {
                 basicColorFlags[i] = basics[i] > 0;
                 paletteComplete &= basicColorFlags[i];
             }
@@ -144,7 +143,7 @@ public abstract class BasePalette extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         RenderSystem.setShaderTexture(0, PALETTE_TEXTURES);
@@ -157,7 +156,8 @@ public abstract class BasePalette extends Screen {
             if (basicColorFlags[i]) {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, BASIC_COLORS[i].rgbVal());
 
-                guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, x - 8, y - 8, DYE_SPRITE_X, (float) i * DYE_SPRITE_SIZE, DYE_SPRITE_SIZE, DYE_SPRITE_SIZE, 256, 256);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                guiGraphics.blit(PALETTE_TEXTURES, x - 8, y - 8, DYE_SPRITE_X, i * DYE_SPRITE_SIZE, DYE_SPRITE_SIZE, DYE_SPRITE_SIZE);
             } else {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, EMPTINESS_COLOR.rgbVal());
             }
@@ -170,11 +170,12 @@ public abstract class BasePalette extends Screen {
             guiGraphics.fill(x - 6, y - 7, x + 7, y + 6, customColors[i].getColor().rgbVal());
         }
 
-        guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, (int) paletteX, (int) paletteY, 0, 0, PALETTE_WIDTH, PALETTE_HEIGHT, 256, 256);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.blit(PALETTE_TEXTURES, (int) paletteX, (int) paletteY, 0, 0, PALETTE_WIDTH, PALETTE_HEIGHT);
 
         // Draw color picker
         if (paletteComplete) {
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, (int) paletteX + COLOR_PICKER_POS_X, (int) paletteY + COLOR_PICKER_POS_Y, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE, 256, 256);
+            guiGraphics.blit(PALETTE_TEXTURES, (int) paletteX + COLOR_PICKER_POS_X, (int) paletteY + COLOR_PICKER_POS_Y, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE);
         }
     }
 
@@ -293,7 +294,7 @@ public abstract class BasePalette extends Screen {
                             customColor.reset();
                             playSound(SoundEvents.WATER_DROP);
                         } else {
-                            if (carriedCustomColorId != i) {
+                            if (carriedCustomColorId != i && carriedColor != null) {
                                 customColor.mix(carriedColor);
                                 currentColor = customColor.getColor();
                                 playSound(SoundEvents.MIX);

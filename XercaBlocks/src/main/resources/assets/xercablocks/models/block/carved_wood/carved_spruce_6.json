@@ -1,0 +1,11 @@
+{
+  "parent": "xercablocks:block/carved_wood/carved_spruce",
+  "textures": {
+    "up": "xercablocks:block/carved_wood/carved_spruce_6_top",
+    "down": "xercablocks:block/carved_wood/carved_spruce_6_top",
+    "north": "xercablocks:block/carved_wood/carved_spruce_6c",
+    "south": "xercablocks:block/carved_wood/carved_spruce_6a",
+    "west":  "xercablocks:block/carved_wood/carved_spruce_6d",
+    "east":  "xercablocks:block/carved_wood/carved_spruce_6b"
+  }
+}

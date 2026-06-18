@@ -4,7 +4,9 @@
   "package": "xerca.xercafood.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "MixinResultSlot"
+    "MixinBrewingStandBlockEntity",
+    "MixinPotionBrewing",
+    "MixinRepairItemRecipe"
   ],
   "client": [
   ],

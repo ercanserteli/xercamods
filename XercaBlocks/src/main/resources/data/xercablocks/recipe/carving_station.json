@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "kk",
+    "pp",
+    "pp"
+  ],
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "k": {
+      "item": "minecraft:shears"
+    }
+  },
+  "result": {
+    "id": "xercablocks:carving_station"
+  }
+}

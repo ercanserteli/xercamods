@@ -1,0 +1,10 @@
+{
+  "type": "xercablocks:carving",
+  "ingredient": {
+    "item": "minecraft:acacia_log"
+  },
+  "result": {
+    "id": "xercablocks:carved_acacia_2",
+    "count": 1
+  }
+}

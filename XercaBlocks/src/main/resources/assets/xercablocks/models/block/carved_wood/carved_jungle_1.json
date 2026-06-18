@@ -1,0 +1,11 @@
+{
+  "parent": "xercablocks:block/carved_wood/carved_jungle",
+  "textures": {
+    "up": "xercablocks:block/carved_wood/carved_jungle_1_top",
+    "down": "xercablocks:block/carved_wood/carved_jungle_1_top",
+    "north": "xercablocks:block/carved_wood/carved_jungle_1",
+    "south": "xercablocks:block/carved_wood/carved_jungle_1",
+    "west":  "xercablocks:block/carved_wood/carved_jungle_1",
+    "east":  "xercablocks:block/carved_wood/carved_jungle_1"
+  }
+}

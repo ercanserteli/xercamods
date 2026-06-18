@@ -1,19 +1,19 @@
 package xerca.xercafood.common.entity;
 
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import xerca.xercafood.common.XercaFood;
+import xerca.xercafood.common.Mod;
 
 public final class Entities {
-    public static final EntityType<EntityTomato> TOMATO = FabricEntityTypeBuilder.<EntityTomato>create(MobCategory.MISC, EntityTomato::new)
-            .dimensions(new EntityDimensions(0.25f, 0.25f, true)).trackedUpdateRate(10).build();
+    private Entities() {
+    }
+
+    public static final EntityType<EntityTomato> TOMATO = EntityType.Builder.<EntityTomato>of(EntityTomato::new, MobCategory.MISC)
+            .sized(0.25f, 0.25f).updateInterval(10).build();
 
     public static void registerEntities() {
-        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(XercaFood.MODID, "tomato"), TOMATO);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, Mod.id("tomato"), TOMATO);
     }
 }

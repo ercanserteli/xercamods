@@ -4,10 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercapaint.entity.Entities;
@@ -53,9 +50,5 @@ public class Mod implements ModInitializer {
 
     public static ResourceLocation id(String location) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, location);
-    }
-
-    public static ResourceKey<Item> itemKey(String location) {
-        return ResourceKey.create(Registries.ITEM, Mod.id(location));
     }
 }

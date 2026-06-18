@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "t  ",
+    "tt ",
+    "ttt"
+  ],
+  "key": {
+    "t": {
+      "item": "xercablocks:lime_terratile"
+    }
+  },
+  "result": {
+    "id": "xercablocks:lime_terratile_stairs",
+    "count": 4
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ppp",
+    "srs",
+    "ppp"
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:string"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "p": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "id": "xercamusic:redstone_piano"
+  }
+}

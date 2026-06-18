@@ -21,7 +21,7 @@ public class RecipeNoteCloning extends CustomRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(CraftingInput inv, @NotNull Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
@@ -48,7 +48,7 @@ public class RecipeNoteCloning extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(@NotNull CraftingInput inv, HolderLookup.@NotNull Provider registries) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.@NotNull Provider registries) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
@@ -83,6 +83,7 @@ public class RecipeNoteCloning extends CustomRecipe {
             resultStack.set(Items.SHEET_VOLUME, orgNote.get(Items.SHEET_VOLUME));
             resultStack.set(Items.SHEET_AUTHOR, orgNote.get(Items.SHEET_AUTHOR));
             resultStack.set(Items.SHEET_TITLE, orgNote.get(Items.SHEET_TITLE));
+            ItemMusicSheet.updateStackSize(resultStack);
             return resultStack;
         } else {
             return ItemStack.EMPTY;

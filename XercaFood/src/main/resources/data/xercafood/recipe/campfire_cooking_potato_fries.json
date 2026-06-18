@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient": {
+    "item": "xercafood:potato_slices"
+  },
+  "result": {
+    "id": "xercafood:potato_fries"
+  },
+  "experience": 0.2,
+  "cookingtime": 600
+}

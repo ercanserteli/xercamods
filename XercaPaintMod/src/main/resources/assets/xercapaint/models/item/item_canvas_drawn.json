@@ -3,6 +3,7 @@
   "textures": {
     "layer0": "xercapaint:item/item_canvas_drawn"
   },
+  "gui_light": "front",
   "display": {
     "gui": {
       "translation": [
@@ -14,12 +15,17 @@
     "fixed": {
       "translation": [
         0,
-        4,
+        -5,
         0
       ],
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ],
       "rotation": [
-        180,
         0,
+        180,
         0
       ]
     }

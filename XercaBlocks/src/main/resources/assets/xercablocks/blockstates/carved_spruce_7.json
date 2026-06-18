@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=south": { "model": "xercablocks:block/carved_wood/carved_spruce_7" },
+    "facing=west": { "model":  "xercablocks:block/carved_wood/carved_spruce_7", "y": 90 },
+    "facing=north": { "model": "xercablocks:block/carved_wood/carved_spruce_7", "y": 180 },
+    "facing=east": { "model":  "xercablocks:block/carved_wood/carved_spruce_7", "y": 270 }
+  }
+}

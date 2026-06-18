@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "xercablocks",
+  "version": "${version}",
+  "name": "Xerca Decoration",
+  "description": "Cool building blocks, some with utility",
+  "authors": ["xerca"],
+  "contact": {},
+  "icon": "assets/xercablocks/icon.png",
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "xerca.xercablocks.client.ModClient"
+    ],
+    "main": [
+      "xerca.xercablocks.Mod"
+    ]
+  },
+  "mixins": [
+    "xercablocks.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric-api": "*",
+    "minecraft": "1.21.1"
+  }
+}

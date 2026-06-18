@@ -1,0 +1,20 @@
+{
+  "item.xercacushion.black_cushion": "Siyah Minder",
+  "item.xercacushion.blue_cushion": "Mavi Minder",
+  "item.xercacushion.brown_cushion": "Kahverengi Minder",
+  "item.xercacushion.cyan_cushion": "Turkuaz Minder",
+  "item.xercacushion.gray_cushion": "Gri Minder",
+  "item.xercacushion.green_cushion": "Yeşil Minder",
+  "item.xercacushion.light_blue_cushion": "Açık Mavi Minder",
+  "item.xercacushion.light_gray_cushion": "Açık Gri Minder",
+  "item.xercacushion.lime_cushion": "Lime Minder",
+  "item.xercacushion.magenta_cushion": "Magenta Minder",
+  "item.xercacushion.orange_cushion": "Turuncu Minder",
+  "item.xercacushion.pink_cushion": "Pembe Minder",
+  "item.xercacushion.purple_cushion": "Mor Minder",
+  "item.xercacushion.red_cushion": "Kırmızı Minder",
+  "item.xercacushion.white_cushion": "Beyaz Minder",
+  "item.xercacushion.yellow_cushion": "Sarı Minder",
+  "entity.xercacushion.cushion": "Minder",
+  "xercacushion.cushion_tooltip": "Üstüne oturmalık"
+}

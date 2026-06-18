@@ -16,6 +16,9 @@ public class Blocks {
     public static final Block PIANO = new BlockPiano();
     public static final Block DRUM_KIT = new BlockDrums();
 
+    private Blocks() {
+    }
+
     public static void registerBlocks() {
         Registry.register(BuiltInRegistries.BLOCK, Mod.id("block_metronome"), BLOCK_METRONOME);
         Registry.register(BuiltInRegistries.BLOCK, Mod.id("music_box"), MUSIC_BOX);

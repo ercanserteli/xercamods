@@ -1,0 +1,10 @@
+{
+  "type": "xercablocks:carving",
+  "ingredient": {
+    "item": "minecraft:stripped_warped_stem"
+  },
+  "result": {
+    "id": "xercablocks:carved_warped_1",
+    "count": 1
+  }
+}
