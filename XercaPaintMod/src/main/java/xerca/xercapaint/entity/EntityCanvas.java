@@ -26,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.CanvasType;
@@ -292,6 +293,11 @@ public class EntityCanvas extends HangingEntity {
                     (this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(state)))
                     && level.getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
         }
+    }
+
+    @Override
+    public Vec3 getLightProbePosition(float partialTick) {
+        return Vec3.atCenterOf(this.pos);
     }
 
     public int getRotation() {
