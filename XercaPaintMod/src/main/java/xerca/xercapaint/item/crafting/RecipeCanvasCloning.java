@@ -132,15 +132,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Items.CRAFTING_SPECIAL_CANVAS_CLONING;
-    }
-
-    /**
-     * Used to determine if this recipe can fit in a grid of the given width/height
-     */
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 2 && height >= 2;
     }
 }

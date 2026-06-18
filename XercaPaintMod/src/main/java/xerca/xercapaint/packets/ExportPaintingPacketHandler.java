@@ -11,9 +11,9 @@ public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayPay
         Minecraft m = Minecraft.getInstance();
         if (m.player != null) {
             if (CommandExport.doExport(m.player, msg.canvasId())) {
-                m.player.sendSystemMessage(Component.translatable("xercapaint.export.success", msg.canvasId()).withStyle(ChatFormatting.GREEN));
+                m.player.displayClientMessage(Component.translatable("xercapaint.export.success", msg.canvasId()).withStyle(ChatFormatting.GREEN), false);
             } else {
-                m.player.sendSystemMessage(Component.translatable("xercapaint.export.fail", msg.canvasId()).withStyle(ChatFormatting.RED));
+                m.player.displayClientMessage(Component.translatable("xercapaint.export.fail", msg.canvasId()).withStyle(ChatFormatting.RED), false);
             }
         }
     }

@@ -118,12 +118,4 @@ public class RecipeFillPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = PALETTE_FILL_BATCH)
-    public static void fillPaletteDimensionRulesRequireAtLeastTwoByTwo(GameTestHelper helper) {
-        helper.assertTrue(!RECIPE.canCraftInDimensions(1, 2), "Expected 1x2 grid to be too small");
-        helper.assertTrue(!RECIPE.canCraftInDimensions(2, 1), "Expected 2x1 grid to be too small");
-        helper.assertTrue(RECIPE.canCraftInDimensions(2, 2), "Expected 2x2 grid to be valid");
-        helper.assertTrue(RECIPE.canCraftInDimensions(3, 3), "Expected 3x3 grid to be valid");
-        helper.succeed();
-    }
 }

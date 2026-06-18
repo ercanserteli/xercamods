@@ -6,14 +6,16 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.crafting.RecipeCanvasCloning;
@@ -28,19 +30,23 @@ public final class Items {
     private Items() {
     }
 
-    public static final ItemPalette ITEM_PALETTE = new ItemPalette();
-    public static final ItemCanvas ITEM_CANVAS = new ItemCanvas(CanvasType.SMALL);
-    public static final ItemCanvas ITEM_CANVAS_LARGE = new ItemCanvas(CanvasType.LARGE);
-    public static final ItemCanvas ITEM_CANVAS_LONG = new ItemCanvas(CanvasType.LONG);
-    public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL);
-    public static final ItemCanvas ITEM_CANVAS_GLASS = new ItemCanvas(CanvasType.SMALL, true);
-    public static final ItemCanvas ITEM_CANVAS_GLASS_LARGE = new ItemCanvas(CanvasType.LARGE, true);
-    public static final ItemCanvas ITEM_CANVAS_GLASS_LONG = new ItemCanvas(CanvasType.LONG, true);
-    public static final ItemCanvas ITEM_CANVAS_GLASS_TALL = new ItemCanvas(CanvasType.TALL, true);
-    public static final ItemEasel ITEM_EASEL = new ItemEasel(new Item.Properties().stacksTo(1));
+    public static final ItemPalette ITEM_PALETTE = new ItemPalette(props("item_palette"));
+    public static final ItemCanvas ITEM_CANVAS = new ItemCanvas(CanvasType.SMALL, false, props("item_canvas"));
+    public static final ItemCanvas ITEM_CANVAS_LARGE = new ItemCanvas(CanvasType.LARGE, false, props("item_canvas_large"));
+    public static final ItemCanvas ITEM_CANVAS_LONG = new ItemCanvas(CanvasType.LONG, false, props("item_canvas_long"));
+    public static final ItemCanvas ITEM_CANVAS_TALL = new ItemCanvas(CanvasType.TALL, false, props("item_canvas_tall"));
+    public static final ItemCanvas ITEM_CANVAS_GLASS = new ItemCanvas(CanvasType.SMALL, true, props("item_canvas_glass"));
+    public static final ItemCanvas ITEM_CANVAS_GLASS_LARGE = new ItemCanvas(CanvasType.LARGE, true, props("item_canvas_glass_large"));
+    public static final ItemCanvas ITEM_CANVAS_GLASS_LONG = new ItemCanvas(CanvasType.LONG, true, props("item_canvas_glass_long"));
+    public static final ItemCanvas ITEM_CANVAS_GLASS_TALL = new ItemCanvas(CanvasType.TALL, true, props("item_canvas_glass_tall"));
+    public static final ItemEasel ITEM_EASEL = new ItemEasel(props("item_easel").stacksTo(1));
 
-    public static final RecipeSerializer<RecipeFillPalette> CRAFTING_SPECIAL_PALETTE_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeFillPalette::new);
-    public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = new SimpleCraftingRecipeSerializer<>(RecipeCanvasCloning::new);
+    private static Item.Properties props(String name) {
+        return new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Mod.id(name)));
+    }
+
+    public static final RecipeSerializer<RecipeFillPalette> CRAFTING_SPECIAL_PALETTE_FILLING = new CustomRecipe.Serializer<>(RecipeFillPalette::new);
+    public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = new CustomRecipe.Serializer<>(RecipeCanvasCloning::new);
     public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = new RecipeTaglessShaped.TaglessSerializer();
     public static final DataComponentType<List<Integer>> CANVAS_PIXELS = DataComponentType.<List<Integer>>builder().persistent(Codec.list(Codec.INT)).networkSynchronized(ByteBufCodecs.fromCodec(Codec.list(Codec.INT))).build();
     public static final DataComponentType<Boolean> CANVAS_SIDES_ACTIVE = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();

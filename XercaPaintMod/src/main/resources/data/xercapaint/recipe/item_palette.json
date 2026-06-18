@@ -5,12 +5,8 @@
     "ppp"
   ],
   "key": {
-    "b": {
-      "item": "minecraft:brush"
-    },
-    "p": {
-      "tag": "minecraft:planks"
-    }
+    "b": "minecraft:brush",
+    "p": "#minecraft:planks"
   },
   "result": {
     "id": "xercapaint:item_palette"

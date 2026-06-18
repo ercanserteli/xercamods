@@ -86,17 +86,17 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float amount) {
-        if (this.isInvulnerableTo(damageSource)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float amount) {
+        if (this.isInvulnerableToBase(damageSource)) {
             return false;
         }
 
-        if (!this.level().isClientSide && !this.isRemoved()) {
+        if (!this.isRemoved()) {
             if (!getItem().isEmpty() && !damageSource.is(DamageTypeTags.IS_EXPLOSION)) {
                 this.dropItem(damageSource.getEntity(), false);
             } else {
                 this.dropItem(damageSource.getEntity());
-                this.kill();
+                this.kill(serverLevel);
                 this.markHurt();
             }
         }
@@ -110,7 +110,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public void kill() {
+    public void kill(ServerLevel serverLevel) {
         showBreakingParticles();
         this.remove(RemovalReason.KILLED);
     }
@@ -142,17 +142,21 @@ public class EntityEasel extends Entity {
         ItemStack canvasStack = this.getItem();
         this.setItem(ItemStack.EMPTY);
 
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
         if (!canvasStack.isEmpty()) {
             canvasStack = canvasStack.copy();
-            this.spawnAtLocation(canvasStack);
+            this.spawnAtLocation(serverLevel, canvasStack);
         }
 
         if (entity instanceof Player player && player.getAbilities().instabuild) {
             return;
         }
 
-        if (dropSelf && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            this.spawnAtLocation(this.getEaselItemStack());
+        if (dropSelf && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            this.spawnAtLocation(serverLevel, this.getEaselItemStack());
         }
     }
 

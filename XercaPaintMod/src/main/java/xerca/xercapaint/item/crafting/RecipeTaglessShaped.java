@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -60,16 +59,16 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
         return CRAFTING_TAGLESS_SHAPED;
     }
 
     public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
         public static final MapCodec<RecipeTaglessShaped> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                        Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
+                        Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::group),
                         CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
                         ShapedRecipePattern.MAP_CODEC.forGetter(RecipeTaglessShaped::getPattern),
-                        ItemStack.STRICT_CODEC.fieldOf("result").forGetter(shapedRecipe -> shapedRecipe.getResultItem(RegistryAccess.EMPTY)),
+                        ItemStack.STRICT_CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
                         Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(ShapedRecipe::showNotification))
                 .apply(instance, RecipeTaglessShaped::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, RecipeTaglessShaped> STREAM_CODEC = StreamCodec.of(RecipeTaglessShaped.TaglessSerializer::toNetwork, RecipeTaglessShaped.TaglessSerializer::fromNetwork);
@@ -94,10 +93,10 @@ public class RecipeTaglessShaped extends ShapedRecipe {
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, RecipeTaglessShaped recipe) {
-            buffer.writeUtf(recipe.getGroup());
+            buffer.writeUtf(recipe.group());
             buffer.writeEnum(recipe.category());
             ShapedRecipePattern.STREAM_CODEC.encode(buffer, recipe.getPattern());
-            ItemStack.STREAM_CODEC.encode(buffer, recipe.getResultItem(RegistryAccess.EMPTY));
+            ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
             buffer.writeBoolean(recipe.showNotification());
         }
     }

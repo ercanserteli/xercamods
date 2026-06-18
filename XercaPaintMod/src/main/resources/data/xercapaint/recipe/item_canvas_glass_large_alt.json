@@ -4,9 +4,7 @@
     "cc"
   ],
   "key": {
-    "c": {
-      "item": "xercapaint:item_canvas_glass_tall"
-    }
+    "c": "xercapaint:item_canvas_glass_tall"
   },
   "result": {
     "id": "xercapaint:item_canvas_glass_large"

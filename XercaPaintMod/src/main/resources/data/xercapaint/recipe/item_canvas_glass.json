@@ -6,12 +6,8 @@
     "sss"
   ],
   "key": {
-    "g": {
-      "item": "minecraft:glass_pane"
-    },
-    "s": {
-      "item": "minecraft:stick"
-    }
+    "g": "minecraft:glass_pane",
+    "s": "minecraft:stick"
   },
   "result": {
     "id": "xercapaint:item_canvas_glass"

@@ -2,6 +2,7 @@ package xerca.xercapaint.client;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.packets.PaletteUpdatePacket;
@@ -33,12 +34,10 @@ public class GuiPalette extends BasePalette {
 
     private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isCarryingColor && carriedColor != null) {
-            carriedColor.setGLColor();
-            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, carriedColor.rgbVal());
 
         } else if (isCarryingWater) {
-            WATER_COLOR.setGLColor();
-            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, WATER_COLOR.rgbVal());
         }
     }
 

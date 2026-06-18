@@ -7,17 +7,16 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 
-public class EaselCanvasLayer extends RenderLayer<EntityEasel, EaselModel> {
-    public EaselCanvasLayer(RenderLayerParent<EntityEasel, EaselModel> layerParent) {
+public class EaselCanvasLayer extends RenderLayer<EaselRenderState, EaselModel> {
+    public EaselCanvasLayer(RenderLayerParent<EaselRenderState, EaselModel> layerParent) {
         super(layerParent);
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int i, EntityEasel entity, float v, float v1, float v2, float v3, float v4, float v5) {
-        ItemStack itemstack = entity.getItem();
+    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int i, EaselRenderState state, float yRot, float xRot) {
+        ItemStack itemstack = state.item;
         if (itemstack.getItem() instanceof ItemCanvas itemCanvas) {
             poseStack.pushPose();
 

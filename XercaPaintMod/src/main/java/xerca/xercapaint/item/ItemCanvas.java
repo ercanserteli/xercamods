@@ -9,7 +9,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.Item;
@@ -33,12 +32,8 @@ public class ItemCanvas extends HangingEntityItem {
     private final CanvasType canvasType;
     private final boolean glass;
 
-    ItemCanvas(CanvasType canvasType) {
-        this(canvasType, false);
-    }
-
-    ItemCanvas(CanvasType canvasType, boolean glass) {
-        super(Entities.CANVAS, new Item.Properties().stacksTo(1));
+    ItemCanvas(CanvasType canvasType, boolean glass, Item.Properties properties) {
+        super(Entities.CANVAS, properties.stacksTo(1));
         this.canvasType = canvasType;
         this.glass = glass;
     }
@@ -48,11 +43,11 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
         if (worldIn.isClientSide) {
             ModClient.showCanvasGui(playerIn);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     @Override

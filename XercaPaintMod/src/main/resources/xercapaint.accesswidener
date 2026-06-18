@@ -2,3 +2,5 @@ accessWidener v2 named
 
 accessible class net/minecraft/util/datafix/fixes/ItemStackComponentizationFix$ItemStackData
 accessible field net/minecraft/world/item/crafting/ShapedRecipe pattern Lnet/minecraft/world/item/crafting/ShapedRecipePattern;
+accessible field net/minecraft/world/item/crafting/ShapedRecipe result Lnet/minecraft/world/item/ItemStack;
+accessible field net/minecraft/client/gui/GuiGraphics bufferSource Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;

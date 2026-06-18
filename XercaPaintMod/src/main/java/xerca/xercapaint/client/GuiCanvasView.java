@@ -111,7 +111,7 @@ public class GuiCanvasView extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         // Write cells straight into the shared GUI buffer (guiGraphics.fill flushes per quad and tanks the FPS)
         Matrix4f matrix = guiGraphics.pose().last().pose();
-        VertexConsumer buffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
+        VertexConsumer buffer = guiGraphics.bufferSource.getBuffer(RenderType.gui());
 
         if (glass) {
             for (int i = 0; i < canvasPixelHeight; i++) {

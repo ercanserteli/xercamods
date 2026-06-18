@@ -414,7 +414,7 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    protected void renderBlurredBackground(float partialTick) {
+    protected void renderBlurredBackground() {
         // Skip vanilla's world-blur behind the painting GUI so the scene stays crisp
     }
 
@@ -428,7 +428,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         // Write cells straight into the shared GUI buffer (guiGraphics.fill flushes per quad and tanks the FPS)
         Matrix4f matrix = guiGraphics.pose().last().pose();
-        VertexConsumer canvasBuffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
+        VertexConsumer canvasBuffer = guiGraphics.bufferSource.getBuffer(RenderType.gui());
 
         // Draw the canvas holder
         int holderMargin = sideMargin();
@@ -465,12 +465,12 @@ public class GuiCanvasEdit extends BasePalette {
                 guiGraphics.fill(brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
             }
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(PALETTE_TEXTURES, brushMeterX, brushMeterY + (3 - brushSize) * BRUSH_SPRITE_SIZE, 15, 246, 10, 10);
-            guiGraphics.blit(PALETTE_TEXTURES, brushMeterX, brushMeterY, BRUSH_SPRITE_X, BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * 3, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE * 4);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, brushMeterX, brushMeterY + (3 - brushSize) * BRUSH_SPRITE_SIZE, 15, 246, 10, 10, 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, brushMeterX, brushMeterY, BRUSH_SPRITE_X, BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * 3, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE * 4, 256, 256);
 
             // Draw opacity meter
-            guiGraphics.blit(PALETTE_TEXTURES, brushOpacityMeterX, brushOpacityMeterY, BRUSH_OPACITY_SPRITE_X, BRUSH_OPACITY_SPRITE_Y, BRUSH_OPACITY_SPRITE_SIZE, BRUSH_OPACITY_SPRITE_SIZE * 4 + 3);
-            guiGraphics.blit(PALETTE_TEXTURES, brushOpacityMeterX - 1, brushOpacityMeterY - 1 + brushOpacitySetting * (BRUSH_OPACITY_SPRITE_SIZE + 1), 212, 240, 16, 16);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, brushOpacityMeterX, brushOpacityMeterY, BRUSH_OPACITY_SPRITE_X, BRUSH_OPACITY_SPRITE_Y, BRUSH_OPACITY_SPRITE_SIZE, BRUSH_OPACITY_SPRITE_SIZE * 4 + 3, 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, brushOpacityMeterX - 1, brushOpacityMeterY - 1 + brushOpacitySetting * (BRUSH_OPACITY_SPRITE_SIZE + 1), 212, 240, 16, 16, 256, 256);
 
             // Draw brush and outline
             renderCursor(guiGraphics, mouseX, mouseY);
@@ -508,25 +508,20 @@ public class GuiCanvasEdit extends BasePalette {
 
     private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isCarryingColor && carriedColor != null) {
-            carriedColor.setGLColor();
-            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, carriedColor.rgbVal());
 
         } else if (isCarryingWater) {
-            WATER_COLOR.setGLColor();
-            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, WATER_COLOR.rgbVal());
         } else if (isPickingColor) {
             drawOutline(guiGraphics, mouseX, mouseY, 0);
-            PaletteUtil.Color.WHITE.setGLColor();
-            guiGraphics.blit(PALETTE_TEXTURES, mouseX, mouseY - COLOR_PICKER_SIZE, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX, mouseY - COLOR_PICKER_SIZE, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE, 256, 256);
         } else {
             drawOutline(guiGraphics, mouseX, mouseY, brushSize);
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             guiGraphics.fill(mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             int trueBrushY = BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * brushSize;
-            guiGraphics.blit(PALETTE_TEXTURES, mouseX, mouseY, BRUSH_SPRITE_X, trueBrushY, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX, mouseY, BRUSH_SPRITE_X, trueBrushY, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE, 256, 256);
         }
     }
 
@@ -544,8 +539,7 @@ public class GuiCanvasEdit extends BasePalette {
         int y = (anchorRow + minOffset) * canvasPixelScale + (int) canvasY - 1;
 
         Vec2 textureVec = (canvasPixelScale == SMALL_CANVAS_PIXEL_SCALE) ? OUTLINE_POSS_1[brushSize] : OUTLINE_POSS_2[brushSize];
-        RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 1.0F);
-        guiGraphics.blit(PALETTE_TEXTURES, x, y, (int) textureVec.x, (int) textureVec.y, outlineSize, outlineSize);
+        guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, x, y, (int) textureVec.x, (int) textureVec.y, outlineSize, outlineSize, 256, 256, 0xFF4D4D4D);
     }
 
     private void drawSigning(GuiGraphics guiGraphics) {
@@ -955,7 +949,7 @@ public class GuiCanvasEdit extends BasePalette {
                 yTexStartNew += this.yDiffText;
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
-            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), xTexStartNew, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), xTexStartNew, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
         }
     }

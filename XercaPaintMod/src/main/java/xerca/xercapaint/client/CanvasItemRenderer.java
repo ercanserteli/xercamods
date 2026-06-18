@@ -38,7 +38,7 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implemen
                 RenderEntityCanvas.Instance canvasIns = RenderEntityCanvas.theInstance.getCanvasRendererInstance(stack, itemCanvas.getWidth(), itemCanvas.getHeight());
                 if (canvasIns != null) {
                     int tint = (itemCanvas.isGlass() && displayContext == ItemDisplayContext.GUI) ? GLASS_INVENTORY_TINT : RenderEntityCanvas.NO_TINT;
-                    canvasIns.render(null, 0, 0, matrixStack, buffer, Direction.UP, combinedLight, itemCanvas.isGlass(), tint);
+                    canvasIns.render(false, 0, 0, 0, matrixStack, buffer, Direction.UP, combinedLight, itemCanvas.isGlass(), tint);
                     rendered = true;
                 }
             }

@@ -1,7 +1,5 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -10,18 +8,15 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import xerca.xercapaint.CanvasType;
-import xerca.xercapaint.entity.EntityEasel;
-import xerca.xercapaint.item.ItemCanvas;
 
-public class EaselModel extends EntityModel<EntityEasel> {
-    private final ModelPart bbMain;
+public class EaselModel extends EntityModel<EaselRenderState> {
     private final ModelPart bottomBar;
     private final ModelPart topBar;
 
-    public EaselModel(ModelPart model) {
-        this.bbMain = model;
-        this.bottomBar = model.getChild("bottomBar");
-        this.topBar = model.getChild("topBar");
+    public EaselModel(ModelPart root) {
+        super(root);
+        this.bottomBar = root.getChild("bottomBar");
+        this.topBar = root.getChild("topBar");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -59,16 +54,17 @@ public class EaselModel extends EntityModel<EntityEasel> {
     }
 
     @Override
-    public void setupAnim(EntityEasel entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entity.getItem().getItem() instanceof ItemCanvas itemCanvas) {
-            if (itemCanvas.getCanvasType() == CanvasType.LONG) {
+    public void setupAnim(EaselRenderState state) {
+        CanvasType canvasType = state.canvasType;
+        if (canvasType != null) {
+            if (canvasType == CanvasType.LONG) {
                 bottomBar.y = 13.5f;
                 bottomBar.z = -3.25f;
                 topBar.y = 16.25f;
                 topBar.z = -4.0f;
                 return;
             }
-            if (itemCanvas.getCanvasType() == CanvasType.LARGE || itemCanvas.getCanvasType() == CanvasType.TALL) {
+            if (canvasType == CanvasType.LARGE || canvasType == CanvasType.TALL) {
                 bottomBar.y = 16.6f;
                 bottomBar.z = -4.0f;
                 topBar.y = 9.8f;
@@ -82,10 +78,5 @@ public class EaselModel extends EntityModel<EntityEasel> {
         bottomBar.z = -4.0f;
         topBar.y = 16.75f;
         topBar.z = -4.0f;
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        bbMain.render(poseStack, buffer, packedLight, packedOverlay);
     }
 }

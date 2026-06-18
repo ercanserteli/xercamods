@@ -110,7 +110,7 @@ public class EaselTests {
             float expected = Mth.wrapDegrees(expectedYaw);
             helper.assertTrue(Math.abs(Mth.wrapDegrees(actualYaw - expected)) < 0.001F,
                     "Easel yaw mismatch for case " + i + " (actual=" + actualYaw + ", expected=" + expected + ")");
-            easel.kill();
+            easel.kill(helper.getLevel());
         }
 
         helper.succeed();

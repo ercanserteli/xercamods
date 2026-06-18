@@ -202,7 +202,7 @@ def getItem(win, item, count=1):
     win.type("t")
     win.paste("/give @s {} {}".format(item, count))
     win.type(Key.ENTER)
-    wait(0.2)
+    wait(0.3)
 
 
 def testCrafting(mc, win, mcLoc):
@@ -212,8 +212,11 @@ def testCrafting(mc, win, mcLoc):
 
     getItem(win, "crafting_table")
     getItem(win, "stick", 64)
+    getItem(win, "stick", 64)
     getItem(win, "paper", 8)
+    getItem(win, "glass_pane", 8)
     getItem(win, "oak_planks", 3)
+    getItem(win, "brush", 1)
     
     dye_colors = [
         'black',
@@ -315,10 +318,78 @@ def testCrafting(mc, win, mcLoc):
     win.click(res)
     keyUp(Key.SHIFT)
 
+    # Glass 
+    stick = win.find("1689507809001.png")
+    win.click("1781807414027.png")
+    win.click(mcLoc.offset(370, 188))
+
+    win.click(stick)
+    win.click(mcLoc.offset(330, 150))
+
+    win.rightClick(mcLoc.offset(330, 150))
+    win.click(mcLoc.offset(365, 150))
+
+    win.rightClick(mcLoc.offset(365, 150))
+    win.click(mcLoc.offset(400, 150))
+
+    win.rightClick(mcLoc.offset(400, 150))
+    win.click(mcLoc.offset(400, 180))
+
+    win.rightClick(mcLoc.offset(365, 150))
+    win.click(mcLoc.offset(400, 230))
+
+    win.rightClick(mcLoc.offset(330, 150))
+    win.click(mcLoc.offset(330, 180))
+
+    win.rightClick(mcLoc.offset(330, 180))
+    win.click(mcLoc.offset(330, 225))
+
+    win.rightClick(mcLoc.offset(330, 150))
+    win.click(mcLoc.offset(370, 225))
+
+    res = exists("1781807491515.png")
+    testAssert(res)
+
+    keyDown(Key.SHIFT)
+    win.click(res)
+    keyUp(Key.SHIFT)
+
+    # Long glass canvas
+    win.click(mcLoc.offset(400, 360))
+    win.click(mcLoc.offset(330, 150))
+    win.click(mcLoc.offset(435, 360))
+    win.click(mcLoc.offset(365, 150))
+    win.click(mcLoc.offset(200, 150))
+    testAssert(exists("1781807522680.png"))
+
+    # Tall glass canvas
+    win.click(mcLoc.offset(365, 150))
+    win.click(mcLoc.offset(330, 185))
+    win.click(mcLoc.offset(200, 150))
+    testAssert(exists("1781807532351.png"))
+
+    # Large glass canvas
+    win.click(mcLoc.offset(470, 360))
+    win.click(mcLoc.offset(365, 150))
+    win.click(mcLoc.offset(365, 360))
+    win.click(mcLoc.offset(365, 185))
+    win.click(mcLoc.offset(200, 150))
+    res = exists("1781807544157.png")
+    testAssert(res)
+    keyDown(Key.SHIFT)
+    win.click(res)
+    keyUp(Key.SHIFT)
+
     # Palette
     win.click("1689509631514.png")
     win.drag(mcLoc.offset(330, 230))
     win.dropAt(mcLoc.offset(400, 230))
+    win.click("1781807050145.png")
+    win.click(mcLoc.offset(365, 195))
+    res = exists("1781807084040.png")
+    testAssert(res)
+    win.click(res)
+    win.click(mcLoc.offset(365, 150))
     win.click("1689509695985.png")
     win.click(mcLoc.offset(365, 195))
     testAssert("1755750517043.png")
@@ -367,7 +438,7 @@ def testCrafting(mc, win, mcLoc):
     win.paste("/paintimport test")
     win.type(Key.ENTER)
     rclick(win)
-    win.click(mcLoc.offset(400, 405))
+    win.click("1781808128128.png")
     win.click(mcLoc.offset(330, 185))
     win.click("1689522685857.png")
     win.click(mcLoc.offset(400, 185))

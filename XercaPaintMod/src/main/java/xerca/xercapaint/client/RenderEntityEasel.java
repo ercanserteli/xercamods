@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
@@ -25,9 +26,9 @@ import xerca.xercapaint.item.ItemCanvas;
 import java.util.List;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
+public class RenderEntityEasel extends EntityRenderer<EntityEasel, EaselRenderState> implements RenderLayerParent<EaselRenderState, EaselModel> {
     protected final EaselModel model;
-    protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
+    protected final List<RenderLayer<EaselRenderState, EaselModel>> layers = Lists.newArrayList();
     static @Nullable RenderEntityEasel theInstance;
     private static final ResourceLocation WOOD_TEXTURE = Mod.id("textures/block/birch_long.png");
 
@@ -43,55 +44,67 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityEasel entity) {
-        return WOOD_TEXTURE;
+    public EaselRenderState createRenderState() {
+        return new EaselRenderState();
     }
 
     @Override
-    public void render(EntityEasel entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void extractRenderState(EntityEasel entity, EaselRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.item = entity.getItem();
+        state.canvasType = state.item.getItem() instanceof ItemCanvas itemCanvas ? itemCanvas.getCanvasType() : null;
+        state.yRot = Mth.rotLerp(partialTick, entity.yRotO, entity.getYRot());
+    }
+
+    @Override
+    public void render(EaselRenderState state, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
 
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(-entityYaw));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(-state.yRot));
 
-        this.model.setupAnim(entity, 0, 0, 0, 0, 0);
+        this.model.setupAnim(state);
 
         matrixStackIn.mulPose(new Quaternionf().rotationXYZ((float) Math.PI, 0, 0));
         matrixStackIn.translate(0, -1.5, 0);
 
-        RenderType rendertype = this.model.renderType(this.getTextureLocation(entity));
+        RenderType rendertype = this.model.renderType(WOOD_TEXTURE);
         VertexConsumer vertexconsumer = bufferIn.getBuffer(rendertype);
 
         int i = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
         this.model.renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, i);
 
-        this.layers.forEach(renderLayer -> renderLayer.render(matrixStackIn, bufferIn, packedLightIn, entity, 0, 0, 0, 0, 0, 0));
+        this.layers.forEach(renderLayer -> renderLayer.render(matrixStackIn, bufferIn, packedLightIn, state, 0, 0));
 
         matrixStackIn.popPose();
-        super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        super.render(state, matrixStackIn, bufferIn, packedLightIn);
     }
 
     @Override
-    protected boolean shouldShowName(EntityEasel easel) {
+    protected boolean shouldShowName(EntityEasel easel, double distanceToCameraSq) {
         HitResult result = Minecraft.getInstance().hitResult;
         if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
-            double distanceSquared = this.entityRenderDispatcher.distanceToSqr(easel);
             float range = easel.isDiscrete() ? 32.0F : 64.0F;
-            return distanceSquared < range * range;
+            return distanceToCameraSq < range * range;
         }
         return false;
     }
 
     @Override
-    protected void renderNameTag(EntityEasel easel, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float partialTick) {
+    protected Component getNameTag(EntityEasel easel) {
+        return ItemCanvas.getFullLabel(easel.getItem());
+    }
+
+    @Override
+    protected void renderNameTag(EaselRenderState state, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, packedLight, partialTick);
+        super.renderNameTag(state, displayName, poseStack, bufferSource, packedLight);
         poseStack.popPose();
     }
 
     public static class RenderEntityEaselFactory implements EntityRendererProvider<EntityEasel> {
         @Override
-        public EntityRenderer<EntityEasel> create(Context ctx) {
+        public EntityRenderer<EntityEasel, EaselRenderState> create(Context ctx) {
             RenderEntityEasel instance = new RenderEntityEasel(ctx);
             theInstance = instance;
             return instance;

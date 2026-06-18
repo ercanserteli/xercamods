@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
@@ -157,7 +158,7 @@ public abstract class BasePalette extends Screen {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, BASIC_COLORS[i].rgbVal());
 
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                guiGraphics.blit(PALETTE_TEXTURES, x - 8, y - 8, DYE_SPRITE_X, i * DYE_SPRITE_SIZE, DYE_SPRITE_SIZE, DYE_SPRITE_SIZE);
+                guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, x - 8, y - 8, DYE_SPRITE_X, i * DYE_SPRITE_SIZE, DYE_SPRITE_SIZE, DYE_SPRITE_SIZE, 256, 256);
             } else {
                 guiGraphics.fill(x - r, y - r, x + r + 1, y + r + 1, EMPTINESS_COLOR.rgbVal());
             }
@@ -171,11 +172,11 @@ public abstract class BasePalette extends Screen {
         }
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(PALETTE_TEXTURES, (int) paletteX, (int) paletteY, 0, 0, PALETTE_WIDTH, PALETTE_HEIGHT);
+        guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, (int) paletteX, (int) paletteY, 0, 0, PALETTE_WIDTH, PALETTE_HEIGHT, 256, 256);
 
         // Draw color picker
         if (paletteComplete) {
-            guiGraphics.blit(PALETTE_TEXTURES, (int) paletteX + COLOR_PICKER_POS_X, (int) paletteY + COLOR_PICKER_POS_Y, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE);
+            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, (int) paletteX + COLOR_PICKER_POS_X, (int) paletteY + COLOR_PICKER_POS_Y, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE, 256, 256);
         }
     }
 

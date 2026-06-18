@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
+public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRenderState> {
     static @Nullable RenderEntityCanvas theInstance;
     private static final ResourceLocation BACK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final ResourceLocation GLASS_FRAME_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/glass.png");
@@ -63,34 +63,48 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         DynamicTexture texture = new DynamicTexture(1, 1, false);
         NativeImage image = texture.getPixels();
         if (image != null) {
-            image.setPixelRGBA(0, 0, 0xFFFFFFFF);
+            image.setPixel(0, 0, 0xFFFFFFFF);
             texture.upload();
         }
         return textureManager.register("canvas_side_white", texture);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityCanvas entity) {
-        return getCanvasRendererInstance(entity).location;
+    public CanvasRenderState createRenderState() {
+        return new CanvasRenderState();
     }
 
     @Override
-    public void render(EntityCanvas entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-        getCanvasRendererInstance(entity).render(entity, entityYaw, entity.getXRot(), matrixStackIn, bufferIn, entity.getDirection(), packedLightIn, entity.isGlass(), NO_TINT);
+    public void extractRenderState(EntityCanvas entity, CanvasRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.canvasId = entity.getCanvasID();
+        state.version = entity.getVersion();
+        state.width = entity.getWidth();
+        state.height = entity.getHeight();
+        state.rotation = entity.getRotation();
+        state.yRot = entity.getYRot();
+        state.xRot = entity.getXRot();
+        state.direction = entity.getDirection();
+        state.glass = entity.isGlass();
+    }
+
+    @Override
+    public void render(CanvasRenderState state, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+        super.render(state, matrixStackIn, bufferIn, packedLightIn);
+        if (state.canvasId == null) {
+            return;
+        }
+        Instance instance = getCanvasRendererInstance(state.canvasId, state.version, state.width, state.height);
+        instance.render(true, state.rotation, state.yRot, state.xRot, matrixStackIn, bufferIn, state.direction, packedLightIn, state.glass, NO_TINT);
     }
 
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
         @Override
-        public EntityRenderer<EntityCanvas> create(Context ctx) {
+        public EntityRenderer<EntityCanvas, CanvasRenderState> create(Context ctx) {
             RenderEntityCanvas instance = new RenderEntityCanvas(ctx);
             theInstance = instance;
             return instance;
         }
-    }
-
-    private Instance getCanvasRendererInstance(EntityCanvas canvas) {
-        return getCanvasRendererInstance(canvas.getCanvasID(), canvas.getVersion(), canvas.getWidth(), canvas.getHeight());
     }
 
     @Nullable Instance getCanvasRendererInstance(ItemStack canvasStack, int width, int height) {
@@ -154,15 +168,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             updateCanvasTexture(name, version);
         }
 
-        private int swapColor(int color) {
-            int i = (color & 16711680) >> 16;
-            int j = (color & '\uff00') >> 8;
-            int k = (color & 255);
-            // Preserve source alpha so glass keeps transparent pixels
-            int a = (color >> 24) & 0xFF;
-            return k << 16 | j << 8 | i | (a << 24);
-        }
-
         private void updateCanvasTexture(String name, int version) {
             int[] pixels = EMPTY_PIXELS;
             if (EntityCanvas.PICTURES.containsKey(name)) {
@@ -183,7 +188,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
                     for (int y = 0; y < height; ++y) {
                         for (int x = 0; x < width; ++x) {
                             int idx = x + y * width;
-                            image.setPixelRGBA(x, y, swapColor(pixels[idx]));
+                            // setPixel takes ARGB (converts to native ABGR internally), so feed the raw pixel
+                            image.setPixel(x, y, pixels[idx]);
                         }
                     }
                     canvasTexture.upload();
@@ -193,7 +199,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             }
         }
 
-        public void render(@Nullable EntityCanvas canvas, float yaw, float pitch, PoseStack ms, MultiBufferSource buffer, Direction facing, int packedLight, boolean glass, int tint) {
+        public void render(boolean hasEntity, int rotation, float yaw, float pitch, PoseStack ms, MultiBufferSource buffer, Direction facing, int packedLight, boolean glass, int tint) {
             final float wScale = width / 16.0f;
             final float hScale = height / 16.0f;
 
@@ -203,16 +209,16 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
             float yOffset = facing.getStepY();
             float zOffset = facing.getStepZ();
 
-            if (canvas != null && canvas.getRotation() > 0) {
+            if (hasEntity && rotation > 0) {
                 ms.mulPose(Axis.XP.rotationDegrees(pitch));
                 ms.mulPose(Axis.YP.rotationDegrees(180.f - yaw));
-                ms.mulPose(Axis.ZP.rotationDegrees(90.f * canvas.getRotation()));
+                ms.mulPose(Axis.ZP.rotationDegrees(90.f * rotation));
                 ms.mulPose(Axis.YP.rotationDegrees(-180.f + yaw));
                 ms.mulPose(Axis.XP.rotationDegrees(-pitch));
             }
 
             float f = 1.0f / 32.0f;
-            if (canvas != null) {
+            if (hasEntity) {
                 if (facing.getAxis().isHorizontal()) {
                     ms.translate(zOffset * 0.5d * wScale, -0.5d * hScale, -xOffset * 0.5d * wScale);
                 } else {

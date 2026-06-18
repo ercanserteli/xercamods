@@ -49,6 +49,23 @@ def normalize_advancement_item_predicate(discover_item):
     return normalized
 
 
+def normalize_ingredient(ingredient):
+    # 1.21.2+ ingredient format: bare item id string, "#tag", or a list of ids
+    if ingredient is None:
+        return None
+    if isinstance(ingredient, str):
+        return ingredient
+    if isinstance(ingredient, list):
+        return [normalize_ingredient(i) for i in ingredient]
+    if isinstance(ingredient, dict):
+        if "item" in ingredient:
+            return ingredient["item"]
+        if "tag" in ingredient:
+            tag = ingredient["tag"]
+            return tag if tag.startswith("#") else "#" + tag
+    return ingredient
+
+
 class Type(Enum):
     crafting_shaped, crafting_shapeless, smelting, campfire_cooking, blasting, smoking, stone_cutting = range(7)
 
@@ -107,7 +124,7 @@ class ShapedRecipe(Recipe):
         d = {}
         self.add_common_fields(d)
         d["pattern"] = self.pattern
-        d["key"] = self.key
+        d["key"] = {k: normalize_ingredient(v) for k, v in self.key.items()}
         d["result"] = normalize_itemstack(self.result)
         return json.dumps(d, indent=2)
 
@@ -124,7 +141,7 @@ class ShapelessRecipe(Recipe):
     def produce_recipe_json(self):
         d = {}
         self.add_common_fields(d)
-        d["ingredients"] = self.ingredients
+        d["ingredients"] = [normalize_ingredient(i) for i in self.ingredients]
         d["result"] = normalize_itemstack(self.result)
         return json.dumps(d, indent=2)
 
@@ -143,7 +160,7 @@ class CookingRecipe(Recipe):
     def produce_recipe_json(self):
         d = {}
         self.add_common_fields(d)
-        d["ingredient"] = self.ingredient
+        d["ingredient"] = normalize_ingredient(self.ingredient)
         d["result"] = normalize_itemstack(self.result)
         d["experience"] = self.experience
         d["cookingtime"] = self.cooking_time
@@ -183,7 +200,7 @@ class StonecuttingRecipe(Recipe):
         d = {}
         self.add_common_fields(d)
         d.update({
-            "ingredient": {"item": self.ingredient},
+            "ingredient": normalize_ingredient(self.ingredient),
             "result": normalize_itemstack({"id": self.result, "count": self.count}),
         })
         return json.dumps(d, indent=2)
@@ -203,7 +220,7 @@ class CarvingRecipe(Recipe):
         d = {}
         self.add_common_fields(d)
         d.update({
-            "ingredient": {"item": self.ingredient},
+            "ingredient": normalize_ingredient(self.ingredient),
             "result": normalize_itemstack({"id": self.result, "count": self.count}),
         })
         return json.dumps(d, indent=2)
@@ -224,10 +241,10 @@ class SmithingRecipe(Recipe):
         d = {}
         self.add_common_fields(d)
         d.update({
-            "base": {"item": self.base},
-            "addition": {"item": self.addition},
+            "base": normalize_ingredient(self.base),
+            "addition": normalize_ingredient(self.addition),
             "result": {"id": self.result},
-            "template": {"item": self.template},
+            "template": normalize_ingredient(self.template),
         })
         return json.dumps(d, indent=2)
 

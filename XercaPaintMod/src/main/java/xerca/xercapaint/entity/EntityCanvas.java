@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DiodeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.CanvasType;
@@ -166,8 +168,8 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    public void dropItem(@Nullable Entity brokenEntity) {
-        if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+    public void dropItem(ServerLevel serverLevel, @Nullable Entity brokenEntity) {
+        if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             this.playSound(isGlass() ? SoundEvents.GLASS_BREAK : SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             if (brokenEntity instanceof Player playerEntity && playerEntity.getAbilities().instabuild) {
                 return;
@@ -191,7 +193,7 @@ public class EntityCanvas extends HangingEntity {
                     canvasItem.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(picture.sidePixels()).boxed().toList());
                 }
             }
-            this.spawnAtLocation(canvasItem);
+            this.spawnAtLocation(serverLevel, canvasItem);
         }
     }
 
@@ -202,11 +204,11 @@ public class EntityCanvas extends HangingEntity {
         this.zo = this.getZ();
         boolean shouldCheckSurvival = this.tickCounter1 == 50;
         this.tickCounter1++;
-        if (shouldCheckSurvival && !this.level().isClientSide) {
+        if (shouldCheckSurvival && this.level() instanceof ServerLevel serverLevel) {
             this.tickCounter1 = 0;
             if (this.isAlive() && !this.survives()) {
                 this.remove(RemovalReason.DISCARDED);
-                this.dropItem(null);
+                this.dropItem(serverLevel, null);
             }
         }
     }
@@ -292,6 +294,11 @@ public class EntityCanvas extends HangingEntity {
                     (this.direction.getAxis().isHorizontal() && DiodeBlock.isDiode(state)))
                     && level.getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
         }
+    }
+
+    @Override
+    public Vec3 getLightProbePosition(float partialTick) {
+        return Vec3.atCenterOf(this.pos);
     }
 
     public int getRotation() {

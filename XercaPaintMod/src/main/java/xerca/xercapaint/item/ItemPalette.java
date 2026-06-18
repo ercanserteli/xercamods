@@ -7,7 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,16 +22,16 @@ import java.util.stream.IntStream;
 public class ItemPalette extends Item {
     private static final int BASIC_COLOR_COUNT = 16;
 
-    ItemPalette() {
-        super(new Properties().stacksTo(1));
+    ItemPalette(Properties properties) {
+        super(properties.stacksTo(1));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
         if (worldIn.isClientSide) {
             ModClient.showCanvasGui(playerIn);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     public static boolean isFull(ItemStack stack) {
