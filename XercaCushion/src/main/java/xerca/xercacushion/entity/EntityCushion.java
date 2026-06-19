@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,6 +28,7 @@ import xerca.xercacushion.block.Blocks;
 import xerca.xercacushion.item.Items;
 
 public class EntityCushion extends Entity {
+    private static final double PISTON_CLEARANCE = 0.01D;
     private static final EntityDataAccessor<Integer> DATA_VARIANT = SynchedEntityData.defineId(EntityCushion.class, EntityDataSerializers.INT);
 
     public EntityCushion(EntityType<? extends EntityCushion> type, Level level) {
@@ -76,6 +78,37 @@ public class EntityCushion extends Entity {
         return supportTop > Double.NEGATIVE_INFINITY ? supportTop : entityBottom;
     }
 
+    private static double removePistonClearance(double movement) {
+        if (movement > 0.0D) {
+            return Math.max(0.0D, movement - PISTON_CLEARANCE);
+        }
+        return Math.min(0.0D, movement + PISTON_CLEARANCE);
+    }
+
+    @Override
+    public void move(MoverType type, Vec3 movement) {
+        if (type == MoverType.PISTON) {
+            movement = new Vec3(
+                    removePistonClearance(movement.x),
+                    removePistonClearance(movement.y),
+                    removePistonClearance(movement.z)
+            );
+        }
+        double oldX = this.getX();
+        double oldY = this.getY();
+        double oldZ = this.getZ();
+        super.move(type, movement);
+
+        boolean moved = this.getX() != oldX || this.getY() != oldY || this.getZ() != oldZ;
+        if (moved && !this.isRemoved() && this.level() instanceof ServerLevel serverLevel
+                && !serverLevel.getEntitiesOfClass(EntityCushion.class, this.getBoundingBox(),
+                cushion -> cushion != this && !cushion.isRemoved()).isEmpty()) {
+            this.discard();
+            this.markHurt();
+            this.onBroken(serverLevel, null);
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -99,26 +132,32 @@ public class EntityCushion extends Entity {
 
     @Override
     public boolean skipAttackInteraction(Entity entity) {
-        return entity instanceof Player player && this.hurt(this.damageSources().playerAttack(player), 0.0F);
+        if (!(entity instanceof Player player)) {
+            return false;
+        }
+        if (this.level() instanceof ServerLevel serverLevel) {
+            this.hurtServer(serverLevel, this.damageSources().playerAttack(player), 0.0F);
+        }
+        return true;
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (this.isInvulnerableToBase(source)) {
             return false;
         }
 
-        if (!this.isRemoved() && !this.level().isClientSide) {
+        if (!this.isRemoved()) {
             this.discard();
             this.markHurt();
-            this.onBroken(source.getEntity());
+            this.onBroken(serverLevel, source.getEntity());
         }
 
         return true;
     }
 
-    private void onBroken(@Nullable Entity breaker) {
-        if (!this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+    private void onBroken(ServerLevel serverLevel, @Nullable Entity breaker) {
+        if (!serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             return;
         }
 
@@ -127,7 +166,7 @@ public class EntityCushion extends Entity {
             return;
         }
 
-        this.spawnAtLocation(new ItemStack(Items.byVariant(getVariant())));
+        this.spawnAtLocation(serverLevel, new ItemStack(Items.byVariant(getVariant())));
     }
 
     @Override

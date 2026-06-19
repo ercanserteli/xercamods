@@ -2,6 +2,8 @@ package xerca.xercacushion.block;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -9,6 +11,12 @@ import xerca.xercacushion.Mod;
 import xerca.xercacushion.item.Items;
 
 public final class Blocks {
+    private static final String[] PATHS = {
+            "black_cushion", "blue_cushion", "brown_cushion", "cyan_cushion",
+            "gray_cushion", "green_cushion", "light_blue_cushion", "light_gray_cushion",
+            "lime_cushion", "magenta_cushion", "orange_cushion", "pink_cushion",
+            "purple_cushion", "red_cushion", "white_cushion", "yellow_cushion"
+    };
     public static final BlockCushion BLACK_CUSHION = create(0, MapColor.COLOR_BLACK);
     public static final BlockCushion BLUE_CUSHION = create(1, MapColor.COLOR_BLUE);
     public static final BlockCushion BROWN_CUSHION = create(2, MapColor.COLOR_BROWN);
@@ -49,7 +57,11 @@ public final class Blocks {
     }
 
     private static BlockCushion create(int variant, MapColor mapColor) {
-        return new BlockCushion(BlockBehaviour.Properties.of().mapColor(mapColor).strength(0.8F).sound(SoundType.WOOL).noOcclusion(), variant);
+        String path = PATHS[variant];
+        BlockBehaviour.Properties properties = BlockBehaviour.Properties.of()
+                .setId(ResourceKey.create(Registries.BLOCK, Mod.id(path)))
+                .mapColor(mapColor).strength(0.8F).sound(SoundType.WOOL).noOcclusion();
+        return new BlockCushion(properties, variant);
     }
 
     public static void register() {

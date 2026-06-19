@@ -7,12 +7,8 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:white_wool"
-    },
-    "f": {
-      "item": "minecraft:feather"
-    }
+    "#": "minecraft:white_wool",
+    "f": "minecraft:feather"
   },
   "result": {
     "id": "xercacushion:white_cushion"

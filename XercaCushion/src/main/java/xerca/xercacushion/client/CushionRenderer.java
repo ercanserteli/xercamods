@@ -7,32 +7,42 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.state.BlockState;
 import xerca.xercacushion.entity.EntityCushion;
 
-public class CushionRenderer extends EntityRenderer<EntityCushion> {
+public class CushionRenderer extends EntityRenderer<EntityCushion, CushionRenderer.CushionRenderState> {
     public CushionRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 0.5F;
     }
 
     @Override
-    public void render(EntityCushion entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public CushionRenderState createRenderState() {
+        return new CushionRenderState();
+    }
+
+    @Override
+    public void extractRenderState(EntityCushion entity, CushionRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.blockState = entity.getVariantBlock().defaultBlockState();
+    }
+
+    @Override
+    public void render(CushionRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         poseStack.pushPose();
         poseStack.translate(0.0D, 0.5D, 0.0D);
         poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
         poseStack.translate(-0.5F, -0.5F, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-        dispatcher.renderSingleBlock(entity.getVariantBlock().defaultBlockState(), poseStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
+        dispatcher.renderSingleBlock(state.blockState, poseStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
-        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+        super.render(state, poseStack, buffer, packedLight);
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(EntityCushion entity) {
-        return InventoryMenu.BLOCK_ATLAS;
+    public static class CushionRenderState extends EntityRenderState {
+        private BlockState blockState = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
     }
 }

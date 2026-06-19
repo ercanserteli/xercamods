@@ -2,11 +2,31 @@ package xerca.xercacushion.item;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import xerca.xercacushion.Mod;
 import xerca.xercacushion.block.Blocks;
 
 public final class Items {
+    public static final String[] PATHS = {
+            "black_cushion",
+            "blue_cushion",
+            "brown_cushion",
+            "cyan_cushion",
+            "gray_cushion",
+            "green_cushion",
+            "light_blue_cushion",
+            "light_gray_cushion",
+            "lime_cushion",
+            "magenta_cushion",
+            "orange_cushion",
+            "pink_cushion",
+            "purple_cushion",
+            "red_cushion",
+            "white_cushion",
+            "yellow_cushion"
+    };
     public static final ItemCushion BLACK_CUSHION = create(Blocks.BLACK_CUSHION.getVariant());
     public static final ItemCushion BLUE_CUSHION = create(Blocks.BLUE_CUSHION.getVariant());
     public static final ItemCushion BROWN_CUSHION = create(Blocks.BROWN_CUSHION.getVariant());
@@ -43,30 +63,12 @@ public final class Items {
             YELLOW_CUSHION
     };
 
-    public static final String[] PATHS = {
-            "black_cushion",
-            "blue_cushion",
-            "brown_cushion",
-            "cyan_cushion",
-            "gray_cushion",
-            "green_cushion",
-            "light_blue_cushion",
-            "light_gray_cushion",
-            "lime_cushion",
-            "magenta_cushion",
-            "orange_cushion",
-            "pink_cushion",
-            "purple_cushion",
-            "red_cushion",
-            "white_cushion",
-            "yellow_cushion"
-    };
-
     private Items() {
     }
 
     private static ItemCushion create(int variant) {
-        return new ItemCushion(new Item.Properties(), variant);
+        String path = pathByVariant(variant);
+        return new ItemCushion(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Mod.id(path))), variant);
     }
 
     public static Item byVariant(int variant) {
