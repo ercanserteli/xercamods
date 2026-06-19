@@ -27,6 +27,7 @@ import xerca.xercacushion.block.Blocks;
 import xerca.xercacushion.item.Items;
 
 public class EntityCushion extends Entity {
+    private static final double PISTON_CLEARANCE = 0.01D;
     private static final EntityDataAccessor<Integer> DATA_VARIANT = SynchedEntityData.defineId(EntityCushion.class, EntityDataSerializers.INT);
 
     public EntityCushion(EntityType<? extends EntityCushion> type, Level level) {
@@ -74,6 +75,37 @@ public class EntityCushion extends Entity {
             supportTop = Math.max(supportTop, shape.bounds().maxY);
         }
         return supportTop > Double.NEGATIVE_INFINITY ? supportTop : entityBottom;
+    }
+
+    private static double removePistonClearance(double movement) {
+        if (movement > 0.0D) {
+            return Math.max(0.0D, movement - PISTON_CLEARANCE);
+        }
+        return Math.min(0.0D, movement + PISTON_CLEARANCE);
+    }
+
+    @Override
+    public void move(MoverType type, Vec3 movement) {
+        if (type == MoverType.PISTON) {
+            movement = new Vec3(
+                    removePistonClearance(movement.x),
+                    removePistonClearance(movement.y),
+                    removePistonClearance(movement.z)
+            );
+        }
+        double oldX = this.getX();
+        double oldY = this.getY();
+        double oldZ = this.getZ();
+        super.move(type, movement);
+
+        boolean moved = this.getX() != oldX || this.getY() != oldY || this.getZ() != oldZ;
+        if (moved && !this.isRemoved() && !this.level().isClientSide
+                && !this.level().getEntitiesOfClass(EntityCushion.class, this.getBoundingBox(),
+                cushion -> cushion != this && !cushion.isRemoved()).isEmpty()) {
+            this.discard();
+            this.markHurt();
+            this.onBroken(null);
+        }
     }
 
     @Override
