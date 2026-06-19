@@ -153,5 +153,7 @@
   "xercafood.ingredient.meat": "Doner",
   "xercafood.ingredient.fish": "Fiskur",
   "xercafood.ingredient.pepperoni": "Pepperoni",
-  "xercafood.ingredient.mushroom": "Sveppur"
+  "xercafood.ingredient.mushroom": "Sveppur",
+  "block.xercafood.apple_pie": "Eplabaka",
+  "block.xercafood.sweet_berry_pie": "Sætberjabaka"
 }

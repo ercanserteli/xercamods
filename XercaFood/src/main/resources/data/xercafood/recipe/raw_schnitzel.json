@@ -6,12 +6,8 @@
     " w "
   ],
   "key": {
-    "c": {
-      "item": "minecraft:chicken"
-    },
-    "w": {
-      "item": "minecraft:wheat"
-    }
+    "c": "minecraft:chicken",
+    "w": "minecraft:wheat"
   },
   "result": {
     "id": "xercafood:raw_schnitzel",

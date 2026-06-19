@@ -153,5 +153,7 @@
   "xercafood.ingredient.meat": "Doner",
   "xercafood.ingredient.fish": "Ryba",
   "xercafood.ingredient.pepperoni": "Pepperoni",
-  "xercafood.ingredient.mushroom": "Grzyb"
+  "xercafood.ingredient.mushroom": "Grzyb",
+  "block.xercafood.apple_pie": "Szarlotka",
+  "block.xercafood.sweet_berry_pie": "Ciasto ze słodkimi jagodami"
 }

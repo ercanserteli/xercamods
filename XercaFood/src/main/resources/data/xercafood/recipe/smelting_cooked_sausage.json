@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "xercafood:raw_sausage"
-  },
+  "ingredient": "xercafood:raw_sausage",
   "result": {
     "id": "xercafood:cooked_sausage"
   },

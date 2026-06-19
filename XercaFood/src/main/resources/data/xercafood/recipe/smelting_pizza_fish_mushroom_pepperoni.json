@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "xercafood:raw_pizza_fish_mushroom_pepperoni"
-  },
+  "ingredient": "xercafood:raw_pizza_fish_mushroom_pepperoni",
   "result": {
     "id": "xercafood:pizza_fish_mushroom_pepperoni"
   },

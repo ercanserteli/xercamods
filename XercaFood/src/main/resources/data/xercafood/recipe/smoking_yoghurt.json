@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smoking",
-  "ingredient": {
-    "item": "minecraft:milk_bucket"
-  },
+  "ingredient": "minecraft:milk_bucket",
   "result": {
     "id": "xercafood:yoghurt"
   },

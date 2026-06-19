@@ -6,15 +6,9 @@
     " s "
   ],
   "key": {
-    "s": {
-      "item": "minecraft:sugar"
-    },
-    "c": {
-      "item": "minecraft:cocoa_beans"
-    },
-    "m": {
-      "item": "minecraft:milk_bucket"
-    }
+    "s": "minecraft:sugar",
+    "c": "minecraft:cocoa_beans",
+    "m": "minecraft:milk_bucket"
   },
   "result": {
     "id": "xercafood:chocolate",

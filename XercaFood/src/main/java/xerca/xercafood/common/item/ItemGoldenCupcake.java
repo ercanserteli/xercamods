@@ -4,11 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
@@ -27,10 +23,8 @@ import java.util.List;
 import static xerca.xercafood.common.item.Foods.GOLDEN_CUPCAKE;
 
 public class ItemGoldenCupcake extends Item {
-    private final TargetingConditions yahooPredicate = TargetingConditions.forNonCombat().range(16.0D);
-
     public ItemGoldenCupcake() {
-        super(new Item.Properties().food(GOLDEN_CUPCAKE));
+        super(new Item.Properties().setId(xerca.xercafood.common.Mod.itemKey("golden_cupcake")).food(GOLDEN_CUPCAKE));
     }
 
     @Override
@@ -64,7 +58,7 @@ public class ItemGoldenCupcake extends Item {
         player.heal(10);
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 2));
 
-        LightningBolt lightningBoltEntity = EntityType.LIGHTNING_BOLT.create(world);
+        LightningBolt lightningBoltEntity = EntityType.LIGHTNING_BOLT.create(world, EntitySpawnReason.MOB_SUMMONED);
         if (lightningBoltEntity != null) {
             lightningBoltEntity.teleportTo(player.getX(), player.getY(), player.getZ());
             lightningBoltEntity.setVisualOnly(true);
@@ -105,7 +99,8 @@ public class ItemGoldenCupcake extends Item {
     }
 
     private void applyYahooJump(Level world, Player player) {
-        List<Player> targets = player.level().getNearbyPlayers(yahooPredicate, player, player.getBoundingBox().inflate(16.0D, 8.0D, 16.0D));
+        List<Player> targets = new ArrayList<>(player.level().getEntitiesOfClass(Player.class,
+                player.getBoundingBox().inflate(16.0D, 8.0D, 16.0D), p -> p != player && p.isAlive()));
         targets.add(player);
         for (Player target : targets) {
             world.playSound(null, target.getX(), target.getY() + 3, target.getZ(), SoundEvents.YAHOO, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.9F);
@@ -140,13 +135,13 @@ public class ItemGoldenCupcake extends Item {
                 Items.RAW_SAUSAGE, Items.COOKED_SAUSAGE, KnifeCompat.getKnifeItem(), Items.HOT_TEAPOT_1, Items.ROTTEN_BURGER
         };
 
-        Skeleton skeleton = EntityType.SKELETON.create(world);
+        Skeleton skeleton = EntityType.SKELETON.create(world, EntitySpawnReason.MOB_SUMMONED);
         if (skeleton != null) {
             equipMob(world, player, weapons, skeleton, new ItemStack(net.minecraft.world.item.Items.WITHER_SKELETON_SKULL));
             world.addFreshEntity(skeleton);
         }
 
-        Zombie zombie = EntityType.ZOMBIE.create(world);
+        Zombie zombie = EntityType.ZOMBIE.create(world, EntitySpawnReason.MOB_SUMMONED);
         if (zombie != null) {
             equipMob(world, player, weapons, zombie, new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD));
             world.addFreshEntity(zombie);

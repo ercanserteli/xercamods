@@ -6,18 +6,10 @@
     " b "
   ],
   "key": {
-    "b": {
-      "item": "xercafood:bun"
-    },
-    "t": {
-      "item": "xercafood:tomato_slices"
-    },
-    "d": {
-      "item": "xercafood:doner_slice"
-    },
-    "p": {
-      "item": "xercafood:potato_fries"
-    }
+    "b": "xercafood:bun",
+    "t": "xercafood:tomato_slices",
+    "d": "xercafood:doner_slice",
+    "p": "xercafood:potato_fries"
   },
   "result": {
     "id": "xercafood:chubby_doner"

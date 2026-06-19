@@ -84,7 +84,7 @@ public class RecipeGameTests {
 
         CraftingInput grid = craftingGrid(2, 1, firstKnife, secondKnife);
         Optional<RecipeHolder<CraftingRecipe>> recipe = helper.getLevel()
-                .getRecipeManager()
+                .recipeAccess()
                 .getRecipeFor(RecipeType.CRAFTING, grid, helper.getLevel());
 
         helper.assertTrue(recipe.isEmpty(), "Expected damaged knives to have no crafting repair recipe");

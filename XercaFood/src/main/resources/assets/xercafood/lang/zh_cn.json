@@ -23,7 +23,6 @@
   "item.xercafood.riceball": "饭团",
   "item.xercafood.sushi": "牧寿司",
   "item.xercafood.cooked_rice": "米饭",
-
   "item.xercafood.apple_cupcake": "苹果杯子蛋糕",
   "item.xercafood.pumpkin_cupcake": "南瓜杯子蛋糕",
   "item.xercafood.cocoa_cupcake": "可可豆杯子蛋糕",
@@ -39,7 +38,6 @@
   "item.xercafood.donut": "甜甜圈",
   "item.xercafood.fancy_donut": "糖屑甜甜圈",
   "item.xercafood.sprinkles": "糖屑",
-
   "item.xercafood.bun": "小圆面包",
   "item.xercafood.raw_patty": "生牛肉饼",
   "item.xercafood.cooked_patty": "熟牛肉饼",
@@ -53,14 +51,12 @@
   "item.xercafood.ultimate_burger": "巨无霸",
   "item.xercafood.rotten_burger": "腐肉汉堡",
   "item.xercafood.cheeseburger": "芝士堡",
-
   "item.xercafood.raw_sausage": "生香肠",
   "item.xercafood.cooked_sausage": "熟香肠",
   "item.xercafood.hotdog": "热狗",
   "item.xercafood.fish_bread": "鳕鱼三明治",
   "item.xercafood.daisy_sandwich": "滨菊三明治",
   "item.xercafood.chicken_wrap": "鸡肉卷",
-
   "item.xercafood.raw_schnitzel": "生肉排",
   "item.xercafood.cooked_schnitzel": "熟肉排",
   "item.xercafood.fried_egg": "荷包蛋",
@@ -71,7 +67,6 @@
   "item.xercafood.tomato_slices": "番茄片",
   "item.xercafood.squid_ink_paella": "鱿鱼墨汁饭",
   "item.xercafood.glow_squid_ink_paella": "发光鱿鱼墨汁饭",
-
   "item.xercafood.cola_powder": "可乐秘方",
   "item.xercafood.cola_extract": "可乐原浆",
   "item.xercafood.cola": "可乐",
@@ -86,7 +81,6 @@
   "item.xercafood.tomato_juice": "番茄汁",
   "item.xercafood.wheat_juice": "啤酒",
   "item.xercafood.glass_of_milk": "牛奶杯",
-
   "item.xercafood.knife": "匕首",
   "item.xercafood.glass": "玻璃杯",
   "item.xercafood.tomato": "番茄",
@@ -121,7 +115,6 @@
   "item.xercafood.hot_teapot_6": "烫茶壶",
   "item.xercafood.hot_teapot_7": "烫茶壶",
   "item.xercafood.teacup": "茶杯",
-
   "block.xercafood.block_tomato_plant": "番茄种子",
   "block.xercafood.block_rice_plant": "米饭",
   "block.xercafood.block_tea_plant": "茶籽",
@@ -131,11 +124,8 @@
   "block.xercafood.block_sweet_berry_pie": "甜浆果派",
   "block.xercafood.vat": "炼乳缸",
   "block.xercafood.cheese_wheel": "奶酪轮",
-
   "itemGroup.xercafood.tea_tab": "茶",
-
   "xercafood.empty_teapot_tooltip": "倒入干茶叶和水，放进熔炼里煮成茶",
-
   "xercafood.pizza": "披萨",
   "xercafood.pizza_plain": "玛格丽特披萨",
   "xercafood.pizza_raw": "没烤熟的披萨",
@@ -144,5 +134,7 @@
   "xercafood.ingredient.meat": "烤肉",
   "xercafood.ingredient.fish": "鱼肉",
   "xercafood.ingredient.pepperoni": "意大利辣香肠",
-  "xercafood.ingredient.mushroom": "蘑菇"
+  "xercafood.ingredient.mushroom": "蘑菇",
+  "block.xercafood.apple_pie": "苹果派",
+  "block.xercafood.sweet_berry_pie": "甜浆果派"
 }

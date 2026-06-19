@@ -6,18 +6,10 @@
     " b "
   ],
   "key": {
-    "b": {
-      "item": "xercafood:bun"
-    },
-    "d": {
-      "item": "xercafood:tomato_slices"
-    },
-    "h": {
-      "item": "xercafood:cooked_patty"
-    },
-    "c": {
-      "item": "xercafood:cheese_slice"
-    }
+    "b": "xercafood:bun",
+    "d": "xercafood:tomato_slices",
+    "h": "xercafood:cooked_patty",
+    "c": "xercafood:cheese_slice"
   },
   "result": {
     "id": "xercafood:cheeseburger"

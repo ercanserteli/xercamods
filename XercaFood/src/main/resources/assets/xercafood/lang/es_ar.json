@@ -23,7 +23,6 @@
   "item.xercafood.riceball": "Bolita de Arroz",
   "item.xercafood.sushi": "Sushi Maki",
   "item.xercafood.cooked_rice": "Arroz Cocido",
-
   "item.xercafood.apple_cupcake": "Cupcake de Manzana",
   "item.xercafood.pumpkin_cupcake": "Cupcake de Calabaza",
   "item.xercafood.cocoa_cupcake": "Cupcake de Cacao",
@@ -39,7 +38,6 @@
   "item.xercafood.donut": "Dona",
   "item.xercafood.fancy_donut": "Dona Elegante",
   "item.xercafood.sprinkles": "Granitos de Azúcar",
-
   "item.xercafood.bun": "Pan de Hamburguesa",
   "item.xercafood.raw_patty": "Medallón Crudo",
   "item.xercafood.cooked_patty": "Medallón Cocido",
@@ -53,14 +51,12 @@
   "item.xercafood.ultimate_burger": "Hamburguesa Definitiva",
   "item.xercafood.rotten_burger": "Hamburguesa Podrida",
   "item.xercafood.cheeseburger": "Hamburguesa con Queso",
-
   "item.xercafood.raw_sausage": "Salchicha Cruda",
   "item.xercafood.cooked_sausage": "Salchicha Cocida",
   "item.xercafood.hotdog": "Hotdog",
   "item.xercafood.fish_bread": "Pan de Pescado",
   "item.xercafood.daisy_sandwich": "Sándwich de Margarita",
   "item.xercafood.chicken_wrap": "Wrap de Pollo",
-
   "item.xercafood.raw_schnitzel": "Schnitzel Crudo",
   "item.xercafood.cooked_schnitzel": "Schnitzel Cocido",
   "item.xercafood.fried_egg": "Huevo Frito",
@@ -71,7 +67,6 @@
   "item.xercafood.tomato_slices": "Rebanadas de Jitomate",
   "item.xercafood.squid_ink_paella": "Paella de Tinta de Calamar",
   "item.xercafood.glow_squid_ink_paella": "Paella de Tinta de Calamar Luminoso",
-
   "item.xercafood.cola_powder": "Fórmula Secreta de Cola",
   "item.xercafood.cola_extract": "Extracto de Cola",
   "item.minecraft.potion.effect.cola_extract": "Extracto de Cola",
@@ -89,7 +84,6 @@
   "item.xercafood.tomato_juice": "Jugo de Jitomate",
   "item.xercafood.wheat_juice": "Cerveza",
   "item.xercafood.glass_of_milk": "Vaso de Leche",
-
   "item.xercafood.knife": "Cuchillo",
   "item.xercafood.glass": "Vaso",
   "item.xercafood.tomato": "Jitomate",
@@ -124,7 +118,6 @@
   "item.xercafood.hot_teapot_6": "Tetera Caliente",
   "item.xercafood.hot_teapot_7": "Tetera Caliente",
   "item.xercafood.teacup": "Taza de Té",
-
   "block.xercafood.block_tomato_plant": "Semillas de Jitomate",
   "block.xercafood.block_rice_plant": "Arroz",
   "block.xercafood.block_tea_plant": "Semillas de Té",
@@ -134,11 +127,9 @@
   "block.xercafood.block_sweet_berry_pie": "Pay de Mora Dulce",
   "block.xercafood.vat": "Tina de Cuajado",
   "block.xercafood.cheese_wheel": "Rueda de Queso",
-
   "itemGroup.xercafood.tea_tab": "Té",
   "tag.item.xercafood.hot_teapot": "Teteras Calientes",
   "tag.item.c.tools.knife": "Cuchillos",
-
   "advancements.xercafood.achievements.root.title": "xercafood",
   "advancements.xercafood.achievements.root.description": "Los únicos logros que importan",
   "advancements.xercafood.achievements.cupcake.title": "El Cupcake del Caos",
@@ -153,9 +144,7 @@
   "advancements.xercafood.achievements.diabetes.description": "Arruina una bebida perfectamente buena para tus deseos cuestionables",
   "advancements.xercafood.achievements.diabetes2.title": "Diabetes tipo 99",
   "advancements.xercafood.achievements.diabetes2.description": "Desarrolla resistencia a la insulina a niveles que nunca creíste posibles",
-
   "xercafood.empty_teapot_tooltip": "Llena con hojas de té secas y agua, luego cocínalo para hacer té",
-
   "xercafood.pizza": "Pizza",
   "xercafood.pizza_plain": "Pizza Margarita",
   "xercafood.pizza_raw": "Pizza Cruda",
@@ -164,5 +153,7 @@
   "xercafood.ingredient.meat": "Doner",
   "xercafood.ingredient.fish": "Pescado",
   "xercafood.ingredient.pepperoni": "Pepperoni",
-  "xercafood.ingredient.mushroom": "Hongo"
+  "xercafood.ingredient.mushroom": "Hongo",
+  "block.xercafood.apple_pie": "Pay de Manzana",
+  "block.xercafood.sweet_berry_pie": "Pay de Mora Dulce"
 }

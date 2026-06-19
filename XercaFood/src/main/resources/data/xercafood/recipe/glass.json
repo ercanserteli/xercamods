@@ -5,9 +5,7 @@
     " c "
   ],
   "key": {
-    "c": {
-      "item": "minecraft:glass_pane"
-    }
+    "c": "minecraft:glass_pane"
   },
   "result": {
     "id": "xercafood:glass",

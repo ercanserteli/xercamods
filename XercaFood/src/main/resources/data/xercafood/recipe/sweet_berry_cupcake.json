@@ -7,21 +7,11 @@
     "www"
   ],
   "key": {
-    "a": {
-      "item": "minecraft:sweet_berries"
-    },
-    "s": {
-      "item": "minecraft:sugar"
-    },
-    "e": {
-      "item": "minecraft:egg"
-    },
-    "w": {
-      "item": "minecraft:wheat"
-    },
-    "m": {
-      "item": "minecraft:milk_bucket"
-    }
+    "a": "minecraft:sweet_berries",
+    "s": "minecraft:sugar",
+    "e": "minecraft:egg",
+    "w": "minecraft:wheat",
+    "m": "minecraft:milk_bucket"
   },
   "result": {
     "id": "xercafood:sweet_berry_cupcake",

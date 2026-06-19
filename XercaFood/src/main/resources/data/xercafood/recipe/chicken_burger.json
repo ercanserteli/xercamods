@@ -6,15 +6,9 @@
     " b "
   ],
   "key": {
-    "b": {
-      "item": "xercafood:bun"
-    },
-    "c": {
-      "item": "xercafood:cooked_chicken_patty"
-    },
-    "d": {
-      "item": "xercafood:tomato_slices"
-    }
+    "b": "xercafood:bun",
+    "c": "xercafood:cooked_chicken_patty",
+    "d": "xercafood:tomato_slices"
   },
   "result": {
     "id": "xercafood:chicken_burger"

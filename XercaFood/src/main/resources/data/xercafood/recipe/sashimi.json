@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "tag": "c:tools/knife"
-    },
-    {
-      "item": "minecraft:salmon"
-    }
+    "#c:tools/knife",
+    "minecraft:salmon"
   ],
   "result": {
     "count": 2,

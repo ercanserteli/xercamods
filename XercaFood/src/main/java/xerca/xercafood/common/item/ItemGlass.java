@@ -13,7 +13,7 @@ import xerca.xercafood.common.SoundEvents;
 
 public class ItemGlass extends Item {
     public ItemGlass() {
-        super((new Item.Properties()));
+        super(new Item.Properties().setId(xerca.xercafood.common.Mod.itemKey("glass")));
     }
 
     @Override

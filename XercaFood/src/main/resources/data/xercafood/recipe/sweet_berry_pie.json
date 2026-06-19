@@ -6,21 +6,11 @@
     "CCC"
   ],
   "key": {
-    "A": {
-      "item": "minecraft:sweet_berries"
-    },
-    "B": {
-      "item": "minecraft:sugar"
-    },
-    "C": {
-      "item": "minecraft:wheat"
-    },
-    "D": {
-      "item": "minecraft:milk_bucket"
-    },
-    "E": {
-      "item": "minecraft:egg"
-    }
+    "A": "minecraft:sweet_berries",
+    "B": "minecraft:sugar",
+    "C": "minecraft:wheat",
+    "D": "minecraft:milk_bucket",
+    "E": "minecraft:egg"
   },
   "result": {
     "id": "xercafood:sweet_berry_pie"

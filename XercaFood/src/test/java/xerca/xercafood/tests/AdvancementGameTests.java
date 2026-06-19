@@ -3,7 +3,6 @@ package xerca.xercafood.tests;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +31,8 @@ public class AdvancementGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
     public static void recipeAdvancementUnlocksTomatoSlicingRecipe(GameTestHelper helper) {
         ServerPlayer player = makeServerPlayer(helper);
-        ResourceLocation tomatoSlicesRecipeId = recipeId("tomato_slices");
+        net.minecraft.resources.ResourceKey<net.minecraft.world.item.crafting.Recipe<?>> tomatoSlicesRecipeId =
+                net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, recipeId("tomato_slices"));
         AdvancementHolder advancement = requireAdvancement(helper, advancementId("recipes/tomato_slices"));
 
         helper.assertFalse(advancementProgress(player, advancement).isDone(), "Expected tomato slices recipe advancement to start locked");

@@ -6,14 +6,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -37,7 +37,7 @@ import java.util.List;
 
 public class BlockTeapot extends Block {
     public static final IntegerProperty TEA_AMOUNT = IntegerProperty.create("tea", 0, 7);
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     private static final VoxelShape centerShape = box(4.0D, 0.0D, 4.0D, 12.0D, 10.0D, 12.0D);
     private static final VoxelShape topShape = box(7.0D, 10.0D, 7.0D, 9.0D, 11.0D, 9.0D);
@@ -52,7 +52,7 @@ public class BlockTeapot extends Block {
             box(2.0D, 3.0D, 7.0D, 4.0D, 9.0D, 9.0D)), box(12.0D, 8.0D, 7.0D, 13.0D, 9.0D, 9.0D));
 
     public BlockTeapot() {
-        super(Properties.of().strength(0.0F, 1.0F).sound(SoundType.STONE));
+        super(Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_teapot")).strength(0.0F, 1.0F).sound(SoundType.STONE));
         this.registerDefaultState(this.stateDefinition.any().setValue(TEA_AMOUNT, 0).setValue(FACING, Direction.NORTH));
     }
 
@@ -83,7 +83,7 @@ public class BlockTeapot extends Block {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (heldItem.getItem() == Items.TEACUP && state.getValue(TEA_AMOUNT) > 0) {
             if (!worldIn.isClientSide) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
@@ -91,9 +91,9 @@ public class BlockTeapot extends Block {
                 player.addItem(new ItemStack(Items.FULL_TEACUP_0));
                 worldIn.setBlockAndUpdate(pos, state.setValue(TEA_AMOUNT, state.getValue(TEA_AMOUNT) - 1));
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
@@ -115,8 +115,8 @@ public class BlockTeapot extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState state1, LevelAccessor world, BlockPos blockPos, BlockPos blockPos1) {
-        return direction == Direction.DOWN && !state.canSurvive(world, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state1, world, blockPos, blockPos1);
+    protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess tickAccess, BlockPos blockPos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        return direction == Direction.DOWN && !state.canSurvive(world, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, world, tickAccess, blockPos, direction, neighborPos, neighborState, random);
     }
 
     @Override

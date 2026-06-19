@@ -23,7 +23,6 @@
   "item.xercafood.riceball": "Risboll",
   "item.xercafood.sushi": "Makisushi",
   "item.xercafood.cooked_rice": "Kokt ris",
-
   "item.xercafood.apple_cupcake": "Äppelmuffin",
   "item.xercafood.pumpkin_cupcake": "Pumpamuffin",
   "item.xercafood.cocoa_cupcake": "Kakaomuffin",
@@ -39,7 +38,6 @@
   "item.xercafood.donut": "Munk",
   "item.xercafood.fancy_donut": "Lyxig munk",
   "item.xercafood.sprinkles": "Strössel",
-
   "item.xercafood.bun": "Hamburgerbröd",
   "item.xercafood.raw_patty": "Rå hamburgerbiff",
   "item.xercafood.cooked_patty": "Stekt hamburgerbiff",
@@ -53,14 +51,12 @@
   "item.xercafood.ultimate_burger": "Ultimata burgare",
   "item.xercafood.rotten_burger": "Rutten burgare",
   "item.xercafood.cheeseburger": "Ostburgare",
-
   "item.xercafood.raw_sausage": "Rå korv",
   "item.xercafood.cooked_sausage": "Stekt korv",
   "item.xercafood.hotdog": "Varmkorv",
   "item.xercafood.fish_bread": "Fiskbröd",
   "item.xercafood.daisy_sandwich": "Prästkragesmörgås",
   "item.xercafood.chicken_wrap": "Kycklingwrap",
-
   "item.xercafood.raw_schnitzel": "Rå schnitzel",
   "item.xercafood.cooked_schnitzel": "Stekt schnitzel",
   "item.xercafood.fried_egg": "Stekt ägg",
@@ -71,7 +67,6 @@
   "item.xercafood.tomato_slices": "Tomatskivor",
   "item.xercafood.squid_ink_paella": "Bläckfiskspaella",
   "item.xercafood.glow_squid_ink_paella": "Lysande bläckfiskspaella",
-
   "item.xercafood.cola_powder": "Hemlig colaformel",
   "item.xercafood.cola_extract": "Colaextrakt",
   "item.minecraft.potion.effect.cola_extract": "Colaextrakt",
@@ -89,7 +84,6 @@
   "item.xercafood.tomato_juice": "Tomatjuice",
   "item.xercafood.wheat_juice": "Öl",
   "item.xercafood.glass_of_milk": "Glas mjölk",
-
   "item.xercafood.knife": "Kniv",
   "item.xercafood.glass": "Glas",
   "item.xercafood.tomato": "Tomat",
@@ -124,7 +118,6 @@
   "item.xercafood.hot_teapot_6": "Het tekanna",
   "item.xercafood.hot_teapot_7": "Het tekanna",
   "item.xercafood.teacup": "Tekopp",
-
   "block.xercafood.block_tomato_plant": "Tomatfrön",
   "block.xercafood.block_rice_plant": "Ris",
   "block.xercafood.block_tea_plant": "Tefrön",
@@ -134,11 +127,9 @@
   "block.xercafood.block_sweet_berry_pie": "Söt bärpaj",
   "block.xercafood.vat": "Ostningskaret",
   "block.xercafood.cheese_wheel": "Osthuvud",
-
   "itemGroup.xercafood.tea_tab": "Te",
   "tag.item.xercafood.hot_teapot": "Heta tekannor",
   "tag.item.c.tools.knife": "Knivar",
-
   "advancements.xercafood.achievements.root.title": "xercafood",
   "advancements.xercafood.achievements.root.description": "De enda framstegen som spelar roll",
   "advancements.xercafood.achievements.cupcake.title": "Kaosens muffin",
@@ -153,9 +144,7 @@
   "advancements.xercafood.achievements.diabetes.description": "Förstör en perfekt god dryck för dina tvivelaktiga begär",
   "advancements.xercafood.achievements.diabetes2.title": "Typ 99-diabetes",
   "advancements.xercafood.achievements.diabetes2.description": "Bygg upp din insulinresistens till nivåer du aldrig visste var möjliga",
-
   "xercafood.empty_teapot_tooltip": "Fyll med torkade teblad och vatten, koka sedan för att göra te",
-
   "xercafood.pizza": "Pizza",
   "xercafood.pizza_plain": "Pizza Margherita",
   "xercafood.pizza_raw": "Rå pizza",
@@ -164,5 +153,7 @@
   "xercafood.ingredient.meat": "Döner",
   "xercafood.ingredient.fish": "Fisk",
   "xercafood.ingredient.pepperoni": "Pepperoni",
-  "xercafood.ingredient.mushroom": "Svamp"
+  "xercafood.ingredient.mushroom": "Svamp",
+  "block.xercafood.apple_pie": "Äppelpaj",
+  "block.xercafood.sweet_berry_pie": "Söt bärpaj"
 }

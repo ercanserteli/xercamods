@@ -1,8 +1,6 @@
 {
   "type": "minecraft:campfire_cooking",
-  "ingredient": {
-    "item": "xercafood:rice_seeds"
-  },
+  "ingredient": "xercafood:rice_seeds",
   "result": {
     "id": "xercafood:cooked_rice"
   },

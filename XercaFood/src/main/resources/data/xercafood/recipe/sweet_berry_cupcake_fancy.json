@@ -6,12 +6,8 @@
     "c"
   ],
   "key": {
-    "s": {
-      "item": "xercafood:sprinkles"
-    },
-    "c": {
-      "item": "xercafood:sweet_berry_cupcake"
-    }
+    "s": "xercafood:sprinkles",
+    "c": "xercafood:sweet_berry_cupcake"
   },
   "result": {
     "id": "xercafood:sweet_berry_cupcake_fancy"

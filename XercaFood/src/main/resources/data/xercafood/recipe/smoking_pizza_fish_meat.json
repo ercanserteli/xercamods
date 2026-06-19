@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smoking",
-  "ingredient": {
-    "item": "xercafood:raw_pizza_fish_meat"
-  },
+  "ingredient": "xercafood:raw_pizza_fish_meat",
   "result": {
     "id": "xercafood:pizza_fish_meat"
   },

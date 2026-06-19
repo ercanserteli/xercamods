@@ -4,12 +4,15 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
 import org.jetbrains.annotations.Nullable;
@@ -31,13 +34,13 @@ public final class Items {
     public static final @Nullable Item KNIFE = REGISTER_LOCAL_KNIFE ? new ItemKnife() : null;
     public static final Item GLASS = new ItemGlass();
     public static final Item ENDER_CUPCAKE = new ItemEnderCupcake();
-    public static final Item COLA_EXTRACT = new Item(new Item.Properties().craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE));
-    public static final Item COLA_POWDER = new Item(new Item.Properties());
+    public static final Item COLA_EXTRACT = new Item(properties("cola_extract").craftRemainder(net.minecraft.world.item.Items.GLASS_BOTTLE));
+    public static final Item COLA_POWDER = new Item(properties("cola_powder"));
     public static final Item ULTIMATE_BURGER = new ItemUltimateBurger();
-    public static final Item GLASS_OF_WATER = new ItemGlassOfWater(new Item.Properties().food(Foods.GLASS_OF_WATER), GLASS);
-    public static final Item APPLE_PIE = new BlockItem(Blocks.BLOCK_APPLE_PIE, new Item.Properties());
-    public static final Item SWEET_BERRY_PIE = new BlockItem(Blocks.BLOCK_SWEET_BERRY_PIE, new Item.Properties());
-    public static final Item TEACUP = new ItemTea(new Item.Properties());
+    public static final Item GLASS_OF_WATER = new ItemGlassOfWater(properties("glass_of_water").food(Foods.GLASS_OF_WATER, Foods.DRINK), GLASS);
+    public static final Item APPLE_PIE = new BlockItem(Blocks.BLOCK_APPLE_PIE, blockProperties("apple_pie"));
+    public static final Item SWEET_BERRY_PIE = new BlockItem(Blocks.BLOCK_SWEET_BERRY_PIE, blockProperties("sweet_berry_pie"));
+    public static final Item TEACUP = new ItemTea(properties("teacup"));
     public static final ItemTeacup FULL_TEACUP_0 = new ItemTeacup(0, TEACUP);
     public static final ItemTeacup FULL_TEACUP_1 = new ItemTeacup(1, TEACUP);
     public static final ItemTeacup FULL_TEACUP_2 = new ItemTeacup(2, TEACUP);
@@ -61,93 +64,93 @@ public final class Items {
     public static final ItemTeapot HOT_TEAPOT_5 = new ItemTeapot(Blocks.BLOCK_TEAPOT, 5, true);
     public static final ItemTeapot HOT_TEAPOT_6 = new ItemTeapot(Blocks.BLOCK_TEAPOT, 6, true);
     public static final ItemTeapot HOT_TEAPOT_7 = new ItemTeapot(Blocks.BLOCK_TEAPOT, 7, true);
-    public static final ItemEmptyTeapot TEAPOT = new ItemEmptyTeapot(new Item.Properties());
-    public static final Item TEA_SEEDS = new BlockItem(Blocks.BLOCK_TEA_PLANT, new Item.Properties());
-    public static final Item TEA_DRIED = new ItemTea(new Item.Properties());
-    public static final Item TEA_LEAF = new ItemTea(new Item.Properties());
+    public static final ItemEmptyTeapot TEAPOT = new ItemEmptyTeapot(properties("teapot"));
+    public static final Item TEA_SEEDS = new BlockItem(Blocks.BLOCK_TEA_PLANT, properties("tea_seeds"));
+    public static final Item TEA_DRIED = new ItemTea(properties("tea_dried"));
+    public static final Item TEA_LEAF = new ItemTea(properties("tea_leaf"));
     public static final ItemGoldenCupcake GOLDEN_CUPCAKE = new ItemGoldenCupcake();
     public static final ItemTomato TOMATO = new ItemTomato();
-    public static final Item TOMATO_SEEDS = new BlockItem(Blocks.BLOCK_TOMATO_PLANT, new Item.Properties());
-    public static final Item RICE_SEEDS = new BlockItem(Blocks.BLOCK_RICE_PLANT, new Item.Properties());
-    public static final Item VAT = new BlockItem(Blocks.VAT, new Item.Properties());
-    public static final Item CHEESE_WHEEL = new BlockItem(Blocks.CHEESE_WHEEL, new Item.Properties());
-    public static final Item APPLE_CUPCAKE = makeFoodItem(Foods.APPLE_CUPCAKE);
-    public static final Item PUMPKIN_CUPCAKE = makeFoodItem(Foods.PUMPKIN_CUPCAKE);
-    public static final Item COCOA_CUPCAKE = makeFoodItem(Foods.COCOA_CUPCAKE);
-    public static final Item MELON_CUPCAKE = makeFoodItem(Foods.MELON_CUPCAKE);
-    public static final Item CARROT_CUPCAKE = makeFoodItem(Foods.CARROT_CUPCAKE);
-    public static final Item FANCY_APPLE_CUPCAKE = makeFoodItem(Foods.FANCY_APPLE_CUPCAKE);
-    public static final Item FANCY_PUMPKIN_CUPCAKE = makeFoodItem(Foods.FANCY_PUMPKIN_CUPCAKE);
-    public static final Item GLOWBERRY_CUPCAKE = makeFoodItem(Foods.GLOWBERRY_CUPCAKE);
-    public static final Item DONUT = makeFoodItem(Foods.DONUT);
-    public static final Item FANCY_DONUT = makeFoodItem(Foods.FANCY_DONUT);
-    public static final Item SPRINKLES = makeFoodItem(Foods.SPRINKLES);
-    public static final Item CHOCOLATE = makeFoodItem(Foods.CHOCOLATE);
-    public static final Item BUN = makeFoodItem(Foods.BUN);
-    public static final Item RAW_PATTY = makeFoodItem(Foods.RAW_PATTY);
-    public static final Item COOKED_PATTY = makeFoodItem(Foods.COOKED_PATTY);
-    public static final Item RAW_CHICKEN_PATTY = makeFoodItem(Foods.RAW_CHICKEN_PATTY);
-    public static final Item COOKED_CHICKEN_PATTY = makeFoodItem(Foods.COOKED_CHICKEN_PATTY);
-    public static final Item HAMBURGER = makeFoodItem(Foods.HAMBURGER);
-    public static final Item CHICKEN_BURGER = makeFoodItem(Foods.CHICKEN_BURGER);
-    public static final Item MUSHROOM_BURGER = makeFoodItem(Foods.MUSHROOM_BURGER);
-    public static final Item ULTIMATE_BOTTOM = makeFoodItem(Foods.ULTIMATE_BOTTOM);
-    public static final Item ULTIMATE_TOP = makeFoodItem(Foods.ULTIMATE_TOP);
-    public static final Item CHEESEBURGER = makeFoodItem(Foods.CHEESEBURGER);
-    public static final Item ROTTEN_BURGER = makeFoodItem(Foods.ROTTEN_BURGER);
-    public static final Item RAW_SAUSAGE = makeFoodItem(Foods.RAW_SAUSAGE);
-    public static final Item COOKED_SAUSAGE = makeFoodItem(Foods.COOKED_SAUSAGE);
-    public static final Item HOTDOG = makeFoodItem(Foods.HOTDOG);
-    public static final Item FISH_BREAD = makeFoodItem(Foods.FISH_BREAD);
-    public static final Item DAISY_SANDWICH = makeFoodItem(Foods.DAISY_SANDWICH);
-    public static final Item CHICKEN_WRAP = makeFoodItem(Foods.CHICKEN_WRAP);
-    public static final Item RAW_SCHNITZEL = makeFoodItem(Foods.RAW_SCHNITZEL);
-    public static final Item COOKED_SCHNITZEL = makeFoodItem(Foods.COOKED_SCHNITZEL);
-    public static final Item FRIED_EGG = makeFoodItem(Foods.FRIED_EGG);
-    public static final Item CROISSANT = makeFoodItem(Foods.CROISSANT);
-    public static final Item POTATO_SLICES = makeFoodItem(Foods.POTATO_SLICES);
-    public static final Item POTATO_FRIES = makeFoodItem(Foods.POTATO_FRIES);
-    public static final Item SHISH_KEBAB = makeFoodItem(Foods.SHISH_KEBAB);
-    public static final Item TOMATO_SLICES = makeFoodItem(Foods.TOMATO_SLICES);
-    public static final Item ICE_TEA = makeDrinkItem(Foods.ICE_TEA, GLASS);
-    public static final Item APPLE_JUICE = makeDrinkItem(Foods.APPLE_JUICE, GLASS);
-    public static final Item CARROT_JUICE = makeDrinkItem(Foods.CARROT_JUICE, GLASS);
-    public static final Item MELON_JUICE = makeDrinkItem(Foods.MELON_JUICE, GLASS);
-    public static final Item PUMPKIN_JUICE = makeDrinkItem(Foods.PUMPKIN_JUICE, GLASS);
-    public static final Item TOMATO_JUICE = makeDrinkItem(Foods.TOMATO_JUICE, GLASS);
-    public static final Item WHEAT_JUICE = makeDrinkItem(Foods.WHEAT_JUICE, GLASS);
-    public static final Item GLASS_OF_MILK = makeDrinkItem(Foods.GLASS_OF_MILK, GLASS);
-    public static final Item SWEET_BERRY_JUICE = makeDrinkItem(Foods.SWEET_BERRY_JUICE, GLASS);
-    public static final Item AYRAN = makeDrinkItem(Foods.AYRAN, GLASS);
-    public static final Item SAKE = makeDrinkItem(Foods.SAKE, GLASS);
-    public static final Item CARBONATED_WATER = makeDrinkItem(Foods.CARBONATED_WATER, GLASS);
-    public static final Item SODA = makeDrinkItem(Foods.SODA, GLASS);
-    public static final Item COLA = makeDrinkItem(Foods.COLA, GLASS);
-    public static final Item OYAKODON = makeContainedFoodItem(Foods.OYAKODON, net.minecraft.world.item.Items.BOWL, 16);
-    public static final Item BEEF_DONBURI = makeContainedFoodItem(Foods.BEEF_DONBURI, net.minecraft.world.item.Items.BOWL, 16);
-    public static final Item EGG_SUSHI = makeFoodItem(Foods.EGG_SUSHI);
-    public static final Item NIGIRI_SUSHI = makeFoodItem(Foods.NIGIRI_SUSHI);
-    public static final Item OMURICE = makeFoodItem(Foods.OMURICE);
-    public static final Item RICEBALL = makeFoodItem(Foods.RICEBALL);
-    public static final Item SUSHI = makeFoodItem(Foods.SUSHI);
-    public static final Item COOKED_RICE = makeFoodItem(Foods.COOKED_RICE);
-    public static final Item SASHIMI = makeFoodItem(Foods.SASHIMI);
-    public static final Item RICE_PUDDING = makeContainedFoodItem(Foods.RICE_PUDDING, net.minecraft.world.item.Items.BOWL, 16);
-    public static final Item BAKED_RICE_PUDDING = makeContainedFoodItem(Foods.BAKED_RICE_PUDDING, net.minecraft.world.item.Items.BOWL, 16);
-    public static final Item SWEET_BERRY_CUPCAKE_FANCY = makeFoodItem(Foods.SWEET_BERRY_CUPCAKE_FANCY);
-    public static final Item SWEET_BERRY_CUPCAKE = makeFoodItem(Foods.SWEET_BERRY_CUPCAKE);
-    public static final Item DONER_SLICE = makeFoodItem(Foods.DONER_SLICE);
-    public static final Item YOGHURT = makeContainedFoodItem(Foods.YOGHURT, net.minecraft.world.item.Items.BUCKET, 16);
-    public static final Item HONEYBERRY_YOGHURT = makeContainedFoodItem(Foods.HONEYBERRY_YOGHURT, net.minecraft.world.item.Items.BOWL, 16);
-    public static final Item HONEY_CUPCAKE = makeFoodItem(Foods.HONEY_CUPCAKE);
-    public static final Item DONER_WRAP = makeFoodItem(Foods.DONER_WRAP);
-    public static final Item CHUBBY_DONER = makeFoodItem(Foods.CHUBBY_DONER);
-    public static final Item ALEXANDER = makeContainedFoodItem(Foods.ALEXANDER, net.minecraft.world.item.Items.BOWL, 16);
-    public static final Item RAW_SHISH_KEBAB = makeFoodItem(Foods.RAW_SHISH_KEBAB);
-    public static final Item CHEESE_SLICE = makeFoodItem(Foods.CHEESE_SLICE);
-    public static final Item CHEESE_TOAST = makeFoodItem(Foods.CHEESE_TOAST);
-    public static final Item SQUID_INK_PAELLA = makeContainedFoodItem(Foods.SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16);
-    public static final Item GLOW_SQUID_INK_PAELLA = makeContainedFoodItem(Foods.GLOW_SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16);
+    public static final Item TOMATO_SEEDS = new BlockItem(Blocks.BLOCK_TOMATO_PLANT, properties("tomato_seeds"));
+    public static final Item RICE_SEEDS = new BlockItem(Blocks.BLOCK_RICE_PLANT, properties("rice_seeds"));
+    public static final Item VAT = new BlockItem(Blocks.VAT, blockProperties("vat"));
+    public static final Item CHEESE_WHEEL = new BlockItem(Blocks.CHEESE_WHEEL, blockProperties("cheese_wheel"));
+    public static final Item APPLE_CUPCAKE = makeFoodItem("apple_cupcake", Foods.APPLE_CUPCAKE);
+    public static final Item PUMPKIN_CUPCAKE = makeFoodItem("pumpkin_cupcake", Foods.PUMPKIN_CUPCAKE);
+    public static final Item COCOA_CUPCAKE = makeFoodItem("cocoa_cupcake", Foods.COCOA_CUPCAKE);
+    public static final Item MELON_CUPCAKE = makeFoodItem("melon_cupcake", Foods.MELON_CUPCAKE);
+    public static final Item CARROT_CUPCAKE = makeFoodItem("carrot_cupcake", Foods.CARROT_CUPCAKE);
+    public static final Item FANCY_APPLE_CUPCAKE = makeFoodItem("fancy_apple_cupcake", Foods.FANCY_APPLE_CUPCAKE);
+    public static final Item FANCY_PUMPKIN_CUPCAKE = makeFoodItem("fancy_pumpkin_cupcake", Foods.FANCY_PUMPKIN_CUPCAKE);
+    public static final Item GLOWBERRY_CUPCAKE = makeFoodItem("glowberry_cupcake", Foods.GLOWBERRY_CUPCAKE, Foods.GLOWBERRY_CUPCAKE_C);
+    public static final Item DONUT = makeFoodItem("donut", Foods.DONUT);
+    public static final Item FANCY_DONUT = makeFoodItem("fancy_donut", Foods.FANCY_DONUT);
+    public static final Item SPRINKLES = makeFoodItem("sprinkles", Foods.SPRINKLES);
+    public static final Item CHOCOLATE = makeFoodItem("chocolate", Foods.CHOCOLATE);
+    public static final Item BUN = makeFoodItem("bun", Foods.BUN);
+    public static final Item RAW_PATTY = makeFoodItem("raw_patty", Foods.RAW_PATTY);
+    public static final Item COOKED_PATTY = makeFoodItem("cooked_patty", Foods.COOKED_PATTY);
+    public static final Item RAW_CHICKEN_PATTY = makeFoodItem("raw_chicken_patty", Foods.RAW_CHICKEN_PATTY);
+    public static final Item COOKED_CHICKEN_PATTY = makeFoodItem("cooked_chicken_patty", Foods.COOKED_CHICKEN_PATTY);
+    public static final Item HAMBURGER = makeFoodItem("hamburger", Foods.HAMBURGER);
+    public static final Item CHICKEN_BURGER = makeFoodItem("chicken_burger", Foods.CHICKEN_BURGER);
+    public static final Item MUSHROOM_BURGER = makeFoodItem("mushroom_burger", Foods.MUSHROOM_BURGER);
+    public static final Item ULTIMATE_BOTTOM = makeFoodItem("ultimate_bottom", Foods.ULTIMATE_BOTTOM);
+    public static final Item ULTIMATE_TOP = makeFoodItem("ultimate_top", Foods.ULTIMATE_TOP);
+    public static final Item CHEESEBURGER = makeFoodItem("cheeseburger", Foods.CHEESEBURGER);
+    public static final Item ROTTEN_BURGER = makeFoodItem("rotten_burger", Foods.ROTTEN_BURGER, Foods.ROTTEN_BURGER_C);
+    public static final Item RAW_SAUSAGE = makeFoodItem("raw_sausage", Foods.RAW_SAUSAGE);
+    public static final Item COOKED_SAUSAGE = makeFoodItem("cooked_sausage", Foods.COOKED_SAUSAGE);
+    public static final Item HOTDOG = makeFoodItem("hotdog", Foods.HOTDOG);
+    public static final Item FISH_BREAD = makeFoodItem("fish_bread", Foods.FISH_BREAD);
+    public static final Item DAISY_SANDWICH = makeFoodItem("daisy_sandwich", Foods.DAISY_SANDWICH);
+    public static final Item CHICKEN_WRAP = makeFoodItem("chicken_wrap", Foods.CHICKEN_WRAP);
+    public static final Item RAW_SCHNITZEL = makeFoodItem("raw_schnitzel", Foods.RAW_SCHNITZEL);
+    public static final Item COOKED_SCHNITZEL = makeFoodItem("cooked_schnitzel", Foods.COOKED_SCHNITZEL);
+    public static final Item FRIED_EGG = makeFoodItem("fried_egg", Foods.FRIED_EGG);
+    public static final Item CROISSANT = makeFoodItem("croissant", Foods.CROISSANT);
+    public static final Item POTATO_SLICES = makeFoodItem("potato_slices", Foods.POTATO_SLICES);
+    public static final Item POTATO_FRIES = makeFoodItem("potato_fries", Foods.POTATO_FRIES);
+    public static final Item SHISH_KEBAB = makeFoodItem("shish_kebab", Foods.SHISH_KEBAB);
+    public static final Item TOMATO_SLICES = makeFoodItem("tomato_slices", Foods.TOMATO_SLICES);
+    public static final Item ICE_TEA = makeDrinkItem("ice_tea", Foods.ICE_TEA, GLASS);
+    public static final Item APPLE_JUICE = makeDrinkItem("apple_juice", Foods.APPLE_JUICE, GLASS);
+    public static final Item CARROT_JUICE = makeDrinkItem("carrot_juice", Foods.CARROT_JUICE, GLASS);
+    public static final Item MELON_JUICE = makeDrinkItem("melon_juice", Foods.MELON_JUICE, GLASS);
+    public static final Item PUMPKIN_JUICE = makeDrinkItem("pumpkin_juice", Foods.PUMPKIN_JUICE, GLASS);
+    public static final Item TOMATO_JUICE = makeDrinkItem("tomato_juice", Foods.TOMATO_JUICE, GLASS);
+    public static final Item WHEAT_JUICE = makeDrinkItem("wheat_juice", Foods.WHEAT_JUICE, GLASS, Foods.WHEAT_JUICE_C);
+    public static final Item GLASS_OF_MILK = makeDrinkItem("glass_of_milk", Foods.GLASS_OF_MILK, GLASS);
+    public static final Item SWEET_BERRY_JUICE = makeDrinkItem("sweet_berry_juice", Foods.SWEET_BERRY_JUICE, GLASS);
+    public static final Item AYRAN = makeDrinkItem("ayran", Foods.AYRAN, GLASS);
+    public static final Item SAKE = makeDrinkItem("sake", Foods.SAKE, GLASS, Foods.SAKE_C);
+    public static final Item CARBONATED_WATER = makeDrinkItem("carbonated_water", Foods.CARBONATED_WATER, GLASS);
+    public static final Item SODA = makeDrinkItem("soda", Foods.SODA, GLASS);
+    public static final Item COLA = makeDrinkItem("cola", Foods.COLA, GLASS, Foods.COLA_C);
+    public static final Item OYAKODON = makeContainedFoodItem("oyakodon", Foods.OYAKODON, net.minecraft.world.item.Items.BOWL, 16);
+    public static final Item BEEF_DONBURI = makeContainedFoodItem("beef_donburi", Foods.BEEF_DONBURI, net.minecraft.world.item.Items.BOWL, 16);
+    public static final Item EGG_SUSHI = makeFoodItem("egg_sushi", Foods.EGG_SUSHI);
+    public static final Item NIGIRI_SUSHI = makeFoodItem("nigiri_sushi", Foods.NIGIRI_SUSHI);
+    public static final Item OMURICE = makeFoodItem("omurice", Foods.OMURICE);
+    public static final Item RICEBALL = makeFoodItem("riceball", Foods.RICEBALL);
+    public static final Item SUSHI = makeFoodItem("sushi", Foods.SUSHI);
+    public static final Item COOKED_RICE = makeFoodItem("cooked_rice", Foods.COOKED_RICE);
+    public static final Item SASHIMI = makeFoodItem("sashimi", Foods.SASHIMI);
+    public static final Item RICE_PUDDING = makeContainedFoodItem("rice_pudding", Foods.RICE_PUDDING, net.minecraft.world.item.Items.BOWL, 16);
+    public static final Item BAKED_RICE_PUDDING = makeContainedFoodItem("baked_rice_pudding", Foods.BAKED_RICE_PUDDING, net.minecraft.world.item.Items.BOWL, 16);
+    public static final Item SWEET_BERRY_CUPCAKE_FANCY = makeFoodItem("sweet_berry_cupcake_fancy", Foods.SWEET_BERRY_CUPCAKE_FANCY);
+    public static final Item SWEET_BERRY_CUPCAKE = makeFoodItem("sweet_berry_cupcake", Foods.SWEET_BERRY_CUPCAKE);
+    public static final Item DONER_SLICE = makeFoodItem("doner_slice", Foods.DONER_SLICE);
+    public static final Item YOGHURT = makeContainedFoodItem("yoghurt", Foods.YOGHURT, net.minecraft.world.item.Items.BUCKET, 16);
+    public static final Item HONEYBERRY_YOGHURT = makeContainedFoodItem("honeyberry_yoghurt", Foods.HONEYBERRY_YOGHURT, net.minecraft.world.item.Items.BOWL, 16);
+    public static final Item HONEY_CUPCAKE = makeFoodItem("honey_cupcake", Foods.HONEY_CUPCAKE);
+    public static final Item DONER_WRAP = makeFoodItem("doner_wrap", Foods.DONER_WRAP);
+    public static final Item CHUBBY_DONER = makeFoodItem("chubby_doner", Foods.CHUBBY_DONER);
+    public static final Item ALEXANDER = makeContainedFoodItem("alexander", Foods.ALEXANDER, net.minecraft.world.item.Items.BOWL, 16);
+    public static final Item RAW_SHISH_KEBAB = makeFoodItem("raw_shish_kebab", Foods.RAW_SHISH_KEBAB);
+    public static final Item CHEESE_SLICE = makeFoodItem("cheese_slice", Foods.CHEESE_SLICE);
+    public static final Item CHEESE_TOAST = makeFoodItem("cheese_toast", Foods.CHEESE_TOAST);
+    public static final Item SQUID_INK_PAELLA = makeContainedFoodItem("squid_ink_paella", Foods.SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16);
+    public static final Item GLOW_SQUID_INK_PAELLA = makeContainedFoodItem("glow_squid_ink_paella", Foods.GLOW_SQUID_INK_PAELLA, net.minecraft.world.item.Items.BOWL, 16, Foods.GLOW_SQUID_INK_PAELLA_C);
 
     public static final Item RAW_PIZZA_PEPPERONI_PEPPERONI_PEPPERONI = new ItemRawPizza(BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3);
     public static final Item RAW_PIZZA_MUSHROOM_PEPPERONI_PEPPERONI = new ItemRawPizza(BlockPizza.Ingredient.MUSHROOM, BlockPizza.Ingredient.PEPPERONI, BlockPizza.Ingredient.PEPPERONI, Foods.RAW_PIZZA_3);
@@ -262,22 +265,43 @@ public final class Items {
     public static final Item PIZZA_CHICKEN = new ItemPizza(Blocks.PIZZA_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
     public static final Item PIZZA = new ItemPizza(Blocks.PIZZA, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
 
-    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING = new SimpleCraftingRecipeSerializer<>(RecipeTeaSugaring::new);
-    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING = new SimpleCraftingRecipeSerializer<>(RecipeTeaPouring::new);
-    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new SimpleCraftingRecipeSerializer<>(RecipeTeaFilling::new);
-    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING = new SimpleCraftingRecipeSerializer<>(RecipeTeaRefilling::new);
+    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING = new CustomRecipe.Serializer<>(RecipeTeaSugaring::new);
+    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING = new CustomRecipe.Serializer<>(RecipeTeaPouring::new);
+    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new CustomRecipe.Serializer<>(RecipeTeaFilling::new);
+    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING = new CustomRecipe.Serializer<>(RecipeTeaRefilling::new);
 
-    static Item makeFoodItem(FoodProperties food) {
-        return new Item(new Item.Properties().food(food));
+    private static Item.Properties properties(String name) {
+        return new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Mod.id(name)));
     }
 
-    static Item makeContainedFoodItem(FoodProperties food, Item container, int stackSize) {
-        return new ItemStackableContainedFood(new Item.Properties().food(food).
+    private static Item.Properties blockProperties(String name) {
+        return properties(name).useBlockDescriptionPrefix();
+    }
+
+    static Item makeFoodItem(String name, FoodProperties food) {
+        return new Item(properties(name).food(food));
+    }
+
+    static Item makeFoodItem(String name, FoodProperties food, Consumable consumable) {
+        return new Item(properties(name).food(food, consumable));
+    }
+
+    static Item makeContainedFoodItem(String name, FoodProperties food, Item container, int stackSize) {
+        return new ItemStackableContainedFood(properties(name).food(food).
                 craftRemainder(container), container, stackSize);
     }
 
-    static Item makeDrinkItem(FoodProperties food, Item container) {
-        return new ItemDrink(new Item.Properties().food(food), container);
+    static Item makeContainedFoodItem(String name, FoodProperties food, Item container, int stackSize, Consumable consumable) {
+        return new ItemStackableContainedFood(properties(name).food(food, consumable).
+                craftRemainder(container), container, stackSize);
+    }
+
+    static Item makeDrinkItem(String name, FoodProperties food, Item container) {
+        return new ItemDrink(properties(name).food(food, Foods.DRINK), container);
+    }
+
+    static Item makeDrinkItem(String name, FoodProperties food, Item container, Consumable consumable) {
+        return new ItemDrink(properties(name).food(food, consumable), container);
     }
 
     public static Item requireLocalKnife() {

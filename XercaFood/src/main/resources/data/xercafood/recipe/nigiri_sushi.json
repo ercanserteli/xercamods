@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "xercafood:cooked_rice"
-    },
-    {
-      "item": "xercafood:sashimi"
-    }
+    "xercafood:cooked_rice",
+    "xercafood:sashimi"
   ],
   "result": {
     "id": "xercafood:nigiri_sushi"

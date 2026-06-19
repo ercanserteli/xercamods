@@ -69,10 +69,9 @@ public class RecipeTeaPouring extends CustomRecipe {
 
         for (int i = 0; i < nonnulllist.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
-            Item item = itemstack.getItem();
-            if (item.hasCraftingRemainingItem()) {
-                Item remainder = item.getCraftingRemainingItem();
-                nonnulllist.set(i, remainder == null ? ItemStack.EMPTY : remainder.getDefaultInstance());
+            ItemStack remainder = itemstack.getItem().getCraftingRemainder();
+            if (!remainder.isEmpty()) {
+                nonnulllist.set(i, remainder);
             } else if (itemstack.getItem() instanceof ItemTeapot oldTeapot) {
                 nonnulllist.set(i, getTeapotRemainder(oldTeapot, teacupCount));
                 break;
@@ -132,15 +131,7 @@ public class RecipeTeaPouring extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Items.CRAFTING_SPECIAL_TEA_POURING;
-    }
-
-    /**
-     * Used to determine if this recipe can fit in a grid of the given width/height
-     */
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 3 && height >= 3;
     }
 }

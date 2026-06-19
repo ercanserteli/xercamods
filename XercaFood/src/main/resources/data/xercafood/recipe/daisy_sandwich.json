@@ -6,12 +6,8 @@
     " b "
   ],
   "key": {
-    "b": {
-      "item": "minecraft:bread"
-    },
-    "y": {
-      "item": "minecraft:oxeye_daisy"
-    }
+    "b": "minecraft:bread",
+    "y": "minecraft:oxeye_daisy"
   },
   "result": {
     "id": "xercafood:daisy_sandwich",

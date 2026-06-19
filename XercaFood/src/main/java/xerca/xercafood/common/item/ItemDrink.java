@@ -2,7 +2,7 @@ package xerca.xercafood.common.item;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 
 public class ItemDrink extends ItemStackableContainedFood {
 
@@ -11,7 +11,7 @@ public class ItemDrink extends ItemStackableContainedFood {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.DRINK;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.DRINK;
     }
 }

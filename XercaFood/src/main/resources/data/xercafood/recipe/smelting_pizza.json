@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "xercafood:raw_pizza"
-  },
+  "ingredient": "xercafood:raw_pizza",
   "result": {
     "id": "xercafood:pizza"
   },

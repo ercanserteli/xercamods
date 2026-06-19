@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "xercafood:glass"
-    },
-    {
-      "item": "minecraft:milk_bucket"
-    }
+    "xercafood:glass",
+    "minecraft:milk_bucket"
   ],
   "result": {
     "id": "xercafood:glass_of_milk"

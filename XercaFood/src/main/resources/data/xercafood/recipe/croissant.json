@@ -5,12 +5,8 @@
     "www"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:sugar"
-    },
-    "w": {
-      "item": "minecraft:wheat"
-    }
+    "s": "minecraft:sugar",
+    "w": "minecraft:wheat"
   },
   "result": {
     "id": "xercafood:croissant",

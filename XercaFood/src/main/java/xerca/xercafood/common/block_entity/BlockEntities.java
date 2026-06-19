@@ -1,5 +1,6 @@
 package xerca.xercafood.common.block_entity;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -10,7 +11,7 @@ public class BlockEntities {
     private BlockEntities() {
     }
 
-    public static final BlockEntityType<BlockEntityDoner> DONER = BlockEntityType.Builder.of(BlockEntityDoner::new, Blocks.BLOCK_DONER).build();
+    public static final BlockEntityType<BlockEntityDoner> DONER = FabricBlockEntityTypeBuilder.create(BlockEntityDoner::new, Blocks.BLOCK_DONER).build();
 
     public static void registerBlockEntities() {
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Mod.id("doner"), DONER);

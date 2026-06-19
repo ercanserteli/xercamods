@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smoking",
-  "ingredient": {
-    "item": "xercafood:raw_shish_kebab"
-  },
+  "ingredient": "xercafood:raw_shish_kebab",
   "result": {
     "id": "xercafood:shish_kebab"
   },

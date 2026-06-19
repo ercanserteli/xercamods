@@ -2,18 +2,13 @@ package xerca.xercafood.common.item;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
+import xerca.xercafood.common.Mod;
 
 public class ItemKnife extends Item {
     private static final int MAX_DAMAGE = 240;
 
     ItemKnife() {
-        super(new Item.Properties().stacksTo(1).durability(MAX_DAMAGE));
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return Tiers.IRON.getEnchantmentValue();
+        super(new Item.Properties().setId(Mod.itemKey("knife")).stacksTo(1).durability(MAX_DAMAGE).enchantable(14));
     }
 
     @Override

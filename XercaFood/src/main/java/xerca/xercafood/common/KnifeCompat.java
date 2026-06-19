@@ -19,7 +19,7 @@ public final class KnifeCompat {
 
     public static Item getKnifeItem() {
         if (useToolsKnife()) {
-            return BuiltInRegistries.ITEM.get(XERCATOOLS_KNIFE_ID);
+            return BuiltInRegistries.ITEM.getValue(XERCATOOLS_KNIFE_ID);
         }
         return Items.requireLocalKnife();
     }

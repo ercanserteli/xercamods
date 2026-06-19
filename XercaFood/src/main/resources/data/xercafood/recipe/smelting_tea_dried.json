@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "xercafood:tea_leaf"
-  },
+  "ingredient": "xercafood:tea_leaf",
   "result": {
     "id": "xercafood:tea_dried"
   },

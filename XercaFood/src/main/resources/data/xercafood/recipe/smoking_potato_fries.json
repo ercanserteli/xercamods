@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smoking",
-  "ingredient": {
-    "item": "xercafood:potato_slices"
-  },
+  "ingredient": "xercafood:potato_slices",
   "result": {
     "id": "xercafood:potato_fries"
   },

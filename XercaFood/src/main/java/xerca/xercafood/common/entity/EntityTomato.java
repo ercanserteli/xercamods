@@ -21,11 +21,11 @@ public class EntityTomato extends ThrowableItemProjectile {
     }
 
     public EntityTomato(Level worldIn, LivingEntity throwerIn) {
-        super(Entities.TOMATO, throwerIn, worldIn);
+        super(Entities.TOMATO, throwerIn, worldIn, new ItemStack(Items.TOMATO));
     }
 
     public EntityTomato(Level worldIn, double x, double y, double z) {
-        super(Entities.TOMATO, x, y, z, worldIn);
+        super(Entities.TOMATO, x, y, z, worldIn, new ItemStack(Items.TOMATO));
     }
 
     @Override

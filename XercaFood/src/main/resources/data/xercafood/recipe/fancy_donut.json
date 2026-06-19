@@ -5,12 +5,8 @@
     "d"
   ],
   "key": {
-    "s": {
-      "item": "xercafood:sprinkles"
-    },
-    "d": {
-      "item": "xercafood:donut"
-    }
+    "s": "xercafood:sprinkles",
+    "d": "xercafood:donut"
   },
   "result": {
     "id": "xercafood:fancy_donut"

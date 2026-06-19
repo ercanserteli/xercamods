@@ -13,7 +13,8 @@ import xerca.xercafood.common.SoundEvents;
 class ItemUltimateBurger extends Item {
 
     public ItemUltimateBurger() {
-        super(new Item.Properties().food(Foods.ULTIMATE_BURGER));
+        super(new Item.Properties().setId(xerca.xercafood.common.Mod.itemKey("ultimate_burger"))
+                .food(Foods.ULTIMATE_BURGER, Foods.ULTIMATE_BURGER_C));
     }
 
     @Override
@@ -24,6 +25,6 @@ class ItemUltimateBurger extends Item {
                 CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
             }
         }
-        return entityLiving.eat(worldIn, stack);
+        return super.finishUsingItem(stack, worldIn, entityLiving);
     }
 }

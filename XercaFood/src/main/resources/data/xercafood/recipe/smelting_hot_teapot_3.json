@@ -1,9 +1,7 @@
 {
   "type": "minecraft:smelting",
   "group": "hot_teapot",
-  "ingredient": {
-    "item": "xercafood:full_teapot_3"
-  },
+  "ingredient": "xercafood:full_teapot_3",
   "result": {
     "id": "xercafood:hot_teapot_3"
   },

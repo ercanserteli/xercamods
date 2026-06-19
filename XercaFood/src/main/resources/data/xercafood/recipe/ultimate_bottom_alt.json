@@ -7,18 +7,10 @@
     " b "
   ],
   "key": {
-    "p": {
-      "item": "xercafood:cooked_patty"
-    },
-    "b": {
-      "item": "xercafood:bun"
-    },
-    "m": {
-      "item": "minecraft:brown_mushroom"
-    },
-    "n": {
-      "item": "minecraft:red_mushroom"
-    }
+    "p": "xercafood:cooked_patty",
+    "b": "xercafood:bun",
+    "m": "minecraft:brown_mushroom",
+    "n": "minecraft:red_mushroom"
   },
   "result": {
     "id": "xercafood:ultimate_bottom"

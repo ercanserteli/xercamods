@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "xercafood:tomato"
-    },
-    {
-      "tag": "c:tools/knife"
-    }
+    "xercafood:tomato",
+    "#c:tools/knife"
   ],
   "result": {
     "count": 3,

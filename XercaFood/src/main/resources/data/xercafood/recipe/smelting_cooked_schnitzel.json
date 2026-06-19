@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "xercafood:raw_schnitzel"
-  },
+  "ingredient": "xercafood:raw_schnitzel",
   "result": {
     "id": "xercafood:cooked_schnitzel"
   },

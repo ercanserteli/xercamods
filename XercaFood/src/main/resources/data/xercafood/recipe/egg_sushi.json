@@ -1,15 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "xercafood:cooked_rice"
-    },
-    {
-      "item": "xercafood:fried_egg"
-    },
-    {
-      "item": "minecraft:dried_kelp"
-    }
+    "xercafood:cooked_rice",
+    "xercafood:fried_egg",
+    "minecraft:dried_kelp"
   ],
   "result": {
     "count": 2,

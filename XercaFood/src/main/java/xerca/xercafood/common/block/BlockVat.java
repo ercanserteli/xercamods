@@ -7,7 +7,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +38,9 @@ public class BlockVat extends Block {
     private final VatContent content;
 
     public BlockVat(VatContent content) {
-        super(BlockBehaviour.Properties.of().strength(1.5F).noOcclusion().randomTicks());
+        super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey(
+                        content == VatContent.MILK ? "vat_milk" : content == VatContent.CHEESE ? "vat_cheese" : "vat"))
+                .strength(1.5F).noOcclusion().randomTicks());
         this.content = content;
     }
 
@@ -55,7 +56,7 @@ public class BlockVat extends Block {
 
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack itemstack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+    public InteractionResult useItemOn(ItemStack itemstack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (content == VatContent.EMPTY && itemstack.getItem() == Items.MILK_BUCKET) {
             if (!player.isCreative()) {
                 itemstack.shrink(1);
@@ -65,7 +66,7 @@ public class BlockVat extends Block {
             level.setBlockAndUpdate(blockPos, Blocks.VAT_MILK.defaultBlockState());
             level.playSound(null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (content == VatContent.MILK && itemstack.getItem() == Items.BUCKET) {
             if (!player.isCreative()) {
@@ -76,14 +77,14 @@ public class BlockVat extends Block {
             level.setBlockAndUpdate(blockPos, Blocks.VAT.defaultBlockState());
             level.playSound(null, blockPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (content == VatContent.CHEESE) {
             InteractionResult used = useWithoutItem(blockState, level, blockPos, player, blockHitResult);
-            return used.consumesAction() ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return used.consumesAction() ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

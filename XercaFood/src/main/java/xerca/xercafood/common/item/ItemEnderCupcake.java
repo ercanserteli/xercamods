@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 class ItemEnderCupcake extends Item {
 
     public ItemEnderCupcake() {
-        super(new Properties().food(Foods.ENDER_CUPCAKE));
+        super(new Properties().setId(xerca.xercafood.common.Mod.itemKey("ender_cupcake")).food(Foods.ENDER_CUPCAKE));
     }
 
     @Override
@@ -39,7 +39,7 @@ class ItemEnderCupcake extends Item {
             }
 
             if (entity instanceof Player player) {
-                player.getCooldowns().addCooldown(this, 20);
+                player.getCooldowns().addCooldown(stack, 20);
             }
         }
 

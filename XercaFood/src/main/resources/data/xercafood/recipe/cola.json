@@ -6,15 +6,9 @@
     "www"
   ],
   "key": {
-    "w": {
-      "item": "xercafood:carbonated_water"
-    },
-    "e": {
-      "item": "xercafood:cola_extract"
-    },
-    "s": {
-      "item": "minecraft:snowball"
-    }
+    "w": "xercafood:carbonated_water",
+    "e": "xercafood:cola_extract",
+    "s": "minecraft:snowball"
   },
   "result": {
     "id": "xercafood:cola",

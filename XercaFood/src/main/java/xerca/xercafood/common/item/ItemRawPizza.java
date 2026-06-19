@@ -16,7 +16,7 @@ public class ItemRawPizza extends Item {
     private final BlockPizza.Ingredient slot3;
 
     public ItemRawPizza(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3, FoodProperties food) {
-        super(new Properties().food(food));
+        super(new Properties().setId(xerca.xercafood.common.Mod.itemKey(ItemPizza.pizzaName("raw_pizza", slot1, slot2, slot3))).food(food));
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;

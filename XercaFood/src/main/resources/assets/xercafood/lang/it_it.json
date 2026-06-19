@@ -153,5 +153,7 @@
   "xercafood.ingredient.meat": "Doner",
   "xercafood.ingredient.fish": "Pesce",
   "xercafood.ingredient.pepperoni": "Pepperoni",
-  "xercafood.ingredient.mushroom": "Fungo"
+  "xercafood.ingredient.mushroom": "Fungo",
+  "block.xercafood.apple_pie": "Torta di mele",
+  "block.xercafood.sweet_berry_pie": "Torta ai frutti dolci"
 }

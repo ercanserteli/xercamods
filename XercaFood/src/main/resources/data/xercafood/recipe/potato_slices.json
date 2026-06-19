@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:potato"
-    },
-    {
-      "tag": "c:tools/knife"
-    }
+    "minecraft:potato",
+    "#c:tools/knife"
   ],
   "result": {
     "count": 2,

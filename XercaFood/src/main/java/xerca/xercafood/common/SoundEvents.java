@@ -21,16 +21,16 @@ public class SoundEvents {
     public static final SoundEvent SNEAK_HIT = SoundEvent.createVariableRangeEvent(Mod.id("sneak_hit"));
 
     public static void registerSoundEvents() {
-        Registry.register(BuiltInRegistries.SOUND_EVENT, TOMATO_SPLASH.getLocation(), TOMATO_SPLASH);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BIG_BURP.getLocation(), BIG_BURP);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, YAHOO.getLocation(), YAHOO);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SCARY.getLocation(), SCARY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, TEA_POUR.getLocation(), TEA_POUR);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SIZZLE.getLocation(), SIZZLE);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BIG_SIZZLE.getLocation(), BIG_SIZZLE);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOLY.getLocation(), HOLY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SPARKLES.getLocation(), SPARKLES);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, FIZZY.getLocation(), FIZZY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SNEAK_HIT.getLocation(), SNEAK_HIT);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, TOMATO_SPLASH.location(), TOMATO_SPLASH);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, BIG_BURP.location(), BIG_BURP);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, YAHOO.location(), YAHOO);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SCARY.location(), SCARY);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, TEA_POUR.location(), TEA_POUR);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SIZZLE.location(), SIZZLE);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, BIG_SIZZLE.location(), BIG_SIZZLE);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, HOLY.location(), HOLY);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SPARKLES.location(), SPARKLES);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, FIZZY.location(), FIZZY);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SNEAK_HIT.location(), SNEAK_HIT);
     }
 }

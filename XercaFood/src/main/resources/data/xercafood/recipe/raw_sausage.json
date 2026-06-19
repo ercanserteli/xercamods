@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:porkchop"
-    },
-    {
-      "tag": "c:tools/knife"
-    }
+    "minecraft:porkchop",
+    "#c:tools/knife"
   ],
   "result": {
     "count": 2,

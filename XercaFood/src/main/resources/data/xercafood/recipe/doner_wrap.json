@@ -6,12 +6,8 @@
     "dw "
   ],
   "key": {
-    "d": {
-      "item": "xercafood:doner_slice"
-    },
-    "w": {
-      "item": "minecraft:wheat"
-    }
+    "d": "xercafood:doner_slice",
+    "w": "minecraft:wheat"
   },
   "result": {
     "id": "xercafood:doner_wrap",

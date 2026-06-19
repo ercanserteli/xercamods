@@ -23,7 +23,6 @@
   "item.xercafood.riceball": "おにぎり",
   "item.xercafood.sushi": "巻き寿司",
   "item.xercafood.cooked_rice": "ご飯",
-
   "item.xercafood.apple_cupcake": "りんごカップケーキ",
   "item.xercafood.pumpkin_cupcake": "かぼちゃカップケーキ",
   "item.xercafood.cocoa_cupcake": "ココアカップケーキ",
@@ -39,7 +38,6 @@
   "item.xercafood.donut": "ドーナツ",
   "item.xercafood.fancy_donut": "豪華ドーナツ",
   "item.xercafood.sprinkles": "スプリンクル",
-
   "item.xercafood.bun": "バンズ",
   "item.xercafood.raw_patty": "生のパティ",
   "item.xercafood.cooked_patty": "焼きパティ",
@@ -53,14 +51,12 @@
   "item.xercafood.ultimate_burger": "究極バーガー",
   "item.xercafood.rotten_burger": "腐ったバーガー",
   "item.xercafood.cheeseburger": "チーズバーガー",
-
   "item.xercafood.raw_sausage": "生のソーセージ",
   "item.xercafood.cooked_sausage": "焼きソーセージ",
   "item.xercafood.hotdog": "ホットドッグ",
   "item.xercafood.fish_bread": "魚パン",
   "item.xercafood.daisy_sandwich": "デイジーサンドイッチ",
   "item.xercafood.chicken_wrap": "チキンラップ",
-
   "item.xercafood.raw_schnitzel": "生のシュニッツェル",
   "item.xercafood.cooked_schnitzel": "焼きシュニッツェル",
   "item.xercafood.fried_egg": "目玉焼き",
@@ -71,7 +67,6 @@
   "item.xercafood.tomato_slices": "トマトスライス",
   "item.xercafood.squid_ink_paella": "イカ墨パエリア",
   "item.xercafood.glow_squid_ink_paella": "発光イカ墨パエリア",
-
   "item.xercafood.cola_powder": "コーラの秘密の公式",
   "item.xercafood.cola_extract": "コーラエキス",
   "item.minecraft.potion.effect.cola_extract": "コーラエキス",
@@ -89,7 +84,6 @@
   "item.xercafood.tomato_juice": "トマトジュース",
   "item.xercafood.wheat_juice": "ビール",
   "item.xercafood.glass_of_milk": "牛乳",
-
   "item.xercafood.knife": "ナイフ",
   "item.xercafood.glass": "グラス",
   "item.xercafood.tomato": "トマト",
@@ -124,7 +118,6 @@
   "item.xercafood.hot_teapot_6": "熱いティーポット",
   "item.xercafood.hot_teapot_7": "熱いティーポット",
   "item.xercafood.teacup": "ティーカップ",
-
   "block.xercafood.block_tomato_plant": "トマトの種",
   "block.xercafood.block_rice_plant": "米",
   "block.xercafood.block_tea_plant": "茶の種",
@@ -134,11 +127,9 @@
   "block.xercafood.block_sweet_berry_pie": "スイートベリーパイ",
   "block.xercafood.vat": "凝固桶",
   "block.xercafood.cheese_wheel": "チーズホイール",
-
   "itemGroup.xercafood.tea_tab": "お茶",
   "tag.item.xercafood.hot_teapot": "熱いティーポット",
   "tag.item.c.tools.knife": "ナイフ類",
-
   "advancements.xercafood.achievements.root.title": "xercafood",
   "advancements.xercafood.achievements.root.description": "唯一重要な進捗",
   "advancements.xercafood.achievements.cupcake.title": "混沌のカップケーキ",
@@ -153,9 +144,7 @@
   "advancements.xercafood.achievements.diabetes.description": "完璧な飲み物を台無しにする",
   "advancements.xercafood.achievements.diabetes2.title": "99型糖尿病",
   "advancements.xercafood.achievements.diabetes2.description": "知らなかったレベルまでインスリン抵抗性を高める",
-
   "xercafood.empty_teapot_tooltip": "乾燥した茶葉と水を入れて加熱するとお茶になります",
-
   "xercafood.pizza": "ピザ",
   "xercafood.pizza_plain": "マルゲリータピザ",
   "xercafood.pizza_raw": "生ピザ",
@@ -164,5 +153,7 @@
   "xercafood.ingredient.meat": "ドネル",
   "xercafood.ingredient.fish": "魚",
   "xercafood.ingredient.pepperoni": "ペパロニ",
-  "xercafood.ingredient.mushroom": "マッシュルーム"
+  "xercafood.ingredient.mushroom": "マッシュルーム",
+  "block.xercafood.apple_pie": "アップルパイ",
+  "block.xercafood.sweet_berry_pie": "スイートベリーパイ"
 }

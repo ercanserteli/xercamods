@@ -18,10 +18,20 @@ public class ItemPizza extends BlockItem {
     private final BlockPizza.Ingredient slot3;
 
     public ItemPizza(Block blockIn, BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
-        super(blockIn, new Item.Properties());
+        super(blockIn, new Item.Properties().setId(Mod.itemKey(pizzaName("pizza", slot1, slot2, slot3))));
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
+    }
+
+    static String pizzaName(String base, BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
+        StringBuilder sb = new StringBuilder(base);
+        for (BlockPizza.Ingredient ingredient : new BlockPizza.Ingredient[]{slot1, slot2, slot3}) {
+            if (ingredient != BlockPizza.Ingredient.EMPTY) {
+                sb.append('_').append(ingredient.name().toLowerCase());
+            }
+        }
+        return sb.toString();
     }
 
     @Override

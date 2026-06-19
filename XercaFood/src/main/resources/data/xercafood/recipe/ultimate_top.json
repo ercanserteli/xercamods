@@ -6,18 +6,10 @@
     " c "
   ],
   "key": {
-    "b": {
-      "item": "xercafood:bun"
-    },
-    "c": {
-      "item": "xercafood:cooked_chicken_patty"
-    },
-    "t": {
-      "item": "xercafood:tomato_slices"
-    },
-    "s": {
-      "item": "xercafood:cheese_slice"
-    }
+    "b": "xercafood:bun",
+    "c": "xercafood:cooked_chicken_patty",
+    "t": "xercafood:tomato_slices",
+    "s": "xercafood:cheese_slice"
   },
   "result": {
     "id": "xercafood:ultimate_top"

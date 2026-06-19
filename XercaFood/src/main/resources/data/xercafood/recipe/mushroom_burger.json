@@ -6,18 +6,10 @@
     " b "
   ],
   "key": {
-    "b": {
-      "item": "xercafood:bun"
-    },
-    "d": {
-      "item": "xercafood:tomato_slices"
-    },
-    "m": {
-      "item": "minecraft:brown_mushroom"
-    },
-    "n": {
-      "item": "minecraft:red_mushroom"
-    }
+    "b": "xercafood:bun",
+    "d": "xercafood:tomato_slices",
+    "m": "minecraft:brown_mushroom",
+    "n": "minecraft:red_mushroom"
   },
   "result": {
     "id": "xercafood:mushroom_burger"

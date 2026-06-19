@@ -6,15 +6,9 @@
     " b "
   ],
   "key": {
-    "b": {
-      "item": "xercafood:ultimate_bottom"
-    },
-    "t": {
-      "item": "xercafood:ultimate_top"
-    },
-    "e": {
-      "item": "xercafood:bun"
-    }
+    "b": "xercafood:ultimate_bottom",
+    "t": "xercafood:ultimate_top",
+    "e": "xercafood:bun"
   },
   "result": {
     "id": "xercafood:ultimate_burger"

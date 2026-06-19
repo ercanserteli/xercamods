@@ -7,21 +7,11 @@
     "www"
   ],
   "key": {
-    "p": {
-      "item": "minecraft:cocoa_beans"
-    },
-    "s": {
-      "item": "minecraft:sugar"
-    },
-    "e": {
-      "item": "minecraft:egg"
-    },
-    "w": {
-      "item": "minecraft:wheat"
-    },
-    "m": {
-      "item": "minecraft:milk_bucket"
-    }
+    "p": "minecraft:cocoa_beans",
+    "s": "minecraft:sugar",
+    "e": "minecraft:egg",
+    "w": "minecraft:wheat",
+    "m": "minecraft:milk_bucket"
   },
   "result": {
     "id": "xercafood:cocoa_cupcake",

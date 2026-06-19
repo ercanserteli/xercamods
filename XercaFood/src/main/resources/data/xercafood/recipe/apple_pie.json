@@ -6,21 +6,11 @@
     "CCC"
   ],
   "key": {
-    "A": {
-      "item": "minecraft:apple"
-    },
-    "B": {
-      "item": "minecraft:sugar"
-    },
-    "C": {
-      "item": "minecraft:wheat"
-    },
-    "D": {
-      "item": "minecraft:milk_bucket"
-    },
-    "E": {
-      "item": "minecraft:egg"
-    }
+    "A": "minecraft:apple",
+    "B": "minecraft:sugar",
+    "C": "minecraft:wheat",
+    "D": "minecraft:milk_bucket",
+    "E": "minecraft:egg"
   },
   "result": {
     "id": "xercafood:apple_pie"

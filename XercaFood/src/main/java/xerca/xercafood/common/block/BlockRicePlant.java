@@ -17,7 +17,7 @@ import xerca.xercafood.common.item.Items;
 public class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     BlockRicePlant() {
-        super(Properties.of().sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
+        super(Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_rice_plant")).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
     }
 
     @Override

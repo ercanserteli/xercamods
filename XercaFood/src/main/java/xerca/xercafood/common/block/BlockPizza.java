@@ -4,15 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -43,8 +40,18 @@ public class BlockPizza extends Block {
     };
 
     public BlockPizza(BlockPizza.Ingredient slot1, BlockPizza.Ingredient slot2, BlockPizza.Ingredient slot3) {
-        super(Properties.of().sound(SoundType.WOOL).strength(0.5F));
+        super(Properties.of().setId(xerca.xercafood.common.Mod.blockKey(blockName(slot1, slot2, slot3))).sound(SoundType.WOOL).strength(0.5F));
         this.hungerPerBite = 1 + (slot1 == Ingredient.EMPTY ? 0 : 1) + (slot2 == Ingredient.EMPTY ? 0 : 1) + (slot3 == Ingredient.EMPTY ? 0 : 1);
+    }
+
+    static String blockName(Ingredient slot1, Ingredient slot2, Ingredient slot3) {
+        StringBuilder sb = new StringBuilder("pizza");
+        for (Ingredient ingredient : new Ingredient[]{slot1, slot2, slot3}) {
+            if (ingredient != Ingredient.EMPTY) {
+                sb.append('_').append(ingredient.name().toLowerCase());
+            }
+        }
+        return sb.toString();
     }
 
     @Override
@@ -53,9 +60,9 @@ public class BlockPizza extends Block {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         InteractionResult ate = useWithoutItem(state, worldIn, pos, player, hit);
-        return ate.consumesAction() ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return ate.consumesAction() ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
@@ -70,7 +77,7 @@ public class BlockPizza extends Block {
         }
 
         InteractionResult ate = eat(worldIn, pos, state, player, hungerPerBite);
-        if (ate.shouldSwing()) {
+        if (ate.consumesAction()) {
             worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
                     1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
         }
@@ -96,8 +103,8 @@ public class BlockPizza extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos1) {
-        return direction == Direction.DOWN && !blockState.canSurvive(levelAccessor, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, direction, blockState1, levelAccessor, blockPos, blockPos1);
+    protected BlockState updateShape(BlockState blockState, LevelReader levelReader, ScheduledTickAccess tickAccess, BlockPos blockPos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        return direction == Direction.DOWN && !blockState.canSurvive(levelReader, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, levelReader, tickAccess, blockPos, direction, neighborPos, neighborState, random);
     }
 
     @Override

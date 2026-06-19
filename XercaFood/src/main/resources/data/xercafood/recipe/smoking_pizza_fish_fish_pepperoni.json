@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smoking",
-  "ingredient": {
-    "item": "xercafood:raw_pizza_fish_fish_pepperoni"
-  },
+  "ingredient": "xercafood:raw_pizza_fish_fish_pepperoni",
   "result": {
     "id": "xercafood:pizza_fish_fish_pepperoni"
   },

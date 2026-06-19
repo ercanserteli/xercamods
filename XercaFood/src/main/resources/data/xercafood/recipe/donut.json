@@ -6,15 +6,9 @@
     "sws"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:sugar"
-    },
-    "w": {
-      "item": "minecraft:wheat"
-    },
-    "x": {
-      "item": "minecraft:milk_bucket"
-    }
+    "s": "minecraft:sugar",
+    "w": "minecraft:wheat",
+    "x": "minecraft:milk_bucket"
   },
   "result": {
     "id": "xercafood:donut",

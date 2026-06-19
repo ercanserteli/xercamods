@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "xercafood:raw_patty"
-  },
+  "ingredient": "xercafood:raw_patty",
   "result": {
     "id": "xercafood:cooked_patty"
   },

@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +41,7 @@ public class BlockDoner extends Block implements EntityBlock {
     private RenderShape renderType = RenderShape.ENTITYBLOCK_ANIMATED;
 
     public BlockDoner() {
-        super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1).noOcclusion());
+        super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_doner")).sound(SoundType.METAL).strength(1).noOcclusion());
         registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(IS_RAW, true));
     }
 
@@ -56,16 +56,16 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (tryAddMeat(heldItem, state, worldIn, pos)) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (trySliceDoner(heldItem, state, worldIn, pos, player, hand)) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     private boolean tryAddMeat(ItemStack heldItem, BlockState state, Level world, BlockPos pos) {

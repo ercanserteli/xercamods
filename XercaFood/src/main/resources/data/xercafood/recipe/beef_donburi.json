@@ -1,15 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "xercafood:cooked_rice"
-    },
-    {
-      "item": "minecraft:cooked_beef"
-    },
-    {
-      "item": "minecraft:bowl"
-    }
+    "xercafood:cooked_rice",
+    "minecraft:cooked_beef",
+    "minecraft:bowl"
   ],
   "result": {
     "id": "xercafood:beef_donburi"

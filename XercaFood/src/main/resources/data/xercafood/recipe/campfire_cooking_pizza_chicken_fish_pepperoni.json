@@ -1,8 +1,6 @@
 {
   "type": "minecraft:campfire_cooking",
-  "ingredient": {
-    "item": "xercafood:raw_pizza_chicken_fish_pepperoni"
-  },
+  "ingredient": "xercafood:raw_pizza_chicken_fish_pepperoni",
   "result": {
     "id": "xercafood:pizza_chicken_fish_pepperoni"
   },

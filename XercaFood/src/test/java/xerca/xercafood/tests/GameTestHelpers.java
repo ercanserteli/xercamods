@@ -36,7 +36,8 @@ class GameTestHelpers {
     }
 
     static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation id) {
-        Optional<RecipeHolder<?>> opt = helper.getLevel().getRecipeManager().byKey(id);
+        Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
+                net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
         helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
         helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + id);
@@ -45,7 +46,8 @@ class GameTestHelpers {
     }
 
     static CampfireCookingRecipe requireCampfireRecipe(GameTestHelper helper, ResourceLocation id) {
-        Optional<RecipeHolder<?>> opt = helper.getLevel().getRecipeManager().byKey(id);
+        Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
+                net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
         helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
         helper.assertTrue(recipe instanceof CampfireCookingRecipe, "Expected campfire cooking recipe for " + id);
@@ -54,7 +56,8 @@ class GameTestHelpers {
     }
 
     static SmeltingRecipe requireSmeltingRecipe(GameTestHelper helper, ResourceLocation id) {
-        Optional<RecipeHolder<?>> opt = helper.getLevel().getRecipeManager().byKey(id);
+        Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
+                net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
         helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
         helper.assertTrue(recipe instanceof SmeltingRecipe, "Expected smelting recipe for " + id);
@@ -63,7 +66,8 @@ class GameTestHelpers {
     }
 
     static SmokingRecipe requireSmokingRecipe(GameTestHelper helper, ResourceLocation id) {
-        Optional<RecipeHolder<?>> opt = helper.getLevel().getRecipeManager().byKey(id);
+        Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
+                net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
         helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
         helper.assertTrue(recipe instanceof SmokingRecipe, "Expected smoking recipe for " + id);

@@ -6,22 +6,11 @@
     "www"
   ],
   "key": {
-    "a": {
-      "item": "minecraft:golden_apple",
-      "data": 0
-    },
-    "e": {
-      "item": "minecraft:egg"
-    },
-    "w": {
-      "item": "minecraft:wheat"
-    },
-    "m": {
-      "item": "minecraft:milk_bucket"
-    },
-    "n": {
-      "item": "minecraft:gold_nugget"
-    }
+    "a": "minecraft:golden_apple",
+    "e": "minecraft:egg",
+    "w": "minecraft:wheat",
+    "m": "minecraft:milk_bucket",
+    "n": "minecraft:gold_nugget"
   },
   "result": {
     "id": "xercafood:golden_cupcake"

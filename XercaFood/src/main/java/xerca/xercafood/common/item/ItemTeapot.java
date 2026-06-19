@@ -17,7 +17,7 @@ public class ItemTeapot extends BlockItem {
     private final boolean isHot;
 
     public ItemTeapot(BlockTeapot blockTeapot, int teaAmount, boolean isHot) {
-        super(blockTeapot, new Item.Properties());
+        super(blockTeapot, new Item.Properties().setId(xerca.xercafood.common.Mod.itemKey((isHot ? "hot_teapot_" : "full_teapot_") + teaAmount)));
         this.teaAmount = teaAmount;
         this.isHot = isHot;
     }

@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "xercafood:glass"
-    },
-    {
-      "item": "minecraft:melon"
-    }
+    "xercafood:glass",
+    "minecraft:melon"
   ],
   "result": {
     "id": "xercafood:melon_juice"

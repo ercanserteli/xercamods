@@ -6,12 +6,8 @@
     "b"
   ],
   "key": {
-    "p": {
-      "item": "xercafood:cooked_sausage"
-    },
-    "b": {
-      "item": "xercafood:bun"
-    }
+    "p": "xercafood:cooked_sausage",
+    "b": "xercafood:bun"
   },
   "result": {
     "id": "xercafood:hotdog"
