@@ -5,12 +5,8 @@
     "ppp"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "p": {
-      "tag": "minecraft:planks"
-    }
+    "s": "minecraft:stick",
+    "p": "#minecraft:planks"
   },
   "result": {
     "id": "xercamusic:xylophone"

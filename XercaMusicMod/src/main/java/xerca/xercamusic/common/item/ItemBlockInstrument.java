@@ -3,7 +3,6 @@ package xerca.xercamusic.common.item;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -21,10 +20,6 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     private final int maxOctave;
     private final int instrumentId;
     private IItemInstrument.InsSound @Nullable [] insSounds;
-
-    public ItemBlockInstrument(int instrumentId, int minOctave, int maxOctave, Block block) {
-        this(instrumentId, minOctave, maxOctave, new Properties(), block);
-    }
 
     public ItemBlockInstrument(int instrumentId, int minOctave, int maxOctave, Properties properties, Block block) {
         super(block, properties);
@@ -49,7 +44,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         return ItemInstrument.useInstrument(worldIn, playerIn, handIn);
     }
 

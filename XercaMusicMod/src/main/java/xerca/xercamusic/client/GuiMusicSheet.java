@@ -11,6 +11,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -981,8 +982,8 @@ public class GuiMusicSheet extends Screen {
             }
         }
 
-        guiGraphics.blit(NOTE_GUI_LEFT_TEXTURE, noteImageLeftX, noteImageY + 7, NOTE_IMAGE_LEFT_TEX_X, NOTE_IMAGE_LEFT_TEX_Y, NOTE_IMAGE_LEFT_WIDTH, NOTE_IMAGE_LEFT_HEIGHT);
-        guiGraphics.blit(NOTE_GUI_TEXTURES, noteImageX, noteImageY, NOTE_IMAGE_TEX_X, NOTE_IMAGE_TEX_Y, NOTE_IMAGE_WIDTH, NOTE_IMAGE_HEIGHT);
+        guiGraphics.blit(RenderType::guiTextured, NOTE_GUI_LEFT_TEXTURE, noteImageLeftX, noteImageY + 7, NOTE_IMAGE_LEFT_TEX_X, NOTE_IMAGE_LEFT_TEX_Y, NOTE_IMAGE_LEFT_WIDTH, NOTE_IMAGE_LEFT_HEIGHT, 256, 256);
+        guiGraphics.blit(RenderType::guiTextured, NOTE_GUI_TEXTURES, noteImageX, noteImageY, NOTE_IMAGE_TEX_X, NOTE_IMAGE_TEX_Y, NOTE_IMAGE_WIDTH, NOTE_IMAGE_HEIGHT, 256, 256);
         if (gettingSigned) {
             drawSigning(guiGraphics);
         } else if (!helpOn) {
@@ -1934,7 +1935,7 @@ public class GuiMusicSheet extends Screen {
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
-            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             postRender();
         }
     }
@@ -1957,9 +1958,9 @@ public class GuiMusicSheet extends Screen {
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
 
-            guiGraphics.blit(resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             if (prevInsLocked) {
-                guiGraphics.blit(resourceLocation, this.getX(), this.getY(), 0, (float) this.texHeight - this.height, this.width, this.height, this.texWidth, this.texHeight);
+                guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), 0, (float) this.texHeight - this.height, this.width, this.height, this.texWidth, this.texHeight);
             }
 
             postRender();

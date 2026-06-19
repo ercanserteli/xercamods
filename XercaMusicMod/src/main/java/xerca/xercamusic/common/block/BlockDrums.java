@@ -7,7 +7,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -16,7 +16,7 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
 public class BlockDrums extends BlockInstrument {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     private static final VoxelShape[] SHAPES = {
             box(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 15.0D),
             box(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 14.0D),
@@ -24,8 +24,8 @@ public class BlockDrums extends BlockInstrument {
             box(1.0D, 0.0D, 0.0D, 14.0D, 16.0D, 16.0D),
     };
 
-    public BlockDrums() {
-        super(Properties.of().mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).noOcclusion());
+    public BlockDrums(Properties properties) {
+        super(properties.mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

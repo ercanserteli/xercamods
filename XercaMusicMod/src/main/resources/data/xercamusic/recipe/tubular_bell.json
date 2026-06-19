@@ -5,12 +5,8 @@
     "g g"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "g": {
-      "item": "minecraft:gold_nugget"
-    }
+    "s": "minecraft:stick",
+    "g": "minecraft:gold_nugget"
   },
   "result": {
     "id": "xercamusic:tubular_bell"

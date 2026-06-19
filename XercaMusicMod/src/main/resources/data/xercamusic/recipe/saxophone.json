@@ -6,9 +6,7 @@
     " g "
   ],
   "key": {
-    "g": {
-      "item": "minecraft:gold_nugget"
-    }
+    "g": "minecraft:gold_nugget"
   },
   "result": {
     "id": "xercamusic:saxophone"

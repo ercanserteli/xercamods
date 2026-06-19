@@ -7,7 +7,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -34,10 +33,6 @@ public class ItemInstrument extends Item implements IItemInstrument {
     private final int instrumentId;
     private InsSound @Nullable [] insSounds;
 
-    public ItemInstrument(int instrumentId, int minOctave, int maxOctave) {
-        this(instrumentId, minOctave, maxOctave, new Properties());
-    }
-
     public ItemInstrument(int instrumentId, int minOctave, int maxOctave, Properties properties) {
         super(properties);
         this.instrumentId = instrumentId;
@@ -50,8 +45,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
         return instrumentId;
     }
 
-    public static InteractionResultHolder<ItemStack> useInstrument(Level worldIn, Player playerIn, InteractionHand handIn) {
-        final ItemStack heldItem = playerIn.getItemInHand(handIn);
+    public static InteractionResult useInstrument(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack off = playerIn.getOffhandItem();
         if (handIn == InteractionHand.MAIN_HAND && off.getItem() == Items.MUSIC_SHEET) {
             if (!worldIn.isClientSide) {
@@ -62,7 +56,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
                 onlyRunOnClient(() -> ModClient::showInstrumentGui);
             }
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
+        return InteractionResult.SUCCESS;
     }
 
     public static boolean useInstrumentOn(UseOnContext context) {
@@ -101,7 +95,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         return useInstrument(worldIn, playerIn, handIn);
     }
 

@@ -172,8 +172,8 @@ public class TileEntityMusicBox extends BlockEntity {
             level.setBlockAndUpdate(t.worldPosition, state.setValue(BlockMusicBox.POWERING, true));
 
             BlockPos neighbor = t.worldPosition.relative(rightSide);
-            level.neighborChanged(neighbor, t.getBlockState().getBlock(), t.worldPosition);
-            level.updateNeighborsAtExceptFromFacing(neighbor, t.getBlockState().getBlock(), rightSide.getOpposite());
+            level.neighborChanged(neighbor, t.getBlockState().getBlock(), null);
+            level.updateNeighborsAtExceptFromFacing(neighbor, t.getBlockState().getBlock(), rightSide.getOpposite(), null);
         }
     }
 
@@ -211,7 +211,7 @@ public class TileEntityMusicBox extends BlockEntity {
             setSheetStack(sheet, false);
         }
         if (parent.contains(KEY_INS_ID, 8)) {
-            this.setInstrument(BuiltInRegistries.ITEM.get(ResourceLocation.parse(parent.getString(KEY_INS_ID))));
+            this.setInstrument(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(parent.getString(KEY_INS_ID))));
         }
     }
 

@@ -6,18 +6,10 @@
     "rpr"
   ],
   "key": {
-    "p": {
-      "item": "minecraft:oak_planks"
-    },
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "i": {
-      "item": "minecraft:string"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    }
+    "p": "minecraft:oak_planks",
+    "s": "minecraft:stick",
+    "i": "minecraft:string",
+    "r": "minecraft:redstone"
   },
   "result": {
     "id": "xercamusic:redstone_guitar"

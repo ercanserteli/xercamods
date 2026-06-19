@@ -6,7 +6,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -19,8 +18,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.SoundEvents;
@@ -30,7 +30,7 @@ import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 public class BlockMetronome extends BaseEntityBlock {
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final MapCodec<BlockMetronome> METRONOME_CODEC = simpleCodec(BlockMetronome::new);
 
     public BlockMetronome(Properties properties) {
@@ -44,7 +44,7 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    protected void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, Orientation orientation, boolean isMoving) {
         boolean flag = worldIn.hasNeighborSignal(pos);
         boolean powered = state.getValue(POWERED);
         if (flag != powered) {
@@ -62,7 +62,7 @@ public class BlockMetronome extends BaseEntityBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide) {
             level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
@@ -75,10 +75,10 @@ public class BlockMetronome extends BaseEntityBlock {
             int bps = note.getOrDefault(Items.SHEET_BPS, (byte) 0);
             if (!note.isEmpty() && bps > 0) {
                 setBps(state, level, pos, bps);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

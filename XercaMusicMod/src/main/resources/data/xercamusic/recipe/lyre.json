@@ -5,12 +5,8 @@
     " s "
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "i": {
-      "item": "minecraft:string"
-    }
+    "s": "minecraft:stick",
+    "i": "minecraft:string"
   },
   "result": {
     "id": "xercamusic:lyre"

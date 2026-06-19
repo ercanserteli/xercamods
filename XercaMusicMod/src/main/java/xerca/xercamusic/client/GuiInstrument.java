@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -112,7 +113,7 @@ public class GuiInstrument extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderTexture(0, INS_GUI_TEXTURES);
 
-        guiGraphics.blit(INS_GUI_TEXTURES, guiBaseX, guiBaseY, 0, 0, 0, GUI_WIDTH, GUI_HEIGHT, 512, 512);
+        guiGraphics.blit(RenderType::guiTextured, INS_GUI_TEXTURES, guiBaseX, guiBaseY, 0, 0, GUI_WIDTH, GUI_HEIGHT, 512, 512);
 
         for (int i = 0; i < buttonPushStates.length; i++) {
             if (buttonPushStates[i]) {
@@ -123,7 +124,7 @@ public class GuiInstrument extends Screen {
                     x -= 4 + 48 * GUI_NOTE_WIDTH;
                     y = guiBaseY + GUI_BOTTOM_KEYBOARD_TOP + 2;
                 }
-                guiGraphics.blit(INS_GUI_TEXTURES, x, y, 0, 402, 11, 7, 82, 512, 512);
+                guiGraphics.blit(RenderType::guiTextured, INS_GUI_TEXTURES, x, y, 402, 11, 7, 82, 512, 512);
             }
         }
 
@@ -134,7 +135,7 @@ public class GuiInstrument extends Screen {
             octaveHighlightX -= 4 * GUI_OCTAVE_WIDTH;
             octaveHighlightY = guiBaseY + GUI_BOTTOM_KEYBOARD_TOP - 6;
         }
-        guiGraphics.blit(INS_GUI_TEXTURES, octaveHighlightX, octaveHighlightY, 0, 0, 0, GUI_OCTAVE_HIGHLIGHT_Y, GUI_OCTAVE_HIGHLIGHT_WIDTH, GUI_OCTAVE_HIGHLIGHT_HEIGHT, 512, 512);
+        guiGraphics.blit(RenderType::guiTextured, INS_GUI_TEXTURES, octaveHighlightX, octaveHighlightY, 0, GUI_OCTAVE_HIGHLIGHT_Y, GUI_OCTAVE_HIGHLIGHT_WIDTH, GUI_OCTAVE_HIGHLIGHT_HEIGHT, 512, 512);
 
         for (int i = 0; i < 8; i++) {
             if (i < instrument.getMinOctave() || i > instrument.getMaxOctave()) {
@@ -144,7 +145,7 @@ public class GuiInstrument extends Screen {
                     x -= 4 * GUI_OCTAVE_WIDTH;
                     y = guiBaseY + GUI_BOTTOM_KEYBOARD_TOP + 2;
                 }
-                guiGraphics.blit(INS_GUI_TEXTURES, x, y, 0, 0, GUI_OCTAVE_BLOCK_X, GUI_OCTAVE_BLOCK_Y, GUI_OCTAVE_BLOCK_WIDTH, GUI_OCTAVE_BLOCK_HEIGHT, 512, 512);
+                guiGraphics.blit(RenderType::guiTextured, INS_GUI_TEXTURES, x, y, GUI_OCTAVE_BLOCK_X, GUI_OCTAVE_BLOCK_Y, GUI_OCTAVE_BLOCK_WIDTH, GUI_OCTAVE_BLOCK_HEIGHT, 512, 512);
             }
         }
 

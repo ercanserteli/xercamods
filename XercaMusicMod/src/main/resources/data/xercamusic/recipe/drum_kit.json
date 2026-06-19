@@ -5,12 +5,8 @@
     "ddd"
   ],
   "key": {
-    "c": {
-      "item": "xercamusic:cymbal"
-    },
-    "d": {
-      "item": "xercamusic:drum"
-    }
+    "c": "xercamusic:cymbal",
+    "d": "xercamusic:drum"
   },
   "result": {
     "id": "xercamusic:drum_kit"

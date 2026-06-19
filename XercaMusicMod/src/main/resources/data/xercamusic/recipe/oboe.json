@@ -5,12 +5,8 @@
     "sss"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "i": {
-      "item": "minecraft:iron_nugget"
-    }
+    "s": "minecraft:stick",
+    "i": "minecraft:iron_nugget"
   },
   "result": {
     "id": "xercamusic:oboe"

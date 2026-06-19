@@ -45,7 +45,7 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPay
             }
 
             if (!msg.instrumentId().isEmpty()) {
-                tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.get(ResourceLocation.parse(msg.instrumentId())));
+                tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(msg.instrumentId())));
             } else {
                 tileEntityMusicBox.removeInstrument();
             }

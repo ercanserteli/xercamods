@@ -6,15 +6,9 @@
     " p "
   ],
   "key": {
-    "p": {
-      "item": "minecraft:oak_planks"
-    },
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "i": {
-      "item": "minecraft:string"
-    }
+    "p": "minecraft:oak_planks",
+    "s": "minecraft:stick",
+    "i": "minecraft:string"
   },
   "result": {
     "id": "xercamusic:guitar"

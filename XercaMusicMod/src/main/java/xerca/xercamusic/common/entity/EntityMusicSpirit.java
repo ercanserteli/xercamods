@@ -8,6 +8,8 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -321,6 +323,11 @@ public class EntityMusicSpirit extends Entity {
 
     public void setPlaying(boolean playing) {
         isPlaying = playing;
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float amount) {
+        return false;
     }
 
     @Nullable

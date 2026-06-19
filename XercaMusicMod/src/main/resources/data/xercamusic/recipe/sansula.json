@@ -5,12 +5,8 @@
     "ppp"
   ],
   "key": {
-    "i": {
-      "item": "minecraft:iron_nugget"
-    },
-    "p": {
-      "tag": "minecraft:planks"
-    }
+    "i": "minecraft:iron_nugget",
+    "p": "#minecraft:planks"
   },
   "result": {
     "id": "xercamusic:sansula"

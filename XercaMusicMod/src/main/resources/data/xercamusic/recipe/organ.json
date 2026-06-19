@@ -6,15 +6,9 @@
     "ppp"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:string"
-    },
-    "g": {
-      "item": "minecraft:gold_nugget"
-    },
-    "p": {
-      "tag": "minecraft:planks"
-    }
+    "s": "minecraft:string",
+    "g": "minecraft:gold_nugget",
+    "p": "#minecraft:planks"
   },
   "result": {
     "id": "xercamusic:organ"

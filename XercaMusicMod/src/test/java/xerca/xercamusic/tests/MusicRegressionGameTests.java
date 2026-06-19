@@ -11,7 +11,6 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -178,7 +177,7 @@ public final class MusicRegressionGameTests {
         return new UseResult(player.getMainHandItem(), helper.getLevel().getBlockState(absolutePos));
     }
 
-    private static ItemInteractionResult useBlockWithItem(GameTestHelper helper, Player player, ItemStack stack, BlockPos relativePos, Direction face) {
+    private static InteractionResult useBlockWithItem(GameTestHelper helper, Player player, ItemStack stack, BlockPos relativePos, Direction face) {
         player.setItemSlot(EquipmentSlot.MAINHAND, stack);
         BlockPos absolutePos = helper.absolutePos(relativePos);
         BlockState state = helper.getLevel().getBlockState(absolutePos);
@@ -193,10 +192,10 @@ public final class MusicRegressionGameTests {
             return instrumentBlock.useItemOn(stack, state, helper.getLevel(), absolutePos, player, InteractionHand.MAIN_HAND, hit);
         }
         helper.assertTrue(false, "Unsupported block for useBlockWithItem: " + state.getBlock());
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
-    private static ItemInteractionResult useBlockFace(GameTestHelper helper, Player player, BlockPos relativePos, Direction face) {
+    private static InteractionResult useBlockFace(GameTestHelper helper, Player player, BlockPos relativePos, Direction face) {
         player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         BlockPos absolutePos = helper.absolutePos(relativePos);
         BlockState state = helper.getLevel().getBlockState(absolutePos);
@@ -211,7 +210,7 @@ public final class MusicRegressionGameTests {
             return instrumentBlock.useItemOn(ItemStack.EMPTY, state, helper.getLevel(), absolutePos, player, InteractionHand.MAIN_HAND, hit);
         }
         helper.assertTrue(false, "Unsupported block for useBlockFace: " + state.getBlock());
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     private static InteractionResult useBlockWithoutItem(GameTestHelper helper, Player player, BlockPos relativePos, Direction face) {
@@ -240,16 +239,14 @@ public final class MusicRegressionGameTests {
         BlockPos absolutePos = helper.absolutePos(relativePos);
         BlockState state = helper.getLevel().getBlockState(absolutePos);
         BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(absolutePos), face, absolutePos, false);
-        if (state.getBlock() instanceof xerca.xercamusic.common.block.BlockInstrument instrumentBlock) {
-            ItemInteractionResult itemResult = instrumentBlock.useItemOn(stack, state, helper.getLevel(), absolutePos, player, InteractionHand.MAIN_HAND, hit);
-            if (itemResult.consumesAction()) {
-                return itemResult.result();
-            }
-            if (itemResult == ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION) {
-                InteractionResult blockResult = instrumentBlock.useWithoutItem(state, helper.getLevel(), absolutePos, player, hit);
-                if (blockResult.consumesAction()) {
-                    return blockResult;
-                }
+        InteractionResult itemResult = state.useItemOn(stack, helper.getLevel(), player, InteractionHand.MAIN_HAND, hit);
+        if (itemResult.consumesAction()) {
+            return itemResult;
+        }
+        if (itemResult == InteractionResult.TRY_WITH_EMPTY_HAND) {
+            InteractionResult blockResult = state.useWithoutItem(helper.getLevel(), player, hit);
+            if (blockResult.consumesAction()) {
+                return blockResult;
             }
         }
         if (!stack.isEmpty()) {
@@ -829,7 +826,7 @@ public final class MusicRegressionGameTests {
         helper.assertTrue(insert.state().getValue(BlockMusicBox.HAS_MUSIC), "Expected music box to report inserted music sheet");
         helper.assertTrue(!requireMusicBox(helper, boxPos).getSheetStack().isEmpty(), "Expected tile entity to store inserted music sheet");
 
-        ItemInteractionResult ejectResult = useBlockFace(helper, player, boxPos, Direction.UP);
+        InteractionResult ejectResult = useBlockFace(helper, player, boxPos, Direction.UP);
         helper.assertTrue(ejectResult.consumesAction(), "Expected top-face ejection to consume interaction");
         BlockState ejectedState = helper.getLevel().getBlockState(helper.absolutePos(boxPos));
         helper.assertTrue(!ejectedState.getValue(BlockMusicBox.HAS_MUSIC), "Expected music sheet slot to be empty after ejection");
@@ -851,7 +848,7 @@ public final class MusicRegressionGameTests {
         helper.assertTrue(insert.state().getValue(BlockMusicBox.HAS_INSTRUMENT), "Expected music box to report inserted instrument");
         helper.assertTrue(requireMusicBox(helper, boxPos).getInstrument() == Items.GUITAR, "Expected tile entity to store inserted instrument");
 
-        ItemInteractionResult ejectResult = useBlockFace(helper, player, boxPos, Direction.SOUTH);
+        InteractionResult ejectResult = useBlockFace(helper, player, boxPos, Direction.SOUTH);
         helper.assertTrue(ejectResult.consumesAction(), "Expected back-face instrument ejection to consume interaction");
         BlockState ejectedState = helper.getLevel().getBlockState(helper.absolutePos(boxPos));
         helper.assertTrue(!ejectedState.getValue(BlockMusicBox.HAS_INSTRUMENT), "Expected instrument slot to be empty after ejection");
@@ -980,8 +977,8 @@ public final class MusicRegressionGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         placeMusicBox(helper, boxPos, Direction.NORTH);
 
-        ItemInteractionResult topResult = useBlockFace(helper, player, boxPos, Direction.UP);
-        ItemInteractionResult backResult = useBlockFace(helper, player, boxPos, Direction.SOUTH);
+        InteractionResult topResult = useBlockFace(helper, player, boxPos, Direction.UP);
+        InteractionResult backResult = useBlockFace(helper, player, boxPos, Direction.SOUTH);
 
         BlockState state = helper.getLevel().getBlockState(helper.absolutePos(boxPos));
         helper.assertTrue(!topResult.consumesAction(), "Expected top interaction on empty slot to be ignored");
@@ -1005,7 +1002,7 @@ public final class MusicRegressionGameTests {
         helper.assertTrue(cycled.getValue(BlockMetronome.BPS) == 7, "Expected metronome to cycle tempo when used without a sheet");
 
         ItemStack sheet = createSheetStack(helper, 8, 12);
-        ItemInteractionResult copyResult = useBlockWithItem(helper, player, sheet, metronomePos, Direction.UP);
+        InteractionResult copyResult = useBlockWithItem(helper, player, sheet, metronomePos, Direction.UP);
         BlockState copied = helper.getLevel().getBlockState(helper.absolutePos(metronomePos));
         helper.assertTrue(copyResult.consumesAction(), "Expected metronome to consume sheet tempo copy use");
         helper.assertTrue(copied.getValue(BlockMetronome.BPS) == 12, "Expected metronome to copy tempo from held music sheet");
@@ -1055,13 +1052,32 @@ public final class MusicRegressionGameTests {
 
         ItemStack sheet = new ItemStack(Items.MUSIC_SHEET);
         sheet.set(Items.SHEET_TITLE, "missing_bps");
-        ItemInteractionResult result = useBlockWithItem(helper, player, sheet, metronomePos, Direction.UP);
-        helper.assertTrue(!result.consumesAction(), "Expected sheet without tempo to fall through to default interaction");
-
-        InteractionResult fallbackResult = useBlockWithoutItem(helper, player, metronomePos, Direction.UP);
+        InteractionResult itemResult = useBlockWithItem(helper, player, sheet, metronomePos, Direction.UP);
+        helper.assertTrue(itemResult == InteractionResult.TRY_WITH_EMPTY_HAND,
+                "Expected sheet without tempo to continue to the empty-hand interaction");
+        InteractionResult fallbackResult = simulateServerUseItemOn(helper, player, sheet, metronomePos, Direction.UP);
         BlockState updated = helper.getLevel().getBlockState(helper.absolutePos(metronomePos));
         helper.assertTrue(fallbackResult.consumesAction(), "Expected fallback block interaction to cycle the metronome");
         helper.assertTrue(updated.getValue(BlockMetronome.BPS) == 10, "Expected sheet without tempo tag to fall back to normal metronome cycling");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = "metronome")
+    public static void metronomeUseWithHeldItemCyclesTempoThroughVanillaDispatch(GameTestHelper helper) {
+        BlockPos metronomePos = new BlockPos(1, 2, 1);
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        placeMetronome(helper, metronomePos, Direction.NORTH, 9, false);
+
+        ItemStack heldItem = new ItemStack(net.minecraft.world.item.Items.STICK);
+        InteractionResult itemResult = useBlockWithItem(helper, player, heldItem, metronomePos, Direction.UP);
+        helper.assertTrue(itemResult == InteractionResult.TRY_WITH_EMPTY_HAND,
+                "Expected held non-sheet items to continue to metronome tempo adjustment");
+
+        InteractionResult result = simulateServerUseItemOn(helper, player, heldItem, metronomePos, Direction.UP);
+        BlockState updated = helper.getLevel().getBlockState(helper.absolutePos(metronomePos));
+        helper.assertTrue(result.consumesAction(), "Expected metronome tempo adjustment to consume the interaction");
+        helper.assertTrue(updated.getValue(BlockMetronome.BPS) == 10,
+                "Expected right-clicking a metronome with a held item to increment its tempo");
         helper.succeed();
     }
     @GameTest(template = BASIC_TEMPLATE, batch = "piano")
@@ -1073,11 +1089,11 @@ public final class MusicRegressionGameTests {
         BlockPos absolutePos = helper.absolutePos(pianoPos);
         player.moveTo(Vec3.atCenterOf(absolutePos).add(1.0D, 0.0D, 0.0D));
         ItemStack sheet = createSheetStack(helper, 8, 8);
-        ItemInteractionResult firstUse = useBlockWithItem(helper, player, sheet, pianoPos, Direction.UP);
+        InteractionResult firstUse = useBlockWithItem(helper, player, sheet, pianoPos, Direction.UP);
         helper.assertTrue(firstUse.consumesAction(), "Expected piano use with sheet to consume interaction");
         EntityMusicSpirit spirit = requireSingleSpiritNear(helper, pianoPos, "Expected piano use with sheet to spawn music spirit");
 
-        ItemInteractionResult secondUse = useBlockWithItem(helper, player, player.getMainHandItem(), pianoPos, Direction.UP);
+        InteractionResult secondUse = useBlockWithItem(helper, player, player.getMainHandItem(), pianoPos, Direction.UP);
         helper.assertTrue(secondUse.consumesAction(), "Expected second piano use with sheet to consume interaction");
         spirit.tick();
 
@@ -1115,6 +1131,9 @@ public final class MusicRegressionGameTests {
 
         ItemStack blockInstrument = new ItemStack(Items.PIANO);
         int initialCount = blockInstrument.getCount();
+        InteractionResult itemResult = useBlockWithItem(helper, player, blockInstrument, pianoPos, Direction.UP);
+        helper.assertTrue(itemResult == InteractionResult.TRY_WITH_EMPTY_HAND,
+                "Expected held non-sheet items to continue to the instrument's empty-hand interaction");
         InteractionResult result = simulateServerUseItemOn(helper, player, blockInstrument, pianoPos, Direction.UP);
 
         helper.assertTrue(result.consumesAction(),
@@ -1170,7 +1189,7 @@ public final class MusicRegressionGameTests {
         BlockPos absolutePos = helper.absolutePos(pianoPos);
         player.moveTo(Vec3.atCenterOf(absolutePos).add(5.0D, 0.0D, 0.0D));
         ItemStack sheet = createSheetStack(helper, 8, 8);
-        ItemInteractionResult result = useBlockWithItem(helper, player, sheet, pianoPos, Direction.UP);
+        InteractionResult result = useBlockWithItem(helper, player, sheet, pianoPos, Direction.UP);
 
         helper.assertTrue(!result.consumesAction(), "Expected distant piano use to be ignored");
         helper.assertTrue(countSpiritsNear(helper, pianoPos) == 0, "Expected distant piano use to not start playback");

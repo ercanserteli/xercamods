@@ -6,15 +6,9 @@
     "ppp"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:string"
-    },
-    "i": {
-      "item": "minecraft:iron_nugget"
-    },
-    "p": {
-      "tag": "minecraft:planks"
-    }
+    "s": "minecraft:string",
+    "i": "minecraft:iron_nugget",
+    "p": "#minecraft:planks"
   },
   "result": {
     "id": "xercamusic:piano"

@@ -6,15 +6,9 @@
     " p "
   ],
   "key": {
-    "p": {
-      "item": "minecraft:dark_oak_planks"
-    },
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "i": {
-      "item": "minecraft:string"
-    }
+    "p": "minecraft:dark_oak_planks",
+    "s": "minecraft:stick",
+    "i": "minecraft:string"
   },
   "result": {
     "id": "xercamusic:cello"

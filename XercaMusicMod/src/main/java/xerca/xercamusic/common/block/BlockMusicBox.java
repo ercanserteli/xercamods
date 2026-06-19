@@ -6,7 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -74,7 +75,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    protected void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, Orientation orientation, boolean isMoving) {
         if (!worldIn.isClientSide) {
             boolean powered = worldIn.hasNeighborSignal(pos);
             boolean powering = state.getValue(POWERING);
@@ -164,26 +165,26 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         ItemStack heldItem = player.getItemInHand(hand);
         boolean hasMusic = state.getValue(HAS_MUSIC);
         boolean hasInstrument = state.getValue(HAS_INSTRUMENT);
         Direction facing = state.getValue(FACING);
         if (hitResult.getDirection() == Direction.UP && hasMusic) {
             if (heldItem.getItem() instanceof IItemInstrument && !hasInstrument) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.PASS;
             }
             ejectItem(level, pos, state, true, false);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         } else if (hitResult.getDirection() == facing.getOpposite() && hasInstrument) {
             if (heldItem.getItem() == Items.MUSIC_SHEET && !hasMusic) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.PASS;
             }
             level.playSound(player, pos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
             ejectItem(level, pos, state, false, false);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     @Override

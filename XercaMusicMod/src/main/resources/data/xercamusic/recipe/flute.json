@@ -4,9 +4,7 @@
     "sss"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stick"
-    }
+    "s": "minecraft:stick"
   },
   "result": {
     "id": "xercamusic:flute"

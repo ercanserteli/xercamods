@@ -6,12 +6,8 @@
     " g "
   ],
   "key": {
-    "g": {
-      "item": "minecraft:gold_nugget"
-    },
-    "i": {
-      "item": "minecraft:iron_nugget"
-    }
+    "g": "minecraft:gold_nugget",
+    "i": "minecraft:iron_nugget"
   },
   "result": {
     "id": "xercamusic:cymbal"

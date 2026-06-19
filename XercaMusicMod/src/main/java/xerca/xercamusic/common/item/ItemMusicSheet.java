@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -49,8 +48,8 @@ public class ItemMusicSheet extends Item {
     public static final String KEY_LENGTH_OLD = "length";
     public static final String KEY_PAUSE_OLD = "pause";
 
-    ItemMusicSheet() {
-        super(new Properties().stacksTo(1));
+    ItemMusicSheet(Properties properties) {
+        super(properties.stacksTo(1));
     }
 
     public static List<NoteEvent> oldMusicToNotes(byte[] music) {
@@ -136,12 +135,11 @@ public class ItemMusicSheet extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
-        final ItemStack heldItem = playerIn.getItemInHand(hand);
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
         if (worldIn.isClientSide) {
             onlyRunOnClient(() -> ModClient::showMusicGui);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
+        return InteractionResult.SUCCESS;
     }
 
     @Override

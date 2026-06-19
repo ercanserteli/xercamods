@@ -6,15 +6,9 @@
     "ppp"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:string"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "p": {
-      "tag": "minecraft:planks"
-    }
+    "s": "minecraft:string",
+    "r": "minecraft:redstone",
+    "p": "#minecraft:planks"
   },
   "result": {
     "id": "xercamusic:redstone_piano"

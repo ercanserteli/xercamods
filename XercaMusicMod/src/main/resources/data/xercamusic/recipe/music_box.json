@@ -6,15 +6,9 @@
     "wrw"
   ],
   "key": {
-    "e": {
-      "item": "minecraft:gold_ingot"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "w": {
-      "tag": "minecraft:planks"
-    }
+    "e": "minecraft:gold_ingot",
+    "r": "minecraft:redstone",
+    "w": "#minecraft:planks"
   },
   "result": {
     "id": "xercamusic:music_box"

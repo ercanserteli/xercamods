@@ -6,12 +6,8 @@
     " p "
   ],
   "key": {
-    "p": {
-      "tag": "minecraft:planks"
-    },
-    "l": {
-      "item": "minecraft:leather"
-    }
+    "p": "#minecraft:planks",
+    "l": "minecraft:leather"
   },
   "result": {
     "id": "xercamusic:drum"
