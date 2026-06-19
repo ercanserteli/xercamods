@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "xercablocks:cyan_terratile"
-  },
+  "ingredient": "xercablocks:cyan_terratile",
   "result": {
     "id": "xercablocks:cyan_terratile_stairs",
     "count": 1

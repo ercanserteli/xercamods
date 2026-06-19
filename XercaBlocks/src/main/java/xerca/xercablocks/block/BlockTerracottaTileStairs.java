@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 
 public class BlockTerracottaTileStairs extends StairBlock {
-    public BlockTerracottaTileStairs(BlockState baseState, DyeColor color) {
-        super(baseState, Properties.of().mapColor(color).instrument(NoteBlockInstrument.BASEDRUM).strength(1.5f).sound(SoundType.STONE));
+    public BlockTerracottaTileStairs(BlockState baseState, DyeColor color, Properties properties) {
+        super(baseState, properties.mapColor(color).instrument(NoteBlockInstrument.BASEDRUM).strength(1.5f).sound(SoundType.STONE));
     }
 }

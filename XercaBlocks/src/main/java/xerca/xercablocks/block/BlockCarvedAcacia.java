@@ -6,10 +6,10 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
 public class BlockCarvedAcacia extends BlockCarvedLog {
-    public static final MapCodec<BlockCarvedAcacia> CODEC = simpleCodec(properties -> new BlockCarvedAcacia());
+    public static final MapCodec<BlockCarvedAcacia> CODEC = simpleCodec(BlockCarvedAcacia::new);
 
-    public BlockCarvedAcacia() {
-        super(Properties.of()
+    public BlockCarvedAcacia(Properties properties) {
+        super(properties
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .ignitedByLava()

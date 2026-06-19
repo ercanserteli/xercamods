@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "minecraft:purple_terracotta"
-  },
+  "ingredient": "minecraft:purple_terracotta",
   "result": {
     "id": "xercablocks:purple_terratile",
     "count": 1

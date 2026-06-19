@@ -12,19 +12,15 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
 public class BlockCarvedLog extends HorizontalDirectionalBlock {
-    public static final MapCodec<BlockCarvedLog> CODEC = simpleCodec(properties -> new BlockCarvedLog());
+    public static final MapCodec<BlockCarvedLog> CODEC = simpleCodec(BlockCarvedLog::new);
 
-    public BlockCarvedLog() {
-        this(Properties.of()
+    public BlockCarvedLog(Properties properties) {
+        super(properties
                 .sound(SoundType.WOOD)
                 .ignitedByLava()
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .strength(2.0F));
-    }
-
-    protected BlockCarvedLog(Properties properties) {
-        super(properties);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

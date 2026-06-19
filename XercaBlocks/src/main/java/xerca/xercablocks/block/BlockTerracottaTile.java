@@ -9,20 +9,16 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 
 public class BlockTerracottaTile extends HorizontalDirectionalBlock {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final MapCodec<BlockTerracottaTile> CODEC = simpleCodec(properties -> new BlockTerracottaTile());
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+    public static final MapCodec<BlockTerracottaTile> CODEC = simpleCodec(properties -> new BlockTerracottaTile(DyeColor.LIGHT_GRAY, properties));
 
-    public BlockTerracottaTile(DyeColor color) {
-        super(Properties.of().mapColor(color).instrument(NoteBlockInstrument.BASEDRUM).strength(1.5f).sound(SoundType.STONE));
+    public BlockTerracottaTile(DyeColor color, Properties properties) {
+        super(properties.mapColor(color).instrument(NoteBlockInstrument.BASEDRUM).strength(1.5f).sound(SoundType.STONE));
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.EAST));
-    }
-
-    private BlockTerracottaTile() {
-        this(DyeColor.LIGHT_GRAY);
     }
 
     @Override

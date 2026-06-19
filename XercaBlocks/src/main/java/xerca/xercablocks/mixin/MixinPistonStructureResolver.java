@@ -11,9 +11,6 @@ import xerca.xercablocks.block.Blocks;
 @SuppressWarnings({"UnusedMethod", "UnusedVariable", "unused"})
 @Mixin(PistonStructureResolver.class)
 public abstract class MixinPistonStructureResolver {
-    private MixinPistonStructureResolver() {
-    }
-
     @Inject(method = "isSticky", at = @At("HEAD"), cancellable = true)
     private static void isSticky(BlockState state, CallbackInfoReturnable<Boolean> cir) {
         if (state.is(Blocks.ROPE)) {

@@ -6,12 +6,8 @@
     "pp"
   ],
   "key": {
-    "p": {
-      "tag": "minecraft:planks"
-    },
-    "k": {
-      "item": "minecraft:shears"
-    }
+    "p": "#minecraft:planks",
+    "k": "minecraft:shears"
   },
   "result": {
     "id": "xercablocks:carving_station"

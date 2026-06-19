@@ -6,9 +6,7 @@
     "ttt"
   ],
   "key": {
-    "t": {
-      "item": "xercablocks:white_terratile"
-    }
+    "t": "xercablocks:white_terratile"
   },
   "result": {
     "id": "xercablocks:white_terratile_stairs",

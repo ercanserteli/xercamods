@@ -1,8 +1,6 @@
 {
   "type": "xercablocks:carving",
-  "ingredient": {
-    "item": "minecraft:spruce_log"
-  },
+  "ingredient": "minecraft:spruce_log",
   "result": {
     "id": "xercablocks:carved_spruce_6",
     "count": 1

@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -23,10 +22,10 @@ import xerca.xercablocks.block_entity.FunctionalBookcaseBlockEntity;
 
 public class BlockFunctionalBookcase extends BaseEntityBlock {
     public static final IntegerProperty BOOK_AMOUNT = IntegerProperty.create("books", 0, 6);
-    public static final MapCodec<BlockFunctionalBookcase> CODEC = simpleCodec(properties -> new BlockFunctionalBookcase());
+    public static final MapCodec<BlockFunctionalBookcase> CODEC = simpleCodec(BlockFunctionalBookcase::new);
 
-    public BlockFunctionalBookcase() {
-        super(Properties.of()
+    public BlockFunctionalBookcase(Properties properties) {
+        super(properties
                 .mapColor(MapColor.WOOD)
                 .ignitedByLava()
                 .instrument(NoteBlockInstrument.BASS)
@@ -46,25 +45,25 @@ public class BlockFunctionalBookcase extends BaseEntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
         return openMenu(level, pos, player);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        ItemInteractionResult result = openMenu(level, pos, player);
+        InteractionResult result = openMenu(level, pos, player);
         return result.consumesAction() ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
-    private ItemInteractionResult openMenu(Level level, BlockPos pos, Player player) {
+    private InteractionResult openMenu(Level level, BlockPos pos, Player player) {
         if (level.getBlockEntity(pos) instanceof FunctionalBookcaseBlockEntity bookcase) {
             if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.openMenu(bookcase);
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     @Override

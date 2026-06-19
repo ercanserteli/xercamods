@@ -6,10 +6,10 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
 public class BlockCarvedNetherLog extends BlockCarvedLog {
-    public static final MapCodec<BlockCarvedNetherLog> CODEC = simpleCodec(properties -> new BlockCarvedNetherLog());
+    public static final MapCodec<BlockCarvedNetherLog> CODEC = simpleCodec(BlockCarvedNetherLog::new);
 
-    public BlockCarvedNetherLog() {
-        super(Properties.of()
+    public BlockCarvedNetherLog(Properties properties) {
+        super(properties
                 .sound(SoundType.STEM)
                 .mapColor(MapColor.NETHER)
                 .instrument(NoteBlockInstrument.BASEDRUM)

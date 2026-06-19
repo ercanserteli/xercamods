@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,11 +25,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import xerca.xercablocks.menu.CarvingStationMenu;
 
 public class BlockCarvingStation extends HorizontalDirectionalBlock {
-    public static final MapCodec<BlockCarvingStation> CODEC = simpleCodec(properties -> new BlockCarvingStation());
+    public static final MapCodec<BlockCarvingStation> CODEC = simpleCodec(BlockCarvingStation::new);
     private static final Component CONTAINER_NAME = Component.translatable("container.xercablocks.carving_station");
 
-    public BlockCarvingStation() {
-        super(Properties.of()
+    public BlockCarvingStation(Properties properties) {
+        super(properties
                 .mapColor(MapColor.WOOD)
                 .ignitedByLava()
                 .instrument(NoteBlockInstrument.BASS)
@@ -57,10 +56,10 @@ public class BlockCarvingStation extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
         return openMenu(level, pos, player).consumesAction()
-                ? ItemInteractionResult.SUCCESS
-                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                ? InteractionResult.SUCCESS
+                : InteractionResult.PASS;
     }
 
     @Override

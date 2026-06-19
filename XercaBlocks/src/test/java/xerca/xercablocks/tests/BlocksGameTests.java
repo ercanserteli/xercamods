@@ -3,11 +3,14 @@ package xerca.xercablocks.tests;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.StonecutterMenu;
@@ -47,7 +50,8 @@ public final class BlocksGameTests {
     }
 
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
-        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().getRecipeManager().byKey(recipeId);
+        ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
+        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
         helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
         helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
@@ -55,7 +59,8 @@ public final class BlocksGameTests {
     }
 
     private static CarvingRecipe requireCarvingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
-        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().getRecipeManager().byKey(recipeId);
+        ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
+        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
         helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
         helper.assertTrue(recipe instanceof CarvingRecipe, "Expected carving recipe for " + recipeId);
@@ -63,7 +68,8 @@ public final class BlocksGameTests {
     }
 
     private static StonecutterRecipe requireStonecuttingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
-        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().getRecipeManager().byKey(recipeId);
+        ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
+        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
         helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
         helper.assertTrue(recipe instanceof StonecutterRecipe, "Expected stonecutting recipe for " + recipeId);
@@ -77,11 +83,11 @@ public final class BlocksGameTests {
     }
 
     private static Block modBlock(String path) {
-        return BuiltInRegistries.BLOCK.get(Mod.id(path));
+        return BuiltInRegistries.BLOCK.getValue(Mod.id(path));
     }
 
     private static Item modItem(String path) {
-        return BuiltInRegistries.ITEM.get(Mod.id(path));
+        return BuiltInRegistries.ITEM.getValue(Mod.id(path));
     }
 
     private static void assertBreaksFasterWithPickaxeThanByHand(GameTestHelper helper, BlockState state, BlockPos pos, String description) {
@@ -100,7 +106,8 @@ public final class BlocksGameTests {
     private static BlockState ropePlacementState(GameTestHelper helper, Player player, BlockPos relativePos) {
         BlockPos absolutePos = helper.absolutePos(relativePos);
         player.getInventory().setItem(player.getInventory().selected, new ItemStack(Items.ROPE));
-        BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(absolutePos), Direction.UP, absolutePos, false);
+        BlockPos supportPos = absolutePos.below();
+        BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(supportPos), Direction.UP, supportPos, false);
         BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult));
         return Blocks.ROPE.getStateForPlacement(context);
     }
@@ -303,9 +310,9 @@ public final class BlocksGameTests {
 
         List<ItemStack> drops = Block.getDrops(state, helper.getLevel(), pos, helper.getLevel().getBlockEntity(pos), null, ItemStack.EMPTY);
         helper.assertTrue(drops.size() == 1, "Expected double terratile slab to produce a single slab stack");
-        helper.assertTrue(drops.get(0).is(modItem("black_terratile_slab")),
+        helper.assertTrue(drops.getFirst().is(modItem("black_terratile_slab")),
                 "Expected double terratile slab to drop black terratile slab items");
-        helper.assertTrue(drops.get(0).getCount() == 2, "Expected double terratile slab to drop two slab items");
+        helper.assertTrue(drops.getFirst().getCount() == 2, "Expected double terratile slab to drop two slab items");
         helper.succeed();
     }
 
@@ -317,8 +324,8 @@ public final class BlocksGameTests {
 
         List<ItemStack> drops = Block.getDrops(state, helper.getLevel(), pos, null, null, ItemStack.EMPTY);
         helper.assertTrue(drops.size() == 1, "Expected black terratile loot table to produce one stack");
-        helper.assertTrue(drops.get(0).is(modItem("black_terratile")), "Expected black terratile loot table to drop black terratile");
-        helper.assertValueEqual(drops.get(0).getCount(), 1, "Expected black terratile loot table to drop one block");
+        helper.assertTrue(drops.getFirst().is(modItem("black_terratile")), "Expected black terratile loot table to drop black terratile");
+        helper.assertValueEqual(drops.getFirst().getCount(), 1, "Expected black terratile loot table to drop one block");
         helper.succeed();
     }
 
@@ -330,8 +337,8 @@ public final class BlocksGameTests {
 
         List<ItemStack> drops = Block.getDrops(state, helper.getLevel(), pos, null, null, ItemStack.EMPTY);
         helper.assertTrue(drops.size() == 1, "Expected black terratile stairs loot table to produce one stack");
-        helper.assertTrue(drops.get(0).is(modItem("black_terratile_stairs")), "Expected black terratile stairs loot table to drop black terratile stairs");
-        helper.assertValueEqual(drops.get(0).getCount(), 1, "Expected black terratile stairs loot table to drop one block");
+        helper.assertTrue(drops.getFirst().is(modItem("black_terratile_stairs")), "Expected black terratile stairs loot table to drop black terratile stairs");
+        helper.assertValueEqual(drops.getFirst().getCount(), 1, "Expected black terratile stairs loot table to drop one block");
         helper.succeed();
     }
 
@@ -499,13 +506,13 @@ public final class BlocksGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void carvingRecipesDoNotLoadAsStonecuttingRecipes(GameTestHelper helper) {
-        Optional<RecipeHolder<StonecutterRecipe>> stonecutterRecipe = helper.getLevel().getRecipeManager().getRecipeFor(
+        Optional<RecipeHolder<StonecutterRecipe>> stonecutterRecipe = helper.getLevel().getServer().getRecipeManager().getRecipeFor(
                 RecipeType.STONECUTTING,
                 new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG)),
                 helper.getLevel()
         );
 
-        Optional<RecipeHolder<CarvingRecipe>> carvingRecipe = helper.getLevel().getRecipeManager().getRecipeFor(
+        Optional<RecipeHolder<CarvingRecipe>> carvingRecipe = helper.getLevel().getServer().getRecipeManager().getRecipeFor(
                 Recipes.CARVING_TYPE,
                 new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG)),
                 helper.getLevel()
@@ -528,8 +535,8 @@ public final class BlocksGameTests {
         stonecutterMenu.getSlot(0).container.setItem(0, oakLog.copy());
         stonecutterMenu.slotsChanged(stonecutterMenu.getSlot(0).container);
 
-        helper.assertTrue(carvingMenu.getNumRecipes() > 0, "Expected carving station menu to expose carving recipes");
-        helper.assertTrue(stonecutterMenu.getNumRecipes() == 0, "Expected vanilla stonecutter to reject carving recipes");
+        helper.assertTrue(carvingMenu.getNumberOfVisibleRecipes() > 0, "Expected carving station menu to expose carving recipes");
+        helper.assertTrue(stonecutterMenu.getNumberOfVisibleRecipes() == 0, "Expected vanilla stonecutter to reject carving recipes");
 
         helper.assertTrue(carvingMenu.clickMenuButton(player, 0), "Expected carving station menu to accept the first carving recipe selection");
         helper.assertTrue(!carvingMenu.getSlot(1).getItem().isEmpty(),
@@ -559,12 +566,44 @@ public final class BlocksGameTests {
         stonecutterMenu.getSlot(0).container.setItem(0, stone.copy());
         stonecutterMenu.slotsChanged(stonecutterMenu.getSlot(0).container);
 
-        helper.assertTrue(carvingMenu.getNumRecipes() == 0, "Expected carving station to reject vanilla stonecutter inputs like stone");
-        helper.assertTrue(stonecutterMenu.getNumRecipes() > 0, "Expected vanilla stonecutter to still show stonecutting recipes for stone");
+        helper.assertTrue(carvingMenu.getNumberOfVisibleRecipes() == 0, "Expected carving station to reject vanilla stonecutter inputs like stone");
+        helper.assertTrue(stonecutterMenu.getNumberOfVisibleRecipes() > 0, "Expected vanilla stonecutter to still show stonecutting recipes for stone");
 
         helper.assertTrue(stonecutterMenu.clickMenuButton(player, 0), "Expected stonecutter to accept its first stonecutting recipe selection");
         helper.assertTrue(!stonecutterMenu.getSlot(1).getItem().isEmpty(),
                 "Expected stonecutter result slot to contain a vanilla stonecutting output after selecting a recipe");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void carvingStationConsumesHeldItemUse(GameTestHelper helper) {
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        BlockState state = Blocks.CARVING_STATION.defaultBlockState();
+        helper.getLevel().setBlockAndUpdate(pos, state);
+
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack heldItem = new ItemStack(net.minecraft.world.item.Items.STICK);
+        player.getInventory().setItem(player.getInventory().selected, heldItem);
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
+        InteractionResult result = state.useItemOn(heldItem, helper.getLevel(), player, InteractionHand.MAIN_HAND, hit);
+
+        helper.assertTrue(result.consumesAction(), "Expected held-item use to be consumed by the carving station");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void functionalBookcaseConsumesHeldItemUse(GameTestHelper helper) {
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        BlockState state = Blocks.BLOCK_BOOKCASE.defaultBlockState();
+        helper.getLevel().setBlockAndUpdate(pos, state);
+
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack heldItem = new ItemStack(net.minecraft.world.item.Items.STICK);
+        player.getInventory().setItem(player.getInventory().selected, heldItem);
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
+        InteractionResult result = state.useItemOn(heldItem, helper.getLevel(), player, InteractionHand.MAIN_HAND, hit);
+
+        helper.assertTrue(result.consumesAction(), "Expected held-item use to be consumed by the functional bookcase");
         helper.succeed();
     }
 }

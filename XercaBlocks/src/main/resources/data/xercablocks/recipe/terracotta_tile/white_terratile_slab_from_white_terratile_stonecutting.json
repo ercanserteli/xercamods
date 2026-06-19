@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "xercablocks:white_terratile"
-  },
+  "ingredient": "xercablocks:white_terratile",
   "result": {
     "id": "xercablocks:white_terratile_slab",
     "count": 2

@@ -4,9 +4,7 @@
     "ttt"
   ],
   "key": {
-    "t": {
-      "item": "xercablocks:blue_terratile"
-    }
+    "t": "xercablocks:blue_terratile"
   },
   "result": {
     "id": "xercablocks:blue_terratile_slab",

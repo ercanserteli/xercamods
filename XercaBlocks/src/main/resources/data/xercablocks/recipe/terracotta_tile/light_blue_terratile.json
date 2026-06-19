@@ -6,9 +6,7 @@
     "tt"
   ],
   "key": {
-    "t": {
-      "item": "minecraft:light_blue_terracotta"
-    }
+    "t": "minecraft:light_blue_terracotta"
   },
   "result": {
     "id": "xercablocks:light_blue_terratile",

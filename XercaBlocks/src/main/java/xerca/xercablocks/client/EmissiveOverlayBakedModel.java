@@ -6,8 +6,8 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.util.TriState;
+import net.minecraft.client.renderer.block.model.BakedOverrides;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -101,8 +101,8 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
     }
 
     @Override
-    public ItemOverrides getOverrides() {
-        return baseModel.getOverrides();
+    public BakedOverrides overrides() {
+        return baseModel.overrides();
     }
 
     private void emitOverlay(RenderContext context, Runnable overlayEmitter) {

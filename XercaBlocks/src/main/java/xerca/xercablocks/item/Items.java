@@ -3,6 +3,8 @@ package xerca.xercablocks.item;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -14,15 +16,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Items {
-    public static final Item BLOCK_LEATHER = new BlockItem(Blocks.BLOCK_LEATHER, new Item.Properties());
-    public static final Item BLOCK_STRAW = new BlockItem(Blocks.BLOCK_STRAW, new Item.Properties());
-    public static final Item BOOKCASE = new BlockItem(Blocks.BLOCK_BOOKCASE, new Item.Properties());
-    public static final Item ROPE = new RopeItem(Blocks.ROPE, new Item.Properties());
-    public static final Item CARVING_STATION = new BlockItem(Blocks.CARVING_STATION, new Item.Properties());
+    public static final Item BLOCK_LEATHER = new BlockItem(Blocks.BLOCK_LEATHER, properties("block_leather"));
+    public static final Item BLOCK_STRAW = new BlockItem(Blocks.BLOCK_STRAW, properties("block_straw"));
+    public static final Item BOOKCASE = new BlockItem(Blocks.BLOCK_BOOKCASE, itemProperties("bookcase"));
+    public static final Item ROPE = new RopeItem(Blocks.ROPE, properties("rope"));
+    public static final Item CARVING_STATION = new BlockItem(Blocks.CARVING_STATION, properties("carving_station"));
     private static final List<Item> BUILDING_TAB_ITEMS = new ArrayList<>();
     private static final List<Item> COLORED_TAB_ITEMS = new ArrayList<>();
 
     private Items() {
+    }
+
+    private static Item.Properties properties(String id) {
+        return itemProperties(id).useBlockDescriptionPrefix();
+    }
+
+    private static Item.Properties itemProperties(String id) {
+        return new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Mod.id(id)));
     }
 
     public static void registerItems() {
@@ -51,13 +61,13 @@ public final class Items {
     }
 
     private static void registerBuildingBlockItem(String id, Block block) {
-        Item item = new BlockItem(block, new Item.Properties());
+        Item item = new BlockItem(block, properties(id));
         register(id, item);
         BUILDING_TAB_ITEMS.add(item);
     }
 
     private static void registerColoredBlockItem(String id, Block block) {
-        Item item = new BlockItem(block, new Item.Properties());
+        Item item = new BlockItem(block, properties(id));
         register(id, item);
         COLORED_TAB_ITEMS.add(item);
     }

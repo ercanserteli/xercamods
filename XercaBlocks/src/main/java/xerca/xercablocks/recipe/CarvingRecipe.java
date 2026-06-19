@@ -6,7 +6,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
-import xerca.xercablocks.block.Blocks;
 
 @MethodsReturnNonnullByDefault
 public class CarvingRecipe extends StonecutterRecipe {
@@ -15,17 +14,15 @@ public class CarvingRecipe extends StonecutterRecipe {
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return Recipes.CARVING_TYPE;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public RecipeType<StonecutterRecipe> getType() {
+        return (RecipeType) Recipes.CARVING_TYPE;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return Recipes.CARVING_SERIALIZER;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public RecipeSerializer<StonecutterRecipe> getSerializer() {
+        return (RecipeSerializer) Recipes.CARVING_SERIALIZER;
     }
 
-    @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(Blocks.CARVING_STATION);
-    }
 }

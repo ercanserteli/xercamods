@@ -2,6 +2,8 @@ package xerca.xercablocks.block;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -56,22 +58,22 @@ public final class Blocks {
     private static final Map<String, Block> CARVED_WOODS = new LinkedHashMap<>();
 
     public static final Block BLOCK_LEATHER = register("block_leather",
-            new Block(BlockBehaviour.Properties.of().ignitedByLava().mapColor(DyeColor.YELLOW).sound(SoundType.WOOL).strength(1.0f)));
+            new Block(properties("block_leather").ignitedByLava().mapColor(DyeColor.YELLOW).sound(SoundType.WOOL).strength(1.0f)));
     public static final Block BLOCK_STRAW = register("block_straw",
-            new Block(BlockBehaviour.Properties.of().ignitedByLava().mapColor(DyeColor.YELLOW).sound(SoundType.GRASS).strength(0.8f)));
-    public static final Block BLOCK_BOOKCASE = register("block_bookcase", new BlockFunctionalBookcase());
-    public static final Block ROPE = register("rope", new BlockRope());
-    public static final Block CARVING_STATION = register("carving_station", new BlockCarvingStation());
+            new Block(properties("block_straw").ignitedByLava().mapColor(DyeColor.YELLOW).sound(SoundType.GRASS).strength(0.8f)));
+    public static final Block BLOCK_BOOKCASE = register("block_bookcase", new BlockFunctionalBookcase(properties("block_bookcase")));
+    public static final Block ROPE = register("rope", new BlockRope(properties("rope")));
+    public static final Block CARVING_STATION = register("carving_station", new BlockCarvingStation(properties("carving_station")));
 
     static {
         for (TerracottaVariant variant : TERRACOTTA_VARIANTS) {
-            Block base = register(variant.id(), new BlockTerracottaTile(variant.color()));
+            Block base = register(variant.id(), new BlockTerracottaTile(variant.color(), properties(variant.id())));
             TERRATILES.put(variant.id(), base);
 
-            Block slab = register(variant.id() + "_slab", new BlockTerracottaTileSlab(variant.color()));
+            Block slab = register(variant.id() + "_slab", new BlockTerracottaTileSlab(variant.color(), properties(variant.id() + "_slab")));
             TERRATILE_SLABS.put(variant.id() + "_slab", slab);
 
-            Block stairs = register(variant.id() + "_stairs", new BlockTerracottaTileStairs(base.defaultBlockState(), variant.color()));
+            Block stairs = register(variant.id() + "_stairs", new BlockTerracottaTileStairs(base.defaultBlockState(), variant.color(), properties(variant.id() + "_stairs")));
             TERRATILE_STAIRS.put(variant.id() + "_stairs", stairs);
         }
 
@@ -79,9 +81,9 @@ public final class Blocks {
             for (int i = 1; i <= 8; ++i) {
                 String id = "carved_" + variant.name() + "_" + i;
                 Block block = switch (variant.name()) {
-                    case "acacia" -> new BlockCarvedAcacia();
-                    case "crimson", "warped" -> new BlockCarvedNetherLog();
-                    default -> new BlockCarvedLog();
+                    case "acacia" -> new BlockCarvedAcacia(properties(id));
+                    case "crimson", "warped" -> new BlockCarvedNetherLog(properties(id));
+                    default -> new BlockCarvedLog(properties(id));
                 };
                 CARVED_WOODS.put(id, register(id, block));
             }
@@ -89,6 +91,10 @@ public final class Blocks {
     }
 
     private Blocks() {
+    }
+
+    private static BlockBehaviour.Properties properties(String id) {
+        return BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Mod.id(id)));
     }
 
     private static Block register(String id, Block block) {

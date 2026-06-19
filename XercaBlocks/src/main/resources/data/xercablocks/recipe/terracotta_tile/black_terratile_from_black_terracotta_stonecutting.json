@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "minecraft:black_terracotta"
-  },
+  "ingredient": "minecraft:black_terracotta",
   "result": {
     "id": "xercablocks:black_terratile",
     "count": 1

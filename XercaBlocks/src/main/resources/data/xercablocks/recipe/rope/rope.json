@@ -1,15 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:string"
-    },
-    {
-      "item": "minecraft:string"
-    },
-    {
-      "item": "minecraft:string"
-    }
+    "minecraft:string",
+    "minecraft:string",
+    "minecraft:string"
   ],
   "result": {
     "id": "xercablocks:rope"

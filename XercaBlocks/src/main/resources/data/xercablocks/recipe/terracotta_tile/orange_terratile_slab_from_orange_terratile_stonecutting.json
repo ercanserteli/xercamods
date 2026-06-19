@@ -1,8 +1,6 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "xercablocks:orange_terratile"
-  },
+  "ingredient": "xercablocks:orange_terratile",
   "result": {
     "id": "xercablocks:orange_terratile_slab",
     "count": 2
