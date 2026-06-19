@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "group": "prosecutor_badge",
   "ingredients": [
-    {
-      "item": "minecraft:gold_nugget"
-    },
-    {
-      "item": "minecraft:poppy"
-    }
+    "minecraft:gold_nugget",
+    "minecraft:poppy"
   ],
   "result": {
     "id": "xercacourt:prosecutor_badge"

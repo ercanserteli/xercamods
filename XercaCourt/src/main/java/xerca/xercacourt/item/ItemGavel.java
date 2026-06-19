@@ -10,8 +10,8 @@ import net.minecraft.world.level.Level;
 import xerca.xercacourt.SoundEvents;
 
 public class ItemGavel extends Item {
-    public ItemGavel() {
-        super(new Properties().stacksTo(1));
+    public ItemGavel(Properties properties) {
+        super(properties.stacksTo(1));
     }
 
     @Override

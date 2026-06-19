@@ -1,8 +1,10 @@
 package xerca.xercacourt.tests;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -34,7 +36,8 @@ public final class CourtGameTests {
     }
 
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
-        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().getRecipeManager().byKey(recipeId);
+        ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
+        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
         helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
         helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
@@ -94,7 +97,7 @@ public final class CourtGameTests {
 
         Items.ATTORNEY_BADGE.use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
 
-        helper.assertTrue(player.getCooldowns().isOnCooldown(Items.ATTORNEY_BADGE), "Expected attorney badge use to start cooldown");
+        helper.assertTrue(player.getCooldowns().isOnCooldown(player.getMainHandItem()), "Expected attorney badge use to start cooldown");
         helper.succeed();
     }
 

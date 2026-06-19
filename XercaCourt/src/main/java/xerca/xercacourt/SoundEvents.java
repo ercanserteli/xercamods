@@ -12,7 +12,7 @@ public final class SoundEvents {
     }
 
     public static void register() {
-        Registry.register(BuiltInRegistries.SOUND_EVENT, GAVEL.getLocation(), GAVEL);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, OBJECTION.getLocation(), OBJECTION);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, GAVEL.location(), GAVEL);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, OBJECTION.location(), OBJECTION);
     }
 }

@@ -6,12 +6,8 @@
     " s "
   ],
   "key": {
-    "#": {
-      "tag": "minecraft:planks"
-    },
-    "s": {
-      "item": "minecraft:stick"
-    }
+    "#": "#minecraft:planks",
+    "s": "minecraft:stick"
   },
   "result": {
     "id": "xercacourt:gavel"
