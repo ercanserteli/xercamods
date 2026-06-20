@@ -16,11 +16,28 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.EnumMap;
 import java.util.Objects;
 
 public class BlockRope extends PipeBlock {
     public static final MapCodec<BlockRope> CODEC = simpleCodec(BlockRope::new);
+    private static final EnumMap<Direction, VoxelShape> CENTER_PROBES = new EnumMap<>(Direction.class);
+
+    static {
+        final double lo = 7.0D / 16.0D;
+        final double hi = 9.0D / 16.0D;
+        final double t = 1.0D / 16.0D;
+        CENTER_PROBES.put(Direction.DOWN, Shapes.box(lo, 0.0D, lo, hi, t, hi));
+        CENTER_PROBES.put(Direction.UP, Shapes.box(lo, 1.0D - t, lo, hi, 1.0D, hi));
+        CENTER_PROBES.put(Direction.NORTH, Shapes.box(lo, lo, 0.0D, hi, hi, t));
+        CENTER_PROBES.put(Direction.SOUTH, Shapes.box(lo, lo, 1.0D - t, hi, hi, 1.0D));
+        CENTER_PROBES.put(Direction.WEST, Shapes.box(0.0D, lo, lo, t, hi, hi));
+        CENTER_PROBES.put(Direction.EAST, Shapes.box(1.0D - t, lo, lo, 1.0D, hi, hi));
+    }
 
     public BlockRope(Properties properties) {
         super(0.125F, properties.mapColor(MapColor.WOOL).noOcclusion().sound(SoundType.WOOL).pushReaction(PushReaction.NORMAL));
@@ -46,7 +63,18 @@ public class BlockRope extends PipeBlock {
     private boolean isConnectable(BlockGetter level, BlockPos pos, Direction direction) {
         BlockPos neighborPos = pos.relative(direction);
         BlockState neighborState = level.getBlockState(neighborPos);
-        return neighborState.is(this) || isFaceFull(neighborState.getCollisionShape(level, neighborPos), direction.getOpposite());
+        if (neighborState.is(this)) {
+            return true;
+        }
+        Direction face = direction.getOpposite();
+        VoxelShape collisionShape = neighborState.getCollisionShape(level, neighborPos);
+        return neighborState.is(this) || isFaceFull(collisionShape, face) || isFaceCenterFull(collisionShape, face);
+    }
+
+    // True if the neighbor's collision shape fully covers the central 2x2 pixels of the given face
+    private static boolean isFaceCenterFull(VoxelShape shape, Direction face) {
+        VoxelShape probe = CENTER_PROBES.get(face);
+        return !Shapes.joinIsNotEmpty(probe, shape, BooleanOp.ONLY_FIRST);
     }
 
     private BlockState makeConnections(BlockGetter level, BlockPos pos) {

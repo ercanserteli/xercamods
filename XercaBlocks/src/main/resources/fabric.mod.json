@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "xercablocks",
   "version": "${version}",
-  "name": "Xerca Decoration",
+  "name": "Xerca's Building Blocks",
   "description": "Cool building blocks, some with utility",
   "authors": ["xerca"],
   "contact": {},
