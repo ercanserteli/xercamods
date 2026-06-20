@@ -6,15 +6,9 @@
     "aea"
   ],
   "key": {
-    "e": {
-      "item": "minecraft:ender_eye"
-    },
-    "c": {
-      "item": "minecraft:ender_chest"
-    },
-    "a": {
-      "item": "minecraft:amethyst_block"
-    }
+    "e": "minecraft:ender_eye",
+    "c": "minecraft:ender_chest",
+    "a": "minecraft:amethyst_block"
   },
   "result": {
     "id": "xercaomnichest:omni_chest"

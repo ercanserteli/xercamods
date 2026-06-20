@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +42,8 @@ public final class OmniChestGameTests {
     }
 
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
-        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().getRecipeManager().byKey(recipeId);
+        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(
+                net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, recipeId));
         helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
         helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
@@ -82,7 +82,7 @@ public final class OmniChestGameTests {
         }
     }
 
-    private static ItemInteractionResult invokeUseItemOn(GameTestHelper helper, BlockPos pos, Player player, ItemStack stack) {
+    private static InteractionResult invokeUseItemOn(GameTestHelper helper, BlockPos pos, Player player, ItemStack stack) {
         BlockState state = helper.getLevel().getBlockState(pos);
         try {
             java.lang.reflect.Method method = net.minecraft.world.level.block.state.BlockBehaviour.class.getDeclaredMethod(
@@ -96,10 +96,10 @@ public final class OmniChestGameTests {
                     BlockHitResult.class
             );
             method.setAccessible(true);
-            return (ItemInteractionResult) method.invoke(state.getBlock(), stack, state, helper.getLevel(), pos, player, InteractionHand.MAIN_HAND, hitTopOf(pos));
+            return (InteractionResult) method.invoke(state.getBlock(), stack, state, helper.getLevel(), pos, player, InteractionHand.MAIN_HAND, hitTopOf(pos));
         } catch (Exception e) {
             helper.fail("Failed to invoke Omni Chest useItemOn: " + e.getMessage());
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
     }
 
@@ -286,9 +286,9 @@ public final class OmniChestGameTests {
         BlockEntityOmniChest chest = requireOmniChest(helper, pos, "Expected Omni Chest block entity");
         OmniChestInventory inventory = BlockOmniChest.getContainer(helper.getLevel().getServer());
 
-        ItemInteractionResult result = invokeUseItemOn(helper, pos, player, ItemStack.EMPTY);
+        InteractionResult result = invokeUseItemOn(helper, pos, player, ItemStack.EMPTY);
 
-        helper.assertTrue(result == ItemInteractionResult.SUCCESS, "Expected item interaction to open the Omni Chest");
+        helper.assertTrue(result == InteractionResult.SUCCESS, "Expected item interaction to open the Omni Chest");
         helper.assertTrue(inventory.testPlayerChest(player, chest), "Expected Omni Chest interaction to track the player's active chest");
         helper.succeed();
     }

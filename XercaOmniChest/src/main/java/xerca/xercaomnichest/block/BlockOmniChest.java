@@ -9,7 +9,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
@@ -20,7 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -39,6 +39,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import xerca.xercaomnichest.Mod;
 import xerca.xercaomnichest.block_entity.BlockEntities;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
 import xerca.xercaomnichest.data.OmniChestInventory;
@@ -46,13 +47,14 @@ import xerca.xercaomnichest.data.OmniChestSavedData;
 
 public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterloggedBlock {
     public static final MapCodec<BlockOmniChest> CODEC = simpleCodec(properties -> new BlockOmniChest());
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final VoxelShape SHAPE = box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
     private static final Component CONTAINER_TITLE = Component.translatable("container.xercaomnichest.omni_chest");
 
     public BlockOmniChest() {
         super(Properties.of()
+                .setId(Mod.blockKey("omni_chest"))
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .strength(22.5F, 600.0F)
@@ -76,39 +78,41 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
         return openMenu(level, pos, player);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        ItemInteractionResult result = openMenu(level, pos, player);
+        InteractionResult result = openMenu(level, pos, player);
         return result.consumesAction() ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
-    private ItemInteractionResult openMenu(Level level, BlockPos pos, Player player) {
+    private InteractionResult openMenu(Level level, BlockPos pos, Player player) {
         if (level.isClientSide) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         if (level.getServer() == null) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         BlockPos blockPosAbove = pos.above();
         if (level.getBlockState(blockPosAbove).isRedstoneConductor(level, blockPosAbove)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof BlockEntityOmniChest omniChest)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         OmniChestInventory inventory = getContainer(level.getServer());
         inventory.setActiveChest(omniChest, player);
         player.openMenu(menuProvider(inventory));
-        PiglinAi.angerNearbyPiglins(player, true);
-        return ItemInteractionResult.SUCCESS;
+        if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            PiglinAi.angerNearbyPiglins(serverLevel, player, true);
+        }
+        return InteractionResult.SUCCESS;
     }
 
     private MenuProvider menuProvider(OmniChestInventory inventory) {
@@ -160,12 +164,12 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess tickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         boolean waterlogged = state.getValue(WATERLOGGED);
         if (waterlogged) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        return super.updateShape(state, level, tickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override

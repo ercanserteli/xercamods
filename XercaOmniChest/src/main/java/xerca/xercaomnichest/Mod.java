@@ -1,7 +1,11 @@
 package xerca.xercaomnichest;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercaomnichest.block.Blocks;
@@ -14,6 +18,14 @@ public final class Mod implements ModInitializer {
 
     public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    public static ResourceKey<Item> itemKey(String path) {
+        return ResourceKey.create(Registries.ITEM, id(path));
+    }
+
+    public static ResourceKey<Block> blockKey(String path) {
+        return ResourceKey.create(Registries.BLOCK, id(path));
     }
 
     @Override

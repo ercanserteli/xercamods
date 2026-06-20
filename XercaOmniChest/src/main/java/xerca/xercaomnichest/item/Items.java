@@ -10,7 +10,7 @@ import xerca.xercaomnichest.Mod;
 import xerca.xercaomnichest.block.Blocks;
 
 public final class Items {
-    public static final Item OMNI_CHEST = Registry.register(BuiltInRegistries.ITEM, Mod.id("omni_chest"), new BlockItem(Blocks.OMNI_CHEST, new Item.Properties()));
+    public static final Item OMNI_CHEST = Registry.register(BuiltInRegistries.ITEM, Mod.id("omni_chest"), new BlockItem(Blocks.OMNI_CHEST, new Item.Properties().setId(Mod.itemKey("omni_chest")).useBlockDescriptionPrefix()));
 
     private Items() {
     }
