@@ -4,6 +4,7 @@ build/
 */bin
 .gradle/
 run/
+run
 .idea/
 builds/
 *.md
