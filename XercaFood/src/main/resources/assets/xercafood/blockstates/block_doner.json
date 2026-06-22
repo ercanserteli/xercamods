@@ -1,12 +1,76 @@
 {
     "variants": {
-        "is_raw=true,meat=1": { "model": "xercafood:block/doner/doner_1" },
-        "is_raw=true,meat=2": { "model": "xercafood:block/doner/doner_2" },
-        "is_raw=true,meat=3": { "model": "xercafood:block/doner/doner_3" },
-        "is_raw=true,meat=4": { "model": "xercafood:block/doner/doner_4" },
-        "is_raw=false,meat=1": { "model": "xercafood:block/doner/doner_cooked_1" },
-        "is_raw=false,meat=2": { "model": "xercafood:block/doner/doner_cooked_2" },
-        "is_raw=false,meat=3": { "model": "xercafood:block/doner/doner_cooked_3" },
-        "is_raw=false,meat=4": { "model": "xercafood:block/doner/doner_cooked_4" }
+        "is_raw=true,meat=1": {
+            "model": "xercafood:block/doner/doner_1"
+        },
+        "is_raw=true,meat=2": {
+            "model": "xercafood:block/doner/doner_2"
+        },
+        "is_raw=true,meat=3": {
+            "model": "xercafood:block/doner/doner_3"
+        },
+        "is_raw=true,meat=4": {
+            "model": "xercafood:block/doner/doner_4"
+        },
+        "is_raw=true,meat=5": {
+            "model": "xercafood:block/doner/doner_5"
+        },
+        "is_raw=true,meat=6": {
+            "model": "xercafood:block/doner/doner_6"
+        },
+        "is_raw=false,meat=4,side=0": {
+            "model": "xercafood:block/doner/doner_cooked_4_0"
+        },
+        "is_raw=false,meat=4,side=1": {
+            "model": "xercafood:block/doner/doner_cooked_4_1"
+        },
+        "is_raw=false,meat=4,side=2": {
+            "model": "xercafood:block/doner/doner_cooked_4_2"
+        },
+        "is_raw=false,meat=4,side=3": {
+            "model": "xercafood:block/doner/doner_cooked_4_3"
+        },
+        "is_raw=false,meat=3,side=0": {
+            "model": "xercafood:block/doner/doner_cooked_3_0"
+        },
+        "is_raw=false,meat=3,side=1": {
+            "model": "xercafood:block/doner/doner_cooked_3_1"
+        },
+        "is_raw=false,meat=3,side=2": {
+            "model": "xercafood:block/doner/doner_cooked_3_2"
+        },
+        "is_raw=false,meat=3,side=3": {
+            "model": "xercafood:block/doner/doner_cooked_3_3"
+        },
+        "is_raw=false,meat=2,side=0": {
+            "model": "xercafood:block/doner/doner_cooked_2_0"
+        },
+        "is_raw=false,meat=2,side=1": {
+            "model": "xercafood:block/doner/doner_cooked_2_1"
+        },
+        "is_raw=false,meat=2,side=2": {
+            "model": "xercafood:block/doner/doner_cooked_2_2"
+        },
+        "is_raw=false,meat=2,side=3": {
+            "model": "xercafood:block/doner/doner_cooked_2_3"
+        },
+        "is_raw=false,meat=1,side=0": {
+            "model": "xercafood:block/doner/doner_cooked_1_0"
+        },
+        "is_raw=false,meat=1,side=1": {
+            "model": "xercafood:block/doner/doner_cooked_1_1"
+        },
+        "is_raw=false,meat=1,side=2": {
+            "model": "xercafood:block/doner/doner_cooked_1_1"
+        },
+        "is_raw=false,meat=1,side=3": {
+            "model": "xercafood:block/doner/doner_cooked_1_1"
+        },
+        "is_raw=false,meat=5": {
+            "model": "xercafood:block/doner/doner_cooked_4_0"
+        },
+        "is_raw=false,meat=6": {
+            "model": "xercafood:block/doner/doner_cooked_4_0"
+        }
     }
 }

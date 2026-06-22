@@ -13,6 +13,7 @@ import xerca.xercafood.common.SoundEvents;
 import static net.minecraft.world.level.block.CampfireBlock.LIT;
 import static xerca.xercafood.common.block.BlockDoner.IS_RAW;
 import static xerca.xercafood.common.block.BlockDoner.MEAT_AMOUNT;
+import static xerca.xercafood.common.block.BlockDoner.SIDE;
 
 public class BlockEntityDoner extends BlockEntity {
     private int spinTicks;
@@ -63,7 +64,7 @@ public class BlockEntityDoner extends BlockEntity {
 
     private boolean isReadyToCook() {
         return this.getBlockState().getValue(IS_RAW)
-                && this.getBlockState().getValue(MEAT_AMOUNT) == 4
+                && this.getBlockState().getValue(MEAT_AMOUNT) == 6
                 && this.gettingRoasted();
     }
 
@@ -88,7 +89,10 @@ public class BlockEntityDoner extends BlockEntity {
     }
 
     private void finishCooking(Level level, RandomSource random) {
-        level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(IS_RAW, false));
+        // The full 6-stage raw tower becomes the full-width cooked box (the meat=4
+        // outer layer), which is then peeled away one side at a time when sliced.
+        level.setBlockAndUpdate(this.getBlockPos(),
+                this.getBlockState().setValue(IS_RAW, false).setValue(MEAT_AMOUNT, 4).setValue(SIDE, 0));
         level.playSound(null, this.getBlockPos(), SoundEvents.BIG_SIZZLE, SoundSource.BLOCKS, 1.0f, 1.0f);
         spawnSmoke(level, random, 12);
     }
