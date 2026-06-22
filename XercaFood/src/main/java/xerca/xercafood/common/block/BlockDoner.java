@@ -31,7 +31,12 @@ import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
 public class BlockDoner extends Block implements EntityBlock {
-    public static final IntegerProperty MEAT_AMOUNT = IntegerProperty.create("meat", 1, 4);
+    // While raw this is the filling stage (1-6): each mutton adds a stage of height.
+    // While cooked it is the current outermost width layer (1-4) being sliced.
+    public static final IntegerProperty MEAT_AMOUNT = IntegerProperty.create("meat", 1, 6);
+    // How many sides of the current outermost meat layer have been sliced off (0-3).
+    // Layers 4-2 have 4 sides; the innermost 2x2 layer (meat=1) only has 2.
+    public static final IntegerProperty SIDE = IntegerProperty.create("side", 0, 3);
     public static final BooleanProperty IS_RAW = BooleanProperty.create("is_raw");
 
     public void setRenderType(RenderShape renderType) {
@@ -42,7 +47,7 @@ public class BlockDoner extends Block implements EntityBlock {
 
     public BlockDoner() {
         super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_doner")).sound(SoundType.METAL).strength(1).noOcclusion());
-        registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(IS_RAW, true));
+        registerDefaultState(this.stateDefinition.any().setValue(MEAT_AMOUNT, 1).setValue(SIDE, 0).setValue(IS_RAW, true));
     }
 
     @Override
@@ -52,7 +57,7 @@ public class BlockDoner extends Block implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(MEAT_AMOUNT, IS_RAW);
+        builder.add(MEAT_AMOUNT, SIDE, IS_RAW);
     }
 
     @Override
@@ -71,7 +76,7 @@ public class BlockDoner extends Block implements EntityBlock {
     private boolean tryAddMeat(ItemStack heldItem, BlockState state, Level world, BlockPos pos) {
         boolean isRaw = state.getValue(IS_RAW);
         int meatAmount = state.getValue(MEAT_AMOUNT);
-        if (heldItem.getItem() != Items.MUTTON || !isRaw || meatAmount >= 4) {
+        if (heldItem.getItem() != Items.MUTTON || !isRaw || meatAmount >= 6) {
             return false;
         }
 
@@ -99,8 +104,18 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     private void updateDonerAfterSlice(BlockState state, Level world, BlockPos pos) {
-        if (state.getValue(MEAT_AMOUNT) > 1) {
-            world.setBlockAndUpdate(pos, state.setValue(MEAT_AMOUNT, state.getValue(MEAT_AMOUNT) - 1));
+        int meatAmount = state.getValue(MEAT_AMOUNT);
+        int side = state.getValue(SIDE);
+        // The innermost 2x2 layer is split into two 2x1 slabs, so it only has 2 sides.
+        int lastSide = meatAmount == 1 ? 1 : 3;
+        if (side < lastSide) {
+            // Still sides left on the current outer layer: remove one of them.
+            world.setBlockAndUpdate(pos, state.setValue(SIDE, side + 1));
+            return;
+        }
+        // This cut removes the last side of the current outer layer.
+        if (meatAmount > 1) {
+            world.setBlockAndUpdate(pos, state.setValue(MEAT_AMOUNT, meatAmount - 1).setValue(SIDE, 0));
             return;
         }
         world.setBlockAndUpdate(pos, Blocks.IRON_BARS.defaultBlockState());

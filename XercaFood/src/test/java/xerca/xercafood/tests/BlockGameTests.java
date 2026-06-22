@@ -284,21 +284,22 @@ public class BlockGameTests {
         helper.getLevel().setBlockAndUpdate(donerPos.east(), Blocks.REDSTONE_BLOCK.defaultBlockState());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 
-        ItemStack mutton = new ItemStack(net.minecraft.world.item.Items.MUTTON, 4);
+        ItemStack mutton = new ItemStack(net.minecraft.world.item.Items.MUTTON, 6);
         player.getInventory().setItem(player.getInventory().selected, mutton);
         UseBlockCallback.EVENT.invoker().interact(player, helper.getLevel(), InteractionHand.MAIN_HAND, hitTopOf(donerPos));
         helper.assertTrue(helper.getLevel().getBlockState(donerPos).is(xerca.xercafood.common.block.Blocks.BLOCK_DONER), "Expected mutton+iron bars to create doner");
 
-        useBlockWithItem(helper, donerPos, player, mutton);
-        useBlockWithItem(helper, donerPos, player, mutton);
-        useBlockWithItem(helper, donerPos, player, mutton);
-        helper.assertTrue(helper.getLevel().getBlockState(donerPos).getValue(xerca.xercafood.common.block.BlockDoner.MEAT_AMOUNT) == 4, "Expected doner to reach max meat");
+        for (int i = 0; i < 5; i++) {
+            useBlockWithItem(helper, donerPos, player, mutton);
+        }
+        helper.assertTrue(helper.getLevel().getBlockState(donerPos).getValue(xerca.xercafood.common.block.BlockDoner.MEAT_AMOUNT) == 6, "Expected doner to reach max meat after 6 muttons");
 
         xerca.xercafood.common.block_entity.BlockEntityDoner be = requireDonerBlockEntity(helper, donerPos);
         for (int i = 0; i < 510; i++) {
             xerca.xercafood.common.block_entity.BlockEntityDoner.tick(helper.getLevel(), be);
         }
         helper.assertFalse(helper.getLevel().getBlockState(donerPos).getValue(xerca.xercafood.common.block.BlockDoner.IS_RAW), "Expected doner to cook when heated and powered");
+        helper.assertTrue(helper.getLevel().getBlockState(donerPos).getValue(xerca.xercafood.common.block.BlockDoner.MEAT_AMOUNT) == 4, "Expected cooked doner to reset to the full-width meat layer");
 
         ItemStack knife = new ItemStack(requireKnifeItem());
         useBlockWithItem(helper, donerPos, player, knife);
