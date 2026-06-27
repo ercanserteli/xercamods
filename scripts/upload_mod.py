@@ -192,7 +192,7 @@ def main():
 
     if args.curseforge_api_token:
         mod_name_to_id = {"xercamod": 341575, "music": 341448, "paint": 350727, "blocks": 1581682, "cushion": 1582875,
-                          "food": 1588028}
+                          "food": 1588028, "omnichest": 1589544}
         cf_project_id = args.project_id
         if cf_project_id in mod_name_to_id:
             cf_project_id = mod_name_to_id[cf_project_id]
@@ -219,10 +219,10 @@ def main():
 
     if args.modrinth_api_token:
         mod_name_to_id = {"xercamod": "Z110yRfL", "music": "qQpWCN75", "paint": "YOs4tZea", "blocks": "pAXaLv6Y",
-                          "cushion": "ARQMEkyi", "food": "CZY6IAGS"}
+                          "cushion": "ARQMEkyi", "food": "CZY6IAGS", "omnichest": "jFgOQPbE"}
         mod_name_to_title = {"xercamod": "XercaMod", "music": "Music Maker Mod", "paint": "Joy of Painting",
                              "blocks": "Xerca's Building Blocks", "cushion": "Sittable Cushions",
-                             "food": "Xerca's Kitchen"}
+                             "food": "Xerca's Kitchen", "omnichest": "Omni Chest"}
 
         title = mod_name_to_title[args.project_id]
         if args.project_id in mod_name_to_id:
