@@ -391,6 +391,87 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerDashAppliesForwardVelocity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);  // facing south (+z)
+        player.setXRot(0.0f);
+        player.setDeltaMovement(Vec3.ZERO);
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.dashingEnchantment(level.registryAccess()), 2);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+
+        // full charge, no point-blank target
+        xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, false);
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+
+        double vz = player.getDeltaMovement().z;
+        helper.assertTrue(vz > 0.5, "Dashing II at full charge should launch the player forward (+z), got " + vz);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerDashStrikesEntityInRange(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);  // facing south (+z)
+        player.setXRot(0.0f);
+
+        // pig a few blocks ahead at eye height, within the warhammer's hit range
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 5));
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.dashingEnchantment(level.registryAccess()), 2);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+
+        float initialHealth = pig.getHealth();
+        xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, false);
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+
+        helper.assertTrue(pig.getHealth() < initialHealth, "Dash should strike a pig that is within reach");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerDashAlreadyHitDoesNotStrikeAgain(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);
+        player.setXRot(0.0f);
+
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 5));
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.dashingEnchantment(level.registryAccess()), 2);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+
+        // alreadyHit=true → the dash must not deal a second hit even though the pig is in reach
+        float initialHealth = pig.getHealth();
+        xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, true);
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+
+        helper.assertTrue(pig.getHealth() == initialHealth,
+                "Dash should not strike again when the release already hit a target");
+        helper.succeed();
+    }
+
     // ── Group C: enchanting-table availability ────────────────────────────────
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
@@ -410,6 +491,8 @@ public class WeaponsGameTests {
                 "Warhammer should allow Quake enchantment");
         helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.UPPERCUT), ctx),
                 "Warhammer should allow Uppercut enchantment");
+        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.DASHING), ctx),
+                "Warhammer should allow Dashing enchantment");
         helper.succeed();
     }
 

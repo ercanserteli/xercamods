@@ -1,6 +1,7 @@
 package xerca.xercatools;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
@@ -105,6 +106,7 @@ public class Mod implements ModInitializer {
 
         registerEnchantmentRules();
         registerCombatHooks();
+        ServerTickEvents.END_SERVER_TICK.register(xerca.xercatools.item.WarhammerDashManager::onServerTick);
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             entries.accept(Items.WOODEN_SCYTHE);

@@ -1,7 +1,7 @@
 {
   "anvil_cost": 2,
   "description": {
-    "translate": "enchantment.xercatools.enchantment_quake"
+    "translate": "enchantment.xercatools.enchantment_dashing"
   },
   "effects": {},
   "exclusive_set": "#xercatools:exclusive_set/warhammer_strike",
@@ -9,7 +9,7 @@
     "base": 65,
     "per_level_above_first": 9
   },
-  "max_level": 3,
+  "max_level": 2,
   "min_cost": {
     "base": 15,
     "per_level_above_first": 9
