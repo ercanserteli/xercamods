@@ -115,7 +115,11 @@ public class Mod implements ModInitializer {
             entries.accept(Items.GOLDEN_SCYTHE);
             entries.accept(Items.DIAMOND_SCYTHE);
             entries.accept(Items.NETHERITE_SCYTHE);
-            entries.accept(Items.KNIFE);
+            entries.accept(Items.STONE_KNIFE);
+            entries.accept(Items.IRON_KNIFE);
+            entries.accept(Items.GOLDEN_KNIFE);
+            entries.accept(Items.DIAMOND_KNIFE);
+            entries.accept(Items.NETHERITE_KNIFE);
             entries.accept(Items.GRAB_HOOK);
             entries.accept(Items.FLASK);
             entries.accept(Items.ENDER_BOW);
@@ -134,7 +138,11 @@ public class Mod implements ModInitializer {
             entries.accept(Items.GOLD_WARHAMMER);
             entries.accept(Items.DIAMOND_WARHAMMER);
             entries.accept(Items.NETHERITE_WARHAMMER);
-            entries.accept(Items.KNIFE);
+            entries.accept(Items.STONE_KNIFE);
+            entries.accept(Items.IRON_KNIFE);
+            entries.accept(Items.GOLDEN_KNIFE);
+            entries.accept(Items.DIAMOND_KNIFE);
+            entries.accept(Items.NETHERITE_KNIFE);
             entries.accept(Items.GRAB_HOOK);
         });
         LOGGER.info(MOD_ID + " initialized");
@@ -289,7 +297,11 @@ public class Mod implements ModInitializer {
     }
 
     private static boolean isKnife(ItemStack stack) {
-        return stack.is(Items.KNIFE);
+        return stack.is(Items.STONE_KNIFE)
+                || stack.is(Items.IRON_KNIFE)
+                || stack.is(Items.GOLDEN_KNIFE)
+                || stack.is(Items.DIAMOND_KNIFE)
+                || stack.is(Items.NETHERITE_KNIFE);
     }
 
     private static boolean isFlask(ItemStack stack) {

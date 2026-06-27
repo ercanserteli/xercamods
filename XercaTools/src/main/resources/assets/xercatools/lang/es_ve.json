@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Cuchillo",
+  "item.xercatools.stone_knife": "Cuchillo de Piedra",
+  "item.xercatools.knife": "Cuchillo de Hierro",
+  "item.xercatools.golden_knife": "Cuchillo de Oro",
+  "item.xercatools.diamond_knife": "Cuchillo de Diamante",
+  "item.xercatools.netherite_knife": "Cuchillo de Netherita",
   "item.xercatools.grab_hook": "Gancho Agarre",
   "item.xercatools.wooden_scythe": "Guadaña de Madera",
   "item.xercatools.stone_scythe": "Guadaña de Piedra",

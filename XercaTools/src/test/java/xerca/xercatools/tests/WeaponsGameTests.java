@@ -538,7 +538,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(0.0f);  // both face same direction → attacker is behind target
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         float crit = ItemKnife.critDamage(pig, player, knife);
         helper.assertTrue(crit == 5.0f,
                 "Sneaking backstab should give 5.0 crit bonus, got " + crit);
@@ -554,7 +554,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(180.0f);  // player facing opposite direction → attacker is in front
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         float crit = ItemKnife.critDamage(pig, player, knife);
         helper.assertTrue(crit == 0.0f,
                 "Facing from front should give no backstab bonus, got " + crit);
@@ -570,7 +570,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(0.0f);
 
-        float crit = ItemKnife.critDamage(pig, player, new ItemStack(Items.KNIFE));
+        float crit = ItemKnife.critDamage(pig, player, new ItemStack(Items.IRON_KNIFE));
         helper.assertTrue(crit == 0.0f,
                 "Not sneaking should give no backstab bonus, got " + crit);
         helper.succeed();
@@ -586,7 +586,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(0.0f);
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc.set(KnifeEnchantments.stealthEnchantment(level.registryAccess()), 1);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
@@ -607,7 +607,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(0.0f);
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc.set(KnifeEnchantments.stealthEnchantment(level.registryAccess()), 2);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
@@ -621,12 +621,12 @@ public class WeaponsGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
     public static void knifeOffhandUseAddsCooldown(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         player.setItemSlot(EquipmentSlot.OFFHAND, knife);
 
-        Items.KNIFE.use(helper.getLevel(), player, net.minecraft.world.InteractionHand.OFF_HAND);
+        Items.IRON_KNIFE.use(helper.getLevel(), player, net.minecraft.world.InteractionHand.OFF_HAND);
 
-        helper.assertTrue(player.getCooldowns().isOnCooldown(Items.KNIFE),
+        helper.assertTrue(player.getCooldowns().isOnCooldown(Items.IRON_KNIFE),
                 "Knife offhand use should add a cooldown");
         helper.succeed();
     }
@@ -637,7 +637,7 @@ public class WeaponsGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc.set(KnifeEnchantments.poisonEnchantment(level.registryAccess()), 1);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
@@ -661,7 +661,7 @@ public class WeaponsGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc.set(KnifeEnchantments.poisonEnchantment(level.registryAccess()), 2);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
@@ -684,7 +684,7 @@ public class WeaponsGameTests {
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
 
         // not sneaking → no crit bonus; no sharpness → no enchant bonus
-        float dmg = ItemKnife.getOffhandDamage(level, new ItemStack(Items.KNIFE), pig, player);
+        float dmg = ItemKnife.getOffhandDamage(level, new ItemStack(Items.IRON_KNIFE), pig, player);
         helper.assertTrue(dmg == 3.0f,
                 "Offhand damage without enchants or backstab should be 3.0, got " + dmg);
         helper.succeed();
@@ -697,7 +697,7 @@ public class WeaponsGameTests {
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
-        ItemStack knife1 = new ItemStack(Items.KNIFE);
+        ItemStack knife1 = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc1 = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc1.set(reg.getOrThrow(Enchantments.SHARPNESS), 1);
         knife1.set(DataComponents.ENCHANTMENTS, enc1.toImmutable());
@@ -705,7 +705,7 @@ public class WeaponsGameTests {
         helper.assertTrue(Math.abs(dmg1 - 4.0f) < 0.001f,
                 "Sharpness I offhand damage should be 4.0, got " + dmg1);
 
-        ItemStack knife2 = new ItemStack(Items.KNIFE);
+        ItemStack knife2 = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc2 = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc2.set(reg.getOrThrow(Enchantments.SHARPNESS), 2);
         knife2.set(DataComponents.ENCHANTMENTS, enc2.toImmutable());

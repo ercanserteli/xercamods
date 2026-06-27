@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "i",
+    "s"
+  ],
+  "key": {
+    "s": {
+      "item": "minecraft:stick"
+    },
+    "i": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "id": "xercatools:golden_knife"
+  }
+}

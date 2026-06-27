@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Kniv",
+  "item.xercatools.stone_knife": "Stenkniv",
+  "item.xercatools.knife": "Järnkniv",
+  "item.xercatools.golden_knife": "Guldkniv",
+  "item.xercatools.diamond_knife": "Diamantkniv",
+  "item.xercatools.netherite_knife": "Netheritkniv",
   "item.xercatools.grab_hook": "Griphake",
   "item.xercatools.wooden_scythe": "Trälien",
   "item.xercatools.stone_scythe": "Stenlien",

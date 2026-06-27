@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Coltello",
+  "item.xercatools.stone_knife": "Coltello di pietra",
+  "item.xercatools.knife": "Coltello di ferro",
+  "item.xercatools.golden_knife": "Coltello d'oro",
+  "item.xercatools.diamond_knife": "Coltello di diamante",
+  "item.xercatools.netherite_knife": "Coltello di netherite",
   "item.xercatools.grab_hook": "Gancio di presa",
   "item.xercatools.wooden_scythe": "Falce di legno",
   "item.xercatools.stone_scythe": "Falce di pietra",

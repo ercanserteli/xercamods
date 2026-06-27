@@ -3,8 +3,12 @@ from recipe_generator import *
 recipes = [
     ShapedRecipe([' l ', 'lel', ' l '], {'id': 'xercatools:flask'}, {'e': {'item': 'minecraft:ender_eye'}, 'l': {'item': 'minecraft:leather'}}, {'item': 'minecraft:ender_eye'}, "", "ender_flask"),
     ShapedRecipe(['f', 'c'], {'id': 'xercatools:ender_bow'}, {'c': {'item': 'minecraft:crossbow'}, 'f': {'item': 'xercatools:flask'}}, {'item': 'xercatools:flask'}, "", "ender_flask"),
-    ShapedRecipe(['i', 's'], {'id': 'xercatools:knife'}, {'s': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:iron_ingot'}}, {'item': 'minecraft:iron_ingot'}, ""),
     ShapedRecipe(['  s', ' sc', 's i'], {'id': 'xercatools:grab_hook'}, {'s': {'item': 'minecraft:stick'}, 'c': {'item': 'minecraft:chain'}, 'i': {'item': 'minecraft:iron_ingot'}}, {'item': 'minecraft:iron_ingot'}, "", "grab_hook"),
+
+    ShapedRecipe(['i', 's'], {'id': 'xercatools:stone_knife'}, {'s': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:cobblestone'}}, {'item': 'minecraft:cobblestone'}, ""),
+    ShapedRecipe(['i', 's'], {'id': 'xercatools:knife'}, {'s': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:iron_ingot'}}, {'item': 'minecraft:iron_ingot'}, ""),
+    ShapedRecipe(['i', 's'], {'id': 'xercatools:golden_knife'}, {'s': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:gold_ingot'}}, {'item': 'minecraft:gold_ingot'}, ""),
+    ShapedRecipe(['i', 's'], {'id': 'xercatools:diamond_knife'}, {'s': {'item': 'minecraft:stick'}, 'i': {'item': 'minecraft:diamond'}}, {'item': 'minecraft:diamond'}, ""),
 
     ShapedRecipe(['tst', ' s ', ' s '], {'id': 'xercatools:stone_warhammer'}, {'s': {'item': 'minecraft:stick'}, 't': {'item': 'minecraft:cobblestone'}}, {'item': 'minecraft:cobblestone'}, "", "warhammer"),
     ShapedRecipe(['tst', ' s ', ' s '], {'id': 'xercatools:iron_warhammer'}, {'s': {'item': 'minecraft:stick'}, 't': {'item': 'minecraft:iron_ingot'}}, {'item': 'minecraft:iron_ingot'}, "", "warhammer"),
@@ -27,6 +31,7 @@ recipes = [
     SpecialRecipe("xercatools:crafting_special_flask_filling"),
     SpecialRecipe("xercatools:crafting_special_ender_bow_filling"),
 
+    SmithingRecipe("xercatools:diamond_knife", "minecraft:netherite_ingot", "xercatools:netherite_knife"),
     SmithingRecipe("xercatools:diamond_scythe", "minecraft:netherite_ingot", "xercatools:netherite_scythe"),
     SmithingRecipe("xercatools:diamond_warhammer", "minecraft:netherite_ingot", "xercatools:netherite_warhammer"),
 ]

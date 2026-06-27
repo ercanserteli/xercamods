@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Faca",
+  "item.xercatools.stone_knife": "Faca de Pedra",
+  "item.xercatools.knife": "Faca de Ferro",
+  "item.xercatools.golden_knife": "Faca de Ouro",
+  "item.xercatools.diamond_knife": "Faca de Diamante",
+  "item.xercatools.netherite_knife": "Faca de Netherita",
   "item.xercatools.grab_hook": "Gancho Agarrador",
   "item.xercatools.wooden_scythe": "Foice de Madeira",
   "item.xercatools.stone_scythe": "Foice de Pedra",

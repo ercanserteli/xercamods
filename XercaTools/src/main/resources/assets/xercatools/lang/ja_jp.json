@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "ナイフ",
+  "item.xercatools.stone_knife": "石のナイフ",
+  "item.xercatools.knife": "鉄のナイフ",
+  "item.xercatools.golden_knife": "金のナイフ",
+  "item.xercatools.diamond_knife": "ダイヤモンドのナイフ",
+  "item.xercatools.netherite_knife": "ネザライトのナイフ",
   "item.xercatools.grab_hook": "グラブフック",
   "item.xercatools.wooden_scythe": "木の大鎌",
   "item.xercatools.stone_scythe": "石の大鎌",

@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "xercatools:item/tools/iron_scythe"
+    "layer0": "xercatools:item/iron_scythe"
   },
   "overrides": [
     {

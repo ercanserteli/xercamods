@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Knife",
+  "item.xercatools.stone_knife": "Stone Knife",
+  "item.xercatools.knife": "Iron Knife",
+  "item.xercatools.golden_knife": "Golden Knife",
+  "item.xercatools.diamond_knife": "Diamond Knife",
+  "item.xercatools.netherite_knife": "Netherite Knife",
   "item.xercatools.grab_hook": "Grab Hook",
   "item.xercatools.wooden_scythe": "Wooden Scythe",
   "item.xercatools.stone_scythe": "Stone Scythe",

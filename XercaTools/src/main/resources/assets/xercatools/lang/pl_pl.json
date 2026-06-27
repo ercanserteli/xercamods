@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Nóż",
+  "item.xercatools.stone_knife": "Kamienny nóż",
+  "item.xercatools.knife": "Żelazny nóż",
+  "item.xercatools.golden_knife": "Złoty nóż",
+  "item.xercatools.diamond_knife": "Diamentowy nóż",
+  "item.xercatools.netherite_knife": "Netherytowy nóż",
   "item.xercatools.grab_hook": "Hak chwytający",
   "item.xercatools.wooden_scythe": "Drewniana kosa",
   "item.xercatools.stone_scythe": "Kamienna kosa",

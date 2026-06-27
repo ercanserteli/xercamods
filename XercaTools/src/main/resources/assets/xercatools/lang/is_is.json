@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Hnifur",
+  "item.xercatools.stone_knife": "Steinhnífur",
+  "item.xercatools.knife": "Járnhnífur",
+  "item.xercatools.golden_knife": "Gullhnífur",
+  "item.xercatools.diamond_knife": "Demantshnífur",
+  "item.xercatools.netherite_knife": "Netherite-hnífur",
   "item.xercatools.grab_hook": "Gripkrókur",
   "item.xercatools.wooden_scythe": "Viðarsigð",
   "item.xercatools.stone_scythe": "Steinsigð",

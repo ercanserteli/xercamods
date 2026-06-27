@@ -13,7 +13,11 @@ import xerca.xercatools.crafting.RecipeFlaskFilling;
 public final class Items {
     public static final Item FLASK = new ItemFlask();
     public static final Item ENDER_BOW = new ItemPotionLauncher();
-    public static final Item KNIFE = new ItemKnife();
+    public static final Item STONE_KNIFE = new ItemKnife(Tiers.STONE);
+    public static final Item IRON_KNIFE = new ItemKnife(Tiers.IRON);
+    public static final Item GOLDEN_KNIFE = new ItemKnife(Tiers.GOLD);
+    public static final Item DIAMOND_KNIFE = new ItemKnife(Tiers.DIAMOND);
+    public static final Item NETHERITE_KNIFE = new ItemKnife(Tiers.NETHERITE);
     public static final Item GRAB_HOOK = new ItemGrabHook();
     public static final Item WOODEN_SCYTHE = new ItemScythe(Tiers.WOOD);
     public static final Item STONE_SCYTHE = new ItemScythe(Tiers.STONE);
@@ -37,7 +41,11 @@ public final class Items {
     public static void register() {
         Registry.register(BuiltInRegistries.ITEM, Mod.id("flask"), FLASK);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("ender_bow"), ENDER_BOW);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("knife"), KNIFE);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("stone_knife"), STONE_KNIFE);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("knife"), IRON_KNIFE);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("golden_knife"), GOLDEN_KNIFE);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("diamond_knife"), DIAMOND_KNIFE);
+        Registry.register(BuiltInRegistries.ITEM, Mod.id("netherite_knife"), NETHERITE_KNIFE);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("grab_hook"), GRAB_HOOK);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("wooden_scythe"), WOODEN_SCYTHE);
         Registry.register(BuiltInRegistries.ITEM, Mod.id("stone_scythe"), STONE_SCYTHE);

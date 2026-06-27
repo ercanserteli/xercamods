@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Нож",
+  "item.xercatools.stone_knife": "Каменный нож",
+  "item.xercatools.knife": "Железный нож",
+  "item.xercatools.golden_knife": "Золотой нож",
+  "item.xercatools.diamond_knife": "Алмазный нож",
+  "item.xercatools.netherite_knife": "Незеритовый нож",
   "item.xercatools.grab_hook": "Метательный крюк",
   "item.xercatools.wooden_scythe": "Деревянная коса",
   "item.xercatools.stone_scythe": "Каменная коса",

@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "匕首",
+  "item.xercatools.stone_knife": "石匕首",
+  "item.xercatools.knife": "铁匕首",
+  "item.xercatools.golden_knife": "金匕首",
+  "item.xercatools.diamond_knife": "钻石匕首",
+  "item.xercatools.netherite_knife": "下界合金匕首",
   "item.xercatools.grab_hook": "抓钩",
   "item.xercatools.wooden_scythe": "木镰刀",
   "item.xercatools.stone_scythe": "石镰刀",

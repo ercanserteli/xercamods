@@ -1,5 +1,9 @@
 {
-  "item.xercatools.knife": "Bıçak",
+  "item.xercatools.stone_knife": "Taş Bıçak",
+  "item.xercatools.knife": "Demir Bıçak",
+  "item.xercatools.golden_knife": "Altın Bıçak",
+  "item.xercatools.diamond_knife": "Elmas Bıçak",
+  "item.xercatools.netherite_knife": "Netherite Bıçak",
   "item.xercatools.grab_hook": "Kapma Kancası",
   "item.xercatools.wooden_scythe": "Tahta Tırpan",
   "item.xercatools.stone_scythe": "Taş Tırpan",
