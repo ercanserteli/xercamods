@@ -16,6 +16,7 @@ public final class SoundEvents {
     public static final SoundEvent ABSORB = SoundEvent.createVariableRangeEvent(Mod.id("absorb"));
     public static final SoundEvent SOUND_CRACK = SoundEvent.createVariableRangeEvent(Mod.id("crack"));
     public static final SoundEvent SOUND_CONFETTI = SoundEvent.createVariableRangeEvent(Mod.id("confetti"));
+    public static final SoundEvent SWOOSH = SoundEvent.createVariableRangeEvent(Mod.id("swoosh"));
 
     private SoundEvents() {
     }
@@ -32,5 +33,6 @@ public final class SoundEvents {
         Registry.register(BuiltInRegistries.SOUND_EVENT, ABSORB.getLocation(), ABSORB);
         Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CRACK.getLocation(), SOUND_CRACK);
         Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CONFETTI.getLocation(), SOUND_CONFETTI);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SWOOSH.getLocation(), SWOOSH);
     }
 }

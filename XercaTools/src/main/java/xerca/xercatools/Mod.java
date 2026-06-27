@@ -1,6 +1,7 @@
 package xerca.xercatools;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
@@ -105,6 +106,7 @@ public class Mod implements ModInitializer {
 
         registerEnchantmentRules();
         registerCombatHooks();
+        ServerTickEvents.END_SERVER_TICK.register(xerca.xercatools.item.WarhammerDashManager::onServerTick);
 
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             entries.accept(Items.WOODEN_SCYTHE);
@@ -113,7 +115,11 @@ public class Mod implements ModInitializer {
             entries.accept(Items.GOLDEN_SCYTHE);
             entries.accept(Items.DIAMOND_SCYTHE);
             entries.accept(Items.NETHERITE_SCYTHE);
-            entries.accept(Items.KNIFE);
+            entries.accept(Items.STONE_KNIFE);
+            entries.accept(Items.IRON_KNIFE);
+            entries.accept(Items.GOLDEN_KNIFE);
+            entries.accept(Items.DIAMOND_KNIFE);
+            entries.accept(Items.NETHERITE_KNIFE);
             entries.accept(Items.GRAB_HOOK);
             entries.accept(Items.FLASK);
             entries.accept(Items.ENDER_BOW);
@@ -132,7 +138,11 @@ public class Mod implements ModInitializer {
             entries.accept(Items.GOLD_WARHAMMER);
             entries.accept(Items.DIAMOND_WARHAMMER);
             entries.accept(Items.NETHERITE_WARHAMMER);
-            entries.accept(Items.KNIFE);
+            entries.accept(Items.STONE_KNIFE);
+            entries.accept(Items.IRON_KNIFE);
+            entries.accept(Items.GOLDEN_KNIFE);
+            entries.accept(Items.DIAMOND_KNIFE);
+            entries.accept(Items.NETHERITE_KNIFE);
             entries.accept(Items.GRAB_HOOK);
         });
         LOGGER.info(MOD_ID + " initialized");
@@ -287,7 +297,11 @@ public class Mod implements ModInitializer {
     }
 
     private static boolean isKnife(ItemStack stack) {
-        return stack.is(Items.KNIFE);
+        return stack.is(Items.STONE_KNIFE)
+                || stack.is(Items.IRON_KNIFE)
+                || stack.is(Items.GOLDEN_KNIFE)
+                || stack.is(Items.DIAMOND_KNIFE)
+                || stack.is(Items.NETHERITE_KNIFE);
     }
 
     private static boolean isFlask(ItemStack stack) {

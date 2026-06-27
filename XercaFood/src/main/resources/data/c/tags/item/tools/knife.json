@@ -2,7 +2,23 @@
   "replace": false,
   "values": [
     {
+      "id": "xercatools:stone_knife",
+      "required": false
+    },
+    {
       "id": "xercatools:knife",
+      "required": false
+    },
+    {
+      "id": "xercatools:golden_knife",
+      "required": false
+    },
+    {
+      "id": "xercatools:diamond_knife",
+      "required": false
+    },
+    {
+      "id": "xercatools:netherite_knife",
       "required": false
     },
     {

@@ -391,6 +391,87 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerDashAppliesForwardVelocity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);  // facing south (+z)
+        player.setXRot(0.0f);
+        player.setDeltaMovement(Vec3.ZERO);
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.dashingEnchantment(level.registryAccess()), 2);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+
+        // full charge, no point-blank target
+        xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, false);
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+
+        double vz = player.getDeltaMovement().z;
+        helper.assertTrue(vz > 0.5, "Dashing II at full charge should launch the player forward (+z), got " + vz);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerDashStrikesEntityInRange(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);  // facing south (+z)
+        player.setXRot(0.0f);
+
+        // pig a few blocks ahead at eye height, within the warhammer's hit range
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 5));
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.dashingEnchantment(level.registryAccess()), 2);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+
+        float initialHealth = pig.getHealth();
+        xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, false);
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+
+        helper.assertTrue(pig.getHealth() < initialHealth, "Dash should strike a pig that is within reach");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerDashAlreadyHitDoesNotStrikeAgain(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
+        player.setPos(abs.x, abs.y, abs.z);
+        player.setYRot(0.0f);
+        player.setXRot(0.0f);
+
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 5));
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(WarhammerEnchantments.dashingEnchantment(level.registryAccess()), 2);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+
+        // alreadyHit=true → the dash must not deal a second hit even though the pig is in reach
+        float initialHealth = pig.getHealth();
+        xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, true);
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+
+        helper.assertTrue(pig.getHealth() == initialHealth,
+                "Dash should not strike again when the release already hit a target");
+        helper.succeed();
+    }
+
     // ── Group C: enchanting-table availability ────────────────────────────────
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
@@ -410,6 +491,8 @@ public class WeaponsGameTests {
                 "Warhammer should allow Quake enchantment");
         helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.UPPERCUT), ctx),
                 "Warhammer should allow Uppercut enchantment");
+        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.DASHING), ctx),
+                "Warhammer should allow Dashing enchantment");
         helper.succeed();
     }
 
@@ -455,7 +538,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(0.0f);  // both face same direction → attacker is behind target
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         float crit = ItemKnife.critDamage(pig, player, knife);
         helper.assertTrue(crit == 5.0f,
                 "Sneaking backstab should give 5.0 crit bonus, got " + crit);
@@ -471,7 +554,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(180.0f);  // player facing opposite direction → attacker is in front
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         float crit = ItemKnife.critDamage(pig, player, knife);
         helper.assertTrue(crit == 0.0f,
                 "Facing from front should give no backstab bonus, got " + crit);
@@ -487,7 +570,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(0.0f);
 
-        float crit = ItemKnife.critDamage(pig, player, new ItemStack(Items.KNIFE));
+        float crit = ItemKnife.critDamage(pig, player, new ItemStack(Items.IRON_KNIFE));
         helper.assertTrue(crit == 0.0f,
                 "Not sneaking should give no backstab bonus, got " + crit);
         helper.succeed();
@@ -503,7 +586,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(0.0f);
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc.set(KnifeEnchantments.stealthEnchantment(level.registryAccess()), 1);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
@@ -524,7 +607,7 @@ public class WeaponsGameTests {
         pig.setYRot(0.0f);
         player.setYRot(0.0f);
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc.set(KnifeEnchantments.stealthEnchantment(level.registryAccess()), 2);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
@@ -538,12 +621,12 @@ public class WeaponsGameTests {
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
     public static void knifeOffhandUseAddsCooldown(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         player.setItemSlot(EquipmentSlot.OFFHAND, knife);
 
-        Items.KNIFE.use(helper.getLevel(), player, net.minecraft.world.InteractionHand.OFF_HAND);
+        Items.IRON_KNIFE.use(helper.getLevel(), player, net.minecraft.world.InteractionHand.OFF_HAND);
 
-        helper.assertTrue(player.getCooldowns().isOnCooldown(Items.KNIFE),
+        helper.assertTrue(player.getCooldowns().isOnCooldown(Items.IRON_KNIFE),
                 "Knife offhand use should add a cooldown");
         helper.succeed();
     }
@@ -554,7 +637,7 @@ public class WeaponsGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc.set(KnifeEnchantments.poisonEnchantment(level.registryAccess()), 1);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
@@ -578,7 +661,7 @@ public class WeaponsGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
 
-        ItemStack knife = new ItemStack(Items.KNIFE);
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc.set(KnifeEnchantments.poisonEnchantment(level.registryAccess()), 2);
         knife.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
@@ -601,7 +684,7 @@ public class WeaponsGameTests {
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
 
         // not sneaking → no crit bonus; no sharpness → no enchant bonus
-        float dmg = ItemKnife.getOffhandDamage(level, new ItemStack(Items.KNIFE), pig, player);
+        float dmg = ItemKnife.getOffhandDamage(level, new ItemStack(Items.IRON_KNIFE), pig, player);
         helper.assertTrue(dmg == 3.0f,
                 "Offhand damage without enchants or backstab should be 3.0, got " + dmg);
         helper.succeed();
@@ -614,7 +697,7 @@ public class WeaponsGameTests {
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
-        ItemStack knife1 = new ItemStack(Items.KNIFE);
+        ItemStack knife1 = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc1 = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc1.set(reg.getOrThrow(Enchantments.SHARPNESS), 1);
         knife1.set(DataComponents.ENCHANTMENTS, enc1.toImmutable());
@@ -622,7 +705,7 @@ public class WeaponsGameTests {
         helper.assertTrue(Math.abs(dmg1 - 4.0f) < 0.001f,
                 "Sharpness I offhand damage should be 4.0, got " + dmg1);
 
-        ItemStack knife2 = new ItemStack(Items.KNIFE);
+        ItemStack knife2 = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc2 = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enc2.set(reg.getOrThrow(Enchantments.SHARPNESS), 2);
         knife2.set(DataComponents.ENCHANTMENTS, enc2.toImmutable());

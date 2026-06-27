@@ -126,11 +126,13 @@ public class ItemWarhammer extends Item {
             EquipmentSlot slot = hand == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
             player.swing(hand, true);
 
+            boolean hitTarget = false;
             EntityHitResult entityHitResult = findLivingEntityHit(player, worldIn, 5.0D);
             if (entityHitResult != null) {
                 Entity target = entityHitResult.getEntity();
                 if (target instanceof LivingEntity livingTarget) {
                     attackEntity(player, stack, livingTarget, f, worldIn, slot);
+                    hitTarget = true;
                 }
             } else {
                 Vec3 start = player.getEyePosition(1.0F);
@@ -140,10 +142,15 @@ public class ItemWarhammer extends Item {
                     performQuake(player, stack, blockHitResult.getLocation(), f, worldIn, slot);
                 }
             }
+
+            int dashLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.dashingEnchantment(worldIn.registryAccess()), stack);
+            if (dashLevel > 0) {
+                WarhammerDashManager.startDash(player, stack, slot, f, dashLevel, hitTarget);
+            }
         }
     }
 
-    private static @Nullable EntityHitResult findLivingEntityHit(Player player, Level level, double range) {
+    static @Nullable EntityHitResult findLivingEntityHit(Player player, Level level, double range) {
         Vec3 start = player.getEyePosition(1.0F);
         Vec3 end = start.add(player.getViewVector(1.0F).scale(range));
         AABB searchBox = player.getBoundingBox().expandTowards(end.subtract(start)).inflate(1.0D);
@@ -197,7 +204,7 @@ public class ItemWarhammer extends Item {
         return Math.max(0.1f, seconds);
     }
 
-    private static void attackEntity(Player player, ItemStack stack, LivingEntity target, float pullDuration, Level level, EquipmentSlot slot) {
+    static void attackEntity(Player player, ItemStack stack, LivingEntity target, float pullDuration, Level level, EquipmentSlot slot) {
         float mult = damageBonusMult(pullDuration);
         int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);

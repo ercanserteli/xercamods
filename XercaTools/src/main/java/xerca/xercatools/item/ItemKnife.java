@@ -16,10 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -32,13 +29,19 @@ import java.util.List;
 public class ItemKnife extends Item {
     private static final float DEFAULT_CRIT_BONUS = 5.0F;
     private static final float OFFHAND_DAMAGE = 3.0F;
+    private final Tier tier;
 
-    public ItemKnife() {
-        super(new Item.Properties().stacksTo(1).durability(240).attributes(
-                ItemAttributeModifiers.builder()
-                        .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 2.0F, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                        .build()
-        ));
+    public static ItemAttributeModifiers createAttributes(Tier tier) {
+        return ItemAttributeModifiers.builder()
+                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, tier.getAttackDamageBonus(), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .build();
+    }
+
+    public ItemKnife(Tier tier) {
+        super(tier == Tiers.NETHERITE
+                ? new Item.Properties().stacksTo(1).durability(tier.getUses()).fireResistant().attributes(createAttributes(tier))
+                : new Item.Properties().stacksTo(1).durability(tier.getUses()).attributes(createAttributes(tier)));
+        this.tier = tier;
     }
 
     public static float critDamage(LivingEntity target, LivingEntity attacker, ItemStack stack) {
@@ -58,7 +61,15 @@ public class ItemKnife extends Item {
 
     @Override
     public int getEnchantmentValue() {
-        return Tiers.IRON.getEnchantmentValue();
+        return this.tier.getEnchantmentValue();
+    }
+
+    @Override
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        if (this.tier.getRepairIngredient().test(repair)) {
+            return true;
+        }
+        return super.isValidRepairItem(toRepair, repair);
     }
 
     @Override

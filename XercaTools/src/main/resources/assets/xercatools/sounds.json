@@ -73,5 +73,12 @@
         "name": "xercatools:confetti"
       }
     ]
+  },
+  "swoosh": {
+    "sounds": [
+      {
+        "name": "xercatools:swoosh"
+      }
+    ]
   }
 }

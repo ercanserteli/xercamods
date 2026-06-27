@@ -1,5 +1,9 @@
 {
   "values": [
-    "xercatools:knife"
+    "xercatools:stone_knife",
+    "xercatools:knife",
+    "xercatools:golden_knife",
+    "xercatools:diamond_knife",
+    "xercatools:netherite_knife"
   ]
 }

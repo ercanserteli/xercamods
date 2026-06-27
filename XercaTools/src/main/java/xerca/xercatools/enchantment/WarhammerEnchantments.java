@@ -14,6 +14,7 @@ public final class WarhammerEnchantments {
     public static final ResourceKey<Enchantment> QUICK = key("enchantment_quick");
     public static final ResourceKey<Enchantment> QUAKE = key("enchantment_quake");
     public static final ResourceKey<Enchantment> UPPERCUT = key("enchantment_uppercut");
+    public static final ResourceKey<Enchantment> DASHING = key("enchantment_dashing");
 
     private WarhammerEnchantments() {
     }
@@ -41,5 +42,9 @@ public final class WarhammerEnchantments {
 
     public static Holder<Enchantment> uppercutEnchantment(RegistryAccess registryAccess) {
         return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(UPPERCUT);
+    }
+
+    public static Holder<Enchantment> dashingEnchantment(RegistryAccess registryAccess) {
+        return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(DASHING);
     }
 }
