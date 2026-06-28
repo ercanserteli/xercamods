@@ -24,9 +24,12 @@ recipes = [
     ShapedRecipe([' c ', 'cgc', ' c '], {'id': 'xercatools:confetti_ball', 'count': 2},
                  {'c': {'item': 'xercatools:confetti'}, 'g': {'item': 'minecraft:gunpowder'}},
                  {'item': 'xercatools:confetti'}, ""),
+    ShapelessRecipe([{'item': 'minecraft:paper'}, {'item': 'minecraft:red_dye'}, {'item': 'minecraft:green_dye'},
+                     {'item': 'minecraft:blue_dye'}], {'id': 'xercatools:confetti', 'count': 12},
+                    {'item': 'minecraft:paper'}, "confetti"),
     ShapelessRecipe([{'item': 'minecraft:paper'}, {'item': 'minecraft:cyan_dye'}, {'item': 'minecraft:magenta_dye'},
                      {'item': 'minecraft:yellow_dye'}], {'id': 'xercatools:confetti', 'count': 12},
-                    {'item': 'minecraft:paper'}, ""),
+                    {'item': 'minecraft:paper'}, "confetti"),
 
     SpecialRecipe("xercatools:crafting_special_flask_filling"),
     SpecialRecipe("xercatools:crafting_special_ender_bow_filling"),
