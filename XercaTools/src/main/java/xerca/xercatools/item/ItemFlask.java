@@ -7,16 +7,17 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -28,8 +29,8 @@ import java.util.List;
 public class ItemFlask extends Item {
     private static final int BASE_MAX_CHARGES = 16;
 
-    public ItemFlask() {
-        super(new Item.Properties().stacksTo(1).durability(160));
+    public ItemFlask(String name) {
+        super(new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(160).enchantable(1));
     }
 
     @Override
@@ -43,19 +44,19 @@ public class ItemFlask extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.DRINK;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.DRINK;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getCharges(stack) <= 0) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         player.startUsingItem(hand);
-        return InteractionResultHolder.consume(stack);
+        return InteractionResult.CONSUME;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class ItemFlask extends Item {
         PotionContents potionContents = getPotionContents(stack);
         for (MobEffectInstance effect : potionContents.getAllEffects()) {
             if (effect.getEffect().value().isInstantenous()) {
-                effect.getEffect().value().applyInstantenousEffect(player, player, entity, effect.getAmplifier(), 1.0D);
+                effect.getEffect().value().applyInstantenousEffect((ServerLevel) level, player, player, entity, effect.getAmplifier(), 1.0D);
             } else {
                 entity.addEffect(new MobEffectInstance(effect));
             }
@@ -89,7 +90,7 @@ public class ItemFlask extends Item {
     private void applyUseCooldown(ItemStack stack, LivingEntity entity, Player player) {
         int useDuration = getUseDuration(stack, entity);
         if (useDuration < 32) {
-            player.getCooldowns().addCooldown(this, (32 - useDuration) / 2);
+            player.getCooldowns().addCooldown(stack, (32 - useDuration) / 2);
         }
     }
 
@@ -99,11 +100,6 @@ public class ItemFlask extends Item {
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
         getPotionContents(stack).addPotionTooltip(tooltip::add, 1.0F, context.tickRate());
         tooltip.add(Component.translatable("xercatools.charges_tooltip", getCharges(stack)).withStyle(ChatFormatting.YELLOW));
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return 1;
     }
 
     public static int getCharges(ItemStack stack) {

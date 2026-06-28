@@ -21,7 +21,7 @@ import org.joml.Quaternionf;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityGrabHook;
 
-public class RenderGrabHook extends EntityRenderer<EntityGrabHook> {
+public class RenderGrabHook extends EntityRenderer<EntityGrabHook, GrabHookRenderState> {
     private static final ResourceLocation TEXTURE = Mod.id("textures/particle/hook.png");
     private static final ResourceLocation CHAIN_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/chain.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE);
@@ -42,11 +42,15 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook> {
     }
 
     @Override
-    public void render(EntityGrabHook entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public GrabHookRenderState createRenderState() {
+        return new GrabHookRenderState();
+    }
+
+    @Override
+    public void extractRenderState(EntityGrabHook entity, GrabHookRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
         Player player = entity.getAngler();
-        float chainDx;
-        float chainDy;
-        float chainDz;
+        state.hasPlayer = player != null;
 
         if (player != null) {
             int side = player.getMainArm() == HumanoidArm.RIGHT ? 1 : -1;
@@ -59,36 +63,35 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook> {
             double sin = Mth.sin(bodyRot);
             double cos = Mth.cos(bodyRot);
             double offset = side * 0.35D;
-            double handX;
-            double handY;
-            double handZ;
-            float crouchOffset;
 
-            handX = Mth.lerp(partialTicks, player.xo, player.getX()) - cos * offset - sin * 0.8D;
-            handY = player.yo + player.getEyeHeight() + (player.getY() - player.yo) * partialTicks - 0.45D;
-            handZ = Mth.lerp(partialTicks, player.zo, player.getZ()) - sin * offset + cos * 0.8D;
-            crouchOffset = player.isCrouching() ? -0.1875F : 0.0F;
+            double handX = Mth.lerp(partialTicks, player.xo, player.getX()) - cos * offset - sin * 0.8D;
+            double handY = player.yo + player.getEyeHeight() + (player.getY() - player.yo) * partialTicks - 0.45D;
+            double handZ = Mth.lerp(partialTicks, player.zo, player.getZ()) - sin * offset + cos * 0.8D;
+            float crouchOffset = player.isCrouching() ? -0.1875F : 0.0F;
 
             double hookX = Mth.lerp(partialTicks, entity.xo, entity.getX());
             double hookY = Mth.lerp(partialTicks, entity.yo, entity.getY()) + HOOK_ATTACHMENT_Y;
             double hookZ = Mth.lerp(partialTicks, entity.zo, entity.getZ());
-            chainDx = (float) (handX - hookX);
-            chainDy = (float) (handY - hookY) + crouchOffset;
-            chainDz = (float) (handZ - hookZ);
+            state.chainDx = (float) (handX - hookX);
+            state.chainDy = (float) (handY - hookY) + crouchOffset;
+            state.chainDz = (float) (handZ - hookZ);
         } else {
             Vec3 fallbackDirection = getFallbackDirection(entity, partialTicks);
-            chainDx = (float) fallbackDirection.x;
-            chainDy = (float) fallbackDirection.y;
-            chainDz = (float) fallbackDirection.z;
+            state.chainDx = (float) fallbackDirection.x;
+            state.chainDy = (float) fallbackDirection.y;
+            state.chainDz = (float) fallbackDirection.z;
         }
+    }
 
+    @Override
+    public void render(GrabHookRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
-        renderHook(chainDx, chainDy, chainDz, poseStack, buffer.getBuffer(RENDER_TYPE), packedLight);
-        if (player != null) {
-            renderChain(chainDx, chainDy, chainDz, poseStack, buffer.getBuffer(CHAIN_RENDER_TYPE), packedLight);
+        renderHook(state.chainDx, state.chainDy, state.chainDz, poseStack, buffer.getBuffer(RENDER_TYPE), packedLight);
+        if (state.hasPlayer) {
+            renderChain(state.chainDx, state.chainDy, state.chainDz, poseStack, buffer.getBuffer(CHAIN_RENDER_TYPE), packedLight);
         }
         poseStack.popPose();
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        super.render(state, poseStack, buffer, packedLight);
     }
 
     private static void renderHook(float chainDx, float chainDy, float chainDz, PoseStack poseStack, VertexConsumer consumer, int light) {
@@ -217,10 +220,5 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook> {
                 Math.max(hookY, handY),
                 Math.max(hookZ, handZ)
         ).inflate(CHAIN_HALF_WIDTH * 2.0F);
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(EntityGrabHook entity) {
-        return TEXTURE;
     }
 }

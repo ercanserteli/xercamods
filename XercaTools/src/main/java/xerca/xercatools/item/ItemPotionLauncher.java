@@ -8,7 +8,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
@@ -23,15 +23,15 @@ import xerca.xercatools.enchantment.FlaskEnchantments;
 import java.util.List;
 
 public class ItemPotionLauncher extends Item {
-    public ItemPotionLauncher() {
-        super(new Item.Properties().stacksTo(1).durability(160));
+    public ItemPotionLauncher(String name) {
+        super(new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(160).enchantable(1));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (ItemFlask.getCharges(stack) <= 0) {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         float range = EnchantmentHelper.getItemEnchantmentLevel(FlaskEnchantments.rangeEnchantment(level.registryAccess()), stack) + 1.0F;
@@ -41,10 +41,9 @@ public class ItemPotionLauncher extends Item {
 
         level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.CROSSBOW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F);
         if (!level.isClientSide) {
-            ThrownPotion thrownPotion = new ThrownPotion(level, player);
             ItemStack potionStack = new ItemStack(isLingering(stack) ? net.minecraft.world.item.Items.LINGERING_POTION : net.minecraft.world.item.Items.SPLASH_POTION);
             potionStack.set(DataComponents.POTION_CONTENTS, ItemFlask.getPotionContents(stack));
-            thrownPotion.setItem(potionStack);
+            ThrownPotion thrownPotion = new ThrownPotion(level, player, potionStack);
             thrownPotion.shootFromRotation(player, player.getXRot(), player.getYRot(), -10.0F, 0.5F * range, 1.0F / range);
             level.addFreshEntity(thrownPotion);
 
@@ -53,7 +52,7 @@ public class ItemPotionLauncher extends Item {
             stack.hurtAndBreak(1, player, slot);
         }
 
-        return InteractionResultHolder.consume(stack);
+        return InteractionResult.CONSUME;
     }
 
     @Override
@@ -62,11 +61,6 @@ public class ItemPotionLauncher extends Item {
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
         ItemFlask.getPotionContents(stack).addPotionTooltip(tooltip::add, 1.0F, context.tickRate());
         tooltip.add(Component.translatable("xercatools.charges_tooltip", ItemFlask.getCharges(stack)).withStyle(ChatFormatting.YELLOW));
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return 1;
     }
 
     public static boolean isLingering(ItemStack stack) {

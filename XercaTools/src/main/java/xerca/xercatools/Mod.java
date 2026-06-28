@@ -18,6 +18,8 @@ import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,6 +29,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -65,17 +68,21 @@ public class Mod implements ModInitializer {
             .sized(0.25F, 0.25F)
             .clientTrackingRange(8)
             .updateInterval(2)
-            .build();
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, id("hook")));
     public static final EntityType<EntityHealthOrb> HEALTH_ORB = EntityType.Builder.<EntityHealthOrb>of(EntityHealthOrb::new, MobCategory.MISC)
             .sized(0.5F, 0.5F)
             .clientTrackingRange(4)
-            .build();
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, id("health_orb")));
     public static final EntityType<EntityConfettiBall> ENTITY_CONFETTI_BALL = EntityType.Builder.<EntityConfettiBall>of(EntityConfettiBall::new, MobCategory.MISC)
-            .sized(0.25f, 0.25f).updateInterval(10).build();
+            .sized(0.25f, 0.25f).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, id("confetti_ball")));
     public static final SimpleParticleType CONFETTI_PARTICLE = FabricParticleTypes.simple();
 
     public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    public static ResourceKey<Item> itemKey(String path) {
+        return ResourceKey.create(Registries.ITEM, id(path));
     }
 
     @Override
@@ -251,7 +258,7 @@ public class Mod implements ModInitializer {
             }
 
             ItemStack stack = player.getOffhandItem();
-            if (!isKnife(stack) || player.getCooldowns().isOnCooldown(stack.getItem())) {
+            if (!isKnife(stack) || player.getCooldowns().isOnCooldown(stack)) {
                 return InteractionResult.PASS;
             }
 
@@ -270,7 +277,7 @@ public class Mod implements ModInitializer {
             }
 
             player.swing(hand, true);
-            player.getCooldowns().addCooldown(stack.getItem(), 15);
+            player.getCooldowns().addCooldown(stack, 15);
             return InteractionResult.SUCCESS;
         });
     }
@@ -348,7 +355,7 @@ public class Mod implements ModInitializer {
             double x = pos.x() + facingIn.getStepX();
             double y = pos.y() + facingIn.getStepY();
             double z = pos.z() + facingIn.getStepZ();
-            ConfettiParticlePacket pack = new ConfettiParticlePacket(x, y, z, facingIn.getNormal());
+            ConfettiParticlePacket pack = new ConfettiParticlePacket(x, y, z, facingIn.getUnitVec3i());
             sendToClientsAround(source.level(), new Vec3(x, y, z), 64, pack);
         }
     }

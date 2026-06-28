@@ -6,12 +6,8 @@
     " s "
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "t": {
-      "item": "minecraft:cobblestone"
-    }
+    "s": "minecraft:stick",
+    "t": "minecraft:cobblestone"
   },
   "result": {
     "id": "xercatools:stone_warhammer"

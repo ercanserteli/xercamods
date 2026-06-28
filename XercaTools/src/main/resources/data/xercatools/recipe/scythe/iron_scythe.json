@@ -6,12 +6,8 @@
     "s  "
   ],
   "key": {
-    "i": {
-      "item": "minecraft:iron_ingot"
-    },
-    "s": {
-      "item": "minecraft:stick"
-    }
+    "i": "minecraft:iron_ingot",
+    "s": "minecraft:stick"
   },
   "result": {
     "id": "xercatools:iron_scythe"

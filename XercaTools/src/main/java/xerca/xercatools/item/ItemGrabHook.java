@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -20,30 +20,29 @@ import xerca.xercatools.entity.EntityGrabHook;
 import java.util.List;
 
 public class ItemGrabHook extends FishingRodItem {
-    public ItemGrabHook() {
-        super(new Item.Properties().durability(210));
+    public ItemGrabHook(String name) {
+        super(new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).durability(210));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack heldItem = player.getItemInHand(hand);
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         player.startUsingItem(hand);
-        return InteractionResultHolder.consume(heldItem);
+        return InteractionResult.CONSUME;
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         if (!(entity instanceof Player player)) {
-            return;
+            return false;
         }
 
         float useSeconds = Math.min(1.0F, (this.getUseDuration(stack, entity) - timeLeft) / 20.0F);
         if (useSeconds <= 0.1F) {
-            return;
+            return false;
         }
 
         InteractionHand hand = player.getUsedItemHand();
-        player.getCooldowns().addCooldown(this, 40);
+        player.getCooldowns().addCooldown(stack, 40);
         stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
         setCastState(stack, true);
 
@@ -52,11 +51,12 @@ public class ItemGrabHook extends FishingRodItem {
         }
 
         player.swing(hand, true);
+        return true;
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     @Override

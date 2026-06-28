@@ -6,12 +6,8 @@
     "s  "
   ],
   "key": {
-    "i": {
-      "item": "minecraft:cobblestone"
-    },
-    "s": {
-      "item": "minecraft:stick"
-    }
+    "i": "minecraft:cobblestone",
+    "s": "minecraft:stick"
   },
   "result": {
     "id": "xercatools:stone_scythe"

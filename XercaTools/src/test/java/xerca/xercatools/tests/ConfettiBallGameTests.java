@@ -4,8 +4,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -60,7 +62,7 @@ public final class ConfettiBallGameTests {
     }
 
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
-        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().getRecipeManager().byKey(recipeId);
+        Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, recipeId));
         helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
         helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
@@ -187,7 +189,7 @@ public final class ConfettiBallGameTests {
         ItemStack stack = new ItemStack(Items.CONFETTI, 2);
         player.setItemSlot(EquipmentSlot.MAINHAND, stack);
 
-        InteractionResult result = Items.CONFETTI.use(helper.getLevel(), player, InteractionHand.MAIN_HAND).getResult();
+        InteractionResult result = Items.CONFETTI.use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
 
         helper.assertTrue(result == InteractionResult.SUCCESS, "Expected confetti use to succeed");
         helper.assertTrue(player.getMainHandItem().getCount() == 1, "Expected survival confetti use to consume one item");
@@ -200,7 +202,7 @@ public final class ConfettiBallGameTests {
         ItemStack stack = new ItemStack(Items.CONFETTI, 2);
         player.setItemSlot(EquipmentSlot.MAINHAND, stack);
 
-        InteractionResult result = Items.CONFETTI.use(helper.getLevel(), player, InteractionHand.MAIN_HAND).getResult();
+        InteractionResult result = Items.CONFETTI.use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
 
         helper.assertTrue(result == InteractionResult.SUCCESS, "Expected confetti use to succeed for creative players");
         helper.assertTrue(player.getMainHandItem().getCount() == 2, "Expected creative confetti use not to consume the item");

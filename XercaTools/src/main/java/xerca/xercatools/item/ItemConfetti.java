@@ -4,7 +4,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,12 +18,12 @@ import static xerca.xercatools.Mod.sendToClientsAround;
 
 public class ItemConfetti extends Item {
 
-    public ItemConfetti() {
-        super(new Item.Properties());
+    public ItemConfetti(String name) {
+        super(new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
         playSound(worldIn, playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ());
         if (!worldIn.isClientSide) {
             Vec3 pos = playerIn.position().add(playerIn.getLookAngle()).add(0d, 1d, 0d);
@@ -36,7 +35,7 @@ public class ItemConfetti extends Item {
         if (!playerIn.isCreative()) {
             heldItem.shrink(1);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
+        return InteractionResult.SUCCESS;
     }
 
     public static void playSound(Level world, @Nullable Player player, double x, double y, double z) {

@@ -626,7 +626,7 @@ public class WeaponsGameTests {
 
         Items.IRON_KNIFE.use(helper.getLevel(), player, net.minecraft.world.InteractionHand.OFF_HAND);
 
-        helper.assertTrue(player.getCooldowns().isOnCooldown(Items.IRON_KNIFE),
+        helper.assertTrue(player.getCooldowns().isOnCooldown(knife),
                 "Knife offhand use should add a cooldown");
         helper.succeed();
     }

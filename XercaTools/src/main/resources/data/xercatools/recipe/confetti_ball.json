@@ -6,12 +6,8 @@
     " c "
   ],
   "key": {
-    "c": {
-      "item": "xercatools:confetti"
-    },
-    "g": {
-      "item": "minecraft:gunpowder"
-    }
+    "c": "xercatools:confetti",
+    "g": "minecraft:gunpowder"
   },
   "result": {
     "id": "xercatools:confetti_ball",

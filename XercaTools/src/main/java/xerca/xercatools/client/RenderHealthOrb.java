@@ -15,7 +15,7 @@ import org.joml.Matrix4f;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityHealthOrb;
 
-public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb> {
+public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb, HealthOrbRenderState> {
     private static final ResourceLocation TEXTURE = Mod.id("textures/misc/health_orb.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE);
 
@@ -31,9 +31,20 @@ public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb> {
     }
 
     @Override
-    public void render(EntityHealthOrb orb, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public HealthOrbRenderState createRenderState() {
+        return new HealthOrbRenderState();
+    }
+
+    @Override
+    public void extractRenderState(EntityHealthOrb entity, HealthOrbRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.animTime = (entity.tickCount + partialTick) / 2.0F;
+    }
+
+    @Override
+    public void render(HealthOrbRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
-        float animTime = (orb.tickCount + partialTicks) / 2.0F;
+        float animTime = state.animTime;
         int red = (int) ((Mth.sin(animTime) + 1.0F) * 32.0F) + 192;
         int blue = (int) ((Mth.sin(animTime + 4.1887903F) + 1.0F) * 0.1F * 64.0F);
         poseStack.translate(0.0D, 0.1D, 0.0D);
@@ -47,7 +58,7 @@ public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb> {
         vertex(consumer, matrix, 0.5F, 0.75F, red, 0, blue, 1, 0, packedLight);
         vertex(consumer, matrix, -0.5F, 0.75F, red, 0, blue, 0, 0, packedLight);
         poseStack.popPose();
-        super.render(orb, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        super.render(state, poseStack, buffer, packedLight);
     }
 
     private static void vertex(VertexConsumer consumer, Matrix4f matrix, float x, float y, int red, int green, int blue, float u, float v, int light) {
@@ -57,10 +68,5 @@ public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb> {
                 .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(light)
                 .setNormal(0.0F, 1.0F, 0.0F);
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(EntityHealthOrb entity) {
-        return TEXTURE;
     }
 }

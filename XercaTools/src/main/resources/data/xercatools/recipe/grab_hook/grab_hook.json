@@ -6,15 +6,9 @@
     "s i"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "c": {
-      "item": "minecraft:chain"
-    },
-    "i": {
-      "item": "minecraft:iron_ingot"
-    }
+    "s": "minecraft:stick",
+    "c": "minecraft:chain",
+    "i": "minecraft:iron_ingot"
   },
   "result": {
     "id": "xercatools:grab_hook"

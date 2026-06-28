@@ -65,13 +65,8 @@ public class RecipeEnderBowFilling extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Items.CRAFTING_SPECIAL_ENDER_BOW_FILLING;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 3 && height >= 3;
     }
 
     private ParsedInput parseInput(CraftingInput inv) {

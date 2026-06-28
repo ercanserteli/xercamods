@@ -3,7 +3,6 @@ package xerca.xercatools.crafting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -69,9 +68,9 @@ public class RecipeFlaskFilling extends CustomRecipe {
 
         for (int i = 0; i < remainingItems.size(); ++i) {
             ItemStack itemStack = inv.getItem(i);
-            if (itemStack.getItem().hasCraftingRemainingItem()) {
-                Item remainderItem = itemStack.getItem().getCraftingRemainingItem();
-                remainingItems.set(i, remainderItem == null ? ItemStack.EMPTY : remainderItem.getDefaultInstance());
+            ItemStack remainder = itemStack.getItem().getCraftingRemainder();
+            if (!remainder.isEmpty()) {
+                remainingItems.set(i, remainder);
             } else if (itemStack.getItem() instanceof PotionItem) {
                 remainingItems.set(i, new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE));
             }
@@ -81,13 +80,8 @@ public class RecipeFlaskFilling extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Items.CRAFTING_SPECIAL_FLASK_FILLING;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 3 && height >= 3;
     }
 
     private ParsedInput parseInput(CraftingInput inv) {

@@ -22,17 +22,17 @@ public final class SoundEvents {
     }
 
     public static void register() {
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SNEAK_HIT.getLocation(), SNEAK_HIT);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HAMMER.getLocation(), HAMMER);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, STOMP.getLocation(), STOMP);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_CHAIN.getLocation(), HOOK_CHAIN);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_IMPACT.getLocation(), HOOK_IMPACT);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_CLINK.getLocation(), HOOK_CLINK);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_RETURN.getLocation(), HOOK_RETURN);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BEHEAD.getLocation(), BEHEAD);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, ABSORB.getLocation(), ABSORB);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CRACK.getLocation(), SOUND_CRACK);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CONFETTI.getLocation(), SOUND_CONFETTI);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SWOOSH.getLocation(), SWOOSH);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SNEAK_HIT.location(), SNEAK_HIT);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, HAMMER.location(), HAMMER);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, STOMP.location(), STOMP);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_CHAIN.location(), HOOK_CHAIN);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_IMPACT.location(), HOOK_IMPACT);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_CLINK.location(), HOOK_CLINK);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_RETURN.location(), HOOK_RETURN);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, BEHEAD.location(), BEHEAD);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, ABSORB.location(), ABSORB);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CRACK.location(), SOUND_CRACK);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CONFETTI.location(), SOUND_CONFETTI);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, SWOOSH.location(), SWOOSH);
     }
 }

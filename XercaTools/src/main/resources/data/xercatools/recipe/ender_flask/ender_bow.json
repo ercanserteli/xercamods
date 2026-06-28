@@ -5,12 +5,8 @@
     "c"
   ],
   "key": {
-    "c": {
-      "item": "minecraft:crossbow"
-    },
-    "f": {
-      "item": "xercatools:flask"
-    }
+    "c": "minecraft:crossbow",
+    "f": "xercatools:flask"
   },
   "result": {
     "id": "xercatools:ender_bow"

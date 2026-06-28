@@ -5,12 +5,8 @@
     "s"
   ],
   "key": {
-    "s": {
-      "item": "minecraft:stick"
-    },
-    "i": {
-      "item": "minecraft:diamond"
-    }
+    "s": "minecraft:stick",
+    "i": "minecraft:diamond"
   },
   "result": {
     "id": "xercatools:diamond_knife"

@@ -25,7 +25,6 @@ import xerca.xercatools.item.ItemPotionLauncher;
 import xerca.xercatools.item.Items;
 
 import java.util.List;
-import java.util.Optional;
 
 public class FlaskAndLauncherGameTests {
     private static final String BASIC_TEMPLATE = "xercatools:basic_test";
@@ -34,14 +33,14 @@ public class FlaskAndLauncherGameTests {
     // Builds a regular potion stack (PotionItem) with the given potion type.
     private static ItemStack makeRegularPotion(Holder<Potion> holder) {
         ItemStack stack = new ItemStack(net.minecraft.world.item.Items.POTION);
-        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(holder), Optional.empty(), List.of()));
+        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(holder));
         return stack;
     }
 
     // Builds a splash potion stack (ThrowablePotionItem) used by the Ender Bow recipe.
     private static ItemStack makeSplashPotion(Holder<Potion> holder) {
         ItemStack stack = new ItemStack(net.minecraft.world.item.Items.SPLASH_POTION);
-        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(holder), Optional.empty(), List.of()));
+        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(holder));
         return stack;
     }
 
@@ -178,7 +177,7 @@ public class FlaskAndLauncherGameTests {
         ItemFlask.setCharges(flask, 1);
         // Healing II potion contents (instant effect)
         flask.set(DataComponents.POTION_CONTENTS,
-            new PotionContents(Optional.of(Potions.STRONG_HEALING), Optional.empty(), List.of()));
+                new PotionContents(Potions.STRONG_HEALING));
         player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, flask);
 
         float damagedHealth = player.getMaxHealth() - 6.0f;
@@ -224,8 +223,7 @@ public class FlaskAndLauncherGameTests {
         ItemStack launcher = new ItemStack(Items.ENDER_BOW);
         ItemFlask.setCharges(launcher, 1);
         launcher.set(DataComponents.POTION_CONTENTS,
-            new PotionContents(Optional.of(Potions.HEALING),
-                Optional.empty(), List.of()));
+                new PotionContents(Potions.HEALING));
         player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, launcher);
 
         Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
@@ -252,8 +250,7 @@ public class FlaskAndLauncherGameTests {
         ItemStack launcher = new ItemStack(Items.ENDER_BOW);
         ItemFlask.setCharges(launcher, 1);
         launcher.set(DataComponents.POTION_CONTENTS,
-            new PotionContents(Optional.of(Potions.HEALING),
-                Optional.empty(), List.of()));
+                new PotionContents(Potions.HEALING));
         ItemPotionLauncher.setLingering(launcher, true);
         player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, launcher);
 
@@ -282,7 +279,7 @@ public class FlaskAndLauncherGameTests {
 
         var result = Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
 
-        helper.assertTrue(result.getResult() == net.minecraft.world.InteractionResult.FAIL,
+        helper.assertTrue(result == net.minecraft.world.InteractionResult.FAIL,
             "Ender Bow with zero charges should return FAIL");
 
         AABB searchBox = new AABB(abs.x - 10, abs.y - 10, abs.z - 10,

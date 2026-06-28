@@ -1,15 +1,9 @@
 {
   "type": "minecraft:smithing_transform",
-  "base": {
-    "item": "xercatools:diamond_warhammer"
-  },
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
+  "base": "xercatools:diamond_warhammer",
+  "addition": "minecraft:netherite_ingot",
   "result": {
     "id": "xercatools:netherite_warhammer"
   },
-  "template": {
-    "item": "minecraft:netherite_upgrade_smithing_template"
-  }
+  "template": "minecraft:netherite_upgrade_smithing_template"
 }

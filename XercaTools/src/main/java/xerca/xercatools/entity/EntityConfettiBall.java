@@ -25,11 +25,11 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     }
 
     public EntityConfettiBall(Level worldIn, LivingEntity throwerIn) {
-        super(Mod.ENTITY_CONFETTI_BALL, throwerIn, worldIn);
+        super(Mod.ENTITY_CONFETTI_BALL, throwerIn, worldIn, new ItemStack(Items.CONFETTI_BALL));
     }
 
     public EntityConfettiBall(Level worldIn, double x, double y, double z) {
-        super(Mod.ENTITY_CONFETTI_BALL, x, y, z, worldIn);
+        super(Mod.ENTITY_CONFETTI_BALL, x, y, z, worldIn, new ItemStack(Items.CONFETTI_BALL));
     }
 
     @Override

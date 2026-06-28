@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +24,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
@@ -42,7 +41,7 @@ import java.util.Optional;
 
 public class ItemWarhammer extends Item {
     private final float pushAmount;
-    private final Tier material;
+    private final ToolMaterial material;
 
     public static ItemAttributeModifiers createAttributes(float attackDamage, float attackSpeed) {
         return ItemAttributeModifiers.builder()
@@ -51,27 +50,20 @@ public class ItemWarhammer extends Item {
                 .build();
     }
 
-    public ItemWarhammer(Tier mat) {
-        super(mat == Tiers.NETHERITE
-                ? new Item.Properties().stacksTo(1).durability(mat.getUses()).fireResistant().attributes(createAttributes(1.0F + mat.getAttackDamageBonus(), -3.0F))
-                : new Item.Properties().stacksTo(1).durability(mat.getUses()).attributes(createAttributes(1.0F + mat.getAttackDamageBonus(), -3.0F)));
-        
+    public ItemWarhammer(ToolMaterial mat, String name) {
+        super(mat == ToolMaterial.NETHERITE
+                ? new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(mat.durability()).fireResistant().enchantable(mat.enchantmentValue()).repairable(mat.repairItems()).attributes(createAttributes(1.0F + mat.attackDamageBonus(), -3.0F))
+                : new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(mat.durability()).enchantable(mat.enchantmentValue()).repairable(mat.repairItems()).attributes(createAttributes(1.0F + mat.attackDamageBonus(), -3.0F)));
+
         this.material = mat;
         this.pushAmount = getPushFromMaterial(mat);
     }
 
-    private float getPushFromMaterial(Tier mat) {
-        return switch (mat) {
-            case Tiers.STONE -> 0.15f;
-            case Tiers.IRON -> 0.3f;
-            case Tiers.DIAMOND -> 0.4f;
-            default -> 0.5f; // Gold and Netherite
-        };
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return this.material.getEnchantmentValue();
+    private float getPushFromMaterial(ToolMaterial mat) {
+        if (mat == ToolMaterial.STONE) return 0.15f;
+        if (mat == ToolMaterial.IRON) return 0.3f;
+        if (mat == ToolMaterial.DIAMOND) return 0.4f;
+        return 0.5f; // Gold and Netherite
     }
 
     @Override
@@ -89,15 +81,8 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
-    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-        Ingredient ingr = this.material.getRepairIngredient();
-        if (ingr.test(repair)) return true;
-        return super.isValidRepairItem(toRepair, repair);
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     @Override
@@ -106,16 +91,15 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand) {
-        final ItemStack heldItem = playerIn.getItemInHand(hand);
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
         playerIn.startUsingItem(hand);
-        return InteractionResultHolder.consume(heldItem);
+        return InteractionResult.CONSUME;
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
-        if (!(entityLiving instanceof Player player)) return;
-        if (worldIn.isClientSide) return;
+    public boolean releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+        if (!(entityLiving instanceof Player player)) return false;
+        if (worldIn.isClientSide) return false;
 
         float useSeconds = (this.getUseDuration(stack, entityLiving) - timeLeft) / 20.0f;
         float f = useSeconds / getFullUseSeconds(worldIn.registryAccess(), stack);
@@ -147,7 +131,9 @@ public class ItemWarhammer extends Item {
             if (dashLevel > 0) {
                 WarhammerDashManager.startDash(player, stack, slot, f, dashLevel, hitTarget);
             }
+            return true;
         }
+        return false;
     }
 
     static @Nullable EntityHitResult findLivingEntityHit(Player player, Level level, double range) {

@@ -6,7 +6,7 @@
   "description": "Useful tools and fun weapons",
   "authors": ["xerca"],
   "contact": {},
-  "icon": "assets/xercatools/textures/item/grab_hook.png",
+  "icon": "assets/xercatools/textures/icon.png",
   "license": "GPL-3.0",
   "environment": "*",
   "entrypoints": {
@@ -21,6 +21,6 @@
   "depends": {
     "fabricloader": "*",
     "fabric-api": "*",
-    "minecraft": "1.21.1"
+    "minecraft": "1.21.3"
   }
 }

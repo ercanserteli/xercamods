@@ -9,7 +9,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -140,7 +139,7 @@ public class EntityHealthOrb extends Entity {
             if (attackingPlayer != null && attackingPlayer.distanceToSqr(this) <= 36.0D) {
                 followingPlayer = attackingPlayer;
             } else if (donorPlayer != null) {
-                this.followingPlayer = this.level().getNearestPlayer(TargetingConditions.forNonCombat().range(5.0D), donorPlayer);
+                this.followingPlayer = this.level().getNearestPlayer(donorPlayer.getX(), donorPlayer.getY(), donorPlayer.getZ(), 5.0D, player -> player.isAlive() && !player.isSpectator());
             } else {
                 this.followingPlayer = this.level().getNearestPlayer(this, 5.0D);
             }
@@ -204,9 +203,9 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float damage) {
-        if (this.level().isClientSide || this.isRemoved()) return false;
-        if (this.isInvulnerableTo(source)) return false;
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+        if (this.isRemoved()) return false;
+        if (this.isInvulnerableToBase(source)) return false;
         this.markHurt();
         this.health = (int) (this.health - damage);
         if (this.health <= 0) {

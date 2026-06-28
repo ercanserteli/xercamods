@@ -15,7 +15,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -47,7 +47,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ItemScythe extends Item {
-    private final Tier tier;
+    private final ToolMaterial tier;
     public static final float FULL_USE_SECONDS = 1.0F;
     private static final Map<EntityType<?>, Item> VANILLA_HEADS = Map.of(
             EntityType.ZOMBIE, net.minecraft.world.item.Items.ZOMBIE_HEAD,
@@ -77,23 +77,18 @@ public class ItemScythe extends Item {
             Map.entry(EntityType.SQUID, new String[]{"squid", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU4OTEwMWQ1Y2M3NGFhNDU4MDIxYTA2MGY2Mjg5YTUxYTM1YTdkMzRkOGNhZGRmYzNjZGYzYjJjOWEwNzFhIn19fQ=="})
     );
 
-    public static ItemAttributeModifiers createAttributes(Tier tier) {
+    public static ItemAttributeModifiers createAttributes(ToolMaterial tier) {
         return ItemAttributeModifiers.builder()
-                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 3.0F + tier.getAttackDamageBonus(), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 3.0F + tier.attackDamageBonus(), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -2.6F, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .build();
     }
 
-    public ItemScythe(Tier tier) {
-        super(tier == Tiers.NETHERITE
-                ? new Item.Properties().durability(tier.getUses()).fireResistant().attributes(createAttributes(tier))
-                : new Item.Properties().durability(tier.getUses()).attributes(createAttributes(tier)));
+    public ItemScythe(ToolMaterial tier, String name) {
+        super(tier == ToolMaterial.NETHERITE
+                ? new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).durability(tier.durability()).fireResistant().enchantable(tier.enchantmentValue()).repairable(tier.repairItems()).attributes(createAttributes(tier))
+                : new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).durability(tier.durability()).enchantable(tier.enchantmentValue()).repairable(tier.repairItems()).attributes(createAttributes(tier)));
         this.tier = tier;
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return this.tier.getEnchantmentValue();
     }
 
     @Override
@@ -130,18 +125,18 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
         if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(level.registryAccess()), heldItem) > 0) {
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(heldItem);
+            return InteractionResult.CONSUME;
         }
-        return InteractionResultHolder.pass(heldItem);
+        return InteractionResult.PASS;
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     @Override
@@ -150,30 +145,30 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeLeft) {
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeLeft) {
         if (!(livingEntity instanceof Player player) || level.isClientSide) {
-            return;
+            return false;
         }
 
         if (EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(level.registryAccess()), stack) <= 0) {
-            return;
+            return false;
         }
 
         float pull = (this.getUseDuration(stack, livingEntity) - timeLeft) / 20.0F;
         if (pull < 0.9F) {
-            return;
+            return false;
         }
 
         player.swing(player.getUsedItemHand(), true);
         EntityHitResult entityHitResult = findLivingEntityHit(player, level, 5.0D);
         if (entityHitResult == null || !(entityHitResult.getEntity() instanceof LivingEntity target)) {
-            return;
+            return false;
         }
 
         EquipmentSlot slot = player.getUsedItemHand() == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
         float damage = getScytheAttackDamage(player) * 1.3F + getEnchantmentDamageBonus(level, stack, target);
         stack.hurtAndBreak(1, player, slot);
-        boolean killed = target.hurt(player.damageSources().playerAttack(player), damage) && target.isDeadOrDying();
+        boolean killed = target.hurtOrSimulate(player.damageSources().playerAttack(player), damage) && target.isDeadOrDying();
 
         if (killed) {
             level.playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), SoundEvents.BEHEAD, SoundSource.PLAYERS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
@@ -182,6 +177,7 @@ public class ItemScythe extends Item {
         } else {
             level.playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
         }
+        return true;
     }
 
     @Override
@@ -193,14 +189,6 @@ public class ItemScythe extends Item {
                 && EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(registries), stack) > 0) {
             tooltip.add(Component.translatable("xercatools.guillotine_tooltip").withStyle(ChatFormatting.YELLOW));
         }
-    }
-
-    @Override
-    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-        if (this.tier.getRepairIngredient().test(repair)) {
-            return true;
-        }
-        return super.isValidRepairItem(toRepair, repair);
     }
 
     public void harvestNeighbourCrops(Level level, BlockPos pos, Player player, ItemStack stack) {
@@ -230,7 +218,7 @@ public class ItemScythe extends Item {
 
         float cooldownStrength = player.getAttackStrengthScale(0.5F);
         boolean cooledAttack = cooldownStrength > 0.9F;
-        double delta = player.walkDist - player.walkDistO;
+        double delta = player.getKnownMovement().horizontalDistance();
         boolean critical = cooledAttack && player.fallDistance > 0.0F && !player.onGround() && !player.onClimbable()
                 && !player.isInWater() && !player.hasEffect(MobEffects.BLINDNESS) && !player.isPassenger()
                 && !player.isSprinting();

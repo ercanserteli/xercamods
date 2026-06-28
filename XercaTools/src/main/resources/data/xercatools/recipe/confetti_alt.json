@@ -3,9 +3,9 @@
   "group": "confetti",
   "ingredients": [
     "minecraft:paper",
-    "minecraft:red_dye",
-    "minecraft:green_dye",
-    "minecraft:blue_dye"
+    "minecraft:cyan_dye",
+    "minecraft:magenta_dye",
+    "minecraft:yellow_dye"
   ],
   "result": {
     "id": "xercatools:confetti",

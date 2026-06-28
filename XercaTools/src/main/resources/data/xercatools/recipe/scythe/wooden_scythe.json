@@ -6,12 +6,8 @@
     "s  "
   ],
   "key": {
-    "i": {
-      "tag": "minecraft:planks"
-    },
-    "s": {
-      "item": "minecraft:stick"
-    }
+    "i": "#minecraft:planks",
+    "s": "minecraft:stick"
   },
   "result": {
     "id": "xercatools:wooden_scythe"
