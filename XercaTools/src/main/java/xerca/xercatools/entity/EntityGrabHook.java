@@ -289,10 +289,6 @@ public class EntityGrabHook extends Entity {
             this.level().playSound(null, angler, net.minecraft.sounds.SoundEvents.BEE_STING, SoundSource.PLAYERS, 1.0F, pitch);
             this.level().playSound(null, angler, SoundEvents.HOOK_CLINK, SoundSource.PLAYERS, 0.25F, pitch);
             caught.hurt(this.damageSources().thrown(this, angler), 3.0F);
-            if (!caught.isAlive()) {
-                discardHook();
-                return;
-            }
         } else {
             this.level().playSound(null, this, net.minecraft.sounds.SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 2.0F, pitch);
             this.level().playSound(null, angler, net.minecraft.sounds.SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, pitch);
@@ -304,7 +300,7 @@ public class EntityGrabHook extends Entity {
     }
 
     private void pullCaughtEntity(Player angler) {
-        if (this.caughtEntity != null && this.caughtEntity.isAlive()) {
+        if (this.caughtEntity != null && !this.caughtEntity.isRemoved()) {
             Vec3 distance = angler.position().subtract(this.caughtEntity.position());
             if (distance.length() > 2.0D) {
                 Vec3 pullVelocity = distance.normalize().scale(this.speed);
@@ -320,6 +316,7 @@ public class EntityGrabHook extends Entity {
             return;
         }
         this.caughtEntity = null;
+        discardHook();
     }
 
     private void pullUser(Player angler) {

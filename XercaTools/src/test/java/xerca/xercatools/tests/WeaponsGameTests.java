@@ -209,18 +209,18 @@ public class WeaponsGameTests {
     // ── Group B: enchantment effects ──────────────────────────────────────────
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void warhammerHeavyIncreasesFullUseSeconds(GameTestHelper helper) {
+    public static void warhammerDensityIncreasesFullUseSeconds(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), 1);
+        enc.set(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.DENSITY), 1);
         stack.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
-        helper.assertTrue(seconds > 1.0f, "Heavy I should increase full-use duration above 1.0s");
+        helper.assertTrue(seconds > 1.0f, "Density I should increase full-use duration above 1.0s");
         float expected = 1.0f + 0.1f;
         helper.assertTrue(Math.abs(seconds - expected) < 0.001f,
-                "Heavy I full-use should be ~" + expected + "s, got " + seconds);
+                "Density I full-use should be ~" + expected + "s, got " + seconds);
         helper.succeed();
     }
 
@@ -241,19 +241,41 @@ public class WeaponsGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void warhammerHeavyTakesPrecedenceOverQuick(GameTestHelper helper) {
+    public static void warhammerDensityTakesPrecedenceOverQuick(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enc.set(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), 1);
+        enc.set(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.DENSITY), 1);
         enc.set(WarhammerEnchantments.quickEnchantment(level.registryAccess()), 1);
         stack.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         float seconds = ItemWarhammer.getFullUseSeconds(level.registryAccess(), stack);
-        // heavy branch executes first and skips quick
+        // density branch executes first and skips quick
         float expected = 1.0f + 0.1f;
         helper.assertTrue(Math.abs(seconds - expected) < 0.001f,
-                "Heavy should take precedence over Quick, expected " + expected + "s, got " + seconds);
+                "Density should take precedence over Quick, expected " + expected + "s, got " + seconds);
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerWindBurstFiresWindChargeOnMiss(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setXRot(-90.0f); // look straight up so the swing hits neither entity nor block
+
+        ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
+        ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enc.set(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.WIND_BURST), 1);
+        warhammer.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
+        player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
+        player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+
+        Items.IRON_WARHAMMER.releaseUsing(warhammer, level, player, 72000 - 20); // full pull
+
+        boolean spawned = !level.getEntitiesOfClass(
+                net.minecraft.world.entity.projectile.windcharge.WindCharge.class,
+                player.getBoundingBox().inflate(8)).isEmpty();
+        helper.assertTrue(spawned, "Wind Burst full-charge miss should spawn a wind charge projectile");
         helper.succeed();
     }
 
@@ -481,8 +503,6 @@ public class WeaponsGameTests {
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
         EnchantingContext ctx = EnchantingContext.PRIMARY;
 
-        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.HEAVY), ctx),
-                "Warhammer should allow Heavy enchantment");
         helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.MAIM), ctx),
                 "Warhammer should allow Maim enchantment");
         helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.QUICK), ctx),
@@ -493,6 +513,35 @@ public class WeaponsGameTests {
                 "Warhammer should allow Uppercut enchantment");
         helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.DASHING), ctx),
                 "Warhammer should allow Dashing enchantment");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void warhammerAllowsMaceEnchantments(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
+        EnchantingContext ctx = EnchantingContext.PRIMARY;
+
+        for (var key : java.util.List.of(Enchantments.DENSITY, Enchantments.BREACH, Enchantments.WIND_BURST)) {
+            helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(key), ctx),
+                    "Warhammer should allow mace enchantment " + key.location());
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void densityIsExclusiveWithBreachAndQuick(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        var density = reg.getOrThrow(Enchantments.DENSITY);
+        var breach = reg.getOrThrow(Enchantments.BREACH);
+        var quick = reg.getOrThrow(WarhammerEnchantments.QUICK);
+
+        helper.assertTrue(!net.minecraft.world.item.enchantment.Enchantment.areCompatible(density, breach),
+                "Density and Breach should be mutually exclusive");
+        helper.assertTrue(!net.minecraft.world.item.enchantment.Enchantment.areCompatible(density, quick),
+                "Density and Quick should be mutually exclusive");
         helper.succeed();
     }
 
