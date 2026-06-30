@@ -1,6 +1,8 @@
 package xerca.xercatools.item;
 
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -78,6 +80,8 @@ public final class WarhammerDashManager {
         player.hasImpulse = true;
         player.fallDistance = 0.0F;
 
+        spawnDashTrail(state);
+
         if (!state.hasHit) {
             EntityHitResult hit = ItemWarhammer.findLivingEntityHit(player, player.level(), HIT_RANGE);
             if (hit != null && hit.getEntity() instanceof LivingEntity target) {
@@ -88,6 +92,17 @@ public final class WarhammerDashManager {
 
         --state.ticksRemaining;
         return state.ticksRemaining > 0;
+    }
+
+    /** Emits some particles behind the dashing player. */
+    private static void spawnDashTrail(DashState state) {
+        Player player = state.player;
+        if (player.level() instanceof ServerLevel serverLevel) {
+            double bx = player.getX() - state.direction.x * 0.6D;
+            double bz = player.getZ() - state.direction.z * 0.6D;
+            double by = player.getY() + player.getBbHeight() * 0.5D;
+            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, bx, by, bz, 4, 0.1D, 0.1D, 0.1D, 0.02D);
+        }
     }
 
     private static final class DashState {

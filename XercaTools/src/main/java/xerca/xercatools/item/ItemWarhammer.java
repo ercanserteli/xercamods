@@ -22,6 +22,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.windcharge.WindCharge;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -97,6 +98,22 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
+        if (level.isClientSide || !(entity instanceof Player)) return;
+        int windBurstLevel = EnchantmentHelper.getItemEnchantmentLevel(
+                level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.WIND_BURST), stack);
+        if (windBurstLevel <= 0) return;
+
+        float threshold = 0.9f * getFullUseSeconds(level.registryAccess(), stack);
+        float used = (getUseDuration(stack, entity) - remainingUseDuration) / 20.0f;
+        float prevUsed = (getUseDuration(stack, entity) - (remainingUseDuration + 1)) / 20.0f;
+        if (used >= threshold && prevUsed < threshold) {
+            level.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                    net.minecraft.sounds.SoundEvents.BREEZE_CHARGE, SoundSource.PLAYERS, 0.8F, 1.0F);
+        }
+    }
+
+    @Override
     public boolean releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player)) return false;
         if (worldIn.isClientSide) return false;
@@ -125,6 +142,7 @@ public class ItemWarhammer extends Item {
                 if (blockHitResult.getType() == HitResult.Type.BLOCK) {
                     performQuake(player, stack, blockHitResult.getLocation(), f, worldIn, slot);
                 }
+                fireWindBurst(player, stack, f, worldIn);
             }
 
             int dashLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.dashingEnchantment(worldIn.registryAccess()), stack);
@@ -176,11 +194,16 @@ public class ItemWarhammer extends Item {
         }
     }
 
+    private static int getDensityLevel(RegistryAccess registryAccess, ItemStack stack) {
+        return EnchantmentHelper.getItemEnchantmentLevel(
+                registryAccess.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.DENSITY), stack);
+    }
+
     public static float getFullUseSeconds(RegistryAccess registryAccess, ItemStack stack) {
         float seconds = 1.0f;
-        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(registryAccess), stack);
-        if (heavyLevel > 0) {
-            seconds += seconds * 0.1f * heavyLevel;
+        int densityLevel = getDensityLevel(registryAccess, stack);
+        if (densityLevel > 0) {
+            seconds += seconds * 0.1f * densityLevel;
         } else {
             int quickLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.quickEnchantment(registryAccess), stack);
             if (quickLevel > 0) {
@@ -192,10 +215,10 @@ public class ItemWarhammer extends Item {
 
     static void attackEntity(Player player, ItemStack stack, LivingEntity target, float pullDuration, Level level, EquipmentSlot slot) {
         float mult = damageBonusMult(pullDuration);
-        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), stack);
+        int densityLevel = getDensityLevel(level.registryAccess(), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + heavyLevel * 0.5f) * mult;
-        float push = (((ItemWarhammer) stack.getItem()).pushAmount + heavyLevel * 0.15f) * 2.0f * mult;
+        float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + densityLevel * 0.5f) * mult;
+        float push = (((ItemWarhammer) stack.getItem()).pushAmount + densityLevel * 0.15f) * 2.0f * mult;
 
         int uppercutLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.uppercutEnchantment(level.registryAccess()), stack);
         double bonusVelY = (uppercutLevel * 0.25d) * pullDuration;
@@ -217,7 +240,7 @@ public class ItemWarhammer extends Item {
             damage += 2.5f * baneLevel;
         }
 
-        level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), xerca.xercatools.SoundEvents.HAMMER, SoundSource.PLAYERS, 1.0f, level.random.nextFloat() * 0.1F + 0.4F + (2.0f / (damage + heavyLevel)));
+        level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), xerca.xercatools.SoundEvents.HAMMER, SoundSource.PLAYERS, 1.0f, level.random.nextFloat() * 0.1F + 0.4F + (2.0f / (damage + densityLevel)));
         stack.hurtAndBreak(1, player, slot);
         target.hurt(player.damageSources().playerAttack(player), damage);
 
@@ -248,11 +271,11 @@ public class ItemWarhammer extends Item {
         }
 
         float mult = damageBonusMult(pullDuration);
-        int heavyLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.heavyEnchantment(level.registryAccess()), stack);
+        int densityLevel = getDensityLevel(level.registryAccess(), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + heavyLevel * 0.5f) * mult * 0.5f;
-        float push = (((ItemWarhammer) stack.getItem()).pushAmount + heavyLevel * 0.15f) * mult;
-        float pitch = 2.0f / (damage + heavyLevel);
+        float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + densityLevel * 0.5f) * mult * 0.5f;
+        float push = (((ItemWarhammer) stack.getItem()).pushAmount + densityLevel * 0.15f) * mult;
+        float pitch = 2.0f / (damage + densityLevel);
 
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class,
                 new net.minecraft.world.phys.AABB(player.position().subtract(5, 5, 5), player.position().add(5, 5, 5)),
@@ -286,6 +309,24 @@ public class ItemWarhammer extends Item {
             Vec3 particleVel = particlePos.subtract(position).normalize().scale(0.15);
             serverLevel.sendParticles(ParticleTypes.SMOKE, posX, position.y, posZ, 1, particleVel.x, 0.01D, particleVel.z, 0.0D);
         }
+    }
+
+    private static void fireWindBurst(Player player, ItemStack stack, float pullDuration, Level level) {
+        if (pullDuration <= 0.9f) {
+            return;
+        }
+        int windBurstLevel = EnchantmentHelper.getItemEnchantmentLevel(
+                level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.WIND_BURST), stack);
+        if (windBurstLevel <= 0) {
+            return;
+        }
+
+        WindCharge windCharge = new WindCharge(player, level, player.getX(), player.getEyePosition().y, player.getZ());
+        float velocity = 1.0f + 0.5f * windBurstLevel;
+        windCharge.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, velocity, 1.0F);
+        level.addFreshEntity(windCharge);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), net.minecraft.sounds.SoundEvents.WIND_CHARGE_THROW,
+                SoundSource.PLAYERS, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
     }
 
     @Override

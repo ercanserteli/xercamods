@@ -137,7 +137,7 @@ public final class ConfettiBallGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = CONFETTI_BATCH)
     public static void confettiRecipeCraftsTwelvePiecesFromPaperAndCmyDyes(GameTestHelper helper) {
-        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("confetti"));
+        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("confetti_alt"));
         CraftingInput grid = craftingGrid(2, 2,
                 new ItemStack(net.minecraft.world.item.Items.PAPER),
                 new ItemStack(net.minecraft.world.item.Items.CYAN_DYE),

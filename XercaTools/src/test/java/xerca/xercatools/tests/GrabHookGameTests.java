@@ -138,6 +138,27 @@ public class GrabHookGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void grabHookKeepsCorpseWhenEntityDiesOnImpact(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = makeSouthPlayer(helper);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        pig.setHealth(1.0f); // 3 damage on impact will kill it
+
+        EntityGrabHook hook = new EntityGrabHook(level, player, new ItemStack(Items.GRAB_HOOK), 1.0f);
+        level.addFreshEntity(hook);
+
+        hook.tick();
+
+        helper.assertTrue(!pig.isAlive(), "Pig should be killed by the impact damage");
+        helper.assertTrue(!pig.isRemoved(), "Corpse should still exist right after death");
+        helper.assertTrue(hook.getCaughtEntity() == pig,
+            "Hook should keep the corpse caught instead of dropping it");
+        helper.assertTrue(!hook.isRemoved(),
+            "Hook should not be discarded when the catch dies on impact");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
     public static void grabHookGentleGrabDealsNoDamage(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
