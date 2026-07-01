@@ -161,16 +161,16 @@ public class ItemCanvas extends HangingEntityItem {
         if (pixels != null) {
             String author = stack.get(Items.CANVAS_AUTHOR);
 
-            if (!StringUtil.isNullOrEmpty(author)) {
+            if (tooltipDisplay.shows(Items.CANVAS_AUTHOR) && !StringUtil.isNullOrEmpty(author)) {
                 consumer.accept(Component.translatable("canvas.byAuthor", author));
             }
 
             int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
             // generation = 0 means empty, 1 means original, more means copy
-            if(generation > 0){
+            if(tooltipDisplay.shows(Items.CANVAS_GENERATION) && generation > 0){
                 consumer.accept((Component.translatable("canvas.generation." + (generation - 1))).withStyle(ChatFormatting.GRAY));
             }
-        }else{
+        }else if(tooltipDisplay.shows(Items.CANVAS_AUTHOR)){
             consumer.accept(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
     }
