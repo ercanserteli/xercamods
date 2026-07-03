@@ -231,7 +231,7 @@ public class ItemWarhammer extends Item {
         float mult = damageBonusMult(pullDuration);
         int densityLevel = getDensityLevel(level.registryAccess(), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + densityLevel * 0.5f) * mult;
+        float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + densityLevel * 0.75f) * mult;
         float push = (((ItemWarhammer) stack.getItem()).pushAmount + densityLevel * 0.15f) * 2.0f * mult;
 
         int uppercutLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.uppercutEnchantment(level.registryAccess()), stack);
@@ -275,10 +275,16 @@ public class ItemWarhammer extends Item {
         }
 
         double range = switch (quakeLevel) {
-            case 1 -> 9.0;
-            case 2 -> 16.0;
-            case 3 -> 25.0;
+            case 1 -> 3;
+            case 2 -> 3.5;
+            case 3 -> 4;
             default -> 0.0;
+        };
+        float quakeDmgMult = switch (quakeLevel) {
+            case 1 -> 0.5f;
+            case 2 -> 0.66f;
+            case 3 -> 0.75f;
+            default -> 0.f;
         };
         if (range <= 0.0D) {
             return;
@@ -287,13 +293,13 @@ public class ItemWarhammer extends Item {
         float mult = damageBonusMult(pullDuration);
         int densityLevel = getDensityLevel(level.registryAccess(), stack);
         AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + densityLevel * 0.5f) * mult * 0.5f;
+        float damage = ((float) (attackDamage != null ? attackDamage.getValue() : 0) + densityLevel * 0.75f) * mult * quakeDmgMult;
         float push = (((ItemWarhammer) stack.getItem()).pushAmount + densityLevel * 0.15f) * mult;
         float pitch = 2.0f / (damage + densityLevel);
 
         List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class,
-                new net.minecraft.world.phys.AABB(player.position().subtract(5, 5, 5), player.position().add(5, 5, 5)),
-                entity -> !entity.is(player) && entity.position().distanceToSqr(position) < range);
+                new net.minecraft.world.phys.AABB(position.subtract(4, 4, 4), position.add(4, 4, 4)),
+                entity -> !entity.is(player) && entity.position().distanceToSqr(position) < range * range);
         for (LivingEntity target : targets) {
             Vec3 knockvec = target.position().subtract(position).normalize().scale(push);
             target.push(knockvec.x, knockvec.y, knockvec.z);
@@ -301,7 +307,7 @@ public class ItemWarhammer extends Item {
             target.hurtMarked = true;
         }
 
-        spawnQuakeParticles(level, position, pullDuration);
+        spawnQuakeParticles(level, position, pullDuration, range);
         level.playSound(null, position.x, position.y, position.z, xerca.xercatools.SoundEvents.STOMP, SoundSource.PLAYERS,
                 (float) Math.min(1.0, Math.log10(10.0 * pullDuration + 1.0)), level.random.nextFloat() * 0.1F + 0.4F + pitch);
 
@@ -310,18 +316,20 @@ public class ItemWarhammer extends Item {
         }
     }
 
-    private static void spawnQuakeParticles(Level level, Vec3 position, float pullDuration) {
+    private static void spawnQuakeParticles(Level level, Vec3 position, float pullDuration, double range) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
         int particleCount = (int) (Math.min(1.0, Math.log10(10.0 * pullDuration + 1.0)) * 64.0);
         for (int i = 0; i < particleCount; i++) {
-            double posX = position.x + level.random.nextGaussian();
-            double posZ = position.z + level.random.nextGaussian();
+            double angle = level.random.nextDouble() * 2.0 * Math.PI;
+            double radius = Math.sqrt(level.random.nextDouble()) * range;
+            double posX = position.x + Math.cos(angle) * radius;
+            double posZ = position.z + Math.sin(angle) * radius;
             Vec3 particlePos = new Vec3(posX, position.y, posZ);
-            Vec3 particleVel = particlePos.subtract(position).normalize().scale(0.15);
-            serverLevel.sendParticles(ParticleTypes.SMOKE, posX, position.y, posZ, 1, particleVel.x, 0.01D, particleVel.z, 0.0D);
+            Vec3 particleVel = particlePos.subtract(position).normalize().scale(0.1);
+            serverLevel.sendParticles(ParticleTypes.SMOKE, posX, position.y, posZ, 0, particleVel.x, 0.001D, particleVel.z, 1.0D);
         }
     }
 
