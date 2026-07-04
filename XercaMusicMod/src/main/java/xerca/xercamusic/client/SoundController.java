@@ -160,26 +160,7 @@ public class SoundController extends Thread {
                             particleSpawned = true;
                         }
 
-                        // Apply glissando (smooth pitch slide)
-                        if (event.hasGlissando()) {
-                            byte[] wps = event.getEffectiveWaypoints();
-                            if (wps != null && wps.length > 0) {
-                                float[] pitchWaypoints = new float[wps.length];
-                                for (int j = 0; j < wps.length; j++) {
-                                    pitchWaypoints[j] = insSound.pitch() * (float) Math.pow(2.0, wps[j] / 12.0);
-                                }
-                                byte[] posBuf = event.getEffectivePositions();
-                                if (posBuf != null && posBuf.length == wps.length) {
-                                    float[] posFloats = new float[posBuf.length];
-                                    for (int j = 0; j < posBuf.length; j++) {
-                                        posFloats[j] = (posBuf[j] & 0xFF) / 100.0f;
-                                    }
-                                    sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
-                                } else {
-                                    sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
-                                }
-                            }
-                        }
+                ClientStuff.applyNoteEffects(sound, event, insSound.pitch(), beatsToTicks(event.length));
 
                         // Track sustained notes inside volume markers for dynamic volume
                         if (activeMarker != null && event.length > 1) {

@@ -48,6 +48,8 @@ public final class Items {
     public static final Item TRUMPET = new ItemInstrument(19, 2, 5, properties("trumpet"));
     public static final Item REDSTONE_PIANO = new ItemInstrument(20, 0, 6, properties("redstone_piano"));
     public static final Item ORGAN = new ItemInstrument(21, 1, 6, properties("organ"));
+    public static final Item HARPSICHORD = new ItemInstrument(22, 0, 5, properties("harpsichord"));
+    public static final Item STEELPAN = new ItemBlockInstrument(23, 1, 5, blockProperties("steelpan"), Blocks.STEELPAN);
     public static final Item MUSIC_SHEET = new ItemMusicSheet(properties("music_sheet"));
 
     public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
@@ -76,6 +78,8 @@ public final class Items {
                 output.accept(TRUMPET);
                 output.accept(REDSTONE_PIANO);
                 output.accept(ORGAN);
+                output.accept(HARPSICHORD);
+                output.accept(STEELPAN);
                 output.accept(Blocks.MUSIC_BOX);
                 output.accept(Blocks.BLOCK_METRONOME);
             })
@@ -88,7 +92,7 @@ public final class Items {
             (IItemInstrument) SANSULA, (IItemInstrument) VIOLIN, (IItemInstrument) CELLO, (IItemInstrument) FLUTE,
             (IItemInstrument) SAXOPHONE, (IItemInstrument) GOD, (IItemInstrument) PIANO, (IItemInstrument) OBOE,
             (IItemInstrument) REDSTONE_GUITAR, (IItemInstrument) FRENCH_HORN, (IItemInstrument) BASS_GUITAR,
-            (IItemInstrument) TRUMPET, (IItemInstrument) REDSTONE_PIANO, (IItemInstrument) ORGAN
+            (IItemInstrument) TRUMPET, (IItemInstrument) REDSTONE_PIANO, (IItemInstrument) ORGAN, (IItemInstrument) HARPSICHORD, (IItemInstrument) STEELPAN
     );
 
     public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = new CustomRecipe.Serializer<>(RecipeNoteCloning::new);
@@ -157,6 +161,8 @@ public final class Items {
         registerItem("trumpet", TRUMPET);
         registerItem("redstone_piano", REDSTONE_PIANO);
         registerItem("organ", ORGAN);
+        registerItem("harpsichord", HARPSICHORD);
+        registerItem("steelpan", STEELPAN);
         registerItem("harp_mc", HARP_MC);
         registerItem("music_sheet", MUSIC_SHEET);
         registerItem("music_box", new BlockItem(Blocks.MUSIC_BOX, blockProperties("music_box")));

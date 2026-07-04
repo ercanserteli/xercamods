@@ -63,6 +63,7 @@ public class GuiMusicSheet extends Screen {
     private static final int HL_BUT_Y = 23;
     private static final int[] OCTAVE_COLORS = {0xFF5B3200, 0xFFFF0000, 0xFF0AEE00, 0xFF0059FF, 0xFF7B00FF, 0xFFEF00B7, 0xFF00E2DF, 0XFFF4E800};
     private static final int[] OCTAVE_COLORS_TRANS = {0x165B3200, 0x16FF0000, 0x160AEE00, 0x160059FF, 0x167B00FF, 0x16EF00B7, 0x1600E2DF, 0X16F4E800};
+    private static final int[] VIBRATO_WAVE = {0, -1, 0, 1};
     static final int MAX_LENGTH_BEATS = 32000;
     private static final int MAX_NOTE_LENGTH = 60;
     static final int MAX_UNDO_LENGTH = 16;
@@ -192,7 +193,8 @@ public class GuiMusicSheet extends Screen {
         {"note.helpSection.effects",
          "note.helpFx1a", "note.helpFx1b",
          "note.helpFx2a", "note.helpFx2b",
-         "note.helpFx3a", "note.helpFx3b"},
+         "note.helpFx3a", "note.helpFx3b",
+         "note.helpFx4a", "note.helpFx4b"},
         {"note.helpSection.tempo",
          "note.helpTempo1a", "note.helpTempo1b",
          "note.helpTempo2a", "note.helpTempo2b"},
@@ -593,7 +595,7 @@ public class GuiMusicSheet extends Screen {
             }
         }).bounds(noteImageLeftX + HL_BUT_X + 44, noteImageY + HL_BUT_Y, BPM_BUT_W, BPM_BUT_H).build());
 
-        this.noteEditBox = this.addRenderableWidget(new NoteEditBox(0, 0, 70, 55, Component.empty()));
+        this.noteEditBox = this.addRenderableWidget(new NoteEditBox(0, 0, 104, 67, Component.empty()));
         this.markerEditBox = this.addRenderableWidget(new MarkerEditBox(0, 0, 90, 75, Component.empty()));
 
         this.buttonHelp = this.addRenderableWidget(Button.builder(Component.literal("?"), button -> toggleHelp()).
@@ -763,26 +765,7 @@ public class GuiMusicSheet extends Screen {
             return null;
         }
 
-        // Apply glissando (smooth pitch slide)
-        if (event.hasGlissando() && sound != null) {
-            byte[] wps = event.getEffectiveWaypoints();
-            if (wps != null && wps.length > 0) {
-                float[] pitchWaypoints = new float[wps.length];
-                for (int i = 0; i < wps.length; i++) {
-                    pitchWaypoints[i] = insSound.pitch() * (float)Math.pow(2.0, wps[i] / 12.0);
-                }
-                byte[] posBuf = event.getEffectivePositions();
-                if (posBuf != null && posBuf.length == wps.length) {
-                    float[] posFloats = new float[posBuf.length];
-                    for (int i = 0; i < posBuf.length; i++) {
-                        posFloats[i] = (posBuf[i] & 0xFF) / 100.0f;
-                    }
-                    sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
-                } else {
-                    sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
-                }
-            }
-        }
+        ClientStuff.applyNoteEffects(sound, event, insSound.pitch(), beatsToTicks(event.length));
 
         return sound;
     }
@@ -1440,6 +1423,15 @@ public class GuiMusicSheet extends Screen {
                 }
             }
 
+            // Draw a compact waveform so vibrato notes are visible on the sheet.
+            if (!isNeighbor && event.hasVibrato()) {
+                for (int px = xFillBegin; px < xFillEnd; px++) {
+                    int waveIndex = ((px - xBegin) / 2) & 3;
+                    int py = y + 1 + VIBRATO_WAVE[waveIndex];
+                    guiGraphics.fill(px, py, px + 1, py + 1, 0xFFE65CFF);
+                }
+            }
+
             // Draw pending waypoints preview during glissando placement, including the live cursor waypoint.
             if (glissandoMode && event == glissandoSourceNote) {
                 drawPendingGlissandoPreview(guiGraphics, event, xBegin, xEnd, y);
@@ -1965,17 +1957,31 @@ public class GuiMusicSheet extends Screen {
         public final Button buttonNoteUp;
         public final Button buttonLengthDown;
         public final Button buttonLengthUp;
+        public final Button buttonVibrato;
         public final Button buttonExit;
         public final Button buttonPrev;
         public final BetterSlider sliderVelocity;
+        public final BetterSlider sliderVibratoDepth;
+        public final BetterSlider sliderVibratoRate;
+        public final BetterSlider sliderVibratoDelay;
+        public final BetterSlider sliderVibratoFade;
         private static final int NOTE_Y = 18;
         private static final int LENGTH_Y = 29;
-        private final AbstractWidget[] children = new AbstractWidget[7];
+        private static final int VOLUME_Y = 41;
+        private static final int VIBRATO_BUTTON_Y = 53;
+        private static final int VIBRATO_DEPTH_Y = 65;
+        private static final int VIBRATO_RATE_Y = 76;
+        private static final int VIBRATO_DELAY_Y = 87;
+        private static final int VIBRATO_FADE_Y = 98;
+        private static final int COLLAPSED_HEIGHT = 67;
+        private static final int EXPANDED_HEIGHT = 112;
+        private final AbstractWidget[] children = new AbstractWidget[12];
         private static final String[] noteNames = {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
         private static final String[] noteNamesSolfege = {"La", "La#", "Si", "Do", "Do#", "Re", "Re#", "Mi", "Fa", "Fa#", "Sol", "Sol#"};
         private @Nullable NoteEvent event;
         private @Nullable NoteSound previewSound;
         private boolean changed;
+        private boolean refreshPreviewOnRelease;
 
         public NoteEditBox(int x, int y, int w, int h, Component msg) {
             super(x, y, w, h, msg);
@@ -1983,7 +1989,52 @@ public class GuiMusicSheet extends Screen {
                 @Override
                 public void applyValue() {
                     setChanged();
-                    requireEvent().volume = (byte) Math.round(value * 127.0f);
+                    event.volume = (byte) Math.round(value * 127.0f);
+                }
+            };
+            sliderVibratoDepth = new BetterSlider(5, 0, 94, 10,
+                    Component.translatable("note.vibrato.depth"), Component.literal("c"),
+                    NoteEvent.MIN_VIBRATO_DEPTH_CENTS, NoteEvent.MAX_VIBRATO_DEPTH_CENTS,
+                    NoteEvent.DEFAULT_VIBRATO_DEPTH_CENTS, 5, true) {
+                @Override
+                public void applyValue() {
+                    setChanged();
+                    event.setVibratoDepthCents((int) Math.round(getValue()));
+                    refreshPreviewOnRelease = true;
+                }
+            };
+            sliderVibratoRate = new BetterSlider(5, 0, 94, 10,
+                    Component.translatable("note.vibrato.rate"), Component.literal("Hz"),
+                    NoteEvent.MIN_VIBRATO_RATE_TENTHS_HZ / 10.0,
+                    NoteEvent.MAX_VIBRATO_RATE_TENTHS_HZ / 10.0,
+                    NoteEvent.DEFAULT_VIBRATO_RATE_TENTHS_HZ / 10.0, 0.5, true) {
+                @Override
+                public void applyValue() {
+                    setChanged();
+                    event.setVibratoRateTenthsHz((int) Math.round(getValue() * 10.0));
+                    refreshPreviewOnRelease = true;
+                }
+            };
+            sliderVibratoDelay = new BetterSlider(5, 0, 94, 10,
+                    Component.translatable("note.vibrato.delay"), Component.literal("s"),
+                    0, NoteEvent.MAX_VIBRATO_ENVELOPE_TICKS / 20.0,
+                    NoteEvent.DEFAULT_VIBRATO_DELAY_TICKS / 20.0, 0.05, true) {
+                @Override
+                public void applyValue() {
+                    setChanged();
+                    event.setVibratoDelayTicks((int) Math.round(getValue() * 20.0));
+                    refreshPreviewOnRelease = true;
+                }
+            };
+            sliderVibratoFade = new BetterSlider(5, 0, 94, 10,
+                    Component.translatable("note.vibrato.fade"), Component.literal("s"),
+                    0, NoteEvent.MAX_VIBRATO_ENVELOPE_TICKS / 20.0,
+                    NoteEvent.DEFAULT_VIBRATO_FADE_TICKS / 20.0, 0.05, true) {
+                @Override
+                public void applyValue() {
+                    setChanged();
+                    event.setVibratoFadeTicks((int) Math.round(getValue() * 20.0));
+                    refreshPreviewOnRelease = true;
                 }
             };
             buttonNoteDown = Button.builder(Component.translatable(NOTE_LEFT_STR_KEY), button -> {
@@ -2018,7 +2069,19 @@ public class GuiMusicSheet extends Screen {
                     playPrev();
                 }
             }).bounds(0, 0, 10, 8).build();
-            buttonExit = Button.builder(Component.translatable("note.exitButton"), button -> close()).bounds(0, 0, 10, 10).build();
+            buttonVibrato = Button.builder(Component.empty(), button -> {
+                setChanged();
+                event.setVibratoEnabled(!event.hasVibrato());
+                updateVibratoControls();
+                playPrev();
+            }).bounds(0, 0, 94, 10).build();
+            buttonExit = Button.builder(Component.translatable("note.exitButton"), button -> {
+                this.visible = false;
+                this.active = false;
+                if (previewSound != null && !previewSound.isStopped()) {
+                    previewSound.stopSound();
+                }
+            }).bounds(0, 0, 10, 10).build();
             buttonPrev = Button.builder(Component.translatable("note.startPreviewButton"), button -> playPrev()).
                     bounds(0, 0, 10, 10).build();
 
@@ -2027,8 +2090,13 @@ public class GuiMusicSheet extends Screen {
             children[2] = buttonNoteUp;
             children[3] = buttonLengthDown;
             children[4] = buttonLengthUp;
-            children[5] = buttonExit;
-            children[6] = buttonPrev;
+            children[5] = buttonVibrato;
+            children[6] = sliderVibratoDepth;
+            children[7] = sliderVibratoRate;
+            children[8] = sliderVibratoDelay;
+            children[9] = sliderVibratoFade;
+            children[10] = buttonExit;
+            children[11] = buttonPrev;
         }
 
         private void setChanged() {
@@ -2044,7 +2112,71 @@ public class GuiMusicSheet extends Screen {
             if (previewSound != null && !previewSound.isStopped()) {
                 previewSound.stopSound();
             }
-            previewSound = playSound(requireEvent(), previewInstrument);
+            previewSound = playSound(event, previewInstrument);
+        }
+
+        private void updateVibratoControls() {
+            if (event == null) {
+                buttonVibrato.setMessage(Component.translatable("note.vibrato.disabled"));
+                setVibratoSlidersVisible(false);
+                this.height = COLLAPSED_HEIGHT;
+                layoutControls();
+                return;
+            }
+
+            boolean enabled = event.hasVibrato();
+            buttonVibrato.setMessage(Component.translatable(enabled
+                    ? "note.vibrato.enabled"
+                    : "note.vibrato.disabled"));
+            setVibratoSlidersVisible(enabled);
+            this.height = enabled ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT;
+            this.setY(Math.max(0, Math.min(getY(), GuiMusicSheet.this.height - height)));
+            layoutControls();
+        }
+
+        private void setVibratoSlidersVisible(boolean visible) {
+            sliderVibratoDepth.visible = visible;
+            sliderVibratoDepth.active = visible;
+            sliderVibratoRate.visible = visible;
+            sliderVibratoRate.active = visible;
+            sliderVibratoDelay.visible = visible;
+            sliderVibratoDelay.active = visible;
+            sliderVibratoFade.visible = visible;
+            sliderVibratoFade.active = visible;
+        }
+
+        private void layoutControls() {
+            int x = getX();
+            int y = getY();
+            sliderVelocity.setX(x + 10);
+            sliderVelocity.setY(y + VOLUME_Y);
+
+            buttonNoteDown.setX(x + 3);
+            buttonNoteDown.setY(y + NOTE_Y);
+            buttonNoteUp.setX(x + width - 13);
+            buttonNoteUp.setY(y + NOTE_Y);
+
+            buttonLengthDown.setX(x + 3);
+            buttonLengthDown.setY(y + LENGTH_Y);
+            buttonLengthUp.setX(x + width - 13);
+            buttonLengthUp.setY(y + LENGTH_Y);
+
+            buttonVibrato.setX(x + 5);
+            buttonVibrato.setY(y + VIBRATO_BUTTON_Y);
+
+            sliderVibratoDepth.setX(x + 5);
+            sliderVibratoDepth.setY(y + VIBRATO_DEPTH_Y);
+            sliderVibratoRate.setX(x + 5);
+            sliderVibratoRate.setY(y + VIBRATO_RATE_Y);
+            sliderVibratoDelay.setX(x + 5);
+            sliderVibratoDelay.setY(y + VIBRATO_DELAY_Y);
+            sliderVibratoFade.setX(x + 5);
+            sliderVibratoFade.setY(y + VIBRATO_FADE_Y);
+
+            buttonExit.setX(x + width - 13);
+            buttonExit.setY(y + 2);
+            buttonPrev.setX(x + 3);
+            buttonPrev.setY(y + 2);
         }
 
         @Override
@@ -2066,9 +2198,22 @@ public class GuiMusicSheet extends Screen {
                 if (buttonPrev.isHovered()) {
                     guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.previewNoteTooltip"), mouseX, mouseY);
                 } else if (buttonExit.isHovered()) {
-                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
+                    guiGraphics.renderTooltip(font, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
+                } else if (sliderVibratoDepth.visible && sliderVibratoDepth.isHovered()) {
+                    renderWrappedTooltip(guiGraphics, font, "note.vibrato.depthTooltip", mouseX, mouseY);
+                } else if (sliderVibratoRate.visible && sliderVibratoRate.isHovered()) {
+                    renderWrappedTooltip(guiGraphics, font, "note.vibrato.rateTooltip", mouseX, mouseY);
+                } else if (sliderVibratoDelay.visible && sliderVibratoDelay.isHovered()) {
+                    renderWrappedTooltip(guiGraphics, font, "note.vibrato.delayTooltip", mouseX, mouseY);
+                } else if (sliderVibratoFade.visible && sliderVibratoFade.isHovered()) {
+                    renderWrappedTooltip(guiGraphics, font, "note.vibrato.fadeTooltip", mouseX, mouseY);
                 }
             }
+        }
+
+        private void renderWrappedTooltip(GuiGraphics guiGraphics, Font font, String translationKey, int mouseX, int mouseY) {
+            int maxWidth = Math.max(80, Math.min(180, GuiMusicSheet.this.width - 24));
+            guiGraphics.renderTooltip(font, font.split(Component.translatable(translationKey), maxWidth), mouseX, mouseY);
         }
 
         public void appear(int x, int y, NoteEvent event) {
@@ -2076,33 +2221,22 @@ public class GuiMusicSheet extends Screen {
                 markerEditBox.close();
             }
             changed = false;
+            this.event = event;
+            this.refreshPreviewOnRelease = false;
+            this.height = event.hasVibrato() ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT;
+            x = Math.max(0, Math.min(x, GuiMusicSheet.this.width - width));
+            y = Math.max(0, Math.min(y, GuiMusicSheet.this.height - height));
             this.setX(x);
             this.setY(y);
             this.visible = true;
             this.active = true;
-            this.event = event;
-            sliderVelocity.setX(x + 10);
-            int sliderY = 41;
-            sliderVelocity.setY(y + sliderY);
-            sliderVelocity.setSliderValue(event.floatVolume() * 100.0f);
-            sliderVelocity.applyValue();
+            sliderVelocity.setValue(event.floatVolume() * 100.0f);
+            sliderVibratoDepth.setValue(event.vibratoDepthCents());
+            sliderVibratoRate.setValue(event.vibratoRateHz());
+            sliderVibratoDelay.setValue(event.vibratoDelaySeconds());
+            sliderVibratoFade.setValue(event.vibratoFadeSeconds());
 
-            buttonNoteDown.setX(x + 3);
-            buttonNoteDown.setY(y + NOTE_Y);
-            buttonNoteUp.setX(x + 59);
-            buttonNoteUp.setY(y + NOTE_Y);
-
-            buttonLengthDown.setX(x + 3);
-            buttonLengthDown.setY(y + LENGTH_Y);
-            buttonLengthUp.setX(x + 59);
-            buttonLengthUp.setY(y + LENGTH_Y);
-
-            buttonExit.setX(x + 59);
-            buttonExit.setY(y + 2);
-
-            buttonPrev.setX(x + 3);
-            buttonPrev.setY(y + 2);
-
+            updateVibratoControls();
             playPrev();
         }
 
@@ -2116,7 +2250,8 @@ public class GuiMusicSheet extends Screen {
                 }
 
                 for (AbstractWidget widget : children) {
-                    if (mouseX >= widget.getX() && mouseX < widget.getX() + widget.getWidth() &&
+                    if (widget.visible
+                            && mouseX >= widget.getX() && mouseX < widget.getX() + widget.getWidth() &&
                             mouseY >= widget.getY() && mouseY < widget.getY() + widget.getHeight()) {
                         widget.mouseClicked(event, isDoubleClick);
                         return true;
@@ -2135,12 +2270,14 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
-            double posX = event.x();
-            double posY = event.y();
-            if (posX >= sliderVelocity.getX() && posX < sliderVelocity.getX() + sliderVelocity.getWidth() &&
-                    posY >= sliderVelocity.getY() && posY < sliderVelocity.getY() + sliderVelocity.getHeight()) {
-                sliderVelocity.mouseDragged(event, deltaX, deltaY);
+        public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+            for (AbstractWidget widget : children) {
+                if (widget instanceof BetterSlider slider && slider.active && slider.visible
+                        && posX >= slider.getX() && posX < slider.getX() + slider.getWidth()
+                        && posY >= slider.getY() && posY < slider.getY() + slider.getHeight()) {
+                    slider.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+                    break;
+                }
             }
             return true;
         }
@@ -2151,8 +2288,16 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseReleased(MouseButtonEvent event) {
-            sliderVelocity.onRelease(event);
+        public boolean mouseReleased(double posX, double posY, int mouseButton) {
+            for (AbstractWidget widget : children) {
+                if (widget instanceof BetterSlider slider) {
+                    slider.onRelease(posX, posY);
+                }
+            }
+            if (refreshPreviewOnRelease) {
+                refreshPreviewOnRelease = false;
+                playPrev();
+            }
             return true;
         }
 

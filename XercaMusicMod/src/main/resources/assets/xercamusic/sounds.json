@@ -3396,5 +3396,176 @@
         "attenuation_distance": 48
       }
     ]
+  },
+  "harpsichord30": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord30",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord36": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord36",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord42": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord42",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harpsichord84": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harpsichord/harpsichord84",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan42": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan42",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan84": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan84",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "steelpan90": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:steelpan/steelpan90",
+        "attenuation_distance": 48
+      }
+    ]
   }
 }

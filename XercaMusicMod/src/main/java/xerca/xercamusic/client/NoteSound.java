@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 
 public class NoteSound extends AbstractSoundInstance implements TickableSoundInstance {
     private static final float[] FADE_VOLUMES = {0.0f, 0.02f, 0.12f, 0.3f};
+    private static final float TICKS_PER_SECOND = 20.0f;
     private final float originalVolume;
     private final float originalPitch;
     private float dynamicVolume = -1f;  // -1 means no dynamic override
@@ -22,6 +23,13 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
     private @Nullable float[] waypointPositions; // null = evenly spaced; values 0.0-1.0 indicating when each waypoint is reached
     private int glissandoTotalTicks;
     private int glissandoTicksElapsed;
+
+    // Vibrato (pitch wobble)
+    private float vibratoDepthSemitones;
+    private float vibratoRateHz;
+    private float vibratoDelaySeconds;
+    private float vibratoFadeSeconds;
+    private int vibratoTicksElapsed;
 
     NoteSound(SoundEvent soundEvent, SoundSource category, float x, float y, float z, float volume, float pitch, int lengthTicks) {
         super(soundEvent, category, RandomSource.create());
@@ -73,6 +81,18 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
         this.glissandoTicksElapsed = 0;
     }
 
+    /**
+     * Enable vibrato around the note's current base pitch. If glissando is also enabled,
+     * the wobble follows the moving glissando pitch.
+     */
+    public void setVibrato(float depthSemitones, float rateHz, float delaySeconds, float fadeInSeconds) {
+        this.vibratoDepthSemitones = Math.max(0.0f, depthSemitones);
+        this.vibratoRateHz = Math.max(0.0f, rateHz);
+        this.vibratoDelaySeconds = Math.max(0.0f, delaySeconds);
+        this.vibratoFadeSeconds = Math.max(0.0f, fadeInSeconds);
+        this.vibratoTicksElapsed = 0;
+    }
+
     @Override
     public boolean isStopped() {
         return this.donePlaying;
@@ -93,52 +113,75 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
             volume = dynamicVolume;
         }
 
-        // Glissando: smoothly interpolate pitch through waypoints
-        if(pitchWaypoints != null && pitchWaypoints.length > 0 && glissandoTicksElapsed < glissandoTotalTicks) {
-            glissandoTicksElapsed++;
-            float progress = (float)glissandoTicksElapsed / (float)glissandoTotalTicks;
-            int numWaypoints = pitchWaypoints.length;
+        float basePitch = updateGlissandoPitch();
+        this.pitch = applyVibrato(basePitch);
+    }
 
-            int segIdx;
-            float localProgress;
-
-            if (waypointPositions != null && waypointPositions.length == numWaypoints) {
-                // Custom-positioned waypoints: find segment based on position thresholds
-                segIdx = 0;
-                for (int i = 0; i < numWaypoints; i++) {
-                    if (progress <= waypointPositions[i]) {
-                        segIdx = i;
-                        break;
-                    }
-                    segIdx = i;
-                }
-                float segStart = segIdx == 0 ? 0.0f : waypointPositions[segIdx - 1];
-                float segEnd = waypointPositions[segIdx];
-                float segLen = segEnd - segStart;
-                localProgress = segLen > 0.0001f ? Math.min((progress - segStart) / segLen, 1.0f) : 1.0f;
-                // If past the last waypoint position, hold the final pitch
-                if (progress > waypointPositions[numWaypoints - 1]) {
-                    this.pitch = pitchWaypoints[numWaypoints - 1];
-                    return;
-                }
-            } else {
-                // Even distribution (original behavior)
-                float scaledProgress = progress * numWaypoints;
-                segIdx = Math.min((int)scaledProgress, numWaypoints - 1);
-                localProgress = scaledProgress - segIdx;
-                if (segIdx >= numWaypoints - 1) {
-                    localProgress = Math.min(localProgress, 1.0f);
-                }
-            }
-
-            float fromPitch = segIdx == 0 ? originalPitch : pitchWaypoints[segIdx - 1];
-            float toPitch = pitchWaypoints[segIdx];
-            // Exponential interpolation for musical pitch (sounds linear to human ear)
-            if (Math.abs(fromPitch - toPitch) < 0.0001f) {
-                this.pitch = toPitch;
-            } else {
-                this.pitch = fromPitch * (float)Math.pow(toPitch / fromPitch, localProgress);
-            }
+    private float updateGlissandoPitch() {
+        if (pitchWaypoints == null || pitchWaypoints.length == 0) {
+            return originalPitch;
         }
+
+        if (glissandoTicksElapsed < glissandoTotalTicks) {
+            glissandoTicksElapsed++;
+        }
+
+        float progress = Math.min(1.0f, (float) glissandoTicksElapsed / (float) glissandoTotalTicks);
+        int numWaypoints = pitchWaypoints.length;
+        int segIdx;
+        float localProgress;
+
+        if (waypointPositions != null && waypointPositions.length == numWaypoints) {
+            if (progress > waypointPositions[numWaypoints - 1]) {
+                return pitchWaypoints[numWaypoints - 1];
+            }
+
+            segIdx = 0;
+            for (int i = 0; i < numWaypoints; i++) {
+                if (progress <= waypointPositions[i]) {
+                    segIdx = i;
+                    break;
+                }
+            }
+            float segStart = segIdx == 0 ? 0.0f : waypointPositions[segIdx - 1];
+            float segEnd = waypointPositions[segIdx];
+            float segLen = segEnd - segStart;
+            localProgress = segLen > 0.0001f
+                    ? Math.max(0.0f, Math.min((progress - segStart) / segLen, 1.0f))
+                    : 1.0f;
+        } else {
+            float scaledProgress = progress * numWaypoints;
+            segIdx = Math.min((int) scaledProgress, numWaypoints - 1);
+            localProgress = segIdx == numWaypoints - 1
+                    ? Math.min(scaledProgress - segIdx, 1.0f)
+                    : scaledProgress - segIdx;
+        }
+
+        float fromPitch = segIdx == 0 ? originalPitch : pitchWaypoints[segIdx - 1];
+        float toPitch = pitchWaypoints[segIdx];
+        if (Math.abs(fromPitch - toPitch) < 0.0001f) {
+            return toPitch;
+        }
+        return fromPitch * (float) Math.pow(toPitch / fromPitch, localProgress);
+    }
+
+    private float applyVibrato(float basePitch) {
+        if (vibratoDepthSemitones <= 0.0f || vibratoRateHz <= 0.0f) {
+            return basePitch;
+        }
+
+        vibratoTicksElapsed++;
+        float noteAgeSeconds = vibratoTicksElapsed / TICKS_PER_SECOND;
+        if (noteAgeSeconds < vibratoDelaySeconds) {
+            return basePitch;
+        }
+
+        float vibratoAgeSeconds = noteAgeSeconds - vibratoDelaySeconds;
+        float fade = vibratoFadeSeconds <= 0.0f
+                ? 1.0f
+                : Math.min(1.0f, vibratoAgeSeconds / vibratoFadeSeconds);
+        float offsetSemitones = vibratoDepthSemitones * fade
+                * (float) Math.sin(2.0 * Math.PI * vibratoRateHz * vibratoAgeSeconds);
+        return basePitch * (float) Math.pow(2.0, offsetSemitones / 12.0);
     }
 }

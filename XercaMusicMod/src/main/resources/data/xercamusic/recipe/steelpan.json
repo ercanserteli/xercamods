@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern": [
+        " i ",
+        "isi",
+        " i "
+    ],
+    "key": {"s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:iron_nugget"}},
+    "result": {"id": "xercamusic:steelpan"}
+}

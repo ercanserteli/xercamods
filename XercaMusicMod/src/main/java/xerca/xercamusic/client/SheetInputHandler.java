@@ -49,6 +49,19 @@ class SheetInputHandler {
             return true;
         }
 
+        // Overlays are rendered above the sheet controls, so they must also receive
+        // mouse input first when their bounds overlap the timeline/navigation sliders.
+        if (isInside(gui.noteEditBox, dmouseX, dmouseY)) {
+            gui.setFocused(gui.noteEditBox);
+            gui.setDragging(true);
+            return gui.noteEditBox.mouseClicked(dmouseX, dmouseY, mouseButton);
+        }
+        if (isInside(gui.markerEditBox, dmouseX, dmouseY)) {
+            gui.setFocused(gui.markerEditBox);
+            gui.setDragging(true);
+            return gui.markerEditBox.mouseClicked(dmouseX, dmouseY, mouseButton);
+        }
+
         if (gui.callSuperMouseClicked(dmouseX, dmouseY, mouseButton)) {
             gui.setDragging(true);
             return true;
@@ -190,6 +203,15 @@ class SheetInputHandler {
             }
         }
         return true;
+    }
+
+    private static boolean isInside(GuiEventListener listener, double mouseX, double mouseY) {
+        if (!(listener instanceof net.minecraft.client.gui.components.AbstractWidget widget)
+                || !widget.visible || !widget.active) {
+            return false;
+        }
+        return mouseX >= widget.getX() && mouseX < widget.getX() + widget.getWidth()
+                && mouseY >= widget.getY() && mouseY < widget.getY() + widget.getHeight();
     }
 
     boolean handleMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {

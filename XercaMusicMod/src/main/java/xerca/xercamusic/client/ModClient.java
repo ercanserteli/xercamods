@@ -17,6 +17,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.common.Mod;
+import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -80,6 +81,42 @@ public class ModClient implements ClientModInitializer {
         NoteSound sound = new NoteSound(event, category, (float) x, (float) y, (float) z, volume, pitch, lengthTicks);
         Minecraft.getInstance().getSoundManager().play(sound);
         return sound;
+    }
+
+    public static void applyNoteEffects(NoteSound sound, NoteEvent event, float basePitch, int durationTicks) {
+        if (sound == null) {
+            return;
+        }
+
+        if (event.hasGlissando()) {
+            byte[] waypoints = event.getEffectiveWaypoints();
+            if (waypoints != null && waypoints.length > 0) {
+                float[] pitchWaypoints = new float[waypoints.length];
+                for (int i = 0; i < waypoints.length; i++) {
+                    pitchWaypoints[i] = basePitch * (float) Math.pow(2.0, waypoints[i] / 12.0);
+                }
+
+                byte[] encodedPositions = event.getEffectivePositions();
+                if (encodedPositions != null && encodedPositions.length == waypoints.length) {
+                    float[] positions = new float[encodedPositions.length];
+                    for (int i = 0; i < encodedPositions.length; i++) {
+                        positions[i] = (encodedPositions[i] & 0xFF) / 100.0f;
+                    }
+                    sound.setGlissando(pitchWaypoints, positions, durationTicks);
+                } else {
+                    sound.setGlissando(pitchWaypoints, durationTicks);
+                }
+            }
+        }
+
+        if (event.hasVibrato()) {
+            sound.setVibrato(
+                    event.vibratoDepthSemitones(),
+                    event.vibratoRateHz(),
+                    event.vibratoDelaySeconds(),
+                    event.vibratoFadeSeconds()
+            );
+        }
     }
 
     public static void endMusic(int spiritID, int playerID) {
