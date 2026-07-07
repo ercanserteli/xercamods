@@ -9,10 +9,13 @@
       "xerca.xercacourt.tests.CourtGameTests"
     ]
   },
+  "mixins": [
+    "xercacourt_tests.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "1.21.3",
+    "minecraft": "1.21.4",
     "xercacourt": "*"
   }
 }

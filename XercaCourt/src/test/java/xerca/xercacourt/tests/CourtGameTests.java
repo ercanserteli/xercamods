@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import xerca.xercacourt.Mod;
+import xerca.xercacourt.SoundEvents;
 import xerca.xercacourt.item.Items;
 
 import java.util.ArrayList;
@@ -115,6 +116,52 @@ public final class CourtGameTests {
         UseOnContext context = new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult);
 
         helper.assertTrue(Items.GAVEL.useOn(context).consumesAction(), "Expected gavel use on a solid block to succeed");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = COURTROOM_BATCH)
+    public static void gavelOnSolidBlockPlaysSound(GameTestHelper helper) {
+        SoundRecorder.clear();
+        BlockPos targetPos = helper.absolutePos(new BlockPos(1, 2, 1));
+        helper.getLevel().setBlockAndUpdate(targetPos, Blocks.STONE.defaultBlockState());
+
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.moveTo(Vec3.atCenterOf(targetPos.above()));
+        player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.GAVEL));
+
+        BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(targetPos), net.minecraft.core.Direction.UP, targetPos, false);
+        Items.GAVEL.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult));
+
+        helper.assertTrue(SoundRecorder.played(SoundEvents.GAVEL), "Expected gavel on a solid block to play the gavel sound");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = COURTROOM_BATCH)
+    public static void gavelOnNonSolidBlockPlaysNoSound(GameTestHelper helper) {
+        SoundRecorder.clear();
+        BlockPos targetPos = helper.absolutePos(new BlockPos(1, 2, 1));
+        helper.getLevel().setBlockAndUpdate(targetPos, Blocks.GLASS.defaultBlockState());
+
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.moveTo(Vec3.atCenterOf(targetPos.above()));
+        player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.GAVEL));
+
+        BlockHitResult hitResult = new BlockHitResult(Vec3.atCenterOf(targetPos), net.minecraft.core.Direction.UP, targetPos, false);
+        Items.GAVEL.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult));
+
+        helper.assertFalse(SoundRecorder.played(SoundEvents.GAVEL), "Expected gavel on a non-occluding block to stay silent");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = COURTROOM_BATCH)
+    public static void prosecutorBadgeUsePlaysObjectionSound(GameTestHelper helper) {
+        SoundRecorder.clear();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.PROSECUTOR_BADGE));
+
+        Items.PROSECUTOR_BADGE.use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
+
+        helper.assertTrue(SoundRecorder.played(SoundEvents.OBJECTION), "Expected prosecutor badge use to play the objection sound");
         helper.succeed();
     }
 }
