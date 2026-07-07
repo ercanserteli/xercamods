@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "xerca.xercacourt.tests.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ServerLevelSoundMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
