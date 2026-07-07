@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.8-SNAPSHOT'
+    id 'fabric-loom' version '1.9-SNAPSHOT'
     id 'maven-publish'
     id("com.github.spotbugs") version "6.4.4"
     id "pmd"
@@ -37,12 +37,16 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.21.3:2024.12.07@zip")
+        parchment("org.parchmentmc.data:parchment-1.21.4:2025.03.23@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Client game test API (experimental) for screenshot-diff rendering regression tests.
+    // Not part of the production fabric-api distribution, so it is pinned explicitly.
+    modImplementation "net.fabricmc.fabric-api:fabric-client-gametest-api-v1:4.1.1+6816ccd404"
 
     // Uncomment the following line to enable the deprecated Fabric API modules.
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
@@ -114,6 +118,16 @@ loom {
             source(testSourceSet)
             ideConfigGenerated = true
             runDir "build/gametest"
+        }
+        clientGameTest {
+            client()
+            name "Client Game Test"
+            vmArg "-Dfabric.client.gametest"
+            vmArg "-Dfabric.client.gametest.testModResourcesPath=${file("src/test/resources").absolutePath.replace('\\', '/')}"
+            source(mainSourceSet)
+            source(testSourceSet)
+            ideConfigGenerated = false
+            runDir "build/clientgametest"
         }
     }
 }

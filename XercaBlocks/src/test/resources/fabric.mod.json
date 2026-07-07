@@ -7,12 +7,15 @@
   "entrypoints": {
     "fabric-gametest": [
       "xerca.xercablocks.tests.BlocksGameTests"
+    ],
+    "fabric-client-gametest": [
+      "xerca.xercablocks.tests.CarvedCrimsonClientTest"
     ]
   },
   "depends": {
     "fabricloader": "*",
     "fabric-api": "*",
-    "minecraft": "1.21.3",
+    "minecraft": "1.21.4",
     "xercablocks": "*"
   }
 }

@@ -1,12 +1,11 @@
 package xerca.xercablocks.client;
 
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.client.renderer.block.model.BakedOverrides;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -14,13 +13,13 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedModel {
@@ -40,15 +39,15 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
     }
 
     @Override
-    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        baseModel.emitBlockQuads(blockView, state, pos, randomSupplier, context);
-        emitOverlay(context, () -> overlayModel.emitBlockQuads(blockView, state, pos, randomSupplier, context));
+    public void emitBlockQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, Predicate<Direction> cullTest) {
+        baseModel.emitBlockQuads(emitter, blockView, state, pos, randomSupplier, cullTest);
+        emitOverlay(emitter, () -> overlayModel.emitBlockQuads(emitter, blockView, state, pos, randomSupplier, cullTest));
     }
 
     @Override
-    public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        baseModel.emitItemQuads(stack, randomSupplier, context);
-        emitOverlay(context, () -> overlayModel.emitItemQuads(stack, randomSupplier, context));
+    public void emitItemQuads(QuadEmitter emitter, Supplier<RandomSource> randomSupplier) {
+        baseModel.emitItemQuads(emitter, randomSupplier);
+        emitOverlay(emitter, () -> overlayModel.emitItemQuads(emitter, randomSupplier));
     }
 
     @Override
@@ -86,11 +85,6 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return baseModel.isCustomRenderer();
-    }
-
-    @Override
     public TextureAtlasSprite getParticleIcon() {
         return baseModel.getParticleIcon();
     }
@@ -100,18 +94,13 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
         return baseModel.getTransforms();
     }
 
-    @Override
-    public BakedOverrides overrides() {
-        return baseModel.overrides();
-    }
-
-    private void emitOverlay(RenderContext context, Runnable overlayEmitter) {
+    private void emitOverlay(QuadEmitter emitter, Runnable overlayEmitter) {
         RenderMaterial overlayMaterial = overlayMaterial();
         if (overlayMaterial == null) {
             return;
         }
 
-        context.pushTransform(quad -> {
+        emitter.pushTransform(quad -> {
             quad.material(overlayMaterial);
             return true;
         });
@@ -119,19 +108,21 @@ public final class EmissiveOverlayBakedModel implements BakedModel, FabricBakedM
         try {
             overlayEmitter.run();
         } finally {
-            context.popTransform();
+            emitter.popTransform();
         }
     }
 
     private static @Nullable RenderMaterial overlayMaterial() {
-        if (emissiveOverlayMaterial == null && RendererAccess.INSTANCE.getRenderer() != null) {
-            emissiveOverlayMaterial = RendererAccess.INSTANCE.getRenderer()
-                    .materialFinder()
-                    .blendMode(BlendMode.TRANSLUCENT)
-                    .emissive(true)
-                    .disableDiffuse(true)
-                    .ambientOcclusion(TriState.FALSE)
-                    .find();
+        if (emissiveOverlayMaterial == null) {
+            Renderer renderer = Renderer.get();
+            if (renderer != null) {
+                emissiveOverlayMaterial = renderer.materialFinder()
+                        .blendMode(BlendMode.TRANSLUCENT)
+                        .emissive(true)
+                        .disableDiffuse(true)
+                        .ambientOcclusion(TriState.FALSE)
+                        .find();
+            }
         }
 
         return emissiveOverlayMaterial;
