@@ -18,7 +18,7 @@ import xerca.xercaomnichest.block.BlockOmniChest;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
 
 public final class OmniChestBlockEntityRenderer implements BlockEntityRenderer<BlockEntityOmniChest> {
-    private static final Material MATERIAL = new Material(Sheets.CHEST_SHEET, Mod.id("block/omni_chest"));
+    private static final Material MATERIAL = new Material(Sheets.CHEST_SHEET, Mod.id("entity/chest/omni_chest"));
 
     private final ModelPart lid;
     private final ModelPart bottom;

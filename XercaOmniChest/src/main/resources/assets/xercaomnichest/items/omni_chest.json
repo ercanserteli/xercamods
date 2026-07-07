@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "xercaomnichest:item/omni_chest",
+    "model": {
+      "type": "minecraft:chest",
+      "texture": "xercaomnichest:omni_chest"
+    }
+  }
+}
