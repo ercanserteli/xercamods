@@ -2128,7 +2128,7 @@ public class GuiMusicSheet extends Screen {
                     }
                 }
 
-                boolean flag = this.clicked(mouseX, mouseY);
+                boolean flag = this.active && this.visible && this.isMouseOver(mouseX, mouseY);
                 if (flag) {
                     this.onClick(mouseX, mouseY);
                 } else {
@@ -2281,7 +2281,7 @@ public class GuiMusicSheet extends Screen {
                     }
                 }
 
-                boolean flag = this.clicked(mouseX, mouseY);
+                boolean flag = this.active && this.visible && this.isMouseOver(mouseX, mouseY);
                 if (!flag) {
                     close();
                 }

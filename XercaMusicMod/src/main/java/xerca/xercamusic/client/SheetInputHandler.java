@@ -1,5 +1,6 @@
 package xerca.xercamusic.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -1056,14 +1057,14 @@ class SheetInputHandler {
 
     static boolean isShiftHeld() {
         long wh = Minecraft.getInstance().getWindow().getWindow();
-        return GLFW.glfwGetKey(wh, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS ||
-               GLFW.glfwGetKey(wh, GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS;
+        return InputConstants.isKeyDown(wh, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                InputConstants.isKeyDown(wh, GLFW.GLFW_KEY_RIGHT_SHIFT);
     }
 
     static boolean isCtrlHeld() {
         long wh = Minecraft.getInstance().getWindow().getWindow();
-        return GLFW.glfwGetKey(wh, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS ||
-               GLFW.glfwGetKey(wh, GLFW.GLFW_KEY_RIGHT_CONTROL) == GLFW.GLFW_PRESS;
+        return InputConstants.isKeyDown(wh, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                InputConstants.isKeyDown(wh, GLFW.GLFW_KEY_RIGHT_CONTROL);
     }
 
     private byte pixelToNote(int mouseRelY) {

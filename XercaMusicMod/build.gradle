@@ -2,7 +2,7 @@ import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 
 plugins {
-    id 'fabric-loom' version '1.8-SNAPSHOT'
+    id 'fabric-loom' version '1.9-SNAPSHOT'
     id 'maven-publish'
     id("com.github.spotbugs") version "6.4.4"
     id("net.ltgt.errorprone") version "4.3.0"
@@ -41,12 +41,16 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.21.3:2024.12.07@zip")
+        parchment("org.parchmentmc.data:parchment-1.21.4:2025.03.23@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Client game test API (experimental) for driving the instrument/music-sheet GUIs in tests.
+    // Not part of the production fabric-api distribution, so it is pinned explicitly.
+    modImplementation "net.fabricmc.fabric-api:fabric-client-gametest-api-v1:4.1.1+6816ccd404"
 
     // Error Prone
     errorprone("com.google.errorprone:error_prone_core:2.43.0")
@@ -121,6 +125,17 @@ loom {
             source(testSourceSet)
             ideConfigGenerated = true
             runDir "build/gametest"
+        }
+
+        clientGameTest {
+            client()
+            name "Client Game Test"
+            vmArg "-Dfabric.client.gametest"
+            vmArg "-Dfabric.client.gametest.testModResourcesPath=${file("src/test/resources").absolutePath.replace('\\', '/')}"
+            source(mainSourceSet)
+            source(testSourceSet)
+            ideConfigGenerated = false
+            runDir "build/clientgametest"
         }
 
         // This adds a new gradle task that runs the datagen API: "gradlew runDatagenClient"
