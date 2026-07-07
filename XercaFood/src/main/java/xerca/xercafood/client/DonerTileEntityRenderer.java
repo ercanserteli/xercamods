@@ -35,7 +35,7 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityD
 
         Blocks.BLOCK_DONER.setRenderType(RenderShape.MODEL);
         blockRenderer.renderSingleBlock(bs, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY);
-        Blocks.BLOCK_DONER.setRenderType(RenderShape.ENTITYBLOCK_ANIMATED);
+        Blocks.BLOCK_DONER.setRenderType(RenderShape.INVISIBLE);
 
         matrixStackIn.popPose();
     }

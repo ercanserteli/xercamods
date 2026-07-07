@@ -43,7 +43,7 @@ public class BlockDoner extends Block implements EntityBlock {
         this.renderType = renderType;
     }
 
-    private RenderShape renderType = RenderShape.ENTITYBLOCK_ANIMATED;
+    private RenderShape renderType = RenderShape.INVISIBLE;
 
     public BlockDoner() {
         super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_doner")).sound(SoundType.METAL).strength(1).noOcclusion());

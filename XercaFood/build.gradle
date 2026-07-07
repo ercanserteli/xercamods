@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.8-SNAPSHOT'
+    id 'fabric-loom' version '1.9-SNAPSHOT'
     id 'maven-publish'
     id("com.github.spotbugs") version "6.4.4"
     id "pmd"
@@ -37,7 +37,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.21.3:2024.12.07@zip")
+        parchment("org.parchmentmc.data:parchment-1.21.4:2025.03.23@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
