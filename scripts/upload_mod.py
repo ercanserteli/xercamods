@@ -12,6 +12,18 @@ CF_VERSION_SYNONYMS = {
     "neo-forge": "NeoForge",
 }
 
+MOD_NAME_TO_JAR_PREFIX = {
+    "xercamod": "xercamod",
+    "music": "xercamusic",
+    "paint": "xercapaint",
+    "blocks": "xercablocks",
+    "cushion": "xercacushion",
+    "court": "xercacourt",
+    "food": "xercafood",
+    "omnichest": "xercaomnichest",
+    "tools": "xercatools",
+}
+
 
 def get_game_versions(api_token):
     url = "https://minecraft.curseforge.com/api/game/versions"
@@ -99,6 +111,7 @@ def upload_mod_to_curseforge(
         print(f"URL: {url}")
         print(f"Headers: {headers}")
         print(f"Metadata: {metadata}")
+        print(f"File path: {file_path}")
         return
 
     with open(file_path, "rb") as f:
@@ -148,6 +161,7 @@ def upload_mod_to_modrinth(
         print(f"URL: {url}")
         print(f"Headers: {headers}")
         print(f"Metadata: {metadata}")
+        print(f"File path: {file_path}")
         return
 
     with open(file_path, "rb") as f:
@@ -169,13 +183,12 @@ def main():
     parser.add_argument("--curseforge-api-token", help="Your CurseForge API token")
     parser.add_argument("--modrinth-api-token", help="Your Modrinth API token")
     parser.add_argument("--project-id", required=True, help="Your CurseForge project ID")
-    parser.add_argument("--file-path", required=True, help="Path to the mod file")
+    parser.add_argument("--game-version", required=True, help="Supported Minecraft game version (e.g. 1.21.3)")
+    parser.add_argument("--mod-version", required=True, help="Mod version (e.g. 2.0.0)")
+    parser.add_argument("--builds-dir", default=r"..\builds", help="Directory containing the built jars")
     parser.add_argument("--changelog", required=True, help="Changelog for this version")
     parser.add_argument("--changelog-type", choices=["text", "html", "markdown"], default="text",
                         help="Type of the changelog")
-    parser.add_argument("--display-name", required=True, help="Display name of the mod")
-    parser.add_argument("--game-versions", nargs="+", type=str, required=True,
-                        help="List of supported game versions (e.g. 1.20.1)")
     parser.add_argument("--release-type", choices=["alpha", "beta", "release"], required=True, help="Release type")
     parser.add_argument("--relations", nargs="+", type=json.loads, required=False,
                         help='List of related projects. Use format: \'{"slug": "mantle", "type": ["embeddedLibrary"]}\'')
@@ -190,6 +203,13 @@ def main():
 
     args = parser.parse_args()
 
+    jar_prefix = MOD_NAME_TO_JAR_PREFIX.get(args.project_id, args.project_id)
+    file_path = os.path.join(args.builds_dir, f"{jar_prefix}-{args.game_version}-{args.mod_version}.jar")
+
+    loader = args.loaders[0]
+    loader_display = CF_VERSION_SYNONYMS.get(loader.lower(), loader.capitalize())
+    display_name = f"{loader_display} {args.game_version} - Version {args.mod_version}"
+
     if args.curseforge_api_token:
         mod_name_to_id = {"xercamod": 341575, "music": 341448, "paint": 350727, "blocks": 1581682, "cushion": 1582875,
                           "food": 1588028, "omnichest": 1589544, "tools": 1590824}
@@ -200,17 +220,17 @@ def main():
         # include loader IDs in gameVersions
         cf_game_versions = build_curseforge_game_version_ids(
             args.curseforge_api_token,
-            mc_versions=args.game_versions,
+            mc_versions=[args.game_version],
             loaders=args.loaders,
         )
 
         upload_mod_to_curseforge(
             args.curseforge_api_token,
             cf_project_id,
-            args.file_path,
+            file_path,
             args.changelog,
             args.changelog_type,
-            args.display_name,
+            display_name,
             cf_game_versions,
             args.release_type,
             args.relations,
@@ -228,21 +248,17 @@ def main():
         if args.project_id in mod_name_to_id:
             args.project_id = mod_name_to_id[args.project_id]
 
-        version = "-".join(os.path.splitext(os.path.basename(args.file_path))[0].split("-")[1:])
-        if version.startswith("fabric-"):
-            version = version[7:]
-        if version.startswith("forge-"):
-            version = version[6:]
+        version = f"{args.game_version}-{args.mod_version}"
         version_name = f"{title} {version}"
 
         upload_mod_to_modrinth(
             args.modrinth_api_token,
             args.project_id,
-            args.file_path,
+            file_path,
             version_name,
             version,
             args.release_type,
-            args.game_versions,
+            [args.game_version],
             args.changelog,
             args.loaders,
             args.featured,

@@ -10,3 +10,5 @@ builds/
 desktop.ini
 **/.cache
 .sonar.ps1
+__pycache__/
+*.pyc

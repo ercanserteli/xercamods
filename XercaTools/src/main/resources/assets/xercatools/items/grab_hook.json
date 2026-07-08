@@ -1,0 +1,49 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:using_item",
+    "on_true": {
+      "type": "minecraft:range_dispatch",
+      "property": "xercatools:pull",
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "xercatools:item/grab_hook_0"
+      },
+      "entries": [
+        {
+          "threshold": 0.4,
+          "model": {
+            "type": "minecraft:model",
+            "model": "xercatools:item/grab_hook_1"
+          }
+        },
+        {
+          "threshold": 0.7,
+          "model": {
+            "type": "minecraft:model",
+            "model": "xercatools:item/grab_hook_2"
+          }
+        },
+        {
+          "threshold": 0.95,
+          "model": {
+            "type": "minecraft:model",
+            "model": "xercatools:item/grab_hook_3"
+          }
+        }
+      ]
+    },
+    "on_false": {
+      "type": "minecraft:condition",
+      "property": "xercatools:cast",
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "xercatools:item/grab_hook_empty"
+      },
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "xercatools:item/grab_hook"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:using_item",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "xercatools:item/iron_scythe"
+    },
+    "on_true": {
+      "type": "minecraft:range_dispatch",
+      "property": "xercatools:pull",
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "xercatools:item/iron_scythe_0"
+      },
+      "entries": [
+        {
+          "threshold": 0.4,
+          "model": {
+            "type": "minecraft:model",
+            "model": "xercatools:item/iron_scythe_1"
+          }
+        },
+        {
+          "threshold": 0.7,
+          "model": {
+            "type": "minecraft:model",
+            "model": "xercatools:item/iron_scythe_2"
+          }
+        },
+        {
+          "threshold": 0.90,
+          "model": {
+            "type": "minecraft:model",
+            "model": "xercatools:item/iron_scythe_3"
+          }
+        }
+      ]
+    }
+  }
+}
