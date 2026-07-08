@@ -242,6 +242,7 @@ public class EaselTests {
 
         ItemStack invulnerableEaselStack = new ItemStack(Items.ITEM_EASEL, 1);
         CompoundTag entityTag = new CompoundTag();
+        entityTag.putString("id", "xercapaint:easel");
         entityTag.putBoolean("Invulnerable", true);
         invulnerableEaselStack.set(DataComponents.ENTITY_DATA, CustomData.of(entityTag));
         player.setItemSlot(EquipmentSlot.MAINHAND, invulnerableEaselStack);

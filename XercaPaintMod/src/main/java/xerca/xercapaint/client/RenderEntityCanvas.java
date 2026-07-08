@@ -26,6 +26,7 @@ import xerca.xercapaint.item.Items;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRenderState> {
@@ -38,6 +39,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
      */
     private static final int GLASS_TINT_OVERLAY_ALPHA = 0x40;
     private static final int[] EMPTY_PIXELS;
+    private static final AtomicInteger DYNAMIC_TEXTURE_COUNTER = new AtomicInteger();
 
     static {
         EMPTY_PIXELS = new int[1024];
@@ -66,7 +68,23 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             image.setPixel(0, 0, 0xFFFFFFFF);
             texture.upload();
         }
-        return textureManager.register("canvas_side_white", texture);
+        return registerDynamicTexture("canvas_side_white", texture);
+    }
+
+    private ResourceLocation registerDynamicTexture(String name, DynamicTexture texture) {
+        ResourceLocation location = Mod.id("dynamic/" + sanitizePath(name) + "_" + DYNAMIC_TEXTURE_COUNTER.getAndIncrement());
+        textureManager.register(location, texture);
+        return location;
+    }
+
+    private static String sanitizePath(String name) {
+        StringBuilder sb = new StringBuilder(name.length());
+        for (int i = 0; i < name.length(); i++) {
+            char c = Character.toLowerCase(name.charAt(i));
+            boolean valid = (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '-' || c == '.' || c == '/';
+            sb.append(valid ? c : '_');
+        }
+        return sb.toString();
     }
 
     @Override
@@ -163,7 +181,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             this.width = width;
             this.height = height;
             this.canvasTexture = new DynamicTexture(width, height, true);
-            this.location = RenderEntityCanvas.this.textureManager.register("canvas/" + key, this.canvasTexture);
+            this.location = RenderEntityCanvas.this.registerDynamicTexture("canvas/" + key, this.canvasTexture);
 
             updateCanvasTexture(name, version);
         }

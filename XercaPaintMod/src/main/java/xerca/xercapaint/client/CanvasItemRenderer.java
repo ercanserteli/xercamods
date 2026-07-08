@@ -4,48 +4,41 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
-public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
+public class CanvasItemRenderer {
     private static final ResourceLocation BACK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
     private static final ResourceLocation EMPTY_CANVAS_LOCATION = Mod.id("textures/block/empty.png");
     private static final ResourceLocation GLASS_FRAME_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/glass.png");
     private static final int GLASS_INVENTORY_TINT = 0xFFDCE6FF;
 
-    public CanvasItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet entityModelSet) {
-        super(dispatcher, entityModelSet);
-    }
-
-    @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         if (stack.getItem() instanceof ItemCanvas itemCanvas) {
-            boolean rendered = false;
+            RenderEntityCanvas.Instance canvasIns = null;
             if (stack.get(Items.CANVAS_PIXELS) != null && RenderEntityCanvas.theInstance != null) {
-                RenderEntityCanvas.Instance canvasIns = RenderEntityCanvas.theInstance.getCanvasRendererInstance(stack, itemCanvas.getWidth(), itemCanvas.getHeight());
-                if (canvasIns != null) {
-                    int tint = (itemCanvas.isGlass() && displayContext == ItemDisplayContext.GUI) ? GLASS_INVENTORY_TINT : RenderEntityCanvas.NO_TINT;
-                    canvasIns.render(false, 0, 0, 0, matrixStack, buffer, Direction.UP, combinedLight, itemCanvas.isGlass(), tint);
-                    rendered = true;
-                }
+                canvasIns = RenderEntityCanvas.theInstance.getCanvasRendererInstance(stack, itemCanvas.getWidth(), itemCanvas.getHeight());
             }
+            renderCanvas(canvasIns, itemCanvas.getWidth(), itemCanvas.getHeight(), itemCanvas.isGlass(), displayContext, matrixStack, buffer, combinedLight);
+        }
+    }
 
-            if (!rendered) {
-                renderEmptyCanvas(matrixStack, buffer, itemCanvas.getWidth(), itemCanvas.getHeight(), combinedLight, itemCanvas.isGlass());
-            }
+    void renderCanvas(@Nullable RenderEntityCanvas.Instance canvasIns, int width, int height, boolean glass, ItemDisplayContext displayContext, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
+        if (canvasIns != null) {
+            int tint = (glass && displayContext == ItemDisplayContext.GUI) ? GLASS_INVENTORY_TINT : RenderEntityCanvas.NO_TINT;
+            canvasIns.render(false, 0, 0, 0, matrixStack, buffer, Direction.UP, combinedLight, glass, tint);
+        } else {
+            renderEmptyCanvas(matrixStack, buffer, width, height, combinedLight, glass);
         }
     }
 
@@ -161,10 +154,5 @@ public class CanvasItemRenderer extends BlockEntityWithoutLevelRenderer implemen
         addVertex(vb, m, pose, w32 - eps, eps, -1.0D, 1.0F, 0.0F, packedLight, 0.0F, -1.0F, 0.0F);
         addVertex(vb, m, pose, w32 - eps, eps, 1.0D, 1.0F, depth, packedLight, 0.0F, -1.0F, 0.0F);
         addVertex(vb, m, pose, eps, eps, 1.0D, 0.0F, depth, packedLight, 0.0F, -1.0F, 0.0F);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
-        renderByItem(stack, displayContext, matrices, vertexConsumers, light, overlay);
     }
 }

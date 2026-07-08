@@ -11,14 +11,22 @@
       "xerca.xercapaint.tests.CanvasSidesGameTests",
       "xerca.xercapaint.tests.CanvasTagCompatibilityGameTests",
       "xerca.xercapaint.tests.CanvasRecipeGameTests",
+      "xerca.xercapaint.tests.BaseCraftingGameTests",
       "xerca.xercapaint.tests.PaletteDropperGameTests",
       "xerca.xercapaint.tests.EaselTests"
+    ],
+    "fabric-client-gametest": [
+      "xerca.xercapaint.client.GuiPaletteClientTest",
+      "xerca.xercapaint.client.GuiCanvasEditClientTest",
+      "xerca.xercapaint.client.CanvasSidesClientTest",
+      "xerca.xercapaint.client.CanvasSidesRenderClientTest",
+      "xerca.xercapaint.client.PaintCommandsClientTest"
     ]
   },
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "1.21.3",
+    "minecraft": "1.21.4",
     "xercapaint": "*"
   }
 }

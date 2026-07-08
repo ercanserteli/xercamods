@@ -1,0 +1,18 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:has_component",
+    "component": "xercapaint:canvas_pixels",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "xercapaint:item/item_canvas_glass_tall"
+    },
+    "on_true": {
+      "type": "minecraft:special",
+      "base": "xercapaint:item/item_canvas_tall_drawn",
+      "model": {
+        "type": "xercapaint:canvas"
+      }
+    }
+  }
+}
