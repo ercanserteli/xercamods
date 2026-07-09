@@ -1,6 +1,5 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -937,13 +936,10 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         protected void postRender() {
-            GlStateManager._enableDepthTest();
         }
 
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-            RenderSystem.setShaderTexture(0, this.resourceLocation);
-            GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
             if (this.isHovered) {
                 yTexStartNew += this.yDiffText;

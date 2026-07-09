@@ -14,6 +14,7 @@ import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +25,7 @@ import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityCanvas;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @NonnullDefault
 public class ItemCanvas extends HangingEntityItem {
@@ -157,23 +159,23 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         List<Integer> pixels = stack.get(Items.CANVAS_PIXELS);
         if (pixels != null) {
             String author = stack.get(Items.CANVAS_AUTHOR);
 
             if (!StringUtil.isNullOrEmpty(author)) {
-                tooltipComponents.add(Component.translatable("canvas.byAuthor", author));
+                tooltipComponents.accept(Component.translatable("canvas.byAuthor", author));
             }
 
             int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
             // generation = 0=empty, 1=original, 2=copy of org, 3=copy of copy
             if (generation > 0) {
-                tooltipComponents.add(Component.translatable("canvas.generation." + (generation - 1))
+                tooltipComponents.accept(Component.translatable("canvas.generation." + (generation - 1))
                         .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
             }
         } else {
-            tooltipComponents.add(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.accept(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
     }
 

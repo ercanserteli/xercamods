@@ -1,12 +1,14 @@
 package xerca.xercamusic.common;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
@@ -22,7 +24,7 @@ public final class MusicManager {
     private static final Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
 
     public static @Nullable MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
-        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
+        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic.TYPE);
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         if (musicMap.containsKey(id)) {
             MusicData data = musicMap.get(id);
@@ -39,7 +41,7 @@ public final class MusicManager {
     }
 
     public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers, MinecraftServer server) {
-        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(SavedDataMusic::new, SavedDataMusic::load, DataFixTypes.SAVED_DATA_MAP_DATA), "music_map");
+        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic.TYPE);
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         NoteEvent.sortNotes(notes);
         NoteEvent.removeDuplicates(notes);
@@ -101,6 +103,11 @@ public final class MusicManager {
     }
 
     public static class SavedDataMusic extends SavedData {
+        public static final Codec<SavedDataMusic> CODEC = CompoundTag.CODEC.xmap(
+                SavedDataMusic::load, data -> data.save(new CompoundTag()));
+        public static final SavedDataType<SavedDataMusic> TYPE =
+                new SavedDataType<>("music_map", SavedDataMusic::new, CODEC, DataFixTypes.SAVED_DATA_MAP_DATA);
+
         private final Map<UUID, MusicData> musicMap;
 
         private SavedDataMusic(Map<UUID, MusicData> musicMap) {
@@ -111,7 +118,7 @@ public final class MusicManager {
             this(new HashMap<>());
         }
 
-        public static SavedDataMusic load(CompoundTag tag, HolderLookup.Provider ignoredRegistries) {
+        public static SavedDataMusic load(CompoundTag tag) {
             Tag musicTag = tag.get("MusicDataList");
             if (musicTag instanceof ListTag musicDataList) {
                 Map<UUID, MusicData> musicDataMap = new HashMap<>();
@@ -121,7 +128,8 @@ public final class MusicManager {
                         NoteEvent.fillArrayFromNBT(notes, musicData);
                         ArrayList<VolumeMarker> markers = new ArrayList<>();
                         VolumeMarker.fillArrayFromNBT(markers, musicData);
-                        musicDataMap.put(musicData.getUUID(KEY_ID), new MusicData(musicData.getInt(KEY_VERSION), notes, markers.isEmpty() ? null : markers));
+                        musicData.read(KEY_ID, UUIDUtil.CODEC).ifPresent(id ->
+                                musicDataMap.put(id, new MusicData(musicData.getIntOr(KEY_VERSION, 0), notes, markers.isEmpty() ? null : markers)));
                     }
                 }
 
@@ -131,12 +139,11 @@ public final class MusicManager {
             }
         }
 
-        @Override
-        public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        public CompoundTag save(CompoundTag tag) {
             ListTag musicDataList = new ListTag();
             for (Map.Entry<UUID, MusicData> entry : musicMap.entrySet()) {
                 CompoundTag nbt = new CompoundTag();
-                nbt.putUUID(KEY_ID, entry.getKey());
+                nbt.store(KEY_ID, UUIDUtil.CODEC, entry.getKey());
                 nbt.putInt(KEY_VERSION, entry.getValue().version);
                 NoteEvent.fillNBTFromArray(entry.getValue().notes, nbt);
                 if (entry.getValue().volumeMarkers != null) {

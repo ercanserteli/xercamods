@@ -6,8 +6,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -20,6 +20,7 @@ import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static net.minecraft.network.chat.Component.translatable;
@@ -77,8 +78,8 @@ public final class CommandImport {
     }
 
     private static boolean sanitizeTag(CompoundTag tag, Player player) {
-        boolean hasAuthor = tag.contains(KEY_AUTHOR, 8);
-        boolean hasTitle = tag.contains(KEY_TITLE, 8);
+        boolean hasAuthor = tag.getString(KEY_AUTHOR).isPresent();
+        boolean hasTitle = tag.getString(KEY_TITLE).isPresent();
         boolean hasLegacyMusic = tag.contains(KEY_MUSIC_OLD);
 
         // only one of them is present -> broken
@@ -89,14 +90,14 @@ public final class CommandImport {
         }
 
         if (hasTitle) {
-            String title = tag.getString(KEY_TITLE);
+            String title = tag.getStringOr(KEY_TITLE, "");
             if (title.length() > 16) {
                 tag.putString(KEY_TITLE, title.substring(0, 16));
             }
         }
 
         if (hasAuthor) {
-            String author = tag.getString(KEY_AUTHOR);
+            String author = tag.getStringOr(KEY_AUTHOR, "");
             if (author.length() > 16) {
                 tag.putString(KEY_AUTHOR, author.substring(0, 16));
             }
@@ -104,18 +105,19 @@ public final class CommandImport {
 
         if (!hasLegacyMusic) {
             if (hasTitle) {
-                if (!tag.contains(KEY_VERSION, Tag.TAG_INT)) {
+                if (tag.getInt(KEY_VERSION).isEmpty()) {
                     tag.putInt(KEY_VERSION, 1);
                 }
             } else {
-                tag.putUUID(KEY_ID, UUID.randomUUID());
+                tag.store(KEY_ID, UUIDUtil.CODEC, UUID.randomUUID());
                 tag.putInt(KEY_VERSION, 1);
                 tag.putInt(KEY_GENERATION, 0);
             }
         }
 
-        if (tag.getInt(KEY_GENERATION) > 0 && tag.getInt(KEY_GENERATION) < 3) {
-            tag.putInt(KEY_GENERATION, tag.getInt(KEY_GENERATION) + 1);
+        int generation = tag.getIntOr(KEY_GENERATION, 0);
+        if (generation > 0 && generation < 3) {
+            tag.putInt(KEY_GENERATION, generation + 1);
         }
 
         List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
@@ -135,9 +137,10 @@ public final class CommandImport {
             return false;
         }
 
-        if (tag.contains(KEY_ID) && tag.contains(KEY_VERSION)) {
-            UUID id = tag.getUUID(KEY_ID);
-            int ver = tag.getInt(KEY_VERSION);
+        UUID tagId = tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null);
+        if (tagId != null && tag.contains(KEY_VERSION)) {
+            UUID id = tagId;
+            int ver = tag.getIntOr(KEY_VERSION, 0);
             List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
 
             if (notes == null) {
@@ -167,8 +170,8 @@ public final class CommandImport {
             if (!validateNotes(converted, player)) {
                 return false;
             }
-            UUID id = tag.getUUID(KEY_ID);
-            int ver = tag.getInt(KEY_VERSION);
+            UUID id = tag.read(KEY_ID, UUIDUtil.CODEC).orElseThrow();
+            int ver = tag.getIntOr(KEY_VERSION, 0);
             if (player instanceof ServerPlayer serverPlayer) {
                 sendToClient(serverPlayer, new MusicDataResponsePacket(id, ver, converted, null));
             }
@@ -234,29 +237,21 @@ public final class CommandImport {
 
 
     private static void importIntoStack(ItemStack sheet, CompoundTag tag) {
-        sheet.set(Items.SHEET_ID, tag.getUUID(KEY_ID));
-        sheet.set(Items.SHEET_GENERATION, tag.getInt(KEY_GENERATION));
-        sheet.set(Items.SHEET_VERSION, tag.getInt(KEY_VERSION));
-        sheet.set(Items.SHEET_LENGTH, tag.getInt(KEY_LENGTH));
-        if (tag.contains(KEY_BPS, Tag.TAG_BYTE)) {
-            sheet.set(Items.SHEET_BPS, tag.getByte(KEY_BPS));
+        tag.read(KEY_ID, UUIDUtil.CODEC).ifPresent(id -> sheet.set(Items.SHEET_ID, id));
+        sheet.set(Items.SHEET_GENERATION, tag.getIntOr(KEY_GENERATION, 0));
+        sheet.set(Items.SHEET_VERSION, tag.getIntOr(KEY_VERSION, 0));
+        sheet.set(Items.SHEET_LENGTH, tag.getIntOr(KEY_LENGTH, 0));
+        tag.getByte(KEY_BPS).ifPresent(bps -> sheet.set(Items.SHEET_BPS, bps));
+        tag.getByte(KEY_PREV_INSTRUMENT_LOCKED).ifPresent(locked -> sheet.set(Items.SHEET_PREV_INSTRUMENT_LOCKED, locked != 0));
+        tag.getByte(KEY_PREV_INSTRUMENT).ifPresent(prev -> sheet.set(Items.SHEET_PREV_INSTRUMENT, prev));
+        Optional<String> title = tag.getString(KEY_TITLE);
+        Optional<String> author = tag.getString(KEY_AUTHOR);
+        if (title.isPresent() && author.isPresent()) {
+            sheet.set(Items.SHEET_TITLE, title.get());
+            sheet.set(Items.SHEET_AUTHOR, author.get());
         }
-        if (tag.contains(KEY_PREV_INSTRUMENT_LOCKED, Tag.TAG_BYTE)) {
-            sheet.set(Items.SHEET_PREV_INSTRUMENT_LOCKED, tag.getBoolean(KEY_PREV_INSTRUMENT_LOCKED));
-        }
-        if (tag.contains(KEY_PREV_INSTRUMENT, Tag.TAG_BYTE)) {
-            sheet.set(Items.SHEET_PREV_INSTRUMENT, tag.getByte(KEY_PREV_INSTRUMENT));
-        }
-        if (tag.contains(KEY_TITLE, Tag.TAG_STRING) && tag.contains(KEY_AUTHOR, Tag.TAG_STRING)) {
-            sheet.set(Items.SHEET_TITLE, tag.getString(KEY_TITLE));
-            sheet.set(Items.SHEET_AUTHOR, tag.getString(KEY_AUTHOR));
-        }
-        if (tag.contains(KEY_HIGHLIGHT_INTERVAL, Tag.TAG_BYTE)) {
-            sheet.set(Items.SHEET_HIGHLIGHT_INTERVAL, tag.getByte(KEY_HIGHLIGHT_INTERVAL));
-        }
-        if (tag.contains(KEY_VOLUME, Tag.TAG_FLOAT)) {
-            sheet.set(Items.SHEET_VOLUME, tag.getFloat(KEY_VOLUME));
-        }
+        tag.getByte(KEY_HIGHLIGHT_INTERVAL).ifPresent(interval -> sheet.set(Items.SHEET_HIGHLIGHT_INTERVAL, interval));
+        tag.getFloat(KEY_VOLUME).ifPresent(volume -> sheet.set(Items.SHEET_VOLUME, volume));
         updateStackSize(sheet);
     }
 }

@@ -12,12 +12,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import xerca.xercatools.enchantment.GrabHookEnchantments;
 import xerca.xercatools.entity.EntityGrabHook;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemGrabHook extends FishingRodItem {
     public ItemGrabHook(String name) {
@@ -65,12 +66,12 @@ public class ItemGrabHook extends FishingRodItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.grab_hook_tooltip");
-        tooltip.add(text.withStyle(ChatFormatting.BLUE));
+        tooltip.accept(text.withStyle(ChatFormatting.BLUE));
         var registries = context.registries();
         if (registries != null && EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.grapplingEnchantment(registries), stack) > 0) {
-            tooltip.add(Component.translatable("xercatools.grappling_tooltip").withStyle(ChatFormatting.YELLOW));
+            tooltip.accept(Component.translatable("xercatools.grappling_tooltip").withStyle(ChatFormatting.YELLOW));
         }
     }
 
@@ -82,6 +83,6 @@ public class ItemGrabHook extends FishingRodItem {
 
     public static boolean isCast(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        return tag.getBoolean("cast");
+        return tag.getBooleanOr("cast", false);
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
@@ -124,10 +123,7 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
     }
 
     public static OmniChestInventory getContainer(MinecraftServer server) {
-        OmniChestSavedData data = server.overworld().getDataStorage().computeIfAbsent(
-                new net.minecraft.world.level.saveddata.SavedData.Factory<>(OmniChestSavedData::new, OmniChestSavedData::load, DataFixTypes.SAVED_DATA_MAP_DATA),
-                "omni_chest"
-        );
+        OmniChestSavedData data = server.overworld().getDataStorage().computeIfAbsent(OmniChestSavedData.TYPE);
         data.setDirty();
         return data.getInventory();
     }

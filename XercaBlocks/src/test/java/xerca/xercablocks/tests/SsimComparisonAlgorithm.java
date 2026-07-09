@@ -43,6 +43,15 @@ public record SsimComparisonAlgorithm(double threshold, int window) implements T
     }
 
     /**
+     * Compares two equal-sized RGB images directly, reporting whether mean SSIM meets the threshold.
+     */
+    public boolean matchesEqualSize(int[] imageA, int[] imageB, int width, int height) {
+        double[] lumA = toLuminance(imageA, 0, 0, width, width, height);
+        double[] lumB = toLuminance(imageB, 0, 0, width, width, height);
+        return meanSsim(lumA, lumB, width, height) >= threshold;
+    }
+
+    /**
      * Extract an nw x nh luminance block from {@code data} (row stride {@code stride}) at (offX, offY).
      */
     private static double[] toLuminance(int[] data, int offX, int offY, int stride, int nw, int nh) {

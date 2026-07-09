@@ -2,6 +2,7 @@ package xerca.xercamusic.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 
@@ -78,9 +81,9 @@ public class ItemMusicSheet extends Item {
     }
 
     public static List<NoteEvent> convertFromOld(CompoundTag nbt, MinecraftServer server) {
-        int length = nbt.getInt(KEY_LENGTH_OLD);
-        byte pause = nbt.getByte(KEY_PAUSE_OLD);
-        byte[] music = nbt.getByteArray(KEY_MUSIC_OLD);
+        int length = nbt.getIntOr(KEY_LENGTH_OLD, 0);
+        byte pause = nbt.getByteOr(KEY_PAUSE_OLD, (byte) 0);
+        byte[] music = nbt.getByteArray(KEY_MUSIC_OLD).orElse(new byte[0]);
 
         int safePause = Math.max(1, pause);
         byte bps = (byte) Math.clamp(Math.round(20.f / safePause), 1, 50);
@@ -90,8 +93,8 @@ public class ItemMusicSheet extends Item {
         nbt.putByte(KEY_BPS, bps);
         UUID id;
         if (nbt.contains(KEY_AUTHOR) && nbt.contains(KEY_TITLE)) {
-            String author = nbt.getString(KEY_AUTHOR);
-            String title = nbt.getString(KEY_TITLE);
+            String author = nbt.getStringOr(KEY_AUTHOR, "");
+            String title = nbt.getStringOr(KEY_TITLE, "");
             IItemInstrument.Pair<String, String> key = new IItemInstrument.Pair<>(author, title);
             if (CONVERT_MAP.containsKey(key)) {
                 id = CONVERT_MAP.get(key);
@@ -105,7 +108,7 @@ public class ItemMusicSheet extends Item {
             MusicManager.setMusicData(id, 1, notes, null, server);
         }
 
-        nbt.putUUID(KEY_ID, id);
+        nbt.store(KEY_ID, UUIDUtil.CODEC, id);
         nbt.putInt(KEY_VERSION, 1);
 
         nbt.remove(KEY_LENGTH_OLD);
@@ -155,32 +158,32 @@ public class ItemMusicSheet extends Item {
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
-    public void appendHoverText(ItemStack stack, Item.@NotNull TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.@NotNull TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
         String s = stack.get(Items.SHEET_AUTHOR);
 
         if (s != null) {
-            tooltip.add(Component.translatable("note.byAuthor", s));
+            tooltip.accept(Component.translatable("note.byAuthor", s));
         }
 
         int generation = stack.getOrDefault(Items.SHEET_GENERATION, 0);
         // generation = 0=empty, 1=original, 2=copy of org, 3=copy of copy
         if (generation > 0) {
-            tooltip.add(Component.translatable("note.generation." + (generation - 1))
+            tooltip.accept(Component.translatable("note.generation." + (generation - 1))
                     .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
         }
 
         int length = stack.getOrDefault(Items.SHEET_LENGTH, 0);
         if (length > 0) {
-            tooltip.add(Component.translatable("note.length", length).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("note.length", length).withStyle(ChatFormatting.GRAY));
         }
         int bps = getBPS(stack);
         if (bps > 0) {
-            tooltip.add(Component.translatable("note.tempo", bps * 60).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("note.tempo", bps * 60).withStyle(ChatFormatting.GRAY));
         }
         int prevIns = getPrevInstrument(stack);
         if (prevIns >= 0 && prevIns < Items.INSTRUMENTS.size()) {
             Component name = ((Item) Items.INSTRUMENTS.get(prevIns)).getName(new ItemStack((Item) Items.INSTRUMENTS.get(prevIns)));
-            tooltip.add(Component.translatable("note.preview_instrument", name).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("note.preview_instrument", name).withStyle(ChatFormatting.GRAY));
         }
     }
 

@@ -5,10 +5,11 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.BlockPizza;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemRawPizza extends Item {
     private final BlockPizza.Ingredient slot1;
@@ -23,7 +24,7 @@ public class ItemRawPizza extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
         ItemPizza.addPizzaIngredientToTooltip(tooltip, slot1);
         ItemPizza.addPizzaIngredientToTooltip(tooltip, slot2);
         ItemPizza.addPizzaIngredientToTooltip(tooltip, slot3);

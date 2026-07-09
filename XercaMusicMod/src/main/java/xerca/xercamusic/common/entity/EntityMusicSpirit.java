@@ -159,12 +159,12 @@ public class EntityMusicSpirit extends Entity {
     protected void readAdditionalSaveData(CompoundTag tag) {
         notes.clear();
         NoteEvent.fillArrayFromNBT(notes, tag);
-        this.length = sanitizeLengthBeats(tag.getInt(KEY_LENGTH));
-        this.bps = sanitizeBps(tag.getInt(KEY_BPS));
-        this.volume = sanitizeVolume(tag.getFloat(KEY_VOLUME));
-        this.isPlaying = tag.getBoolean("playing");
+        this.length = sanitizeLengthBeats(tag.getIntOr(KEY_LENGTH, 0));
+        this.bps = sanitizeBps(tag.getIntOr(KEY_BPS, 0));
+        this.volume = sanitizeVolume(tag.getFloatOr(KEY_VOLUME, 0.0f));
+        this.isPlaying = tag.getBooleanOr("playing", false);
         if (tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")) {
-            setBlockPosAndInstrument(new BlockPos(tag.getInt("bX"), tag.getInt("bY"), tag.getInt("bZ")), tag.getInt("bIns"));
+            setBlockPosAndInstrument(new BlockPos(tag.getIntOr("bX", 0), tag.getIntOr("bY", 0), tag.getIntOr("bZ", 0)), tag.getIntOr("bIns", 0));
         }
     }
 

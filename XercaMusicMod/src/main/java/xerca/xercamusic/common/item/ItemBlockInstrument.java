@@ -58,9 +58,8 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         ItemInstrument.hurtEnemyWithInstrument(target, attacker, minOctave, maxOctave, this);
-        return true;
     }
 
     @Override

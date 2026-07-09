@@ -25,6 +25,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
@@ -41,10 +42,10 @@ import xerca.xercatools.enchantment.ScytheEnchantments;
 import xerca.xercatools.entity.EntityHealthOrb;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class ItemScythe extends Item {
     private final ToolMaterial tier;
@@ -111,12 +112,11 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
         if (attacker instanceof Player player) {
             handleDevourKill(stack, target, player);
         }
-        return true;
     }
 
     public static void applyAttackEffects(ItemStack stack, Player player, Entity entity) {
@@ -181,13 +181,13 @@ public class ItemScythe extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.scythe_tooltip");
-        tooltip.add(text.withStyle(ChatFormatting.BLUE));
+        tooltip.accept(text.withStyle(ChatFormatting.BLUE));
         var registries = context.registries();
         if (registries != null
                 && EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(registries), stack) > 0) {
-            tooltip.add(Component.translatable("xercatools.guillotine_tooltip").withStyle(ChatFormatting.YELLOW));
+            tooltip.accept(Component.translatable("xercatools.guillotine_tooltip").withStyle(ChatFormatting.YELLOW));
         }
     }
 

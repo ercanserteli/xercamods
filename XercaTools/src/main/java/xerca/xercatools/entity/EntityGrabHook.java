@@ -73,7 +73,7 @@ public class EntityGrabHook extends Entity {
         float f3 = Mth.sin(-yaw * ((float) Math.PI / 180F) - (float) Math.PI);
         float f4 = -Mth.cos(-pitch * ((float) Math.PI / 180F));
         float f5 = Mth.sin(-pitch * ((float) Math.PI / 180F));
-        this.moveTo(owner.getX(), owner.getY() + owner.getEyeHeight(), owner.getZ(), yaw, pitch);
+        this.snapTo(owner.getX(), owner.getY() + owner.getEyeHeight(), owner.getZ(), yaw, pitch);
 
         Vec3 velocity = new Vec3(-f3, -(f5 / f4), -f2);
         double length = velocity.length();
@@ -158,16 +158,16 @@ public class EntityGrabHook extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        this.age = tag.getInt("age");
-        this.inGround = tag.getBoolean("in_ground");
-        this.ticksInAir = tag.getInt("ticks_in_air");
-        this.returning = tag.getBoolean("returning");
-        this.hasGrappling = tag.getBoolean("grappling");
-        this.hasGentle = tag.getBoolean("gentle");
-        this.turboLevel = tag.getInt("turbo");
-        this.speed = tag.getDouble("speed");
-        this.entityData.set(DATA_OWNER, tag.getInt("owner"));
-        this.entityData.set(DATA_CAUGHT, tag.getInt("caught"));
+        this.age = tag.getIntOr("age", 0);
+        this.inGround = tag.getBooleanOr("in_ground", false);
+        this.ticksInAir = tag.getIntOr("ticks_in_air", 0);
+        this.returning = tag.getBooleanOr("returning", false);
+        this.hasGrappling = tag.getBooleanOr("grappling", false);
+        this.hasGentle = tag.getBooleanOr("gentle", false);
+        this.turboLevel = tag.getIntOr("turbo", 0);
+        this.speed = tag.getDoubleOr("speed", 0.0D);
+        this.entityData.set(DATA_OWNER, tag.getIntOr("owner", 0));
+        this.entityData.set(DATA_CAUGHT, tag.getIntOr("caught", 0));
     }
 
     @Override

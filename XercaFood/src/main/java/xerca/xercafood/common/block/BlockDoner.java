@@ -1,6 +1,7 @@
 package xerca.xercafood.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -133,13 +134,14 @@ public class BlockDoner extends Block implements EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock() && newState.getBlock() != Blocks.IRON_BARS && !worldIn.isClientSide) {
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel worldIn, BlockPos pos, boolean isMoving) {
+        BlockState newState = worldIn.getBlockState(pos);
+        if (state.getBlock() != newState.getBlock() && newState.getBlock() != Blocks.IRON_BARS) {
             ItemEntity barsEntity = new ItemEntity(worldIn, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.IRON_BARS));
             barsEntity.setDefaultPickUpDelay();
             worldIn.addFreshEntity(barsEntity);
         }
-        super.onRemove(state, worldIn, pos, newState, isMoving);
+        super.affectNeighborsAfterRemoval(state, worldIn, pos, isMoving);
     }
 
     @Override

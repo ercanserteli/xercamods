@@ -187,14 +187,22 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
         return InteractionResult.PASS;
     }
 
-    @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != Blocks.MUSIC_BOX || newState.getBlock() != Blocks.MUSIC_BOX) {
-            ejectItem(worldIn, pos, state, true, true);
-            ejectItem(worldIn, pos, state, false, true);
+    public void ejectContentsOnRemoval(Level world, BlockPos pos, BlockState state, TileEntityMusicBox te) {
+        ejectStackOnRemoval(world, pos, state, te, true);
+        ejectStackOnRemoval(world, pos, state, te, false);
+    }
 
-            super.onRemove(state, worldIn, pos, newState, isMoving);
+    private void ejectStackOnRemoval(Level world, BlockPos pos, BlockState state, TileEntityMusicBox te, boolean isMusic) {
+        if (world.isClientSide) {
+            return;
         }
+        ItemStack itemStack = getEjectedStack(te, isMusic);
+        if (itemStack.isEmpty()) {
+            return;
+        }
+        ItemEntity itemEntity = createItemEntity(world, pos, state, itemStack, isMusic);
+        itemEntity.setDefaultPickUpDelay();
+        world.addFreshEntity(itemEntity);
     }
 
     @Override

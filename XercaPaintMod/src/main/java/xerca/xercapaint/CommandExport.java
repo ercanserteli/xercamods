@@ -64,7 +64,7 @@ public class CommandExport {
             }
         }
 
-        for (ItemStack s : player.getHandSlots()) {
+        for (ItemStack s : java.util.List.of(player.getMainHandItem(), player.getOffhandItem())) {
             if (s.getItem() instanceof ItemCanvas itemCanvas) {
                 List<Integer> pixels = s.get(Items.CANVAS_PIXELS);
                 String canvasId = s.get(Items.CANVAS_ID);
@@ -77,7 +77,7 @@ public class CommandExport {
 
                         CompoundTag tag = new CompoundTag();
 
-                        tag.putIntArray("pixels", pixels);
+                        tag.putIntArray("pixels", pixels.stream().mapToInt(Integer::intValue).toArray());
                         tag.putByte("ct", itemCanvas.getCanvasType().toByte());
                         if (itemCanvas.isGlass()) {
                             tag.putBoolean("glass", true);

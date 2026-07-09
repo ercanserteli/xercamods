@@ -221,9 +221,9 @@ public class EntityEasel extends Entity {
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
-        CompoundTag itemTag = tag.getCompound("Item");
+        CompoundTag itemTag = tag.getCompoundOrEmpty("Item");
         if (!itemTag.isEmpty()) {
-            ItemStack itemStack = ItemStack.parseOptional(this.registryAccess(), itemTag);
+            ItemStack itemStack = ItemStack.parse(this.registryAccess(), itemTag).orElse(ItemStack.EMPTY);
             if (itemStack.isEmpty()) {
                 Mod.LOGGER.warn("Unable to load item from: {}", itemTag);
             }

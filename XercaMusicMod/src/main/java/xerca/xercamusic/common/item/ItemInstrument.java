@@ -109,9 +109,8 @@ public class ItemInstrument extends Item implements IItemInstrument {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         hurtEnemyWithInstrument(target, attacker, minOctave, maxOctave, this);
-        return true;
     }
 
     @Override

@@ -6,11 +6,12 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.BlockPizza;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemPizza extends BlockItem {
     private final BlockPizza.Ingredient slot1;
@@ -35,15 +36,15 @@ public class ItemPizza extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
         addPizzaIngredientToTooltip(tooltip, slot1);
         addPizzaIngredientToTooltip(tooltip, slot2);
         addPizzaIngredientToTooltip(tooltip, slot3);
     }
 
-    static void addPizzaIngredientToTooltip(List<Component> tooltip, BlockPizza.Ingredient ingredient) {
+    static void addPizzaIngredientToTooltip(Consumer<Component> tooltip, BlockPizza.Ingredient ingredient) {
         if (ingredient != BlockPizza.Ingredient.EMPTY) {
-            tooltip.add(Component.translatable(Mod.MOD_ID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable(Mod.MOD_ID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
         }
     }
 

@@ -2,7 +2,6 @@ package xerca.xercapaint.client;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -62,7 +61,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
     }
 
     private ResourceLocation createWhiteTexture() {
-        DynamicTexture texture = new DynamicTexture(1, 1, false);
+        DynamicTexture texture = new DynamicTexture("xercapaint white", 1, 1, false);
         NativeImage image = texture.getPixels();
         if (image != null) {
             image.setPixel(0, 0, 0xFFFFFFFF);
@@ -180,7 +179,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             this.loaded = false;
             this.width = width;
             this.height = height;
-            this.canvasTexture = new DynamicTexture(width, height, true);
+            this.canvasTexture = new DynamicTexture("xercapaint canvas " + key, width, height, true);
             this.location = RenderEntityCanvas.this.registerDynamicTexture("canvas/" + key, this.canvasTexture);
 
             updateCanvasTexture(name, version);
@@ -261,7 +260,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             final float sideWidth = 1.0F / 16.0F;
 
             // FRONT (facing -Z): glass uses single-sided cutout so transparent pixels are see-through
-            RenderSystem.setShaderTexture(0, location);
             VertexConsumer front = buffer.getBuffer(glass ? RenderType.entityCutout(location) : RenderType.entitySolid(location));
             addVertex(front, pose, 0.0F, h32, -1.0F, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
             addVertex(front, pose, w32, h32, -1.0F, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
@@ -279,7 +277,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
                 if (tint != NO_TINT) {
                     // Tint the transparent pixels
                     int overlay = (GLASS_TINT_OVERLAY_ALPHA << 24) | (tint & 0xFFFFFF);
-                    RenderSystem.setShaderTexture(0, RenderEntityCanvas.this.whiteLocation);
                     VertexConsumer glassSheet = buffer.getBuffer(RenderType.entityTranslucent(RenderEntityCanvas.this.whiteLocation));
                     addVertex(glassSheet, pose, 0.0D, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
                     addVertex(glassSheet, pose, w32, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
@@ -289,12 +286,10 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
 
                 if (sidesActive) {
                     // Painted side pixels (no-cull so they are visible from inside the canvas too)
-                    RenderSystem.setShaderTexture(0, RenderEntityCanvas.this.whiteLocation);
                     VertexConsumer sides = buffer.getBuffer(RenderType.entityCutoutNoCull(RenderEntityCanvas.this.whiteLocation));
                     renderPaintedSides(sides, pose, w32, h32, packedLight, true);
                 } else {
                     // Glass-pane frame
-                    RenderSystem.setShaderTexture(0, GLASS_FRAME_LOCATION);
                     VertexConsumer frame = buffer.getBuffer(RenderType.entityTranslucent(GLASS_FRAME_LOCATION));
                     renderGlassFrame(frame, pose, w32, h32, packedLight);
                 }
@@ -303,7 +298,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             }
 
             // BACK (facing +Z)
-            RenderSystem.setShaderTexture(0, BACK_LOCATION);
             VertexConsumer back = buffer.getBuffer(RenderType.entitySolid(BACK_LOCATION));
             addVertex(back, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
             addVertex(back, pose, w32, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
@@ -337,7 +331,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
                 addVertex(back, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
             } else {
                 // No-cull so painted sides are visible from inside the canvas too
-                RenderSystem.setShaderTexture(0, RenderEntityCanvas.this.whiteLocation);
                 VertexConsumer sides = buffer.getBuffer(RenderType.entityCutoutNoCull(RenderEntityCanvas.this.whiteLocation));
                 renderPaintedSides(sides, pose, w32, h32, packedLight, false);
             }

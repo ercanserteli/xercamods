@@ -1,8 +1,8 @@
 package xerca.xercapaint.tests;
 
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -25,8 +25,6 @@ import java.util.Optional;
 import static xerca.xercapaint.Mod.MOD_ID;
 
 public class CanvasRecipeGameTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
-    private static final String CANVAS_RECIPES_BATCH = "canvas_recipes";
 
     private record CanvasRecipeSpec(ResourceLocation recipeId, int width, int height, Item expectedResult) {
     }
@@ -53,9 +51,9 @@ public class CanvasRecipeGameTests {
 
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, recipeId));
-        helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
+        TestAsserts.assertTrue(helper, recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow(() -> new IllegalStateException("Missing recipe: " + recipeId)).value();
-        helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
+        TestAsserts.assertTrue(helper, recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
         if (!(recipe instanceof CraftingRecipe craftingRecipe)) {
             throw new IllegalStateException("Expected crafting recipe for " + recipeId);
         }
@@ -87,37 +85,37 @@ public class CanvasRecipeGameTests {
         return stack;
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
-    public static void smallFreshCanvasesCraftLongTallAndLarge(GameTestHelper helper) {
+    @GameTest
+    public void smallFreshCanvasesCraftLongTallAndLarge(GameTestHelper helper) {
         for (CanvasRecipeSpec spec : SMALL_CANVAS_RECIPES) {
             CraftingRecipe recipe = requireCraftingRecipe(helper, spec.recipeId());
             CraftingInput grid = createFilledGrid(spec.width(), spec.height(), createFreshSmallCanvas());
 
-            helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected recipe to match for " + spec.recipeId());
+            TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected recipe to match for " + spec.recipeId());
             ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-            helper.assertTrue(result.is(spec.expectedResult()), "Expected " + spec.recipeId() + " result item");
+            TestAsserts.assertTrue(helper, result.is(spec.expectedResult()), "Expected " + spec.recipeId() + " result item");
         }
 
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
-    public static void smallFreshGlassCanvasesCraftLongTallAndLarge(GameTestHelper helper) {
+    @GameTest
+    public void smallFreshGlassCanvasesCraftLongTallAndLarge(GameTestHelper helper) {
         ItemStack freshGlass = new ItemStack(Items.ITEM_CANVAS_GLASS);
         for (CanvasRecipeSpec spec : SMALL_GLASS_CANVAS_RECIPES) {
             CraftingRecipe recipe = requireCraftingRecipe(helper, spec.recipeId());
             CraftingInput grid = createFilledGrid(spec.width(), spec.height(), freshGlass);
 
-            helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected glass recipe to match for " + spec.recipeId());
+            TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected glass recipe to match for " + spec.recipeId());
             ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-            helper.assertTrue(result.is(spec.expectedResult()), "Expected " + spec.recipeId() + " result item");
+            TestAsserts.assertTrue(helper, result.is(spec.expectedResult()), "Expected " + spec.recipeId() + " result item");
         }
 
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
-    public static void glassCanvasCraftsFromGlassPaneAndSticks(GameTestHelper helper) {
+    @GameTest
+    public void glassCanvasCraftsFromGlassPaneAndSticks(GameTestHelper helper) {
         ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass");
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId);
 
@@ -129,17 +127,17 @@ public class CanvasRecipeGameTests {
                 stick.copy(), stick.copy(), stick.copy()));
         CraftingInput grid = CraftingInput.of(3, 3, stacks);
 
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected glass canvas recipe to match");
+        TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected glass canvas recipe to match");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.ITEM_CANVAS_GLASS), "Expected glass canvas result item");
+        TestAsserts.assertTrue(helper, result.is(Items.ITEM_CANVAS_GLASS), "Expected glass canvas result item");
 
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
-    public static void paintedCanvasesCannotBeUsedInFreshCanvasRecipes(GameTestHelper helper) {
+    @GameTest
+    public void paintedCanvasesCannotBeUsedInFreshCanvasRecipes(GameTestHelper helper) {
         ItemStack paintedSmallCanvas = createPaintedSmallCanvas();
-        helper.assertTrue(paintedSmallCanvas.get(Items.CANVAS_PIXELS) != null,
+        TestAsserts.assertTrue(helper, paintedSmallCanvas.get(Items.CANVAS_PIXELS) != null,
                 "Expected painted test input to have canvas pixels");
 
         for (CanvasRecipeSpec spec : SMALL_CANVAS_RECIPES) {
@@ -151,28 +149,28 @@ public class CanvasRecipeGameTests {
             stacks.set(0, paintedSmallCanvas.copy());
             CraftingInput grid = CraftingInput.of(spec.width(), spec.height(), stacks);
 
-            helper.assertTrue(!recipe.matches(grid, helper.getLevel()), "Expected painted input to fail matching for " + spec.recipeId());
-            helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+            TestAsserts.assertTrue(helper, !recipe.matches(grid, helper.getLevel()), "Expected painted input to fail matching for " + spec.recipeId());
+            TestAsserts.assertTrue(helper, recipe.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
                     "Expected painted input to assemble empty for " + spec.recipeId());
         }
 
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = CANVAS_RECIPES_BATCH)
-    public static void foreignTaggedFreshCanvasesCanBeUsedInFreshCanvasRecipes(GameTestHelper helper) {
+    @GameTest
+    public void foreignTaggedFreshCanvasesCanBeUsedInFreshCanvasRecipes(GameTestHelper helper) {
         ItemStack foreignTaggedSmallCanvas = createForeignTaggedFreshSmallCanvas();
-        helper.assertTrue(foreignTaggedSmallCanvas.get(Items.CANVAS_PIXELS) == null,
+        TestAsserts.assertTrue(helper, foreignTaggedSmallCanvas.get(Items.CANVAS_PIXELS) == null,
                 "Expected foreign-tagged fresh canvas to remain fresh (no canvas pixels)");
 
         for (CanvasRecipeSpec spec : SMALL_CANVAS_RECIPES) {
             CraftingRecipe recipe = requireCraftingRecipe(helper, spec.recipeId());
             CraftingInput grid = createFilledGrid(spec.width(), spec.height(), foreignTaggedSmallCanvas);
 
-            helper.assertTrue(recipe.matches(grid, helper.getLevel()),
+            TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()),
                     "Expected foreign-tagged fresh input to match for " + spec.recipeId());
             ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-            helper.assertTrue(result.is(spec.expectedResult()),
+            TestAsserts.assertTrue(helper, result.is(spec.expectedResult()),
                     "Expected foreign-tagged fresh input to craft expected result for " + spec.recipeId());
         }
 

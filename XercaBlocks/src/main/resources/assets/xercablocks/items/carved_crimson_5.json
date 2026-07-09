@@ -1,6 +1,15 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "xercablocks:item/carved_crimson_5"
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "xercablocks:item/carved_crimson_5"
+      },
+      {
+        "type": "minecraft:model",
+        "model": "xercablocks:block/carved_wood/carved_crimson_5_overlay"
+      }
+    ]
   }
 }

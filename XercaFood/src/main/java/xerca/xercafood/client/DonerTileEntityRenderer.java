@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.block.Blocks;
 import xerca.xercafood.common.block_entity.BlockEntityDoner;
@@ -21,7 +22,7 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityD
     }
 
     @Override
-    public void render(BlockEntityDoner blockEntity, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(BlockEntityDoner blockEntity, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPos) {
         if (blockRenderer == null) blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
         float f = blockEntity.getAnimationProgress(partialTicks);

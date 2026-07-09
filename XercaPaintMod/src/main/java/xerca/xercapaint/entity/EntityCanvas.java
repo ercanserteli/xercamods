@@ -239,12 +239,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    public void moveTo(double x, double y, double z, float yRot, float xRot) {
-        this.setPos(x, y, z);
-    }
-
-    @Override
-    public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+    public void snapTo(double x, double y, double z, float yRot, float xRot) {
         this.setPos(x, y, z);
     }
 
@@ -358,39 +353,36 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     public void readAdditionalSaveData(CompoundTag tagCompound) {
-        this.pos = new BlockPos(tagCompound.getInt("TileX"), tagCompound.getInt("TileY"), tagCompound.getInt("TileZ"));
-        CompoundTag canvasNBT = tagCompound;
-        if (tagCompound.contains("canvas")) {
-            canvasNBT = tagCompound.getCompound("canvas");
-        }
+        this.pos = new BlockPos(tagCompound.getIntOr("TileX", 0), tagCompound.getIntOr("TileY", 0), tagCompound.getIntOr("TileZ", 0));
+        CompoundTag canvasNBT = tagCompound.getCompound("canvas").orElse(tagCompound);
         this.canvasSigned = canvasNBT.contains("author") && canvasNBT.contains("title");
-        String canvasId = canvasNBT.getString("name");
+        String canvasId = canvasNBT.getStringOr("name", "");
         this.setCanvasID(canvasId);
-        int version = canvasNBT.getInt("v");
+        int version = canvasNBT.getIntOr("v", 0);
         this.setVersion(version);
         if (canvasSigned) {
-            this.canvasAuthor = canvasNBT.getString("author");
-            this.canvasTitle = canvasNBT.getString("title");
-            this.canvasGeneration = canvasNBT.getInt("generation");
+            this.canvasAuthor = canvasNBT.getStringOr("author", "");
+            this.canvasTitle = canvasNBT.getStringOr("title", "");
+            this.canvasGeneration = canvasNBT.getIntOr("generation", 0);
         }
 
         Picture picture = PICTURES.get(canvasId);
         if (picture == null || picture.version < version) {
-            boolean sidesActive = canvasNBT.getBoolean("sidesActive");
-            int[] sidePixels = canvasNBT.getIntArray("sidePixels");
-            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels"), sidesActive, sidePixels));
+            boolean sidesActive = canvasNBT.getBooleanOr("sidesActive", false);
+            int[] sidePixels = canvasNBT.getIntArray("sidePixels").orElse(new int[0]);
+            PICTURES.put(canvasId, new Picture(version, canvasNBT.getIntArray("pixels").orElse(new int[0]), sidesActive, sidePixels));
         }
 
-        this.setCanvasType(CanvasType.fromByte(tagCompound.getByte("ctype")));
-        this.setGlass(tagCompound.getBoolean("glass"));
+        this.setCanvasType(CanvasType.fromByte(tagCompound.getByteOr("ctype", (byte) 0)));
+        this.setGlass(tagCompound.getBooleanOr("glass", false));
         if (tagCompound.contains("Facing") && !tagCompound.contains("RealFace")) {
-            int facing = tagCompound.getByte("Facing");
+            int facing = tagCompound.getByteOr("Facing", (byte) 0);
             Direction horizontal = Direction.from2DDataValue(facing);
             this.setDirection(horizontal);
         } else {
-            this.setDirection(Direction.from3DDataValue(tagCompound.getByte("RealFace")));
+            this.setDirection(Direction.from3DDataValue(tagCompound.getByteOr("RealFace", (byte) 0)));
         }
-        this.setRotation(tagCompound.getByte("Rotation"));
+        this.setRotation(tagCompound.getByteOr("Rotation", (byte) 0));
     }
 
     @Override

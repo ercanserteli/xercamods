@@ -21,13 +21,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import xerca.xercatools.SoundEvents;
 import xerca.xercatools.enchantment.KnifeEnchantments;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemKnife extends Item {
     private static final float DEFAULT_CRIT_BONUS = 5.0F;
@@ -63,7 +64,7 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
 
         int poisonLevel = EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.poisonEnchantment(attacker.level().registryAccess()), stack);
@@ -78,7 +79,6 @@ public class ItemKnife extends Item {
                     : attacker.damageSources().mobAttack(attacker);
             target.hurt(damageSource, critBonus);
         }
-        return true;
     }
 
     @Override
@@ -103,9 +103,9 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flag) {
-        tooltip.add(net.minecraft.network.chat.Component.translatable("xercatools.knife_tooltip").withStyle(ChatFormatting.BLUE));
-        tooltip.add(net.minecraft.network.chat.Component.translatable("xercatools.knife_offhand_tooltip").withStyle(ChatFormatting.YELLOW));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<net.minecraft.network.chat.Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(net.minecraft.network.chat.Component.translatable("xercatools.knife_tooltip").withStyle(ChatFormatting.BLUE));
+        tooltip.accept(net.minecraft.network.chat.Component.translatable("xercatools.knife_offhand_tooltip").withStyle(ChatFormatting.YELLOW));
     }
 
     public static float getOffhandDamage(Level level, ItemStack stack, LivingEntity target, Player attacker) {

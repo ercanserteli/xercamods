@@ -1,7 +1,7 @@
 package xerca.xercaomnichest.tests;
 
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -34,8 +34,10 @@ import java.util.List;
 import java.util.Optional;
 
 public final class OmniChestGameTests {
-    private static final String BASIC_TEMPLATE = "xercaomnichest:basic_test";
-    private static final String BATCH = "xercaomnichest.omni_chest";
+
+    private static void assertTrue(GameTestHelper helper, boolean condition, String message) {
+        helper.assertTrue(condition, net.minecraft.network.chat.Component.literal(message));
+    }
 
     private static ResourceLocation recipeId(String path) {
         return Mod.id(path);
@@ -44,9 +46,9 @@ public final class OmniChestGameTests {
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, recipeId));
-        helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
+        assertTrue(helper, recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
-        helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
+        assertTrue(helper, recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
         assert recipe instanceof CraftingRecipe;
         return (CraftingRecipe) recipe;
     }
@@ -55,7 +57,7 @@ public final class OmniChestGameTests {
         if (helper.getLevel().getBlockEntity(pos) instanceof BlockEntityOmniChest chest) {
             return chest;
         }
-        helper.assertTrue(false, message);
+        assertTrue(helper, false, message);
         throw new IllegalStateException("Unreachable after GameTest assertion failure");
     }
 
@@ -77,7 +79,7 @@ public final class OmniChestGameTests {
             method.setAccessible(true);
             return (InteractionResult) method.invoke(state.getBlock(), state, helper.getLevel(), pos, player, hitTopOf(pos));
         } catch (Exception e) {
-            helper.fail("Failed to invoke Omni Chest useWithoutItem: " + e.getMessage());
+            helper.fail(net.minecraft.network.chat.Component.literal("Failed to invoke Omni Chest useWithoutItem: " + e.getMessage()));
             return InteractionResult.FAIL;
         }
     }
@@ -98,13 +100,13 @@ public final class OmniChestGameTests {
             method.setAccessible(true);
             return (InteractionResult) method.invoke(state.getBlock(), stack, state, helper.getLevel(), pos, player, InteractionHand.MAIN_HAND, hitTopOf(pos));
         } catch (Exception e) {
-            helper.fail("Failed to invoke Omni Chest useItemOn: " + e.getMessage());
+            helper.fail(net.minecraft.network.chat.Component.literal("Failed to invoke Omni Chest useItemOn: " + e.getMessage()));
             return InteractionResult.FAIL;
         }
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void omniChestRecipeCraftsFromAmethystEyesAndEnderChest(GameTestHelper helper) {
+    @GameTest
+    public void omniChestRecipeCraftsFromAmethystEyesAndEnderChest(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("omni_chest"));
         CraftingInput grid = CraftingInput.of(3, 3, java.util.List.of(
                 new ItemStack(net.minecraft.world.item.Items.AMETHYST_BLOCK), new ItemStack(net.minecraft.world.item.Items.ENDER_EYE), new ItemStack(net.minecraft.world.item.Items.AMETHYST_BLOCK),
@@ -112,14 +114,14 @@ public final class OmniChestGameTests {
                 new ItemStack(net.minecraft.world.item.Items.AMETHYST_BLOCK), new ItemStack(net.minecraft.world.item.Items.ENDER_EYE), new ItemStack(net.minecraft.world.item.Items.AMETHYST_BLOCK)
         ));
 
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected Omni Chest recipe to match");
+        assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected Omni Chest recipe to match");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.OMNI_CHEST), "Expected recipe to craft Omni Chest");
+        assertTrue(helper, result.is(Items.OMNI_CHEST), "Expected recipe to craft Omni Chest");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void omniChestInventoryIsSharedAcrossPlacedChests(GameTestHelper helper) {
+    @GameTest
+    public void omniChestInventoryIsSharedAcrossPlacedChests(GameTestHelper helper) {
         BlockPos firstPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos secondPos = helper.absolutePos(new BlockPos(3, 2, 1));
         helper.getLevel().setBlockAndUpdate(firstPos, Blocks.OMNI_CHEST.defaultBlockState());
@@ -140,20 +142,20 @@ public final class OmniChestGameTests {
         ChestMenu firstMenu = ChestMenu.threeRows(0, firstPlayer.getInventory(), inventory);
         ChestMenu secondMenu = ChestMenu.threeRows(1, secondPlayer.getInventory(), inventory);
 
-        helper.assertTrue(firstMenu.getContainer().getItem(0).getCount() == 7, "Expected first player to see shared inventory contents");
-        helper.assertTrue(secondMenu.getContainer().getItem(0).getCount() == 7, "Expected second player to see shared inventory contents");
+        assertTrue(helper, firstMenu.getContainer().getItem(0).getCount() == 7, "Expected first player to see shared inventory contents");
+        assertTrue(helper, secondMenu.getContainer().getItem(0).getCount() == 7, "Expected second player to see shared inventory contents");
 
         secondMenu.getContainer().setItem(0, new ItemStack(net.minecraft.world.item.Items.EMERALD, 3));
-        helper.assertTrue(firstMenu.getContainer().getItem(0).is(net.minecraft.world.item.Items.EMERALD), "Expected inventory mutation to be shared");
-        helper.assertTrue(firstMenu.getContainer().getItem(0).getCount() == 3, "Expected shared inventory count to update");
+        assertTrue(helper, firstMenu.getContainer().getItem(0).is(net.minecraft.world.item.Items.EMERALD), "Expected inventory mutation to be shared");
+        assertTrue(helper, firstMenu.getContainer().getItem(0).getCount() == 3, "Expected shared inventory count to update");
 
         secondMenu.removed(secondPlayer);
         firstMenu.removed(firstPlayer);
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void omniChestTracksDifferentActiveChestsPerPlayer(GameTestHelper helper) {
+    @GameTest
+    public void omniChestTracksDifferentActiveChestsPerPlayer(GameTestHelper helper) {
         BlockPos firstPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos secondPos = helper.absolutePos(new BlockPos(3, 2, 1));
         helper.getLevel().setBlockAndUpdate(firstPos, Blocks.OMNI_CHEST.defaultBlockState());
@@ -168,14 +170,14 @@ public final class OmniChestGameTests {
         inventory.setActiveChest(firstChest, firstPlayer);
         inventory.setActiveChest(secondChest, secondPlayer);
 
-        helper.assertTrue(inventory.testPlayerChest(firstPlayer, firstChest), "Expected first player to be tracked against first chest");
-        helper.assertTrue(inventory.testPlayerChest(secondPlayer, secondChest), "Expected second player to be tracked against second chest");
-        helper.assertTrue(!inventory.testPlayerChest(firstPlayer, secondChest), "Expected players to keep separate active chest mappings");
+        assertTrue(helper, inventory.testPlayerChest(firstPlayer, firstChest), "Expected first player to be tracked against first chest");
+        assertTrue(helper, inventory.testPlayerChest(secondPlayer, secondChest), "Expected second player to be tracked against second chest");
+        assertTrue(helper, !inventory.testPlayerChest(firstPlayer, secondChest), "Expected players to keep separate active chest mappings");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void omniChestSavedDataRoundTripsStoredItems(GameTestHelper helper) {
+    @GameTest
+    public void omniChestSavedDataRoundTripsStoredItems(GameTestHelper helper) {
         OmniChestSavedData original = new OmniChestSavedData();
         original.getInventory().setItem(4, new ItemStack(net.minecraft.world.item.Items.DIAMOND, 5));
 
@@ -183,13 +185,13 @@ public final class OmniChestGameTests {
         OmniChestSavedData restored = OmniChestSavedData.load(tag, helper.getLevel().registryAccess());
 
         ItemStack restoredStack = restored.getInventory().getItem(4);
-        helper.assertTrue(restoredStack.is(net.minecraft.world.item.Items.DIAMOND), "Expected saved data to restore the stored item");
-        helper.assertTrue(restoredStack.getCount() == 5, "Expected saved data to restore the stored item count");
+        assertTrue(helper, restoredStack.is(net.minecraft.world.item.Items.DIAMOND), "Expected saved data to restore the stored item");
+        assertTrue(helper, restoredStack.getCount() == 5, "Expected saved data to restore the stored item count");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void omniChestBreaksAtPickaxeSpeedLikeEnderChest(GameTestHelper helper) {
+    @GameTest
+    public void omniChestBreaksAtPickaxeSpeedLikeEnderChest(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());
 
@@ -197,7 +199,7 @@ public final class OmniChestGameTests {
         BlockState omniChestState = helper.getLevel().getBlockState(pos);
         BlockState enderChestState = net.minecraft.world.level.block.Blocks.ENDER_CHEST.defaultBlockState();
 
-        player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
+        player.getInventory().setSelectedItem(ItemStack.EMPTY);
         float handProgress = omniChestState.getDestroyProgress(player, helper.getLevel(), pos);
 
         ItemStack pickaxe = new ItemStack(net.minecraft.world.item.Items.NETHERITE_PICKAXE);
@@ -207,18 +209,18 @@ public final class OmniChestGameTests {
                         .getOrThrow(net.minecraft.world.item.enchantment.Enchantments.EFFICIENCY),
                 5
         ));
-        player.getInventory().setItem(player.getInventory().selected, pickaxe);
+        player.getInventory().setSelectedItem(pickaxe);
 
         float omniChestProgress = omniChestState.getDestroyProgress(player, helper.getLevel(), pos);
         float enderChestProgress = enderChestState.getDestroyProgress(player, helper.getLevel(), pos);
 
-        helper.assertTrue(omniChestProgress > handProgress, "Expected pickaxe mining progress to be faster than hand mining progress");
-        helper.assertTrue(Math.abs(omniChestProgress - enderChestProgress) < 0.000001F, "Expected Omni Chest mining progress to match Ender Chest with the same pickaxe");
+        assertTrue(helper, omniChestProgress > handProgress, "Expected pickaxe mining progress to be faster than hand mining progress");
+        assertTrue(helper, Math.abs(omniChestProgress - enderChestProgress) < 0.000001F, "Expected Omni Chest mining progress to match Ender Chest with the same pickaxe");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void omniChestLootRequiresSilkTouchForFullBlockDrop(GameTestHelper helper) {
+    @GameTest
+    public void omniChestLootRequiresSilkTouchForFullBlockDrop(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());
         BlockState state = helper.getLevel().getBlockState(pos);
@@ -232,9 +234,9 @@ public final class OmniChestGameTests {
                 null,
                 new ItemStack(net.minecraft.world.item.Items.NETHERITE_PICKAXE)
         );
-        helper.assertTrue(normalDrops.size() == 1, "Expected one non-silk-touch drop");
-        helper.assertTrue(normalDrops.getFirst().is(net.minecraft.world.item.Items.OBSIDIAN), "Expected non-silk-touch Omni Chest to drop obsidian");
-        helper.assertTrue(normalDrops.getFirst().getCount() == 8, "Expected non-silk-touch Omni Chest to drop eight obsidian");
+        assertTrue(helper, normalDrops.size() == 1, "Expected one non-silk-touch drop");
+        assertTrue(helper, normalDrops.getFirst().is(net.minecraft.world.item.Items.OBSIDIAN), "Expected non-silk-touch Omni Chest to drop obsidian");
+        assertTrue(helper, normalDrops.getFirst().getCount() == 8, "Expected non-silk-touch Omni Chest to drop eight obsidian");
 
         ItemStack silkTouchPickaxe = new ItemStack(net.minecraft.world.item.Items.NETHERITE_PICKAXE);
         EnchantmentHelper.updateEnchantments(silkTouchPickaxe, enchantments -> enchantments.set(
@@ -252,14 +254,14 @@ public final class OmniChestGameTests {
                 null,
                 silkTouchPickaxe
         );
-        helper.assertTrue(silkTouchDrops.size() == 1, "Expected one silk-touch drop");
-        helper.assertTrue(silkTouchDrops.getFirst().is(Items.OMNI_CHEST), "Expected silk-touch Omni Chest to drop itself");
-        helper.assertTrue(silkTouchDrops.getFirst().getCount() == 1, "Expected silk-touch Omni Chest to drop exactly one block");
+        assertTrue(helper, silkTouchDrops.size() == 1, "Expected one silk-touch drop");
+        assertTrue(helper, silkTouchDrops.getFirst().is(Items.OMNI_CHEST), "Expected silk-touch Omni Chest to drop itself");
+        assertTrue(helper, silkTouchDrops.getFirst().getCount() == 1, "Expected silk-touch Omni Chest to drop exactly one block");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void omniChestCanBePlacedWaterlogged(GameTestHelper helper) {
+    @GameTest
+    public void omniChestCanBePlacedWaterlogged(GameTestHelper helper) {
         BlockPos supportPos = helper.absolutePos(new BlockPos(1, 1, 1));
         BlockPos chestPos = supportPos.above();
         helper.getLevel().setBlockAndUpdate(supportPos, net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
@@ -271,14 +273,14 @@ public final class OmniChestGameTests {
         Items.OMNI_CHEST.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hitTopOf(supportPos)));
 
         BlockState placedState = helper.getLevel().getBlockState(chestPos);
-        helper.assertTrue(placedState.is(Blocks.OMNI_CHEST), "Expected Omni Chest item placement to replace the water block");
-        helper.assertTrue(placedState.getValue(BlockOmniChest.WATERLOGGED), "Expected placed Omni Chest to keep waterlogged state");
-        helper.assertTrue(helper.getLevel().getFluidState(chestPos).getType() == Fluids.WATER, "Expected waterlogged Omni Chest to expose a water fluid state");
+        assertTrue(helper, placedState.is(Blocks.OMNI_CHEST), "Expected Omni Chest item placement to replace the water block");
+        assertTrue(helper, placedState.getValue(BlockOmniChest.WATERLOGGED), "Expected placed Omni Chest to keep waterlogged state");
+        assertTrue(helper, helper.getLevel().getFluidState(chestPos).getType() == Fluids.WATER, "Expected waterlogged Omni Chest to expose a water fluid state");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void omniChestUseItemOpensMenuAndTracksActiveChest(GameTestHelper helper) {
+    @GameTest
+    public void omniChestUseItemOpensMenuAndTracksActiveChest(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());
 
@@ -288,13 +290,13 @@ public final class OmniChestGameTests {
 
         InteractionResult result = invokeUseItemOn(helper, pos, player, ItemStack.EMPTY);
 
-        helper.assertTrue(result == InteractionResult.SUCCESS, "Expected item interaction to open the Omni Chest");
-        helper.assertTrue(inventory.testPlayerChest(player, chest), "Expected Omni Chest interaction to track the player's active chest");
+        assertTrue(helper, result == InteractionResult.SUCCESS, "Expected item interaction to open the Omni Chest");
+        assertTrue(helper, inventory.testPlayerChest(player, chest), "Expected Omni Chest interaction to track the player's active chest");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
-    public static void blockedOmniChestDoesNotOpenMenu(GameTestHelper helper) {
+    @GameTest
+    public void blockedOmniChestDoesNotOpenMenu(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(pos.above(), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
@@ -305,9 +307,9 @@ public final class OmniChestGameTests {
 
         InteractionResult result = invokeUseWithoutItem(helper, pos, player);
 
-        helper.assertTrue(result == InteractionResult.PASS, "Expected blocked Omni Chest to refuse menu opening");
-        helper.assertFalse(inventory.testPlayerChest(player, chest), "Expected blocked Omni Chest not to register an active chest for the player");
-        helper.assertFalse(player.containerMenu instanceof ChestMenu, "Expected blocked Omni Chest not to open a chest menu");
+        assertTrue(helper, result == InteractionResult.PASS, "Expected blocked Omni Chest to refuse menu opening");
+        helper.assertFalse(inventory.testPlayerChest(player, chest), net.minecraft.network.chat.Component.literal("Expected blocked Omni Chest not to register an active chest for the player"));
+        helper.assertFalse(player.containerMenu instanceof ChestMenu, net.minecraft.network.chat.Component.literal("Expected blocked Omni Chest not to open a chest menu"));
         helper.succeed();
     }
 }

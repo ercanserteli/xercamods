@@ -1,10 +1,11 @@
 package xerca.xercacushion.tests;
 
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 
 public final class CushionGameTests {
-    private static final String BASIC_TEMPLATE = "xercacushion:basic_test";
 
     private static ResourceLocation recipeId(String path) {
         return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);
@@ -39,9 +39,9 @@ public final class CushionGameTests {
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
         ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
-        helper.assertTrue(recipeOptional.isPresent(), "Missing recipe: " + recipeId);
+        helper.assertTrue(recipeOptional.isPresent(), Component.literal("Missing recipe: " + recipeId));
         Recipe<?> recipe = recipeOptional.orElseThrow().value();
-        helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + recipeId);
+        helper.assertTrue(recipe instanceof CraftingRecipe, Component.literal("Expected crafting recipe for " + recipeId));
         return (CraftingRecipe) recipe;
     }
 
@@ -51,8 +51,8 @@ public final class CushionGameTests {
         return CraftingInput.of(width, height, list);
     }
 
-    @GameTest(template = BASIC_TEMPLATE)
-    public static void blackCushionRecipeCraftsFromWoolAndFeather(GameTestHelper helper) {
+    @GameTest
+    public void blackCushionRecipeCraftsFromWoolAndFeather(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("black_cushion"));
         CraftingInput grid = craftingGrid(1, 3,
                 new ItemStack(net.minecraft.world.item.Items.BLACK_WOOL),
@@ -60,61 +60,61 @@ public final class CushionGameTests {
                 new ItemStack(net.minecraft.world.item.Items.BLACK_WOOL)
         );
 
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected black cushion recipe to match wool-feather-wool");
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.BLACK_CUSHION), "Expected black cushion recipe output");
+        helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected black cushion recipe to match wool-feather-wool"));
+        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.BLACK_CUSHION), Component.literal("Expected black cushion recipe output"));
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE)
-    public static void allSixteenCushionRecipesLoad(GameTestHelper helper) {
+    @GameTest
+    public void allSixteenCushionRecipesLoad(GameTestHelper helper) {
         for (String path : Items.PATHS) {
             ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId(path));
-            helper.assertTrue(helper.getLevel().recipeAccess().byKey(recipeKey).isPresent(), "Missing cushion recipe: " + path);
+            helper.assertTrue(helper.getLevel().recipeAccess().byKey(recipeKey).isPresent(), Component.literal("Missing cushion recipe: " + path));
         }
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE)
-    public static void redCushionEntityKeepsItsItemVariant(GameTestHelper helper) {
+    @GameTest
+    public void redCushionEntityKeepsItsItemVariant(GameTestHelper helper) {
         Vec3 pos = helper.absoluteVec(new Vec3(1.5D, 2.0D, 1.5D));
         EntityCushion cushion = new EntityCushion(helper.getLevel(), pos.x, pos.y, pos.z, Items.RED_CUSHION.getVariant());
         helper.getLevel().addFreshEntity(cushion);
 
-        helper.assertTrue(cushion.getPickResult().is(Items.RED_CUSHION), "Expected red cushion entity to keep its red item variant");
+        helper.assertTrue(cushion.getPickResult().is(Items.RED_CUSHION), Component.literal("Expected red cushion entity to keep its red item variant"));
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE)
-    public static void interactingWithCushionMountsPlayer(GameTestHelper helper) {
+    @GameTest
+    public void interactingWithCushionMountsPlayer(GameTestHelper helper) {
         Vec3 pos = helper.absoluteVec(new Vec3(1.5D, 2.0D, 1.5D));
         EntityCushion cushion = new EntityCushion(helper.getLevel(), pos.x, pos.y, pos.z, 0);
         helper.getLevel().addFreshEntity(cushion);
 
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        player.moveTo(pos.x, pos.y, pos.z);
+        player.snapTo(pos.x, pos.y, pos.z);
 
         cushion.interact(player, InteractionHand.MAIN_HAND);
 
-        helper.assertTrue(player.getVehicle() == cushion, "Expected player to mount the cushion");
+        helper.assertTrue(player.getVehicle() == cushion, Component.literal("Expected player to mount the cushion"));
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE)
-    public static void unsupportedCushionFallsSlowly(GameTestHelper helper) {
+    @GameTest
+    public void unsupportedCushionFallsSlowly(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 2, 1), Blocks.STONE);
         Vec3 pos = helper.absoluteVec(new Vec3(1.5D, 4.0D, 1.5D));
         EntityCushion cushion = new EntityCushion(helper.getLevel(), pos.x, pos.y, pos.z, 0);
         helper.getLevel().addFreshEntity(cushion);
 
         helper.startSequence()
-                .thenWaitUntil(() -> helper.assertTrue(cushion.getY() < pos.y - 0.5D, "Expected cushion to fall after a few ticks"))
-                .thenWaitUntil(() -> helper.assertTrue(cushion.onGround(), "Expected cushion to land on the ground"))
-                .thenExecute(() -> helper.assertTrue(Math.abs(cushion.getY() - (pos.y - 1.0D)) < 0.0001D, "Expected cushion to sit flush on top of the supporting block, got y=" + cushion.getY()))
+                .thenWaitUntil(() -> helper.assertTrue(cushion.getY() < pos.y - 0.5D, Component.literal("Expected cushion to fall after a few ticks")))
+                .thenWaitUntil(() -> helper.assertTrue(cushion.onGround(), Component.literal("Expected cushion to land on the ground")))
+                .thenExecute(() -> helper.assertTrue(Math.abs(cushion.getY() - (pos.y - 1.0D)) < 0.0001D, Component.literal("Expected cushion to sit flush on top of the supporting block, got y=" + cushion.getY())))
                 .thenSucceed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE)
-    public static void groundedCushionDoesNotSlideFromHorizontalVelocity(GameTestHelper helper) {
+    @GameTest
+    public void groundedCushionDoesNotSlideFromHorizontalVelocity(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 1, 1), Blocks.STONE);
         Vec3 pos = helper.absoluteVec(new Vec3(1.5D, 2.0D, 1.5D));
         EntityCushion cushion = new EntityCushion(helper.getLevel(), pos.x, pos.y, pos.z, 0);
@@ -122,16 +122,16 @@ public final class CushionGameTests {
         cushion.setDeltaMovement(0.35D, 0.0D, 0.2D);
 
         helper.startSequence()
-                .thenWaitUntil(() -> helper.assertTrue(cushion.onGround(), "Expected cushion to remain grounded"))
+                .thenWaitUntil(() -> helper.assertTrue(cushion.onGround(), Component.literal("Expected cushion to remain grounded")))
                 .thenExecute(() -> {
-                    helper.assertTrue(Math.abs(cushion.getX() - pos.x) < 0.01D, "Expected cushion not to slide on X, got x=" + cushion.getX());
-                    helper.assertTrue(Math.abs(cushion.getZ() - pos.z) < 0.01D, "Expected cushion not to slide on Z, got z=" + cushion.getZ());
+                    helper.assertTrue(Math.abs(cushion.getX() - pos.x) < 0.01D, Component.literal("Expected cushion not to slide on X, got x=" + cushion.getX()));
+                    helper.assertTrue(Math.abs(cushion.getZ() - pos.z) < 0.01D, Component.literal("Expected cushion not to slide on Z, got z=" + cushion.getZ()));
                 })
                 .thenSucceed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE)
-    public static void pistonPushesCushionExactlyOneBlock(GameTestHelper helper) {
+    @GameTest
+    public void pistonPushesCushionExactlyOneBlock(GameTestHelper helper) {
         BlockPos pistonPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos powerPos = helper.absolutePos(new BlockPos(0, 2, 1));
         BlockPos floorPos = helper.absolutePos(new BlockPos(2, 1, 1));
@@ -148,12 +148,12 @@ public final class CushionGameTests {
         helper.startSequence()
                 .thenExecuteAfter(5, () -> helper.assertTrue(
                         Math.abs(cushion.getX() - (startX + 1.0D)) < 1.0E-6D,
-                        "Expected piston to move cushion exactly one block, got " + (cushion.getX() - startX)))
+                        Component.literal("Expected piston to move cushion exactly one block, got " + (cushion.getX() - startX))))
                 .thenSucceed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE)
-    public static void movingCushionDropsWhenItIntersectsAnotherCushion(GameTestHelper helper) {
+    @GameTest
+    public void movingCushionDropsWhenItIntersectsAnotherCushion(GameTestHelper helper) {
         BlockPos pistonPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos powerPos = helper.absolutePos(new BlockPos(0, 2, 1));
         for (int x = 2; x <= 4; x++) {
@@ -173,12 +173,12 @@ public final class CushionGameTests {
 
         helper.startSequence()
                 .thenExecuteAfter(5, () -> {
-                    helper.assertTrue(moving.isRemoved(), "Expected the moving cushion to break on intersection");
-                    helper.assertTrue(!stationary.isRemoved(), "Expected the stationary cushion to remain");
+                    helper.assertTrue(moving.isRemoved(), Component.literal("Expected the moving cushion to break on intersection"));
+                    helper.assertTrue(!stationary.isRemoved(), Component.literal("Expected the stationary cushion to remain"));
                     AABB itemSearchBox = stationary.getBoundingBox().inflate(2.0D);
                     boolean droppedMovingVariant = helper.getLevel().getEntitiesOfClass(ItemEntity.class, itemSearchBox).stream()
                             .anyMatch(item -> item.getItem().is(Items.RED_CUSHION));
-                    helper.assertTrue(droppedMovingVariant, "Expected the moving cushion to drop its item variant");
+                    helper.assertTrue(droppedMovingVariant, Component.literal("Expected the moving cushion to drop its item variant"));
                 })
                 .thenSucceed();
     }

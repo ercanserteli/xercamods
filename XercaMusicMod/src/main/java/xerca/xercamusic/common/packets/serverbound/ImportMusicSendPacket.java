@@ -1,5 +1,6 @@
 package xerca.xercamusic.common.packets.serverbound;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -29,9 +30,7 @@ public record ImportMusicSendPacket(@Nullable UUID uuid, @Nullable CompoundTag t
     public static ImportMusicSendPacket create(CompoundTag tag) throws NotesTooLargeException {
         UUID uuid = null;
         List<NoteEvent> notes = null;
-        if (tag.contains(KEY_ID)) {
-            uuid = tag.getUUID(KEY_ID);
-        }
+        uuid = tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null);
         if (tag.contains(KEY_NOTES)) {
             notes = new ArrayList<>();
             NoteEvent.fillArrayFromNBT(notes, tag);
@@ -46,9 +45,7 @@ public record ImportMusicSendPacket(@Nullable UUID uuid, @Nullable CompoundTag t
 
     public static ImportMusicSendPacket create(CompoundTag tag, @Nullable List<NoteEvent> notes) {
         UUID uuid = null;
-        if (tag.contains(KEY_ID)) {
-            uuid = tag.getUUID(KEY_ID);
-        }
+        uuid = tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null);
         return new ImportMusicSendPacket(uuid, tag, notes);
     }
 

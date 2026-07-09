@@ -5,12 +5,13 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.block.BlockTeapot;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemTeapot extends BlockItem {
     private final int teaAmount;
@@ -31,9 +32,9 @@ public class ItemTeapot extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
-        tooltip.add(Component.literal(isHot ? "Hot" : "Cold"));
-        tooltip.add(Component.literal("Tea amount: " + teaAmount));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.literal(isHot ? "Hot" : "Cold"));
+        tooltip.accept(Component.literal("Tea amount: " + teaAmount));
     }
 
     @Override

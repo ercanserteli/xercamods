@@ -176,7 +176,7 @@ public class EntityCushion extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        this.setVariant(tag.getInt("cushion"));
+        this.setVariant(tag.getIntOr("cushion", 0));
     }
 
     @Override

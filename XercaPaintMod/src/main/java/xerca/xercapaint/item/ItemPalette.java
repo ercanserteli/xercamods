@@ -11,12 +11,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.client.ModClient;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class ItemPalette extends Item {
@@ -55,18 +56,18 @@ public class ItemPalette extends Item {
 
     @Override
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
         ComponentCustomColor customColorComp = stack.get(Items.PALETTE_CUSTOM_COLORS);
         if (basicColors == null && customColorComp == null) {
-            tooltip.add(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
         } else {
             if (basicColors != null && basicColors.length == BASIC_COLOR_COUNT) {
                 int basicCount = 0;
                 for (byte basicColor : basicColors) {
                     basicCount += basicColor;
                 }
-                tooltip.add(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
+                tooltip.accept(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
             }
 
             if (customColorComp != null) {
@@ -76,7 +77,7 @@ public class ItemPalette extends Item {
                         fullCount++;
                     }
                 }
-                tooltip.add(Component.translatable("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
+                tooltip.accept(Component.translatable("palette.custom_count", String.valueOf(fullCount)).withStyle(ChatFormatting.GRAY));
             }
         }
     }

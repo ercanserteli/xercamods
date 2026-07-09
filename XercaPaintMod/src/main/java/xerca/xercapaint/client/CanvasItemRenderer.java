@@ -1,6 +1,5 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -77,7 +76,6 @@ public class CanvasItemRenderer {
             return;
         }
 
-        RenderSystem.setShaderTexture(0, EMPTY_CANVAS_LOCATION);
 
         VertexConsumer vb = buffer.getBuffer(RenderType.entitySolid(EMPTY_CANVAS_LOCATION));
 
@@ -91,7 +89,6 @@ public class CanvasItemRenderer {
         // Draw the back and sides
         final float sideWidth = 1.0F / 16.0F;
 
-        RenderSystem.setShaderTexture(0, BACK_LOCATION);
         // BACK (normal +Z)
         addVertex(vb, m, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
         addVertex(vb, m, pose, w32, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
@@ -130,7 +127,6 @@ public class CanvasItemRenderer {
      * renderGlassFramefor the empty-canvas item path.
      */
     private void renderGlassFrame(MultiBufferSource buffer, Matrix4f m, PoseStack.Pose pose, float w32, float h32, int packedLight) {
-        RenderSystem.setShaderTexture(0, GLASS_FRAME_LOCATION);
         VertexConsumer vb = buffer.getBuffer(RenderType.entityTranslucent(GLASS_FRAME_LOCATION));
         final double eps = 0.001;
         final float depth = 1.0F / 16.0F;

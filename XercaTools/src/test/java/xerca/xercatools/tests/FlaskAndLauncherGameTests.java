@@ -1,12 +1,12 @@
 package xerca.xercatools.tests;
 
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.entity.projectile.AbstractThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -27,8 +27,6 @@ import xerca.xercatools.item.Items;
 import java.util.List;
 
 public class FlaskAndLauncherGameTests {
-    private static final String BASIC_TEMPLATE = "xercatools:basic_test";
-    private static final String WEAPONS_BATCH = "xercatools_tests";
 
     // Builds a regular potion stack (PotionItem) with the given potion type.
     private static ItemStack makeRegularPotion(Holder<Potion> holder) {
@@ -46,17 +44,17 @@ public class FlaskAndLauncherGameTests {
 
     // ── Flask max-charges ─────────────────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskMaxChargesBaseIs16(GameTestHelper helper) {
+    @GameTest
+    public void flaskMaxChargesBaseIs16(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack flask = new ItemStack(Items.FLASK);
         int max = ItemFlask.getMaxCharges(flask, level);
-        helper.assertTrue(max == 16, "Base flask max charges should be 16, got " + max);
+        TestAsserts.assertTrue(helper, max == 16, "Base flask max charges should be 16, got " + max);
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskCapacityEnchantmentDoublesMaxCharges(GameTestHelper helper) {
+    @GameTest
+    public void flaskCapacityEnchantmentDoublesMaxCharges(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -64,23 +62,23 @@ public class FlaskAndLauncherGameTests {
         flask.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         int max = ItemFlask.getMaxCharges(flask, level);
-        helper.assertTrue(max == 32, "Capacity I should give max 32 charges (16×2), got " + max);
+        TestAsserts.assertTrue(helper, max == 32, "Capacity I should give max 32 charges (16×2), got " + max);
         helper.succeed();
     }
 
     // ── Flask use duration ────────────────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskUseDurationBaseIs32(GameTestHelper helper) {
+    @GameTest
+    public void flaskUseDurationBaseIs32(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack flask = new ItemStack(Items.FLASK);
         int duration = Items.FLASK.getUseDuration(flask, player);
-        helper.assertTrue(duration == 32, "Base flask use duration should be 32, got " + duration);
+        TestAsserts.assertTrue(helper, duration == 32, "Base flask use duration should be 32, got " + duration);
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskChugLevel1DecreasesUseDuration(GameTestHelper helper) {
+    @GameTest
+    public void flaskChugLevel1DecreasesUseDuration(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack flask = new ItemStack(Items.FLASK);
@@ -89,12 +87,12 @@ public class FlaskAndLauncherGameTests {
         flask.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         int duration = Items.FLASK.getUseDuration(flask, player);
-        helper.assertTrue(duration == 21, "Chug I flask use duration should be 21, got " + duration);
+        TestAsserts.assertTrue(helper, duration == 21, "Chug I flask use duration should be 21, got " + duration);
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskChugLevel2DecreasesUseDurationFurther(GameTestHelper helper) {
+    @GameTest
+    public void flaskChugLevel2DecreasesUseDurationFurther(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack flask = new ItemStack(Items.FLASK);
@@ -103,14 +101,14 @@ public class FlaskAndLauncherGameTests {
         flask.set(DataComponents.ENCHANTMENTS, enc.toImmutable());
 
         int duration = Items.FLASK.getUseDuration(flask, player);
-        helper.assertTrue(duration == 10, "Chug II flask use duration should be 10, got " + duration);
+        TestAsserts.assertTrue(helper, duration == 10, "Chug II flask use duration should be 10, got " + duration);
         helper.succeed();
     }
 
     // ── Flask filling recipe ──────────────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskFillingRecipeAcceptsFlaskAndPotion(GameTestHelper helper) {
+    @GameTest
+    public void flaskFillingRecipeAcceptsFlaskAndPotion(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         RecipeFlaskFilling recipe = new RecipeFlaskFilling(CraftingBookCategory.MISC);
 
@@ -123,13 +121,13 @@ public class FlaskAndLauncherGameTests {
             ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         ));
 
-        helper.assertTrue(recipe.matches(input, level),
+        TestAsserts.assertTrue(helper, recipe.matches(input, level),
             "Flask + potion recipe should match");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskFillingRecipeRejectsOverCapacity(GameTestHelper helper) {
+    @GameTest
+    public void flaskFillingRecipeRejectsOverCapacity(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         RecipeFlaskFilling recipe = new RecipeFlaskFilling(CraftingBookCategory.MISC);
 
@@ -142,13 +140,13 @@ public class FlaskAndLauncherGameTests {
             ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         ));
 
-        helper.assertTrue(!recipe.matches(input, level),
+        TestAsserts.assertTrue(helper, !recipe.matches(input, level),
             "Flask filling should be rejected when already full");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskFillingRecipeRejectsMixedPotions(GameTestHelper helper) {
+    @GameTest
+    public void flaskFillingRecipeRejectsMixedPotions(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         RecipeFlaskFilling recipe = new RecipeFlaskFilling(CraftingBookCategory.MISC);
 
@@ -161,15 +159,15 @@ public class FlaskAndLauncherGameTests {
             ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         ));
 
-        helper.assertTrue(!recipe.matches(input, level),
+        TestAsserts.assertTrue(helper, !recipe.matches(input, level),
             "Flask filling with mixed potion types should be rejected");
         helper.succeed();
     }
 
     // ── Flask drinking effect ─────────────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void flaskDrinkingAppliesInstantHealingEffect(GameTestHelper helper) {
+    @GameTest
+    public void flaskDrinkingAppliesInstantHealingEffect(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 
@@ -186,15 +184,15 @@ public class FlaskAndLauncherGameTests {
 
         Items.FLASK.finishUsingItem(flask, level, player);
 
-        helper.assertTrue(player.getHealth() > healthBefore,
+        TestAsserts.assertTrue(helper, player.getHealth() > healthBefore,
             "Drinking a healing flask should increase player health");
         helper.succeed();
     }
 
     // ── Potion Launcher (Ender Bow) ───────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void potionLauncherFillingRecipeAcceptsEnderBowAndSplashPotion(GameTestHelper helper) {
+    @GameTest
+    public void potionLauncherFillingRecipeAcceptsEnderBowAndSplashPotion(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         RecipeEnderBowFilling recipe = new RecipeEnderBowFilling(CraftingBookCategory.MISC);
 
@@ -206,13 +204,13 @@ public class FlaskAndLauncherGameTests {
             ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         ));
 
-        helper.assertTrue(recipe.matches(input, level),
+        TestAsserts.assertTrue(helper, recipe.matches(input, level),
             "Ender Bow + splash potion recipe should match");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void potionLauncherFiresSplashPotionByDefault(GameTestHelper helper) {
+    @GameTest
+    public void potionLauncherFiresSplashPotionByDefault(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
@@ -230,16 +228,16 @@ public class FlaskAndLauncherGameTests {
 
         AABB searchBox = new AABB(abs.x - 10, abs.y - 10, abs.z - 10,
                                    abs.x + 10, abs.y + 10, abs.z + 10);
-        List<ThrownPotion> projectiles = level.getEntitiesOfClass(ThrownPotion.class, searchBox);
-        helper.assertTrue(!projectiles.isEmpty(), "Ender Bow use should spawn a ThrownPotion");
+        List<AbstractThrownPotion> projectiles = level.getEntitiesOfClass(AbstractThrownPotion.class, searchBox);
+        TestAsserts.assertTrue(helper, !projectiles.isEmpty(), "Ender Bow use should spawn a AbstractThrownPotion");
 
         boolean isSplash = projectiles.get(0).getItem().is(net.minecraft.world.item.Items.SPLASH_POTION);
-        helper.assertTrue(isSplash, "Ender Bow without lingering flag should fire a splash potion");
+        TestAsserts.assertTrue(helper, isSplash, "Ender Bow without lingering flag should fire a splash potion");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void potionLauncherFiresLingeringPotionWhenFlagSet(GameTestHelper helper) {
+    @GameTest
+    public void potionLauncherFiresLingeringPotionWhenFlagSet(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
@@ -258,16 +256,16 @@ public class FlaskAndLauncherGameTests {
 
         AABB searchBox = new AABB(abs.x - 10, abs.y - 10, abs.z - 10,
                                    abs.x + 10, abs.y + 10, abs.z + 10);
-        List<ThrownPotion> projectiles = level.getEntitiesOfClass(ThrownPotion.class, searchBox);
-        helper.assertTrue(!projectiles.isEmpty(), "Ender Bow use should spawn a ThrownPotion");
+        List<AbstractThrownPotion> projectiles = level.getEntitiesOfClass(AbstractThrownPotion.class, searchBox);
+        TestAsserts.assertTrue(helper, !projectiles.isEmpty(), "Ender Bow use should spawn a AbstractThrownPotion");
 
         boolean isLingering = projectiles.get(0).getItem().is(net.minecraft.world.item.Items.LINGERING_POTION);
-        helper.assertTrue(isLingering, "Ender Bow with lingering flag should fire a lingering potion");
+        TestAsserts.assertTrue(helper, isLingering, "Ender Bow with lingering flag should fire a lingering potion");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void potionLauncherFailsWithZeroCharges(GameTestHelper helper) {
+    @GameTest
+    public void potionLauncherFailsWithZeroCharges(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
@@ -279,12 +277,12 @@ public class FlaskAndLauncherGameTests {
 
         var result = Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
 
-        helper.assertTrue(result == net.minecraft.world.InteractionResult.FAIL,
+        TestAsserts.assertTrue(helper, result == net.minecraft.world.InteractionResult.FAIL,
             "Ender Bow with zero charges should return FAIL");
 
         AABB searchBox = new AABB(abs.x - 10, abs.y - 10, abs.z - 10,
                                    abs.x + 10, abs.y + 10, abs.z + 10);
-        helper.assertTrue(level.getEntitiesOfClass(ThrownPotion.class, searchBox).isEmpty(),
+        TestAsserts.assertTrue(helper, level.getEntitiesOfClass(AbstractThrownPotion.class, searchBox).isEmpty(),
             "No projectile should be spawned when charges are zero");
         helper.succeed();
     }

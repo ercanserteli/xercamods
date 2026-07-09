@@ -203,16 +203,21 @@ public class TileEntityMusicBox extends BlockEntity {
     }
 
     @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState oldState) {
+        if (level != null && oldState.getBlock() instanceof BlockMusicBox musicBox) {
+            musicBox.ejectContentsOnRemoval(level, pos, oldState, this);
+        }
+    }
+
+    @Override
     public void loadAdditional(CompoundTag parent, HolderLookup.@NotNull Provider levelRegistry) {
         super.loadAdditional(parent, levelRegistry);
-        if (parent.contains(KEY_NOTE, 10)) {
-            CompoundTag sheetTag = parent.getCompound(KEY_NOTE);
+        parent.getCompound(KEY_NOTE).ifPresent(sheetTag -> {
             ItemStack sheet = ItemStack.parse(levelRegistry, sheetTag).orElse(ItemStack.EMPTY);
             setSheetStack(sheet, false);
-        }
-        if (parent.contains(KEY_INS_ID, 8)) {
-            this.setInstrument(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(parent.getString(KEY_INS_ID))));
-        }
+        });
+        parent.getString(KEY_INS_ID).ifPresent(insId ->
+                this.setInstrument(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(insId))));
     }
 
     @Override

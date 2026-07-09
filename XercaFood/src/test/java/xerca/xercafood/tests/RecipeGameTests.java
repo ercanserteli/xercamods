@@ -1,8 +1,8 @@
 package xerca.xercafood.tests;
 
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -21,8 +21,8 @@ import static xerca.xercafood.tests.GameTestHelpers.*;
 
 public class RecipeGameTests {
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void shapedRecipeCraftsAppleCupcake(GameTestHelper helper) {
+    @GameTest
+    public void shapedRecipeCraftsAppleCupcake(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("apple_cupcake"));
         CraftingInput grid = craftingGrid(3, 3,
                 new ItemStack(net.minecraft.world.item.Items.SUGAR), new ItemStack(net.minecraft.world.item.Items.APPLE), new ItemStack(net.minecraft.world.item.Items.SUGAR),
@@ -30,15 +30,15 @@ public class RecipeGameTests {
                 new ItemStack(net.minecraft.world.item.Items.WHEAT), new ItemStack(net.minecraft.world.item.Items.WHEAT), new ItemStack(net.minecraft.world.item.Items.WHEAT)
         );
 
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected apple cupcake recipe to match");
+        assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected apple cupcake recipe to match");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.APPLE_CUPCAKE), "Expected apple cupcake result item");
-        helper.assertTrue(result.getCount() == 6, "Expected apple cupcake recipe to craft 6 items");
+        assertTrue(helper, result.is(Items.APPLE_CUPCAKE), "Expected apple cupcake result item");
+        assertTrue(helper, result.getCount() == 6, "Expected apple cupcake recipe to craft 6 items");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void shapelessRecipeCraftsColaPowder(GameTestHelper helper) {
+    @GameTest
+    public void shapelessRecipeCraftsColaPowder(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("cola_powder"));
         CraftingInput grid = craftingGrid(3, 3,
                 new ItemStack(net.minecraft.world.item.Items.WARPED_ROOTS), new ItemStack(net.minecraft.world.item.Items.ROTTEN_FLESH), new ItemStack(net.minecraft.world.item.Items.SPIDER_EYE),
@@ -46,14 +46,14 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
 
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected cola powder recipe to match");
+        assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected cola powder recipe to match");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.COLA_POWDER), "Expected cola powder result item");
+        assertTrue(helper, result.is(Items.COLA_POWDER), "Expected cola powder result item");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void slicingTomatoDamagesKnife(GameTestHelper helper) {
+    @GameTest
+    public void slicingTomatoDamagesKnife(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tomato_slices"));
         net.minecraft.world.item.Item knifeItem = requireKnifeItem();
         ItemStack knife = new ItemStack(knifeItem);
@@ -63,19 +63,19 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
 
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected tomato slicing recipe to match");
+        assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected tomato slicing recipe to match");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.TOMATO_SLICES), "Expected tomato slicing to produce tomato slices");
-        helper.assertTrue(result.getCount() == 3, "Expected tomato slicing recipe to craft 3 slices");
+        assertTrue(helper, result.is(Items.TOMATO_SLICES), "Expected tomato slicing to produce tomato slices");
+        assertTrue(helper, result.getCount() == 3, "Expected tomato slicing recipe to craft 3 slices");
 
         NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
-        helper.assertTrue(remainingItems.get(1).is(knifeItem), "Expected knife to remain after slicing tomato");
-        helper.assertTrue(remainingItems.get(1).getDamageValue() == 8, "Expected knife durability to decrease by 1");
+        assertTrue(helper, remainingItems.get(1).is(knifeItem), "Expected knife to remain after slicing tomato");
+        assertTrue(helper, remainingItems.get(1).getDamageValue() == 8, "Expected knife durability to decrease by 1");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void repairingKnivesHasNoCraftingRecipe(GameTestHelper helper) {
+    @GameTest
+    public void repairingKnivesHasNoCraftingRecipe(GameTestHelper helper) {
         net.minecraft.world.item.Item knifeItem = requireKnifeItem();
         ItemStack firstKnife = new ItemStack(knifeItem);
         ItemStack secondKnife = new ItemStack(knifeItem);
@@ -87,54 +87,54 @@ public class RecipeGameTests {
                 .recipeAccess()
                 .getRecipeFor(RecipeType.CRAFTING, grid, helper.getLevel());
 
-        helper.assertTrue(recipe.isEmpty(), "Expected damaged knives to have no crafting repair recipe");
+        assertTrue(helper, recipe.isEmpty(), "Expected damaged knives to have no crafting repair recipe");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void smeltingRecipeCooksRawPatty(GameTestHelper helper) {
+    @GameTest
+    public void smeltingRecipeCooksRawPatty(GameTestHelper helper) {
         SmeltingRecipe recipe = requireSmeltingRecipe(helper, recipeId("smelting_cooked_patty"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_PATTY));
 
-        helper.assertTrue(recipe.matches(input, helper.getLevel()), "Expected smelting recipe to match raw patty input");
+        assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected smelting recipe to match raw patty input");
         ItemStack result = recipe.assemble(input, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.COOKED_PATTY), "Expected smelting recipe to produce cooked patty");
+        assertTrue(helper, result.is(Items.COOKED_PATTY), "Expected smelting recipe to produce cooked patty");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void smokingRecipeCooksRawSausage(GameTestHelper helper) {
+    @GameTest
+    public void smokingRecipeCooksRawSausage(GameTestHelper helper) {
         SmokingRecipe recipe = requireSmokingRecipe(helper, recipeId("smoking_cooked_sausage"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_SAUSAGE));
 
-        helper.assertTrue(recipe.matches(input, helper.getLevel()), "Expected smoking recipe to match raw sausage input");
+        assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected smoking recipe to match raw sausage input");
         ItemStack result = recipe.assemble(input, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.COOKED_SAUSAGE), "Expected smoking recipe to produce cooked sausage");
+        assertTrue(helper, result.is(Items.COOKED_SAUSAGE), "Expected smoking recipe to produce cooked sausage");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void campfireRecipeLoadsAndCooksPizzaVariant(GameTestHelper helper) {
+    @GameTest
+    public void campfireRecipeLoadsAndCooksPizzaVariant(GameTestHelper helper) {
         CampfireCookingRecipe recipe = requireCampfireRecipe(helper, recipeId("campfire_cooking_pizza_chicken_mushroom_mushroom"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_PIZZA_CHICKEN_MUSHROOM_MUSHROOM));
 
-        helper.assertTrue(recipe.matches(input, helper.getLevel()), "Expected campfire pizza recipe to match raw pizza input");
+        assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected campfire pizza recipe to match raw pizza input");
         ItemStack result = recipe.assemble(input, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.PIZZA_CHICKEN_MUSHROOM_MUSHROOM), "Expected cooked pizza variant result item");
+        assertTrue(helper, result.is(Items.PIZZA_CHICKEN_MUSHROOM_MUSHROOM), "Expected cooked pizza variant result item");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH, timeoutTicks = 500)
-    public static void pizzaRecipeWorksEndToEnd(GameTestHelper helper) {
+    @GameTest(maxTicks = 500)
+    public void pizzaRecipeWorksEndToEnd(GameTestHelper helper) {
         CraftingRecipe pizzaBaseRecipe = requireCraftingRecipe(helper, recipeId("raw_pizza"));
         CraftingInput pizzaBaseGrid = craftingGrid(3, 2,
                 new ItemStack(Items.CHEESE_SLICE), new ItemStack(Items.TOMATO_SLICES), ItemStack.EMPTY,
                 new ItemStack(net.minecraft.world.item.Items.WHEAT), new ItemStack(net.minecraft.world.item.Items.WHEAT), new ItemStack(net.minecraft.world.item.Items.WHEAT)
         );
 
-        helper.assertTrue(pizzaBaseRecipe.matches(pizzaBaseGrid, helper.getLevel()), "Expected raw pizza base recipe to match");
+        assertTrue(helper, pizzaBaseRecipe.matches(pizzaBaseGrid, helper.getLevel()), "Expected raw pizza base recipe to match");
         ItemStack rawPizza = pizzaBaseRecipe.assemble(pizzaBaseGrid, helper.getLevel().registryAccess());
-        helper.assertTrue(rawPizza.is(Items.RAW_PIZZA), "Expected raw pizza base recipe to produce raw pizza");
+        assertTrue(helper, rawPizza.is(Items.RAW_PIZZA), "Expected raw pizza base recipe to produce raw pizza");
 
         CraftingRecipe toppingRecipe = requireCraftingRecipe(helper, recipeId("raw_pizza_chicken_mushroom"));
         CraftingInput toppingGrid = craftingGrid(3, 3,
@@ -143,20 +143,20 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
 
-        helper.assertTrue(toppingRecipe.matches(toppingGrid, helper.getLevel()), "Expected pizza topping recipe to match");
+        assertTrue(helper, toppingRecipe.matches(toppingGrid, helper.getLevel()), "Expected pizza topping recipe to match");
         ItemStack toppedPizza = toppingRecipe.assemble(toppingGrid, helper.getLevel().registryAccess());
-        helper.assertTrue(toppedPizza.is(Items.RAW_PIZZA_CHICKEN_MUSHROOM), "Expected topped pizza recipe to produce raw chicken mushroom pizza");
+        assertTrue(helper, toppedPizza.is(Items.RAW_PIZZA_CHICKEN_MUSHROOM), "Expected topped pizza recipe to produce raw chicken mushroom pizza");
 
         CampfireCookingRecipe cookingRecipe = requireCampfireRecipe(helper, recipeId("campfire_cooking_pizza_chicken_mushroom"));
         SingleRecipeInput cookingInput = new SingleRecipeInput(toppedPizza.copy());
-        helper.assertTrue(cookingRecipe.matches(cookingInput, helper.getLevel()), "Expected campfire recipe to match topped raw pizza");
+        assertTrue(helper, cookingRecipe.matches(cookingInput, helper.getLevel()), "Expected campfire recipe to match topped raw pizza");
         ItemStack cookedPizza = cookingRecipe.assemble(cookingInput, helper.getLevel().registryAccess());
-        helper.assertTrue(cookedPizza.is(Items.PIZZA_CHICKEN_MUSHROOM), "Expected end-to-end pizza flow to produce cooked chicken mushroom pizza");
+        assertTrue(helper, cookedPizza.is(Items.PIZZA_CHICKEN_MUSHROOM), "Expected end-to-end pizza flow to produce cooked chicken mushroom pizza");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void teaPouringFillsCupsAndReturnsReducedTeapot(GameTestHelper helper) {
+    @GameTest
+    public void teaPouringFillsCupsAndReturnsReducedTeapot(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tea_pouring"));
         CraftingInput grid = craftingGrid(3, 3,
                 new ItemStack(Items.HOT_TEAPOT_3), new ItemStack(Items.TEACUP), new ItemStack(Items.TEACUP),
@@ -164,18 +164,18 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
 
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected tea pouring recipe to match teapot plus cups");
+        assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected tea pouring recipe to match teapot plus cups");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.FULL_TEACUP_0), "Expected tea pouring to produce filled teacups");
-        helper.assertTrue(result.getCount() == 2, "Expected tea pouring to fill two teacups");
+        assertTrue(helper, result.is(Items.FULL_TEACUP_0), "Expected tea pouring to produce filled teacups");
+        assertTrue(helper, result.getCount() == 2, "Expected tea pouring to fill two teacups");
 
         NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
-        helper.assertTrue(remainingItems.get(0).is(Items.HOT_TEAPOT_1), "Expected pouring two cups from a 3-cup teapot to leave a 1-cup hot teapot");
+        assertTrue(helper, remainingItems.get(0).is(Items.HOT_TEAPOT_1), "Expected pouring two cups from a 3-cup teapot to leave a 1-cup hot teapot");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void teaSugaringIncreasesSugarLevel(GameTestHelper helper) {
+    @GameTest
+    public void teaSugaringIncreasesSugarLevel(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tea_sugaring"));
         CraftingInput grid = craftingGrid(3, 3,
                 new ItemStack(Items.FULL_TEACUP_0), new ItemStack(net.minecraft.world.item.Items.SUGAR), new ItemStack(net.minecraft.world.item.Items.SUGAR),
@@ -183,28 +183,28 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
 
-        helper.assertTrue(recipe.matches(grid, helper.getLevel()), "Expected tea sugaring recipe to match teacup plus sugar");
+        assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected tea sugaring recipe to match teacup plus sugar");
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
-        helper.assertTrue(result.is(Items.FULL_TEACUP_2), "Expected two sugars to produce the two-sugar teacup");
+        assertTrue(helper, result.is(Items.FULL_TEACUP_2), "Expected two sugars to produce the two-sugar teacup");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH, timeoutTicks = 500)
-    public static void brewingProducesTexturedColaExtractAndCraftsCola(GameTestHelper helper) {
+    @GameTest(maxTicks = 500)
+    public void brewingProducesTexturedColaExtractAndCraftsCola(GameTestHelper helper) {
         BlockPos brewingStandPos = new BlockPos(1, 1, 1);
         helper.setBlock(brewingStandPos, Blocks.BREWING_STAND);
 
-        BrewingStandBlockEntity stand = helper.getBlockEntity(brewingStandPos);
+        BrewingStandBlockEntity stand = helper.getBlockEntity(brewingStandPos, BrewingStandBlockEntity.class);
         stand.setItem(0, PotionContents.createItemStack(net.minecraft.world.item.Items.POTION, Potions.WATER));
         stand.setItem(3, new ItemStack(Items.COLA_POWDER));
         stand.setItem(4, new ItemStack(net.minecraft.world.item.Items.BLAZE_POWDER));
         stand.setChanged();
 
         helper.runAtTickTime(420, () -> {
-            BrewingStandBlockEntity brewedStand = helper.getBlockEntity(brewingStandPos);
+            BrewingStandBlockEntity brewedStand = helper.getBlockEntity(brewingStandPos, BrewingStandBlockEntity.class);
             ItemStack brewedExtract = brewedStand.getItem(0).copy();
 
-            helper.assertTrue(brewedExtract.is(Items.COLA_EXTRACT), "Expected brewing stand output to be the cola extract item");
+            assertTrue(helper, brewedExtract.is(Items.COLA_EXTRACT), "Expected brewing stand output to be the cola extract item");
 
             CraftingRecipe colaRecipe = requireCraftingRecipe(helper, recipeId("cola"));
             CraftingInput colaGrid = craftingGrid(3, 3,
@@ -213,38 +213,38 @@ public class RecipeGameTests {
                     new ItemStack(Items.CARBONATED_WATER), new ItemStack(Items.CARBONATED_WATER), new ItemStack(Items.CARBONATED_WATER)
             );
 
-            helper.assertTrue(colaRecipe.matches(colaGrid, helper.getLevel()), "Expected cola recipe to accept brewed cola extract");
+            assertTrue(helper, colaRecipe.matches(colaGrid, helper.getLevel()), "Expected cola recipe to accept brewed cola extract");
             ItemStack colaResult = colaRecipe.assemble(colaGrid, helper.getLevel().registryAccess());
-            helper.assertTrue(colaResult.is(Items.COLA), "Expected cola recipe to craft cola");
-            helper.assertTrue(colaResult.getCount() == 6, "Expected cola recipe to craft 6 cola items");
+            assertTrue(helper, colaResult.is(Items.COLA), "Expected cola recipe to craft cola");
+            assertTrue(helper, colaResult.getCount() == 6, "Expected cola recipe to craft 6 cola items");
 
             NonNullList<ItemStack> remainingItems = colaRecipe.getRemainingItems(colaGrid);
-            helper.assertTrue(remainingItems.get(1).is(net.minecraft.world.item.Items.GLASS_BOTTLE),
+            assertTrue(helper, remainingItems.get(1).is(net.minecraft.world.item.Items.GLASS_BOTTLE),
                     "Expected brewed cola extract input to leave behind a glass bottle");
 
             helper.succeed();
         });
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void teaLeafSmeltsToDriedTeaLeaves(GameTestHelper helper) {
+    @GameTest
+    public void teaLeafSmeltsToDriedTeaLeaves(GameTestHelper helper) {
         SmeltingRecipe recipe = requireSmeltingRecipe(helper, recipeId("smelting_tea_dried"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.TEA_LEAF));
-        helper.assertTrue(recipe.matches(input, helper.getLevel()), "Expected tea leaf smelting recipe to match");
-        helper.assertTrue(recipe.assemble(input, helper.getLevel().registryAccess()).is(Items.TEA_DRIED), "Expected tea leaf smelting result to be dried tea");
+        assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected tea leaf smelting recipe to match");
+        assertTrue(helper, recipe.assemble(input, helper.getLevel().registryAccess()).is(Items.TEA_DRIED), "Expected tea leaf smelting result to be dried tea");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void teaFillingAndRefillingEdgeCasesWork(GameTestHelper helper) {
+    @GameTest
+    public void teaFillingAndRefillingEdgeCasesWork(GameTestHelper helper) {
         CraftingRecipe filling = requireCraftingRecipe(helper, recipeId("tea_filling"));
         CraftingInput fillToFull = craftingGrid(3, 3,
                 new ItemStack(Items.TEAPOT), new ItemStack(net.minecraft.world.item.Items.WATER_BUCKET), new ItemStack(Items.TEA_DRIED),
                 new ItemStack(Items.TEA_DRIED), new ItemStack(Items.TEA_DRIED), new ItemStack(Items.TEA_DRIED),
                 new ItemStack(Items.TEA_DRIED), new ItemStack(Items.TEA_DRIED), new ItemStack(Items.TEA_DRIED)
         );
-        helper.assertTrue(filling.matches(fillToFull, helper.getLevel()), "Expected full tea fill path to match");
-        helper.assertTrue(filling.assemble(fillToFull, helper.getLevel().registryAccess()).is(Items.FULL_TEAPOT_7), "Expected full tea fill path to produce 7-tea teapot");
+        assertTrue(helper, filling.matches(fillToFull, helper.getLevel()), "Expected full tea fill path to match");
+        assertTrue(helper, filling.assemble(fillToFull, helper.getLevel().registryAccess()).is(Items.FULL_TEAPOT_7), "Expected full tea fill path to produce 7-tea teapot");
 
         CraftingRecipe refilling = requireCraftingRecipe(helper, recipeId("tea_refilling"));
         CraftingInput tooManyLeaves = craftingGrid(3, 3,
@@ -252,19 +252,19 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
-        helper.assertFalse(refilling.matches(tooManyLeaves, helper.getLevel()), "Expected refilling above max to fail");
+        assertFalse(helper, refilling.matches(tooManyLeaves, helper.getLevel()), "Expected refilling above max to fail");
 
         CraftingInput hotTeapotRefill = craftingGrid(3, 3,
                 new ItemStack(Items.HOT_TEAPOT_3), new ItemStack(Items.TEA_DRIED), ItemStack.EMPTY,
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
-        helper.assertFalse(refilling.matches(hotTeapotRefill, helper.getLevel()), "Expected hot teapot refilling to fail");
+        assertFalse(helper, refilling.matches(hotTeapotRefill, helper.getLevel()), "Expected hot teapot refilling to fail");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void pouringLastCupRevertsHotTeapotToEmptyTeapot(GameTestHelper helper) {
+    @GameTest
+    public void pouringLastCupRevertsHotTeapotToEmptyTeapot(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tea_pouring"));
         CraftingInput grid = craftingGrid(3, 3,
                 new ItemStack(Items.HOT_TEAPOT_1), new ItemStack(Items.TEACUP), ItemStack.EMPTY,
@@ -272,21 +272,21 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
         NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
-        helper.assertTrue(remainingItems.get(0).is(Items.TEAPOT), "Expected empty teapot after pouring the final cup");
+        assertTrue(helper, remainingItems.get(0).is(Items.TEAPOT), "Expected empty teapot after pouring the final cup");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)
-    public static void sparklingWaterAndSodaColaFlowsWork(GameTestHelper helper) {
+    @GameTest
+    public void sparklingWaterAndSodaColaFlowsWork(GameTestHelper helper) {
         BlockPos soulSandPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(soulSandPos, net.minecraft.world.level.block.Blocks.SOUL_SAND.defaultBlockState());
         helper.getLevel().setBlockAndUpdate(soulSandPos.above(), net.minecraft.world.level.block.Blocks.BUBBLE_COLUMN.defaultBlockState());
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack glass = new ItemStack(Items.GLASS);
-        player.getInventory().setItem(player.getInventory().selected, glass);
+        player.getInventory().setSelectedItem(glass);
 
         Items.GLASS.useOn(new net.minecraft.world.item.context.UseOnContext(player, InteractionHand.MAIN_HAND, hitTopOf(soulSandPos)));
-        helper.assertTrue(player.getInventory().contains(new ItemStack(Items.CARBONATED_WATER)), "Expected bubble column interaction to create carbonated water");
+        assertTrue(helper, player.getInventory().contains(new ItemStack(Items.CARBONATED_WATER)), "Expected bubble column interaction to create carbonated water");
 
         CraftingRecipe sodaRecipe = requireCraftingRecipe(helper, recipeId("soda"));
         CraftingInput sodaGrid = craftingGrid(3, 3,
@@ -294,8 +294,8 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
-        helper.assertTrue(sodaRecipe.matches(sodaGrid, helper.getLevel()), "Expected soda recipe to match");
-        helper.assertTrue(sodaRecipe.assemble(sodaGrid, helper.getLevel().registryAccess()).is(Items.SODA), "Expected soda recipe output");
+        assertTrue(helper, sodaRecipe.matches(sodaGrid, helper.getLevel()), "Expected soda recipe to match");
+        assertTrue(helper, sodaRecipe.assemble(sodaGrid, helper.getLevel().registryAccess()).is(Items.SODA), "Expected soda recipe output");
 
         CraftingRecipe colaRecipe = requireCraftingRecipe(helper, recipeId("cola"));
         CraftingInput colaGrid = craftingGrid(3, 3,
@@ -303,8 +303,8 @@ public class RecipeGameTests {
                 new ItemStack(Items.CARBONATED_WATER), new ItemStack(Items.CARBONATED_WATER), new ItemStack(Items.CARBONATED_WATER),
                 new ItemStack(Items.CARBONATED_WATER), new ItemStack(Items.CARBONATED_WATER), new ItemStack(Items.CARBONATED_WATER)
         );
-        helper.assertTrue(colaRecipe.matches(colaGrid, helper.getLevel()), "Expected cola recipe to match");
-        helper.assertTrue(colaRecipe.assemble(colaGrid, helper.getLevel().registryAccess()).is(Items.COLA), "Expected cola recipe output");
+        assertTrue(helper, colaRecipe.matches(colaGrid, helper.getLevel()), "Expected cola recipe to match");
+        assertTrue(helper, colaRecipe.assemble(colaGrid, helper.getLevel().registryAccess()).is(Items.COLA), "Expected cola recipe output");
         helper.succeed();
     }
 }

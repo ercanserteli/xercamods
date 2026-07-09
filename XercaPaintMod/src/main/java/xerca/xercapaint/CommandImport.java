@@ -17,6 +17,7 @@ import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.ImportPaintingPacket;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class CommandImport {
     private CommandImport() {
@@ -52,33 +53,34 @@ public class CommandImport {
 
     public static void doImport(CompoundTag tag, ServerPlayer player) {
         // Sanitizing
-        if (!tag.contains("ct", 1)) {
+        if (tag.getByte("ct").isEmpty()) {
             notifyBrokenPaintFile(player);
             return;
         }
-        if ((tag.contains(TAG_AUTHOR, 8) && !tag.contains(TAG_TITLE, 8)) ||
-                (!tag.contains(TAG_AUTHOR, 8) && tag.contains(TAG_TITLE, 8))) {
+        if (tag.getString(TAG_AUTHOR).isPresent() != tag.getString(TAG_TITLE).isPresent()) {
             notifyBrokenPaintFile(player);
             return;
         }
-        if (tag.contains(TAG_TITLE, 8) && tag.getString(TAG_TITLE).length() > 16) {
-            tag.putString(TAG_TITLE, tag.getString(TAG_TITLE).substring(0, 16));
+        String titleValue = tag.getStringOr(TAG_TITLE, "");
+        if (titleValue.length() > 16) {
+            tag.putString(TAG_TITLE, titleValue.substring(0, 16));
         }
-        if (tag.contains(TAG_AUTHOR, 8) && tag.getString(TAG_AUTHOR).length() > 16) {
-            tag.putString(TAG_AUTHOR, tag.getString(TAG_AUTHOR).substring(0, 16));
+        String authorValue = tag.getStringOr(TAG_AUTHOR, "");
+        if (authorValue.length() > 16) {
+            tag.putString(TAG_AUTHOR, authorValue.substring(0, 16));
         }
         String canvasId;
         if (tag.contains(TAG_TITLE)) {
-            if (!tag.contains(TAG_CANVAS_ID, 8)) {
+            if (tag.getString(TAG_CANVAS_ID).isEmpty()) {
                 notifyBrokenPaintFile(player);
                 return;
             }
-            canvasId = tag.getString(TAG_CANVAS_ID);
+            canvasId = tag.getStringOr(TAG_CANVAS_ID, "");
             if (!canvasId.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}_\\d+$")) {
                 notifyBrokenPaintFile(player);
                 return;
             }
-            if (!tag.contains("v", 3)) {
+            if (tag.getInt("v").isEmpty()) {
                 tag.putInt("v", 1);
             }
         } else {
@@ -88,13 +90,14 @@ public class CommandImport {
             tag.remove(TAG_GENERATION);
         }
 
-        byte canvasType = tag.getByte("ct");
+        byte canvasType = tag.getByteOr("ct", (byte) 0);
         CanvasType importedCanvasType = CanvasType.fromByte(canvasType);
-        boolean importedGlass = tag.getBoolean("glass");
+        boolean importedGlass = tag.getBooleanOr("glass", false);
         tag.remove("ct");
         tag.remove("glass");
-        if (tag.getInt(TAG_GENERATION) > 0 && tag.getInt(TAG_GENERATION) < 3) {
-            tag.putInt(TAG_GENERATION, tag.getInt(TAG_GENERATION) + 1);
+        int generation = tag.getIntOr(TAG_GENERATION, 0);
+        if (generation > 0 && generation < 3) {
+            tag.putInt(TAG_GENERATION, generation + 1);
         }
 
         ItemStack itemStack;
@@ -127,20 +130,20 @@ public class CommandImport {
             itemStack = mainHand;
         }
 
-        itemStack.set(Items.CANVAS_VERSION, tag.getInt("v"));
+        itemStack.set(Items.CANVAS_VERSION, tag.getIntOr("v", 1));
         itemStack.set(Items.CANVAS_ID, canvasId);
-        itemStack.set(Items.CANVAS_PIXELS, Arrays.stream(tag.getIntArray("pixels")).boxed().toList());
-        itemStack.set(Items.CANVAS_GENERATION, tag.getInt(TAG_GENERATION));
-        if (tag.contains("sidePixels")) {
-            int[] sidePixels = tag.getIntArray("sidePixels");
-            if (sidePixels.length == CanvasSides.count(importedCanvasType)) {
-                itemStack.set(Items.CANVAS_SIDES_ACTIVE, tag.getBoolean("sidesActive"));
-                itemStack.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(sidePixels).boxed().toList());
-            }
+        itemStack.set(Items.CANVAS_PIXELS, Arrays.stream(tag.getIntArray("pixels").orElse(new int[0])).boxed().toList());
+        itemStack.set(Items.CANVAS_GENERATION, tag.getIntOr(TAG_GENERATION, 0));
+        int[] sidePixels = tag.getIntArray("sidePixels").orElse(null);
+        if (sidePixels != null && sidePixels.length == CanvasSides.count(importedCanvasType)) {
+            itemStack.set(Items.CANVAS_SIDES_ACTIVE, tag.getBooleanOr("sidesActive", false));
+            itemStack.set(Items.CANVAS_SIDE_PIXELS, Arrays.stream(sidePixels).boxed().toList());
         }
-        if (tag.contains(TAG_TITLE, 8) && tag.contains(TAG_AUTHOR, 8)) {
-            itemStack.set(Items.CANVAS_TITLE, tag.getString(TAG_TITLE));
-            itemStack.set(Items.CANVAS_AUTHOR, tag.getString(TAG_AUTHOR));
+        Optional<String> importTitle = tag.getString(TAG_TITLE);
+        Optional<String> importAuthor = tag.getString(TAG_AUTHOR);
+        if (importTitle.isPresent() && importAuthor.isPresent()) {
+            itemStack.set(Items.CANVAS_TITLE, importTitle.get());
+            itemStack.set(Items.CANVAS_AUTHOR, importAuthor.get());
         }
         ItemCanvas.updateStackSize(itemStack);
         if (doAddItem) {

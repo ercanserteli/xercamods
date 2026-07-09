@@ -114,12 +114,12 @@ public class Foods {
     public static final Consumable GLOWBERRY_CUPCAKE_C = foodConsumable(effect(MobEffects.GLOWING, 300, 1, 1.0f));
     public static final Consumable ULTIMATE_BURGER_C = foodConsumable(effect(MobEffects.SATURATION, 1200, 0, 1.0f));
     public static final Consumable ROTTEN_BURGER_C = foodConsumable(effect(MobEffects.POISON, 80, 0, 0.9f));
-    public static final Consumable SAKE_C = drinkConsumable(effect(MobEffects.CONFUSION, 280, 1, 0.8f));
-    public static final Consumable COLA_C = drinkConsumable(effect(MobEffects.DIG_SPEED, 1000, 1, 1.0f));
-    public static final Consumable WHEAT_JUICE_C = drinkConsumable(effect(MobEffects.CONFUSION, 180, 0, 0.3f));
-    public static final Consumable TEACUP_SUGARED_C = drinkConsumable(effect(MobEffects.DIG_SPEED, 1200, 1, 1.0f));
+    public static final Consumable SAKE_C = drinkConsumable(effect(MobEffects.NAUSEA, 280, 1, 0.8f));
+    public static final Consumable COLA_C = drinkConsumable(effect(MobEffects.HASTE, 1000, 1, 1.0f));
+    public static final Consumable WHEAT_JUICE_C = drinkConsumable(effect(MobEffects.NAUSEA, 180, 0, 0.3f));
+    public static final Consumable TEACUP_SUGARED_C = drinkConsumable(effect(MobEffects.HASTE, 1200, 1, 1.0f));
     public static final Consumable TEACUP6_C = drinkConsumable(
-            effect(MobEffects.DIG_SLOWDOWN, 400, 1, 1.0f), effect(MobEffects.CONFUSION, 300, 1, 1.0f));
+            effect(MobEffects.MINING_FATIGUE, 400, 1, 1.0f), effect(MobEffects.NAUSEA, 300, 1, 1.0f));
 
     public static Consumable teacupConsumable(int sugarAmount) {
         return sugarAmount >= 6 ? TEACUP6_C : TEACUP_SUGARED_C;

@@ -2,7 +2,6 @@ package xerca.xercamusic.common;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;
@@ -110,12 +109,12 @@ public class VolumeMarker {
     }
 
     public void deserializeNBT(CompoundTag tag) {
-        this.startTime = tag.getShort("st");
-        this.endTime = tag.getShort("et");
-        this.startVolume = tag.getByte("sv");
-        this.endVolume = tag.getByte("ev");
-        this.lowNote = tag.getByte("ln");
-        this.highNote = tag.getByte("hn");
+        this.startTime = tag.getShortOr("st", (short) 0);
+        this.endTime = tag.getShortOr("et", (short) 0);
+        this.startVolume = tag.getByteOr("sv", (byte) 0);
+        this.endVolume = tag.getByteOr("ev", (byte) 0);
+        this.lowNote = tag.getByteOr("ln", (byte) 0);
+        this.highNote = tag.getByteOr("hn", (byte) 0);
     }
 
     public static VolumeMarker fromNBT(CompoundTag tag) {
@@ -149,11 +148,9 @@ public class VolumeMarker {
     }
 
     public static void fillArrayFromNBT(List<VolumeMarker> markers, CompoundTag tag) {
-        if (tag.contains(KEY_VOLUME_MARKERS)) {
-            ListTag markerList = tag.getList(KEY_VOLUME_MARKERS, Tag.TAG_COMPOUND);
-            for (int i = 0; i < markerList.size(); i++) {
-                markers.add(fromNBT(markerList.getCompound(i)));
-            }
+        ListTag markerList = tag.getListOrEmpty(KEY_VOLUME_MARKERS);
+        for (int i = 0; i < markerList.size(); i++) {
+            markers.add(fromNBT(markerList.getCompoundOrEmpty(i)));
         }
     }
 

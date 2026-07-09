@@ -24,8 +24,13 @@ import xerca.xercafood.common.block_entity.BlockEntityDoner;
 import java.util.*;
 
 class GameTestHelpers {
-    static final String BASIC_TEMPLATE = "xercafood:basic_test";
-    static final String RECIPE_BATCH = "xercafood_recipes";
+    static void assertTrue(GameTestHelper helper, boolean condition, String message) {
+        helper.assertTrue(condition, net.minecraft.network.chat.Component.literal(message));
+    }
+
+    static void assertFalse(GameTestHelper helper, boolean condition, String message) {
+        helper.assertFalse(condition, net.minecraft.network.chat.Component.literal(message));
+    }
 
     static ResourceLocation recipeId(String path) {
         return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);
@@ -38,9 +43,9 @@ class GameTestHelpers {
     static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation id) {
         Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
-        helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
+        assertTrue(helper, opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
-        helper.assertTrue(recipe instanceof CraftingRecipe, "Expected crafting recipe for " + id);
+        assertTrue(helper, recipe instanceof CraftingRecipe, "Expected crafting recipe for " + id);
         assert recipe instanceof CraftingRecipe;
         return (CraftingRecipe) recipe;
     }
@@ -48,9 +53,9 @@ class GameTestHelpers {
     static CampfireCookingRecipe requireCampfireRecipe(GameTestHelper helper, ResourceLocation id) {
         Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
-        helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
+        assertTrue(helper, opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
-        helper.assertTrue(recipe instanceof CampfireCookingRecipe, "Expected campfire cooking recipe for " + id);
+        assertTrue(helper, recipe instanceof CampfireCookingRecipe, "Expected campfire cooking recipe for " + id);
         assert recipe instanceof CampfireCookingRecipe;
         return (CampfireCookingRecipe) recipe;
     }
@@ -58,9 +63,9 @@ class GameTestHelpers {
     static SmeltingRecipe requireSmeltingRecipe(GameTestHelper helper, ResourceLocation id) {
         Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
-        helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
+        assertTrue(helper, opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
-        helper.assertTrue(recipe instanceof SmeltingRecipe, "Expected smelting recipe for " + id);
+        assertTrue(helper, recipe instanceof SmeltingRecipe, "Expected smelting recipe for " + id);
         assert recipe instanceof SmeltingRecipe;
         return (SmeltingRecipe) recipe;
     }
@@ -68,16 +73,16 @@ class GameTestHelpers {
     static SmokingRecipe requireSmokingRecipe(GameTestHelper helper, ResourceLocation id) {
         Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
-        helper.assertTrue(opt.isPresent(), "Missing recipe: " + id);
+        assertTrue(helper, opt.isPresent(), "Missing recipe: " + id);
         Recipe<?> recipe = opt.orElseThrow().value();
-        helper.assertTrue(recipe instanceof SmokingRecipe, "Expected smoking recipe for " + id);
+        assertTrue(helper, recipe instanceof SmokingRecipe, "Expected smoking recipe for " + id);
         assert recipe instanceof SmokingRecipe;
         return (SmokingRecipe) recipe;
     }
 
     static AdvancementHolder requireAdvancement(GameTestHelper helper, ResourceLocation id) {
         AdvancementHolder advancement = helper.getLevel().getServer().getAdvancements().get(id);
-        helper.assertTrue(advancement != null, "Missing advancement: " + id);
+        assertTrue(helper, advancement != null, "Missing advancement: " + id);
         return Objects.requireNonNull(advancement, "Missing advancement after assertion: " + id);
     }
 
@@ -89,13 +94,13 @@ class GameTestHelpers {
         if (helper.getLevel().getBlockEntity(pos) instanceof BlockEntityDoner doner) {
             return doner;
         }
-        helper.assertTrue(false, "Expected doner block entity at " + pos);
+        assertTrue(helper, false, "Expected doner block entity at " + pos);
         throw new IllegalStateException("Unreachable after GameTest assertion failure");
     }
 
     static FoodProperties requireFoodProperties(GameTestHelper helper, net.minecraft.world.item.Item item) {
         FoodProperties food = item.components().get(net.minecraft.core.component.DataComponents.FOOD);
-        helper.assertTrue(food != null, "Expected food component on " + item);
+        assertTrue(helper, food != null, "Expected food component on " + item);
         return Objects.requireNonNull(food, "Food component unexpectedly missing after assertion");
     }
 
@@ -145,7 +150,7 @@ class GameTestHelpers {
             m.setAccessible(true);
             m.invoke(state.getBlock(), state, helper.getLevel(), pos, player, hitTopOf(pos));
         } catch (Exception e) {
-            helper.fail("Failed to invoke useWithoutItem: " + e.getMessage());
+            helper.fail(net.minecraft.network.chat.Component.literal("Failed to invoke useWithoutItem: " + e.getMessage()));
         }
     }
 
@@ -165,7 +170,7 @@ class GameTestHelpers {
             m.setAccessible(true);
             m.invoke(state.getBlock(), stack, state, helper.getLevel(), pos, player, InteractionHand.MAIN_HAND, hitTopOf(pos));
         } catch (Exception e) {
-            helper.fail("Failed to invoke useItemOn: " + e.getMessage());
+            helper.fail(net.minecraft.network.chat.Component.literal("Failed to invoke useItemOn: " + e.getMessage()));
         }
     }
 }

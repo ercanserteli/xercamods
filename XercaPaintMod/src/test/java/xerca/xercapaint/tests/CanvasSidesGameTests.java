@@ -1,9 +1,9 @@
 package xerca.xercapaint.tests;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CanvasSidesGameTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
-    private static final String SIDES_BATCH = "canvas_sides";
 
     private static final RecipeCanvasCloning CLONING_RECIPE = new RecipeCanvasCloning(CraftingBookCategory.MISC);
 
@@ -48,29 +46,29 @@ public class CanvasSidesGameTests {
         return sides;
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = SIDES_BATCH)
-    public static void sidesLayoutMatchesDimensions(GameTestHelper helper) {
+    @GameTest
+    public void sidesLayoutMatchesDimensions(GameTestHelper helper) {
         for (CanvasType type : CanvasType.values()) {
             int width = CanvasType.getWidth(type);
             int height = CanvasType.getHeight(type);
-            helper.assertTrue(CanvasSides.count(type) == 2 * width + 2 * height,
+            TestAsserts.assertTrue(helper, CanvasSides.count(type) == 2 * width + 2 * height,
                     "Side pixel count must cover all four edges for " + type);
-            helper.assertTrue(CanvasSides.topOffset() == 0, "Top offset must be 0");
-            helper.assertTrue(CanvasSides.bottomOffset(type) == width, "Bottom offset must follow the top row");
-            helper.assertTrue(CanvasSides.leftOffset(type) == 2 * width, "Left offset must follow both rows");
-            helper.assertTrue(CanvasSides.rightOffset(type) == 2 * width + height, "Right offset must follow the left column");
-            helper.assertTrue(CanvasSides.defaultPixels(type, false).length == CanvasSides.count(type),
+            TestAsserts.assertTrue(helper, CanvasSides.topOffset() == 0, "Top offset must be 0");
+            TestAsserts.assertTrue(helper, CanvasSides.bottomOffset(type) == width, "Bottom offset must follow the top row");
+            TestAsserts.assertTrue(helper, CanvasSides.leftOffset(type) == 2 * width, "Left offset must follow both rows");
+            TestAsserts.assertTrue(helper, CanvasSides.rightOffset(type) == 2 * width + height, "Right offset must follow the left column");
+            TestAsserts.assertTrue(helper, CanvasSides.defaultPixels(type, false).length == CanvasSides.count(type),
                     "Default side pixels must be fully populated");
-            helper.assertTrue(CanvasSides.defaultPixels(type, false)[0] == CanvasSides.DEFAULT_COLOR,
+            TestAsserts.assertTrue(helper, CanvasSides.defaultPixels(type, false)[0] == CanvasSides.DEFAULT_COLOR,
                     "Default paper side pixels must be white");
-            helper.assertTrue(CanvasSides.defaultPixels(type, true)[0] == 0,
+            TestAsserts.assertTrue(helper, CanvasSides.defaultPixels(type, true)[0] == 0,
                     "Default glass side pixels must be transparent");
         }
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = SIDES_BATCH)
-    public static void canvasUpdatePacketRoundTripsSides(GameTestHelper helper) {
+    @GameTest
+    public void canvasUpdatePacketRoundTripsSides(GameTestHelper helper) {
         CanvasType type = CanvasType.LARGE;
         int area = CanvasType.getWidth(type) * CanvasType.getHeight(type);
         int[] pixels = new int[area];
@@ -87,14 +85,14 @@ public class CanvasSidesGameTests {
         original.encode(buf);
         CanvasUpdatePacket decoded = CanvasUpdatePacket.decode(buf);
 
-        helper.assertTrue(decoded.sidesActive(), "sidesActive must survive packet round-trip");
-        helper.assertTrue(Arrays.equals(decoded.sidePixels(), sidePixels), "Side pixels must survive packet round-trip");
-        helper.assertTrue(Arrays.equals(decoded.pixels(), pixels), "Front pixels must survive packet round-trip");
+        TestAsserts.assertTrue(helper, decoded.sidesActive(), "sidesActive must survive packet round-trip");
+        TestAsserts.assertTrue(helper, Arrays.equals(decoded.sidePixels(), sidePixels), "Side pixels must survive packet round-trip");
+        TestAsserts.assertTrue(helper, Arrays.equals(decoded.pixels(), pixels), "Front pixels must survive packet round-trip");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = SIDES_BATCH)
-    public static void cloningCopiesSidePixels(GameTestHelper helper) {
+    @GameTest
+    public void cloningCopiesSidePixels(GameTestHelper helper) {
         ItemStack original = new ItemStack(Items.ITEM_CANVAS);
         ItemCanvas itemCanvas = (ItemCanvas) original.getItem();
         CanvasType type = itemCanvas.getCanvasType();
@@ -110,17 +108,17 @@ public class CanvasSidesGameTests {
         ItemStack result = CLONING_RECIPE.assemble(createGrid(2, 2, original, new ItemStack(Items.ITEM_CANVAS)),
                 helper.getLevel().registryAccess());
 
-        helper.assertTrue(!result.isEmpty(), "Expected a clone result");
-        helper.assertTrue(Boolean.TRUE.equals(result.get(Items.CANVAS_SIDES_ACTIVE)), "Clone must copy sidesActive");
-        helper.assertTrue(sideList.equals(result.get(Items.CANVAS_SIDE_PIXELS)), "Clone must copy side pixels");
+        TestAsserts.assertTrue(helper, !result.isEmpty(), "Expected a clone result");
+        TestAsserts.assertTrue(helper, Boolean.TRUE.equals(result.get(Items.CANVAS_SIDES_ACTIVE)), "Clone must copy sidesActive");
+        TestAsserts.assertTrue(helper, sideList.equals(result.get(Items.CANVAS_SIDE_PIXELS)), "Clone must copy side pixels");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = SIDES_BATCH)
-    public static void glassFlagSurvivesEntityNbtRoundTrip(GameTestHelper helper) {
+    @GameTest
+    public void glassFlagSurvivesEntityNbtRoundTrip(GameTestHelper helper) {
         ItemStack glassStack = new ItemStack(Items.ITEM_CANVAS_GLASS);
         ItemCanvas itemCanvas = (ItemCanvas) glassStack.getItem();
-        helper.assertTrue(itemCanvas.isGlass(), "ITEM_CANVAS_GLASS must report glass");
+        TestAsserts.assertTrue(helper, itemCanvas.isGlass(), "ITEM_CANVAS_GLASS must report glass");
         int area = itemCanvas.getWidth() * itemCanvas.getHeight();
         glassStack.set(Items.CANVAS_ID, "glass_entity");
         glassStack.set(Items.CANVAS_VERSION, 1);
@@ -128,15 +126,15 @@ public class CanvasSidesGameTests {
 
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         EntityCanvas canvas = new EntityCanvas(helper.getLevel(), glassStack, pos, Direction.NORTH, CanvasType.SMALL, 0);
-        helper.assertTrue(canvas.isGlass(), "Placed glass canvas entity must be glass");
+        TestAsserts.assertTrue(helper, canvas.isGlass(), "Placed glass canvas entity must be glass");
 
         CompoundTag tag = new CompoundTag();
         canvas.addAdditionalSaveData(tag);
-        helper.assertTrue(tag.getBoolean("glass"), "NBT must record the glass flag");
+        TestAsserts.assertTrue(helper, tag.getBooleanOr("glass", false), "NBT must record the glass flag");
 
         EntityCanvas reloaded = new EntityCanvas(Entities.CANVAS, helper.getLevel());
         reloaded.readAdditionalSaveData(tag);
-        helper.assertTrue(reloaded.isGlass(), "Glass flag must survive an NBT round-trip");
+        TestAsserts.assertTrue(helper, reloaded.isGlass(), "Glass flag must survive an NBT round-trip");
         helper.succeed();
     }
 }

@@ -225,14 +225,14 @@ public class EntityHealthOrb extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        this.health = tag.getShort("Health");
-        this.age = tag.getShort("Age");
-        this.count = Math.max(tag.getInt("Count"), 1);
-        int donorId = tag.getInt("DonorId");
+        this.health = tag.getShortOr("Health", (short) 0);
+        this.age = tag.getShortOr("Age", (short) 0);
+        this.count = Math.max(tag.getIntOr("Count", 0), 1);
+        int donorId = tag.getIntOr("DonorId", -1);
         if (donorId >= 0 && level().getEntity(donorId) instanceof Player p) {
             donorPlayer = p;
         }
-        int attackerId = tag.getInt("AttackerId");
+        int attackerId = tag.getIntOr("AttackerId", -1);
         if (attackerId >= 0 && level().getEntity(attackerId) instanceof Player p) {
             attackingPlayer = p;
         }

@@ -1,7 +1,7 @@
 package xerca.xercamusic.tests;
 
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -23,7 +23,15 @@ import java.util.*;
  * asserted, replacing the Sikuli test that drove the crafting-table GUI by pixel.
  */
 public final class MusicRecipeGameTests {
-    private static final String BASIC_TEMPLATE = Mod.MODID + ":basic_test";
+
+    private static void assertTrue(net.minecraft.gametest.framework.GameTestHelper helper, boolean condition, String message) {
+        helper.assertTrue(condition, net.minecraft.network.chat.Component.literal(message));
+    }
+
+    private static void assertFalse(net.minecraft.gametest.framework.GameTestHelper helper, boolean condition, String message) {
+        helper.assertFalse(condition, net.minecraft.network.chat.Component.literal(message));
+    }
+
 
     private static Map<Character, Item> key(Object... charItemPairs) {
         Map<Character, Item> map = new HashMap<>();
@@ -47,7 +55,7 @@ public final class MusicRecipeGameTests {
                     items.add(ItemStack.EMPTY);
                 } else {
                     Item item = key.get(c);
-                    helper.assertTrue(item != null, "Missing key mapping for '" + c + "' in recipe " + expectedPath);
+                    assertTrue(helper, item != null, "Missing key mapping for '" + c + "' in recipe " + expectedPath);
                     items.add(new ItemStack(item));
                 }
             }
@@ -67,17 +75,17 @@ public final class MusicRecipeGameTests {
         Level level = helper.getLevel();
         Optional<RecipeHolder<CraftingRecipe>> holder = level.getServer().getRecipeManager()
                 .getRecipeFor(RecipeType.CRAFTING, input, level);
-        helper.assertTrue(holder.isPresent(), "Expected a crafting recipe to match for " + expectedPath);
+        assertTrue(helper, holder.isPresent(), "Expected a crafting recipe to match for " + expectedPath);
         if (holder.isPresent()) {
             ItemStack result = holder.get().value().assemble(input, level.registryAccess());
             ResourceLocation resultId = BuiltInRegistries.ITEM.getKey(result.getItem());
-            helper.assertTrue(Mod.id(expectedPath).equals(resultId),
+            assertTrue(helper, Mod.id(expectedPath).equals(resultId),
                     "Expected " + expectedPath + " recipe to craft xercamusic:" + expectedPath + " but got " + resultId);
         }
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = "music_recipes")
-    public static void stringInstrumentsCraft(GameTestHelper helper) {
+    @GameTest
+    public void stringInstrumentsCraft(GameTestHelper helper) {
         assertShaped(helper, "guitar", new String[]{" s ", "pip", " p "},
                 key('p', Items.OAK_PLANKS, 's', Items.STICK, 'i', Items.STRING));
         assertShaped(helper, "violin", new String[]{" s ", "pip", " p "},
@@ -95,8 +103,8 @@ public final class MusicRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = "music_recipes")
-    public static void percussionInstrumentsCraft(GameTestHelper helper) {
+    @GameTest
+    public void percussionInstrumentsCraft(GameTestHelper helper) {
         assertShaped(helper, "drum", new String[]{" p ", "plp", " p "},
                 key('p', Items.OAK_PLANKS, 'l', Items.LEATHER));
         assertShaped(helper, "cymbal", new String[]{" g ", "gig", " g "},
@@ -112,8 +120,8 @@ public final class MusicRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = "music_recipes")
-    public static void windInstrumentsCraft(GameTestHelper helper) {
+    @GameTest
+    public void windInstrumentsCraft(GameTestHelper helper) {
         assertShaped(helper, "flute", new String[]{"sss"},
                 key('s', Items.STICK));
         assertShaped(helper, "oboe", new String[]{"iii", "sss"},
@@ -127,8 +135,8 @@ public final class MusicRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = "music_recipes")
-    public static void keyboardInstrumentsCraft(GameTestHelper helper) {
+    @GameTest
+    public void keyboardInstrumentsCraft(GameTestHelper helper) {
         assertShaped(helper, "piano", new String[]{"ppp", "sis", "ppp"},
                 key('p', Items.OAK_PLANKS, 's', Items.STRING, 'i', Items.IRON_NUGGET));
         assertShaped(helper, "redstone_piano", new String[]{"ppp", "srs", "ppp"},
@@ -138,8 +146,8 @@ public final class MusicRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = "music_recipes")
-    public static void musicItemsCraft(GameTestHelper helper) {
+    @GameTest
+    public void musicItemsCraft(GameTestHelper helper) {
         assertShaped(helper, "music_box", new String[]{"www", "wew", "wrw"},
                 key('w', Items.OAK_PLANKS, 'e', Items.GOLD_INGOT, 'r', Items.REDSTONE));
         assertShapeless(helper, "music_sheet", Items.PAPER, Items.INK_SAC, Items.FEATHER);

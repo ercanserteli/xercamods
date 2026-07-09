@@ -1,8 +1,8 @@
 package xerca.xercatools.tests;
 
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -17,8 +17,6 @@ import xerca.xercatools.entity.EntityGrabHook;
 import xerca.xercatools.item.Items;
 
 public class GrabHookGameTests {
-    private static final String BASIC_TEMPLATE = "xercatools:basic_test";
-    private static final String WEAPONS_BATCH = "xercatools_tests";
     private static final double DEFAULT_SPEED = 1.5;
 
     // Positions a player facing south at relative (2.5, 2.0, 2.5).
@@ -33,19 +31,19 @@ public class GrabHookGameTests {
 
     // ── speed on launch ───────────────────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void grabHookLaunchesWithDefaultSpeed(GameTestHelper helper) {
+    @GameTest
+    public void grabHookLaunchesWithDefaultSpeed(GameTestHelper helper) {
         Player player = makeSouthPlayer(helper);
         EntityGrabHook hook = new EntityGrabHook(helper.getLevel(), player, new ItemStack(Items.GRAB_HOOK), 1.0f);
 
         double speed = hook.getDeltaMovement().length();
-        helper.assertTrue(Math.abs(speed - DEFAULT_SPEED) < 0.01,
+        TestAsserts.assertTrue(helper, Math.abs(speed - DEFAULT_SPEED) < 0.01,
             "Hook default launch speed should be " + DEFAULT_SPEED + ", got " + speed);
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void grabHookTurboGrabIncreasesLaunchSpeed(GameTestHelper helper) {
+    @GameTest
+    public void grabHookTurboGrabIncreasesLaunchSpeed(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
 
@@ -57,27 +55,27 @@ public class GrabHookGameTests {
         EntityGrabHook hook = new EntityGrabHook(level, player, rod, 1.0f);
         double expectedSpeed = DEFAULT_SPEED * 1.25;  // 1 + turbo*0.25
         double speed = hook.getDeltaMovement().length();
-        helper.assertTrue(Math.abs(speed - expectedSpeed) < 0.01,
+        TestAsserts.assertTrue(helper, Math.abs(speed - expectedSpeed) < 0.01,
             "Turbo Grab I launch speed should be " + expectedSpeed + ", got " + speed);
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void grabHookPullAmountScalesSpeed(GameTestHelper helper) {
+    @GameTest
+    public void grabHookPullAmountScalesSpeed(GameTestHelper helper) {
         Player player = makeSouthPlayer(helper);
 
         EntityGrabHook hook = new EntityGrabHook(helper.getLevel(), player, new ItemStack(Items.GRAB_HOOK), 0.5f);
         double expectedSpeed = DEFAULT_SPEED * 0.5;
         double speed = hook.getDeltaMovement().length();
-        helper.assertTrue(Math.abs(speed - expectedSpeed) < 0.01,
+        TestAsserts.assertTrue(helper, Math.abs(speed - expectedSpeed) < 0.01,
             "Pull amount 0.5 should give half speed, got " + speed);
         helper.succeed();
     }
 
     // ── retracting after 20 ticks in air ─────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void grabHookStartsRetractingAfterAirTime(GameTestHelper helper) {
+    @GameTest(maxTicks = 60)
+    public void grabHookStartsRetractingAfterAirTime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
 
@@ -90,7 +88,7 @@ public class GrabHookGameTests {
 
         // ticksInAir reaches 20 on the 20th server tick; check after 22 ticks.
         helper.runAtTickTime(helper.getTick() + 22, () -> {
-            helper.assertTrue(hook.isReturning(),
+            TestAsserts.assertTrue(helper, hook.isReturning(),
                 "Hook should be returning after 20 ticks in air");
             helper.succeed();
         });
@@ -98,8 +96,8 @@ public class GrabHookGameTests {
 
     // ── catching entities ─────────────────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void grabHookCatchesEntityOnPath(GameTestHelper helper) {
+    @GameTest
+    public void grabHookCatchesEntityOnPath(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
 
@@ -115,13 +113,13 @@ public class GrabHookGameTests {
         // After one tick the ray sweeps past the pig (pig z-start ≈ abs+3.05, ray to ≈ abs+4.0).
         hook.tick();
 
-        helper.assertTrue(hook.getCaughtEntity() == pig,
+        TestAsserts.assertTrue(helper, hook.getCaughtEntity() == pig,
             "Hook should catch the pig on first tick");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void grabHookDamagesEntityByDefault(GameTestHelper helper) {
+    @GameTest
+    public void grabHookDamagesEntityByDefault(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
@@ -132,13 +130,13 @@ public class GrabHookGameTests {
         float healthBefore = pig.getHealth();
         hook.tick();
 
-        helper.assertTrue(pig.getHealth() < healthBefore,
+        TestAsserts.assertTrue(helper, pig.getHealth() < healthBefore,
             "Hook without Gentle Grab should deal 3 damage on catch");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void grabHookKeepsCorpseWhenEntityDiesOnImpact(GameTestHelper helper) {
+    @GameTest
+    public void grabHookKeepsCorpseWhenEntityDiesOnImpact(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
@@ -149,17 +147,17 @@ public class GrabHookGameTests {
 
         hook.tick();
 
-        helper.assertTrue(!pig.isAlive(), "Pig should be killed by the impact damage");
-        helper.assertTrue(!pig.isRemoved(), "Corpse should still exist right after death");
-        helper.assertTrue(hook.getCaughtEntity() == pig,
+        TestAsserts.assertTrue(helper, !pig.isAlive(), "Pig should be killed by the impact damage");
+        TestAsserts.assertTrue(helper, !pig.isRemoved(), "Corpse should still exist right after death");
+        TestAsserts.assertTrue(helper, hook.getCaughtEntity() == pig,
             "Hook should keep the corpse caught instead of dropping it");
-        helper.assertTrue(!hook.isRemoved(),
+        TestAsserts.assertTrue(helper, !hook.isRemoved(),
             "Hook should not be discarded when the catch dies on impact");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void grabHookGentleGrabDealsNoDamage(GameTestHelper helper) {
+    @GameTest
+    public void grabHookGentleGrabDealsNoDamage(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
@@ -175,9 +173,9 @@ public class GrabHookGameTests {
         float healthBefore = pig.getHealth();
         hook.tick();
 
-        helper.assertTrue(hook.getCaughtEntity() == pig,
+        TestAsserts.assertTrue(helper, hook.getCaughtEntity() == pig,
             "Gentle Grab should still catch the entity");
-        helper.assertTrue(pig.getHealth() == healthBefore,
+        TestAsserts.assertTrue(helper, pig.getHealth() == healthBefore,
             "Gentle Grab should deal no damage on catch");
         helper.succeed();
     }

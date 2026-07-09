@@ -1,5 +1,6 @@
 package xerca.xercamusic.client;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -55,8 +56,8 @@ public final class MusicManagerClient {
                 try {
                     UUID id = UUID.fromString(fileName);
                     CompoundTag tag = NbtIo.readCompressed(file.toPath(), NbtAccounter.unlimitedHeap());
-                    if (tag.contains(KEY_ID) && id.equals(tag.getUUID(KEY_ID)) && tag.contains(KEY_VERSION) && tag.contains(KEY_NOTES)) {
-                        int version = tag.getInt(KEY_VERSION);
+                    if (id.equals(tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null)) && tag.contains(KEY_VERSION) && tag.contains(KEY_NOTES)) {
+                        int version = tag.getIntOr(KEY_VERSION, 0);
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, tag);
                         ArrayList<VolumeMarker> markers = new ArrayList<>();
@@ -131,7 +132,7 @@ public final class MusicManagerClient {
         }
 
         CompoundTag tag = new CompoundTag();
-        tag.putUUID(KEY_ID, id);
+        tag.store(KEY_ID, UUIDUtil.CODEC, id);
         tag.putInt(KEY_VERSION, ver);
         NoteEvent.fillNBTFromArray(notes, tag);
         if (volumeMarkers != null) {

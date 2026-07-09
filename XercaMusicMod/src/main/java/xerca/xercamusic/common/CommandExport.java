@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -75,7 +76,7 @@ public final class CommandExport {
         }
         Path filePath = directory.toPath().resolve(name + ".sheet");
 
-        for (ItemStack stack : player.getHandSlots()) {
+        for (ItemStack stack : java.util.List.of(player.getMainHandItem(), player.getOffhandItem())) {
             if (stack.getItem() instanceof ItemMusicSheet) {
                 exportSheetIfValid(stack, filePath);
                 return true;
@@ -105,7 +106,7 @@ public final class CommandExport {
 
         CompoundTag tag = new CompoundTag();
         tag.putInt(KEY_VERSION, ver);
-        tag.putUUID(KEY_ID, id);
+        tag.store(KEY_ID, UUIDUtil.CODEC, id);
         tag.putInt(KEY_LENGTH, length);
         tag.putInt(KEY_GENERATION, stack.getOrDefault(Items.SHEET_GENERATION, 0));
 

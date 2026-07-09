@@ -20,11 +20,12 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import xerca.xercatools.enchantment.FlaskEnchantments;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemFlask extends Item {
     private static final int BASE_MAX_CHARGES = 16;
@@ -95,16 +96,16 @@ public class ItemFlask extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.ender_flask_tooltip");
-        tooltip.add(text.withStyle(ChatFormatting.BLUE));
-        getPotionContents(stack).addPotionTooltip(tooltip::add, 1.0F, context.tickRate());
-        tooltip.add(Component.translatable("xercatools.charges_tooltip", getCharges(stack)).withStyle(ChatFormatting.YELLOW));
+        tooltip.accept(text.withStyle(ChatFormatting.BLUE));
+        PotionContents.addPotionTooltip(getPotionContents(stack).getAllEffects(), tooltip, 1.0F, context.tickRate());
+        tooltip.accept(Component.translatable("xercatools.charges_tooltip", getCharges(stack)).withStyle(ChatFormatting.YELLOW));
     }
 
     public static int getCharges(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        return tag.getInt("charges");
+        return tag.getIntOr("charges", 0);
     }
 
     public static int getMaxCharges(ItemStack stack, Level level) {
@@ -129,7 +130,7 @@ public class ItemFlask extends Item {
 
     private static void decrementCharges(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        int oldCharges = tag.getInt("charges");
+        int oldCharges = tag.getIntOr("charges", 0);
         if (oldCharges <= 0) {
             return;
         }

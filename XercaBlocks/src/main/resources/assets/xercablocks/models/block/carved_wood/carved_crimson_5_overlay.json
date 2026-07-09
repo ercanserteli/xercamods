@@ -1,5 +1,5 @@
 {
-  "parent": "block/cube",
+  "parent": "xercablocks:block/carved_wood/cube_light",
   "textures": {
     "particle": "block/stripped_crimson_stem_top",
     "up": "xercablocks:block/carved_wood/carved_crimson_5_side_d_top_o",

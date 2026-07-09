@@ -25,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.windcharge.WindCharge;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
@@ -39,6 +40,7 @@ import xerca.xercatools.enchantment.WarhammerEnchantments;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class ItemWarhammer extends Item {
     private final float pushAmount;
@@ -68,9 +70,8 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
-        return true;
     }
 
     @Override
@@ -246,7 +247,7 @@ public class ItemWarhammer extends Item {
 
         int maimLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.maimEnchantment(level.registryAccess()), stack);
         if (maimLevel > 0) {
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100 + 40 * maimLevel, maimLevel - 1));
+            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100 + 40 * maimLevel, maimLevel - 1));
         }
 
         Vec3 knockVector = target.position().subtract(player.position()).normalize().scale(push);
@@ -338,8 +339,8 @@ public class ItemWarhammer extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
         MutableComponent text = Component.translatable("xercatools.warhammer_tooltip");
-        tooltip.add(text.withStyle(ChatFormatting.BLUE));
+        tooltip.accept(text.withStyle(ChatFormatting.BLUE));
     }
 }

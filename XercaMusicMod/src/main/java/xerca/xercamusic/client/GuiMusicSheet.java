@@ -1,7 +1,5 @@
 package xerca.xercamusic.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -266,7 +264,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         // Neighbor sheets
-        int currentSlot = player.getInventory().selected;
+        int currentSlot = player.getInventory().getSelectedSlot();
         boolean added = addNeighborSheet(getStackInSlot(currentSlot - 1));
         if (added) {
             addNeighborSheet(getStackInSlot(currentSlot - 2));
@@ -1919,8 +1917,6 @@ public class GuiMusicSheet extends Screen {
         }
 
         protected int preRender() {
-            RenderSystem.setShaderTexture(0, this.resourceLocation);
-            GlStateManager._disableDepthTest();
             int yTexStartNew = this.yTexStart;
             if (this.isHovered && this.active) {
                 yTexStartNew += this.yDiffText;
@@ -1929,7 +1925,6 @@ public class GuiMusicSheet extends Screen {
         }
 
         protected void postRender() {
-            GlStateManager._enableDepthTest();
         }
 
         @Override

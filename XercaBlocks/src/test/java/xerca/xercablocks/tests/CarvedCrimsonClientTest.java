@@ -6,11 +6,19 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
+import java.util.Objects;
+
 /**
  * Renders a wall of emissive carved crimson blocks at night in a deterministic superflat world.
  * Asserts (via SSIM) that the frame matches the glowing golden, and — as a positive check that the
  * emissive glow is actually rendered — that it does NOT match a "no-glow" reference of the same wall.
- * Guards the emissive-overlay baked model ({@link xerca.xercablocks.client.EmissiveOverlayBakedModel}).
+ * Guards the emissive-overlay block state model ({@link xerca.xercablocks.client.EmissiveOverlayBlockStateModel}).
  */
 public final class CarvedCrimsonClientTest implements FabricClientGameTest {
     // SSIM >= this to pass. 1.0 is identical; rendering the same static scene twice sits very close to 1.0.
@@ -56,19 +64,41 @@ public final class CarvedCrimsonClientTest implements FabricClientGameTest {
 
     /**
      * Fails if the current frame matches {@code template} at or above the SSIM threshold.
+     * Screenshot assertion failures are raised off the test thread since client-gametest 4.2.0,
+     * so the mismatch is checked directly on a captured frame instead of catching an AssertionError.
      */
     private static void assertScreenshotDiffers(ClientGameTestContext context, String template) {
-        boolean matched;
-        try {
-            context.assertScreenshotEquals(TestScreenshotComparisonOptions.of(template)
-                    .withAlgorithm(SsimComparisonAlgorithm.withThreshold(SSIM_THRESHOLD)));
-            matched = true;
-        } catch (AssertionError expectedMismatch) {
-            matched = false;
+        Path screenshotPath = context.takeScreenshot("carved_crimson_wall_night_live");
+        BufferedImage live = readImage(screenshotPath);
+        BufferedImage reference = readTemplate(template);
+        if (live.getWidth() != reference.getWidth() || live.getHeight() != reference.getHeight()) {
+            return;
         }
-        if (matched) {
+
+        int width = live.getWidth();
+        int height = live.getHeight();
+        int[] livePixels = live.getRGB(0, 0, width, height, null, 0, width);
+        int[] referencePixels = reference.getRGB(0, 0, width, height, null, 0, width);
+        if (SsimComparisonAlgorithm.withThreshold(SSIM_THRESHOLD).matchesEqualSize(livePixels, referencePixels, width, height)) {
             throw new AssertionError("Frame unexpectedly matched no-glow reference '" + template
                     + "' — the carved crimson emissive glow appears to be missing");
+        }
+    }
+
+    private static BufferedImage readImage(Path path) {
+        try {
+            return ImageIO.read(path.toFile());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static BufferedImage readTemplate(String template) {
+        String resource = "/templates/" + template + ".png";
+        try (InputStream stream = CarvedCrimsonClientTest.class.getResourceAsStream(resource)) {
+            return ImageIO.read(Objects.requireNonNull(stream, "Missing template resource " + resource));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 }

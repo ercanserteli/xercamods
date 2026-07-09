@@ -93,7 +93,7 @@ public class ItemGoldenCupcake extends Item {
         player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 500, 3));
         player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 300, 3));
         player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 300, 3));
-        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 3));
+        player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 300, 3));
         player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 300, 3));
         player.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 150, 3));
     }
@@ -107,8 +107,8 @@ public class ItemGoldenCupcake extends Item {
             target.push(0, 2, 0);
             target.hurtMarked = true;
             int time = 1100 + world.random.nextInt(200);
-            target.addEffect(new MobEffectInstance(MobEffects.JUMP, time, 6));
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, time, 1));
+            target.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, time, 6));
+            target.addEffect(new MobEffectInstance(MobEffects.SPEED, time, 1));
         }
     }
 
@@ -116,8 +116,8 @@ public class ItemGoldenCupcake extends Item {
         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SPARKLES, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.4F + 0.8F);
         List<Holder<net.minecraft.world.effect.MobEffect>> effects = new ArrayList<>(Arrays.asList(
                 MobEffects.HEALTH_BOOST, MobEffects.REGENERATION, MobEffects.SATURATION, MobEffects.SLOW_FALLING,
-                MobEffects.CONFUSION, MobEffects.MOVEMENT_SPEED, MobEffects.HUNGER, MobEffects.WEAKNESS,
-                MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SPEED, MobEffects.DAMAGE_BOOST
+                MobEffects.NAUSEA, MobEffects.SPEED, MobEffects.HUNGER, MobEffects.WEAKNESS,
+                MobEffects.SLOWNESS, MobEffects.HASTE, MobEffects.STRENGTH
         ));
         Collections.shuffle(effects);
         for (int i = 0; i < 3; i++) {
@@ -128,7 +128,7 @@ public class ItemGoldenCupcake extends Item {
     private void applyScarySummon(Level world, Player player) {
         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SCARY, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.9F);
         player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
-        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 2));
+        player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 200, 2));
         player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 1));
 
         Item[] weapons = {
@@ -152,7 +152,7 @@ public class ItemGoldenCupcake extends Item {
         mob.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapons[world.random.nextInt(weapons.length)]));
         mob.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(weapons[world.random.nextInt(weapons.length)]));
         mob.setItemSlot(EquipmentSlot.HEAD, head);
-        mob.moveTo(
+        mob.snapTo(
                 player.getX() + world.random.nextInt(3),
                 player.getY() + world.random.nextInt(5),
                 player.getZ() + world.random.nextInt(3),

@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import xerca.xercaomnichest.Mod;
 import xerca.xercaomnichest.block.BlockOmniChest;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
@@ -32,7 +33,7 @@ public final class OmniChestBlockEntityRenderer implements BlockEntityRenderer<B
     }
 
     @Override
-    public void render(BlockEntityOmniChest blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public void render(BlockEntityOmniChest blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, Vec3 cameraPos) {
         BlockState state = blockEntity.getBlockState();
         Direction direction = state.hasProperty(BlockOmniChest.FACING) ? state.getValue(BlockOmniChest.FACING) : Direction.SOUTH;
 

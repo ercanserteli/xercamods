@@ -2,9 +2,9 @@ package xerca.xercamusic.mixin;
 
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.OptionalDynamic;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.datafix.fixes.ItemStackComponentizationFix;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +28,7 @@ public abstract class ItemStackComponentizationFixMixin {
                 if (dynamic.getOps() == NbtOps.INSTANCE) {
                     Tag nbtElement = (Tag) dynamic.getValue();
                     if (nbtElement instanceof IntArrayTag) {
-                        return NbtUtils.loadUUID(nbtElement);
+                        return UUIDUtil.uuidFromIntArray(((IntArrayTag) nbtElement).getAsIntArray());
                     }
                 }
                 return null;

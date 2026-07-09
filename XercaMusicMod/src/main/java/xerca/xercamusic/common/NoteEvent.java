@@ -2,7 +2,6 @@ package xerca.xercamusic.common;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -76,9 +75,9 @@ public class NoteEvent implements Serializable {
     }
 
     public static void fillArrayFromNBT(List<NoteEvent> noteEvents, CompoundTag tag) {
-        ListTag notesTag = tag.getList(KEY_NOTES, Tag.TAG_COMPOUND);
+        ListTag notesTag = tag.getListOrEmpty(KEY_NOTES);
         for (int i = 0; i < notesTag.size(); i++) {
-            noteEvents.add(fromNBT(notesTag.getCompound(i)));
+            noteEvents.add(fromNBT(notesTag.getCompoundOrEmpty(i)));
         }
         sortNotes(noteEvents);
         removeDuplicates(noteEvents);
@@ -237,23 +236,20 @@ public class NoteEvent implements Serializable {
     }
 
     public void deserializeNBT(CompoundTag tag) {
-        this.note = tag.getByte("n");
-        this.time = tag.getShort("d");
-        this.volume = tag.getByte("v");
-        this.length = tag.getByte("l");
+        this.note = tag.getByteOr("n", (byte) 0);
+        this.time = tag.getShortOr("d", (short) 0);
+        this.volume = tag.getByteOr("v", (byte) 0);
+        this.length = tag.getByteOr("l", (byte) 0);
         // Load flags and glissandoInterval with defaults for backwards compatibility
-        this.flags = tag.contains("f") ? tag.getByte("f") : FLAG_NONE;
-        if (tag.contains("gw")) {
-            this.glissandoWaypoints = tag.getByteArray("gw");
-            this.glissandoInterval = this.glissandoWaypoints.length > 0 ? this.glissandoWaypoints[this.glissandoWaypoints.length - 1] : 0;
-            if (tag.contains("gp")) {
-                byte[] gp = tag.getByteArray("gp");
-                this.glissandoWaypointPositions = (gp.length == this.glissandoWaypoints.length) ? gp : null;
-            } else {
-                this.glissandoWaypointPositions = null;
-            }
+        this.flags = tag.getByteOr("f", FLAG_NONE);
+        byte[] gw = tag.getByteArray("gw").orElse(null);
+        if (gw != null) {
+            this.glissandoWaypoints = gw;
+            this.glissandoInterval = gw.length > 0 ? gw[gw.length - 1] : 0;
+            byte[] gp = tag.getByteArray("gp").orElse(null);
+            this.glissandoWaypointPositions = (gp != null && gp.length == gw.length) ? gp : null;
         } else {
-            this.glissandoInterval = tag.contains("ti") ? tag.getByte("ti") : 0;
+            this.glissandoInterval = tag.getByteOr("ti", (byte) 0);
             this.glissandoWaypoints = null;
             this.glissandoWaypointPositions = null;
         }

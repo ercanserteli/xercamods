@@ -1,6 +1,5 @@
 package xerca.xercamusic.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -111,8 +110,6 @@ public class GuiInstrument extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderTexture(0, INS_GUI_TEXTURES);
-
         guiGraphics.blit(RenderType::guiTextured, INS_GUI_TEXTURES, guiBaseX, guiBaseY, 0, 0, GUI_WIDTH, GUI_HEIGHT, 512, 512);
 
         for (int i = 0; i < buttonPushStates.length; i++) {

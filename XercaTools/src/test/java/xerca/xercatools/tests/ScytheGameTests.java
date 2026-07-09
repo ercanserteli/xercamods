@@ -1,9 +1,9 @@
 package xerca.xercatools.tests;
 
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -26,8 +26,6 @@ import xerca.xercatools.item.Items;
 import java.util.List;
 
 public class ScytheGameTests {
-    private static final String BASIC_TEMPLATE = "xercatools:basic_test";
-    private static final String WEAPONS_BATCH = "xercatools_tests";
 
     private static BlockState maxAgeWheat() {
         CropBlock crop = (CropBlock) Blocks.WHEAT;
@@ -36,25 +34,25 @@ public class ScytheGameTests {
 
     // ── Group D: crop harvesting ──────────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void scytheCanHarvestMaxAgeCrop(GameTestHelper helper) {
+    @GameTest
+    public void scytheCanHarvestMaxAgeCrop(GameTestHelper helper) {
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         float speed = Items.IRON_SCYTHE.getDestroySpeed(scythe, maxAgeWheat());
-        helper.assertTrue(speed > 0.0f, "Scythe should have destroy speed > 0 for max-age crop, got " + speed);
+        TestAsserts.assertTrue(helper, speed > 0.0f, "Scythe should have destroy speed > 0 for max-age crop, got " + speed);
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void scytheCannotHarvestYoungCrop(GameTestHelper helper) {
+    @GameTest
+    public void scytheCannotHarvestYoungCrop(GameTestHelper helper) {
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         BlockState youngWheat = Blocks.WHEAT.defaultBlockState(); // age=0, not max
         float speed = Items.IRON_SCYTHE.getDestroySpeed(scythe, youngWheat);
-        helper.assertTrue(speed == 0.0f, "Scythe should have destroy speed 0 for non-max-age crop, got " + speed);
+        TestAsserts.assertTrue(helper, speed == 0.0f, "Scythe should have destroy speed 0 for non-max-age crop, got " + speed);
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void scytheMineBlockHarvestsAdjacentCropsWithSweepingEdge(GameTestHelper helper) {
+    @GameTest
+    public void scytheMineBlockHarvestsAdjacentCropsWithSweepingEdge(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
@@ -79,7 +77,7 @@ public class ScytheGameTests {
 
         Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
-        helper.assertTrue(
+        TestAsserts.assertTrue(helper, 
             !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(north)))).is(Blocks.WHEAT) &&
             !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(south)))).is(Blocks.WHEAT) &&
             !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(east)))).is(Blocks.WHEAT)  &&
@@ -88,8 +86,8 @@ public class ScytheGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void scytheMineBlockSweepingLevel2HarvestsDiagonals(GameTestHelper helper) {
+    @GameTest
+    public void scytheMineBlockSweepingLevel2HarvestsDiagonals(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
@@ -114,7 +112,7 @@ public class ScytheGameTests {
 
         Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
-        helper.assertTrue(
+        TestAsserts.assertTrue(helper, 
             !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(ne)))).is(Blocks.WHEAT) &&
             !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(nw)))).is(Blocks.WHEAT) &&
             !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(se)))).is(Blocks.WHEAT) &&
@@ -123,8 +121,8 @@ public class ScytheGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void scytheWithoutSweepingEdgeDoesNotHarvestNeighbors(GameTestHelper helper) {
+    @GameTest
+    public void scytheWithoutSweepingEdgeDoesNotHarvestNeighbors(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 
@@ -143,7 +141,7 @@ public class ScytheGameTests {
 
         Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
-        helper.assertTrue(
+        TestAsserts.assertTrue(helper, 
             level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(north)))).is(Blocks.WHEAT) &&
             level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(south)))).is(Blocks.WHEAT),
             "Scythe without Sweeping Edge must not harvest neighbors");
@@ -152,8 +150,8 @@ public class ScytheGameTests {
 
     // ── Group E: guillotine ───────────────────────────────────────────────────
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void guillotineRequiresFullPullToActivate(GameTestHelper helper) {
+    @GameTest
+    public void guillotineRequiresFullPullToActivate(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
@@ -174,13 +172,13 @@ public class ScytheGameTests {
         // pull = 17/20 = 0.85 < 0.9 threshold → early return with no effect
         Items.IRON_SCYTHE.releaseUsing(scythe, level, player, 72000 - 17);
 
-        helper.assertTrue(pig.getHealth() == initialHealth,
+        TestAsserts.assertTrue(helper, pig.getHealth() == initialHealth,
             "Guillotine below 0.9 pull should not deal damage");
         helper.succeed();
     }
 
-    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
-    public static void guillotineKillDropsHead(GameTestHelper helper) {
+    @GameTest
+    public void guillotineKillDropsHead(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 abs = helper.absoluteVec(new Vec3(2.5, 2.0, 2.5));
@@ -202,12 +200,12 @@ public class ScytheGameTests {
         // pull = 19/20 = 0.95 >= 0.9 → guillotine activates
         Items.IRON_SCYTHE.releaseUsing(scythe, level, player, 72000 - 19);
 
-        helper.assertTrue(pig.isDeadOrDying(), "Guillotine at ≥0.9 pull should kill the pig");
+        TestAsserts.assertTrue(helper, pig.isDeadOrDying(), "Guillotine at ≥0.9 pull should kill the pig");
 
         AABB searchBox = new AABB(pigPos.x - 3, pigPos.y - 3, pigPos.z - 3,
                                    pigPos.x + 3, pigPos.y + 3, pigPos.z + 3);
         boolean headDropped = !level.getEntitiesOfClass(ItemEntity.class, searchBox).isEmpty();
-        helper.assertTrue(headDropped, "Guillotine kill should drop a head item entity");
+        TestAsserts.assertTrue(helper, headDropped, "Guillotine kill should drop a head item entity");
         helper.succeed();
     }
 }

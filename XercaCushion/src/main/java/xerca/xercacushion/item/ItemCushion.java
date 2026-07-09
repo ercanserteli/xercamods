@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -20,6 +21,7 @@ import net.minecraft.world.phys.AABB;
 import xerca.xercacushion.entity.EntityCushion;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemCushion extends Item {
     private final int variant;
@@ -58,7 +60,7 @@ public class ItemCushion extends Item {
         if (!level.isClientSide) {
             EntityCushion cushion = new EntityCushion(level, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, variant);
             float yaw = Mth.floor((Mth.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-            cushion.moveTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, yaw, 0.0F);
+            cushion.snapTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, yaw, 0.0F);
             level.addFreshEntity(cushion);
             level.playSound(null, cushion.getX(), cushion.getY(), cushion.getZ(), SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
             context.getItemInHand().shrink(1);
@@ -68,7 +70,7 @@ public class ItemCushion extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("xercacushion.cushion_tooltip").withStyle(ChatFormatting.BLUE));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        tooltipAdder.accept(Component.translatable("xercacushion.cushion_tooltip").withStyle(ChatFormatting.BLUE));
     }
 }
