@@ -7,6 +7,9 @@
   "entrypoints": {
     "fabric-gametest": [
       "xerca.xercaomnichest.tests.OmniChestGameTests"
+    ],
+    "fabric-client-gametest": [
+      "xerca.xercaomnichest.tests.OmniChestClientTest"
     ]
   },
   "depends": {
