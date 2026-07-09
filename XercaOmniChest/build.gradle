@@ -35,6 +35,9 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Client game test API for screenshot-diff rendering regression tests.
+    modImplementation fabricApi.module("fabric-client-gametest-api-v1", project.fabric_version)
 }
 
 processResources {
@@ -94,6 +97,16 @@ loom {
             source(testSourceSet)
             ideConfigGenerated = true
             runDir "build/gametest"
+        }
+        clientGameTest {
+            client()
+            name "Client Game Test"
+            vmArg "-Dfabric.client.gametest"
+            vmArg "-Dfabric.client.gametest.testModResourcesPath=${file("src/test/resources").absolutePath.replace('\\', '/')}"
+            source(mainSourceSet)
+            source(testSourceSet)
+            ideConfigGenerated = false
+            runDir "build/clientgametest"
         }
     }
 }

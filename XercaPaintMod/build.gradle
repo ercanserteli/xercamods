@@ -48,8 +48,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // Client game test API (experimental) for driving the palette/canvas GUIs in tests.
-    // Not part of the production fabric-api distribution, so it is pinned explicitly.
+    // Client game test API for screenshot-diff rendering regression tests.
     modImplementation fabricApi.module("fabric-client-gametest-api-v1", project.fabric_version)
 
     // Error Prone

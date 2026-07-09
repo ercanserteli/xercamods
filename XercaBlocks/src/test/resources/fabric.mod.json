@@ -9,7 +9,8 @@
       "xerca.xercablocks.tests.BlocksGameTests"
     ],
     "fabric-client-gametest": [
-      "xerca.xercablocks.tests.CarvedCrimsonClientTest"
+      "xerca.xercablocks.tests.CarvedCrimsonClientTest",
+      "xerca.xercablocks.tests.CarvedCrimsonInventoryClientTest"
     ]
   },
   "depends": {
