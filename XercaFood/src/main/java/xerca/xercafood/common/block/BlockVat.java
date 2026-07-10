@@ -38,10 +38,17 @@ public class BlockVat extends Block {
     private final VatContent content;
 
     public BlockVat(VatContent content) {
-        super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey(
-                        content == VatContent.MILK ? "vat_milk" : content == VatContent.CHEESE ? "vat_cheese" : "vat"))
+        super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey(blockName(content)))
                 .strength(1.5F).noOcclusion().randomTicks());
         this.content = content;
+    }
+
+    private static String blockName(VatContent content) {
+        return switch (content) {
+            case MILK -> "vat_milk";
+            case CHEESE -> "vat_cheese";
+            case EMPTY -> "vat";
+        };
     }
 
     @Override

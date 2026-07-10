@@ -3,7 +3,6 @@ package xerca.xercapaint.entity;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -23,10 +22,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
@@ -213,22 +213,15 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(ValueOutput output) {
         if (!this.getItem().isEmpty()) {
-            tag.put("Item", this.getItem().save(this.registryAccess()));
+            output.store("Item", ItemStack.CODEC, this.getItem());
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        CompoundTag itemTag = tag.getCompoundOrEmpty("Item");
-        if (!itemTag.isEmpty()) {
-            ItemStack itemStack = ItemStack.parse(this.registryAccess(), itemTag).orElse(ItemStack.EMPTY);
-            if (itemStack.isEmpty()) {
-                Mod.LOGGER.warn("Unable to load item from: {}", itemTag);
-            }
-            this.setItem(itemStack, false);
-        }
+    public void readAdditionalSaveData(ValueInput input) {
+        input.read("Item", ItemStack.CODEC).ifPresent(itemStack -> this.setItem(itemStack, false));
     }
 
     @Override

@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.common.*;
 import xerca.xercamusic.common.block.BlockMetronome;
@@ -42,6 +41,7 @@ import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
@@ -50,7 +50,7 @@ import java.util.*;
 
 import static xerca.xercamusic.tests.TestAsserts.assertTrue;
 
-@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+@SuppressWarnings({"unused", "PMD.AvoidAccessibilityAlteration"})
 public final class MusicRegressionGameTests {
     private static final Field MUSIC_BOX_IS_PLAYING_FIELD;
     private static final Field MUSIC_BOX_BPS_FIELD;

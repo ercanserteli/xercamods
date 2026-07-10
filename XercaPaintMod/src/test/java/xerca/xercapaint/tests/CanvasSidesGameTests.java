@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class CanvasSidesGameTests {
 
     private static final RecipeCanvasCloning CLONING_RECIPE = new RecipeCanvasCloning(CraftingBookCategory.MISC);
@@ -128,12 +129,13 @@ public class CanvasSidesGameTests {
         EntityCanvas canvas = new EntityCanvas(helper.getLevel(), glassStack, pos, Direction.NORTH, CanvasType.SMALL, 0);
         TestAsserts.assertTrue(helper, canvas.isGlass(), "Placed glass canvas entity must be glass");
 
-        CompoundTag tag = new CompoundTag();
-        canvas.addAdditionalSaveData(tag);
+        var output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING, helper.getLevel().registryAccess());
+        canvas.addAdditionalSaveData(output);
+        CompoundTag tag = output.buildResult();
         TestAsserts.assertTrue(helper, tag.getBooleanOr("glass", false), "NBT must record the glass flag");
 
         EntityCanvas reloaded = new EntityCanvas(Entities.CANVAS, helper.getLevel());
-        reloaded.readAdditionalSaveData(tag);
+        reloaded.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), tag));
         TestAsserts.assertTrue(helper, reloaded.isGlass(), "Glass flag must survive an NBT round-trip");
         helper.succeed();
     }

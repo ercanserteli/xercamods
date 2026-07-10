@@ -1,7 +1,8 @@
 package xerca.xercamusic.client;
 
 import net.minecraft.client.Minecraft;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import xerca.xercamusic.common.Mod;
 
 import javax.sound.midi.*;

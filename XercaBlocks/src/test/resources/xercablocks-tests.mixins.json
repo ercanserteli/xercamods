@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "xerca.xercablocks.tests.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "TextureAtlasAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

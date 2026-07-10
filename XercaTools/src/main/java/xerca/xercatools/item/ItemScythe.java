@@ -48,7 +48,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ItemScythe extends Item {
-    private final ToolMaterial tier;
     public static final float FULL_USE_SECONDS = 1.0F;
     private static final Map<EntityType<?>, Item> VANILLA_HEADS = Map.of(
             EntityType.ZOMBIE, net.minecraft.world.item.Items.ZOMBIE_HEAD,
@@ -89,7 +88,6 @@ public class ItemScythe extends Item {
         super(tier == ToolMaterial.NETHERITE
                 ? new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).durability(tier.durability()).fireResistant().enchantable(tier.enchantmentValue()).repairable(tier.repairItems()).attributes(createAttributes(tier))
                 : new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).durability(tier.durability()).enchantable(tier.enchantmentValue()).repairable(tier.repairItems()).attributes(createAttributes(tier)));
-        this.tier = tier;
     }
 
     @Override

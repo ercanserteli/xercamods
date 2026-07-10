@@ -5,10 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import xerca.xercafood.common.block.Blocks;
 import xerca.xercafood.common.item.Items;
 
@@ -23,14 +20,14 @@ public class XercaFoodDatagen implements DataGeneratorEntrypoint {
         pack.addProvider(ItemTagGenerator::new);
     }
 
-    private static class BlockTagGenerator extends FabricTagProvider<Block> {
+    private static class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
         public BlockTagGenerator(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> future) {
-            super(dataOutput, Registries.BLOCK, future);
+            super(dataOutput, future);
         }
 
         @Override
         protected void addTags(HolderLookup.Provider registries) {
-            getOrCreateTagBuilder(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(
+            valueLookupBuilder(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(
                     Blocks.VAT,
                     Blocks.VAT_MILK,
                     Blocks.VAT_CHEESE
@@ -38,14 +35,14 @@ public class XercaFoodDatagen implements DataGeneratorEntrypoint {
         }
     }
 
-    private static class ItemTagGenerator extends FabricTagProvider<Item> {
+    private static class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
         public ItemTagGenerator(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> future) {
-            super(dataOutput, Registries.ITEM, future);
+            super(dataOutput, future);
         }
 
         @Override
         protected void addTags(HolderLookup.Provider registries) {
-            getOrCreateTagBuilder(ItemTags.MEAT).add(
+            valueLookupBuilder(ItemTags.MEAT).add(
                     Items.GLOW_SQUID_INK_PAELLA,
                     Items.SQUID_INK_PAELLA,
                     Items.CHEESEBURGER,

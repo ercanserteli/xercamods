@@ -3,9 +3,11 @@ package xerca.xercamusic.common;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import xerca.xercamusic.common.item.IItemInstrument;
 
+import javax.annotation.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -26,8 +28,8 @@ public class NoteEvent implements Serializable {
     public byte length;
     public byte flags;              // Articulation flags (see FLAG_* constants)
     public byte glissandoInterval;  // Signed semitones to slide for glissando (+up, -down); used for single-point
-    public byte @Nullable [] glissandoWaypoints; // Multi-point glissando: array of semitone offsets. null = use glissandoInterval
-    public byte @Nullable [] glissandoWaypointPositions; // Parallel to glissandoWaypoints: beat position as % of note length (1-100). null = evenly spaced.
+    public @Nullable byte[] glissandoWaypoints; // Multi-point glissando: array of semitone offsets. null = use glissandoInterval
+    public @Nullable byte[] glissandoWaypointPositions; // Parallel to glissandoWaypoints: beat position as % of note length (1-100). null = evenly spaced.
 
     public NoteEvent(byte note, short time, byte volume, byte length) {
         this(note, time, volume, length, FLAG_NONE, (byte) 0);
@@ -78,6 +80,14 @@ public class NoteEvent implements Serializable {
         ListTag notesTag = tag.getListOrEmpty(KEY_NOTES);
         for (int i = 0; i < notesTag.size(); i++) {
             noteEvents.add(fromNBT(notesTag.getCompoundOrEmpty(i)));
+        }
+        sortNotes(noteEvents);
+        removeDuplicates(noteEvents);
+    }
+
+    public static void fillArrayFromNBT(List<NoteEvent> noteEvents, ValueInput input) {
+        for (CompoundTag noteTag : input.listOrEmpty(KEY_NOTES, CompoundTag.CODEC)) {
+            noteEvents.add(fromNBT(noteTag));
         }
         sortNotes(noteEvents);
         removeDuplicates(noteEvents);
@@ -144,6 +154,13 @@ public class NoteEvent implements Serializable {
         tag.put(KEY_NOTES, noteList);
     }
 
+    public static void fillNBTFromArray(List<NoteEvent> noteEvents, ValueOutput output) {
+        ValueOutput.TypedOutputList<CompoundTag> noteList = output.list(KEY_NOTES, CompoundTag.CODEC);
+        for (NoteEvent event : noteEvents) {
+            noteList.add(event.serializeNBT());
+        }
+    }
+
     public short endTime() {
         return (short) (time + length - 1);
     }
@@ -173,7 +190,7 @@ public class NoteEvent implements Serializable {
      * @param waypoints  semitone offsets from the note; null to clear
      * @param positions  parallel array of beat positions as % of note length (1-100); null = evenly spaced
      */
-    public void setGlissandoWaypoints(byte @Nullable [] waypoints, byte @Nullable [] positions) {
+    public void setGlissandoWaypoints(@Nullable byte[] waypoints, @Nullable byte[] positions) {
         if (waypoints != null && waypoints.length > 0) {
             flags |= FLAG_GLISSANDO;
             glissandoWaypoints = waypoints;
@@ -192,7 +209,7 @@ public class NoteEvent implements Serializable {
      * If multi-point waypoints exist, returns those; otherwise wraps glissandoInterval in a single-element array.
      * Returns null if no glissando.
      */
-    public byte @Nullable [] getEffectiveWaypoints() {
+    public @Nullable byte[] getEffectiveWaypoints() {
         if (glissandoWaypoints != null && glissandoWaypoints.length > 0) {
             return glissandoWaypoints;
         }
@@ -206,7 +223,7 @@ public class NoteEvent implements Serializable {
      * Returns the waypoint position fractions (1-100) if custom positioned, or null for even distribution.
      * Only meaningful when glissandoWaypoints is non-null.
      */
-    public byte @Nullable [] getEffectivePositions() {
+    public @Nullable byte[] getEffectivePositions() {
         if (glissandoWaypointPositions != null && glissandoWaypoints != null
                 && glissandoWaypointPositions.length == glissandoWaypoints.length) {
             return glissandoWaypointPositions;

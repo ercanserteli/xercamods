@@ -38,11 +38,12 @@ public class RecipeTeaSugaring extends CustomRecipe {
      */
     public boolean matches(CraftingInput inv, Level worldIn) {
         ParsedInput parsed = parseInput(inv);
+        ItemTeacup teacup = parsed.teacup();
         return parsed.valid()
                 && !parsed.teacupStack().isEmpty()
-                && parsed.teacup() != null
+                && teacup != null
                 && parsed.sugarCount() > 0
-                && (parsed.teacup().getSugarAmount() + parsed.sugarCount()) <= 6;
+                && (teacup.getSugarAmount() + parsed.sugarCount()) <= 6;
     }
 
     /**
@@ -50,14 +51,15 @@ public class RecipeTeaSugaring extends CustomRecipe {
      */
     public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ParsedInput parsed = parseInput(inv);
+        ItemTeacup teacup = parsed.teacup();
         if (!parsed.valid()
                 || parsed.teacupStack().isEmpty()
-                || parsed.teacup() == null
+                || teacup == null
                 || parsed.sugarCount() < 1
-                || (parsed.teacup().getSugarAmount() + parsed.sugarCount()) > 6) {
+                || (teacup.getSugarAmount() + parsed.sugarCount()) > 6) {
             return ItemStack.EMPTY;
         }
-        return new ItemStack(getTeacup(parsed.teacup().getSugarAmount() + parsed.sugarCount()));
+        return new ItemStack(getTeacup(teacup.getSugarAmount() + parsed.sugarCount()));
     }
 
     private ParsedInput parseInput(CraftingInput inv) {

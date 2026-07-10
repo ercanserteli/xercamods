@@ -1,14 +1,12 @@
 package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.PaletteUtil;
@@ -413,7 +410,7 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    protected void renderBlurredBackground() {
+    protected void renderBlurredBackground(GuiGraphics guiGraphics) {
         // Skip vanilla's world-blur behind the painting GUI so the scene stays crisp
     }
 
@@ -425,19 +422,15 @@ public class GuiCanvasEdit extends BasePalette {
             super.superRender(guiGraphics, mouseX, mouseY, f);
         }
 
-        // Write cells straight into the shared GUI buffer (guiGraphics.fill flushes per quad and tanks the FPS)
-        Matrix4f matrix = guiGraphics.pose().last().pose();
-        VertexConsumer canvasBuffer = guiGraphics.bufferSource.getBuffer(RenderType.gui());
-
         // Draw the canvas holder
         int holderMargin = sideMargin();
-        batchFill(canvasBuffer, matrix, (int) (canvasX + canvasWidth * 0.25), (int) canvasY - CANVAS_HOLDER_HEIGHT - holderMargin, (int) (canvasX + canvasWidth * 0.75), (int) canvasY - holderMargin, 0xffe1e1e1);
+        guiGraphics.fill((int) (canvasX + canvasWidth * 0.25), (int) canvasY - CANVAS_HOLDER_HEIGHT - holderMargin, (int) (canvasX + canvasWidth * 0.75), (int) canvasY - holderMargin, 0xffe1e1e1);
 
         // For glass canvases, draw a transparency checkerboard so empty cells are visible
         if (glass) {
             for (int i = 0; i < canvasPixelHeight; i++) {
                 for (int j = 0; j < canvasPixelWidth; j++) {
-                    fillChecker(canvasBuffer, matrix, (int) canvasX + j * canvasPixelScale, (int) canvasY + i * canvasPixelScale, i + j);
+                    fillChecker(guiGraphics, (int) canvasX + j * canvasPixelScale, (int) canvasY + i * canvasPixelScale, i + j);
                 }
             }
         }
@@ -447,14 +440,14 @@ public class GuiCanvasEdit extends BasePalette {
             for (int j = 0; j < canvasPixelWidth; j++) {
                 int y = (int) canvasY + i * canvasPixelScale;
                 int x = (int) canvasX + j * canvasPixelScale;
-                batchFill(canvasBuffer, matrix, x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
+                guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
             }
         }
 
         if (!gettingSigned) {
             // Draw the paintable sides and the toggle button
             if (sidesActive) {
-                drawSideLines(canvasBuffer, matrix);
+                drawSideLines(guiGraphics);
             }
             drawSidesToggle(guiGraphics);
 
@@ -463,13 +456,12 @@ public class GuiCanvasEdit extends BasePalette {
                 int y = brushMeterY + i * BRUSH_SPRITE_SIZE;
                 guiGraphics.fill(brushMeterX, y, brushMeterX + 3, y + 3, currentColor.rgbVal());
             }
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, brushMeterX, brushMeterY + (3 - brushSize) * BRUSH_SPRITE_SIZE, 15, 246, 10, 10, 256, 256);
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, brushMeterX, brushMeterY, BRUSH_SPRITE_X, BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * 3, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE * 4, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, brushMeterX, brushMeterY + (3 - brushSize) * BRUSH_SPRITE_SIZE, 15, 246, 10, 10, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, brushMeterX, brushMeterY, BRUSH_SPRITE_X, BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * 3, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE * 4, 256, 256);
 
             // Draw opacity meter
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, brushOpacityMeterX, brushOpacityMeterY, BRUSH_OPACITY_SPRITE_X, BRUSH_OPACITY_SPRITE_Y, BRUSH_OPACITY_SPRITE_SIZE, BRUSH_OPACITY_SPRITE_SIZE * 4 + 3, 256, 256);
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, brushOpacityMeterX - 1, brushOpacityMeterY - 1 + brushOpacitySetting * (BRUSH_OPACITY_SPRITE_SIZE + 1), 212, 240, 16, 16, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, brushOpacityMeterX, brushOpacityMeterY, BRUSH_OPACITY_SPRITE_X, BRUSH_OPACITY_SPRITE_Y, BRUSH_OPACITY_SPRITE_SIZE, BRUSH_OPACITY_SPRITE_SIZE * 4 + 3, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, brushOpacityMeterX - 1, brushOpacityMeterY - 1 + brushOpacitySetting * (BRUSH_OPACITY_SPRITE_SIZE + 1), 212, 240, 16, 16, 256, 256);
 
             // Draw brush and outline
             renderCursor(guiGraphics, mouseX, mouseY);
@@ -478,26 +470,26 @@ public class GuiCanvasEdit extends BasePalette {
                 if (inBrushMeter(mouseX, mouseY)) {
                     int selectedSize = 3 - (mouseY - brushMeterY) / BRUSH_SPRITE_SIZE;
                     if (selectedSize <= 3 && selectedSize >= 0) {
-                        guiGraphics.renderTooltip(font, Component.translatable("canvas.help.brushSize", selectedSize + 1), mouseX, mouseY);
+                        guiGraphics.setTooltipForNextFrame(font, Component.translatable("canvas.help.brushSize", selectedSize + 1), mouseX, mouseY);
                     }
                 } else if (inBrushOpacityMeter(mouseX, mouseY)) {
                     int relativeY = mouseY - brushOpacityMeterY;
                     int selectedOpacity = relativeY / (BRUSH_OPACITY_SPRITE_SIZE + 1);
                     if (selectedOpacity >= 0 && selectedOpacity <= 3) {
                         int percentage = 100 - 25 * selectedOpacity;
-                        guiGraphics.renderTooltip(font, Component.translatable("canvas.help.brushOpacity", percentage), mouseX, mouseY);
+                        guiGraphics.setTooltipForNextFrame(font, Component.translatable("canvas.help.brushOpacity", percentage), mouseX, mouseY);
                     }
                 } else if (inColorPicker(mouseX - (int) paletteX, mouseY - (int) paletteY)) {
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.translatable("canvas.help.colorPicker"),
+                    guiGraphics.setComponentTooltipForNextFrame(font, Arrays.asList(Component.translatable("canvas.help.colorPicker"),
                             Component.translatable("canvas.help.colorPicker.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 } else if (inWater(mouseX - (int) paletteX, mouseY - (int) paletteY)) {
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.translatable("canvas.help.colorRemover"),
+                    guiGraphics.setComponentTooltipForNextFrame(font, Arrays.asList(Component.translatable("canvas.help.colorRemover"),
                             Component.translatable("canvas.help.colorRemover.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 } else if (inCanvasHolder(mouseX, mouseY)) {
-                    guiGraphics.renderComponentTooltip(font, Arrays.asList(Component.translatable("canvas.help.canvasHolder"),
+                    guiGraphics.setComponentTooltipForNextFrame(font, Arrays.asList(Component.translatable("canvas.help.canvasHolder"),
                             Component.translatable("canvas.help.canvasHolder.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
                 } else if (inSidesToggle(mouseX, mouseY)) {
-                    guiGraphics.renderTooltip(font, Component.translatable("canvas.help.toggleSides"), mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("canvas.help.toggleSides"), mouseX, mouseY);
                 }
             }
         } else {
@@ -507,20 +499,20 @@ public class GuiCanvasEdit extends BasePalette {
 
     private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isCarryingColor && carriedColor != null) {
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, carriedColor.rgbVal());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, carriedColor.rgbVal());
 
         } else if (isCarryingWater) {
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, WATER_COLOR.rgbVal());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, WATER_COLOR.rgbVal());
         } else if (isPickingColor) {
             drawOutline(guiGraphics, mouseX, mouseY, 0);
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX, mouseY - COLOR_PICKER_SIZE, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, mouseX, mouseY - COLOR_PICKER_SIZE, COLOR_PICKER_SPRITE_X, COLOR_PICKER_SPRITE_Y, COLOR_PICKER_SIZE, COLOR_PICKER_SIZE, 256, 256);
         } else {
             drawOutline(guiGraphics, mouseX, mouseY, brushSize);
 
             guiGraphics.fill(mouseX, mouseY, mouseX + 3, mouseY + 3, currentColor.rgbVal());
 
             int trueBrushY = BRUSH_SPRITE_Y - BRUSH_SPRITE_SIZE * brushSize;
-            guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, mouseX, mouseY, BRUSH_SPRITE_X, trueBrushY, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, mouseX, mouseY, BRUSH_SPRITE_X, trueBrushY, BRUSH_SPRITE_SIZE, BRUSH_SPRITE_SIZE, 256, 256);
         }
     }
 
@@ -538,7 +530,7 @@ public class GuiCanvasEdit extends BasePalette {
         int y = (anchorRow + minOffset) * canvasPixelScale + (int) canvasY - 1;
 
         Vec2 textureVec = (canvasPixelScale == SMALL_CANVAS_PIXEL_SCALE) ? OUTLINE_POSS_1[brushSize] : OUTLINE_POSS_2[brushSize];
-        guiGraphics.blit(RenderType::guiTextured, PALETTE_TEXTURES, x, y, (int) textureVec.x, (int) textureVec.y, outlineSize, outlineSize, 256, 256, 0xFF4D4D4D);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, x, y, (int) textureVec.x, (int) textureVec.y, outlineSize, outlineSize, 256, 256, 0xFF4D4D4D);
     }
 
     private void drawSigning(GuiGraphics guiGraphics) {
@@ -808,41 +800,31 @@ public class GuiCanvasEdit extends BasePalette {
     private static final int CHECKER_LIGHT = 0xFFBFBFBF;
     private static final int CHECKER_DARK = 0xFF7F7F7F;
 
-    /**
-     * Writes one coloured quad into the shared GUI buffer, like {@link GuiGraphics#fill} but without flushing.
-     */
-    private static void batchFill(VertexConsumer buffer, Matrix4f matrix, int x1, int y1, int x2, int y2, int color) {
-        buffer.addVertex(matrix, x1, y1, 0.0f).setColor(color);
-        buffer.addVertex(matrix, x1, y2, 0.0f).setColor(color);
-        buffer.addVertex(matrix, x2, y2, 0.0f).setColor(color);
-        buffer.addVertex(matrix, x2, y1, 0.0f).setColor(color);
+    private void fillChecker(GuiGraphics guiGraphics, int x, int y, int parity) {
+        guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, (parity & 1) == 0 ? CHECKER_LIGHT : CHECKER_DARK);
     }
 
-    private void fillChecker(VertexConsumer buffer, Matrix4f matrix, int x, int y, int parity) {
-        batchFill(buffer, matrix, x, y, x + canvasPixelScale, y + canvasPixelScale, (parity & 1) == 0 ? CHECKER_LIGHT : CHECKER_DARK);
-    }
-
-    private void drawSideLines(VertexConsumer buffer, Matrix4f matrix) {
+    private void drawSideLines(GuiGraphics guiGraphics) {
         int scale = canvasPixelScale;
         int cx = (int) canvasX;
         int cy = (int) canvasY;
         for (int k = 0; k < canvasPixelWidth; k++) {
             int x = cx + k * scale;
             if (glass) {
-                fillChecker(buffer, matrix, x, cy - scale, k - 1);
-                fillChecker(buffer, matrix, x, cy + canvasHeight, k + canvasPixelHeight);
+                fillChecker(guiGraphics, x, cy - scale, k - 1);
+                fillChecker(guiGraphics, x, cy + canvasHeight, k + canvasPixelHeight);
             }
-            batchFill(buffer, matrix, x, cy - scale, x + scale, cy, getSidePixel(CanvasSides.topOffset() + k));
-            batchFill(buffer, matrix, x, cy + canvasHeight, x + scale, cy + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
+            guiGraphics.fill(x, cy - scale, x + scale, cy, getSidePixel(CanvasSides.topOffset() + k));
+            guiGraphics.fill(x, cy + canvasHeight, x + scale, cy + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
         }
         for (int i = 0; i < canvasPixelHeight; i++) {
             int y = cy + i * scale;
             if (glass) {
-                fillChecker(buffer, matrix, cx - scale, y, i - 1);
-                fillChecker(buffer, matrix, cx + canvasWidth, y, i + canvasPixelWidth);
+                fillChecker(guiGraphics, cx - scale, y, i - 1);
+                fillChecker(guiGraphics, cx + canvasWidth, y, i + canvasPixelWidth);
             }
-            batchFill(buffer, matrix, cx - scale, y, cx, y + scale, getSidePixel(CanvasSides.leftOffset(canvasType) + i));
-            batchFill(buffer, matrix, cx + canvasWidth, y, cx + canvasWidth + scale, y + scale, getSidePixel(CanvasSides.rightOffset(canvasType) + i));
+            guiGraphics.fill(cx - scale, y, cx, y + scale, getSidePixel(CanvasSides.leftOffset(canvasType) + i));
+            guiGraphics.fill(cx + canvasWidth, y, cx + canvasWidth + scale, y + scale, getSidePixel(CanvasSides.rightOffset(canvasType) + i));
         }
     }
 
@@ -942,7 +924,7 @@ public class GuiCanvasEdit extends BasePalette {
                 yTexStartNew += this.yDiffText;
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
-            guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), xTexStartNew, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), xTexStartNew, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
         }
     }
 }

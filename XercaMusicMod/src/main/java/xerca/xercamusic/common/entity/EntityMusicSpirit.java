@@ -2,7 +2,6 @@ package xerca.xercamusic.common.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -17,8 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
@@ -30,6 +29,7 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemBlockInstrument;
 import xerca.xercamusic.common.item.Items;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
@@ -156,30 +156,30 @@ public class EntityMusicSpirit extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput input) {
         notes.clear();
-        NoteEvent.fillArrayFromNBT(notes, tag);
-        this.length = sanitizeLengthBeats(tag.getIntOr(KEY_LENGTH, 0));
-        this.bps = sanitizeBps(tag.getIntOr(KEY_BPS, 0));
-        this.volume = sanitizeVolume(tag.getFloatOr(KEY_VOLUME, 0.0f));
-        this.isPlaying = tag.getBooleanOr("playing", false);
-        if (tag.contains("bX") && tag.contains("bY") && tag.contains("bZ") && tag.contains("bIns")) {
-            setBlockPosAndInstrument(new BlockPos(tag.getIntOr("bX", 0), tag.getIntOr("bY", 0), tag.getIntOr("bZ", 0)), tag.getIntOr("bIns", 0));
+        NoteEvent.fillArrayFromNBT(notes, input);
+        this.length = sanitizeLengthBeats(input.getIntOr(KEY_LENGTH, 0));
+        this.bps = sanitizeBps(input.getIntOr(KEY_BPS, 0));
+        this.volume = sanitizeVolume(input.getFloatOr(KEY_VOLUME, 0.0f));
+        this.isPlaying = input.getBooleanOr("playing", false);
+        if (input.getInt("bX").isPresent() && input.getInt("bY").isPresent() && input.getInt("bZ").isPresent() && input.getInt("bIns").isPresent()) {
+            setBlockPosAndInstrument(new BlockPos(input.getIntOr("bX", 0), input.getIntOr("bY", 0), input.getIntOr("bZ", 0)), input.getIntOr("bIns", 0));
         }
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
-        NoteEvent.fillNBTFromArray(notes, tag);
-        tag.putInt(KEY_LENGTH, length);
-        tag.putByte(KEY_BPS, bps);
-        tag.putFloat(KEY_VOLUME, volume);
-        tag.putBoolean("playing", isPlaying);
+    protected void addAdditionalSaveData(ValueOutput output) {
+        NoteEvent.fillNBTFromArray(notes, output);
+        output.putInt(KEY_LENGTH, length);
+        output.putByte(KEY_BPS, bps);
+        output.putFloat(KEY_VOLUME, volume);
+        output.putBoolean("playing", isPlaying);
         if (blockInstrument != null && blockInsPos != null) {
-            tag.putInt("bX", blockInsPos.getX());
-            tag.putInt("bY", blockInsPos.getY());
-            tag.putInt("bZ", blockInsPos.getZ());
-            tag.putInt("bIns", blockInstrument.getItemInstrument().getInstrumentId());
+            output.putInt("bX", blockInsPos.getX());
+            output.putInt("bY", blockInsPos.getY());
+            output.putInt("bZ", blockInsPos.getZ());
+            output.putInt("bIns", blockInstrument.getItemInstrument().getInstrumentId());
         }
     }
 
@@ -240,18 +240,19 @@ public class EntityMusicSpirit extends Entity {
             }
         }
 
-        if (this.note == null || !level().isClientSide) {
+        ItemStack note = this.note;
+        if (note == null || !level().isClientSide) {
             return;
         }
-        UUID id = this.note.get(Items.SHEET_ID);
-        int ver = this.note.getOrDefault(Items.SHEET_VERSION, -1);
-        length = this.note.getOrDefault(Items.SHEET_LENGTH, 0);
+        UUID id = note.get(Items.SHEET_ID);
+        int ver = note.getOrDefault(Items.SHEET_VERSION, -1);
+        length = note.getOrDefault(Items.SHEET_LENGTH, 0);
         if (id == null || ver < 0 || length <= 0) {
             return;
         }
 
-        bps = sanitizeBps(this.note.getOrDefault(Items.SHEET_BPS, (byte) 8));
-        volume = sanitizeVolume(this.note.getOrDefault(Items.SHEET_VOLUME, 1.f));
+        bps = sanitizeBps(note.getOrDefault(Items.SHEET_BPS, (byte) 8));
+        volume = sanitizeVolume(note.getOrDefault(Items.SHEET_VOLUME, 1.f));
         MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
             MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
             if (data != null) {
@@ -270,7 +271,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         // No need for synching data
     }
 
@@ -294,8 +295,9 @@ public class EntityMusicSpirit extends Entity {
             this.remove(RemovalReason.DISCARDED);
             return true;
         }
-        if (this.blockInsPos != null && this.blockInstrument != null) {
-            if (!Objects.equals(level().getBlockState(this.blockInsPos).getBlock(), this.blockInstrument)) {
+        BlockPos insPos = this.blockInsPos;
+        if (insPos != null && this.blockInstrument != null) {
+            if (!Objects.equals(level().getBlockState(insPos).getBlock(), this.blockInstrument)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
             }

@@ -12,12 +12,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.packets.clientbound.ImportMusicPacket;
 import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -139,13 +139,12 @@ public final class CommandImport {
 
         UUID tagId = tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null);
         if (tagId != null && tag.contains(KEY_VERSION)) {
-            UUID id = tagId;
             int ver = tag.getIntOr(KEY_VERSION, 0);
             List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
 
             if (notes == null) {
                 // maybe it was sent in parts
-                UUID bufferId = importBufferId != null ? importBufferId : id;
+                UUID bufferId = importBufferId != null ? importBufferId : tagId;
                 notes = MusicManager.getFinishedNotesFromBuffer(bufferId);
                 if (notes.isEmpty()) {
                     return false;
@@ -156,9 +155,9 @@ public final class CommandImport {
                 return false;
             }
 
-            MusicManager.setMusicData(id, ver, notes, volumeMarkers, server);
+            MusicManager.setMusicData(tagId, ver, notes, volumeMarkers, server);
             if (player instanceof ServerPlayer serverPlayer) {
-                sendToClient(serverPlayer, new MusicDataResponsePacket(id, ver, notes, volumeMarkers));
+                sendToClient(serverPlayer, new MusicDataResponsePacket(tagId, ver, notes, volumeMarkers));
             }
             return true;
         }

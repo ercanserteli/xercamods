@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -24,13 +25,14 @@ public class ItemGlass extends Item {
     public static boolean getCarbonatedWater(UseOnContext ctx) {
         BlockPos pos = ctx.getClickedPos();
         BlockState state = ctx.getLevel().getBlockState(pos);
-        if (ctx.getPlayer() != null && state.getBlock() == Blocks.SOUL_SAND &&
+        Player player = ctx.getPlayer();
+        if (player != null && state.getBlock() == Blocks.SOUL_SAND &&
                 ctx.getClickedFace() == Direction.UP &&
                 ctx.getLevel().getBlockState(pos.above()).getBlock() == Blocks.BUBBLE_COLUMN
         ) {
             ctx.getItemInHand().shrink(1);
-            ctx.getPlayer().addItem(new ItemStack(Items.CARBONATED_WATER));
-            ctx.getLevel().playSound(ctx.getPlayer(), ctx.getClickedPos(), SoundEvents.FIZZY, SoundSource.PLAYERS,
+            player.addItem(new ItemStack(Items.CARBONATED_WATER));
+            ctx.getLevel().playSound(player, ctx.getClickedPos(), SoundEvents.FIZZY, SoundSource.PLAYERS,
                     1.0f, 0.9f + ctx.getLevel().random.nextFloat() * 0.2f);
             return true;
         }

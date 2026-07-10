@@ -1,6 +1,5 @@
 package xerca.xercatools.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -12,6 +11,8 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -108,11 +109,12 @@ public class EntityHealthOrb extends Entity {
             this.followingPlayer = null;
         }
 
-        if (this.followingPlayer != null) {
+        Player following = this.followingPlayer;
+        if (following != null) {
             Vec3 toPlayer = new Vec3(
-                    this.followingPlayer.getX() - this.getX(),
-                    this.followingPlayer.getY() + this.followingPlayer.getEyeHeight() / 2.0D - this.getY(),
-                    this.followingPlayer.getZ() - this.getZ()
+                    following.getX() - this.getX(),
+                    following.getY() + following.getEyeHeight() / 2.0D - this.getY(),
+                    following.getZ() - this.getZ()
             );
             double distSq = toPlayer.lengthSqr();
             if (distSq < 16.0D) {
@@ -136,10 +138,11 @@ public class EntityHealthOrb extends Entity {
 
     private void scanForEntities() {
         if (this.followingPlayer == null || this.followingPlayer.distanceToSqr(this) > 36.0D) {
+            Player donor = this.donorPlayer;
             if (attackingPlayer != null && attackingPlayer.distanceToSqr(this) <= 36.0D) {
                 followingPlayer = attackingPlayer;
-            } else if (donorPlayer != null) {
-                this.followingPlayer = this.level().getNearestPlayer(donorPlayer.getX(), donorPlayer.getY(), donorPlayer.getZ(), 5.0D, player -> player.isAlive() && !player.isSpectator());
+            } else if (donor != null) {
+                this.followingPlayer = this.level().getNearestPlayer(donor.getX(), donor.getY(), donor.getZ(), 5.0D, player -> player.isAlive() && !player.isSpectator());
             } else {
                 this.followingPlayer = this.level().getNearestPlayer(this, 5.0D);
             }
@@ -215,7 +218,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         tag.putShort("Health", (short) this.health);
         tag.putShort("Age", (short) this.age);
         tag.putInt("Count", this.count);
@@ -224,7 +227,7 @@ public class EntityHealthOrb extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         this.health = tag.getShortOr("Health", (short) 0);
         this.age = tag.getShortOr("Age", (short) 0);
         this.count = Math.max(tag.getIntOr("Count", 0), 1);

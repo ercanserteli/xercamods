@@ -44,7 +44,6 @@ import java.util.function.Consumer;
 
 public class ItemWarhammer extends Item {
     private final float pushAmount;
-    private final ToolMaterial material;
 
     public static ItemAttributeModifiers createAttributes(float attackDamage, float attackSpeed) {
         return ItemAttributeModifiers.builder()
@@ -58,7 +57,6 @@ public class ItemWarhammer extends Item {
                 ? new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(mat.durability()).fireResistant().enchantable(mat.enchantmentValue()).repairable(mat.repairItems()).attributes(createAttributes(1.0F + mat.attackDamageBonus(), -3.0F))
                 : new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(mat.durability()).enchantable(mat.enchantmentValue()).repairable(mat.repairItems()).attributes(createAttributes(1.0F + mat.attackDamageBonus(), -3.0F)));
 
-        this.material = mat;
         this.pushAmount = getPushFromMaterial(mat);
     }
 

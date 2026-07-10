@@ -1,6 +1,5 @@
 package xerca.xercatools.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -22,6 +21,8 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -157,7 +158,7 @@ public class EntityGrabHook extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         this.age = tag.getIntOr("age", 0);
         this.inGround = tag.getBooleanOr("in_ground", false);
         this.ticksInAir = tag.getIntOr("ticks_in_air", 0);
@@ -171,7 +172,7 @@ public class EntityGrabHook extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         tag.putInt("age", this.age);
         tag.putBoolean("in_ground", this.inGround);
         tag.putInt("ticks_in_air", this.ticksInAir);
@@ -302,8 +303,8 @@ public class EntityGrabHook extends Entity {
             this.level().playSound(null, angler, SoundEvents.HOOK_CLINK, SoundSource.PLAYERS, 0.25F, pitch);
         }
 
-        this.caughtEntity.noPhysics = true;
-        this.caughtEntity.stopRiding();
+        caught.noPhysics = true;
+        caught.stopRiding();
     }
 
     private void pullCaughtEntity(Player angler) {

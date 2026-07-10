@@ -11,9 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import xerca.xercafood.common.SoundEvents;
 
 import static net.minecraft.world.level.block.CampfireBlock.LIT;
-import static xerca.xercafood.common.block.BlockDoner.IS_RAW;
-import static xerca.xercafood.common.block.BlockDoner.MEAT_AMOUNT;
-import static xerca.xercafood.common.block.BlockDoner.SIDE;
+import static xerca.xercafood.common.block.BlockDoner.*;
 
 public class BlockEntityDoner extends BlockEntity {
     private int spinTicks;
@@ -48,6 +46,7 @@ public class BlockEntityDoner extends BlockEntity {
     }
 
     private boolean gettingRoasted() {
+        Level level = this.level;
         if (level == null) {
             return false;
         }

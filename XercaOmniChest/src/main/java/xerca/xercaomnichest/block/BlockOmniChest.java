@@ -91,7 +91,8 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
-        if (level.getServer() == null) {
+        MinecraftServer server = level.getServer();
+        if (server == null) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
@@ -105,7 +106,7 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
-        OmniChestInventory inventory = getContainer(level.getServer());
+        OmniChestInventory inventory = getContainer(server);
         inventory.setActiveChest(omniChest, player);
         player.openMenu(menuProvider(inventory));
         if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {

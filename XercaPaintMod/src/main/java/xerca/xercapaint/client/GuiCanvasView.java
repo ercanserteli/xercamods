@@ -1,16 +1,13 @@
 package xerca.xercapaint.client;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityEasel;
@@ -93,30 +90,16 @@ public class GuiCanvasView extends Screen {
     private static final int CHECKER_LIGHT = 0xFFBFBFBF;
     private static final int CHECKER_DARK = 0xFF7F7F7F;
 
-    /**
-     * Writes one coloured quad into the shared GUI buffer, like {@link GuiGraphics#fill} but without flushing.
-     */
-    private static void batchFill(VertexConsumer buffer, Matrix4f matrix, int x1, int y1, int x2, int y2, int color) {
-        buffer.addVertex(matrix, x1, y1, 0.0f).setColor(color);
-        buffer.addVertex(matrix, x1, y2, 0.0f).setColor(color);
-        buffer.addVertex(matrix, x2, y2, 0.0f).setColor(color);
-        buffer.addVertex(matrix, x2, y1, 0.0f).setColor(color);
-    }
-
-    private void fillChecker(VertexConsumer buffer, Matrix4f matrix, int x, int y, int parity) {
-        batchFill(buffer, matrix, x, y, x + canvasPixelScale, y + canvasPixelScale, (parity & 1) == 0 ? CHECKER_LIGHT : CHECKER_DARK);
+    private void fillChecker(GuiGraphics guiGraphics, int x, int y, int parity) {
+        guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, (parity & 1) == 0 ? CHECKER_LIGHT : CHECKER_DARK);
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
-        // Write cells straight into the shared GUI buffer (guiGraphics.fill flushes per quad and tanks the FPS)
-        Matrix4f matrix = guiGraphics.pose().last().pose();
-        VertexConsumer buffer = guiGraphics.bufferSource.getBuffer(RenderType.gui());
-
         if (glass) {
             for (int i = 0; i < canvasPixelHeight; i++) {
                 for (int j = 0; j < canvasPixelWidth; j++) {
-                    fillChecker(buffer, matrix, canvasX + j * canvasPixelScale, canvasY + i * canvasPixelScale, i + j);
+                    fillChecker(guiGraphics, canvasX + j * canvasPixelScale, canvasY + i * canvasPixelScale, i + j);
                 }
             }
         }
@@ -125,7 +108,7 @@ public class GuiCanvasView extends Screen {
             for (int j = 0; j < canvasPixelWidth; j++) {
                 int x = canvasX + j * canvasPixelScale;
                 int y = canvasY + i * canvasPixelScale;
-                batchFill(buffer, matrix, x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
+                guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
             }
         }
 
@@ -135,20 +118,20 @@ public class GuiCanvasView extends Screen {
             for (int k = 0; k < canvasPixelWidth; k++) {
                 int x = canvasX + k * scale;
                 if (glass) {
-                    fillChecker(buffer, matrix, x, canvasY - scale, k - 1);
-                    fillChecker(buffer, matrix, x, canvasY + canvasHeight, k + canvasPixelHeight);
+                    fillChecker(guiGraphics, x, canvasY - scale, k - 1);
+                    fillChecker(guiGraphics, x, canvasY + canvasHeight, k + canvasPixelHeight);
                 }
-                batchFill(buffer, matrix, x, canvasY - scale, x + scale, canvasY, getSidePixel(CanvasSides.topOffset() + k));
-                batchFill(buffer, matrix, x, canvasY + canvasHeight, x + scale, canvasY + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
+                guiGraphics.fill(x, canvasY - scale, x + scale, canvasY, getSidePixel(CanvasSides.topOffset() + k));
+                guiGraphics.fill(x, canvasY + canvasHeight, x + scale, canvasY + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
             }
             for (int i = 0; i < canvasPixelHeight; i++) {
                 int y = canvasY + i * scale;
                 if (glass) {
-                    fillChecker(buffer, matrix, canvasX - scale, y, i - 1);
-                    fillChecker(buffer, matrix, canvasX + canvasWidth, y, i + canvasPixelWidth);
+                    fillChecker(guiGraphics, canvasX - scale, y, i - 1);
+                    fillChecker(guiGraphics, canvasX + canvasWidth, y, i + canvasPixelWidth);
                 }
-                batchFill(buffer, matrix, canvasX - scale, y, canvasX, y + scale, getSidePixel(CanvasSides.leftOffset(canvasType) + i));
-                batchFill(buffer, matrix, canvasX + canvasWidth, y, canvasX + canvasWidth + scale, y + scale, getSidePixel(CanvasSides.rightOffset(canvasType) + i));
+                guiGraphics.fill(canvasX - scale, y, canvasX, y + scale, getSidePixel(CanvasSides.leftOffset(canvasType) + i));
+                guiGraphics.fill(canvasX + canvasWidth, y, canvasX + canvasWidth + scale, y + scale, getSidePixel(CanvasSides.rightOffset(canvasType) + i));
             }
         }
 

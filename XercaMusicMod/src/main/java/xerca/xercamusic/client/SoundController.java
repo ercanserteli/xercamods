@@ -3,7 +3,8 @@ package xerca.xercamusic.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;

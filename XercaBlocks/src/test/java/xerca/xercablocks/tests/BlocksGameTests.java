@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public final class BlocksGameTests {
 
     private static ResourceLocation recipeId(String path) {
@@ -472,7 +473,9 @@ public final class BlocksGameTests {
         original.setItem(0, new ItemStack(net.minecraft.world.item.Items.BOOK));
         original.setItem(5, new ItemStack(net.minecraft.world.item.Items.WRITTEN_BOOK));
 
-        var savedTag = original.saveWithId(helper.getLevel().registryAccess());
+        var savedOutput = net.minecraft.world.level.storage.TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING, helper.getLevel().registryAccess());
+        original.saveWithId(savedOutput);
+        var savedTag = savedOutput.buildResult();
         helper.getLevel().getChunkAt(pos).removeBlockEntity(pos);
 
         BlockEntity reloaded = BlockEntity.loadStatic(pos, helper.getLevel().getBlockState(pos), savedTag, helper.getLevel().registryAccess());

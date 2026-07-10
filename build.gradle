@@ -121,13 +121,14 @@ def registerAggregateTask = { String name, String taskGroup, String taskDescript
 tasks.register('staticAnalysisAll') {
     group = 'verification'
     description = 'Runs PMD and SpotBugs for all mod projects.'
+    dependsOn(modProjects.collect { it.tasks.named('clean') })
     dependsOn(modProjects.collect { it.tasks.named('pmdMain') })
     dependsOn(modProjects.collect { it.tasks.named('spotbugsMain') })
 }
 
 def coverageAllTask = tasks.register('coverageAll') {
     group = 'verification'
-    description = 'Runs Fabric game tests and generates JaCoCo XML coverage for all mod projects.'
+    description = 'Runs Fabric server and client game tests and generates JaCoCo XML coverage for all mod projects.'
 }
 
 tasks.register('sonarReportsAll') {
@@ -186,12 +187,18 @@ subprojects {
 
     afterEvaluate {
         def gameTestTask = tasks.named('runGameTest')
+        def gameTestTasks = [gameTestTask]
+        if (tasks.findByName('runClientGameTest') != null) {
+            gameTestTasks << tasks.named('runClientGameTest')
+        }
         def jacocoGameTestReportTask = tasks.register('jacocoGameTestReport', JacocoReport) {
             group = 'verification'
-            description = 'Generates JaCoCo coverage from Fabric game tests.'
-            dependsOn(gameTestTask)
+            description = 'Generates JaCoCo coverage from Fabric server and client game tests.'
+            dependsOn(gameTestTasks)
 
-            executionData(layout.buildDirectory.file('jacoco/runGameTest.exec'))
+            executionData(gameTestTasks.collect { task ->
+                layout.buildDirectory.file("jacoco/${task.name}.exec")
+            })
             sourceDirectories.from(files(modSourceDirectory))
             classDirectories.from(sourceSets.main.output.classesDirs)
 
@@ -253,9 +260,11 @@ subprojects {
             }
         }
 
-        gameTestTask.configure {
-            jacoco.applyTo(it)
-            finalizedBy(jacocoGameTestReportTask)
+        gameTestTasks.each { task ->
+            task.configure {
+                jacoco.applyTo(it)
+                finalizedBy(jacocoGameTestReportTask)
+            }
         }
     }
 

@@ -23,7 +23,11 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityD
 
     @Override
     public void render(BlockEntityDoner blockEntity, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPos) {
-        if (blockRenderer == null) blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        BlockRenderDispatcher renderer = blockRenderer;
+        if (renderer == null) {
+            renderer = Minecraft.getInstance().getBlockRenderer();
+            blockRenderer = renderer;
+        }
 
         float f = blockEntity.getAnimationProgress(partialTicks);
         matrixStackIn.pushPose();
@@ -35,7 +39,7 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityD
         BlockState bs = blockEntity.getBlockState();
 
         Blocks.BLOCK_DONER.setRenderType(RenderShape.MODEL);
-        blockRenderer.renderSingleBlock(bs, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY);
+        renderer.renderSingleBlock(bs, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY);
         Blocks.BLOCK_DONER.setRenderType(RenderShape.INVISIBLE);
 
         matrixStackIn.popPose();

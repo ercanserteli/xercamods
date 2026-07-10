@@ -24,11 +24,12 @@ public class RecipeTeaRefilling extends CustomRecipe {
      */
     public boolean matches(CraftingInput inv, Level worldIn) {
         ParsedInput parsed = parseInput(inv);
+        ItemTeapot teapot = parsed.teapot();
         return parsed.valid()
                 && !parsed.teapotStack().isEmpty()
-                && parsed.teapot() != null
-                && !parsed.teapot().isHot()
-                && parsed.teapot().getTeaAmount() + parsed.teaCount() <= 7
+                && teapot != null
+                && !teapot.isHot()
+                && teapot.getTeaAmount() + parsed.teaCount() <= 7
                 && parsed.teaCount() > 0;
     }
 
@@ -37,15 +38,16 @@ public class RecipeTeaRefilling extends CustomRecipe {
      */
     public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ParsedInput parsed = parseInput(inv);
+        ItemTeapot teapot = parsed.teapot();
         if (!parsed.valid()
                 || parsed.teapotStack().isEmpty()
-                || parsed.teapot() == null
+                || teapot == null
                 || parsed.teaCount() <= 0
-                || parsed.teapot().isHot()
-                || parsed.teapot().getTeaAmount() + parsed.teaCount() > 7) {
+                || teapot.isHot()
+                || teapot.getTeaAmount() + parsed.teaCount() > 7) {
             return ItemStack.EMPTY;
         }
-        return new ItemStack(RecipeTeaFilling.getFullTeapot(parsed.teapot().getTeaAmount() + parsed.teaCount()));
+        return new ItemStack(RecipeTeaFilling.getFullTeapot(teapot.getTeaAmount() + parsed.teaCount()));
     }
 
 

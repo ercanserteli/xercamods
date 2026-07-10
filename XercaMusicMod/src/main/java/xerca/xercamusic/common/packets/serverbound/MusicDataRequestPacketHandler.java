@@ -14,7 +14,7 @@ public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayP
     private static void processMessage(MusicDataRequestPacket msg, ServerPlayer pl) {
         UUID id = msg.id();
         int version = msg.version();
-        MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.server);
+        MusicManager.MusicData data = MusicManager.getMusicData(id, version, pl.getServer());
         MusicDataResponsePacket packet;
         if (data != null) {
             packet = new MusicDataResponsePacket(id, data.version(), data.notes(), data.volumeMarkers());

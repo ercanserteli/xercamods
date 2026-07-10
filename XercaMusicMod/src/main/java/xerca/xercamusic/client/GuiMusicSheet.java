@@ -1,6 +1,5 @@
 package xerca.xercamusic.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -9,7 +8,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
+import org.joml.Matrix3x2fStack;
 import xerca.xercamusic.common.*;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -622,61 +623,61 @@ public class GuiMusicSheet extends Screen {
         boolean hideForHelp = helpOn;
         boolean hideForGlissando = glissandoMode;
         boolean showNormal = !hideForHelp && !hideForGlissando && !this.gettingSigned;
-        requireWidget(this.bpmDown, "bpmDown");
-        requireWidget(this.bpmUp, "bpmUp");
-        requireWidget(this.buttonPreview, "buttonPreview");
-        requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns");
-        requireWidget(this.sliderSheetVolume, "sliderSheetVolume");
-        requireWidget(this.noteEditBox, "noteEditBox");
-        requireWidget(this.markerEditBox, "markerEditBox");
-        requireWidget(this.octaveDown, "octaveDown");
-        requireWidget(this.octaveUp, "octaveUp");
-        requireWidget(this.sliderTime, "sliderTime");
-        requireWidget(this.hlUp, "hlUp");
-        requireWidget(this.hlDown, "hlDown");
-        requireWidget(this.sliderNoteVolume, "sliderNoteVolume");
-        requireWidget(this.buttonHelp, "buttonHelp");
-        requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors");
-        requireWidget(this.buttonRecord, "buttonRecord");
+        var bpmDown = requireWidget(this.bpmDown, "bpmDown");
+        var bpmUp = requireWidget(this.bpmUp, "bpmUp");
+        var buttonPreview = requireWidget(this.buttonPreview, "buttonPreview");
+        var buttonLockPrevIns = requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns");
+        var sliderSheetVolume = requireWidget(this.sliderSheetVolume, "sliderSheetVolume");
+        var noteEditBox = requireWidget(this.noteEditBox, "noteEditBox");
+        var markerEditBox = requireWidget(this.markerEditBox, "markerEditBox");
+        var octaveDown = requireWidget(this.octaveDown, "octaveDown");
+        var octaveUp = requireWidget(this.octaveUp, "octaveUp");
+        var sliderTime = requireWidget(this.sliderTime, "sliderTime");
+        var hlUp = requireWidget(this.hlUp, "hlUp");
+        var hlDown = requireWidget(this.hlDown, "hlDown");
+        var sliderNoteVolume = requireWidget(this.sliderNoteVolume, "sliderNoteVolume");
+        var buttonHelp = requireWidget(this.buttonHelp, "buttonHelp");
+        var buttonHideNeighbors = requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors");
+        var buttonRecord = requireWidget(this.buttonRecord, "buttonRecord");
 
         if (!this.isSigned) {
-            requireWidget(this.buttonSign, "buttonSign");
-            requireWidget(this.buttonCancel, "buttonCancel");
-            requireWidget(this.buttonFinalize, "buttonFinalize");
-            this.buttonSign.visible = !this.gettingSigned;
-            this.buttonSign.active = !this.helpOn && notRecording;
-            this.buttonCancel.visible = this.gettingSigned;
-            this.buttonFinalize.visible = this.gettingSigned;
-            this.buttonFinalize.active = !this.noteTitle.trim().isEmpty();
+            var buttonSign = requireWidget(this.buttonSign, "buttonSign");
+            var buttonCancel = requireWidget(this.buttonCancel, "buttonCancel");
+            var buttonFinalize = requireWidget(this.buttonFinalize, "buttonFinalize");
+            buttonSign.visible = !this.gettingSigned;
+            buttonSign.active = !this.helpOn && notRecording;
+            buttonCancel.visible = this.gettingSigned;
+            buttonFinalize.visible = this.gettingSigned;
+            buttonFinalize.active = !this.noteTitle.trim().isEmpty();
         }
-        this.bpmDown.visible = this.bpmUp.visible = showNormal && editable;
-        this.bpmDown.active = this.bpmUp.active = notRecording;
-        this.buttonPreview.visible = showNormal;
-        this.buttonPreview.active = notRecording;
-        this.buttonLockPrevIns.visible = showNormal;
-        this.buttonLockPrevIns.active = editable && notRecording;
-        this.sliderSheetVolume.visible = showNormal;
-        this.sliderSheetVolume.active = editable && notRecording;
-        this.noteEditBox.visible = false;
-        this.noteEditBox.active = false;
-        this.markerEditBox.visible = false;
-        this.markerEditBox.active = false;
-        this.octaveDown.visible = showNormal;
-        this.octaveUp.visible = showNormal;
-        this.sliderTime.visible = showNormal;
-        this.sliderTime.active = notRecording;
-        this.hlUp.visible = showNormal && editable;
-        this.hlUp.active = editable && notRecording;
-        this.hlDown.visible = showNormal && editable;
-        this.hlDown.active = editable && notRecording;
-        this.sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned;
-        this.sliderNoteVolume.active = this.sliderNoteVolume.visible && notRecording;
-        this.buttonHelp.visible = !this.isSigned && !this.gettingSigned;
-        this.buttonHelp.active = buttonHelp.visible && notRecording;
-        this.buttonHideNeighbors.visible = showNormal && !this.neighborNotes.isEmpty();
-        this.buttonHideNeighbors.active = notRecording;
-        this.buttonRecord.visible = showNormal && !this.isSigned;
-        this.buttonRecord.active = this.recording || this.preRecording || !this.previewing;
+        bpmDown.visible = bpmUp.visible = showNormal && editable;
+        bpmDown.active = bpmUp.active = notRecording;
+        buttonPreview.visible = showNormal;
+        buttonPreview.active = notRecording;
+        buttonLockPrevIns.visible = showNormal;
+        buttonLockPrevIns.active = editable && notRecording;
+        sliderSheetVolume.visible = showNormal;
+        sliderSheetVolume.active = editable && notRecording;
+        noteEditBox.visible = false;
+        noteEditBox.active = false;
+        markerEditBox.visible = false;
+        markerEditBox.active = false;
+        octaveDown.visible = showNormal;
+        octaveUp.visible = showNormal;
+        sliderTime.visible = showNormal;
+        sliderTime.active = notRecording;
+        hlUp.visible = showNormal && editable;
+        hlUp.active = editable && notRecording;
+        hlDown.visible = showNormal && editable;
+        hlDown.active = editable && notRecording;
+        sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned;
+        sliderNoteVolume.active = sliderNoteVolume.visible && notRecording;
+        buttonHelp.visible = !this.isSigned && !this.gettingSigned;
+        buttonHelp.active = buttonHelp.visible && notRecording;
+        buttonHideNeighbors.visible = showNormal && !this.neighborNotes.isEmpty();
+        buttonHideNeighbors.active = notRecording;
+        buttonRecord.visible = showNormal && !this.isSigned;
+        buttonRecord.active = this.recording || this.preRecording || !this.previewing;
     }
 
     void toggleHelp() {
@@ -923,7 +924,7 @@ public class GuiMusicSheet extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        PoseStack stack = guiGraphics.pose();
+        Matrix3x2fStack stack = guiGraphics.pose();
         renderMouseX = mouseX;
         renderMouseY = mouseY;
         if (previewing || recording || preRecording) {
@@ -980,8 +981,8 @@ public class GuiMusicSheet extends Screen {
             }
         }
 
-        guiGraphics.blit(RenderType::guiTextured, NOTE_GUI_LEFT_TEXTURE, noteImageLeftX, noteImageY + 7, NOTE_IMAGE_LEFT_TEX_X, NOTE_IMAGE_LEFT_TEX_Y, NOTE_IMAGE_LEFT_WIDTH, NOTE_IMAGE_LEFT_HEIGHT, 256, 256);
-        guiGraphics.blit(RenderType::guiTextured, NOTE_GUI_TEXTURES, noteImageX, noteImageY, NOTE_IMAGE_TEX_X, NOTE_IMAGE_TEX_Y, NOTE_IMAGE_WIDTH, NOTE_IMAGE_HEIGHT, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, NOTE_GUI_LEFT_TEXTURE, noteImageLeftX, noteImageY + 7, NOTE_IMAGE_LEFT_TEX_X, NOTE_IMAGE_LEFT_TEX_Y, NOTE_IMAGE_LEFT_WIDTH, NOTE_IMAGE_LEFT_HEIGHT, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, NOTE_GUI_TEXTURES, noteImageX, noteImageY, NOTE_IMAGE_TEX_X, NOTE_IMAGE_TEX_Y, NOTE_IMAGE_WIDTH, NOTE_IMAGE_HEIGHT, 256, 256);
         if (gettingSigned) {
             drawSigning(guiGraphics);
         } else if (!helpOn) {
@@ -1034,8 +1035,8 @@ public class GuiMusicSheet extends Screen {
                 }
 
                 // Draw measure numbers
-                stack.pushPose();
-                stack.scale(0.5f, 0.5f, 0.5f);
+                stack.pushMatrix();
+                stack.scale(0.5f, 0.5f);
                 for (int i = sliderPosition; i < sliderPosition + BEATS_IN_SCREEN; i++) {
                     if (i % highlightInterval == 0) {
                         final int x = (i - sliderPosition) * 3 + noteImageLeftX + NOTE_REGION_LEFT;
@@ -1045,7 +1046,7 @@ public class GuiMusicSheet extends Screen {
                         guiGraphics.drawString(font, name, (int) ((x - (w - 6.0f) / 4.0f) * 2.f), y * 2, 0xFF444400, false);
                     }
                 }
-                stack.popPose();
+                stack.popMatrix();
             }
 
             // Draw volume markers (crescendo/decrescendo)
@@ -1104,7 +1105,7 @@ public class GuiMusicSheet extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         if (requireWidget(this.buttonHelp, "buttonHelp").isHovered()) {
-            guiGraphics.renderTooltip(font, Component.translatable("note.helpTooltip"), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.helpTooltip"), mouseX, mouseY);
         }
 
         if(helpOn) {
@@ -1202,21 +1203,21 @@ public class GuiMusicSheet extends Screen {
         }
         else{
             if (requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors").isHovered()) {
-                guiGraphics.renderTooltip(font, Component.translatable("note.toggleTooltip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.toggleTooltip"), mouseX, mouseY);
             } else if (requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns").isHovered()) {
-                guiGraphics.renderTooltip(font, Component.translatable("note.lockTooltip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.lockTooltip"), mouseX, mouseY);
             } else if (requireWidget(this.buttonPreview, "buttonPreview").isHovered()) {
-                guiGraphics.renderTooltip(font, Component.translatable("note.previewTooltip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.previewTooltip"), mouseX, mouseY);
             } else if (requireWidget(this.buttonRecord, "buttonRecord").isHovered()) {
-                guiGraphics.renderTooltip(font, Component.translatable("note.recordTooltip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.recordTooltip"), mouseX, mouseY);
             } else if (requireWidget(this.bpmDown, "bpmDown").isHovered() || requireWidget(this.bpmUp, "bpmUp").isHovered()) {
-                guiGraphics.renderTooltip(font, Component.translatable("note.tempoTooltip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.tempoTooltip"), mouseX, mouseY);
             } else if (requireWidget(this.hlDown, "hlDown").isHovered() || requireWidget(this.hlUp, "hlUp").isHovered()) {
-                guiGraphics.renderTooltip(font, Component.translatable("note.measureTooltip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.measureTooltip"), mouseX, mouseY);
             } else if (requireWidget(this.sliderSheetVolume, "sliderSheetVolume").isHovered()) {
-                guiGraphics.renderTooltip(font, Component.translatable("note.sheetVolumeTooltip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.sheetVolumeTooltip"), mouseX, mouseY);
             } else if (requireWidget(this.sliderNoteVolume, "sliderNoteVolume").isHovered()) {
-                guiGraphics.renderTooltip(font, Component.translatable("note.noteVolumeTooltip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.noteVolumeTooltip"), mouseX, mouseY);
             }
         }
 
@@ -1699,9 +1700,9 @@ public class GuiMusicSheet extends Screen {
     void setSliderPos(int time) {
         time = Math.clamp(time, 0, this.maxSliderPosition);
 
-        requireWidget(this.sliderTime, "sliderTime");
-        this.sliderTime.setSliderValue((float) time / (float) this.maxSliderPosition);
-        this.sliderTime.applyValue();
+        var sliderTime = requireWidget(this.sliderTime, "sliderTime");
+        sliderTime.setSliderValue((float) time / (float) this.maxSliderPosition);
+        sliderTime.applyValue();
     }
 
     void stopPreview() {
@@ -1927,7 +1928,7 @@ public class GuiMusicSheet extends Screen {
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
-            guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
         }
     }
 
@@ -1949,9 +1950,9 @@ public class GuiMusicSheet extends Screen {
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
 
-            guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
             if (prevInsLocked) {
-                guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), 0, (float) this.texHeight - this.height, this.width, this.height, this.texWidth, this.texHeight);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), 0, (float) this.texHeight - this.height, this.width, this.height, this.texWidth, this.texHeight);
             }
         }
     }
@@ -2060,9 +2061,9 @@ public class GuiMusicSheet extends Screen {
                 }
 
                 if (buttonPrev.isHovered()) {
-                    guiGraphics.renderTooltip(font, Component.translatable("note.previewNoteTooltip"), mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.previewNoteTooltip"), mouseX, mouseY);
                 } else if (buttonExit.isHovered()) {
-                    guiGraphics.renderTooltip(font, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
                 }
             }
         }

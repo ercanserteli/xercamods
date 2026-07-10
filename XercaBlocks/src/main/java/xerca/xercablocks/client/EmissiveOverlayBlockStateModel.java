@@ -1,13 +1,11 @@
 package xerca.xercablocks.client;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -18,8 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 public final class EmissiveOverlayBlockStateModel extends WrapperBlockStateModel {
-    private static @Nullable RenderMaterial emissiveOverlayMaterial;
-
     private final BlockModelPart overlayPart;
 
     public EmissiveOverlayBlockStateModel(BlockStateModel baseModel, BlockModelPart overlayPart) {
@@ -32,7 +28,10 @@ public final class EmissiveOverlayBlockStateModel extends WrapperBlockStateModel
         super.emitQuads(emitter, blockView, pos, state, random, cullTest);
 
         emitter.pushTransform(quad -> {
-            quad.material(overlayMaterial());
+            quad.renderLayer(ChunkSectionLayer.TRANSLUCENT)
+                    .emissive(true)
+                    .diffuseShade(false)
+                    .ambientOcclusion(TriState.FALSE);
             return true;
         });
         try {
@@ -51,17 +50,5 @@ public final class EmissiveOverlayBlockStateModel extends WrapperBlockStateModel
         record Key(Object baseKey, EmissiveOverlayBlockStateModel model) {
         }
         return new Key(baseKey, this);
-    }
-
-    private static RenderMaterial overlayMaterial() {
-        if (emissiveOverlayMaterial == null) {
-            emissiveOverlayMaterial = Renderer.get().materialFinder()
-                    .blendMode(BlendMode.TRANSLUCENT)
-                    .emissive(true)
-                    .disableDiffuse(true)
-                    .ambientOcclusion(TriState.FALSE)
-                    .find();
-        }
-        return emissiveOverlayMaterial;
     }
 }

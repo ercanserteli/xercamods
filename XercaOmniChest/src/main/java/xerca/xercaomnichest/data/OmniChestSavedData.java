@@ -3,7 +3,9 @@ package xerca.xercaomnichest.data;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -39,7 +41,9 @@ public class OmniChestSavedData extends SavedData {
                 }
                 int slot = entry.getByteOr("Slot", (byte) 0) & 255;
                 if (slot < data.inventory.getContainerSize()) {
-                    data.inventory.setItem(slot, ItemStack.parse(registries, entry).orElse(ItemStack.EMPTY));
+                    RegistryOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
+                    ItemStack stack = ItemStack.CODEC.parse(ops, entry).result().orElse(ItemStack.EMPTY);
+                    data.inventory.setItem(slot, stack);
                 }
             }
         }
@@ -48,11 +52,12 @@ public class OmniChestSavedData extends SavedData {
     }
 
     public CompoundTag save(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        RegistryOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
         ListTag listTag = new ListTag();
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
             ItemStack stack = inventory.getItem(i);
             if (!stack.isEmpty()) {
-                CompoundTag stackTag = (CompoundTag) stack.save(registries, new CompoundTag());
+                CompoundTag stackTag = (CompoundTag) ItemStack.CODEC.encodeStart(ops, stack).getOrThrow();
                 stackTag.putByte("Slot", (byte) i);
                 listTag.add(stackTag);
             }

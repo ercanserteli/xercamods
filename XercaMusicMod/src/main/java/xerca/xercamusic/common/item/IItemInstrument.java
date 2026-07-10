@@ -3,7 +3,8 @@ package xerca.xercamusic.common.item;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
 import java.util.List;

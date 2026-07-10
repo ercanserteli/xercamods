@@ -7,13 +7,13 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringUtil;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.MusicClipboard;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.IItemInstrument;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
@@ -58,25 +58,23 @@ class SheetInputHandler {
         boolean viewingSelfSigned = gui.isSigned && gui.selfSigned;
         boolean composing = !gui.isSigned && !gui.gettingSigned;
 
-        if (!gui.gettingSigned) {
-            if (mouseButton == 1) {
-                // Right click: cancel/finish glissando mode, or set cursor
-                if (gui.glissandoMode) {
-                    finishGlissando();
-                    return true;
-                }
-                int mx = mouseX - gui.noteImageLeftX;
-                int my = mouseY - gui.noteImageY;
-                if (validClick(mx, my)) {
-                    gui.selectionStart = gui.editCursorEnd = gui.editCursor =
-                            ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
-                    if (isShiftHeld()) {
-                        byte note = pixelToNote(my);
-                        gui.rectSelection = true;
-                        gui.rectSelectNoteStart = gui.rectSelectNoteTop = gui.rectSelectNoteBottom = note;
-                    } else {
-                        gui.rectSelection = false;
-                    }
+        if (!gui.gettingSigned && mouseButton == 1) {
+            // Right click: cancel/finish glissando mode, or set cursor
+            if (gui.glissandoMode) {
+                finishGlissando();
+                return true;
+            }
+            int mx = mouseX - gui.noteImageLeftX;
+            int my = mouseY - gui.noteImageY;
+            if (validClick(mx, my)) {
+                gui.selectionStart = gui.editCursorEnd = gui.editCursor =
+                        ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
+                if (isShiftHeld()) {
+                    byte note = pixelToNote(my);
+                    gui.rectSelection = true;
+                    gui.rectSelectNoteStart = gui.rectSelectNoteTop = gui.rectSelectNoteBottom = note;
+                } else {
+                    gui.rectSelection = false;
                 }
             }
         }
@@ -164,14 +162,12 @@ class SheetInputHandler {
                     int i = findNote((byte) note, (short) time);
                     if (i >= 0) {
                         NoteEvent event = gui.notes.get(i);
-                        GuiMusicSheet.requireWidget(gui.noteEditBox, "noteEditBox");
-                        gui.noteEditBox.appear(mouseX, mouseY, event);
+                        GuiMusicSheet.requireWidget(gui.noteEditBox, "noteEditBox").appear(mouseX, mouseY, event);
                     } else {
                         // Check if clicking on a volume marker
                         VolumeMarker clickedMarker = findVolumeMarker((byte) note, (short) time);
                         if (clickedMarker != null) {
-                            GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox");
-                            gui.markerEditBox.appear(mouseX, mouseY, clickedMarker);
+                            GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox").appear(mouseX, mouseY, clickedMarker);
                         }
                     }
                 }
@@ -554,14 +550,10 @@ class SheetInputHandler {
                         }
                     }
                     case GLFW.GLFW_KEY_D -> {
-                        if (gui.editCursor != gui.editCursorEnd) {
-                            if (shiftSelectedOctave(-1)) resetEditCursorEnd = false;
-                        }
+                        if (gui.editCursor != gui.editCursorEnd && shiftSelectedOctave(-1)) resetEditCursorEnd = false;
                     }
                     case GLFW.GLFW_KEY_F -> {
-                        if (gui.editCursor != gui.editCursorEnd) {
-                            if (shiftSelectedOctave(1)) resetEditCursorEnd = false;
-                        }
+                        if (gui.editCursor != gui.editCursorEnd && shiftSelectedOctave(1)) resetEditCursorEnd = false;
                     }
                     case GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT_CONTROL -> resetEditCursorEnd = false;
                     default -> {
@@ -771,11 +763,9 @@ class SheetInputHandler {
             for (VolumeMarker m : gui.volumeMarkers) {
                 // Marker overlaps the time selection
                 if (m.startTime <= gui.editCursorEnd && m.endTime > gui.editCursor) {
-                    if (gui.rectSelection) {
-                        // Only shift if the marker's note range overlaps the rect selection
-                        if (m.highNote < gui.rectSelectNoteBottom - semitones || m.lowNote > gui.rectSelectNoteTop - semitones) {
-                            continue;
-                        }
+                    // Only shift if the marker's note range overlaps the rect selection
+                    if (gui.rectSelection && (m.highNote < gui.rectSelectNoteBottom - semitones || m.lowNote > gui.rectSelectNoteTop - semitones)) {
+                        continue;
                     }
                     m.lowNote += (byte) semitones;
                     m.highNote += (byte) semitones;
@@ -798,11 +788,9 @@ class SheetInputHandler {
         ArrayList<NoteEvent> toBeCopied = new ArrayList<>();
         for (NoteEvent event : gui.notes) {
             if (event.time >= gui.editCursor && event.time <= gui.editCursorEnd && event.endTime() >= gui.editCursor && event.endTime() <= gui.editCursorEnd) {
-                if (gui.rectSelection) {
-                    // For rectangular selection, also filter by note pitch
-                    if (event.note < gui.rectSelectNoteBottom || event.note > gui.rectSelectNoteTop) {
-                        continue;
-                    }
+                // For rectangular selection, also filter by note pitch
+                if (gui.rectSelection && (event.note < gui.rectSelectNoteBottom || event.note > gui.rectSelectNoteTop)) {
+                    continue;
                 }
                 toBeCopied.add(event);
             }
@@ -951,8 +939,7 @@ class SheetInputHandler {
             // Add the marker to the list and show the edit box
             gui.volumeMarkers.add(marker);
             gui.dirtyFlag.hasNotes = true;  // Volume markers are saved with notes
-            GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox");
-            gui.markerEditBox.appear(mouseX, mouseY, marker);
+            GuiMusicSheet.requireWidget(gui.markerEditBox, "markerEditBox").appear(mouseX, mouseY, marker);
         }
         gui.currentlyAddedMarker = null;
     }

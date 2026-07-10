@@ -33,7 +33,6 @@ import java.util.function.Consumer;
 public class ItemKnife extends Item {
     private static final float DEFAULT_CRIT_BONUS = 5.0F;
     private static final float OFFHAND_DAMAGE = 3.0F;
-    private final ToolMaterial tier;
 
     public static ItemAttributeModifiers createAttributes(ToolMaterial tier) {
         return ItemAttributeModifiers.builder()
@@ -45,7 +44,6 @@ public class ItemKnife extends Item {
         super(tier == ToolMaterial.NETHERITE
                 ? new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(tier.durability()).fireResistant().enchantable(tier.enchantmentValue()).repairable(tier.repairItems()).attributes(createAttributes(tier))
                 : new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(tier.durability()).enchantable(tier.enchantmentValue()).repairable(tier.repairItems()).attributes(createAttributes(tier)));
-        this.tier = tier;
     }
 
     public static float critDamage(LivingEntity target, LivingEntity attacker, ItemStack stack) {

@@ -151,7 +151,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
         String key = rendererKey(name, width, height);
         Instance instance = this.loadedCanvases.get(key);
         if (instance == null) {
-            instance = new Instance(key, name, version, width, height);
+            instance = new Instance(this, key, name, version, width, height);
             this.loadedCanvases.put(key, instance);
         } else {
             if (instance.version < version || !instance.loaded) {
@@ -163,7 +163,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
     }
 
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public final class Instance implements AutoCloseable {
+    public static final class Instance implements AutoCloseable {
+        private final RenderEntityCanvas renderer;
         int version;
         final int width;
         final int height;
@@ -174,13 +175,14 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
         public final DynamicTexture canvasTexture;
         public final ResourceLocation location;
 
-        private Instance(String key, String name, int version, int width, int height) {
+        private Instance(RenderEntityCanvas renderer, String key, String name, int version, int width, int height) {
+            this.renderer = renderer;
             this.started = false;
             this.loaded = false;
             this.width = width;
             this.height = height;
             this.canvasTexture = new DynamicTexture("xercapaint canvas " + key, width, height, true);
-            this.location = RenderEntityCanvas.this.registerDynamicTexture("canvas/" + key, this.canvasTexture);
+            this.location = renderer.registerDynamicTexture("canvas/" + key, this.canvasTexture);
 
             updateCanvasTexture(name, version);
         }
@@ -277,7 +279,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
                 if (tint != NO_TINT) {
                     // Tint the transparent pixels
                     int overlay = (GLASS_TINT_OVERLAY_ALPHA << 24) | (tint & 0xFFFFFF);
-                    VertexConsumer glassSheet = buffer.getBuffer(RenderType.entityTranslucent(RenderEntityCanvas.this.whiteLocation));
+                    VertexConsumer glassSheet = buffer.getBuffer(RenderType.entityTranslucent(renderer.whiteLocation));
                     addVertex(glassSheet, pose, 0.0D, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
                     addVertex(glassSheet, pose, w32, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
                     addVertex(glassSheet, pose, w32, 0.0D, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
@@ -286,7 +288,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
 
                 if (sidesActive) {
                     // Painted side pixels (no-cull so they are visible from inside the canvas too)
-                    VertexConsumer sides = buffer.getBuffer(RenderType.entityCutoutNoCull(RenderEntityCanvas.this.whiteLocation));
+                    VertexConsumer sides = buffer.getBuffer(RenderType.entityCutoutNoCull(renderer.whiteLocation));
                     renderPaintedSides(sides, pose, w32, h32, packedLight, true);
                 } else {
                     // Glass-pane frame
@@ -331,7 +333,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
                 addVertex(back, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
             } else {
                 // No-cull so painted sides are visible from inside the canvas too
-                VertexConsumer sides = buffer.getBuffer(RenderType.entityCutoutNoCull(RenderEntityCanvas.this.whiteLocation));
+                VertexConsumer sides = buffer.getBuffer(RenderType.entityCutoutNoCull(renderer.whiteLocation));
                 renderPaintedSides(sides, pose, w32, h32, packedLight, false);
             }
 
@@ -472,7 +474,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
         @Override
         public void close() {
             this.canvasTexture.close();
-            textureManager.release(location);
+            renderer.textureManager.release(location);
         }
     }
 }

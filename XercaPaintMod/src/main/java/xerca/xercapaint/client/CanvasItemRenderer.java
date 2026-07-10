@@ -22,7 +22,7 @@ public class CanvasItemRenderer {
     private static final ResourceLocation GLASS_FRAME_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/glass.png");
     private static final int GLASS_INVENTORY_TINT = 0xFFDCE6FF;
 
-    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
         if (stack.getItem() instanceof ItemCanvas itemCanvas) {
             RenderEntityCanvas.Instance canvasIns = null;
             if (stack.get(Items.CANVAS_PIXELS) != null && RenderEntityCanvas.theInstance != null) {

@@ -19,8 +19,8 @@ import java.util.Objects;
  * Renders a carved crimson block placed in the world while the player holds another one in the
  * selected hotbar slot, with all 8 variants filling the first hotbar slots and the HUD visible.
  * One SSIM screenshot covers the world block model, the first-person hand model, and the GUI
- * (hotbar slot) item models at once; the hotbar region is additionally compared on its own so
- * that GUI item model regressions cannot hide inside the full-frame average.
+ * (hotbar slot) item models at once; the hand and hotbar regions are additionally compared on
+ * their own so localized item model regressions cannot hide inside the full-frame average.
  */
 public final class CarvedCrimsonInventoryClientTest implements FabricClientGameTest {
     // SSIM >= this to pass. 1.0 is identical; rendering the same static scene twice sits very close to 1.0.
@@ -31,6 +31,10 @@ public final class CarvedCrimsonInventoryClientTest implements FabricClientGameT
     private static final int HOTBAR_Y = 442;
     private static final int HOTBAR_WIDTH = 312;
     private static final int HOTBAR_HEIGHT = 32;
+    private static final int HAND_X = 558;
+    private static final int HAND_Y = 350;
+    private static final int HAND_WIDTH = 296;
+    private static final int HAND_HEIGHT = 130;
 
     @Override
     public void runTest(ClientGameTestContext context) {
@@ -41,6 +45,7 @@ public final class CarvedCrimsonInventoryClientTest implements FabricClientGameT
             client.options.hideGui = false;
             client.options.cloudStatus().set(CloudStatus.OFF);
             client.options.chatVisibility().set(ChatVisiblity.HIDDEN);
+            CarvedCrimsonAnimationTestHelper.freezeAtFirstFrame(client);
         });
 
         // Consistent settings (default) give a superflat, fixed-seed world with daylight/weather/mob cycles off.
@@ -68,23 +73,28 @@ public final class CarvedCrimsonInventoryClientTest implements FabricClientGameT
                     .saveWithFileName(GOLDEN + "_live")
                     .disableCounterPrefix());
 
-            assertHotbarMatchesGolden();
+            assertItemRegionsMatchGolden();
         }
     }
 
     /**
-     * Compares only the hotbar region against the golden, since a regression confined to the
-     * small GUI item icons could pass the whole-frame mean SSIM unnoticed. Reuses the frame the
-     * full-frame assertion saved: a fresh capture drifts sub-pixel from tick interpolation.
+     * Compares the held item and hotbar regions against the golden so localized regressions cannot
+     * pass the whole-frame mean SSIM. Reuses the saved frame so every assertion inspects one render.
      */
-    private static void assertHotbarMatchesGolden() {
+    private static void assertItemRegionsMatchGolden() {
         BufferedImage live = readImage(Path.of("screenshots", GOLDEN + "_live.png"));
         BufferedImage golden = readTemplate(GOLDEN);
-        int[] livePixels = live.getRGB(HOTBAR_X, HOTBAR_Y, HOTBAR_WIDTH, HOTBAR_HEIGHT, null, 0, HOTBAR_WIDTH);
-        int[] goldenPixels = golden.getRGB(HOTBAR_X, HOTBAR_Y, HOTBAR_WIDTH, HOTBAR_HEIGHT, null, 0, HOTBAR_WIDTH);
-        if (!SsimComparisonAlgorithm.withThreshold(SSIM_THRESHOLD).matchesEqualSize(livePixels, goldenPixels, HOTBAR_WIDTH, HOTBAR_HEIGHT)) {
-            throw new AssertionError("Hotbar region (" + HOTBAR_X + "," + HOTBAR_Y + " " + HOTBAR_WIDTH + "x"
-                    + HOTBAR_HEIGHT + ") does not match golden '" + GOLDEN + "'");
+        assertRegionMatchesGolden("Held-item", live, golden, HAND_X, HAND_Y, HAND_WIDTH, HAND_HEIGHT);
+        assertRegionMatchesGolden("Hotbar", live, golden, HOTBAR_X, HOTBAR_Y, HOTBAR_WIDTH, HOTBAR_HEIGHT);
+    }
+
+    private static void assertRegionMatchesGolden(String name, BufferedImage live, BufferedImage golden,
+                                                  int x, int y, int width, int height) {
+        int[] livePixels = live.getRGB(x, y, width, height, null, 0, width);
+        int[] goldenPixels = golden.getRGB(x, y, width, height, null, 0, width);
+        if (!SsimComparisonAlgorithm.withThreshold(SSIM_THRESHOLD).matchesEqualSize(livePixels, goldenPixels, width, height)) {
+            throw new AssertionError(name + " region (" + x + "," + y + " " + width + "x" + height
+                    + ") does not match golden '" + GOLDEN + "'");
         }
     }
 

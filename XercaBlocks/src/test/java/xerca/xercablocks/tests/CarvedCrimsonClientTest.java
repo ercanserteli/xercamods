@@ -30,6 +30,7 @@ public final class CarvedCrimsonClientTest implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext context) {
         context.restoreDefaultGameOptions();
+        context.runOnClient(CarvedCrimsonAnimationTestHelper::freezeAtFirstFrame);
 
         // Consistent settings (default) give a superflat, fixed-seed world with daylight/weather/mob cycles off.
         try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {

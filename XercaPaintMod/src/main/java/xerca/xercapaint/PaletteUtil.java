@@ -1,6 +1,5 @@
 package xerca.xercapaint;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PaletteUtil {
@@ -36,10 +35,6 @@ public class PaletteUtil {
             val = (val << 8) + b;
             val += 0xFF000000;
             return val;
-        }
-
-        public void setGLColor() {
-            RenderSystem.setShaderColor(r / 255.f, g / 255.f, b / 255.f, 1.0f);
         }
 
         public static Color mix(Color a, Color b, float ratio) {

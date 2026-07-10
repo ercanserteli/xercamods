@@ -14,13 +14,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.packets.clientbound.TripleNoteClientPacket;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
     public final int minOctave;
     public final int maxOctave;
     private final int instrumentId;
-    private InsSound @Nullable [] insSounds;
+    private @Nullable InsSound[] insSounds;
 
     public ItemInstrument(int instrumentId, int minOctave, int maxOctave, Properties properties) {
         super(properties);

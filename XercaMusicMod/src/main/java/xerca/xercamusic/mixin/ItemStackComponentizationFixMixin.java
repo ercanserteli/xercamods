@@ -27,8 +27,8 @@ public abstract class ItemStackComponentizationFixMixin {
             Function<Dynamic<?>, UUID> getUuidFromDynamic = (Dynamic<?> dynamic) -> {
                 if (dynamic.getOps() == NbtOps.INSTANCE) {
                     Tag nbtElement = (Tag) dynamic.getValue();
-                    if (nbtElement instanceof IntArrayTag) {
-                        return UUIDUtil.uuidFromIntArray(((IntArrayTag) nbtElement).getAsIntArray());
+                    if (nbtElement instanceof IntArrayTag intArrayTag) {
+                        return UUIDUtil.uuidFromIntArray(intArrayTag.getAsIntArray());
                     }
                 }
                 return null;
