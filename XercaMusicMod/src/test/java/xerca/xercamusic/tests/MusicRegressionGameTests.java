@@ -48,17 +48,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import static xerca.xercamusic.tests.TestAsserts.assertTrue;
+
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 public final class MusicRegressionGameTests {
-
-    private static void assertTrue(net.minecraft.gametest.framework.GameTestHelper helper, boolean condition, String message) {
-        helper.assertTrue(condition, net.minecraft.network.chat.Component.literal(message));
-    }
-
-    private static void assertFalse(net.minecraft.gametest.framework.GameTestHelper helper, boolean condition, String message) {
-        helper.assertFalse(condition, net.minecraft.network.chat.Component.literal(message));
-    }
-
     private static final Field MUSIC_BOX_IS_PLAYING_FIELD;
     private static final Field MUSIC_BOX_BPS_FIELD;
     private static final Field MUSIC_BOX_VOLUME_FIELD;

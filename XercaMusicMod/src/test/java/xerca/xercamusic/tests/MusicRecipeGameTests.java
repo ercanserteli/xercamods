@@ -16,6 +16,8 @@ import xerca.xercamusic.common.Mod;
 
 import java.util.*;
 
+import static xerca.xercamusic.tests.TestAsserts.assertTrue;
+
 /**
  * Server-side coverage of every music crafting recipe, ported from the crafting half of the
  * {@code music-fabric.sikuli} script. Each recipe's authoritative grid (from
@@ -23,15 +25,6 @@ import java.util.*;
  * asserted, replacing the Sikuli test that drove the crafting-table GUI by pixel.
  */
 public final class MusicRecipeGameTests {
-
-    private static void assertTrue(net.minecraft.gametest.framework.GameTestHelper helper, boolean condition, String message) {
-        helper.assertTrue(condition, net.minecraft.network.chat.Component.literal(message));
-    }
-
-    private static void assertFalse(net.minecraft.gametest.framework.GameTestHelper helper, boolean condition, String message) {
-        helper.assertFalse(condition, net.minecraft.network.chat.Component.literal(message));
-    }
-
 
     private static Map<Character, Item> key(Object... charItemPairs) {
         Map<Character, Item> map = new HashMap<>();

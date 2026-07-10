@@ -1924,14 +1924,10 @@ public class GuiMusicSheet extends Screen {
             return yTexStartNew;
         }
 
-        protected void postRender() {
-        }
-
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
             guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
-            postRender();
         }
     }
 
@@ -1957,8 +1953,6 @@ public class GuiMusicSheet extends Screen {
             if (prevInsLocked) {
                 guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), 0, (float) this.texHeight - this.height, this.width, this.height, this.texWidth, this.texHeight);
             }
-
-            postRender();
         }
     }
 

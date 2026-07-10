@@ -28,7 +28,7 @@ repositories {
 tasks.register('buildCopy', Copy) {
     dependsOn tasks.named('remapJar')
     from(tasks.named('remapJar').flatMap { it.archiveFile })
-    into(rootProject.layout.projectDirectory.dir("../builds"))
+    into(layout.projectDirectory.dir("../builds"))
 }
 
 dependencies {

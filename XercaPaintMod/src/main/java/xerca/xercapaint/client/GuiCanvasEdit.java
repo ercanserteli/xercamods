@@ -935,9 +935,6 @@ public class GuiCanvasEdit extends BasePalette {
             this.resourceLocation = texture;
         }
 
-        protected void postRender() {
-        }
-
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             int yTexStartNew = this.yTexStart;
@@ -946,7 +943,6 @@ public class GuiCanvasEdit extends BasePalette {
             }
             int xTexStartNew = this.xTexStart + (showHelp ? 0 : this.width);
             guiGraphics.blit(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), xTexStartNew, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
-            postRender();
         }
     }
 }

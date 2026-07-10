@@ -28,9 +28,8 @@ public record ImportMusicSendPacket(@Nullable UUID uuid, @Nullable CompoundTag t
     }
 
     public static ImportMusicSendPacket create(CompoundTag tag) throws NotesTooLargeException {
-        UUID uuid = null;
+        UUID uuid = tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null);
         List<NoteEvent> notes = null;
-        uuid = tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null);
         if (tag.contains(KEY_NOTES)) {
             notes = new ArrayList<>();
             NoteEvent.fillArrayFromNBT(notes, tag);
@@ -44,8 +43,7 @@ public record ImportMusicSendPacket(@Nullable UUID uuid, @Nullable CompoundTag t
     }
 
     public static ImportMusicSendPacket create(CompoundTag tag, @Nullable List<NoteEvent> notes) {
-        UUID uuid = null;
-        uuid = tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null);
+        UUID uuid = tag.read(KEY_ID, UUIDUtil.CODEC).orElse(null);
         return new ImportMusicSendPacket(uuid, tag, notes);
     }
 
