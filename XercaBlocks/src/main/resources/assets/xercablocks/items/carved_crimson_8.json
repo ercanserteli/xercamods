@@ -7,7 +7,7 @@
         "model": "xercablocks:item/carved_crimson_8"
       },
       {
-        "type": "minecraft:model",
+        "type": "xercablocks:translucent_model",
         "model": "xercablocks:block/carved_wood/carved_crimson_8_overlay"
       }
     ]
