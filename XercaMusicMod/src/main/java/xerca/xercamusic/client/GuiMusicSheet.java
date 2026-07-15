@@ -16,8 +16,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 import org.joml.Matrix3x2fStack;
 import xerca.xercamusic.common.*;
 import xerca.xercamusic.common.item.IItemInstrument;
@@ -28,6 +26,7 @@ import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket;
 import xerca.xercamusic.common.packets.serverbound.MusicUpdatePacket;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static xerca.xercamusic.client.ModClient.sendToServer;
@@ -854,13 +853,13 @@ public class GuiMusicSheet extends Screen {
         }
         String writeTitleStr = I18n.get("note.editTitle");
         int k = this.font.width(writeTitleStr);
-        guiGraphics.drawString(font, writeTitleStr, (int) (left + (width - k) / 2.0f), top + 16, 0, false);
+        guiGraphics.drawString(font, writeTitleStr, (int) (left + (width - k) / 2.0f), top + 16, 0xFF000000, false);
         int l = this.font.width(titleStr);
-        guiGraphics.drawString(font, titleStr, (int) (left + (width - l) / 2.0f), top + 30, 0, false);
+        guiGraphics.drawString(font, titleStr, (int) (left + (width - l) / 2.0f), top + 30, 0xFF000000, false);
         String authorStr = I18n.get("note.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(authorStr);
-        guiGraphics.drawString(font, ChatFormatting.DARK_GRAY + authorStr, (int) (left + (116 - i1) / 2.0f), top + 42, 0, false);
-        guiGraphics.drawWordWrap(font, Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0);
+        guiGraphics.drawString(font, ChatFormatting.DARK_GRAY + authorStr, (int) (left + (116 - i1) / 2.0f), top + 42, 0xFF000000, false);
+        guiGraphics.drawWordWrap(font, Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0xFF000000, false);
     }
 
     private int noteToPixelX(int noteX) {

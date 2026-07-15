@@ -180,6 +180,10 @@ public final class GuiCanvasEditClientTest implements FabricClientGameTest {
             // Sign flow: sign, cancel back out, sign again, type a title, then finalize (closes the screen).
             pressButton(context, "buttonSign");
             check(gettingSigned(context), "Expected the sign button to enter signing mode");
+            // Signing overlay: the prompt text must actually render over the box
+            // (regression: color-0 text became invisible with the 1.21.6 GUI rework).
+            context.waitTicks(2);
+            assertSigningTextRendered(context.takeScreenshot("canvas_signing_live"), signingBoxFramebufferRect(context));
             pressButton(context, "buttonCancel");
             check(!gettingSigned(context), "Expected cancel to leave signing mode");
             pressButton(context, "buttonSign");
@@ -276,6 +280,41 @@ public final class GuiCanvasEditClientTest implements FabricClientGameTest {
                 && TITLE.equals(canvas.get(Items.CANVAS_TITLE))
                 && canvas.get(Items.CANVAS_AUTHOR) != null
                 && canvas.getOrDefault(Items.CANVAS_GENERATION, 0) == 1;
+    }
+
+    // The drawSigning box (canvasX+10, canvasY+10, 140x140) in framebuffer pixels, inset to skip edges.
+    private static int[] signingBoxFramebufferRect(ClientGameTestContext context) {
+        return context.computeOnClient(client -> {
+            double cx = PaintClientTests.<Double>readField(client.screen, GuiCanvasEdit.class, "canvasX");
+            double cy = PaintClientTests.<Double>readField(client.screen, GuiCanvasEdit.class, "canvasY");
+            int scale = client.getWindow().getGuiScale();
+            return new int[]{(int) ((cx + 12) * scale), (int) ((cy + 12) * scale), 136 * scale, 136 * scale};
+        });
+    }
+
+    private static void assertSigningTextRendered(java.nio.file.Path screenshot, int[] rect) {
+        java.awt.image.BufferedImage image;
+        try {
+            image = javax.imageio.ImageIO.read(screenshot.toFile());
+        } catch (java.io.IOException e) {
+            throw new java.io.UncheckedIOException(e);
+        }
+        int dark = 0;
+        int light = 0;
+        for (int y = rect[1]; y < rect[1] + rect[3]; y++) {
+            for (int x = rect[0]; x < rect[0] + rect[2]; x++) {
+                int rgb = image.getRGB(x, y);
+                int luminance = ((rgb >> 16 & 0xFF) + (rgb >> 8 & 0xFF) + (rgb & 0xFF)) / 3;
+                if (luminance < 100) {
+                    dark++;
+                } else if (luminance > 220) {
+                    light++;
+                }
+            }
+        }
+        int area = rect[2] * rect[3];
+        check(light > area / 2, "Expected the signing box to render as a light panel, got " + light + "/" + area + " light pixels");
+        check(dark >= 40, "Expected the signing prompt text to render dark pixels over the box, got " + dark);
     }
 
     private static void pressButton(ClientGameTestContext context, String fieldName) {

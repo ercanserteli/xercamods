@@ -40,7 +40,8 @@ public class BlockRope extends PipeBlock {
     }
 
     public BlockRope(Properties properties) {
-        super(0.125F, properties.mapColor(MapColor.WOOL).noOcclusion().sound(SoundType.WOOL).pushReaction(PushReaction.NORMAL));
+        // PipeBlock's constructor takes the full width in pixels since 1.21.5 (was an apothem in block units).
+        super(4.0F, properties.mapColor(MapColor.WOOL).noOcclusion().sound(SoundType.WOOL).pushReaction(PushReaction.NORMAL));
         registerDefaultState(stateDefinition.any()
                 .setValue(NORTH, false)
                 .setValue(EAST, false)

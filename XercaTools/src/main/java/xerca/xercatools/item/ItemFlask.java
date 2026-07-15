@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -31,7 +32,10 @@ public class ItemFlask extends Item {
     private static final int BASE_MAX_CHARGES = 16;
 
     public ItemFlask(String name) {
-        super(new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(160).enchantable(1));
+        // The consumable component provides the drinking sounds during use ticks; use duration,
+        // animation and finish behavior stay overridden below.
+        super(new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(160).enchantable(1)
+                .component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK));
     }
 
     @Override

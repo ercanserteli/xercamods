@@ -371,6 +371,43 @@ public final class BlocksGameTests {
     }
 
     @GameTest
+    public void carvedAcaciaLetsLightThroughAndCullsLikeAGrate(GameTestHelper helper) {
+        BlockState state = modBlock("carved_acacia_1").defaultBlockState();
+
+        helper.assertTrue(state.propagatesSkylightDown(), Component.literal("Expected carved acacia to let skylight through"));
+        helper.assertTrue(state.getLightBlock() == 0, Component.literal("Expected carved acacia to not block any light"));
+        helper.assertTrue(state.skipRendering(state, Direction.NORTH),
+                Component.literal("Expected carved acacia to cull inner faces against the same carved acacia block"));
+        helper.assertTrue(!state.skipRendering(net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), Direction.NORTH),
+                Component.literal("Expected carved acacia to still render faces against other blocks"));
+        helper.succeed();
+    }
+
+    @GameTest
+    public void ropeHasClickBoxMatchingItsModel(GameTestHelper helper) {
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        helper.getLevel().setBlockAndUpdate(pos, Blocks.ROPE.defaultBlockState());
+
+        // The unconnected rope knot model spans 6..10 pixels around the block center.
+        net.minecraft.world.phys.AABB bounds = Blocks.ROPE.defaultBlockState().getShape(helper.getLevel(), pos).bounds();
+        helper.assertTrue(Math.abs(bounds.minX - 6.0 / 16.0) < 1.0e-6 && Math.abs(bounds.maxX - 10.0 / 16.0) < 1.0e-6
+                        && Math.abs(bounds.minY - 6.0 / 16.0) < 1.0e-6 && Math.abs(bounds.maxY - 10.0 / 16.0) < 1.0e-6
+                        && Math.abs(bounds.minZ - 6.0 / 16.0) < 1.0e-6 && Math.abs(bounds.maxZ - 10.0 / 16.0) < 1.0e-6,
+                Component.literal("Expected the rope outline shape to span 6..10 pixels, got " + bounds));
+
+        // A slightly off-center ray (like a real crosshair) must still hit the rope outline.
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Vec3 target = Vec3.atCenterOf(pos).add(0.08, 0.0, 0.08);
+        Vec3 start = target.add(0.0, 2.0, 0.0);
+        net.minecraft.world.phys.HitResult hit = helper.getLevel().clip(new net.minecraft.world.level.ClipContext(
+                start, target, net.minecraft.world.level.ClipContext.Block.OUTLINE, net.minecraft.world.level.ClipContext.Fluid.NONE, player));
+        helper.assertTrue(hit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK
+                        && ((BlockHitResult) hit).getBlockPos().equals(pos),
+                Component.literal("Expected an off-center ray to hit the rope click box"));
+        helper.succeed();
+    }
+
+    @GameTest
     public void ropeDropsItselfWhenBroken(GameTestHelper helper) {
         BlockPos relativePos = new BlockPos(1, 2, 1);
         BlockPos pos = helper.absolutePos(relativePos);

@@ -727,6 +727,75 @@ public class WeaponsGameTests {
     }
 
     @GameTest
+    public void knifeStealthHitDealsFullBonusDespiteHurtResistance(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        player.setShiftKeyDown(true);
+        pig.setYRot(0.0f);
+        player.setYRot(0.0f);
+
+        ItemStack knife = new ItemStack(Items.IRON_KNIFE);
+        player.setItemSlot(EquipmentSlot.MAINHAND, knife);
+
+        // The main hit starts the hurt-resistance window with lastHurt = 3; the stealth
+        // bonus applied by hurtEnemy right after must still land in full.
+        pig.hurt(level.damageSources().playerAttack(player), 3.0f);
+        float healthAfterMainHit = pig.getHealth();
+        knife.hurtEnemy(pig, player);
+
+        float bonusDealt = healthAfterMainHit - pig.getHealth();
+        TestAsserts.assertTrue(helper, Math.abs(bonusDealt - 5.0f) < 0.001f,
+                "Stealth hit should deal the full 5.0 bonus during hurt resistance, got " + bonusDealt);
+        helper.succeed();
+    }
+
+    @GameTest
+    public void knifeOffhandDamageMatchesMainHandForEveryTier(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        // Offhand hits must use the knife's main-hand attack damage (player base 1 + tier bonus).
+        record TierCase(ItemStack knife, float expected) {
+        }
+        TierCase[] cases = {
+                new TierCase(new ItemStack(Items.IRON_KNIFE), 3.0f),
+                new TierCase(new ItemStack(Items.DIAMOND_KNIFE), 4.0f),
+                new TierCase(new ItemStack(Items.NETHERITE_KNIFE), 5.0f),
+        };
+        for (TierCase tierCase : cases) {
+            float dmg = ItemKnife.getOffhandDamage(level, tierCase.knife(), pig, player);
+            TestAsserts.assertTrue(helper, Math.abs(dmg - tierCase.expected()) < 0.001f,
+                    "Offhand damage for " + tierCase.knife().getItem() + " should be " + tierCase.expected() + ", got " + dmg);
+        }
+        helper.succeed();
+    }
+
+    @GameTest
+    public void knifeOffhandInteractionDealsMainHandDamage(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+
+        ItemStack knife = new ItemStack(Items.NETHERITE_KNIFE);
+        player.setItemSlot(EquipmentSlot.OFFHAND, knife);
+
+        float initialHealth = pig.getHealth();
+        net.minecraft.world.InteractionResult result = net.fabricmc.fabric.api.event.player.UseEntityCallback.EVENT.invoker()
+                .interact(player, level, net.minecraft.world.InteractionHand.OFF_HAND, pig, null);
+
+        TestAsserts.assertTrue(helper, result == net.minecraft.world.InteractionResult.SUCCESS,
+                "Offhand knife interaction should be handled");
+        float dealt = initialHealth - pig.getHealth();
+        TestAsserts.assertTrue(helper, Math.abs(dealt - 5.0f) < 0.001f,
+                "Offhand netherite knife hit should deal the main-hand 5.0 damage, got " + dealt);
+        TestAsserts.assertTrue(helper, knife.getDamageValue() == 1, "Offhand knife hit should cost 1 durability");
+        helper.succeed();
+    }
+
+    @GameTest
     public void knifeOffhandDamageBaseIsThree(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);

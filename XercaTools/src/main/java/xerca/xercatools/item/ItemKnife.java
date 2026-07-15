@@ -1,6 +1,7 @@
 package xerca.xercatools.item;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -32,7 +33,6 @@ import java.util.function.Consumer;
 
 public class ItemKnife extends Item {
     private static final float DEFAULT_CRIT_BONUS = 5.0F;
-    private static final float OFFHAND_DAMAGE = 3.0F;
 
     public static ItemAttributeModifiers createAttributes(ToolMaterial tier) {
         return ItemAttributeModifiers.builder()
@@ -75,7 +75,9 @@ public class ItemKnife extends Item {
             DamageSource damageSource = attacker instanceof Player player
                     ? attacker.damageSources().playerAttack(player)
                     : attacker.damageSources().mobAttack(attacker);
-            target.hurt(damageSource, critBonus);
+            // The main hit set lastHurt and hurt-resistance; within that window only
+            // (amount - lastHurt) is applied, so stack the bonus on top of lastHurt.
+            target.hurt(damageSource, target.lastHurt + critBonus);
         }
     }
 
@@ -108,8 +110,14 @@ public class ItemKnife extends Item {
 
     public static float getOffhandDamage(Level level, ItemStack stack, LivingEntity target, Player attacker) {
         float bonus = critDamage(target, attacker, stack);
+        float damage = (float) attacker.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
+        for (ItemAttributeModifiers.Entry entry : stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY).modifiers()) {
+            if (entry.attribute().is(Attributes.ATTACK_DAMAGE) && entry.modifier().operation() == AttributeModifier.Operation.ADD_VALUE) {
+                damage += (float) entry.modifier().amount();
+            }
+        }
         int sharpnessLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), stack);
         float enchantBonus = sharpnessLevel > 0 ? 0.5F * sharpnessLevel + 0.5F : 0.0F;
-        return OFFHAND_DAMAGE + enchantBonus + bonus;
+        return damage + enchantBonus + bonus;
     }
 }
