@@ -859,7 +859,7 @@ public class GuiMusicSheet extends Screen {
         String authorStr = I18n.get("note.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(authorStr);
         guiGraphics.drawString(font, ChatFormatting.DARK_GRAY + authorStr, (int) (left + (116 - i1) / 2.0f), top + 42, 0, false);
-        guiGraphics.drawWordWrap(font, Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0);
+        guiGraphics.drawWordWrap(font, Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0, false);
     }
 
     private int noteToPixelX(int noteX) {

@@ -563,7 +563,7 @@ public class GuiCanvasEdit extends BasePalette {
         String s2 = I18n.get("canvas.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(s2);
         guiGraphics.drawString(this.font, ChatFormatting.DARK_GRAY + s2, (int) (i + 26 + (116 - i1) / 2.0f), j + 48 + 10, 0, false);
-        guiGraphics.drawWordWrap(this.font, Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0);
+        guiGraphics.drawWordWrap(this.font, Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0, false);
     }
 
     private void playBrushSound() {

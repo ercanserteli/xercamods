@@ -40,7 +40,7 @@ public class BlockRope extends PipeBlock {
     }
 
     public BlockRope(Properties properties) {
-        super(0.125F, properties.mapColor(MapColor.WOOL).noOcclusion().sound(SoundType.WOOL).pushReaction(PushReaction.NORMAL));
+        super(4.0F, properties.mapColor(MapColor.WOOL).noOcclusion().sound(SoundType.WOOL).pushReaction(PushReaction.NORMAL));
         registerDefaultState(stateDefinition.any()
                 .setValue(NORTH, false)
                 .setValue(EAST, false)

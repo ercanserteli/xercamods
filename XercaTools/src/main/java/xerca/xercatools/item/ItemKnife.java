@@ -1,6 +1,7 @@
 package xerca.xercatools.item;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -32,8 +33,6 @@ import java.util.function.Consumer;
 
 public class ItemKnife extends Item {
     private static final float DEFAULT_CRIT_BONUS = 5.0F;
-    private static final float OFFHAND_DAMAGE = 3.0F;
-    private final ToolMaterial tier;
 
     public static ItemAttributeModifiers createAttributes(ToolMaterial tier) {
         return ItemAttributeModifiers.builder()
@@ -45,7 +44,6 @@ public class ItemKnife extends Item {
         super(tier == ToolMaterial.NETHERITE
                 ? new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(tier.durability()).fireResistant().enchantable(tier.enchantmentValue()).repairable(tier.repairItems()).attributes(createAttributes(tier))
                 : new Item.Properties().setId(xerca.xercatools.Mod.itemKey(name)).stacksTo(1).durability(tier.durability()).enchantable(tier.enchantmentValue()).repairable(tier.repairItems()).attributes(createAttributes(tier)));
-        this.tier = tier;
     }
 
     public static float critDamage(LivingEntity target, LivingEntity attacker, ItemStack stack) {
@@ -77,7 +75,8 @@ public class ItemKnife extends Item {
             DamageSource damageSource = attacker instanceof Player player
                     ? attacker.damageSources().playerAttack(player)
                     : attacker.damageSources().mobAttack(attacker);
-            target.hurt(damageSource, critBonus);
+            // stack the bonus on top of lastHurt.
+            target.hurt(damageSource, target.lastHurt + critBonus);
         }
     }
 
@@ -110,8 +109,14 @@ public class ItemKnife extends Item {
 
     public static float getOffhandDamage(Level level, ItemStack stack, LivingEntity target, Player attacker) {
         float bonus = critDamage(target, attacker, stack);
+        float damage = (float) attacker.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
+        for (ItemAttributeModifiers.Entry entry : stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY).modifiers()) {
+            if (entry.attribute().is(Attributes.ATTACK_DAMAGE) && entry.modifier().operation() == AttributeModifier.Operation.ADD_VALUE) {
+                damage += (float) entry.modifier().amount();
+            }
+        }
         int sharpnessLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), stack);
         float enchantBonus = sharpnessLevel > 0 ? 0.5F * sharpnessLevel + 0.5F : 0.0F;
-        return OFFHAND_DAMAGE + enchantBonus + bonus;
+        return damage + enchantBonus + bonus;
     }
 }
