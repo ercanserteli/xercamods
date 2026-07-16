@@ -371,6 +371,21 @@ public final class BlocksGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
+    public static void carvedAcaciaLetsLightThroughAndCullsLikeAGrate(GameTestHelper helper) {
+        BlockState state = modBlock("carved_acacia_1").defaultBlockState();
+
+        helper.assertTrue(state.propagatesSkylightDown(), "Expected carved acacia to let skylight through");
+        helper.assertTrue(state.getLightBlock() == 0, "Expected carved acacia to not block any light");
+        helper.assertTrue(state.skipRendering(state, Direction.NORTH),
+                "Expected carved acacia to cull inner faces against the same carved acacia block");
+        helper.assertTrue(state.skipRendering(modBlock("carved_acacia_2").defaultBlockState(), Direction.NORTH),
+                "Expected carved acacia to cull inner faces against other carved acacia variants");
+        helper.assertTrue(!state.skipRendering(net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), Direction.NORTH),
+                "Expected carved acacia to still render faces against other blocks");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void ropeDropsItselfWhenBroken(GameTestHelper helper) {
         BlockPos relativePos = new BlockPos(1, 2, 1);
         BlockPos pos = helper.absolutePos(relativePos);
