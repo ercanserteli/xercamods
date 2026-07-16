@@ -104,6 +104,7 @@ jar {
 }
 
 loom {
+    accessWidenerPath.set(file("src/main/resources/xercatools.accesswidener"))
     runs {
         gameTest {
             inherit server

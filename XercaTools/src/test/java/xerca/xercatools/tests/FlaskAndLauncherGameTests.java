@@ -56,6 +56,27 @@ public class FlaskAndLauncherGameTests {
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
+    public static void flaskHasDrinkConsumableSoDrinkingMakesSound(GameTestHelper helper) {
+        ItemStack flask = new ItemStack(Items.FLASK);
+        var consumable = flask.get(DataComponents.CONSUMABLE);
+        helper.assertTrue(consumable != null,
+                "Flask needs a consumable component: vanilla only plays drinking sounds during use ticks through it");
+        helper.assertTrue(consumable.animation() == net.minecraft.world.item.ItemUseAnimation.DRINK,
+                "Flask consumable should use the drink animation/sound profile");
+
+        // The gulp sounds must actually trigger within the flask's own use duration.
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        int useDuration = flask.getItem().getUseDuration(flask, player);
+        helper.assertTrue(useDuration == 32, "Base flask use duration should stay 32 ticks, got " + useDuration);
+        boolean makesSound = false;
+        for (int remaining = useDuration; remaining > 0; remaining--) {
+            makesSound |= consumable.shouldEmitParticlesAndSounds(remaining);
+        }
+        helper.assertTrue(makesSound, "Expected drinking sounds to trigger during the flask's use duration");
+        helper.succeed();
+    }
+
+    @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
     public static void flaskCapacityEnchantmentDoublesMaxCharges(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack flask = new ItemStack(Items.FLASK);
