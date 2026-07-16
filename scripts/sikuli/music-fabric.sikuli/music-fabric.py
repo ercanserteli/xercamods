@@ -110,8 +110,8 @@ def emptyInventory():
 
 def testItemsInCreative(mc, win, mcLoc):
     emptyInventory()
-    
-    win.click("1690565858766.png")
+
+    win.click("1784222760677.png")
     win.click("1689794207237.png")
     
     

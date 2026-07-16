@@ -30,7 +30,7 @@ public class BlockCarvedAcacia extends BlockCarvedLog {
     // Grate-like behavior (copper grate): cull faces between same blocks and let light through.
     @Override
     protected boolean skipRendering(BlockState state, BlockState adjacentState, Direction direction) {
-        return adjacentState.is(this) || super.skipRendering(state, adjacentState, direction);
+        return adjacentState.getBlock() instanceof BlockCarvedAcacia || super.skipRendering(state, adjacentState, direction);
     }
 
     @Override

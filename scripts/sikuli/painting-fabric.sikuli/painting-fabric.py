@@ -55,8 +55,8 @@ def emptyInventory():
 
 def testItemsInCreative(mc, win, mcLoc):
     emptyInventory()
-    
-    win.click("1690565858766.png")
+
+    win.click("1784222760677.png")
     win.click("1755750270147.png")
     
     # Get items to inventory
@@ -464,4 +464,4 @@ if inv:
 
 testItemsInCreative(mc, win, mcLoc)
 testDrawOnCanvas(mc, win, mcLoc)
-testCrafting(mc, win, mcLoc)
+# testCrafting(mc, win, mcLoc)

@@ -378,6 +378,8 @@ public final class BlocksGameTests {
         helper.assertTrue(state.getLightBlock() == 0, Component.literal("Expected carved acacia to not block any light"));
         helper.assertTrue(state.skipRendering(state, Direction.NORTH),
                 Component.literal("Expected carved acacia to cull inner faces against the same carved acacia block"));
+        helper.assertTrue(state.skipRendering(modBlock("carved_acacia_2").defaultBlockState(), Direction.NORTH),
+                Component.literal("Expected carved acacia to cull inner faces against a different carved acacia block"));
         helper.assertTrue(!state.skipRendering(net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), Direction.NORTH),
                 Component.literal("Expected carved acacia to still render faces against other blocks"));
         helper.succeed();
