@@ -257,7 +257,13 @@ public class Mod implements ModInitializer {
 
             if (!level.isClientSide) {
                 float damage = ItemKnife.getOffhandDamage(level, stack, target, player);
+                float healthBefore = target.getHealth();
                 target.hurt(player.damageSources().playerAttack(player), damage);
+                float dealt = healthBefore - target.getHealth();
+                if (dealt > 2.0F && level instanceof ServerLevel serverLevel) {
+                    serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR,
+                            target.getX(), target.getY(0.5), target.getZ(), (int) (dealt * 0.5), 0.1, 0.0, 0.1, 0.2);
+                }
                 stack.hurtAndBreak(1, player, net.minecraft.world.entity.EquipmentSlot.OFFHAND);
                 int poisonLevel = EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.poisonEnchantment(level.registryAccess()), stack);
                 if (poisonLevel > 0) {
