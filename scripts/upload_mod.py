@@ -68,6 +68,10 @@ def build_curseforge_game_version_ids(api_token, mc_versions, loaders):
     for l in (loaders or []):
         ids.append(get_game_version_id(l, api_token, cached_versions=versions))
 
+    # Environment group is mandatory
+    for env in ("Client", "Server"):
+        ids.append(get_game_version_id(env, api_token, cached_versions=versions))
+
     # de-dupe while preserving order
     seen = set()
     out = []
