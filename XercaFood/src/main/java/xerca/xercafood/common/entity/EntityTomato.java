@@ -2,6 +2,7 @@ package xerca.xercafood.common.entity;
 
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,12 +31,12 @@ public class EntityTomato extends ThrowableItemProjectile {
 
     @Override
     protected void onHit(HitResult result) {
-        if (result.getType() == HitResult.Type.ENTITY) {
+        if (result.getType() == HitResult.Type.ENTITY && this.level() instanceof ServerLevel serverLevel) {
             EntityHitResult entityRayTraceResult = (EntityHitResult) result;
-            entityRayTraceResult.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 1f);
+            entityRayTraceResult.getEntity().hurtServer(serverLevel, this.damageSources().thrown(this, this.getOwner()), 1f);
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.level().broadcastEntityEvent(this, (byte) 3);
             this.level().playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, SoundEvents.TOMATO_SPLASH, SoundSource.PLAYERS, 1.0f, this.random.nextFloat() * 0.2F + 0.9F);
             this.remove(RemovalReason.DISCARDED);

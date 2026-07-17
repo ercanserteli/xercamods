@@ -5,11 +5,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -96,7 +96,7 @@ public class ModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        EntityRendererRegistry.register(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
+        EntityRenderers.register(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
 
         ClientPlayNetworking.registerGlobalReceiver(ExportMusicPacket.PACKET_ID, new ExportMusicPacketHandler());
         ClientPlayNetworking.registerGlobalReceiver(ImportMusicPacket.PACKET_ID, new ImportMusicPacketHandler());

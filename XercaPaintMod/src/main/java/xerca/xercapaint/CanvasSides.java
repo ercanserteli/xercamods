@@ -10,13 +10,10 @@ public final class CanvasSides {
     }
 
     public static final int DEFAULT_COLOR = 0xFFF9FFFE;
+    public static final int TOP_OFFSET = 0;
 
     public static int count(CanvasType type) {
         return 2 * CanvasType.getWidth(type) + 2 * CanvasType.getHeight(type);
-    }
-
-    public static int topOffset() {
-        return 0;
     }
 
     public static int bottomOffset(CanvasType type) {

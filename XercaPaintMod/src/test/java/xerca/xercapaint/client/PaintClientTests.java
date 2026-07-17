@@ -2,6 +2,10 @@ package xerca.xercapaint.client;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 
 import java.lang.reflect.Field;
 
@@ -27,7 +31,7 @@ final class PaintClientTests {
         context.runOnClient(client -> {
             Screen screen = client.screen;
             if (screen != null) {
-                screen.keyPressed(keyCode, scanCode, modifiers);
+                screen.keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
             }
         });
         context.waitTick();
@@ -37,8 +41,9 @@ final class PaintClientTests {
         context.runOnClient(client -> {
             Screen screen = client.screen;
             if (screen != null) {
-                screen.mouseClicked(x, y, button);
-                screen.mouseReleased(x, y, button);
+                MouseButtonEvent event = new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0));
+                screen.mouseClicked(event, false);
+                screen.mouseReleased(event);
             }
         });
         context.waitTick();
@@ -48,7 +53,7 @@ final class PaintClientTests {
         context.runOnClient(client -> {
             Screen screen = client.screen;
             if (screen != null) {
-                screen.mouseClicked(x, y, button);
+                screen.mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)), false);
             }
         });
         context.waitTick();
@@ -58,7 +63,7 @@ final class PaintClientTests {
         context.runOnClient(client -> {
             Screen screen = client.screen;
             if (screen != null) {
-                screen.mouseDragged(x, y, button, deltaX, deltaY);
+                screen.mouseDragged(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)), deltaX, deltaY);
             }
         });
         context.waitTick();
@@ -68,7 +73,7 @@ final class PaintClientTests {
         context.runOnClient(client -> {
             Screen screen = client.screen;
             if (screen != null) {
-                screen.mouseReleased(x, y, button);
+                screen.mouseReleased(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)));
             }
         });
         context.waitTick();
@@ -79,7 +84,7 @@ final class PaintClientTests {
             Screen screen = client.screen;
             if (screen != null) {
                 for (int i = 0; i < text.length(); i++) {
-                    screen.charTyped(text.charAt(i), 0);
+                    screen.charTyped(new CharacterEvent(text.charAt(i), 0));
                 }
             }
         });

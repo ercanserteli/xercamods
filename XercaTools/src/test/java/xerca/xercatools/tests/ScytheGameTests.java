@@ -160,6 +160,7 @@ public class ScytheGameTests {
         player.setXRot(0.0f);
 
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        pig.setNoAi(true);
 
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -187,6 +188,7 @@ public class ScytheGameTests {
         player.setXRot(0.0f);
 
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        pig.setNoAi(true);
         pig.setHealth(1.0f); // near-dead so the strike kills it
 
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);

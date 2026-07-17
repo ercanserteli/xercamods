@@ -49,7 +49,7 @@ public class BlockCarvingStation extends HorizontalDirectionalBlock {
     }
 
     private InteractionResult openMenu(Level level, BlockPos pos, Player player) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             player.openMenu(menuProvider(level, pos));
         }
         return InteractionResult.SUCCESS;

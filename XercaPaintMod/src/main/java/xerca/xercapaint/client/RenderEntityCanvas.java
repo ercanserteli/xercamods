@@ -6,10 +6,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -106,13 +107,13 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
     }
 
     @Override
-    public void render(CanvasRenderState state, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        super.render(state, matrixStackIn, bufferIn, packedLightIn);
+    public void submit(CanvasRenderState state, PoseStack matrixStackIn, SubmitNodeCollector collector, CameraRenderState cameraState) {
+        super.submit(state, matrixStackIn, collector, cameraState);
         if (state.canvasId == null) {
             return;
         }
         Instance instance = getCanvasRendererInstance(state.canvasId, state.version, state.width, state.height);
-        instance.render(true, state.rotation, state.yRot, state.xRot, matrixStackIn, bufferIn, state.direction, packedLightIn, state.glass, NO_TINT);
+        instance.render(true, state.rotation, state.yRot, state.xRot, matrixStackIn, collector, state.direction, state.lightCoords, state.glass, NO_TINT);
     }
 
     public static class RenderEntityCanvasFactory implements EntityRendererProvider<EntityCanvas> {
@@ -218,7 +219,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             }
         }
 
-        public void render(boolean hasEntity, int rotation, float yaw, float pitch, PoseStack ms, MultiBufferSource buffer, Direction facing, int packedLight, boolean glass, int tint) {
+        public void render(boolean hasEntity, int rotation, float yaw, float pitch, PoseStack ms, SubmitNodeCollector collector, Direction facing, int packedLight, boolean glass, int tint) {
             final float wScale = width / 16.0f;
             final float hScale = height / 16.0f;
 
@@ -256,85 +257,89 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             ms.mulPose(Axis.YP.rotationDegrees(180 - yaw));
             ms.scale(f, f, f);
 
-            PoseStack.Pose pose = ms.last();
             final float w32 = 32.0F * wScale;
             final float h32 = 32.0F * hScale;
             final float sideWidth = 1.0F / 16.0F;
 
             // FRONT (facing -Z): glass uses single-sided cutout so transparent pixels are see-through
-            VertexConsumer front = buffer.getBuffer(glass ? RenderType.entityCutout(location) : RenderType.entitySolid(location));
-            addVertex(front, pose, 0.0F, h32, -1.0F, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
-            addVertex(front, pose, w32, h32, -1.0F, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
-            addVertex(front, pose, w32, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
-            addVertex(front, pose, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
+            collector.submitCustomGeometry(ms, glass ? RenderType.entityCutout(location) : RenderType.entitySolid(location), (pose, front) -> {
+                addVertex(front, pose, 0.0F, h32, -1.0F, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
+                addVertex(front, pose, w32, h32, -1.0F, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
+                addVertex(front, pose, w32, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
+                addVertex(front, pose, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
+            });
 
             if (glass) {
                 // BACK (facing +Z): the front image seen through the glass appears mirrored
-                VertexConsumer back = buffer.getBuffer(RenderType.entityCutout(location));
-                addVertex(back, pose, 0.0D, 0.0D, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
-                addVertex(back, pose, w32, 0.0D, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
-                addVertex(back, pose, w32, h32, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
-                addVertex(back, pose, 0.0D, h32, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+                collector.submitCustomGeometry(ms, RenderType.entityCutout(location), (pose, back) -> {
+                    addVertex(back, pose, 0.0D, 0.0D, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
+                    addVertex(back, pose, w32, 0.0D, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
+                    addVertex(back, pose, w32, h32, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+                    addVertex(back, pose, 0.0D, h32, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+                });
 
                 if (tint != NO_TINT) {
                     // Tint the transparent pixels
                     int overlay = (GLASS_TINT_OVERLAY_ALPHA << 24) | (tint & 0xFFFFFF);
-                    VertexConsumer glassSheet = buffer.getBuffer(RenderType.entityTranslucent(renderer.whiteLocation));
-                    addVertex(glassSheet, pose, 0.0D, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
-                    addVertex(glassSheet, pose, w32, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
-                    addVertex(glassSheet, pose, w32, 0.0D, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
-                    addVertex(glassSheet, pose, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
+                    collector.submitCustomGeometry(ms, RenderType.entityTranslucent(renderer.whiteLocation), (pose, glassSheet) -> {
+                        addVertex(glassSheet, pose, 0.0D, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
+                        addVertex(glassSheet, pose, w32, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
+                        addVertex(glassSheet, pose, w32, 0.0D, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
+                        addVertex(glassSheet, pose, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
+                    });
                 }
 
                 if (sidesActive) {
                     // Painted side pixels (no-cull so they are visible from inside the canvas too)
-                    VertexConsumer sides = buffer.getBuffer(RenderType.entityCutoutNoCull(renderer.whiteLocation));
-                    renderPaintedSides(sides, pose, w32, h32, packedLight, true);
+                    collector.submitCustomGeometry(ms, RenderType.entityCutoutNoCull(renderer.whiteLocation), (pose, sides) ->
+                            renderPaintedSides(sides, pose, w32, h32, packedLight, true));
                 } else {
                     // Glass-pane frame
-                    VertexConsumer frame = buffer.getBuffer(RenderType.entityTranslucent(GLASS_FRAME_LOCATION));
-                    renderGlassFrame(frame, pose, w32, h32, packedLight);
+                    collector.submitCustomGeometry(ms, RenderType.entityTranslucent(GLASS_FRAME_LOCATION), (pose, frame) ->
+                            renderGlassFrame(frame, pose, w32, h32, packedLight));
                 }
                 ms.popPose();
                 return;
             }
 
-            // BACK (facing +Z)
-            VertexConsumer back = buffer.getBuffer(RenderType.entitySolid(BACK_LOCATION));
-            addVertex(back, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
-            addVertex(back, pose, w32, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
-            addVertex(back, pose, w32, h32, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
-            addVertex(back, pose, 0.0D, h32, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
-
             boolean paintedSides = sidesActive;
-            if (!paintedSides) {
-                // LEFT SIDE (x = 0, normal -X)
-                addVertex(back, pose, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
-                addVertex(back, pose, 0.0D, h32, 1.0D, sideWidth, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
-                addVertex(back, pose, 0.0D, h32, -1.0D, 0.0F, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
-                addVertex(back, pose, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
+            collector.submitCustomGeometry(ms, RenderType.entitySolid(BACK_LOCATION), (pose, back) -> {
+                // BACK (facing +Z)
+                addVertex(back, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+                addVertex(back, pose, w32, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
+                addVertex(back, pose, w32, h32, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
+                addVertex(back, pose, 0.0D, h32, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
 
-                // TOP SIDE (y = 32*hScale, normal +Y)
-                addVertex(back, pose, 0.0D, h32, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
-                addVertex(back, pose, w32, h32, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
-                addVertex(back, pose, w32, h32, -1.0D, 1.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
-                addVertex(back, pose, 0.0D, h32, -1.0D, 0.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
+                if (!paintedSides) {
+                    // LEFT SIDE (x = 0, normal -X)
+                    addVertex(back, pose, 0.0D, 0.0D, 1.0D, sideWidth, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
+                    addVertex(back, pose, 0.0D, h32, 1.0D, sideWidth, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+                    addVertex(back, pose, 0.0D, h32, -1.0D, 0.0F, 1.0F, packedLight, -1.0F, 0.0F, 0.0F);
+                    addVertex(back, pose, 0.0D, 0.0D, -1.0D, 0.0F, 0.0F, packedLight, -1.0F, 0.0F, 0.0F);
 
-                // RIGHT SIDE (x = 32*wScale, normal +X)
-                addVertex(back, pose, w32, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
-                addVertex(back, pose, w32, h32, -1.0F, 0.0F, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
-                addVertex(back, pose, w32, h32, 1.0F, sideWidth, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
-                addVertex(back, pose, w32, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+                    // TOP SIDE (y = 32*hScale, normal +Y)
+                    addVertex(back, pose, 0.0D, h32, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+                    addVertex(back, pose, w32, h32, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 1.0F, 0.0F);
+                    addVertex(back, pose, w32, h32, -1.0D, 1.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
+                    addVertex(back, pose, 0.0D, h32, -1.0D, 0.0F, sideWidth, packedLight, 0.0F, 1.0F, 0.0F);
 
-                // BOTTOM SIDE (y = 0, normal -Y)
-                addVertex(back, pose, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
-                addVertex(back, pose, w32, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
-                addVertex(back, pose, w32, 0.0D, 1.0F, 1.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
-                addVertex(back, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
-            } else {
+                    // RIGHT SIDE (x = 32*wScale, normal +X)
+                    addVertex(back, pose, w32, 0.0D, -1.0F, 0.0F, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+                    addVertex(back, pose, w32, h32, -1.0F, 0.0F, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+                    addVertex(back, pose, w32, h32, 1.0F, sideWidth, 1.0F, packedLight, 1.0F, 0.0F, 0.0F);
+                    addVertex(back, pose, w32, 0.0D, 1.0F, sideWidth, 0.0F, packedLight, 1.0F, 0.0F, 0.0F);
+
+                    // BOTTOM SIDE (y = 0, normal -Y)
+                    addVertex(back, pose, 0.0D, 0.0D, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
+                    addVertex(back, pose, w32, 0.0D, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, -1.0F, 0.0F);
+                    addVertex(back, pose, w32, 0.0D, 1.0F, 1.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
+                    addVertex(back, pose, 0.0D, 0.0D, 1.0F, 0.0F, 1.0F - sideWidth, packedLight, 0.0F, -1.0F, 0.0F);
+                }
+            });
+            if (paintedSides) {
                 // No-cull so painted sides are visible from inside the canvas too
-                VertexConsumer sides = buffer.getBuffer(RenderType.entityCutoutNoCull(renderer.whiteLocation));
-                renderPaintedSides(sides, pose, w32, h32, packedLight, false);
+                collector.submitCustomGeometry(ms, RenderType.entityCutoutNoCull(renderer.whiteLocation), (pose, sides) ->
+                        renderPaintedSides(sides, pose, w32, h32, packedLight, false));
             }
 
             ms.popPose();

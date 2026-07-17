@@ -3,6 +3,7 @@ package xerca.xercapaint.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -176,23 +177,24 @@ public abstract class BasePalette extends Screen {
         }
     }
 
-    protected boolean superMouseClicked(double posX, double posY, int mouseButton) {
-        return super.mouseClicked(posX, posY, mouseButton);
+    protected boolean superMouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        return super.mouseClicked(event, isDoubleClick);
     }
 
-    protected boolean superMouseReleased(double posX, double posY, int mouseButton) {
-        return super.mouseReleased(posX, posY, mouseButton);
+    protected boolean superMouseReleased(MouseButtonEvent event) {
+        return super.mouseReleased(event);
     }
 
-    protected boolean superMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+    protected boolean superMouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+        return super.mouseDragged(event, deltaX, deltaY);
     }
 
     // Mouse button 0: left, 1: right
     @Override
-    public boolean mouseClicked(double posX, double posY, int mouseButton) {
-        int mouseX = (int) Math.round(posX);
-        int mouseY = (int) Math.round(posY);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        int mouseButton = event.button();
+        int mouseX = (int) Math.round(event.x());
+        int mouseY = (int) Math.round(event.y());
 
         if (paletteClick(mouseX, mouseY)) {
             int x = (mouseX - (int) paletteX);
@@ -245,7 +247,7 @@ public abstract class BasePalette extends Screen {
                 isCarryingPalette = true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     protected boolean inColorPicker(int x, int y) {
@@ -275,9 +277,9 @@ public abstract class BasePalette extends Screen {
     }
 
     @Override
-    public boolean mouseReleased(double posX, double posY, int mouseButton) {
-        int mouseX = (int) Math.round(posX);
-        int mouseY = (int) Math.round(posY);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        int mouseX = (int) Math.round(event.x());
+        int mouseY = (int) Math.round(event.y());
         if (isCarryingColor || isCarryingWater) {
             if (paletteClick(mouseX, mouseY)) {
                 float sqrCustomRadius = CUSTOM_COLOR_RADIUS * CUSTOM_COLOR_RADIUS;
@@ -307,7 +309,7 @@ public abstract class BasePalette extends Screen {
             carriedCustomColorId = -1;
         }
         isCarryingPalette = false;
-        return super.mouseReleased(posX, posY, mouseButton);
+        return super.mouseReleased(event);
     }
 
     protected void playSound(SoundInstance sound) {

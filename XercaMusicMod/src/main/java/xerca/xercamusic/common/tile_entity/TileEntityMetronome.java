@@ -44,7 +44,7 @@ public class TileEntityMetronome extends BlockEntity {
             final int bps = Math.max(state.getValue(BlockMetronome.BPS), 1);
             int pause = Math.max(40 / bps, 1);
             if (metronome.age % pause == 0) {
-                if (level.isClientSide) {// note: doesn't work if this function is only called in server
+                if (level.isClientSide()) {// note: doesn't work if this function is only called in server
                     try {
                         onlyCallOnClient(() -> () ->
                                 ModClient.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat() * 0.1f, (byte) -1));

@@ -29,7 +29,7 @@ public class ItemPalette extends Item {
 
     @Override
     public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             ModClient.showCanvasGui(playerIn);
         }
         return InteractionResult.SUCCESS;

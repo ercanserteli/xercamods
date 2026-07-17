@@ -47,7 +47,7 @@ public class ItemGrabHook extends FishingRodItem {
         stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
         setCastState(stack, true);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             level.addFreshEntity(new EntityGrabHook(level, player, stack, useSeconds));
         }
 

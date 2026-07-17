@@ -3,15 +3,15 @@ package xerca.xercatools.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.joml.Matrix4f;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityHealthOrb;
 
@@ -42,27 +42,28 @@ public class RenderHealthOrb extends EntityRenderer<EntityHealthOrb, HealthOrbRe
     }
 
     @Override
-    public void render(HealthOrbRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void submit(HealthOrbRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
         poseStack.pushPose();
         float animTime = state.animTime;
         int red = (int) ((Mth.sin(animTime) + 1.0F) * 32.0F) + 192;
         int blue = (int) ((Mth.sin(animTime + 4.1887903F) + 1.0F) * 0.1F * 64.0F);
+        int packedLight = state.lightCoords;
         poseStack.translate(0.0D, 0.1D, 0.0D);
-        poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+        poseStack.mulPose(cameraState.orientation);
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
         poseStack.scale(0.3F, 0.3F, 0.3F);
-        VertexConsumer consumer = buffer.getBuffer(RENDER_TYPE);
-        Matrix4f matrix = poseStack.last().pose();
-        vertex(consumer, matrix, -0.5F, -0.25F, red, 0, blue, 0, 1, packedLight);
-        vertex(consumer, matrix, 0.5F, -0.25F, red, 0, blue, 1, 1, packedLight);
-        vertex(consumer, matrix, 0.5F, 0.75F, red, 0, blue, 1, 0, packedLight);
-        vertex(consumer, matrix, -0.5F, 0.75F, red, 0, blue, 0, 0, packedLight);
+        collector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, consumer) -> {
+            vertex(consumer, pose, -0.5F, -0.25F, red, 0, blue, 0, 1, packedLight);
+            vertex(consumer, pose, 0.5F, -0.25F, red, 0, blue, 1, 1, packedLight);
+            vertex(consumer, pose, 0.5F, 0.75F, red, 0, blue, 1, 0, packedLight);
+            vertex(consumer, pose, -0.5F, 0.75F, red, 0, blue, 0, 0, packedLight);
+        });
         poseStack.popPose();
-        super.render(state, poseStack, buffer, packedLight);
+        super.submit(state, poseStack, collector, cameraState);
     }
 
-    private static void vertex(VertexConsumer consumer, Matrix4f matrix, float x, float y, int red, int green, int blue, float u, float v, int light) {
-        consumer.addVertex(matrix, x, y, 0.0F)
+    private static void vertex(VertexConsumer consumer, PoseStack.Pose pose, float x, float y, int red, int green, int blue, float u, float v, int light) {
+        consumer.addVertex(pose, x, y, 0.0F)
                 .setColor(red, green, blue, 220)
                 .setUv(u, v)
                 .setOverlay(OverlayTexture.NO_OVERLAY)

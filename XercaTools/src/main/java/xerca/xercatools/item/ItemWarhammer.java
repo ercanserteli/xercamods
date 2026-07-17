@@ -98,7 +98,7 @@ public class ItemWarhammer extends Item {
 
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
-        if (level.isClientSide || !(entity instanceof Player)) return;
+        if (level.isClientSide() || !(entity instanceof Player)) return;
         int windBurstLevel = EnchantmentHelper.getItemEnchantmentLevel(
                 level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.WIND_BURST), stack);
         if (windBurstLevel <= 0) return;
@@ -115,7 +115,7 @@ public class ItemWarhammer extends Item {
     @Override
     public boolean releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player)) return false;
-        if (worldIn.isClientSide) return false;
+        if (worldIn.isClientSide()) return false;
 
         float useSeconds = (this.getUseDuration(stack, entityLiving) - timeLeft) / 20.0f;
         float f = useSeconds / getFullUseSeconds(worldIn.registryAccess(), stack);
@@ -241,7 +241,9 @@ public class ItemWarhammer extends Item {
 
         level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), xerca.xercatools.SoundEvents.HAMMER, SoundSource.PLAYERS, 1.0f, level.random.nextFloat() * 0.1F + 0.4F + (2.0f / (damage + densityLevel)));
         stack.hurtAndBreak(1, player, slot);
-        target.hurt(player.damageSources().playerAttack(player), damage);
+        if (level instanceof ServerLevel serverLevel) {
+            target.hurtServer(serverLevel, player.damageSources().playerAttack(player), damage);
+        }
 
         int maimLevel = EnchantmentHelper.getItemEnchantmentLevel(WarhammerEnchantments.maimEnchantment(level.registryAccess()), stack);
         if (maimLevel > 0) {
@@ -288,7 +290,9 @@ public class ItemWarhammer extends Item {
         for (LivingEntity target : targets) {
             Vec3 knockvec = target.position().subtract(position).normalize().scale(push);
             target.push(knockvec.x, knockvec.y, knockvec.z);
-            target.hurt(player.damageSources().playerAttack(player), damage);
+            if (level instanceof ServerLevel serverLevel) {
+                target.hurtServer(serverLevel, player.damageSources().playerAttack(player), damage);
+            }
             target.hurtMarked = true;
         }
 

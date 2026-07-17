@@ -67,7 +67,7 @@ public class BlockPizza extends Block {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level worldIn, BlockPos pos, Player player, BlockHitResult hit) {
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             if (eat(worldIn, pos, state, player, hungerPerBite).consumesAction()) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
                         1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);

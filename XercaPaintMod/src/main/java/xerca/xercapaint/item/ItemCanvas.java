@@ -46,7 +46,7 @@ public class ItemCanvas extends HangingEntityItem {
 
     @Override
     public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             ModClient.showCanvasGui(playerIn);
         }
         return InteractionResult.SUCCESS;
@@ -61,14 +61,14 @@ public class ItemCanvas extends HangingEntityItem {
         ItemStack itemstack = context.getItemInHand();
         if (player != null) {
             if (!this.mayPlace(player, direction, itemstack, pos)) {
-                if (context.getLevel().isClientSide) {
+                if (context.getLevel().isClientSide()) {
                     ModClient.showCanvasGui(player);
                 }
             } else {
                 String canvasId = itemstack.get(Items.CANVAS_ID);
                 List<Integer> canvasPixels = itemstack.get(Items.CANVAS_PIXELS);
                 if (canvasId == null || canvasPixels == null) {
-                    if (context.getLevel().isClientSide) {
+                    if (context.getLevel().isClientSide()) {
                         ModClient.showCanvasGui(player);
                     }
                     return InteractionResult.SUCCESS;
@@ -76,7 +76,7 @@ public class ItemCanvas extends HangingEntityItem {
 
                 int rotation = getRotation(direction, blockpos, player);
 
-                if (!context.getLevel().isClientSide) {
+                if (!context.getLevel().isClientSide()) {
                     EntityCanvas entityCanvas = new EntityCanvas(context.getLevel(), itemstack, pos, direction, canvasType, rotation);
 
                     if (entityCanvas.survives()) {
@@ -196,11 +196,6 @@ public class ItemCanvas extends HangingEntityItem {
         } else if (stack.getOrDefault(DataComponents.MAX_STACK_SIZE, 1) > 1) {
             stack.remove(DataComponents.MAX_STACK_SIZE);
         }
-    }
-
-    @Override
-    public void verifyComponentsAfterLoad(ItemStack stack) {
-        updateStackSize(stack);
     }
 
     public int getWidth() {

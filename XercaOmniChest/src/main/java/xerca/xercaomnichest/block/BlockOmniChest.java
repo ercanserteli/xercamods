@@ -88,7 +88,7 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
     }
 
     private InteractionResult openMenu(Level level, BlockPos pos, Player player) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         MinecraftServer server = level.getServer();
@@ -190,7 +190,7 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
             return null;
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return (tickerLevel, tickerPos, tickerState, blockEntity) -> {
                 if (blockEntity instanceof BlockEntityOmniChest omniChest) {
                     BlockEntityOmniChest.lidAnimateTick(omniChest);

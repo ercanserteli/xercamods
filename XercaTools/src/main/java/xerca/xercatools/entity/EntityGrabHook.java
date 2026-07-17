@@ -191,7 +191,7 @@ public class EntityGrabHook extends Entity {
         this.age++;
 
         Player angler = this.getAngler();
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             handleClientTick(angler);
         } else if (shouldDiscardOnServer(angler)) {
             discardHook();
@@ -211,7 +211,7 @@ public class EntityGrabHook extends Entity {
             setReturning();
         }
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (checkCollision(angler)) {
                 return;
             }
@@ -296,7 +296,9 @@ public class EntityGrabHook extends Entity {
             this.level().playSound(null, this, net.minecraft.sounds.SoundEvents.BEE_STING, SoundSource.PLAYERS, 3.0F, pitch);
             this.level().playSound(null, angler, net.minecraft.sounds.SoundEvents.BEE_STING, SoundSource.PLAYERS, 1.0F, pitch);
             this.level().playSound(null, angler, SoundEvents.HOOK_CLINK, SoundSource.PLAYERS, 0.25F, pitch);
-            caught.hurt(this.damageSources().thrown(this, angler), 3.0F);
+            if (this.level() instanceof ServerLevel serverLevel) {
+                caught.hurtServer(serverLevel, this.damageSources().thrown(this, angler), 3.0F);
+            }
         } else {
             this.level().playSound(null, this, net.minecraft.sounds.SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 2.0F, pitch);
             this.level().playSound(null, angler, net.minecraft.sounds.SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, pitch);

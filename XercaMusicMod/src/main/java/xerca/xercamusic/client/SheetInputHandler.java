@@ -5,6 +5,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringUtil;
 import org.lwjgl.glfw.GLFW;
@@ -197,7 +199,7 @@ class SheetInputHandler {
 
         GuiEventListener focused = gui.getFocused();
         if (focused != null && gui.isDragging()) {
-            focused.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            focused.mouseDragged(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)), deltaX, deltaY);
             return true;
         }
 
@@ -278,11 +280,11 @@ class SheetInputHandler {
 
     private boolean handleTopLevelMouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (isActive(gui.markerEditBox)) {
-            gui.markerEditBox.mouseClicked(mouseX, mouseY, mouseButton);
+            gui.markerEditBox.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(mouseButton, 0)), false);
             return true;
         }
         if (isActive(gui.noteEditBox)) {
-            gui.noteEditBox.mouseClicked(mouseX, mouseY, mouseButton);
+            gui.noteEditBox.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(mouseButton, 0)), false);
             return true;
         }
         return false;
@@ -290,11 +292,11 @@ class SheetInputHandler {
 
     private boolean handleTopLevelMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
         if (isActive(gui.markerEditBox)) {
-            gui.markerEditBox.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            gui.markerEditBox.mouseDragged(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)), deltaX, deltaY);
             return true;
         }
         if (isActive(gui.noteEditBox)) {
-            gui.noteEditBox.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            gui.noteEditBox.mouseDragged(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)), deltaX, deltaY);
             return true;
         }
         return false;
@@ -302,11 +304,11 @@ class SheetInputHandler {
 
     private boolean handleTopLevelMouseReleased(double posX, double posY, int mouseButton) {
         if (isActive(gui.markerEditBox)) {
-            gui.markerEditBox.mouseReleased(posX, posY, mouseButton);
+            gui.markerEditBox.mouseReleased(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)));
             return true;
         }
         if (isActive(gui.noteEditBox)) {
-            gui.noteEditBox.mouseReleased(posX, posY, mouseButton);
+            gui.noteEditBox.mouseReleased(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)));
             return true;
         }
         return false;
@@ -351,11 +353,11 @@ class SheetInputHandler {
             if (scrollY > 0) {
                 Button octaveUp = GuiMusicSheet.requireWidget(gui.octaveUp, "octaveUp");
                 octaveUp.playDownSound(Minecraft.getInstance().getSoundManager());
-                octaveUp.onPress();
+                octaveUp.onPress(new MouseButtonInfo(0, 0));
             } else if (scrollY < 0) {
                 Button octaveDown = GuiMusicSheet.requireWidget(gui.octaveDown, "octaveDown");
                 octaveDown.playDownSound(Minecraft.getInstance().getSoundManager());
-                octaveDown.onPress();
+                octaveDown.onPress(new MouseButtonInfo(0, 0));
             }
             return true;
         }
@@ -823,13 +825,13 @@ class SheetInputHandler {
         byte[] bytes = new byte[index];
         buffer.getBytes(0, bytes);
         String encodeBytes = Base64.getEncoder().encodeToString(bytes);
-        GLFW.glfwSetClipboardString(Minecraft.getInstance().getWindow().getWindow(), encodeBytes);
+        GLFW.glfwSetClipboardString(Minecraft.getInstance().getWindow().handle(), encodeBytes);
 
         gui.editCursorEnd = gui.editCursor;
     }
 
     private void decodeFromClipboard(boolean pushBack) {
-        String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getWindow().getWindow());
+        String encodedMusic = GLFW.glfwGetClipboardString(Minecraft.getInstance().getWindow().handle());
         if (encodedMusic != null && !encodedMusic.isEmpty()) {
             MusicClipboard.ParsedMusic parsedMusic = MusicClipboard.decode(encodedMusic);
             if (parsedMusic == null) {
@@ -1043,15 +1045,15 @@ class SheetInputHandler {
     }
 
     static boolean isShiftHeld() {
-        long wh = Minecraft.getInstance().getWindow().getWindow();
-        return InputConstants.isKeyDown(wh, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                InputConstants.isKeyDown(wh, GLFW.GLFW_KEY_RIGHT_SHIFT);
+        com.mojang.blaze3d.platform.Window window = Minecraft.getInstance().getWindow();
+        return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
     }
 
     static boolean isCtrlHeld() {
-        long wh = Minecraft.getInstance().getWindow().getWindow();
-        return InputConstants.isKeyDown(wh, GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                InputConstants.isKeyDown(wh, GLFW.GLFW_KEY_RIGHT_CONTROL);
+        com.mojang.blaze3d.platform.Window window = Minecraft.getInstance().getWindow();
+        return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL);
     }
 
     private byte pixelToNote(int mouseRelY) {

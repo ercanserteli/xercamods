@@ -102,7 +102,7 @@ public final class MusicSheetEditClientTest implements FabricClientGameTest {
             pressKey(context, GLFW.GLFW_KEY_A, 0, GLFW.GLFW_MOD_CONTROL);
             pressKey(context, GLFW.GLFW_KEY_C, 0, GLFW.GLFW_MOD_CONTROL);
             MusicClipboard.ParsedMusic copied = context.computeOnClient(client -> {
-                String clip = GLFW.glfwGetClipboardString(client.getWindow().getWindow());
+                String clip = GLFW.glfwGetClipboardString(client.getWindow().handle());
                 return clip == null ? null : MusicClipboard.decode(clip);
             });
             check(copied != null && !copied.notes().isEmpty(), "Expected Ctrl+C to place the selection on the clipboard");
@@ -200,7 +200,7 @@ public final class MusicSheetEditClientTest implements FabricClientGameTest {
         for (int i = 0; i < times; i++) {
             context.runOnClient(client -> {
                 Button button = readField(client.screen, GuiMusicSheet.class, fieldName);
-                button.onPress();
+                button.onPress(new net.minecraft.client.input.MouseButtonInfo(0, 0));
             });
             context.waitTick();
         }

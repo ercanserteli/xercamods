@@ -243,7 +243,7 @@ public class EntityHealthOrb extends Entity {
 
     @Override
     public void playerTouch(Player player) {
-        if (!this.level().isClientSide && !player.equals(donorPlayer) && (age > 80 || player.equals(attackingPlayer)) && player.takeXpDelay == 0) {
+        if (!this.level().isClientSide() && !player.equals(donorPlayer) && (age > 80 || player.equals(attackingPlayer)) && player.takeXpDelay == 0) {
             player.level().playSound(null, player, SoundEvents.ABSORB, SoundSource.PLAYERS, 1.0f, 0.8f + random.nextFloat() * 0.4f);
             player.takeXpDelay = 1;
             player.setHealth(player.getHealth() + 1);

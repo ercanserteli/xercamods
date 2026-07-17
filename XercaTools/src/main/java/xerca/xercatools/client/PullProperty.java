@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemMode
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,8 @@ public record PullProperty() implements RangeSelectItemModelProperty {
     public static final MapCodec<PullProperty> MAP_CODEC = MapCodec.unit(new PullProperty());
 
     @Override
-    public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+    public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
+        LivingEntity entity = owner != null ? owner.asLivingEntity() : null;
         if (entity == null || !entity.isUsingItem() || !ItemStack.isSameItemSameComponents(entity.getUseItem(), stack)) {
             return 0.0F;
         }

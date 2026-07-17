@@ -2,6 +2,7 @@ package xerca.xercablocks.block;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
@@ -58,7 +59,7 @@ public class BlockFunctionalBookcase extends BaseEntityBlock {
 
     private InteractionResult openMenu(Level level, BlockPos pos, Player player) {
         if (level.getBlockEntity(pos) instanceof FunctionalBookcaseBlockEntity bookcase) {
-            if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+            if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.openMenu(bookcase);
             }
             return InteractionResult.SUCCESS;
@@ -78,7 +79,7 @@ public class BlockFunctionalBookcase extends BaseEntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof FunctionalBookcaseBlockEntity bookcase) {
             return net.minecraft.world.inventory.AbstractContainerMenu.getRedstoneSignalFromContainer(bookcase);

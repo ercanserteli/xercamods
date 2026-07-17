@@ -56,7 +56,7 @@ public class BlockMetronome extends BaseEntityBlock {
 
 
     public void setBps(BlockState state, Level worldIn, BlockPos pos, int bps) {
-        if (!worldIn.isClientSide && bps >= 1 && bps <= 50) {
+        if (!worldIn.isClientSide() && bps >= 1 && bps <= 50) {
             state = state.setValue(BPS, bps);
             worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
         }
@@ -64,7 +64,7 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Override
     public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
             if (player.getMainHandItem().getItem() == Items.MUSIC_SHEET) {
@@ -84,7 +84,7 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             state = state.cycle(BPS); //cycle
             level.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
         }

@@ -3,45 +3,50 @@ package xerca.xercafood.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import xerca.xercafood.common.block.Blocks;
 import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
-public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityDoner> {
-    protected static @Nullable BlockRenderDispatcher blockRenderer;
-
+public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityDoner, DonerTileEntityRenderer.DonerRenderState> {
     public DonerTileEntityRenderer(BlockEntityRendererProvider.Context ignoredCtx) {
     }
 
     @Override
-    public void render(BlockEntityDoner blockEntity, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPos) {
-        BlockRenderDispatcher renderer = blockRenderer;
-        if (renderer == null) {
-            renderer = Minecraft.getInstance().getBlockRenderer();
-            blockRenderer = renderer;
-        }
+    public DonerRenderState createRenderState() {
+        return new DonerRenderState();
+    }
 
-        float f = blockEntity.getAnimationProgress(partialTicks);
-        matrixStackIn.pushPose();
+    @Override
+    public void extractRenderState(BlockEntityDoner blockEntity, DonerRenderState state, float partialTick, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        BlockEntityRenderState.extractBase(blockEntity, state, breakProgress);
+        state.animationProgress = blockEntity.getAnimationProgress(partialTick);
+    }
 
-        matrixStackIn.translate(0.5f, 0.f, 0.5f);
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(2 * f));
-        matrixStackIn.translate(-0.5f, 0.f, -0.5f);
+    @Override
+    public void submit(DonerRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+        poseStack.pushPose();
 
-        BlockState bs = blockEntity.getBlockState();
+        poseStack.translate(0.5f, 0.f, 0.5f);
+        poseStack.mulPose(Axis.YP.rotationDegrees(2 * state.animationProgress));
+        poseStack.translate(-0.5f, 0.f, -0.5f);
 
-        Blocks.BLOCK_DONER.setRenderType(RenderShape.MODEL);
-        renderer.renderSingleBlock(bs, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY);
-        Blocks.BLOCK_DONER.setRenderType(RenderShape.INVISIBLE);
+        BlockStateModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state.blockState);
+        collector.submitBlockModel(poseStack, ItemBlockRenderTypes.getRenderType(state.blockState), model,
+                1.0f, 1.0f, 1.0f, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
-        matrixStackIn.popPose();
+        poseStack.popPose();
+    }
+
+    public static class DonerRenderState extends BlockEntityRenderState {
+        private float animationProgress;
     }
 }

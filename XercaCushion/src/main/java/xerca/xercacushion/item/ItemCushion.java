@@ -57,7 +57,7 @@ public class ItemCushion extends Item {
             return InteractionResult.FAIL;
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             EntityCushion cushion = new EntityCushion(level, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, variant);
             float yaw = Mth.floor((Mth.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
             cushion.snapTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, yaw, 0.0F);

@@ -25,7 +25,7 @@ public class BlockTomatoPlant extends CropBlock implements BonemealableBlock {
 
 
     BlockTomatoPlant() {
-        super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_tomato_plant")).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
+        super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_tomato_plant")).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollision());
     }
 
     @Override

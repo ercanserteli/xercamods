@@ -262,12 +262,12 @@ public class Mod implements ModInitializer {
                 return InteractionResult.PASS;
             }
 
-            if (!level.isClientSide) {
+            if (level instanceof ServerLevel serverLevel) {
                 float damage = ItemKnife.getOffhandDamage(level, stack, target, player);
                 float healthBefore = target.getHealth();
-                target.hurt(player.damageSources().playerAttack(player), damage);
+                target.hurtServer(serverLevel, player.damageSources().playerAttack(player), damage);
                 float dealt = healthBefore - target.getHealth();
-                if (dealt > 2.0F && level instanceof ServerLevel serverLevel) {
+                if (dealt > 2.0F) {
                     serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR,
                             target.getX(), target.getY(0.5), target.getZ(), (int) (dealt * 0.5), 0.1, 0.0, 0.1, 0.2);
                 }

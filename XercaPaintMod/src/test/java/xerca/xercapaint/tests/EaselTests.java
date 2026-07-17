@@ -17,7 +17,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -180,7 +180,7 @@ public class EaselTests {
         TestAsserts.assertTrue(helper, Objects.equals(getPainter(helper, easel), firstPlayer), "Second player should not replace first player as editor");
 
         DamageSource secondAttack = helper.getLevel().damageSources().playerAttack(secondPlayer);
-        easel.hurt(secondAttack, 1.0F);
+        easel.hurtServer(helper.getLevel(), secondAttack, 1.0F);
         TestAsserts.assertTrue(helper, getDeferredDrop(helper, easel) != null, "Expected deferred drop while first player editor is still active");
 
         // In GameTests we don't have a real client ack; clear painter to emulate GUI close ack
@@ -191,7 +191,7 @@ public class EaselTests {
         TestAsserts.assertTrue(helper, countItemDropsNear(helper, easelLand, Items.ITEM_CANVAS) >= 1,
                 "Expected canvas item drop after break while another player was editing");
 
-        easel.hurt(secondAttack, 1.0F);
+        easel.hurtServer(helper.getLevel(), secondAttack, 1.0F);
         TestAsserts.assertTrue(helper, !easel.isAlive() || easel.isRemoved(), "Expected easel entity to be removed after second break");
         TestAsserts.assertTrue(helper, countItemDropsNear(helper, easelLand, Items.ITEM_EASEL) >= 1,
                 "Expected easel item drop when broken by second player");
@@ -218,7 +218,7 @@ public class EaselTests {
         TestAsserts.assertTrue(helper, easel.getItem().is(Items.ITEM_CANVAS), "Expected canvas to be mounted before explosion break test");
 
         DamageSource explosion = helper.getLevel().damageSources().explosion(null, null);
-        easel.hurt(explosion, 1.0F);
+        easel.hurtServer(helper.getLevel(), explosion, 1.0F);
 
         TestAsserts.assertTrue(helper, easel.isRemoved(), "Expected easel entity to be removed by explosion damage");
         TestAsserts.assertTrue(helper, countItemDropsNear(helper, easelLand, Items.ITEM_EASEL) >= 1,
@@ -241,9 +241,8 @@ public class EaselTests {
 
         ItemStack invulnerableEaselStack = new ItemStack(Items.ITEM_EASEL, 1);
         CompoundTag entityTag = new CompoundTag();
-        entityTag.putString("id", "xercapaint:easel");
         entityTag.putBoolean("Invulnerable", true);
-        invulnerableEaselStack.set(DataComponents.ENTITY_DATA, CustomData.of(entityTag));
+        invulnerableEaselStack.set(DataComponents.ENTITY_DATA, TypedEntityData.of(Entities.EASEL, entityTag));
         player.setItemSlot(EquipmentSlot.MAINHAND, invulnerableEaselStack);
 
         helper.placeAt(player, player.getMainHandItem(), easelLand, Direction.UP);
@@ -255,8 +254,8 @@ public class EaselTests {
 
         DamageSource playerDamage = helper.getLevel().damageSources().playerAttack(player);
         DamageSource explosionDamage = helper.getLevel().damageSources().explosion(null, null);
-        easel.hurt(playerDamage, 1.0F);
-        easel.hurt(explosionDamage, 1.0F);
+        easel.hurtServer(helper.getLevel(), playerDamage, 1.0F);
+        easel.hurtServer(helper.getLevel(), explosionDamage, 1.0F);
 
         TestAsserts.assertTrue(helper, easel.isAlive() && !easel.isRemoved(), "Invulnerable easel should remain after player/explosion damage");
         TestAsserts.assertTrue(helper, countItemDropsNear(helper, easelLand, Items.ITEM_EASEL) == 0,

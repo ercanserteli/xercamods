@@ -2,6 +2,7 @@ package xerca.xercatools.item;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -144,7 +145,7 @@ public class ItemScythe extends Item {
 
     @Override
     public boolean releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeLeft) {
-        if (!(livingEntity instanceof Player player) || level.isClientSide) {
+        if (!(livingEntity instanceof Player player) || !(level instanceof ServerLevel serverLevel)) {
             return false;
         }
 
@@ -166,7 +167,7 @@ public class ItemScythe extends Item {
         EquipmentSlot slot = player.getUsedItemHand() == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
         float damage = getScytheAttackDamage(player) * 1.3F + getEnchantmentDamageBonus(level, stack, target);
         stack.hurtAndBreak(1, player, slot);
-        boolean killed = target.hurtOrSimulate(player.damageSources().playerAttack(player), damage) && target.isDeadOrDying();
+        boolean killed = target.hurtServer(serverLevel, player.damageSources().playerAttack(player), damage) && target.isDeadOrDying();
 
         if (killed) {
             level.playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), SoundEvents.BEHEAD, SoundSource.PLAYERS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
@@ -235,7 +236,9 @@ public class ItemScythe extends Item {
                     && (!(nearby instanceof ArmorStand armorStand) || !armorStand.isMarker())
                     && player.distanceToSqr(nearby) < 9.0D) {
                 nearby.knockback(0.4F, net.minecraft.util.Mth.sin(player.getYRot() * ((float) Math.PI / 180F)), -net.minecraft.util.Mth.cos(player.getYRot() * ((float) Math.PI / 180F)));
-                nearby.hurt(player.damageSources().playerAttack(player), sweepDamage);
+                if (player.level() instanceof ServerLevel serverLevel) {
+                    nearby.hurtServer(serverLevel, player.damageSources().playerAttack(player), sweepDamage);
+                }
             }
         }
 
@@ -249,7 +252,7 @@ public class ItemScythe extends Item {
         }
 
         int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.devourEnchantment(player.level().registryAccess()), stack);
-        if (devourLevel <= 0 || player.level().isClientSide || player.getAttackStrengthScale(0.5F) <= 0.9F) {
+        if (devourLevel <= 0 || player.level().isClientSide() || player.getAttackStrengthScale(0.5F) <= 0.9F) {
             return;
         }
 
@@ -285,7 +288,7 @@ public class ItemScythe extends Item {
         ItemStack head;
         if (target instanceof Player playerTarget) {
             head = new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD);
-            head.set(DataComponents.PROFILE, new net.minecraft.world.item.component.ResolvableProfile(playerTarget.getGameProfile()));
+            head.set(DataComponents.PROFILE, net.minecraft.world.item.component.ResolvableProfile.createResolved(playerTarget.getGameProfile()));
         } else {
             head = getMobHead(target.getType());
 
@@ -315,9 +318,9 @@ public class ItemScythe extends Item {
 
     private static ItemStack createCustomMobHead(String key, String texture) {
         ItemStack head = new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD);
-        GameProfile profile = new GameProfile(UUID.nameUUIDFromBytes(("xercatools:" + key).getBytes(StandardCharsets.UTF_8)), key);
-        profile.getProperties().put("textures", new Property("textures", texture));
-        head.set(DataComponents.PROFILE, new net.minecraft.world.item.component.ResolvableProfile(profile));
+        GameProfile profile = new GameProfile(UUID.nameUUIDFromBytes(("xercatools:" + key).getBytes(StandardCharsets.UTF_8)), key,
+                new PropertyMap(com.google.common.collect.ImmutableMultimap.of("textures", new Property("textures", texture))));
+        head.set(DataComponents.PROFILE, net.minecraft.world.item.component.ResolvableProfile.createResolved(profile));
         return head;
     }
 

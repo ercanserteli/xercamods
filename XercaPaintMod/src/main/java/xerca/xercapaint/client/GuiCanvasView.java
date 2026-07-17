@@ -121,7 +121,7 @@ public class GuiCanvasView extends Screen {
                     fillChecker(guiGraphics, x, canvasY - scale, k - 1);
                     fillChecker(guiGraphics, x, canvasY + canvasHeight, k + canvasPixelHeight);
                 }
-                guiGraphics.fill(x, canvasY - scale, x + scale, canvasY, getSidePixel(CanvasSides.topOffset() + k));
+                guiGraphics.fill(x, canvasY - scale, x + scale, canvasY, getSidePixel(CanvasSides.TOP_OFFSET + k));
                 guiGraphics.fill(x, canvasY + canvasHeight, x + scale, canvasY + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
             }
             for (int i = 0; i < canvasPixelHeight; i++) {

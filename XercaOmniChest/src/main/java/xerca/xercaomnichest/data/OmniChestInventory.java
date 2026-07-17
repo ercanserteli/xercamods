@@ -2,6 +2,7 @@ package xerca.xercaomnichest.data;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
@@ -30,21 +31,25 @@ public class OmniChestInventory extends SimpleContainer {
     }
 
     @Override
-    public void startOpen(Player player) {
-        BlockEntityOmniChest chest = getActiveChest(player);
-        if (chest != null) {
-            chest.startOpen(player);
-            super.startOpen(player);
+    public void startOpen(ContainerUser user) {
+        if (user.getLivingEntity() instanceof Player player) {
+            BlockEntityOmniChest chest = getActiveChest(player);
+            if (chest != null) {
+                chest.startOpen(user);
+                super.startOpen(user);
+            }
         }
     }
 
     @Override
-    public void stopOpen(Player player) {
-        BlockEntityOmniChest chest = getActiveChest(player);
-        if (chest != null) {
-            chest.stopOpen(player);
-            super.stopOpen(player);
-            playerChests.remove(player.getUUID());
+    public void stopOpen(ContainerUser user) {
+        if (user.getLivingEntity() instanceof Player player) {
+            BlockEntityOmniChest chest = getActiveChest(player);
+            if (chest != null) {
+                chest.stopOpen(user);
+                super.stopOpen(user);
+                playerChests.remove(player.getUUID());
+            }
         }
     }
 

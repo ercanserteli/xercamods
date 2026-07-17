@@ -78,7 +78,7 @@ public final class MusicSheetPlaybackClientTest implements FabricClientGameTest 
     private static void pressButton(ClientGameTestContext context, String fieldName) {
         context.runOnClient(client -> {
             Button button = readField(client.screen, GuiMusicSheet.class, fieldName);
-            button.onPress();
+            button.onPress(new net.minecraft.client.input.MouseButtonInfo(0, 0));
         });
         context.waitTick();
     }

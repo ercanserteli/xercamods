@@ -164,7 +164,7 @@ public final class CanvasSidesRenderClientTest implements FabricClientGameTest {
         int height = CanvasType.getHeight(type);
         int[] sides = new int[CanvasSides.count(type)];
         for (int k = 0; k < width; k++) {
-            sides[CanvasSides.topOffset() + k] = SIDE_TOP;
+            sides[CanvasSides.TOP_OFFSET + k] = SIDE_TOP;
             sides[CanvasSides.bottomOffset(type) + k] = SIDE_BOTTOM;
         }
         for (int i = 0; i < height; i++) {

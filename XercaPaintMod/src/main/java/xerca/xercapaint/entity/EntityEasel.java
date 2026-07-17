@@ -126,7 +126,7 @@ public class EntityEasel extends Entity {
 
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
         if (painter != null) {
-            if (!this.level().isClientSide && dropDeferred == null) {
+            if (!this.level().isClientSide() && dropDeferred == null) {
                 if (painter instanceof ServerPlayer serverPainter) {
                     CloseGuiPacket pack = new CloseGuiPacket();
                     ServerPlayNetworking.send(serverPainter, pack);
@@ -230,7 +230,7 @@ public class EntityEasel extends Entity {
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;
         boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return !isEaselFilled && !handHoldsCanvas ? InteractionResult.PASS : InteractionResult.SUCCESS;
         } else {
             if (!isEaselFilled) {
@@ -270,7 +270,7 @@ public class EntityEasel extends Entity {
         super.tick();
         move(MoverType.SELF, new Vec3(0, -0.25, 0));
         reapplyPosition();
-        if (!this.level().isClientSide && dropDeferred != null) {
+        if (!this.level().isClientSide() && dropDeferred != null) {
             dropWaitTicks++;
             if (painter == null || dropWaitTicks > 80) {
                 dropDeferred.run();

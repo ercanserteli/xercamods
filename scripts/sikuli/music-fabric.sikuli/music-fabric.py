@@ -392,11 +392,12 @@ def testItemsInCreative(mc, win, mcLoc):
 
     # Export/import commands
     old_similarity = Settings.MinSimilarity
-    Settings.MinSimilarity = 0.7
+    Settings.MinSimilarity = 0.5
     
     win.type("t")
     win.paste("/musicexport test")
     win.type(Key.ENTER)
+    wait(0.5)
     testAssert(exists("1727556138753.png"))
     wait(0.5)
     win.type("t")

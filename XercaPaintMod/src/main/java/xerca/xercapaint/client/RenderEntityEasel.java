@@ -2,15 +2,15 @@ package xerca.xercapaint.client;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -57,26 +57,22 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, EaselRenderSt
     }
 
     @Override
-    public void render(EaselRenderState state, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+    public void submit(EaselRenderState state, PoseStack matrixStackIn, SubmitNodeCollector collector, CameraRenderState cameraState) {
         matrixStackIn.pushPose();
 
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(-state.yRot));
-
-        this.model.setupAnim(state);
 
         matrixStackIn.mulPose(new Quaternionf().rotationXYZ((float) Math.PI, 0, 0));
         matrixStackIn.translate(0, -1.5, 0);
 
         RenderType rendertype = this.model.renderType(WOOD_TEXTURE);
-        VertexConsumer vertexconsumer = bufferIn.getBuffer(rendertype);
-
         int i = OverlayTexture.pack(OverlayTexture.u(0), OverlayTexture.v(false));
-        this.model.renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, i);
+        collector.submitModel(this.model, state, matrixStackIn, rendertype, state.lightCoords, i, state.outlineColor, null);
 
-        this.layers.forEach(renderLayer -> renderLayer.render(matrixStackIn, bufferIn, packedLightIn, state, 0, 0));
+        this.layers.forEach(renderLayer -> renderLayer.submit(matrixStackIn, collector, state.lightCoords, state, 0, 0));
 
         matrixStackIn.popPose();
-        super.render(state, matrixStackIn, bufferIn, packedLightIn);
+        super.submit(state, matrixStackIn, collector, cameraState);
     }
 
     @Override
@@ -95,10 +91,10 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, EaselRenderSt
     }
 
     @Override
-    protected void renderNameTag(EaselRenderState state, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    protected void submitNameTag(EaselRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.renderNameTag(state, displayName, poseStack, bufferSource, packedLight);
+        super.submitNameTag(state, poseStack, collector, cameraState);
         poseStack.popPose();
     }
 

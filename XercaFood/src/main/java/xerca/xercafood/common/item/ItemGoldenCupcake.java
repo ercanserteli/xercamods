@@ -38,7 +38,7 @@ public class ItemGoldenCupcake extends Item {
             return stack;
         }
 
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             int n = worldIn.random.nextInt(5);
             switch (n) {
                 case 0 -> applyLuckyStorm(worldIn, player);

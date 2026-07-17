@@ -104,6 +104,7 @@ public class GrabHookGameTests {
         // Pig at relative (2, 3, 3) → center at (abs+2.5, abs+3.0, abs+3.5).
         // Hook eye y = abs+2.0+1.62 = abs+3.62, inside pig box y=[abs+3, abs+3.9] ✓
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        pig.setNoAi(true);
 
         ItemStack rod = new ItemStack(Items.GRAB_HOOK);
         EntityGrabHook hook = new EntityGrabHook(level, player, rod, 1.0f);
@@ -123,6 +124,7 @@ public class GrabHookGameTests {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        pig.setNoAi(true);
 
         EntityGrabHook hook = new EntityGrabHook(level, player, new ItemStack(Items.GRAB_HOOK), 1.0f);
         level.addFreshEntity(hook);
@@ -140,6 +142,7 @@ public class GrabHookGameTests {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        pig.setNoAi(true);
         pig.setHealth(1.0f); // 3 damage on impact will kill it
 
         EntityGrabHook hook = new EntityGrabHook(level, player, new ItemStack(Items.GRAB_HOOK), 1.0f);
@@ -161,6 +164,7 @@ public class GrabHookGameTests {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
         Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        pig.setNoAi(true);
 
         ItemStack rod = new ItemStack(Items.GRAB_HOOK);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);

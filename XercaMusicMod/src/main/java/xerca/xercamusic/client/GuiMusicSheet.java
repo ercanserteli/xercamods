@@ -8,6 +8,10 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -283,23 +287,23 @@ public class GuiMusicSheet extends Screen {
     // ---- Super call wrappers for SheetInputHandler ----
 
     boolean callSuperMouseClicked(double x, double y, int btn) {
-        return super.mouseClicked(x, y, btn);
+        return super.mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(btn, 0)), false);
     }
 
     boolean callSuperMouseDragged(double x, double y, int btn, double dx, double dy) {
-        return super.mouseDragged(x, y, btn, dx, dy);
+        return super.mouseDragged(new MouseButtonEvent(x, y, new MouseButtonInfo(btn, 0)), dx, dy);
     }
 
     void callSuperKeyPressed(int key, int scan, int mods) {
-        super.keyPressed(key, scan, mods);
+        super.keyPressed(new KeyEvent(key, scan, mods));
     }
 
     void callSuperKeyReleased(int key, int scan, int mods) {
-        super.keyReleased(key, scan, mods);
+        super.keyReleased(new KeyEvent(key, scan, mods));
     }
 
     void callSuperCharTyped(char c, int mods) {
-        super.charTyped(c, mods);
+        super.charTyped(new CharacterEvent(c, mods));
     }
 
     boolean callSuperMouseScrolled(double x, double y, double sx, double sy) {
@@ -481,8 +485,8 @@ public class GuiMusicSheet extends Screen {
 
         this.bpmUp = this.addRenderableWidget(Button.builder(Component.translatable("note.upButton"), button -> {
             if (!isSigned || selfSigned || generation > 1) {
-                if (hasShiftDown()) {
-                    int mult = hasControlDown() ? 3 : 2;
+                if (minecraft != null && minecraft.hasShiftDown()) {
+                    int mult = minecraft.hasControlDown() ? 3 : 2;
                     if (bps * mult <= 50) {
                         pushUndo();
 
@@ -508,8 +512,8 @@ public class GuiMusicSheet extends Screen {
         }).bounds(noteImageLeftX + BPM_BUT_X, noteImageY + BPM_BUT_Y, BPM_BUT_W, BPM_BUT_H).build());
         this.bpmDown = this.addRenderableWidget(Button.builder(Component.translatable("note.downButton"), button -> {
             if (!isSigned || selfSigned || generation > 1) {
-                if (hasShiftDown()) {
-                    float mult = hasControlDown() ? 0.33f : 0.5f;
+                if (minecraft != null && minecraft.hasShiftDown()) {
+                    float mult = minecraft.hasControlDown() ? 0.33f : 0.5f;
                     if (Math.round(bps * mult) >= 1) {
                         pushUndo();
 
@@ -1761,8 +1765,8 @@ public class GuiMusicSheet extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double dmouseX, double dmouseY, int mouseButton) {
-        return inputHandler.handleMouseClicked(dmouseX, dmouseY, mouseButton);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        return inputHandler.handleMouseClicked(event.x(), event.y(), event.button());
     }
 
     void pushUndo() {
@@ -1798,28 +1802,28 @@ public class GuiMusicSheet extends Screen {
     }
 
     @Override
-    public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        return inputHandler.handleMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+        return inputHandler.handleMouseDragged(event.x(), event.y(), event.button(), deltaX, deltaY);
     }
 
     @Override
-    public boolean mouseReleased(double posX, double posY, int mouseButton) {
-        return inputHandler.handleMouseReleased(posX, posY, mouseButton);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        return inputHandler.handleMouseReleased(event.x(), event.y(), event.button());
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return inputHandler.handleKeyReleased(keyCode, scanCode, modifiers);
+    public boolean keyReleased(KeyEvent event) {
+        return inputHandler.handleKeyReleased(event.key(), event.scancode(), event.modifiers());
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers){
-        return inputHandler.handleKeyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(KeyEvent event) {
+        return inputHandler.handleKeyPressed(event.key(), event.scancode(), event.modifiers());
     }
 
     @Override
-    public boolean charTyped(char typedChar, int something) {
-        return inputHandler.handleCharTyped(typedChar, something);
+    public boolean charTyped(CharacterEvent event) {
+        return inputHandler.handleCharTyped((char) event.codepoint(), event.modifiers());
     }
 
     @Override
@@ -2103,23 +2107,25 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+            double mouseX = event.x();
+            double mouseY = event.y();
             if (this.active && this.visible) {
-                if (mouseButton == 2) {
+                if (event.button() == 2) {
                     close();
                 }
 
                 for (AbstractWidget widget : children) {
                     if (mouseX >= widget.getX() && mouseX < widget.getX() + widget.getWidth() &&
                             mouseY >= widget.getY() && mouseY < widget.getY() + widget.getHeight()) {
-                        widget.mouseClicked(mouseX, mouseY, mouseButton);
+                        widget.mouseClicked(event, isDoubleClick);
                         return true;
                     }
                 }
 
                 boolean flag = this.active && this.visible && this.isMouseOver(mouseX, mouseY);
                 if (flag) {
-                    this.onClick(mouseX, mouseY);
+                    this.onClick(event, isDoubleClick);
                 } else {
                     close();
                 }
@@ -2129,10 +2135,12 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+            double posX = event.x();
+            double posY = event.y();
             if (posX >= sliderVelocity.getX() && posX < sliderVelocity.getX() + sliderVelocity.getWidth() &&
                     posY >= sliderVelocity.getY() && posY < sliderVelocity.getY() + sliderVelocity.getHeight()) {
-                sliderVelocity.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+                sliderVelocity.mouseDragged(event, deltaX, deltaY);
             }
             return true;
         }
@@ -2143,8 +2151,8 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseReleased(double posX, double posY, int mouseButton) {
-            sliderVelocity.onRelease(posX, posY);
+        public boolean mouseReleased(MouseButtonEvent event) {
+            sliderVelocity.onRelease(event);
             return true;
         }
 
@@ -2256,16 +2264,18 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+            double mouseX = event.x();
+            double mouseY = event.y();
             if (this.active && this.visible) {
-                if(mouseButton == 2){
+                if (event.button() == 2) {
                     close();
                 }
 
                 for(AbstractWidget widget : children) {
                     if(mouseX >= widget.getX() && mouseX < widget.getX() + widget.getWidth() &&
                             mouseY >= widget.getY() && mouseY < widget.getY() + widget.getHeight()){
-                        widget.mouseClicked(mouseX, mouseY, mouseButton);
+                        widget.mouseClicked(event, isDoubleClick);
                         return true;
                     }
                 }
@@ -2280,14 +2290,16 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+            double posX = event.x();
+            double posY = event.y();
             if(posX >= sliderStartVolume.getX() && posX < sliderStartVolume.getX() + sliderStartVolume.getWidth() &&
                     posY >= sliderStartVolume.getY() && posY < sliderStartVolume.getY() + sliderStartVolume.getHeight()){
-                sliderStartVolume.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+                sliderStartVolume.mouseDragged(event, deltaX, deltaY);
             }
             if(posX >= sliderEndVolume.getX() && posX < sliderEndVolume.getX() + sliderEndVolume.getWidth() &&
                     posY >= sliderEndVolume.getY() && posY < sliderEndVolume.getY() + sliderEndVolume.getHeight()){
-                sliderEndVolume.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+                sliderEndVolume.mouseDragged(event, deltaX, deltaY);
             }
             return true;
         }
@@ -2298,9 +2310,9 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseReleased(double posX, double posY, int mouseButton) {
-            sliderStartVolume.onRelease(posX, posY);
-            sliderEndVolume.onRelease(posX, posY);
+        public boolean mouseReleased(MouseButtonEvent event) {
+            sliderStartVolume.onRelease(event);
+            sliderEndVolume.onRelease(event);
             return true;
         }
 

@@ -45,7 +45,7 @@ public abstract class BlockInstrument extends Block {
         if (new Vec3(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5).distanceTo(player.position()) > 4) {
             return InteractionResult.PASS;
         }
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             onlyRunOnClient(() -> () -> ModClient.showInstrumentGui(getItemInstrument(), pos));
         }
         return InteractionResult.SUCCESS;

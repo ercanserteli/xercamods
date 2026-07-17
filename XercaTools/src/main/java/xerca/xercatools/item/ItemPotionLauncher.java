@@ -44,7 +44,7 @@ public class ItemPotionLauncher extends Item {
         }
 
         level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.CROSSBOW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ItemStack potionStack = new ItemStack(isLingering(stack) ? net.minecraft.world.item.Items.LINGERING_POTION : net.minecraft.world.item.Items.SPLASH_POTION);
             potionStack.set(DataComponents.POTION_CONTENTS, ItemFlask.getPotionContents(stack));
             AbstractThrownPotion thrownPotion = isLingering(stack)

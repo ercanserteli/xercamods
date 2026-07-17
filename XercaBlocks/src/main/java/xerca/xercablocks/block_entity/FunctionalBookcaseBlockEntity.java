@@ -62,7 +62,7 @@ public class FunctionalBookcaseBlockEntity extends BlockEntity implements Contai
 
     private void syncVisualState() {
         Level level = this.level;
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide()) {
             return;
         }
 

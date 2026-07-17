@@ -54,7 +54,6 @@ public class CanvasSidesGameTests {
             int height = CanvasType.getHeight(type);
             TestAsserts.assertTrue(helper, CanvasSides.count(type) == 2 * width + 2 * height,
                     "Side pixel count must cover all four edges for " + type);
-            TestAsserts.assertTrue(helper, CanvasSides.topOffset() == 0, "Top offset must be 0");
             TestAsserts.assertTrue(helper, CanvasSides.bottomOffset(type) == width, "Bottom offset must follow the top row");
             TestAsserts.assertTrue(helper, CanvasSides.leftOffset(type) == 2 * width, "Left offset must follow both rows");
             TestAsserts.assertTrue(helper, CanvasSides.rightOffset(type) == 2 * width + height, "Right offset must follow the left column");

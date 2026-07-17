@@ -24,7 +24,7 @@ public class ItemConfettiBall extends Item {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
         worldIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (worldIn.random.nextFloat() * 0.4F + 0.8F));
 
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             EntityConfettiBall entityball = new EntityConfettiBall(worldIn, playerIn);
             entityball.setItem(heldItem.copyWithCount(1));
             entityball.shootFromRotation(playerIn, playerIn.getXRot(), playerIn.getYRot(), 0.0F, 1.5F, 1.0F);

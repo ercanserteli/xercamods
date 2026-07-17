@@ -18,7 +18,7 @@ class ItemEnderCupcake extends Item {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
         ItemStack resultStack = super.finishUsingItem(stack, world, entity);
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             double entityX = entity.getX();
             double entityY = entity.getY();
             double entityZ = entity.getZ();

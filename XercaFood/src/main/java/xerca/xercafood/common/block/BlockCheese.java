@@ -7,7 +7,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +50,7 @@ public class BlockCheese extends Block {
     @Override
     public InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (KnifeCompat.isKnife(heldItem)) {
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 slice(worldIn, pos, state, player, handIn, heldItem);
             }
             worldIn.playSound(player, pos, xerca.xercafood.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat() * 0.1f);
@@ -63,7 +62,7 @@ public class BlockCheese extends Block {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level worldIn, BlockPos pos, Player player, BlockHitResult hit) {
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             if (eat(worldIn, pos, state, player).consumesAction()) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
                         1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
@@ -111,7 +110,7 @@ public class BlockCheese extends Block {
         sliceEntity.hurtMarked = true;
         level.addFreshEntity(sliceEntity);
 
-        heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+        heldItem.hurtAndBreak(1, player, hand);
 
         int i = state.getValue(BITES);
         if (i < MAX_BITES) {

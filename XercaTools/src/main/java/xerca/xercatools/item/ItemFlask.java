@@ -79,7 +79,7 @@ public class ItemFlask extends Item {
     }
 
     private static void applyPotionEffects(ItemStack stack, Level level, Player player, LivingEntity entity) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         PotionContents potionContents = getPotionContents(stack);

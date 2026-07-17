@@ -28,7 +28,7 @@ public class ItemTomato extends Item {
 
         worldIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (worldIn.random.nextFloat() * 0.4F + 0.8F));
 
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             EntityTomato entitytomato = new EntityTomato(worldIn, playerIn);
             entitytomato.shootFromRotation(playerIn, playerIn.getXRot(), playerIn.getYRot(), 0.0F, 1.5F, 1.0F);
             worldIn.addFreshEntity(entitytomato);

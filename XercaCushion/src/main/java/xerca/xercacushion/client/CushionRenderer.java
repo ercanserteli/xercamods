@@ -2,12 +2,11 @@ package xerca.xercacushion.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 import xerca.xercacushion.entity.EntityCushion;
@@ -30,16 +29,15 @@ public class CushionRenderer extends EntityRenderer<EntityCushion, CushionRender
     }
 
     @Override
-    public void render(CushionRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+    public void submit(CushionRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
         poseStack.pushPose();
         poseStack.translate(0.0D, 0.5D, 0.0D);
         poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
         poseStack.translate(-0.5F, -0.5F, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-        dispatcher.renderSingleBlock(state.blockState, poseStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
+        collector.submitBlock(poseStack, state.blockState, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
-        super.render(state, poseStack, buffer, packedLight);
+        super.submit(state, poseStack, collector, cameraState);
     }
 
     public static class CushionRenderState extends EntityRenderState {

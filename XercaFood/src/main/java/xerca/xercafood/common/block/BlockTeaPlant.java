@@ -25,7 +25,7 @@ public class BlockTeaPlant extends CropBlock implements BonemealableBlock {
 
 
     BlockTeaPlant() {
-        super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_tea_plant")).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollission());
+        super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_tea_plant")).sound(SoundType.GRASS).strength(0.0f).randomTicks().noCollision());
     }
 
     @Override

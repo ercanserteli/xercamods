@@ -5,9 +5,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.network.chat.Component;
@@ -55,7 +55,7 @@ public class ModClient implements ClientModInitializer {
         final ItemStack offhandItem = player.getOffhandItem();
         final Minecraft minecraft = Minecraft.getInstance();
 
-        if (heldItem.isEmpty() || (minecraft.player != null && !minecraft.player.getGameProfile().getId().equals(player.getGameProfile().getId()))) {
+        if (heldItem.isEmpty() || (minecraft.player != null && !minecraft.player.getGameProfile().id().equals(player.getGameProfile().id()))) {
             return;
         }
 
@@ -89,8 +89,8 @@ public class ModClient implements ClientModInitializer {
     public void onInitializeClient() {
         canvasItemRenderer = new CanvasItemRenderer();
 
-        EntityRendererRegistry.register(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
-        EntityRendererRegistry.register(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
+        EntityRenderers.register(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
+        EntityRenderers.register(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
         EntityModelLayerRegistry.registerModelLayer(EASEL_MAIN_LAYER, EaselModel::createBodyLayer);
         EntityModelLayerRegistry.registerModelLayer(EASEL_CANVAS_LAYER, EaselModel::createBodyLayer);
 

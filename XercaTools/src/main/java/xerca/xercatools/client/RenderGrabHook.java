@@ -3,11 +3,12 @@ package xerca.xercatools.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -23,7 +24,7 @@ import xerca.xercatools.entity.EntityGrabHook;
 
 public class RenderGrabHook extends EntityRenderer<EntityGrabHook, GrabHookRenderState> {
     private static final ResourceLocation TEXTURE = Mod.id("textures/particle/hook.png");
-    private static final ResourceLocation CHAIN_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/chain.png");
+    private static final ResourceLocation CHAIN_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/iron_chain.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE);
     private static final RenderType CHAIN_RENDER_TYPE = RenderType.entityCutoutNoCull(CHAIN_TEXTURE);
     private static final float HOOK_ATTACHMENT_Y = 0.25F;
@@ -84,17 +85,17 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook, GrabHookRende
     }
 
     @Override
-    public void render(GrabHookRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void submit(GrabHookRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
         poseStack.pushPose();
-        renderHook(state.chainDx, state.chainDy, state.chainDz, poseStack, buffer.getBuffer(RENDER_TYPE), packedLight);
+        submitHook(state.chainDx, state.chainDy, state.chainDz, poseStack, collector, state.lightCoords);
         if (state.hasPlayer) {
-            renderChain(state.chainDx, state.chainDy, state.chainDz, poseStack, buffer.getBuffer(CHAIN_RENDER_TYPE), packedLight);
+            submitChain(state.chainDx, state.chainDy, state.chainDz, poseStack, collector, state.lightCoords);
         }
         poseStack.popPose();
-        super.render(state, poseStack, buffer, packedLight);
+        super.submit(state, poseStack, collector, cameraState);
     }
 
-    private static void renderHook(float chainDx, float chainDy, float chainDz, PoseStack poseStack, VertexConsumer consumer, int light) {
+    private static void submitHook(float chainDx, float chainDy, float chainDz, PoseStack poseStack, SubmitNodeCollector collector, int light) {
         float length = Mth.sqrt(chainDx * chainDx + chainDy * chainDy + chainDz * chainDz);
         if (length < MIN_CHAIN_LENGTH) {
             return;
@@ -102,16 +103,17 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook, GrabHookRende
 
         poseStack.pushPose();
         poseStack.mulPose(new Quaternionf().rotationTo(0.0F, 1.0F, 0.0F, chainDx / length, chainDy / length, chainDz / length));
-        PoseStack.Pose pose = poseStack.last();
-        hookVertex(consumer, pose, -HOOK_HALF_WIDTH, HOOK_BOTTOM, 0.0F, light, 0.0F, 1.0F);
-        hookVertex(consumer, pose, HOOK_HALF_WIDTH, HOOK_BOTTOM, 0.0F, light, 1.0F, 1.0F);
-        hookVertex(consumer, pose, HOOK_HALF_WIDTH, HOOK_TOP, 0.0F, light, 1.0F, 0.0F);
-        hookVertex(consumer, pose, -HOOK_HALF_WIDTH, HOOK_TOP, 0.0F, light, 0.0F, 0.0F);
+        collector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, consumer) -> {
+            hookVertex(consumer, pose, -HOOK_HALF_WIDTH, HOOK_BOTTOM, 0.0F, light, 0.0F, 1.0F);
+            hookVertex(consumer, pose, HOOK_HALF_WIDTH, HOOK_BOTTOM, 0.0F, light, 1.0F, 1.0F);
+            hookVertex(consumer, pose, HOOK_HALF_WIDTH, HOOK_TOP, 0.0F, light, 1.0F, 0.0F);
+            hookVertex(consumer, pose, -HOOK_HALF_WIDTH, HOOK_TOP, 0.0F, light, 0.0F, 0.0F);
 
-        hookVertex(consumer, pose, 0.0F, HOOK_BOTTOM, -HOOK_HALF_WIDTH, light, 0.0F, 1.0F);
-        hookVertex(consumer, pose, 0.0F, HOOK_BOTTOM, HOOK_HALF_WIDTH, light, 1.0F, 1.0F);
-        hookVertex(consumer, pose, 0.0F, HOOK_TOP, HOOK_HALF_WIDTH, light, 1.0F, 0.0F);
-        hookVertex(consumer, pose, 0.0F, HOOK_TOP, -HOOK_HALF_WIDTH, light, 0.0F, 0.0F);
+            hookVertex(consumer, pose, 0.0F, HOOK_BOTTOM, -HOOK_HALF_WIDTH, light, 0.0F, 1.0F);
+            hookVertex(consumer, pose, 0.0F, HOOK_BOTTOM, HOOK_HALF_WIDTH, light, 1.0F, 1.0F);
+            hookVertex(consumer, pose, 0.0F, HOOK_TOP, HOOK_HALF_WIDTH, light, 1.0F, 0.0F);
+            hookVertex(consumer, pose, 0.0F, HOOK_TOP, -HOOK_HALF_WIDTH, light, 0.0F, 0.0F);
+        });
         poseStack.popPose();
     }
 
@@ -124,7 +126,7 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook, GrabHookRende
                 .setNormal(pose, 0.0F, 0.0F, 1.0F);
     }
 
-    private static void renderChain(float dx, float dy, float dz, PoseStack poseStack, VertexConsumer consumer, int light) {
+    private static void submitChain(float dx, float dy, float dz, PoseStack poseStack, SubmitNodeCollector collector, int light) {
         float length = Mth.sqrt(dx * dx + dy * dy + dz * dz);
         if (length < MIN_CHAIN_LENGTH) {
             return;
@@ -137,20 +139,21 @@ public class RenderGrabHook extends EntityRenderer<EntityGrabHook, GrabHookRende
         poseStack.translate(dx, dy, dz);
         poseStack.mulPose(new Quaternionf().rotationTo(0.0F, 1.0F, 0.0F, nx, ny, nz));
         poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
-        PoseStack.Pose pose = poseStack.last();
-        int fullSegments = Mth.floor(length / CHAIN_SEGMENT_LENGTH);
-        float partialSegment = length - fullSegments * CHAIN_SEGMENT_LENGTH;
-        float offset = 0.0F;
+        collector.submitCustomGeometry(poseStack, CHAIN_RENDER_TYPE, (pose, consumer) -> {
+            int fullSegments = Mth.floor(length / CHAIN_SEGMENT_LENGTH);
+            float partialSegment = length - fullSegments * CHAIN_SEGMENT_LENGTH;
+            float offset = 0.0F;
 
-        if (partialSegment > MIN_CHAIN_LENGTH) {
-            renderChainSegment(consumer, pose, offset, partialSegment, light, true);
-            offset += partialSegment;
-        }
+            if (partialSegment > MIN_CHAIN_LENGTH) {
+                renderChainSegment(consumer, pose, offset, partialSegment, light, true);
+                offset += partialSegment;
+            }
 
-        for (int segment = 0; segment < fullSegments; segment++) {
-            renderChainSegment(consumer, pose, offset, CHAIN_SEGMENT_LENGTH, light, false);
-            offset += CHAIN_SEGMENT_LENGTH;
-        }
+            for (int segment = 0; segment < fullSegments; segment++) {
+                renderChainSegment(consumer, pose, offset, CHAIN_SEGMENT_LENGTH, light, false);
+                offset += CHAIN_SEGMENT_LENGTH;
+            }
+        });
         poseStack.popPose();
     }
 

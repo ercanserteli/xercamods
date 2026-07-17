@@ -5,20 +5,21 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-
-import javax.annotation.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.packets.serverbound.SingleNotePacket;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static xerca.xercamusic.client.ModClient.sendToServer;
@@ -208,32 +209,32 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double dmouseX, double dmouseY, int mouseButton) {
-        int mouseX = (int) Math.round(dmouseX);
-        int mouseY = (int) Math.round(dmouseY);
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        int mouseX = (int) Math.round(event.x());
+        int mouseY = (int) Math.round(event.y());
 
         int noteId = noteIdFromPos(mouseX, mouseY);
         playSound(noteId);
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double dmouseX, double dmouseY, int mouseButton) {
-        int mouseX = (int) Math.round(dmouseX);
-        int mouseY = (int) Math.round(dmouseY);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        int mouseX = (int) Math.round(event.x());
+        int mouseY = (int) Math.round(event.y());
 
         int noteId = noteIdFromPos(mouseX, mouseY);
         stopSound(noteId);
 
-        return super.mouseReleased(dmouseX, dmouseY, mouseButton);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        int mouseX = (int) Math.round(posX);
-        int mouseY = (int) Math.round(posY);
-        int prevMouseX = (int) Math.round(posX - deltaX);
-        int prevMouseY = (int) Math.round(posY - deltaY);
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+        int mouseX = (int) Math.round(event.x());
+        int mouseY = (int) Math.round(event.y());
+        int prevMouseX = (int) Math.round(event.x() - deltaX);
+        int prevMouseY = (int) Math.round(event.y() - deltaY);
 
         int prevNoteId = noteIdFromPos(prevMouseX, prevMouseY);
         int currentNoteId = noteIdFromPos(mouseX, mouseY);
@@ -242,13 +243,15 @@ public class GuiInstrument extends Screen {
             playSound(currentNoteId);
         }
 
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        return super.mouseDragged(event, deltaX, deltaY);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
+        int keyCode = event.key();
+        int scanCode = event.scancode();
         setFocused(null);
-        super.keyPressed(keyCode, scanCode, modifiers);
+        super.keyPressed(event);
 
         if (scanCode >= 16 && scanCode <= 27) {
             int noteId = scanCode - 16 + 12 * Math.max(0, currentKeyboardOctave);
@@ -280,7 +283,8 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(KeyEvent event) {
+        int scanCode = event.scancode();
         if (scanCode >= 16 && scanCode <= 27) {
             int noteId = scanCode - 16 + 12 * Math.max(0, currentKeyboardOctave);
             stopSound(noteId);

@@ -114,7 +114,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     private void clientPictureInit(Level level) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             return;
         }
 
@@ -289,7 +289,7 @@ public class EntityCanvas extends HangingEntity {
             BlockPos supportPos = this.pos.relative(direction.getOpposite());
             BlockState state = level.getBlockState(supportPos);
             return state.isFaceSturdy(level, supportPos, direction)
-                    && level.getEntities(this, this.getBoundingBox(), HANGING_ENTITY).isEmpty();
+                    && level.getEntities(this, this.getBoundingBox(), HangingEntity.class::isInstance).isEmpty();
         }
     }
 
@@ -420,7 +420,7 @@ public class EntityCanvas extends HangingEntity {
     public InteractionResult interact(Player player, InteractionHand hand) {
         CanvasType canvasType = this.requireCanvasType();
         if (canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 setRotation(getRotation() + 1);
             }
             return InteractionResult.SUCCESS;

@@ -320,7 +320,7 @@ public final class GuiCanvasEditClientTest implements FabricClientGameTest {
     private static void pressButton(ClientGameTestContext context, String fieldName) {
         context.runOnClient(client -> {
             Button button = PaintClientTests.readField(client.screen, GuiCanvasEdit.class, fieldName);
-            button.onPress();
+            button.onPress(new net.minecraft.client.input.MouseButtonInfo(0, 0));
         });
         context.waitTick();
     }

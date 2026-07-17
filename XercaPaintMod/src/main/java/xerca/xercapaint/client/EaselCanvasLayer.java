@@ -2,7 +2,7 @@ package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -15,7 +15,7 @@ public class EaselCanvasLayer extends RenderLayer<EaselRenderState, EaselModel> 
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int i, EaselRenderState state, float yRot, float xRot) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector collector, int i, EaselRenderState state, float yRot, float xRot) {
         ItemStack itemstack = state.item;
         if (itemstack.getItem() instanceof ItemCanvas itemCanvas) {
             poseStack.pushPose();
@@ -51,7 +51,7 @@ public class EaselCanvasLayer extends RenderLayer<EaselRenderState, EaselModel> 
                 }
             }
 
-            ModClient.requireCanvasItemRenderer().renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, bufferSource, i);
+            ModClient.requireCanvasItemRenderer().renderByItem(itemstack, ItemDisplayContext.FIXED, poseStack, collector, i);
 
             poseStack.popPose();
         }

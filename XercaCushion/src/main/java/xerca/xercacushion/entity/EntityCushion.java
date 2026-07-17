@@ -197,7 +197,7 @@ public class EntityCushion extends Entity {
 
     @Override
     public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand hand) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             player.startRiding(this);
         }
         return InteractionResult.SUCCESS;
@@ -209,7 +209,7 @@ public class EntityCushion extends Entity {
             return InteractionResult.PASS;
         }
 
-        if (!this.level().isClientSide && !this.isVehicle()) {
+        if (!this.level().isClientSide() && !this.isVehicle()) {
             player.startRiding(this);
         }
         return InteractionResult.SUCCESS;

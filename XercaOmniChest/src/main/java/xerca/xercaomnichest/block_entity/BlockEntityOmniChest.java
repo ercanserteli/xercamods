@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.Level;
@@ -34,7 +35,7 @@ public class BlockEntityOmniChest extends BlockEntity implements LidBlockEntity 
         }
 
         @Override
-        protected boolean isOwnContainer(Player player) {
+        public boolean isOwnContainer(Player player) {
             if (player.containerMenu instanceof ChestMenu chestMenu) {
                 Container container = chestMenu.getContainer();
                 if (container instanceof OmniChestInventory omniChestInventory) {
@@ -62,15 +63,15 @@ public class BlockEntityOmniChest extends BlockEntity implements LidBlockEntity 
         return super.triggerEvent(type, data);
     }
 
-    public void startOpen(Player player) {
-        if (!remove && !player.isSpectator() && level != null) {
-            openersCounter.incrementOpeners(player, level, worldPosition, getBlockState());
+    public void startOpen(ContainerUser user) {
+        if (!remove && !user.getLivingEntity().isSpectator() && level != null) {
+            openersCounter.incrementOpeners(user.getLivingEntity(), level, worldPosition, getBlockState(), user.getContainerInteractionRange());
         }
     }
 
-    public void stopOpen(Player player) {
-        if (!remove && !player.isSpectator() && level != null) {
-            openersCounter.decrementOpeners(player, level, worldPosition, getBlockState());
+    public void stopOpen(ContainerUser user) {
+        if (!remove && !user.getLivingEntity().isSpectator() && level != null) {
+            openersCounter.decrementOpeners(user.getLivingEntity(), level, worldPosition, getBlockState());
         }
     }
 

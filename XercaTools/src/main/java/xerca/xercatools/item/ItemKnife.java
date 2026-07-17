@@ -51,7 +51,7 @@ public class ItemKnife extends Item {
         if (attacker.isSteppingCarefully() && (angleDiff < 65.0F || angleDiff > 295.0F)) {
             if (!target.level().isClientSide()) {
                 ClientboundAnimatePacket packet = new ClientboundAnimatePacket(target, 4);
-                ((ServerLevel) target.level()).getChunkSource().broadcastAndSend(attacker, packet);
+                ((ServerLevel) target.level()).getChunkSource().sendToTrackingPlayersAndSelf(attacker, packet);
             }
             attacker.level().playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 1.0F, attacker.level().random.nextFloat() * 0.2F + 0.8F);
             float bonus = DEFAULT_CRIT_BONUS;
@@ -77,7 +77,9 @@ public class ItemKnife extends Item {
                     : attacker.damageSources().mobAttack(attacker);
             // The main hit set lastHurt and hurt-resistance; within that window only
             // (amount - lastHurt) is applied, so stack the bonus on top of lastHurt.
-            target.hurt(damageSource, target.lastHurt + critBonus);
+            if (attacker.level() instanceof ServerLevel serverLevel) {
+                target.hurtServer(serverLevel, damageSource, target.lastHurt + critBonus);
+            }
         }
     }
 
@@ -112,7 +114,7 @@ public class ItemKnife extends Item {
         float bonus = critDamage(target, attacker, stack);
         float damage = (float) attacker.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
         for (ItemAttributeModifiers.Entry entry : stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY).modifiers()) {
-            if (entry.attribute().is(Attributes.ATTACK_DAMAGE) && entry.modifier().operation() == AttributeModifier.Operation.ADD_VALUE) {
+            if (entry.attribute().is(Attributes.ATTACK_DAMAGE.unwrapKey().orElseThrow()) && entry.modifier().operation() == AttributeModifier.Operation.ADD_VALUE) {
                 damage += (float) entry.modifier().amount();
             }
         }

@@ -85,7 +85,7 @@ public class BlockTeapot extends Block {
     @Override
     public InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (heldItem.getItem() == Items.TEACUP && state.getValue(TEA_AMOUNT) > 0) {
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TEA_POUR, SoundSource.PLAYERS, 1.0F, worldIn.random.nextFloat() * 0.1F + 0.9F);
                 heldItem.shrink(1);
                 player.addItem(new ItemStack(Items.FULL_TEACUP_0));

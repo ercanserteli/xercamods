@@ -34,7 +34,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
 
     @Override
     protected void onHit(HitResult result) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.level().broadcastEntityEvent(this, IMPACT_PARTICLES_EVENT);
             this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.SOUND_CRACK, SoundSource.PLAYERS, 3.0f, this.random.nextFloat() * 0.4F + 0.8F);
             this.remove(RemovalReason.DISCARDED);
@@ -54,7 +54,7 @@ public class EntityConfettiBall extends ThrowableItemProjectile {
     public void tick() {
         super.tick();
         if (this.tickCount % 4 == 0) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.SOUND_CRACK, SoundSource.PLAYERS, 2.0f, this.random.nextFloat() * 0.4F + 0.8F);
             } else {
                 ConfettiParticles.spawnBallTrail(this.level(), this.random, this.getX(), this.getY(), this.getZ(), this.getDeltaMovement().normalize());

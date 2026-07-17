@@ -15,7 +15,7 @@
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "1.21.8",
+    "minecraft": "1.21.10",
     "xercafood": "*"
   }
 }

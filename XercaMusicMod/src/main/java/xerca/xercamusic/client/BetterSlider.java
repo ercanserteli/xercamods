@@ -1,6 +1,7 @@
 package xerca.xercamusic.client;
 
 import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -57,14 +58,14 @@ public abstract class BetterSlider extends AbstractSliderButton {
     public abstract void applyValue();
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        this.updateFromMouse(mouseX);
+    public void onClick(MouseButtonEvent event, boolean isDoubleClick) {
+        this.updateFromMouse(event.x());
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        super.onDrag(mouseX, mouseY, dragX, dragY);
-        this.updateFromMouse(mouseX);
+    protected void onDrag(MouseButtonEvent event, double dragX, double dragY) {
+        super.onDrag(event, dragX, dragY);
+        this.updateFromMouse(event.x());
     }
 
     private void updateFromMouse(double mouseX) {

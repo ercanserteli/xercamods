@@ -99,7 +99,7 @@ public class BlockVat extends Block {
         if (content != VatContent.CHEESE) {
             return InteractionResult.PASS;
         }
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             Vec3 playerPos = new Vec3(player.getX(), player.getY(), player.getZ());
             Vec3 boost = playerPos.subtract(new Vec3(blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ()));
             boost = boost.normalize().scale(0.15);

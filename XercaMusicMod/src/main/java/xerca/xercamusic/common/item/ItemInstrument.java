@@ -48,11 +48,11 @@ public class ItemInstrument extends Item implements IItemInstrument {
     public static InteractionResult useInstrument(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack off = playerIn.getOffhandItem();
         if (handIn == InteractionHand.MAIN_HAND && off.getItem() == Items.MUSIC_SHEET) {
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 IItemInstrument.playMusic(worldIn, playerIn, true);
             }
         } else {
-            if (worldIn.isClientSide) {
+            if (worldIn.isClientSide()) {
                 onlyRunOnClient(() -> ModClient::showInstrumentGui);
             }
         }
@@ -67,7 +67,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
                 blockState.hasProperty(BlockMusicBox.HAS_INSTRUMENT) &&
                 !blockState.getValue(BlockMusicBox.HAS_INSTRUMENT)) {
             ItemStack itemstack = context.getItemInHand();
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 BlockMusicBox.insertInstrument(world, blockpos, blockState, itemstack.getItem());
                 Player player = context.getPlayer();
                 if (player != null && !player.getAbilities().instabuild) {
@@ -81,7 +81,7 @@ public class ItemInstrument extends Item implements IItemInstrument {
 
     public static void hurtEnemyWithInstrument(LivingEntity target, LivingEntity attacker, int minOctave, int maxOctave, IItemInstrument instrument) {
         Level world = attacker.level();
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             int note1 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
             int note2 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
             int note3 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);

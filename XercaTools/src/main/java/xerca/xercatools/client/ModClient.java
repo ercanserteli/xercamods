@@ -6,8 +6,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
 import xerca.xercatools.Mod;
@@ -19,9 +19,9 @@ import xerca.xercatools.packet.ConfettiParticlePacketHandler;
 public final class ModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        EntityRendererRegistry.register(Mod.HOOK, RenderGrabHook::new);
-        EntityRendererRegistry.register(Mod.HEALTH_ORB, RenderHealthOrb::new);
-        EntityRendererRegistry.register(Mod.ENTITY_CONFETTI_BALL, new RenderConfettiBallFactory());
+        EntityRenderers.register(Mod.HOOK, RenderGrabHook::new);
+        EntityRenderers.register(Mod.HEALTH_ORB, RenderHealthOrb::new);
+        EntityRenderers.register(Mod.ENTITY_CONFETTI_BALL, new RenderConfettiBallFactory());
         ClientPlayNetworking.registerGlobalReceiver(ConfettiParticlePacket.PACKET_ID, new ConfettiParticlePacketHandler());
         ParticleFactoryRegistry.getInstance().register(Mod.CONFETTI_PARTICLE, ConfettiParticle.Provider::new);
         ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {

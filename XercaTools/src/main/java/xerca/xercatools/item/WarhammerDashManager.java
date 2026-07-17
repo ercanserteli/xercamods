@@ -38,7 +38,7 @@ public final class WarhammerDashManager {
      */
     public static void startDash(Player player, ItemStack stack, EquipmentSlot slot, float pullDuration, int dashLevel, boolean alreadyHit) {
         Level level = player.level();
-        if (level.isClientSide || dashLevel <= 0) {
+        if (level.isClientSide() || dashLevel <= 0) {
             return;
         }
 
@@ -70,7 +70,7 @@ public final class WarhammerDashManager {
 
     private static boolean advance(DashState state) {
         Player player = state.player;
-        if (player.isRemoved() || !player.isAlive() || player.level().isClientSide) {
+        if (player.isRemoved() || !player.isAlive() || player.level().isClientSide()) {
             return false;
         }
 

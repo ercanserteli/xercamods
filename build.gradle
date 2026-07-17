@@ -7,7 +7,7 @@ import javax.xml.XMLConstants
 import javax.xml.parsers.DocumentBuilderFactory
 
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT' apply false
+    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
     id 'com.github.spotbugs' version '6.4.4' apply false
     id 'org.sonarqube' version '5.1.0.4882'
 }

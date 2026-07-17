@@ -13,12 +13,12 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -31,15 +31,15 @@ public final class TranslucentModelWrapper implements ItemModel {
     private final ModelRenderProperties properties;
     private final boolean animated;
 
-    private TranslucentModelWrapper(List<BakedQuad> quads, ModelRenderProperties properties) {
+    TranslucentModelWrapper(List<BakedQuad> quads, ModelRenderProperties properties) {
         this.quads = quads;
         this.properties = properties;
         this.extents = Suppliers.memoize(() -> BlockModelWrapper.computeExtents(this.quads));
-        this.animated = quads.stream().anyMatch(quad -> quad.sprite().isAnimated());
+        this.animated = quads.stream().anyMatch(quad -> quad.sprite().contents().isAnimated());
     }
 
     @Override
-    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
         renderState.appendModelIdentityElement(this);
         ItemStackRenderState.LayerRenderState layer = renderState.newLayer();
         layer.setExtents(this.extents);

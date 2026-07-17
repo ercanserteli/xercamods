@@ -138,7 +138,7 @@ public class ItemMusicSheet extends Item {
 
     @Override
     public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             onlyRunOnClient(() -> ModClient::showMusicGui);
         }
         return InteractionResult.SUCCESS;
@@ -195,7 +195,7 @@ public class ItemMusicSheet extends Item {
                 blockState.hasProperty(BlockMusicBox.HAS_MUSIC) &&
                 !blockState.getValue(BlockMusicBox.HAS_MUSIC)) {
             ItemStack itemstack = context.getItemInHand();
-            if (!world.isClientSide && itemstack.get(Items.SHEET_ID) != null) {
+            if (!world.isClientSide() && itemstack.get(Items.SHEET_ID) != null) {
                 BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copyWithCount(1));
                 Player player = context.getPlayer();
                 if (player != null && !player.getAbilities().instabuild) {
@@ -227,8 +227,4 @@ public class ItemMusicSheet extends Item {
         }
     }
 
-    @Override
-    public void verifyComponentsAfterLoad(ItemStack stack) {
-        updateStackSize(stack);
-    }
 }

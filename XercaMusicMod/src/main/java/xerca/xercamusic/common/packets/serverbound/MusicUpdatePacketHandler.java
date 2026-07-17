@@ -69,7 +69,7 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
                     }
                 }
                 List<VolumeMarker> volumeMarkers = flag.hasVolumeMarkers ? msg.volumeMarkers() : null;
-                MusicManager.setMusicData(id, note.getOrDefault(Items.SHEET_VERSION, 0), notes, volumeMarkers, pl.getServer());
+                MusicManager.setMusicData(id, note.getOrDefault(Items.SHEET_VERSION, 0), notes, volumeMarkers, pl.level().getServer());
                 if (note.get(Items.SHEET_BPS) == null) {
                     note.set(Items.SHEET_BPS, (byte) 8);
                 }

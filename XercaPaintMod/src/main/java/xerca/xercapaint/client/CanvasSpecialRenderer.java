@@ -2,8 +2,7 @@ package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -34,11 +33,11 @@ public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecial
     }
 
     @Override
-    public void render(@Nullable CanvasData data, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, boolean hasFoil) {
+    public void submit(@Nullable CanvasData data, ItemDisplayContext displayContext, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
         if (data == null) {
             return;
         }
-        renderer.renderCanvas(data.instance(), data.width(), data.height(), data.glass(), displayContext, poseStack, buffer, light);
+        renderer.renderCanvas(data.instance(), data.width(), data.height(), data.glass(), displayContext, poseStack, collector, light);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecial
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
 
         @Override
-        public SpecialModelRenderer<?> bake(EntityModelSet entityModelSet) {
+        public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext context) {
             return new CanvasSpecialRenderer();
         }
 

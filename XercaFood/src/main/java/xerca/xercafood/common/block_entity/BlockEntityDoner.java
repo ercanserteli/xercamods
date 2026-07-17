@@ -80,7 +80,7 @@ public class BlockEntityDoner extends BlockEntity {
         if (this.sizzleCooldown != 0) {
             return;
         }
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             level.playLocalSound(this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ(), SoundEvents.SIZZLE, SoundSource.BLOCKS, 1.0f, 0.9f + random.nextFloat() * 0.1f, false);
             spawnSmoke(level, random, random.nextInt(2) + 1);
         }

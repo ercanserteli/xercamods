@@ -31,10 +31,17 @@ public class WeaponsGameTests {
 
     // ── existing tests ────────────────────────────────────────────────────────
 
+    // NoAI keeps targets exactly where placed; hurt pigs otherwise panic-run into other tests' sight lines.
+    private static Pig spawnStillPig(GameTestHelper helper, BlockPos pos) {
+        Pig pig = helper.spawn(EntityType.PIG, pos);
+        pig.setNoAi(true);
+        return pig;
+    }
+
     @GameTest
     public void warhammerDamagesEntityAndLosesDurability(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
@@ -51,7 +58,7 @@ public class WeaponsGameTests {
     public void devourKillSpawnsHealthOrbs(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -59,7 +66,7 @@ public class WeaponsGameTests {
         scythe.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
         player.setItemSlot(EquipmentSlot.MAINHAND, scythe);
 
-        pig.hurt(level.damageSources().generic(), 100.0f);
+        pig.hurtServer(level, level.damageSources().generic(), 100.0f);
         scythe.hurtEnemy(pig, player);
 
         boolean orbsSpawned = !level.getEntitiesOfClass(EntityHealthOrb.class, pig.getBoundingBox().inflate(10)).isEmpty();
@@ -93,7 +100,7 @@ public class WeaponsGameTests {
         player.setPos(abs.x, abs.y, abs.z);
         player.setYRot(0.0f);  // facing south (+z)
         player.setXRot(0.0f);
-        return helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        return spawnStillPig(helper, new BlockPos(2, 3, 3));
     }
 
     @GameTest
@@ -342,8 +349,10 @@ public class WeaponsGameTests {
         player.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
 
         // full pull so pullDuration=1.0; bonusVelY = 2 * 0.25 * 1.0 = 0.5
+        float initialHealth = pig.getHealth();
         Items.IRON_WARHAMMER.releaseUsing(warhammer, level, player, 72000 - 20);
 
+        TestAsserts.assertTrue(helper, pig.getHealth() < initialHealth, "Uppercut strike should hit the pig");
         double vy = pig.getDeltaMovement().y;
         TestAsserts.assertTrue(helper, vy > 0.3, "Uppercut II + full pull should give significant upward velocity, got " + vy);
         helper.succeed();
@@ -364,8 +373,8 @@ public class WeaponsGameTests {
         // Place block at y=3 so the ray at eye-height 3.62 can hit it
         helper.setBlock(new BlockPos(4, 3, 3), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
 
-        Pig pig1 = helper.spawn(EntityType.PIG, new BlockPos(2, 2, 3));
-        Pig pig2 = helper.spawn(EntityType.PIG, new BlockPos(6, 2, 3));
+        Pig pig1 = spawnStillPig(helper, new BlockPos(2, 2, 3));
+        Pig pig2 = spawnStillPig(helper, new BlockPos(6, 2, 3));
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -396,8 +405,8 @@ public class WeaponsGameTests {
 
         helper.setBlock(new BlockPos(4, 3, 3), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
 
-        Pig pig1 = helper.spawn(EntityType.PIG, new BlockPos(2, 2, 3));
-        Pig pig2 = helper.spawn(EntityType.PIG, new BlockPos(6, 2, 3));
+        Pig pig1 = spawnStillPig(helper, new BlockPos(2, 2, 3));
+        Pig pig2 = spawnStillPig(helper, new BlockPos(6, 2, 3));
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
@@ -450,7 +459,7 @@ public class WeaponsGameTests {
         player.setXRot(0.0f);
 
         // pig a few blocks ahead at eye height, within the warhammer's hit range
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 5));
+        Pig pig = spawnStillPig(helper, new BlockPos(2, 3, 5));
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -476,7 +485,7 @@ public class WeaponsGameTests {
         player.setYRot(0.0f);
         player.setXRot(0.0f);
 
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 5));
+        Pig pig = spawnStillPig(helper, new BlockPos(2, 3, 5));
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -581,7 +590,7 @@ public class WeaponsGameTests {
     @GameTest
     public void knifeBackstabBonusWhenSneak(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         player.setShiftKeyDown(true);
         pig.setYRot(0.0f);
@@ -597,7 +606,7 @@ public class WeaponsGameTests {
     @GameTest
     public void knifeNoBackstabBonusFromFront(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         player.setShiftKeyDown(true);
         pig.setYRot(0.0f);
@@ -613,7 +622,7 @@ public class WeaponsGameTests {
     @GameTest
     public void knifeNoBackstabBonusWhenNotSneaking(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         player.setShiftKeyDown(false);
         pig.setYRot(0.0f);
@@ -629,7 +638,7 @@ public class WeaponsGameTests {
     public void knifeStealthEnchantmentIncreasesBackstabBonus(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         player.setShiftKeyDown(true);
         pig.setYRot(0.0f);
@@ -650,7 +659,7 @@ public class WeaponsGameTests {
     public void knifeStealthLevel2IncreasesBackstabFurther(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         player.setShiftKeyDown(true);
         pig.setYRot(0.0f);
@@ -684,7 +693,7 @@ public class WeaponsGameTests {
     public void knifePoisonEnchantmentAppliesEffectOnHit(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -708,7 +717,7 @@ public class WeaponsGameTests {
     public void knifePoisonLevel2HasLongerDuration(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         ItemStack knife = new ItemStack(Items.IRON_KNIFE);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -730,7 +739,7 @@ public class WeaponsGameTests {
     public void knifeStealthHitDealsFullBonusDespiteHurtResistance(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         player.setShiftKeyDown(true);
         pig.setYRot(0.0f);
@@ -741,7 +750,7 @@ public class WeaponsGameTests {
 
         // The main hit starts the hurt-resistance window with lastHurt = 3; the stealth
         // bonus applied by hurtEnemy right after must still land in full.
-        pig.hurt(level.damageSources().playerAttack(player), 3.0f);
+        pig.hurtServer(level, level.damageSources().playerAttack(player), 3.0f);
         float healthAfterMainHit = pig.getHealth();
         knife.hurtEnemy(pig, player);
 
@@ -755,7 +764,7 @@ public class WeaponsGameTests {
     public void knifeOffhandDamageMatchesMainHandForEveryTier(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         // Offhand hits must use the knife's main-hand attack damage (player base 1 + tier bonus).
         record TierCase(ItemStack knife, float expected) {
@@ -777,7 +786,7 @@ public class WeaponsGameTests {
     public void knifeOffhandInteractionDealsMainHandDamage(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         ItemStack knife = new ItemStack(Items.NETHERITE_KNIFE);
         player.setItemSlot(EquipmentSlot.OFFHAND, knife);
@@ -799,7 +808,7 @@ public class WeaponsGameTests {
     public void knifeOffhandDamageBaseIsThree(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
 
         // not sneaking → no crit bonus; no sharpness → no enchant bonus
         float dmg = ItemKnife.getOffhandDamage(level, new ItemStack(Items.IRON_KNIFE), pig, player);
@@ -812,7 +821,7 @@ public class WeaponsGameTests {
     public void knifeOffhandDamageScalesWithSharpness(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(1, 2, 1));
+        Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
         ItemStack knife1 = new ItemStack(Items.IRON_KNIFE);

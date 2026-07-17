@@ -241,7 +241,7 @@ public class EntityMusicSpirit extends Entity {
         }
 
         ItemStack note = this.note;
-        if (note == null || !level().isClientSide) {
+        if (note == null || !level().isClientSide()) {
             return;
         }
         UUID id = note.get(Items.SHEET_ID);
@@ -283,7 +283,7 @@ public class EntityMusicSpirit extends Entity {
     }
 
     private boolean checkForRemoval() {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return false;
         }
         if (this.body == null || !isPlaying) {

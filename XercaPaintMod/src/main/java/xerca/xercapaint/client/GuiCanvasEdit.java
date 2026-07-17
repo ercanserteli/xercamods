@@ -6,6 +6,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -185,7 +188,7 @@ public class GuiCanvasEdit extends BasePalette {
         Window window = minecraft.getWindow();
 
         // Hide mouse cursor
-        glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         int x = window.getGuiScaledWidth() - 120;
         int y = window.getGuiScaledHeight() - 30;
@@ -195,7 +198,7 @@ public class GuiCanvasEdit extends BasePalette {
                 resetPositions();
                 updateButtons();
 
-                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }).bounds(x, y, 98, 20).build());
         this.buttonFinalize = this.addRenderableWidget(Button.builder(Component.translatable("canvas.finalizeButton"), button -> {
@@ -213,7 +216,7 @@ public class GuiCanvasEdit extends BasePalette {
                 gettingSigned = false;
                 updateButtons();
 
-                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                glfwSetInputMode(window.handle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
         }).bounds((int) canvasX - 100, 130, 98, 20).build());
 
@@ -275,7 +278,7 @@ public class GuiCanvasEdit extends BasePalette {
         int w = canvasPixelWidth;
         int h = canvasPixelHeight;
         if (row == -1 && col >= 0 && col < w) {
-            return CanvasSides.topOffset() + col;
+            return CanvasSides.TOP_OFFSET + col;
         }
         if (row == h && col >= 0 && col < w) {
             return CanvasSides.bottomOffset(canvasType) + col;
@@ -564,7 +567,9 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
+        int keyCode = event.key();
+        int modifiers = event.modifiers();
         if (this.gettingSigned) {
             switch (Integer.valueOf(keyCode)) {
                 case Integer k when k == GLFW_KEY_BACKSPACE && !this.canvasTitle.isEmpty() -> {
@@ -602,7 +607,7 @@ public class GuiCanvasEdit extends BasePalette {
                         brushOpacitySetting = 0;
                     }
                 }
-                return super.keyPressed(keyCode, scanCode, modifiers);
+                return super.keyPressed(event);
             }
         }
     }
@@ -612,9 +617,10 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    public boolean charTyped(char typedChar, int something) {
-        super.charTyped(typedChar, something);
+    public boolean charTyped(CharacterEvent event) {
+        super.charTyped(event);
 
+        char typedChar = (char) event.codepoint();
         if (!this.isSigned) {
             if (this.gettingSigned && this.canvasTitle.length() < MAX_TITLE_LENGTH && isAllowedChatCharacter(typedChar)) {
                 this.canvasTitle = this.canvasTitle + typedChar;
@@ -649,13 +655,14 @@ public class GuiCanvasEdit extends BasePalette {
 
     // Mouse button 0: left, 1: right
     @Override
-    public boolean mouseClicked(double posX, double posY, int mouseButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (gettingSigned) {
-            return super.superMouseClicked(posX, posY, mouseButton);
+            return super.superMouseClicked(event, isDoubleClick);
         }
 
-        int mouseX = (int) Math.floor(posX);
-        int mouseY = (int) Math.floor(posY);
+        int mouseButton = event.button();
+        int mouseX = (int) Math.floor(event.x());
+        int mouseY = (int) Math.floor(event.y());
 
         undoStarted = true;
         touchedCanvas = false;
@@ -667,7 +674,7 @@ public class GuiCanvasEdit extends BasePalette {
 
         if (inSidesToggle(mouseX, mouseY)) {
             toggleSides();
-            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+            return super.superMouseClicked(event, isDoubleClick);
         }
 
         if (inPaintable(mouseX, mouseY)) {
@@ -682,7 +689,7 @@ public class GuiCanvasEdit extends BasePalette {
                 paintAt(mouseX, mouseY, mouseButton);
                 playBrushSound();
             }
-            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+            return super.superMouseClicked(event, isDoubleClick);
         }
 
         if (inBrushMeter(mouseX, mouseY)) {
@@ -690,7 +697,7 @@ public class GuiCanvasEdit extends BasePalette {
             if (selectedSize <= 3 && selectedSize >= 0) {
                 brushSize = selectedSize;
             }
-            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+            return super.superMouseClicked(event, isDoubleClick);
         }
         if (inBrushOpacityMeter(mouseX, mouseY)) {
             int relativeY = mouseY - brushOpacityMeterY;
@@ -698,19 +705,19 @@ public class GuiCanvasEdit extends BasePalette {
             if (selectedOpacity >= 0 && selectedOpacity <= 3) {
                 brushOpacitySetting = selectedOpacity;
             }
-            return super.superMouseClicked(mouseX, mouseY, mouseButton);
+            return super.superMouseClicked(event, isDoubleClick);
         }
         if (inCanvasHolder(mouseX, mouseY)) {
             isCarryingCanvas = true;
         }
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double posX, double posY, int mouseButton) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         isCarryingCanvas = false;
         if (gettingSigned) {
-            return super.superMouseReleased(posX, posY, mouseButton);
+            return super.superMouseReleased(event);
         }
         draggedPoints.clear();
 
@@ -727,19 +734,19 @@ public class GuiCanvasEdit extends BasePalette {
             updateCanvas(false);
         }
 
-        return super.mouseReleased(posX, posY, mouseButton);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
         if (gettingSigned) {
-            return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return super.superMouseDragged(event, deltaX, deltaY);
         }
         if (!isCarryingColor && !isCarryingWater && !isPickingColor && !isCarryingPalette && !isCarryingCanvas) {
-            int mouseX = (int) Math.floor(posX);
-            int mouseY = (int) Math.floor(posY);
+            int mouseX = (int) Math.floor(event.x());
+            int mouseY = (int) Math.floor(event.y());
             if (inPaintable(mouseX, mouseY)) {
-                paintAt(mouseX, mouseY, mouseButton);
+                paintAt(mouseX, mouseY, event.button());
             }
 
             if (brushSound != null) {
@@ -747,13 +754,13 @@ public class GuiCanvasEdit extends BasePalette {
             }
         } else if (isCarryingCanvas) {
             updateCanvasPos(deltaX, deltaY);
-            return super.superMouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            return super.superMouseDragged(event, deltaX, deltaY);
         } else if (isCarryingPalette) {
-            boolean ret = super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            boolean ret = super.mouseDragged(event, deltaX, deltaY);
             updatePalettePos(deltaX, deltaY);
             return ret;
         }
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        return super.mouseDragged(event, deltaX, deltaY);
     }
 
     private void updateCanvasPos(double deltaX, double deltaY) {
@@ -814,7 +821,7 @@ public class GuiCanvasEdit extends BasePalette {
                 fillChecker(guiGraphics, x, cy - scale, k - 1);
                 fillChecker(guiGraphics, x, cy + canvasHeight, k + canvasPixelHeight);
             }
-            guiGraphics.fill(x, cy - scale, x + scale, cy, getSidePixel(CanvasSides.topOffset() + k));
+            guiGraphics.fill(x, cy - scale, x + scale, cy, getSidePixel(CanvasSides.TOP_OFFSET + k));
             guiGraphics.fill(x, cy + canvasHeight, x + scale, cy + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
         }
         for (int i = 0; i < canvasPixelHeight; i++) {

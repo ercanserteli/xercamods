@@ -77,7 +77,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     protected void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, @Nullable Orientation orientation, boolean isMoving) {
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             boolean powered = worldIn.hasNeighborSignal(pos);
             boolean powering = state.getValue(POWERING);
             boolean poweredState = state.getValue(POWERED);
@@ -91,7 +91,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     }
 
     private void ejectItem(Level world, BlockPos pos, BlockState state, boolean isMusic, boolean isBreaking) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
 
@@ -194,7 +194,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     }
 
     private void ejectStackOnRemoval(Level world, BlockPos pos, BlockState state, TileEntityMusicBox te, boolean isMusic) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
         ItemStack itemStack = getEjectedStack(te, isMusic);

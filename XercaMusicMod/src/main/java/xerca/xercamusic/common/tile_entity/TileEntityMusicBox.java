@@ -98,7 +98,7 @@ public class TileEntityMusicBox extends BlockEntity {
             return;
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             MusicManagerClient.checkMusicDataAndRun(id, version, () -> {
                 MusicManager.MusicData data = MusicManagerClient.getMusicData(id, version);
                 if (data != null) {
@@ -205,7 +205,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
     public static void musicStart(TileEntityMusicBox t, BlockPos blockPos) {
         IItemInstrument instrument = t.instrument;
-        if (t.level != null && t.level.isClientSide && instrument != null) {
+        if (t.level != null && t.level.isClientSide() && instrument != null) {
             if (t.soundController != null) {
                 t.soundController.setStop();
             }
@@ -280,7 +280,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
     public void setSheetStack(ItemStack sheetStack, boolean updateClient) {
         if (sheetStack.getItem() instanceof ItemMusicSheet) {
-            if (updateClient && level != null && !level.isClientSide) {
+            if (updateClient && level != null && !level.isClientSide()) {
                 updateClient(sheetStack, (Item) instrument);
             }
 
@@ -299,7 +299,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
     public void removeSheetStack() {
         if (!this.sheetStack.isEmpty()) {
-            if (level != null && !level.isClientSide) {
+            if (level != null && !level.isClientSide()) {
                 updateClient(ItemStack.EMPTY, (Item) instrument);
             }
 
@@ -318,7 +318,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
     public void setInstrument(Item instrument) {
         if (instrument instanceof IItemInstrument itemInstrument) {
-            if (level != null && !level.isClientSide) {
+            if (level != null && !level.isClientSide()) {
                 updateClient(null, instrument);
             }
 
@@ -329,7 +329,7 @@ public class TileEntityMusicBox extends BlockEntity {
 
     public void removeInstrument() {
         if (this.instrument != null) {
-            if (level != null && !level.isClientSide) {
+            if (level != null && !level.isClientSide()) {
                 updateClient(null, null);
             }
 

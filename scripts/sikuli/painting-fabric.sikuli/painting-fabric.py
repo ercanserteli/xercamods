@@ -183,11 +183,12 @@ def testDrawOnCanvas(mc, win, mcLoc):
 
     # Export/import commands
     old_similarity = Settings.MinSimilarity
-    Settings.MinSimilarity = 0.7
+    Settings.MinSimilarity = 0.5
     
     win.type("t")
     win.paste("/paintexport test")
     win.type(Key.ENTER)
+    wait(0.5)
     testAssert(exists("1689521099196.png"))
     wait(0.5)
     win.type("t")

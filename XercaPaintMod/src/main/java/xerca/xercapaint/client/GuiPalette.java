@@ -2,6 +2,7 @@ package xerca.xercapaint.client;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -42,13 +43,13 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
         if (isCarryingPalette) {
-            boolean ret = super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+            boolean ret = super.mouseDragged(event, deltaX, deltaY);
             updatePalettePos(deltaX, deltaY);
             return ret;
         }
-        return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+        return super.mouseDragged(event, deltaX, deltaY);
     }
 
     private void updatePalettePos(double deltaX, double deltaY) {

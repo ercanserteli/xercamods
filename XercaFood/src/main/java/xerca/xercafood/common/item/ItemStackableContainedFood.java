@@ -28,7 +28,7 @@ public class ItemStackableContainedFood extends Item {
             if (entityLiving instanceof Player) {
                 Inventory inv = ((Player) (entityLiving)).getInventory();
                 if (inv.getSlotWithRemainingSpace(containerStack) == -1 && inv.getFreeSlot() == -1) {
-                    if (!worldIn.isClientSide) {
+                    if (!worldIn.isClientSide()) {
                         worldIn.addFreshEntity(new ItemEntity(worldIn, entityLiving.getX(), entityLiving.getY(), entityLiving.getZ(), containerStack));
                     }
                 } else {

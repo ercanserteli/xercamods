@@ -6,7 +6,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,12 +38,6 @@ public class BlockDoner extends Block implements EntityBlock {
     // Layers 4-2 have 4 sides; the innermost 2x2 layer (meat=1) only has 2.
     public static final IntegerProperty SIDE = IntegerProperty.create("side", 0, 3);
     public static final BooleanProperty IS_RAW = BooleanProperty.create("is_raw");
-
-    public void setRenderType(RenderShape renderType) {
-        this.renderType = renderType;
-    }
-
-    private RenderShape renderType = RenderShape.INVISIBLE;
 
     public BlockDoner() {
         super(BlockBehaviour.Properties.of().setId(xerca.xercafood.common.Mod.blockKey("block_doner")).sound(SoundType.METAL).strength(1).noOcclusion());
@@ -81,7 +74,7 @@ public class BlockDoner extends Block implements EntityBlock {
             return false;
         }
 
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             world.setBlockAndUpdate(pos, state.setValue(MEAT_AMOUNT, meatAmount + 1));
             heldItem.shrink(1);
         }
@@ -95,10 +88,10 @@ public class BlockDoner extends Block implements EntityBlock {
             return false;
         }
 
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             updateDonerAfterSlice(state, world, pos);
             spawnDonerSlice(world, pos, player);
-            heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+            heldItem.hurtAndBreak(1, player, hand);
         }
         world.playSound(player, pos, xerca.xercafood.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + world.random.nextFloat() * 0.1f);
         return true;
@@ -146,7 +139,7 @@ public class BlockDoner extends Block implements EntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return renderType;
+        return RenderShape.INVISIBLE;
     }
 
     @Nullable

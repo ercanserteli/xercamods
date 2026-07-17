@@ -3,12 +3,16 @@ package xerca.xercatools.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 
 @Environment(EnvType.CLIENT)
-public class ConfettiParticle extends TextureSheetParticle {
+public class ConfettiParticle extends SingleQuadParticle {
     private static final float PIECE_GRID = 8.0F;
     private final float rollSpeed;
     private final float swayPhase;
@@ -17,7 +21,7 @@ public class ConfettiParticle extends TextureSheetParticle {
     private final float vo;
 
     private ConfettiParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
-        super(level, x, y, z);
+        super(level, x, y, z, spriteSet.first());
         this.friction = 0.82F;
         this.gravity = 0.12F;
         this.quadSize *= 0.5F;
@@ -30,7 +34,7 @@ public class ConfettiParticle extends TextureSheetParticle {
         this.swayAmount = 0.0015F + this.random.nextFloat() * 0.0020F;
         this.uo = this.random.nextFloat() * (PIECE_GRID - 1.0F);
         this.vo = this.random.nextFloat() * (PIECE_GRID - 1.0F);
-        this.pickSprite(spriteSet);
+        this.setSprite(spriteSet.get(this.random));
         this.setParticleSpeed(xSpeed, ySpeed, zSpeed);
     }
 
@@ -49,8 +53,8 @@ public class ConfettiParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -82,7 +86,7 @@ public class ConfettiParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             return new ConfettiParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
         }
     }

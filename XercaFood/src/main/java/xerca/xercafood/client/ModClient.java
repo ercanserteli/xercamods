@@ -4,9 +4,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import xerca.xercafood.common.block.Blocks;
 import xerca.xercafood.common.block_entity.BlockEntities;
 import xerca.xercafood.common.entity.Entities;
@@ -16,7 +16,7 @@ import xerca.xercafood.common.entity.Entities;
 public class ModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        EntityRendererRegistry.register(Entities.TOMATO, new RenderTomatoFactory());
+        EntityRenderers.register(Entities.TOMATO, new RenderTomatoFactory());
 
         BlockEntityRenderers.register(BlockEntities.DONER, DonerTileEntityRenderer::new);
         initializeRenderLayers();
