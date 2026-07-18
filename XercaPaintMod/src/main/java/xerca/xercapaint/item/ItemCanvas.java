@@ -164,17 +164,17 @@ public class ItemCanvas extends HangingEntityItem {
         if (pixels != null) {
             String author = stack.get(Items.CANVAS_AUTHOR);
 
-            if (!StringUtil.isNullOrEmpty(author)) {
+            if (tooltipDisplay.shows(Items.CANVAS_AUTHOR) && !StringUtil.isNullOrEmpty(author)) {
                 tooltipComponents.accept(Component.translatable("canvas.byAuthor", author));
             }
 
             int generation = stack.getOrDefault(Items.CANVAS_GENERATION, 0);
             // generation = 0=empty, 1=original, 2=copy of org, 3=copy of copy
-            if (generation > 0) {
+            if (tooltipDisplay.shows(Items.CANVAS_GENERATION) && generation > 0) {
                 tooltipComponents.accept(Component.translatable("canvas.generation." + (generation - 1))
                         .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
             }
-        } else {
+        } else if (tooltipDisplay.shows(Items.CANVAS_AUTHOR)) {
             tooltipComponents.accept(Component.translatable("canvas.empty").withStyle(ChatFormatting.GRAY));
         }
     }

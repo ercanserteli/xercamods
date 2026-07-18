@@ -1,12 +1,20 @@
 package xerca.xercapaint.tests;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import xerca.xercapaint.CanvasType;
+import xerca.xercapaint.entity.Entities;
+import xerca.xercapaint.entity.EntityCanvas;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.item.crafting.RecipeCanvasCloning;
@@ -60,6 +68,27 @@ public class CanvasTagCompatibilityGameTests {
         ItemStack result = CLONING_RECIPE.assemble(grid);
         TestAsserts.assertTrue(helper, !result.isEmpty(), "Expected cloning result to be present");
         TestAsserts.assertTrue(helper, result.getOrDefault(Items.CANVAS_GENERATION, 0) == 2, "Expected generation to increment to 2");
+        helper.succeed();
+    }
+
+    @GameTest
+    public void canvasRotationDoesNotClobberVanillaRotationKey(GameTestHelper helper) {
+        ItemStack stack = new ItemStack(Items.ITEM_CANVAS);
+        stack.set(Items.CANVAS_ID, "rotation_canvas");
+        stack.set(Items.CANVAS_VERSION, 1);
+
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        EntityCanvas canvas = new EntityCanvas(helper.getLevel(), stack, pos, Direction.NORTH, CanvasType.SMALL, 2);
+
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, helper.getLevel().registryAccess());
+        canvas.addAdditionalSaveData(output);
+        CompoundTag tag = output.buildResult();
+        TestAsserts.assertTrue(helper, !tag.contains("Rotation"), "Mod save data must not write vanilla's Rotation key");
+        TestAsserts.assertTrue(helper, tag.getByteOr("CanvasRotation", (byte) -1) == 2, "NBT must record the quarter-turn under CanvasRotation");
+
+        EntityCanvas reloaded = new EntityCanvas(Entities.CANVAS, helper.getLevel());
+        reloaded.readAdditionalSaveData(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), tag));
+        TestAsserts.assertTrue(helper, reloaded.getRotation() == 2, "Quarter-turn must survive an NBT round-trip");
         helper.succeed();
     }
 }

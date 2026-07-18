@@ -70,7 +70,8 @@ public class ItemGrabHook extends FishingRodItem {
         MutableComponent text = Component.translatable("xercatools.grab_hook_tooltip");
         tooltip.accept(text.withStyle(ChatFormatting.BLUE));
         var registries = context.registries();
-        if (registries != null && EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.grapplingEnchantment(registries), stack) > 0) {
+        if (tooltipDisplay.shows(DataComponents.ENCHANTMENTS) && registries != null
+                && EnchantmentHelper.getItemEnchantmentLevel(GrabHookEnchantments.grapplingEnchantment(registries), stack) > 0) {
             tooltip.accept(Component.translatable("xercatools.grappling_tooltip").withStyle(ChatFormatting.YELLOW));
         }
     }

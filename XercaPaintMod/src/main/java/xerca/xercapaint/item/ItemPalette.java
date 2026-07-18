@@ -60,9 +60,11 @@ public class ItemPalette extends Item {
         byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
         ComponentCustomColor customColorComp = stack.get(Items.PALETTE_CUSTOM_COLORS);
         if (basicColors == null && customColorComp == null) {
-            tooltip.accept(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
+            if (tooltipDisplay.shows(Items.PALETTE_BASIC_COLORS)) {
+                tooltip.accept(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));
+            }
         } else {
-            if (basicColors != null && basicColors.length == BASIC_COLOR_COUNT) {
+            if (tooltipDisplay.shows(Items.PALETTE_BASIC_COLORS) && basicColors != null && basicColors.length == BASIC_COLOR_COUNT) {
                 int basicCount = 0;
                 for (byte basicColor : basicColors) {
                     basicCount += basicColor;
@@ -70,7 +72,7 @@ public class ItemPalette extends Item {
                 tooltip.accept(Component.translatable("palette.basic_count", String.valueOf(basicCount)).withStyle(ChatFormatting.GRAY));
             }
 
-            if (customColorComp != null) {
+            if (tooltipDisplay.shows(Items.PALETTE_CUSTOM_COLORS) && customColorComp != null) {
                 int fullCount = 0;
                 for (PaletteUtil.CustomColor color : customColorComp.colors) {
                     if (color.numberOfColors > 0) {

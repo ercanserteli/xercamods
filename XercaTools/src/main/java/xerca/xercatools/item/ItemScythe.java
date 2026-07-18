@@ -184,7 +184,7 @@ public class ItemScythe extends Item {
         MutableComponent text = Component.translatable("xercatools.scythe_tooltip");
         tooltip.accept(text.withStyle(ChatFormatting.BLUE));
         var registries = context.registries();
-        if (registries != null
+        if (tooltipDisplay.shows(DataComponents.ENCHANTMENTS) && registries != null
                 && EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.guillotineEnchantment(registries), stack) > 0) {
             tooltip.accept(Component.translatable("xercatools.guillotine_tooltip").withStyle(ChatFormatting.YELLOW));
         }

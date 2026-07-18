@@ -160,27 +160,27 @@ public class ItemMusicSheet extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
         String s = stack.get(Items.SHEET_AUTHOR);
 
-        if (s != null) {
+        if (tooltipDisplay.shows(Items.SHEET_AUTHOR) && s != null) {
             tooltip.accept(Component.translatable("note.byAuthor", s));
         }
 
         int generation = stack.getOrDefault(Items.SHEET_GENERATION, 0);
         // generation = 0=empty, 1=original, 2=copy of org, 3=copy of copy
-        if (generation > 0) {
+        if (tooltipDisplay.shows(Items.SHEET_GENERATION) && generation > 0) {
             tooltip.accept(Component.translatable("note.generation." + (generation - 1))
                     .withStyle(generation == 1 ? ChatFormatting.GOLD : ChatFormatting.GRAY));
         }
 
         int length = stack.getOrDefault(Items.SHEET_LENGTH, 0);
-        if (length > 0) {
+        if (tooltipDisplay.shows(Items.SHEET_LENGTH) && length > 0) {
             tooltip.accept(Component.translatable("note.length", length).withStyle(ChatFormatting.GRAY));
         }
         int bps = getBPS(stack);
-        if (bps > 0) {
+        if (tooltipDisplay.shows(Items.SHEET_BPS) && bps > 0) {
             tooltip.accept(Component.translatable("note.tempo", bps * 60).withStyle(ChatFormatting.GRAY));
         }
         int prevIns = getPrevInstrument(stack);
-        if (prevIns >= 0 && prevIns < Items.INSTRUMENTS.size()) {
+        if (tooltipDisplay.shows(Items.SHEET_PREV_INSTRUMENT) && prevIns >= 0 && prevIns < Items.INSTRUMENTS.size()) {
             Component name = ((Item) Items.INSTRUMENTS.get(prevIns)).getName(new ItemStack((Item) Items.INSTRUMENTS.get(prevIns)));
             tooltip.accept(Component.translatable("note.preview_instrument", name).withStyle(ChatFormatting.GRAY));
         }

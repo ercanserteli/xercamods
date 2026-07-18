@@ -65,8 +65,12 @@ public class ItemPotionLauncher extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         MutableComponent text = Component.translatable("xercatools.ender_bow_tooltip");
         tooltip.accept(text.withStyle(ChatFormatting.BLUE));
-        PotionContents.addPotionTooltip(ItemFlask.getPotionContents(stack).getAllEffects(), tooltip, 1.0F, context.tickRate());
-        tooltip.accept(Component.translatable("xercatools.charges_tooltip", ItemFlask.getCharges(stack)).withStyle(ChatFormatting.YELLOW));
+        if (tooltipDisplay.shows(DataComponents.POTION_CONTENTS)) {
+            PotionContents.addPotionTooltip(ItemFlask.getPotionContents(stack).getAllEffects(), tooltip, 1.0F, context.tickRate());
+        }
+        if (tooltipDisplay.shows(DataComponents.CUSTOM_DATA)) {
+            tooltip.accept(Component.translatable("xercatools.charges_tooltip", ItemFlask.getCharges(stack)).withStyle(ChatFormatting.YELLOW));
+        }
     }
 
     public static boolean isLingering(ItemStack stack) {

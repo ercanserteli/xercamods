@@ -385,7 +385,7 @@ public class EntityCanvas extends HangingEntity {
         } else {
             this.setDirection(Direction.from3DDataValue(realFace == -1 ? 0 : realFace));
         }
-        this.setRotation(input.getByteOr("Rotation", (byte) 0));
+        this.setRotation(input.getByteOr("CanvasRotation", (byte) 0));
     }
 
     @Override
@@ -404,7 +404,7 @@ public class EntityCanvas extends HangingEntity {
         output.putByte("ctype", getCanvasTypeKey());
         output.putBoolean("glass", isGlass());
         output.putByte("RealFace", (byte) this.getDirection().get3DDataValue());
-        output.putByte("Rotation", (byte) this.getRotation());
+        output.putByte("CanvasRotation", (byte) this.getRotation());
 
         Picture picture = PICTURES.get(getCanvasID());
         if (picture != null) {
