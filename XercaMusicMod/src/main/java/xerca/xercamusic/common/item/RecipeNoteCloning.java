@@ -1,6 +1,5 @@
 package xerca.xercamusic.common.item;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -9,8 +8,9 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.NullMarked;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class RecipeNoteCloning extends CustomRecipe {
     public RecipeNoteCloning(CraftingBookCategory category) {
         super(category);

@@ -18,8 +18,8 @@ public final class ModClient implements ClientModInitializer {
     public void onInitializeClient() {
         CarvedCrimsonModels.register();
         ItemModels.ID_MAPPER.put(Mod.id("translucent_model"), TranslucentModelWrapper.Unbaked.MAP_CODEC);
-        BlockRenderLayerMap.putBlock(Blocks.ROPE, ChunkSectionLayer.CUTOUT_MIPPED);
-        Blocks.carvedWoods().values().forEach(block -> BlockRenderLayerMap.putBlock(block, ChunkSectionLayer.CUTOUT_MIPPED));
+        BlockRenderLayerMap.putBlock(Blocks.ROPE, ChunkSectionLayer.CUTOUT);
+        Blocks.carvedWoods().values().forEach(block -> BlockRenderLayerMap.putBlock(block, ChunkSectionLayer.CUTOUT));
         MenuScreens.register(Menus.CARVING_STATION, StonecutterScreen::new);
         MenuScreens.register(Menus.BOOKCASE, BookcaseScreen::new);
     }

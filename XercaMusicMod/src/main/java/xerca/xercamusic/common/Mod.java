@@ -10,7 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -18,8 +18,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import javax.annotation.Nullable;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.Items;
@@ -27,6 +25,7 @@ import xerca.xercamusic.common.packets.clientbound.*;
 import xerca.xercamusic.common.packets.serverbound.*;
 import xerca.xercamusic.common.tile_entity.BlockEntities;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
@@ -55,8 +54,8 @@ public class Mod implements ModInitializer {
         }
     }
 
-    public static ResourceLocation id(String location) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, location);
+    public static Identifier id(String location) {
+        return Identifier.fromNamespaceAndPath(MODID, location);
     }
 
     private void networkRegistry() {

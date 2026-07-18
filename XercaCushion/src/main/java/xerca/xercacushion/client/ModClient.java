@@ -15,7 +15,7 @@ public class ModClient implements ClientModInitializer {
     public void onInitializeClient() {
         EntityRenderers.register(Mod.CUSHION, CushionRenderer::new);
         for (var block : Blocks.all()) {
-            BlockRenderLayerMap.putBlock(block, ChunkSectionLayer.CUTOUT_MIPPED);
+            BlockRenderLayerMap.putBlock(block, ChunkSectionLayer.CUTOUT);
         }
     }
 }

@@ -243,7 +243,17 @@ public class ItemScythe extends Item {
         }
 
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0F, 1.0F);
-        player.sweepAttack();
+        spawnSweepParticle(player);
+    }
+
+    // Replicates the removed Player#sweepAttack (inlined into vanilla's private doSweepAttack in 1.21.11).
+    private static void spawnSweepParticle(Player player) {
+        double dx = -net.minecraft.util.Mth.sin(player.getYRot() * ((float) Math.PI / 180F));
+        double dz = net.minecraft.util.Mth.cos(player.getYRot() * ((float) Math.PI / 180F));
+        if (player.level() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.SWEEP_ATTACK,
+                    player.getX() + dx, player.getY(0.5D), player.getZ() + dz, 0, dx, 0.0D, dz, 0.0D);
+        }
     }
 
     private static void handleDevourHit(ItemStack stack, Player player, Entity entity) {

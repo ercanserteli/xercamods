@@ -316,7 +316,7 @@ public class EntityGrabHook extends Entity {
                 Vec3 pullVelocity = distance.normalize().scale(this.speed);
                 this.caughtEntity.setDeltaMovement(pullVelocity);
                 this.caughtEntity.hurtMarked = true;
-                this.caughtEntity.hasImpulse = true;
+                this.caughtEntity.needsSync = true;
             } else {
                 discardHook();
                 return;
@@ -334,7 +334,7 @@ public class EntityGrabHook extends Entity {
         if (distance.length() > 2.0D) {
             angler.setDeltaMovement(distance.normalize().scale(this.speed));
             angler.noPhysics = true;
-            angler.hasImpulse = true;
+            angler.needsSync = true;
             angler.hurtMarked = true;
         } else {
             discardHook();

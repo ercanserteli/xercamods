@@ -1,7 +1,7 @@
 package xerca.xercablocks;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercablocks.block.Blocks;
@@ -14,8 +14,8 @@ public final class Mod implements ModInitializer {
     public static final String MOD_ID = "xercablocks";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     @Override

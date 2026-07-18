@@ -1,10 +1,11 @@
 package xerca.xercablocks.tests;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import xerca.xercablocks.tests.mixin.TextureAtlasAccessor;
 
 import java.util.List;
@@ -19,16 +20,18 @@ final class CarvedCrimsonAnimationTestHelper {
     static void freezeAtFirstFrame(Minecraft client) {
         TextureAtlas atlas = client.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS);
         TextureAtlasAccessor accessor = (TextureAtlasAccessor) atlas;
-        List<TextureAtlasSprite.Ticker> tickers = accessor.xercablocksTests$getAnimatedTextures();
-        tickers.forEach(TextureAtlasSprite.Ticker::close);
-        accessor.xercablocksTests$setAnimatedTextures(List.of());
+        List<SpriteContents.AnimationState> states = accessor.xercablocksTests$getAnimatedTexturesStates();
+        states.forEach(SpriteContents.AnimationState::close);
+        accessor.xercablocksTests$setAnimatedTexturesStates(List.of());
 
         int overlayCount = 0;
-        for (Map.Entry<ResourceLocation, TextureAtlasSprite> entry : accessor.xercablocksTests$getTexturesByName().entrySet()) {
-            ResourceLocation id = entry.getKey();
+        for (Map.Entry<Identifier, TextureAtlasSprite> entry : accessor.xercablocksTests$getTexturesByName().entrySet()) {
+            Identifier id = entry.getKey();
             if ("xercablocks".equals(id.getNamespace()) && id.getPath().startsWith(OVERLAY_PREFIX)
                     && id.getPath().endsWith("_o")) {
-                entry.getValue().uploadFirstFrame(atlas.getTexture());
+                for (int mip = 0; mip <= accessor.xercablocksTests$getMaxMipLevel(); mip++) {
+                    entry.getValue().uploadFirstFrame(atlas.getTexture(), mip);
+                }
                 overlayCount++;
             }
         }

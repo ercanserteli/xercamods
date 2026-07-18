@@ -2,7 +2,7 @@ package xerca.xercablocks.menu;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercablocks.block_entity.FunctionalBookcaseBlockEntity;
 
 public class BookcaseMenu extends AbstractContainerMenu {
-    private static final ResourceLocation MUSIC_SHEET_ID = ResourceLocation.fromNamespaceAndPath("xercamusic", "music_sheet");
+    private static final Identifier MUSIC_SHEET_ID = Identifier.fromNamespaceAndPath("xercamusic", "music_sheet");
     private final Container container;
 
     public BookcaseMenu(int syncId, Inventory playerInventory, BlockPos pos) {
@@ -118,7 +118,7 @@ public class BookcaseMenu extends AbstractContainerMenu {
 
         private static boolean isAllowedBook(ItemStack stack) {
             Item item = stack.getItem();
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
+            Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
             return stack.is(net.minecraft.world.item.Items.BOOK)
                     || stack.is(net.minecraft.world.item.Items.WRITABLE_BOOK)
                     || stack.is(net.minecraft.world.item.Items.WRITTEN_BOOK)

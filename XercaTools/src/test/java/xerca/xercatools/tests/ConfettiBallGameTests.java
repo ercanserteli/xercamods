@@ -7,8 +7,8 @@ import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -55,11 +55,11 @@ public final class ConfettiBallGameTests {
         return balls.getFirst();
     }
 
-    private static ResourceLocation recipeId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(xerca.xercatools.Mod.MOD_ID, path);
+    private static Identifier recipeId(String path) {
+        return Identifier.fromNamespaceAndPath(xerca.xercatools.Mod.MOD_ID, path);
     }
 
-    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
+    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, Identifier recipeId) {
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, recipeId));
         TestAsserts.assertTrue(helper, recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow().value();

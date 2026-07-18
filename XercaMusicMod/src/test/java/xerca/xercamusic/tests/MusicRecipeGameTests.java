@@ -3,7 +3,7 @@ package xerca.xercamusic.tests;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -71,7 +71,7 @@ public final class MusicRecipeGameTests {
         assertTrue(helper, holder.isPresent(), "Expected a crafting recipe to match for " + expectedPath);
         if (holder.isPresent()) {
             ItemStack result = holder.get().value().assemble(input, level.registryAccess());
-            ResourceLocation resultId = BuiltInRegistries.ITEM.getKey(result.getItem());
+            Identifier resultId = BuiltInRegistries.ITEM.getKey(result.getItem());
             assertTrue(helper, Mod.id(expectedPath).equals(resultId),
                     "Expected " + expectedPath + " recipe to craft xercamusic:" + expectedPath + " but got " + resultId);
         }

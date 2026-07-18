@@ -12,7 +12,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
@@ -907,14 +907,14 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     public static class ToggleHelpButton extends Button {
-        protected final ResourceLocation resourceLocation;
+        protected final Identifier resourceLocation;
         protected final int xTexStart;
         protected final int yTexStart;
         protected final int yDiffText;
         protected final int texWidth;
         protected final int texHeight;
 
-        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
+        public ToggleHelpButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, Identifier texture, int texWidth, int texHeight, OnPress onClick) {
             super(x, y, width, height, Component.empty(), onClick, DEFAULT_NARRATION);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
@@ -925,7 +925,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             int yTexStartNew = this.yTexStart;
             if (this.isHovered) {
                 yTexStartNew += this.yDiffText;

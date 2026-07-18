@@ -7,8 +7,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -45,11 +45,11 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public final class BlocksGameTests {
 
-    private static ResourceLocation recipeId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);
+    private static Identifier recipeId(String path) {
+        return Identifier.fromNamespaceAndPath(Mod.MOD_ID, path);
     }
 
-    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
+    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, Identifier recipeId) {
         ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
         helper.assertTrue(recipeOptional.isPresent(), Component.literal("Missing recipe: " + recipeId));
@@ -58,7 +58,7 @@ public final class BlocksGameTests {
         return (CraftingRecipe) recipe;
     }
 
-    private static CarvingRecipe requireCarvingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
+    private static CarvingRecipe requireCarvingRecipe(GameTestHelper helper, Identifier recipeId) {
         ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
         helper.assertTrue(recipeOptional.isPresent(), Component.literal("Missing recipe: " + recipeId));
@@ -67,7 +67,7 @@ public final class BlocksGameTests {
         return (CarvingRecipe) recipe;
     }
 
-    private static StonecutterRecipe requireStonecuttingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
+    private static StonecutterRecipe requireStonecuttingRecipe(GameTestHelper helper, Identifier recipeId) {
         ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
         helper.assertTrue(recipeOptional.isPresent(), Component.literal("Missing recipe: " + recipeId));
@@ -563,6 +563,21 @@ public final class BlocksGameTests {
 
         helper.assertTrue(stonecutterRecipe.isEmpty(), Component.literal("Expected carving recipes to be absent from vanilla stonecutting"));
         helper.assertTrue(carvingRecipe.isPresent(), Component.literal("Expected carving recipes to load under xercablocks:carving"));
+        helper.succeed();
+    }
+
+    @GameTest
+    public void carvingOutputClassificationRoutesStrippedLogsToCarvingStation(GameTestHelper helper) {
+        helper.assertTrue(CarvingRecipe.isCarvingOutput(net.minecraft.world.item.Items.STRIPPED_OAK_LOG),
+                Component.literal("Expected stripped logs to be classified as carving outputs so they show in the carving station, not the stonecutter"));
+        helper.assertTrue(CarvingRecipe.isCarvingOutput(net.minecraft.world.item.Items.STRIPPED_WARPED_STEM),
+                Component.literal("Expected stripped stems to be classified as carving outputs"));
+        helper.assertTrue(CarvingRecipe.isCarvingOutput(modItem("carved_oak_1")),
+                Component.literal("Expected carved wood to be classified as a carving output"));
+        helper.assertTrue(!CarvingRecipe.isCarvingOutput(net.minecraft.world.item.Items.STONE),
+                Component.literal("Expected vanilla stonecutter outputs like stone to not be carving outputs"));
+        helper.assertTrue(!CarvingRecipe.isCarvingOutput(modItem("black_terratile")),
+                Component.literal("Expected xercablocks stonecutter outputs like terratile to not be carving outputs"));
         helper.succeed();
     }
 

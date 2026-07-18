@@ -5,8 +5,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -26,19 +26,19 @@ import static xerca.xercapaint.Mod.MOD_ID;
 
 public class CanvasRecipeGameTests {
 
-    private record CanvasRecipeSpec(ResourceLocation recipeId, int width, int height, Item expectedResult) {
+    private record CanvasRecipeSpec(Identifier recipeId, int width, int height, Item expectedResult) {
     }
 
     private static final CanvasRecipeSpec[] SMALL_CANVAS_RECIPES = {
-            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_long"), 2, 1, Items.ITEM_CANVAS_LONG),
-            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_tall"), 1, 2, Items.ITEM_CANVAS_TALL),
-            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_large"), 2, 2, Items.ITEM_CANVAS_LARGE)
+            new CanvasRecipeSpec(Identifier.fromNamespaceAndPath(MOD_ID, "item_canvas_long"), 2, 1, Items.ITEM_CANVAS_LONG),
+            new CanvasRecipeSpec(Identifier.fromNamespaceAndPath(MOD_ID, "item_canvas_tall"), 1, 2, Items.ITEM_CANVAS_TALL),
+            new CanvasRecipeSpec(Identifier.fromNamespaceAndPath(MOD_ID, "item_canvas_large"), 2, 2, Items.ITEM_CANVAS_LARGE)
     };
 
     private static final CanvasRecipeSpec[] SMALL_GLASS_CANVAS_RECIPES = {
-            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_long"), 2, 1, Items.ITEM_CANVAS_GLASS_LONG),
-            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_tall"), 1, 2, Items.ITEM_CANVAS_GLASS_TALL),
-            new CanvasRecipeSpec(ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_large"), 2, 2, Items.ITEM_CANVAS_GLASS_LARGE)
+            new CanvasRecipeSpec(Identifier.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_long"), 2, 1, Items.ITEM_CANVAS_GLASS_LONG),
+            new CanvasRecipeSpec(Identifier.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_tall"), 1, 2, Items.ITEM_CANVAS_GLASS_TALL),
+            new CanvasRecipeSpec(Identifier.fromNamespaceAndPath(MOD_ID, "item_canvas_glass_large"), 2, 2, Items.ITEM_CANVAS_GLASS_LARGE)
     };
 
     private static CraftingInput createFilledGrid(int width, int height, ItemStack fillStack) {
@@ -49,7 +49,7 @@ public class CanvasRecipeGameTests {
         return CraftingInput.of(width, height, stacks);
     }
 
-    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
+    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, Identifier recipeId) {
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, recipeId));
         TestAsserts.assertTrue(helper, recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow(() -> new IllegalStateException("Missing recipe: " + recipeId)).value();
@@ -116,7 +116,7 @@ public class CanvasRecipeGameTests {
 
     @GameTest
     public void glassCanvasCraftsFromGlassPaneAndSticks(GameTestHelper helper) {
-        ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(MOD_ID, "item_canvas_glass");
+        Identifier recipeId = Identifier.fromNamespaceAndPath(MOD_ID, "item_canvas_glass");
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId);
 
         ItemStack stick = new ItemStack(net.minecraft.world.item.Items.STICK);

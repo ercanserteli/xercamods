@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +23,7 @@ import xerca.xercapaint.item.Items;
 import static xerca.xercapaint.PaletteUtil.EMPTINESS_COLOR;
 
 public abstract class BasePalette extends Screen {
-    protected static final ResourceLocation PALETTE_TEXTURES = Mod.id("textures/gui/palette.png");
+    protected static final Identifier PALETTE_TEXTURES = Mod.id("textures/gui/palette.png");
     static final int DYE_SPRITE_X = 240;
     static final int DYE_SPRITE_SIZE = 16;
     static final int BRUSH_SPRITE_X = 0;

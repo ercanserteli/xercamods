@@ -5,14 +5,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.Items;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,7 +25,7 @@ public record MusicBoxUpdatePacket(BlockPos pos, String instrumentId, boolean sh
     public static MusicBoxUpdatePacket create(BlockPos pos, @Nullable ItemStack sheetStack, @Nullable Item itemInstrument) {
         String instrumentId = "";
         if (itemInstrument != null) {
-            ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey(itemInstrument);
+            Identifier resourcelocation = BuiltInRegistries.ITEM.getKey(itemInstrument);
             instrumentId = resourcelocation.toString();
         }
 

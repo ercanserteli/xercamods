@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -45,7 +45,7 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPay
             }
 
             if (!msg.instrumentId().isEmpty()) {
-                tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(msg.instrumentId())));
+                tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.getValue(Identifier.parse(msg.instrumentId())));
             } else {
                 tileEntityMusicBox.removeInstrument();
             }

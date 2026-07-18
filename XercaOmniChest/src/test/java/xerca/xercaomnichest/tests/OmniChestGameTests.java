@@ -3,8 +3,10 @@ package xerca.xercaomnichest.tests;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -39,11 +41,11 @@ public final class OmniChestGameTests {
         helper.assertTrue(condition, net.minecraft.network.chat.Component.literal(message));
     }
 
-    private static ResourceLocation recipeId(String path) {
+    private static Identifier recipeId(String path) {
         return Mod.id(path);
     }
 
-    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
+    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, Identifier recipeId) {
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, recipeId));
         assertTrue(helper, recipeOptional.isPresent(), "Missing recipe: " + recipeId);
@@ -181,8 +183,9 @@ public final class OmniChestGameTests {
         OmniChestSavedData original = new OmniChestSavedData();
         original.getInventory().setItem(4, new ItemStack(net.minecraft.world.item.Items.DIAMOND, 5));
 
-        CompoundTag tag = original.save(new CompoundTag(), helper.getLevel().registryAccess());
-        OmniChestSavedData restored = OmniChestSavedData.load(tag, helper.getLevel().registryAccess());
+        RegistryOps<Tag> ops = helper.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        Tag tag = OmniChestSavedData.TYPE.codec().encodeStart(ops, original).getOrThrow();
+        OmniChestSavedData restored = OmniChestSavedData.TYPE.codec().parse(ops, tag).getOrThrow();
 
         ItemStack restoredStack = restored.getInventory().getItem(4);
         assertTrue(helper, restoredStack.is(net.minecraft.world.item.Items.DIAMOND), "Expected saved data to restore the stored item");

@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -222,7 +222,7 @@ public class TileEntityMusicBox extends BlockEntity {
             output.store(KEY_NOTE, ItemStack.CODEC, sheetStack);
         }
         if (this.instrument != null) {
-            ResourceLocation resourcelocation = BuiltInRegistries.ITEM.getKey((Item) this.instrument);
+            Identifier resourcelocation = BuiltInRegistries.ITEM.getKey((Item) this.instrument);
             output.putString(KEY_INS_ID, resourcelocation.toString());
         }
     }
@@ -240,7 +240,7 @@ public class TileEntityMusicBox extends BlockEntity {
         super.loadAdditional(input);
         input.read(KEY_NOTE, ItemStack.CODEC).ifPresent(sheet -> setSheetStack(sheet, false));
         input.getString(KEY_INS_ID).ifPresent(insId ->
-                this.setInstrument(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(insId))));
+                this.setInstrument(BuiltInRegistries.ITEM.getValue(Identifier.parse(insId))));
     }
 
     @Override

@@ -3,8 +3,8 @@ package xerca.xercapaint.entity;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import xerca.xercapaint.Mod;
@@ -13,8 +13,8 @@ public class Entities {
     private Entities() {
     }
 
-    public static final ResourceLocation CANVAS_ID = Mod.id("canvas");
-    public static final ResourceLocation EASEL_ID = Mod.id("easel");
+    public static final Identifier CANVAS_ID = Mod.id("canvas");
+    public static final Identifier EASEL_ID = Mod.id("easel");
     private static final ResourceKey<EntityType<?>> CANVAS_KEY = ResourceKey.create(Registries.ENTITY_TYPE, CANVAS_ID);
     private static final ResourceKey<EntityType<?>> EASEL_KEY = ResourceKey.create(Registries.ENTITY_TYPE, EASEL_ID);
 

@@ -5,7 +5,7 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -32,15 +32,15 @@ class GameTestHelpers {
         helper.assertFalse(condition, net.minecraft.network.chat.Component.literal(message));
     }
 
-    static ResourceLocation recipeId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);
+    static Identifier recipeId(String path) {
+        return Identifier.fromNamespaceAndPath(Mod.MOD_ID, path);
     }
 
-    static ResourceLocation advancementId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);
+    static Identifier advancementId(String path) {
+        return Identifier.fromNamespaceAndPath(Mod.MOD_ID, path);
     }
 
-    static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation id) {
+    static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, Identifier id) {
         Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
         assertTrue(helper, opt.isPresent(), "Missing recipe: " + id);
@@ -50,7 +50,7 @@ class GameTestHelpers {
         return (CraftingRecipe) recipe;
     }
 
-    static CampfireCookingRecipe requireCampfireRecipe(GameTestHelper helper, ResourceLocation id) {
+    static CampfireCookingRecipe requireCampfireRecipe(GameTestHelper helper, Identifier id) {
         Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
         assertTrue(helper, opt.isPresent(), "Missing recipe: " + id);
@@ -60,7 +60,7 @@ class GameTestHelpers {
         return (CampfireCookingRecipe) recipe;
     }
 
-    static SmeltingRecipe requireSmeltingRecipe(GameTestHelper helper, ResourceLocation id) {
+    static SmeltingRecipe requireSmeltingRecipe(GameTestHelper helper, Identifier id) {
         Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
         assertTrue(helper, opt.isPresent(), "Missing recipe: " + id);
@@ -70,7 +70,7 @@ class GameTestHelpers {
         return (SmeltingRecipe) recipe;
     }
 
-    static SmokingRecipe requireSmokingRecipe(GameTestHelper helper, ResourceLocation id) {
+    static SmokingRecipe requireSmokingRecipe(GameTestHelper helper, Identifier id) {
         Optional<RecipeHolder<?>> opt = helper.getLevel().recipeAccess().byKey(
                 net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id));
         assertTrue(helper, opt.isPresent(), "Missing recipe: " + id);
@@ -80,7 +80,7 @@ class GameTestHelpers {
         return (SmokingRecipe) recipe;
     }
 
-    static AdvancementHolder requireAdvancement(GameTestHelper helper, ResourceLocation id) {
+    static AdvancementHolder requireAdvancement(GameTestHelper helper, Identifier id) {
         AdvancementHolder advancement = helper.getLevel().getServer().getAdvancements().get(id);
         assertTrue(helper, advancement != null, "Missing advancement: " + id);
         return Objects.requireNonNull(advancement, "Missing advancement after assertion: " + id);

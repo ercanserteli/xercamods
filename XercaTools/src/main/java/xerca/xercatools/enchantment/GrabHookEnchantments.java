@@ -4,8 +4,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantment;
 import xerca.xercatools.Mod;
 
@@ -18,7 +18,7 @@ public final class GrabHookEnchantments {
     }
 
     private static ResourceKey<Enchantment> key(String path) {
-        ResourceLocation id = Mod.id(path);
+        Identifier id = Mod.id(path);
         return ResourceKey.create(Registries.ENCHANTMENT, id);
     }
 

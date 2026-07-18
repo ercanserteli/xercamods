@@ -19,8 +19,8 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -77,8 +77,8 @@ public class Mod implements ModInitializer {
             .sized(0.25f, 0.25f).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, id("confetti_ball")));
     public static final SimpleParticleType CONFETTI_PARTICLE = FabricParticleTypes.simple();
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static ResourceKey<Item> itemKey(String path) {

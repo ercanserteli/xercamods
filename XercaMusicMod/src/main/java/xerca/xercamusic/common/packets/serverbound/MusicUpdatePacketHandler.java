@@ -1,6 +1,7 @@
 package xerca.xercamusic.common.packets.serverbound;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.common.MusicManager;
@@ -26,7 +27,7 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
         return (byte) Math.clamp(interval & 0xFF, 1, 24);
     }
 
-    private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {
+    private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl, MinecraftServer server) {
         ItemStack note = pl.getMainHandItem();
         if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET) {
             MusicUpdatePacket.FieldFlag flag = msg.availability();
@@ -69,7 +70,7 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
                     }
                 }
                 List<VolumeMarker> volumeMarkers = flag.hasVolumeMarkers ? msg.volumeMarkers() : null;
-                MusicManager.setMusicData(id, note.getOrDefault(Items.SHEET_VERSION, 0), notes, volumeMarkers, pl.level().getServer());
+                MusicManager.setMusicData(id, note.getOrDefault(Items.SHEET_VERSION, 0), notes, volumeMarkers, server);
                 if (note.get(Items.SHEET_BPS) == null) {
                     note.set(Items.SHEET_BPS, (byte) 8);
                 }
@@ -79,6 +80,6 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
 
     @Override
     public void receive(MusicUpdatePacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+        context.server().execute(() -> processMessage(packet, context.player(), context.server()));
     }
 }

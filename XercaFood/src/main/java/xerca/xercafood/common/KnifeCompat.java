@@ -3,15 +3,15 @@ package xerca.xercafood.common;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercafood.common.item.Items;
 
 public final class KnifeCompat {
-    private static final ResourceLocation XERCATOOLS_KNIFE_ID = ResourceLocation.fromNamespaceAndPath("xercatools", "knife");
-    private static final TagKey<Item> KNIFE_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/knife"));
+    private static final Identifier XERCATOOLS_KNIFE_ID = Identifier.fromNamespaceAndPath("xercatools", "knife");
+    private static final TagKey<Item> KNIFE_TAG = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "tools/knife"));
 
     private KnifeCompat() {
     }

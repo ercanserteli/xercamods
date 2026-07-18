@@ -5,8 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -31,11 +31,11 @@ import java.util.Optional;
 
 public final class CourtGameTests {
 
-    private static ResourceLocation recipeId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);
+    private static Identifier recipeId(String path) {
+        return Identifier.fromNamespaceAndPath(Mod.MOD_ID, path);
     }
 
-    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, ResourceLocation recipeId) {
+    private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, Identifier recipeId) {
         ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);
         helper.assertTrue(recipeOptional.isPresent(), Component.literal("Missing recipe: " + recipeId));

@@ -6,16 +6,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercapaint.CanvasSides;
@@ -31,8 +31,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRenderState> {
     static @Nullable RenderEntityCanvas theInstance;
-    private static final ResourceLocation BACK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
-    private static final ResourceLocation GLASS_FRAME_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/glass.png");
+    private static final Identifier BACK_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
+    private static final Identifier GLASS_FRAME_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/block/glass.png");
     static final int NO_TINT = 0xFFFFFFFF;
     /**
      * Alpha of the faint glass sheet drawn behind a tinted glass painting so transparent pixels are tinted too
@@ -53,7 +53,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
     /**
      * 1x1 white texture used to render painted sides
      */
-    private final ResourceLocation whiteLocation;
+    private final Identifier whiteLocation;
 
     RenderEntityCanvas(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -61,7 +61,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
         this.whiteLocation = createWhiteTexture();
     }
 
-    private ResourceLocation createWhiteTexture() {
+    private Identifier createWhiteTexture() {
         DynamicTexture texture = new DynamicTexture("xercapaint white", 1, 1, false);
         NativeImage image = texture.getPixels();
         if (image != null) {
@@ -71,8 +71,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
         return registerDynamicTexture("canvas_side_white", texture);
     }
 
-    private ResourceLocation registerDynamicTexture(String name, DynamicTexture texture) {
-        ResourceLocation location = Mod.id("dynamic/" + sanitizePath(name) + "_" + DYNAMIC_TEXTURE_COUNTER.getAndIncrement());
+    private Identifier registerDynamicTexture(String name, DynamicTexture texture) {
+        Identifier location = Mod.id("dynamic/" + sanitizePath(name) + "_" + DYNAMIC_TEXTURE_COUNTER.getAndIncrement());
         textureManager.register(location, texture);
         return location;
     }
@@ -174,7 +174,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
         boolean sidesActive;
         int[] sidePixels = new int[0];
         public final DynamicTexture canvasTexture;
-        public final ResourceLocation location;
+        public final Identifier location;
 
         private Instance(RenderEntityCanvas renderer, String key, String name, int version, int width, int height) {
             this.renderer = renderer;
@@ -262,7 +262,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             final float sideWidth = 1.0F / 16.0F;
 
             // FRONT (facing -Z): glass uses single-sided cutout so transparent pixels are see-through
-            collector.submitCustomGeometry(ms, glass ? RenderType.entityCutout(location) : RenderType.entitySolid(location), (pose, front) -> {
+            collector.submitCustomGeometry(ms, glass ? RenderTypes.entityCutout(location) : RenderTypes.entitySolid(location), (pose, front) -> {
                 addVertex(front, pose, 0.0F, h32, -1.0F, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
                 addVertex(front, pose, w32, h32, -1.0F, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
                 addVertex(front, pose, w32, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
@@ -271,7 +271,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
 
             if (glass) {
                 // BACK (facing +Z): the front image seen through the glass appears mirrored
-                collector.submitCustomGeometry(ms, RenderType.entityCutout(location), (pose, back) -> {
+                collector.submitCustomGeometry(ms, RenderTypes.entityCutout(location), (pose, back) -> {
                     addVertex(back, pose, 0.0D, 0.0D, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
                     addVertex(back, pose, w32, 0.0D, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
                     addVertex(back, pose, w32, h32, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
@@ -281,7 +281,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
                 if (tint != NO_TINT) {
                     // Tint the transparent pixels
                     int overlay = (GLASS_TINT_OVERLAY_ALPHA << 24) | (tint & 0xFFFFFF);
-                    collector.submitCustomGeometry(ms, RenderType.entityTranslucent(renderer.whiteLocation), (pose, glassSheet) -> {
+                    collector.submitCustomGeometry(ms, RenderTypes.entityTranslucent(renderer.whiteLocation), (pose, glassSheet) -> {
                         addVertex(glassSheet, pose, 0.0D, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
                         addVertex(glassSheet, pose, w32, h32, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
                         addVertex(glassSheet, pose, w32, 0.0D, 0.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F, overlay);
@@ -291,11 +291,11 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
 
                 if (sidesActive) {
                     // Painted side pixels (no-cull so they are visible from inside the canvas too)
-                    collector.submitCustomGeometry(ms, RenderType.entityCutoutNoCull(renderer.whiteLocation), (pose, sides) ->
+                    collector.submitCustomGeometry(ms, RenderTypes.entityCutoutNoCull(renderer.whiteLocation), (pose, sides) ->
                             renderPaintedSides(sides, pose, w32, h32, packedLight, true));
                 } else {
                     // Glass-pane frame
-                    collector.submitCustomGeometry(ms, RenderType.entityTranslucent(GLASS_FRAME_LOCATION), (pose, frame) ->
+                    collector.submitCustomGeometry(ms, RenderTypes.entityTranslucent(GLASS_FRAME_LOCATION), (pose, frame) ->
                             renderGlassFrame(frame, pose, w32, h32, packedLight));
                 }
                 ms.popPose();
@@ -303,7 +303,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             }
 
             boolean paintedSides = sidesActive;
-            collector.submitCustomGeometry(ms, RenderType.entitySolid(BACK_LOCATION), (pose, back) -> {
+            collector.submitCustomGeometry(ms, RenderTypes.entitySolid(BACK_LOCATION), (pose, back) -> {
                 // BACK (facing +Z)
                 addVertex(back, pose, 0.0D, 0.0D, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
                 addVertex(back, pose, w32, 0.0D, 1.0D, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
@@ -338,7 +338,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             });
             if (paintedSides) {
                 // No-cull so painted sides are visible from inside the canvas too
-                collector.submitCustomGeometry(ms, RenderType.entityCutoutNoCull(renderer.whiteLocation), (pose, sides) ->
+                collector.submitCustomGeometry(ms, RenderTypes.entityCutoutNoCull(renderer.whiteLocation), (pose, sides) ->
                         renderPaintedSides(sides, pose, w32, h32, packedLight, false));
             }
 

@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,7 +15,7 @@ import xerca.xercatools.item.ItemScythe;
 import xerca.xercatools.item.ItemWarhammer;
 
 public record PullProperty() implements RangeSelectItemModelProperty {
-    public static final ResourceLocation ID = Mod.id("pull");
+    public static final Identifier ID = Mod.id("pull");
     public static final MapCodec<PullProperty> MAP_CODEC = MapCodec.unit(new PullProperty());
 
     @Override

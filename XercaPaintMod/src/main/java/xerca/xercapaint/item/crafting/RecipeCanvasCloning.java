@@ -1,6 +1,5 @@
 package xerca.xercapaint.item.crafting;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -9,10 +8,11 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.NullMarked;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class RecipeCanvasCloning extends CustomRecipe {
     public RecipeCanvasCloning(CraftingBookCategory category) {
         super(category);

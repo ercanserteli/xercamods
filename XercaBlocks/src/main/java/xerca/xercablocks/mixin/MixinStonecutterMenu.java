@@ -1,7 +1,5 @@
 package xerca.xercablocks.mixin;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.crafting.RecipeAccess;
 import net.minecraft.world.item.crafting.SelectableRecipe;
@@ -10,7 +8,6 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import xerca.xercablocks.Mod;
 import xerca.xercablocks.menu.CarvingStationMenu;
 import xerca.xercablocks.recipe.CarvingRecipe;
 
@@ -37,8 +34,7 @@ abstract class MixinStonecutterMenu {
         if (entry.recipe().optionDisplay() instanceof SlotDisplay.ItemStackSlotDisplay(
                 net.minecraft.world.item.ItemStack stack
         )) {
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-            return id.getNamespace().equals(Mod.MOD_ID) && id.getPath().startsWith("carved_");
+            return CarvingRecipe.isCarvingOutput(stack.getItem());
         }
         return false;
     }

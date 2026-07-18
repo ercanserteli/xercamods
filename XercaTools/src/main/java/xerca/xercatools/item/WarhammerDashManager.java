@@ -77,7 +77,7 @@ public final class WarhammerDashManager {
         // Re-apply the forward velocity each tick so the client sustains the lunge, preserving vertical motion.
         player.setDeltaMovement(state.direction.x * state.speed, player.getDeltaMovement().y, state.direction.z * state.speed);
         player.hurtMarked = true;
-        player.hasImpulse = true;
+        player.needsSync = true;
         player.fallDistance = 0.0F;
 
         spawnDashTrail(state);

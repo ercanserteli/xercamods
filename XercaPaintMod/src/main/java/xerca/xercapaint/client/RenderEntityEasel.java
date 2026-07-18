@@ -4,16 +4,16 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -30,7 +30,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, EaselRenderSt
     protected final EaselModel model;
     protected final List<RenderLayer<EaselRenderState, EaselModel>> layers = Lists.newArrayList();
     static @Nullable RenderEntityEasel theInstance;
-    private static final ResourceLocation WOOD_TEXTURE = Mod.id("textures/block/birch_long.png");
+    private static final Identifier WOOD_TEXTURE = Mod.id("textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);

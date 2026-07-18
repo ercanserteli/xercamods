@@ -3,11 +3,11 @@ package xerca.xercapaint.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -17,9 +17,9 @@ import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
 public class CanvasItemRenderer {
-    private static final ResourceLocation BACK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
-    private static final ResourceLocation EMPTY_CANVAS_LOCATION = Mod.id("textures/block/empty.png");
-    private static final ResourceLocation GLASS_FRAME_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/glass.png");
+    private static final Identifier BACK_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
+    private static final Identifier EMPTY_CANVAS_LOCATION = Mod.id("textures/block/empty.png");
+    private static final Identifier GLASS_FRAME_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/block/glass.png");
     private static final int GLASS_INVENTORY_TINT = 0xFFDCE6FF;
 
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight) {
@@ -68,13 +68,13 @@ public class CanvasItemRenderer {
 
         if (glass) {
             // Empty glass canvas: transparent front and back, only the glass-pane frame on the edges
-            collector.submitCustomGeometry(ms, RenderType.entityTranslucent(GLASS_FRAME_LOCATION), (pose, vb) ->
+            collector.submitCustomGeometry(ms, RenderTypes.entityTranslucent(GLASS_FRAME_LOCATION), (pose, vb) ->
                     renderGlassFrame(vb, pose.pose(), pose, w32, h32, packedLight));
             ms.popPose();
             return;
         }
 
-        collector.submitCustomGeometry(ms, RenderType.entitySolid(EMPTY_CANVAS_LOCATION), (pose, vb) -> {
+        collector.submitCustomGeometry(ms, RenderTypes.entitySolid(EMPTY_CANVAS_LOCATION), (pose, vb) -> {
             Matrix4f m = pose.pose();
             // Draw the front (normal -Z)
             addVertex(vb, m, pose, 0.0F, h32, -1.0F, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
@@ -83,7 +83,7 @@ public class CanvasItemRenderer {
             addVertex(vb, m, pose, 0.0F, 0.0F, -1.0F, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
         });
 
-        collector.submitCustomGeometry(ms, RenderType.entitySolid(BACK_LOCATION), (pose, vb) -> {
+        collector.submitCustomGeometry(ms, RenderTypes.entitySolid(BACK_LOCATION), (pose, vb) -> {
             Matrix4f m = pose.pose();
             // Draw the back and sides
             final float sideWidth = 1.0F / 16.0F;

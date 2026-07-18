@@ -2,8 +2,8 @@ package xerca.xercaomnichest;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.apache.logging.log4j.LogManager;
@@ -16,8 +16,8 @@ public final class Mod implements ModInitializer {
     public static final String MOD_ID = "xercaomnichest";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static ResourceKey<Item> itemKey(String path) {

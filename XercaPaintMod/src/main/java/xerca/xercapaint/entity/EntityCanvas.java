@@ -21,9 +21,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
@@ -171,7 +171,7 @@ public class EntityCanvas extends HangingEntity {
 
     @Override
     public void dropItem(ServerLevel serverLevel, @Nullable Entity brokenEntity) {
-        if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (serverLevel.getGameRules().get(GameRules.ENTITY_DROPS)) {
             this.playSound(isGlass() ? SoundEvents.GLASS_BREAK : SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             if (brokenEntity instanceof Player playerEntity && playerEntity.getAbilities().instabuild) {
                 return;

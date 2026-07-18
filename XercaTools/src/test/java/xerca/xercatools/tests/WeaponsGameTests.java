@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -280,7 +280,7 @@ public class WeaponsGameTests {
         Items.IRON_WARHAMMER.releaseUsing(warhammer, level, player, 72000 - 20); // full pull
 
         boolean spawned = !level.getEntitiesOfClass(
-                net.minecraft.world.entity.projectile.windcharge.WindCharge.class,
+                net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge.class,
                 player.getBoundingBox().inflate(8)).isEmpty();
         TestAsserts.assertTrue(helper, spawned, "Wind Burst full-charge miss should spawn a wind charge projectile");
         helper.succeed();
@@ -534,7 +534,7 @@ public class WeaponsGameTests {
 
         for (var key : java.util.List.of(Enchantments.DENSITY, Enchantments.BREACH, Enchantments.WIND_BURST)) {
             TestAsserts.assertTrue(helper, stack.canBeEnchantedWith(reg.getOrThrow(key), ctx),
-                    "Warhammer should allow mace enchantment " + key.location());
+                    "Warhammer should allow mace enchantment " + key.identifier());
         }
         helper.succeed();
     }
@@ -565,7 +565,7 @@ public class WeaponsGameTests {
             TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker()
                     .allowEnchanting(reg.getOrThrow(key), stack, EnchantingContext.PRIMARY);
             TestAsserts.assertTrue(helper, result == TriState.TRUE,
-                    "Warhammer should allow vanilla enchantment " + key.location());
+                    "Warhammer should allow vanilla enchantment " + key.identifier());
         }
         helper.succeed();
     }
@@ -580,7 +580,7 @@ public class WeaponsGameTests {
             TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker()
                     .allowEnchanting(reg.getOrThrow(key), stack, EnchantingContext.PRIMARY);
             TestAsserts.assertTrue(helper, result != TriState.TRUE,
-                    "Warhammer should not allow enchantment " + key.location());
+                    "Warhammer should not allow enchantment " + key.identifier());
         }
         helper.succeed();
     }

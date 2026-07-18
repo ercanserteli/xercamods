@@ -15,7 +15,7 @@ import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -40,9 +40,9 @@ import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 public class GuiMusicSheet extends Screen {
     public static final int BEATS_IN_SCREEN = 91;
     private static final String[] OCTAVE_NAMES = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
-    private static final ResourceLocation NOTE_GUI_LEFT_TEXTURE = Mod.id("textures/gui/music_sheet_left.png");
-    private static final ResourceLocation NOTE_GUI_TEXTURES = Mod.id("textures/gui/music_sheet.png");
-    private static final ResourceLocation INSTRUMENT_TEXTURES = Mod.id("textures/gui/instruments.png");
+    private static final Identifier NOTE_GUI_LEFT_TEXTURE = Mod.id("textures/gui/music_sheet_left.png");
+    private static final Identifier NOTE_GUI_TEXTURES = Mod.id("textures/gui/music_sheet.png");
+    private static final Identifier INSTRUMENT_TEXTURES = Mod.id("textures/gui/instruments.png");
     private static final int NOTE_IMAGE_LEFT_TEX_X = 175;
     private static final int NOTE_IMAGE_LEFT_TEX_Y = 51;
     private static final int NOTE_IMAGE_LEFT_WIDTH = 81;
@@ -1890,22 +1890,22 @@ public class GuiMusicSheet extends Screen {
     }
 
     public static class ChangeableImageButton extends Button {
-        protected final ResourceLocation resourceLocation;
+        protected final Identifier resourceLocation;
         protected final int yDiffText;
         protected final int texWidth;
         protected final int texHeight;
         protected int xTexStart;
         protected int yTexStart;
 
-        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, OnPress onClick) {
+        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, Identifier texture, OnPress onClick) {
             this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, 256, 256, onClick);
         }
 
-        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
+        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, Identifier texture, int texWidth, int texHeight, OnPress onClick) {
             this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, Component.empty());
         }
 
-        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Component message) {
+        public ChangeableImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, Identifier texture, int texWidth, int texHeight, OnPress onClick, Component message) {
             super(x, y, width, height, message, onClick, DEFAULT_NARRATION);
             this.texWidth = texWidth;
             this.texHeight = texHeight;
@@ -1929,7 +1929,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
         }
@@ -1937,20 +1937,20 @@ public class GuiMusicSheet extends Screen {
 
     public class LockImageButton extends ChangeableImageButton {
 
-        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, OnPress onClick) {
+        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, Identifier texture, OnPress onClick) {
             this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, 256, 256, onClick);
         }
 
-        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick) {
+        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, Identifier texture, int texWidth, int texHeight, OnPress onClick) {
             this(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, Component.empty());
         }
 
-        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, ResourceLocation texture, int texWidth, int texHeight, OnPress onClick, Component message) {
+        public LockImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffText, Identifier texture, int texWidth, int texHeight, OnPress onClick, Component message) {
             super(x, y, width, height, xTexStart, yTexStart, yDiffText, texture, texWidth, texHeight, onClick, message);
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
 
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);

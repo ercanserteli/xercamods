@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
@@ -25,7 +25,7 @@ import java.util.Objects;
 import static xerca.xercamusic.client.ModClient.sendToServer;
 
 public class GuiInstrument extends Screen {
-    private static final ResourceLocation INS_GUI_TEXTURES = Mod.id("textures/gui/instrument_gui.png");
+    private static final Identifier INS_GUI_TEXTURES = Mod.id("textures/gui/instrument_gui.png");
     private static final int GUI_HEIGHT = 201;
     private static final int GUI_WIDTH = 401;
     private static final int GUI_MARGIN_WIDTH = 7;

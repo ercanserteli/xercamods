@@ -3,8 +3,8 @@ package xerca.xercapaint.tests;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -26,7 +26,7 @@ public class BaseCraftingGameTests {
     private static final ItemStack E = ItemStack.EMPTY;
 
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, String path) {
-        ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+        Identifier recipeId = Identifier.fromNamespaceAndPath(MOD_ID, path);
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, recipeId));
         TestAsserts.assertTrue(helper, recipeOptional.isPresent(), "Missing recipe: " + recipeId);
         Recipe<?> recipe = recipeOptional.orElseThrow(() -> new IllegalStateException("Missing recipe: " + recipeId)).value();

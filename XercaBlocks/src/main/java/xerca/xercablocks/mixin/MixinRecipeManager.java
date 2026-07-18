@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Mixin(RecipeManager.class)
-@SuppressFBWarnings({"BC_IMPOSSIBLE_CAST", "NP_NONNULL_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"})
+@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")
 abstract class MixinRecipeManager {
     @Shadow
     private SelectableRecipe.SingleInputSet<StonecutterRecipe> stonecutterRecipes;

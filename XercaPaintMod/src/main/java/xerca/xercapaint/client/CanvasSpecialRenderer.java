@@ -8,10 +8,11 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
 // Client Items special model renderer for drawn canvases.
 public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecialRenderer.CanvasData> {
@@ -41,11 +42,11 @@ public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecial
     }
 
     @Override
-    public void getExtents(Set<Vector3f> extents) {
-        extents.add(new Vector3f(0.0f, 0.0f, 0.5f));
-        extents.add(new Vector3f(0.0f, 1.0f, 0.5f));
-        extents.add(new Vector3f(1.0f, 0.0f, 0.5f));
-        extents.add(new Vector3f(1.0f, 1.0f, 0.5f));
+    public void getExtents(Consumer<Vector3fc> extents) {
+        extents.accept(new Vector3f(0.0f, 0.0f, 0.5f));
+        extents.accept(new Vector3f(0.0f, 1.0f, 0.5f));
+        extents.accept(new Vector3f(1.0f, 0.0f, 0.5f));
+        extents.accept(new Vector3f(1.0f, 1.0f, 0.5f));
     }
 
     public record Unbaked() implements SpecialModelRenderer.Unbaked {

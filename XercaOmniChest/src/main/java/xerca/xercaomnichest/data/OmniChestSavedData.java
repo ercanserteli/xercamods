@@ -1,24 +1,28 @@
 package xerca.xercaomnichest.data;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.RegistryOps;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OmniChestSavedData extends SavedData {
+    private record SlotEntry(byte slot, ItemStack stack) {
+        static final Codec<SlotEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.BYTE.fieldOf("Slot").forGetter(SlotEntry::slot),
+                ItemStack.MAP_CODEC.forGetter(SlotEntry::stack)
+        ).apply(instance, SlotEntry::new));
+    }
+
     public static final SavedDataType<OmniChestSavedData> TYPE = new SavedDataType<>(
             "omni_chest",
-            context -> new OmniChestSavedData(),
-            context -> CompoundTag.CODEC.xmap(
-                    tag -> load(tag, context.levelOrThrow().registryAccess()),
-                    data -> data.save(new CompoundTag(), context.levelOrThrow().registryAccess())),
+            OmniChestSavedData::new,
+            SlotEntry.CODEC.listOf().optionalFieldOf("OmniChest", List.of()).codec()
+                    .xmap(OmniChestSavedData::load, OmniChestSavedData::toEntries),
             DataFixTypes.SAVED_DATA_MAP_DATA);
 
     private final OmniChestInventory inventory;
@@ -27,43 +31,27 @@ public class OmniChestSavedData extends SavedData {
         this.inventory = new OmniChestInventory(this::setDirty);
     }
 
-    public static OmniChestSavedData load(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+    private static OmniChestSavedData load(List<SlotEntry> entries) {
         OmniChestSavedData data = new OmniChestSavedData();
-        Tag chestTag = tag.get("OmniChest");
-        if (chestTag instanceof ListTag listTag) {
-            for (int i = 0; i < data.inventory.getContainerSize(); ++i) {
-                data.inventory.setItem(i, ItemStack.EMPTY);
-            }
-
-            for (Tag entryTag : listTag) {
-                if (!(entryTag instanceof CompoundTag entry)) {
-                    continue;
-                }
-                int slot = entry.getByteOr("Slot", (byte) 0) & 255;
-                if (slot < data.inventory.getContainerSize()) {
-                    RegistryOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
-                    ItemStack stack = ItemStack.CODEC.parse(ops, entry).result().orElse(ItemStack.EMPTY);
-                    data.inventory.setItem(slot, stack);
-                }
+        for (SlotEntry entry : entries) {
+            int slot = entry.slot() & 255;
+            if (slot < data.inventory.getContainerSize()) {
+                data.inventory.setItem(slot, entry.stack());
             }
         }
         data.setDirty(false);
         return data;
     }
 
-    public CompoundTag save(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        RegistryOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        ListTag listTag = new ListTag();
+    private List<SlotEntry> toEntries() {
+        List<SlotEntry> entries = new ArrayList<>();
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
             ItemStack stack = inventory.getItem(i);
             if (!stack.isEmpty()) {
-                CompoundTag stackTag = (CompoundTag) ItemStack.CODEC.encodeStart(ops, stack).getOrThrow();
-                stackTag.putByte("Slot", (byte) i);
-                listTag.add(stackTag);
+                entries.add(new SlotEntry((byte) i, stack));
             }
         }
-        tag.put("OmniChest", listTag);
-        return tag;
+        return entries;
     }
 
     public OmniChestInventory getInventory() {

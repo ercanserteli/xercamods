@@ -12,12 +12,12 @@ import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.ResolvedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 // (which the GUI item atlas would then composite against the screen behind the GUI).
 public final class TranslucentModelWrapper implements ItemModel {
     private final List<BakedQuad> quads;
-    private final Supplier<Vector3f[]> extents;
+    private final Supplier<Vector3fc[]> extents;
     private final ModelRenderProperties properties;
     private final boolean animated;
 
@@ -43,7 +43,7 @@ public final class TranslucentModelWrapper implements ItemModel {
         renderState.appendModelIdentityElement(this);
         ItemStackRenderState.LayerRenderState layer = renderState.newLayer();
         layer.setExtents(this.extents);
-        layer.setRenderType(Sheets.translucentItemSheet());
+        layer.setRenderType(Sheets.translucentBlockItemSheet());
         this.properties.applyToLayer(layer, displayContext);
         layer.prepareQuadList().addAll(this.quads);
         if (this.animated) {
@@ -51,10 +51,10 @@ public final class TranslucentModelWrapper implements ItemModel {
         }
     }
 
-    public record Unbaked(ResourceLocation model) implements ItemModel.Unbaked {
+    public record Unbaked(Identifier model) implements ItemModel.Unbaked {
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
-                        ResourceLocation.CODEC.fieldOf("model").forGetter(Unbaked::model)
+                        Identifier.CODEC.fieldOf("model").forGetter(Unbaked::model)
                 ).apply(instance, Unbaked::new)
         );
 
@@ -68,7 +68,7 @@ public final class TranslucentModelWrapper implements ItemModel {
             ModelBaker baker = context.blockModelBaker();
             ResolvedModel resolvedModel = baker.getModel(this.model);
             TextureSlots textureSlots = resolvedModel.getTopTextureSlots();
-            List<BakedQuad> quads = resolvedModel.bakeTopGeometry(textureSlots, baker, BlockModelRotation.X0_Y0).getAll();
+            List<BakedQuad> quads = resolvedModel.bakeTopGeometry(textureSlots, baker, BlockModelRotation.IDENTITY).getAll();
             ModelRenderProperties properties = ModelRenderProperties.fromResolvedModel(baker, resolvedModel, textureSlots);
             return new TranslucentModelWrapper(quads, properties);
         }
