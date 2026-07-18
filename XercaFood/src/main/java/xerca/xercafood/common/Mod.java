@@ -3,7 +3,6 @@ package xerca.xercafood.common;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
-import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.BlockSource;
@@ -13,8 +12,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.npc.villager.VillagerProfession;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +29,6 @@ import xerca.xercafood.common.entity.Entities;
 import xerca.xercafood.common.entity.EntityTomato;
 import xerca.xercafood.common.item.Items;
 
-import java.util.List;
 
 public class Mod implements ModInitializer {
     public static final String MOD_ID = "xercafood";
@@ -75,16 +71,7 @@ public class Mod implements ModInitializer {
         Entities.registerEntities();
         registerSeedDrops();
         registerDonerEvent();
-        registerTradeOffers();
         LOGGER.info(MOD_ID + " initialized");
-    }
-
-    private void registerTradeOffers() {
-        TradeOfferHelper.registerVillagerOffers(VillagerProfession.FARMER, 1, a -> a.addAll(List.of(
-                new VillagerTrades.EmeraldForItems(Items.RICE_SEEDS, 24, 16, 2),
-                new VillagerTrades.EmeraldForItems(Items.TOMATO, 22, 16, 2),
-                new VillagerTrades.EmeraldForItems(Items.TEA_SEEDS, 18, 16, 2))
-        ));
     }
 
     private void registerDonerEvent() {
@@ -94,7 +81,7 @@ public class Mod implements ModInitializer {
                     && heldItem.getItem() == net.minecraft.world.item.Items.MUTTON) {
                 world.setBlockAndUpdate(hitResult.getBlockPos(), Blocks.BLOCK_DONER.defaultBlockState());
                 heldItem.shrink(1);
-                world.playSound(null, hitResult.getBlockPos(), net.minecraft.sounds.SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8f, 0.9f + world.random.nextFloat() * 0.1f);
+                world.playSound(null, hitResult.getBlockPos(), net.minecraft.sounds.SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8f, 0.9f + world.getRandom().nextFloat() * 0.1f);
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;
@@ -106,13 +93,13 @@ public class Mod implements ModInitializer {
             if (source.isBuiltin() && GRASS_LOOT_TABLE_ID.equals(id)) {
                 LootPool.Builder poolRice = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))
-                        .with(LootItem.lootTableItem(Items.RICE_SEEDS).build());
+                        .add(LootItem.lootTableItem(Items.RICE_SEEDS));
                 LootPool.Builder poolTomato = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))
-                        .with(LootItem.lootTableItem(Items.TOMATO_SEEDS).build());
+                        .add(LootItem.lootTableItem(Items.TOMATO_SEEDS));
                 LootPool.Builder poolTea = LootPool.lootPool()
                         .when(LootItemRandomChanceCondition.randomChance(0.066f))
-                        .with(LootItem.lootTableItem(Items.TEA_SEEDS).build());
+                        .add(LootItem.lootTableItem(Items.TEA_SEEDS));
 
                 tableBuilder.withPool(poolRice).withPool(poolTomato).withPool(poolTea);
             }

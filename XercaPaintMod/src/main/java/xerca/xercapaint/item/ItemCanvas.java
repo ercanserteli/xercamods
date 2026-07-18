@@ -18,7 +18,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.system.NonnullDefault;
+import org.jspecify.annotations.NullMarked;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.Entities;
@@ -27,7 +27,7 @@ import xerca.xercapaint.entity.EntityCanvas;
 import java.util.List;
 import java.util.function.Consumer;
 
-@NonnullDefault
+@NullMarked
 public class ItemCanvas extends HangingEntityItem {
     private static final int ORIGINAL_GENERATION = 1;
     private static final int COPY_GENERATION = 3;

@@ -1,7 +1,7 @@
 package xerca.xercamusic.common.item;
 
 import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
@@ -15,7 +15,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.Blocks;
@@ -50,7 +49,7 @@ public final class Items {
     public static final Item ORGAN = new ItemInstrument(21, 1, 6, properties("organ"));
     public static final Item MUSIC_SHEET = new ItemMusicSheet(properties("music_sheet"));
 
-    public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
+    public static final CreativeModeTab MUSIC_TAB = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(GUITAR))
             .displayItems((params, output) -> {
                 output.accept(MUSIC_SHEET);
@@ -91,7 +90,7 @@ public final class Items {
             (IItemInstrument) TRUMPET, (IItemInstrument) REDSTONE_PIANO, (IItemInstrument) ORGAN
     );
 
-    public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = new CustomRecipe.Serializer<>(RecipeNoteCloning::new);
+    public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = new RecipeSerializer<>(RecipeNoteCloning.MAP_CODEC, RecipeNoteCloning.STREAM_CODEC);
 
     public static final DataComponentType<Byte> SHEET_BPS = DataComponentType.<Byte>builder().persistent(Codec.BYTE).build();
     public static final DataComponentType<Integer> SHEET_LENGTH = DataComponentType.<Integer>builder().persistent(Codec.INT).build();

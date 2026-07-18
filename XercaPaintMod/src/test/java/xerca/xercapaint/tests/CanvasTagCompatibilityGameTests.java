@@ -6,7 +6,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
@@ -18,9 +17,7 @@ import java.util.List;
 
 public class CanvasTagCompatibilityGameTests {
 
-    private static final RecipeCanvasCloning CLONING_RECIPE = new RecipeCanvasCloning(
-            CraftingBookCategory.MISC
-    );
+    private static final RecipeCanvasCloning CLONING_RECIPE = RecipeCanvasCloning.INSTANCE;
 
     private static CraftingInput createGrid(int width, int height, ItemStack... input) {
         List<ItemStack> stacks = new ArrayList<>(Collections.nCopies(width * height, ItemStack.EMPTY));
@@ -60,7 +57,7 @@ public class CanvasTagCompatibilityGameTests {
         CraftingInput grid = createGrid(2, 2, original, freshWithForeignTag);
 
         TestAsserts.assertTrue(helper, CLONING_RECIPE.matches(grid, helper.getLevel()), "Expected recipe to match with foreign-tagged fresh canvas");
-        ItemStack result = CLONING_RECIPE.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = CLONING_RECIPE.assemble(grid);
         TestAsserts.assertTrue(helper, !result.isEmpty(), "Expected cloning result to be present");
         TestAsserts.assertTrue(helper, result.getOrDefault(Items.CANVAS_GENERATION, 0) == 2, "Expected generation to increment to 2");
         helper.succeed();

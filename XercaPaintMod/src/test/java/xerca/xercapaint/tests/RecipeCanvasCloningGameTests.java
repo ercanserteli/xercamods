@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
@@ -16,9 +15,7 @@ import java.util.List;
 
 public class RecipeCanvasCloningGameTests {
 
-    private static final RecipeCanvasCloning RECIPE = new RecipeCanvasCloning(
-            CraftingBookCategory.MISC
-    );
+    private static final RecipeCanvasCloning RECIPE = RecipeCanvasCloning.INSTANCE;
 
     private static CraftingInput createGrid(int width, int height, ItemStack... input) {
         List<ItemStack> stacks = new ArrayList<>(Collections.nCopies(width * height, ItemStack.EMPTY));
@@ -48,7 +45,7 @@ public class RecipeCanvasCloningGameTests {
 
         TestAsserts.assertTrue(helper, !RECIPE.matches(grid, helper.getLevel()),
                 "Expected generation 0 painted canvas to fail matching");
-        TestAsserts.assertTrue(helper, RECIPE.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+        TestAsserts.assertTrue(helper, RECIPE.assemble(grid).isEmpty(),
                 "Expected generation 0 painted canvas to assemble empty");
 
         helper.succeed();
@@ -64,7 +61,7 @@ public class RecipeCanvasCloningGameTests {
 
         TestAsserts.assertTrue(helper, RECIPE.matches(grid, helper.getLevel()),
                 "Expected generation 3 canvas to pass matching stage");
-        TestAsserts.assertTrue(helper, RECIPE.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+        TestAsserts.assertTrue(helper, RECIPE.assemble(grid).isEmpty(),
                 "Expected generation 3 canvas to assemble empty (clone cap)");
 
         helper.succeed();
@@ -80,7 +77,7 @@ public class RecipeCanvasCloningGameTests {
 
         TestAsserts.assertTrue(helper, !RECIPE.matches(grid, helper.getLevel()),
                 "Expected cloning to fail for mixed canvas types");
-        TestAsserts.assertTrue(helper, RECIPE.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+        TestAsserts.assertTrue(helper, RECIPE.assemble(grid).isEmpty(),
                 "Expected cloning to assemble empty for mixed canvas types");
 
         helper.succeed();
@@ -97,7 +94,7 @@ public class RecipeCanvasCloningGameTests {
 
         TestAsserts.assertTrue(helper, !RECIPE.matches(grid, helper.getLevel()),
                 "Expected cloning to fail for mixed paper/glass canvases");
-        TestAsserts.assertTrue(helper, RECIPE.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+        TestAsserts.assertTrue(helper, RECIPE.assemble(grid).isEmpty(),
                 "Expected cloning to assemble empty for mixed paper/glass canvases");
 
         helper.succeed();
@@ -109,7 +106,7 @@ public class RecipeCanvasCloningGameTests {
         CraftingInput grid = createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS_GLASS));
 
         TestAsserts.assertTrue(helper, RECIPE.matches(grid, helper.getLevel()), "Expected glass+glass clone to match");
-        ItemStack result = RECIPE.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = RECIPE.assemble(grid);
         TestAsserts.assertTrue(helper, result.is(Items.ITEM_CANVAS_GLASS), "Expected glass clone result to stay a glass canvas");
         TestAsserts.assertTrue(helper, result.getOrDefault(Items.CANVAS_GENERATION, 0) == 2, "Expected glass clone generation to increase to 2");
 
@@ -119,14 +116,12 @@ public class RecipeCanvasCloningGameTests {
     @GameTest
     public void signedCanvasesStackToSixteenBySameGeneration(GameTestHelper helper) {
         ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "stackable");
-        ItemStack clone = RECIPE.assemble(createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS)),
-                helper.getLevel().registryAccess());
+        ItemStack clone = RECIPE.assemble(createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS)));
         TestAsserts.assertTrue(helper, !clone.isEmpty(), "Expected the clone recipe to produce a signed canvas");
         TestAsserts.assertTrue(helper, clone.getMaxStackSize() == ItemCanvas.SIGNED_STACK_SIZE,
                 "Expected a cloned (signed) canvas to stack up to 16");
 
-        ItemStack cloneAgain = RECIPE.assemble(createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS)),
-                helper.getLevel().registryAccess());
+        ItemStack cloneAgain = RECIPE.assemble(createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS)));
         TestAsserts.assertTrue(helper, ItemStack.isSameItemSameComponents(clone, cloneAgain),
                 "Expected two identical signed canvases of the same generation to be stackable");
 
@@ -151,7 +146,7 @@ public class RecipeCanvasCloningGameTests {
         CraftingInput grid = createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS));
 
         TestAsserts.assertTrue(helper, RECIPE.matches(grid, helper.getLevel()), "Expected valid clone recipe to match");
-        ItemStack result = RECIPE.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = RECIPE.assemble(grid);
         TestAsserts.assertTrue(helper, !result.isEmpty(), "Expected clone result");
         TestAsserts.assertTrue(helper, result.is(Items.ITEM_CANVAS), "Expected clone result type to stay small canvas");
         TestAsserts.assertTrue(helper, result.getOrDefault(Items.CANVAS_GENERATION, 0) == 2, "Expected clone generation to increase to 2");

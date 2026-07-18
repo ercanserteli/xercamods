@@ -39,6 +39,6 @@ public class ItemConfetti extends Item {
     }
 
     public static void playSound(Level world, @Nullable Player player, double x, double y, double z) {
-        world.playSound(player, x, y, z, SoundEvents.SOUND_CONFETTI, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.8F);
+        world.playSound(player, x, y, z, SoundEvents.SOUND_CONFETTI, SoundSource.PLAYERS, 1.0f, world.getRandom().nextFloat() * 0.2F + 0.8F);
     }
 }

@@ -3,7 +3,7 @@ package xerca.xercapaint.client;
 import com.mojang.blaze3d.platform.Window;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.CharacterEvent;
@@ -413,14 +413,14 @@ public class GuiCanvasEdit extends BasePalette {
     }
 
     @Override
-    protected void renderBlurredBackground(GuiGraphics guiGraphics) {
+    protected void extractBlurredBackground(GuiGraphicsExtractor guiGraphics) {
         // Skip vanilla's world-blur behind the painting GUI so the scene stays crisp
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
         if (!gettingSigned) {
-            super.render(guiGraphics, mouseX, mouseY, f);
+            super.extractRenderState(guiGraphics, mouseX, mouseY, f);
         } else {
             super.superRender(guiGraphics, mouseX, mouseY, f);
         }
@@ -500,7 +500,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderCursor(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (isCarryingColor && carriedColor != null) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, carriedColor.rgbVal());
 
@@ -519,7 +519,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    private void drawOutline(GuiGraphics guiGraphics, int mouseX, int mouseY, int brushSize) {
+    private void drawOutline(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int brushSize) {
         // The outline is the brush stamp's bounding box, so it follows the cursor onto the sides too.
         if (!inPaintable(mouseX, mouseY)) {
             return;
@@ -536,7 +536,7 @@ public class GuiCanvasEdit extends BasePalette {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, x, y, (int) textureVec.x, (int) textureVec.y, outlineSize, outlineSize, 256, 256, 0xFF4D4D4D);
     }
 
-    private void drawSigning(GuiGraphics guiGraphics) {
+    private void drawSigning(GuiGraphicsExtractor guiGraphics) {
         int i = (int) canvasX;
         int j = (int) canvasY;
 
@@ -552,13 +552,13 @@ public class GuiCanvasEdit extends BasePalette {
         }
         String s1 = I18n.get("canvas.editTitle");
         int k = this.font.width(s1);
-        guiGraphics.drawString(this.font, s1, (int) (i + 26 + (116 - k) / 2.0f), (j + 16 + 16), 0xFF000000, false);
+        guiGraphics.text(this.font, s1, (int) (i + 26 + (116 - k) / 2.0f), (j + 16 + 16), 0xFF000000, false);
         int l = this.font.width(s);
-        guiGraphics.drawString(this.font, s, (int) (i + 26 + (116 - l) / 2.0f), j + 48, 0xFF000000, false);
+        guiGraphics.text(this.font, s, (int) (i + 26 + (116 - l) / 2.0f), j + 48, 0xFF000000, false);
         String s2 = I18n.get("canvas.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(s2);
-        guiGraphics.drawString(this.font, ChatFormatting.DARK_GRAY + s2, (int) (i + 26 + (116 - i1) / 2.0f), j + 48 + 10, 0xFF000000, false);
-        guiGraphics.drawWordWrap(this.font, Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0xFF000000, false);
+        guiGraphics.text(this.font, ChatFormatting.DARK_GRAY + s2, (int) (i + 26 + (116 - i1) / 2.0f), j + 48 + 10, 0xFF000000, false);
+        guiGraphics.textWithWordWrap(this.font, Component.translatable("canvas.finalizeWarning"), i + 26, j + 80, 116, 0xFF000000, false);
     }
 
     private void playBrushSound() {
@@ -807,11 +807,11 @@ public class GuiCanvasEdit extends BasePalette {
     private static final int CHECKER_LIGHT = 0xFFBFBFBF;
     private static final int CHECKER_DARK = 0xFF7F7F7F;
 
-    private void fillChecker(GuiGraphics guiGraphics, int x, int y, int parity) {
+    private void fillChecker(GuiGraphicsExtractor guiGraphics, int x, int y, int parity) {
         guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, (parity & 1) == 0 ? CHECKER_LIGHT : CHECKER_DARK);
     }
 
-    private void drawSideLines(GuiGraphics guiGraphics) {
+    private void drawSideLines(GuiGraphicsExtractor guiGraphics) {
         int scale = canvasPixelScale;
         int cx = (int) canvasX;
         int cy = (int) canvasY;
@@ -835,7 +835,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
     }
 
-    private void drawSidesToggle(GuiGraphics guiGraphics) {
+    private void drawSidesToggle(GuiGraphicsExtractor guiGraphics) {
         int x = sidesToggleX;
         int y = sidesToggleY;
         int s = SIDES_TOGGLE_SIZE;
@@ -925,7 +925,7 @@ public class GuiCanvasEdit extends BasePalette {
         }
 
         @Override
-        protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
             int yTexStartNew = this.yTexStart;
             if (this.isHovered) {
                 yTexStartNew += this.yDiffText;

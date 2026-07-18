@@ -1,9 +1,10 @@
 package xerca.xercamusic.common.item;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -12,8 +13,11 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class RecipeNoteCloning extends CustomRecipe {
-    public RecipeNoteCloning(CraftingBookCategory category) {
-        super(category);
+    public static final RecipeNoteCloning INSTANCE = new RecipeNoteCloning();
+    public static final MapCodec<RecipeNoteCloning> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RecipeNoteCloning> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    private RecipeNoteCloning() {
     }
 
     /**
@@ -47,7 +51,7 @@ public class RecipeNoteCloning extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput inv) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 

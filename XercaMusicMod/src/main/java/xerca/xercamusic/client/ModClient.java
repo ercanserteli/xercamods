@@ -35,7 +35,7 @@ public class ModClient implements ClientModInitializer {
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
             if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet) {
-                player.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + player.level().random.nextFloat() * 0.4f);
+                player.playSound(SoundEvents.OPEN_SCROLL, 1.0f, 0.8f + player.level().getRandom().nextFloat() * 0.4f);
                 UUID id = heldItem.get(Items.SHEET_ID);
                 int version = heldItem.getOrDefault(Items.SHEET_VERSION, -1);
                 if (id != null && version >= 0) {

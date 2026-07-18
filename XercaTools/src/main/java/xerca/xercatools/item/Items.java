@@ -4,7 +4,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import xerca.xercatools.Mod;
 import xerca.xercatools.crafting.RecipeEnderBowFilling;
@@ -32,8 +31,8 @@ public final class Items {
     public static final Item NETHERITE_WARHAMMER = new ItemWarhammer(ToolMaterial.NETHERITE, "netherite_warhammer");
     public static final ItemConfettiBall CONFETTI_BALL = new ItemConfettiBall("confetti_ball");
     public static final ItemConfetti CONFETTI = new ItemConfetti("confetti");
-    public static final RecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_FLASK_FILLING = new CustomRecipe.Serializer<>(RecipeFlaskFilling::new);
-    public static final RecipeSerializer<RecipeEnderBowFilling> CRAFTING_SPECIAL_ENDER_BOW_FILLING = new CustomRecipe.Serializer<>(RecipeEnderBowFilling::new);
+    public static final RecipeSerializer<RecipeFlaskFilling> CRAFTING_SPECIAL_FLASK_FILLING = new RecipeSerializer<>(RecipeFlaskFilling.MAP_CODEC, RecipeFlaskFilling.STREAM_CODEC);
+    public static final RecipeSerializer<RecipeEnderBowFilling> CRAFTING_SPECIAL_ENDER_BOW_FILLING = new RecipeSerializer<>(RecipeEnderBowFilling.MAP_CODEC, RecipeEnderBowFilling.STREAM_CODEC);
 
     private Items() {
     }

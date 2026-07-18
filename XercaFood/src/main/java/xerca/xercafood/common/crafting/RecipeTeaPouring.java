@@ -1,10 +1,11 @@
 package xerca.xercafood.common.crafting;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -30,8 +31,11 @@ public class RecipeTeaPouring extends CustomRecipe {
         };
     }
 
-    public RecipeTeaPouring(CraftingBookCategory category) {
-        super(category);
+    public static final RecipeTeaPouring INSTANCE = new RecipeTeaPouring();
+    public static final MapCodec<RecipeTeaPouring> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RecipeTeaPouring> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    private RecipeTeaPouring() {
     }
 
     /**
@@ -51,7 +55,7 @@ public class RecipeTeaPouring extends CustomRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv) {
         ParsedInput parsed = parseInput(inv);
         ItemTeapot teapot = parsed.teapot();
         if (!parsed.valid()
@@ -71,7 +75,8 @@ public class RecipeTeaPouring extends CustomRecipe {
 
         for (int i = 0; i < nonnulllist.size(); ++i) {
             ItemStack itemstack = inv.getItem(i);
-            ItemStack remainder = itemstack.getItem().getCraftingRemainder();
+            net.minecraft.world.item.ItemStackTemplate remainderTemplate = itemstack.getItem().getCraftingRemainder();
+            ItemStack remainder = remainderTemplate != null ? remainderTemplate.create() : ItemStack.EMPTY;
             if (!remainder.isEmpty()) {
                 nonnulllist.set(i, remainder);
             } else if (itemstack.getItem() instanceof ItemTeapot oldTeapot) {

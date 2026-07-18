@@ -1,9 +1,10 @@
 package xerca.xercafood.common.crafting;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -34,8 +35,11 @@ public class RecipeTeaFilling extends CustomRecipe {
         };
     }
 
-    public RecipeTeaFilling(CraftingBookCategory category) {
-        super(category);
+    public static final RecipeTeaFilling INSTANCE = new RecipeTeaFilling();
+    public static final MapCodec<RecipeTeaFilling> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RecipeTeaFilling> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    private RecipeTeaFilling() {
     }
 
     /**
@@ -52,7 +56,7 @@ public class RecipeTeaFilling extends CustomRecipe {
     /**
      * Returns an Item that is the result of this recipe
      */
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv) {
         ParsedInput parsed = parseInput(inv);
         if (!parsed.valid()
                 || parsed.teapotStack().isEmpty()

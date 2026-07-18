@@ -62,7 +62,7 @@ public final class CourtGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected gavel recipe to match planks and sticks"));
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         helper.assertTrue(result.is(Items.GAVEL), Component.literal("Expected gavel recipe to produce a gavel"));
         helper.succeed();
     }
@@ -83,9 +83,9 @@ public final class CourtGameTests {
 
         helper.assertTrue(poppyRecipe.matches(poppyGrid, helper.getLevel()), Component.literal("Expected prosecutor badge recipe to accept a poppy"));
         helper.assertTrue(dandelionRecipe.matches(dandelionGrid, helper.getLevel()), Component.literal("Expected alternate prosecutor badge recipe to accept a dandelion"));
-        helper.assertTrue(poppyRecipe.assemble(poppyGrid, helper.getLevel().registryAccess()).is(Items.PROSECUTOR_BADGE),
+        helper.assertTrue(poppyRecipe.assemble(poppyGrid).is(Items.PROSECUTOR_BADGE),
                 Component.literal("Expected poppy recipe to produce prosecutor badge"));
-        helper.assertTrue(dandelionRecipe.assemble(dandelionGrid, helper.getLevel().registryAccess()).is(Items.PROSECUTOR_BADGE),
+        helper.assertTrue(dandelionRecipe.assemble(dandelionGrid).is(Items.PROSECUTOR_BADGE),
                 Component.literal("Expected dandelion recipe to produce prosecutor badge"));
         helper.succeed();
     }

@@ -5,14 +5,14 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
-
-import javax.annotation.Nullable;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
@@ -107,7 +107,7 @@ public final class MusicManager {
         public static final Codec<SavedDataMusic> CODEC = CompoundTag.CODEC.xmap(
                 SavedDataMusic::load, data -> data.save(new CompoundTag()));
         public static final SavedDataType<SavedDataMusic> TYPE =
-                new SavedDataType<>("music_map", SavedDataMusic::new, CODEC, DataFixTypes.SAVED_DATA_MAP_DATA);
+                new SavedDataType<>(Identifier.fromNamespaceAndPath("xercamusic", "music_map"), SavedDataMusic::new, CODEC, DataFixTypes.SAVED_DATA_MAP_DATA);
 
         private final Map<UUID, MusicData> musicMap;
 

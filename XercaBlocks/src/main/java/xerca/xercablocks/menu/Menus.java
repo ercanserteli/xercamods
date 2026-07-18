@@ -1,6 +1,6 @@
 package xerca.xercablocks.menu;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -10,7 +10,7 @@ import xerca.xercablocks.Mod;
 
 public final class Menus {
     public static final MenuType<BookcaseMenu> BOOKCASE =
-            new ExtendedScreenHandlerType<>(BookcaseMenu::new, BlockPos.STREAM_CODEC);
+            new ExtendedMenuType<>(BookcaseMenu::new, BlockPos.STREAM_CODEC);
     public static final MenuType<CarvingStationMenu> CARVING_STATION =
             new MenuType<>(CarvingStationMenu::new, FeatureFlags.DEFAULT_FLAGS);
 

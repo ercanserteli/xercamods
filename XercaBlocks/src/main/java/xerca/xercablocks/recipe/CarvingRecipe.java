@@ -3,18 +3,15 @@ package xerca.xercablocks.recipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.*;
 import org.jspecify.annotations.NullMarked;
 import xerca.xercablocks.Mod;
 
 @NullMarked
 public class CarvingRecipe extends StonecutterRecipe {
-    public CarvingRecipe(String group, Ingredient ingredient, ItemStack result) {
-        super(group, ingredient, result);
+    public CarvingRecipe(Recipe.CommonInfo commonInfo, Ingredient ingredient, ItemStackTemplate result) {
+        super(commonInfo, ingredient, result);
     }
 
     public static boolean isCarvingOutput(Item item) {

@@ -45,7 +45,7 @@ public final class OmniChestClientTest implements FabricClientGameTest {
 
         // Consistent settings (default) give a superflat, fixed-seed world with daylight/weather/mob cycles off.
         try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
-            singleplayer.getClientWorld().waitForChunksRender();
+            singleplayer.getClientLevel().waitForChunksRender();
 
             TestServerContext server = singleplayer.getServer();
             server.runCommand("gamerule sendCommandFeedback false");
@@ -59,7 +59,7 @@ public final class OmniChestClientTest implements FabricClientGameTest {
 
             // Let the equip animation finish and the held-item name label above the hotbar fade out.
             context.waitTicks(100);
-            singleplayer.getClientWorld().waitForChunksRender();
+            singleplayer.getClientLevel().waitForChunksRender();
 
             context.assertScreenshotEquals(TestScreenshotComparisonOptions.of(GOLDEN)
                     .withAlgorithm(SsimComparisonAlgorithm.withThreshold(SSIM_THRESHOLD))

@@ -10,7 +10,9 @@ import xerca.xercablocks.Mod;
 public final class Recipes {
     public static final RecipeType<CarvingRecipe> CARVING_TYPE = new CarvingRecipeType();
 
-    public static final RecipeSerializer<CarvingRecipe> CARVING_SERIALIZER = new CarvingRecipeSerializer();
+    public static final RecipeSerializer<CarvingRecipe> CARVING_SERIALIZER = new RecipeSerializer<>(
+            SingleItemRecipe.simpleMapCodec(CarvingRecipe::new),
+            SingleItemRecipe.simpleStreamCodec(CarvingRecipe::new));
 
     private Recipes() {
     }
@@ -18,12 +20,6 @@ public final class Recipes {
     public static void register() {
         Registry.register(BuiltInRegistries.RECIPE_TYPE, Mod.id("carving"), CARVING_TYPE);
         Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("carving"), CARVING_SERIALIZER);
-    }
-
-    private static final class CarvingRecipeSerializer extends SingleItemRecipe.Serializer<CarvingRecipe> {
-        private CarvingRecipeSerializer() {
-            super(CarvingRecipe::new);
-        }
     }
 
     private static class CarvingRecipeType implements RecipeType<CarvingRecipe> {

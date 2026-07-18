@@ -69,12 +69,15 @@ class SheetInputHandler {
             int mx = mouseX - gui.noteImageLeftX;
             int my = mouseY - gui.noteImageY;
             if (validClick(mx, my)) {
-                gui.selectionStart = gui.editCursorEnd = gui.editCursor =
-                        ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
+                gui.editCursor = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
+                gui.editCursorEnd = gui.editCursor;
+                gui.selectionStart = gui.editCursor;
                 if (isShiftHeld()) {
                     byte note = pixelToNote(my);
                     gui.rectSelection = true;
-                    gui.rectSelectNoteStart = gui.rectSelectNoteTop = gui.rectSelectNoteBottom = note;
+                    gui.rectSelectNoteStart = note;
+                    gui.rectSelectNoteTop = note;
+                    gui.rectSelectNoteBottom = note;
                 } else {
                     gui.rectSelection = false;
                 }
@@ -592,8 +595,8 @@ class SheetInputHandler {
         return true;
     }
 
-    boolean handleCharTyped(char typedChar, int something) {
-        gui.callSuperCharTyped(typedChar, something);
+    boolean handleCharTyped(char typedChar) {
+        gui.callSuperCharTyped(typedChar);
 
         if (!gui.isSigned) {
             if (gui.gettingSigned && gui.noteTitle.length() < 16 && StringUtil.isAllowedChatCharacter(typedChar)) {

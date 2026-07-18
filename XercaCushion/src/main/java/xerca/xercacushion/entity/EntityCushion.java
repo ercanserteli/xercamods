@@ -196,15 +196,7 @@ public class EntityCushion extends Entity {
     }
 
     @Override
-    public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand hand) {
-        if (!this.level().isClientSide()) {
-            player.startRiding(this);
-        }
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 hitPos) {
         if (player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         }

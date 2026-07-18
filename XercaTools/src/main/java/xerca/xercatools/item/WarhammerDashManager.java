@@ -55,7 +55,7 @@ public final class WarhammerDashManager {
 
         ACTIVE.put(player.getUUID(), new DashState(player, stack, slot, pullDuration, direction, speed, alreadyHit));
 
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), xerca.xercatools.SoundEvents.SWOOSH, player.getSoundSource(), 1.0F, 0.9F + level.random.nextFloat() * 0.2F);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), xerca.xercatools.SoundEvents.SWOOSH, player.getSoundSource(), 1.0F, 0.9F + level.getRandom().nextFloat() * 0.2F);
     }
 
     /**

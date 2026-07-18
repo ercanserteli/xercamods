@@ -56,7 +56,7 @@ public final class CommandImport {
 
     public static void doImport(@Nullable CompoundTag tag, @Nullable List<NoteEvent> notes, @Nullable UUID importBufferId, Player player) {
         if (tag == null) {
-            player.displayClientMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED), false);
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken sheet file: missing tag");
             return;
         }
@@ -74,7 +74,7 @@ public final class CommandImport {
             return;
         }
 
-        player.displayClientMessage(translatable("xercamusic.import.success").withStyle(ChatFormatting.GREEN), false);
+        player.sendSystemMessage(translatable("xercamusic.import.success").withStyle(ChatFormatting.GREEN));
     }
 
     private static boolean sanitizeTag(CompoundTag tag, Player player) {
@@ -84,7 +84,7 @@ public final class CommandImport {
 
         // only one of them is present -> broken
         if (hasAuthor ^ hasTitle) {
-            player.displayClientMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED), false);
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken sheet file");
             return false;
         }
@@ -122,7 +122,7 @@ public final class CommandImport {
 
         List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
         if (volumeMarkers != null && !validateVolumeMarkers(volumeMarkers)) {
-            player.displayClientMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED), false);
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
             Mod.LOGGER.warn("Broken sheet file: overlapping or invalid volume markers");
             return false;
         }
@@ -192,7 +192,7 @@ public final class CommandImport {
             int noteLength = note.length & 0xFF;
             byte[] glissandoWaypoints = note.getEffectiveWaypoints();
             if (glissandoWaypoints != null && glissandoWaypoints.length > noteLength) {
-                player.displayClientMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED), false);
+                player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
                 Mod.LOGGER.warn("Broken sheet file: note at time {} has {} glissando points for note length {}",
                         note.time, glissandoWaypoints.length, noteLength);
                 return false;
@@ -226,7 +226,7 @@ public final class CommandImport {
 
         ItemStack mainHandItem = player.getMainHandItem();
         if (!(mainHandItem.getItem() instanceof ItemMusicSheet) || !isEmptySheet(mainHandItem)) {
-            player.displayClientMessage(translatable("xercamusic.import.fail.1").withStyle(ChatFormatting.RED), false);
+            player.sendSystemMessage(translatable("xercamusic.import.fail.1").withStyle(ChatFormatting.RED));
             return false;
         }
 

@@ -59,19 +59,19 @@ public class Mod implements ModInitializer {
     }
 
     private void networkRegistry() {
-        PayloadTypeRegistry.playS2C().register(ExportMusicPacket.PACKET_ID, ExportMusicPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(ImportMusicPacket.PACKET_ID, ImportMusicPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(MusicBoxUpdatePacket.PACKET_ID, MusicBoxUpdatePacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(MusicDataResponsePacket.PACKET_ID, MusicDataResponsePacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(NotesPartAckFromServerPacket.PACKET_ID, NotesPartAckFromServerPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(SingleNoteClientPacket.PACKET_ID, SingleNoteClientPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(TripleNoteClientPacket.PACKET_ID, TripleNoteClientPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(MusicUpdatePacket.PACKET_ID, MusicUpdatePacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(MusicEndedPacket.PACKET_ID, MusicEndedPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(ImportMusicSendPacket.PACKET_ID, ImportMusicSendPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(MusicDataRequestPacket.PACKET_ID, MusicDataRequestPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(SingleNotePacket.PACKET_ID, SingleNotePacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(SendNotesPartToServerPacket.PACKET_ID, SendNotesPartToServerPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ExportMusicPacket.PACKET_ID, ExportMusicPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ImportMusicPacket.PACKET_ID, ImportMusicPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(MusicBoxUpdatePacket.PACKET_ID, MusicBoxUpdatePacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(MusicDataResponsePacket.PACKET_ID, MusicDataResponsePacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(NotesPartAckFromServerPacket.PACKET_ID, NotesPartAckFromServerPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SingleNoteClientPacket.PACKET_ID, SingleNoteClientPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(TripleNoteClientPacket.PACKET_ID, TripleNoteClientPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(MusicUpdatePacket.PACKET_ID, MusicUpdatePacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(MusicEndedPacket.PACKET_ID, MusicEndedPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ImportMusicSendPacket.PACKET_ID, ImportMusicSendPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(MusicDataRequestPacket.PACKET_ID, MusicDataRequestPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SingleNotePacket.PACKET_ID, SingleNotePacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(SendNotesPartToServerPacket.PACKET_ID, SendNotesPartToServerPacket.PACKET_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(MusicUpdatePacket.PACKET_ID, new MusicUpdatePacketHandler());
         ServerPlayNetworking.registerGlobalReceiver(MusicEndedPacket.PACKET_ID, new MusicEndedPacketHandler());

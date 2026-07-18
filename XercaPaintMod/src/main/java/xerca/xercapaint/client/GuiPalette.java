@@ -1,7 +1,7 @@
 package xerca.xercapaint.client;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -27,13 +27,13 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
-        super.render(guiGraphics, mouseX, mouseY, f);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, f);
 
         renderCursor(guiGraphics, mouseX, mouseY);
     }
 
-    private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderCursor(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (isCarryingColor && carriedColor != null) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE, 256, 256, carriedColor.rgbVal());
 

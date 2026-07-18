@@ -21,7 +21,7 @@ public class ItemGavel extends Item {
         Player player = context.getPlayer();
 
         if (level.getBlockState(pos).canOcclude()) {
-            level.playSound(player, pos, SoundEvents.GAVEL, SoundSource.PLAYERS, 1.0F, level.random.nextFloat() * 0.2F + 0.8F);
+            level.playSound(player, pos, SoundEvents.GAVEL, SoundSource.PLAYERS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.8F);
         }
         return InteractionResult.SUCCESS;
     }

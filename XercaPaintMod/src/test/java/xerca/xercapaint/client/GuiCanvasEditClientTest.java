@@ -172,7 +172,7 @@ public final class GuiCanvasEditClientTest implements FabricClientGameTest {
             server.runCommand("tp @p 0.5 111 3 0 0"); // stand on the floor, face the wall
             context.runOnClient(client -> client.options.hideGui = true);
             context.waitTicks(40);
-            singleplayer.getClientWorld().waitForChunksRender();
+            singleplayer.getClientLevel().waitForChunksRender();
             context.assertScreenshotEquals(TestScreenshotComparisonOptions.of(GOLDEN)
                     .withAlgorithm(SsimComparisonAlgorithm.withThreshold(SSIM_THRESHOLD))
                     .save());

@@ -1,7 +1,7 @@
 package xerca.xercacushion;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -38,7 +38,7 @@ public final class Mod implements ModInitializer {
         Items.register();
         Registry.register(BuiltInRegistries.ENTITY_TYPE, CUSHION_ID, CUSHION);
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries -> {
             for (var item : Items.all()) {
                 entries.accept(item);
             }

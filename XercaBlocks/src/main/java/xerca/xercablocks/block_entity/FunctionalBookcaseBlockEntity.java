@@ -1,6 +1,6 @@
 package xerca.xercablocks.block_entity;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import xerca.xercablocks.block.BlockFunctionalBookcase;
 import xerca.xercablocks.menu.BookcaseMenu;
 
-public class FunctionalBookcaseBlockEntity extends BlockEntity implements Container, ExtendedScreenHandlerFactory<BlockPos> {
+public class FunctionalBookcaseBlockEntity extends BlockEntity implements Container, ExtendedMenuProvider<BlockPos> {
     private static final int SLOT_COUNT = 6;
     private final NonNullList<ItemStack> items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 

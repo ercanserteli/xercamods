@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -91,10 +91,10 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, EaselRenderSt
     }
 
     @Override
-    protected void submitNameTag(EaselRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+    protected void submitNameDisplay(EaselRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.submitNameTag(state, poseStack, collector, cameraState);
+        super.submitNameDisplay(state, poseStack, collector, cameraState);
         poseStack.popPose();
     }
 

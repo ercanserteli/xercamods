@@ -82,9 +82,9 @@ public class ItemInstrument extends Item implements IItemInstrument {
     public static void hurtEnemyWithInstrument(LivingEntity target, LivingEntity attacker, int minOctave, int maxOctave, IItemInstrument instrument) {
         Level world = attacker.level();
         if (!world.isClientSide()) {
-            int note1 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
-            int note2 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
-            int note3 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note1 = MIN_NOTE + minOctave * 12 + world.getRandom().nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note2 = MIN_NOTE + minOctave * 12 + world.getRandom().nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note3 = MIN_NOTE + minOctave * 12 + world.getRandom().nextInt((maxOctave + 1) * 12 - minOctave * 12);
 
             Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level(), target.position(), 24.0D);
             TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, instrument, target);

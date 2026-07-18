@@ -1,7 +1,7 @@
 package xerca.xercamusic.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -106,12 +106,12 @@ public class GuiInstrument extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         // All rendering is handled in render()
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, INS_GUI_TEXTURES, guiBaseX, guiBaseY, 0, 0, GUI_WIDTH, GUI_HEIGHT, 512, 512);
 
         for (int i = 0; i < buttonPushStates.length; i++) {
@@ -148,8 +148,8 @@ public class GuiInstrument extends Screen {
             }
         }
 
-        guiGraphics.drawCenteredString(this.font, Integer.toString(currentKeyboardOctave), octaveButtonX + 4, OCTAVE_BUTTON_Y + 14, 0xFFFFFFFF);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        guiGraphics.centeredText(this.font, Integer.toString(currentKeyboardOctave), octaveButtonX + 4, OCTAVE_BUTTON_Y + 14, 0xFFFFFFFF);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     private int noteIdFromPos(int mouseX, int mouseY) {

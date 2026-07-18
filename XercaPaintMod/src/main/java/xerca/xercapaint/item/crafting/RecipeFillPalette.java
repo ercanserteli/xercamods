@@ -1,11 +1,12 @@
 package xerca.xercapaint.item.crafting;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -17,16 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeFillPalette extends CustomRecipe {
-    public RecipeFillPalette(CraftingBookCategory category) {
-        super(category);
+    public static final RecipeFillPalette INSTANCE = new RecipeFillPalette();
+    public static final MapCodec<RecipeFillPalette> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RecipeFillPalette> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    private RecipeFillPalette() {
     }
 
     static int getBasicColorIndex(ItemStack stack) {
-        if (!(stack.getItem() instanceof DyeItem dyeItem)) {
-            return -1;
-        }
-        DyeColor dyeColor = dyeItem.getDyeColor();
-        if (!DyeItem.byColor(dyeColor).equals(stack.getItem())) {
+        DyeColor dyeColor = stack.get(DataComponents.DYE);
+        if (dyeColor == null) {
             return -1;
         }
         int colorId = dyeColor.getId();
@@ -94,7 +95,7 @@ public class RecipeFillPalette extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv) {
         int paletteId = findPalette(inv);
         if (paletteId < 0) {
             return ItemStack.EMPTY;

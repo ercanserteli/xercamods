@@ -61,7 +61,7 @@ public final class CushionGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected black cushion recipe to match wool-feather-wool"));
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.BLACK_CUSHION), Component.literal("Expected black cushion recipe output"));
+        helper.assertTrue(recipe.assemble(grid).is(Items.BLACK_CUSHION), Component.literal("Expected black cushion recipe output"));
         helper.succeed();
     }
 
@@ -93,7 +93,7 @@ public final class CushionGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.snapTo(pos.x, pos.y, pos.z);
 
-        cushion.interact(player, InteractionHand.MAIN_HAND);
+        cushion.interact(player, InteractionHand.MAIN_HAND, pos);
 
         helper.assertTrue(player.getVehicle() == cushion, Component.literal("Expected player to mount the cushion"));
         helper.succeed();

@@ -17,7 +17,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -1149,7 +1148,7 @@ public final class MusicRegressionGameTests {
 
     @GameTest
     public void signedMusicSheetsStackToSixteenBySameGeneration(GameTestHelper helper) {
-        RecipeNoteCloning recipe = new RecipeNoteCloning(CraftingBookCategory.MISC);
+        RecipeNoteCloning recipe = RecipeNoteCloning.INSTANCE;
         UUID id = UUID.randomUUID();
         ItemStack original = createSheetStack(id, 1, 1, 8, 8, 1.0f, "song", "composer");
 
@@ -1158,12 +1157,12 @@ public final class MusicRegressionGameTests {
         items.set(1, new ItemStack(Items.MUSIC_SHEET));
         CraftingInput grid = CraftingInput.of(3, 3, items);
 
-        ItemStack clone = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack clone = recipe.assemble(grid);
         assertTrue(helper, !clone.isEmpty(), "Expected the clone recipe to produce a signed sheet");
         assertTrue(helper, clone.getMaxStackSize() == ItemMusicSheet.SIGNED_STACK_SIZE,
                 "Expected a cloned (signed) music sheet to stack up to 16");
 
-        ItemStack cloneAgain = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack cloneAgain = recipe.assemble(grid);
         assertTrue(helper, ItemStack.isSameItemSameComponents(clone, cloneAgain),
                 "Expected two identical signed sheets of the same generation to be stackable");
 

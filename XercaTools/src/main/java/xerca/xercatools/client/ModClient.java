@@ -5,7 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
@@ -23,7 +23,7 @@ public final class ModClient implements ClientModInitializer {
         EntityRenderers.register(Mod.HEALTH_ORB, RenderHealthOrb::new);
         EntityRenderers.register(Mod.ENTITY_CONFETTI_BALL, new RenderConfettiBallFactory());
         ClientPlayNetworking.registerGlobalReceiver(ConfettiParticlePacket.PACKET_ID, new ConfettiParticlePacketHandler());
-        ParticleFactoryRegistry.getInstance().register(Mod.CONFETTI_PARTICLE, ConfettiParticle.Provider::new);
+        ParticleProviderRegistry.getInstance().register(Mod.CONFETTI_PARTICLE, ConfettiParticle.Provider::new);
         ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if (entity instanceof EntityGrabHook hook) {
                 Minecraft.getInstance().getSoundManager().queueTickingSound(new HookSound(hook));

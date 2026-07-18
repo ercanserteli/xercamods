@@ -117,7 +117,7 @@ public final class OmniChestGameTests {
         ));
 
         assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected Omni Chest recipe to match");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         assertTrue(helper, result.is(Items.OMNI_CHEST), "Expected recipe to craft Omni Chest");
         helper.succeed();
     }

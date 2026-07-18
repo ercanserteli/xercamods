@@ -19,6 +19,7 @@ import java.util.Map;
 public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<SingleNoteClientPacket> {
     static final Map<Pair<Player, Integer>, NoteSoundEntry> NOTE_SOUNDS = new HashMap<>();
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private static void processMessage(SingleNoteClientPacket msg) {
         int playerId = msg.playerId();
         ClientLevel level = Minecraft.getInstance().level;

@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.GameType;
@@ -131,7 +130,7 @@ public class FlaskAndLauncherGameTests {
     @GameTest
     public void flaskFillingRecipeAcceptsFlaskAndPotion(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        RecipeFlaskFilling recipe = new RecipeFlaskFilling(CraftingBookCategory.MISC);
+        RecipeFlaskFilling recipe = RecipeFlaskFilling.INSTANCE;
 
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemStack potion = makeRegularPotion(Potions.HEALING);
@@ -150,7 +149,7 @@ public class FlaskAndLauncherGameTests {
     @GameTest
     public void flaskFillingRecipeRejectsOverCapacity(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        RecipeFlaskFilling recipe = new RecipeFlaskFilling(CraftingBookCategory.MISC);
+        RecipeFlaskFilling recipe = RecipeFlaskFilling.INSTANCE;
 
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemFlask.setCharges(flask, 16); // already at max capacity
@@ -169,7 +168,7 @@ public class FlaskAndLauncherGameTests {
     @GameTest
     public void flaskFillingRecipeRejectsMixedPotions(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        RecipeFlaskFilling recipe = new RecipeFlaskFilling(CraftingBookCategory.MISC);
+        RecipeFlaskFilling recipe = RecipeFlaskFilling.INSTANCE;
 
         ItemStack flask = new ItemStack(Items.FLASK);
         ItemStack healing = makeRegularPotion(Potions.HEALING);
@@ -215,7 +214,7 @@ public class FlaskAndLauncherGameTests {
     @GameTest
     public void potionLauncherFillingRecipeAcceptsEnderBowAndSplashPotion(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        RecipeEnderBowFilling recipe = new RecipeEnderBowFilling(CraftingBookCategory.MISC);
+        RecipeEnderBowFilling recipe = RecipeEnderBowFilling.INSTANCE;
 
         ItemStack launcher = new ItemStack(Items.ENDER_BOW);
         ItemStack splash = makeSplashPotion(Potions.HEALING);

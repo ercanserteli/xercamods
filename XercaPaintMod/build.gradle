@@ -2,7 +2,7 @@ import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 
 plugins {
-    id 'fabric-loom' version '1.14.10'
+    id 'net.fabricmc.fabric-loom' version '1.17.16'
     id 'maven-publish'
     id("com.github.spotbugs") version "6.5.9"
     id("net.ltgt.errorprone") version "4.3.0"
@@ -18,10 +18,6 @@ base {
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'ParchmentMC'
-        url = 'https://maven.parchmentmc.org'
-    }
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -30,8 +26,8 @@ repositories {
 }
 
 tasks.register('buildCopy', Copy) {
-    dependsOn tasks.named('remapJar')
-    from(tasks.named('remapJar').flatMap { it.archiveFile })
+    dependsOn tasks.named('jar')
+    from(tasks.named('jar').flatMap { it.archiveFile })
     into(layout.projectDirectory.dir("../builds"))
 }
 
@@ -39,17 +35,13 @@ dependencies {
     compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.21.11:2025.12.20@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Client game test API for screenshot-diff rendering regression tests.
-    modImplementation fabricApi.module("fabric-client-gametest-api-v1", project.fabric_version)
+    implementation fabricApi.module("fabric-client-gametest-api-v1", project.fabric_version)
 
     // Error Prone
     errorprone("com.google.errorprone:error_prone_core:2.43.0")
@@ -57,7 +49,7 @@ dependencies {
     // Uncomment the following line to enable the deprecated Fabric API modules.
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 
-    // modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
+    // implementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 }
 
 processResources {
@@ -69,7 +61,7 @@ processResources {
     }
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
     // this fixes some edge cases with special characters not displaying correctly
@@ -98,7 +90,7 @@ tasks.named('spotbugsMain') {
 }
 
 pmd {
-    toolVersion = "7.11.0"
+    toolVersion = "7.26.0"
     ignoreFailures = true
     consoleOutput = true
     ruleSets = []

@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.lwjgl.system.NonnullDefault;
+import org.jspecify.annotations.NullMarked;
 
 public class ItemStackableContainedFood extends Item {
     private final Item container;
@@ -18,7 +18,7 @@ public class ItemStackableContainedFood extends Item {
     }
 
     @Override
-    @NonnullDefault
+    @NullMarked
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
         super.finishUsingItem(stack, worldIn, entityLiving);
         ItemStack containerStack = new ItemStack(container);

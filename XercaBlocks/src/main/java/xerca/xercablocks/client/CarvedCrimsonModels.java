@@ -5,14 +5,10 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedExtraModel;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.*;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
@@ -63,7 +59,7 @@ public final class CarvedCrimsonModels {
             return model;
         }
 
-        BlockModelPart overlayPart = SimpleModelWrapper.bake(context.baker(), overlayModelId(blockId.getPath()), rotationFor(state));
+        BlockStateModelPart overlayPart = SimpleModelWrapper.bake(context.baker(), overlayModelId(blockId.getPath()), rotationFor(state));
         return new EmissiveOverlayBlockStateModel(model, overlayPart);
     }
 

@@ -7,7 +7,7 @@ import javax.xml.XMLConstants
 import javax.xml.parsers.DocumentBuilderFactory
 
 plugins {
-    id 'fabric-loom' version '1.14.10' apply false
+    id 'net.fabricmc.fabric-loom' version '1.17.16' apply false
     id 'com.github.spotbugs' version '6.5.9' apply false
     id 'org.sonarqube' version '7.3.1.8318'
 }
@@ -31,7 +31,7 @@ def rootSonarExclusions = commonSonarExclusions + ['builds/**', 'scripts/**']
 def modProjects = subprojects.findAll { it.file(modSourceDirectory).isDirectory() }
 
 def configureCommonSonarProperties = { propertyTarget, List<String> exclusions ->
-    propertyTarget.property 'sonar.java.source', '21'
+    propertyTarget.property 'sonar.java.source', '25'
     propertyTarget.property 'sonar.testExecutionReportPaths', sonarTestExecutionReportPath
     propertyTarget.property 'sonar.issue.ignore.multicriteria', 'fabricGameTests'
     propertyTarget.property 'sonar.issue.ignore.multicriteria.fabricGameTests.ruleKey', 'java:S2187'
@@ -182,7 +182,7 @@ subprojects {
     apply plugin: 'jacoco'
 
     jacoco {
-        toolVersion = '0.8.12'
+        toolVersion = '0.8.15'
     }
 
     afterEvaluate {

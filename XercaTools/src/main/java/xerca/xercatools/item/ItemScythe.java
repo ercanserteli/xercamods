@@ -170,11 +170,11 @@ public class ItemScythe extends Item {
         boolean killed = target.hurtServer(serverLevel, player.damageSources().playerAttack(player), damage) && target.isDeadOrDying();
 
         if (killed) {
-            level.playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), SoundEvents.BEHEAD, SoundSource.PLAYERS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
+            level.playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), SoundEvents.BEHEAD, SoundSource.PLAYERS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.9F);
             spawnBeheadParticles(level, target.position().add(0.0D, target.getBbHeight() * 0.5D, 0.0D));
             spawnHead(target);
         } else {
-            level.playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
+            level.playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.PLAYERS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.9F);
         }
         return true;
     }
@@ -275,7 +275,7 @@ public class ItemScythe extends Item {
     private static void handleDevourKill(ItemStack stack, LivingEntity target, Player player) {
         int devourLevel = EnchantmentHelper.getItemEnchantmentLevel(ScytheEnchantments.devourEnchantment(player.level().registryAccess()), stack);
         if (devourLevel > 0 && player.level() instanceof ServerLevel serverLevel && target.isDeadOrDying()) {
-            int devourCount = player.level().random.nextInt(devourLevel, devourLevel * 2 + 1);
+            int devourCount = player.level().getRandom().nextInt(devourLevel, devourLevel * 2 + 1);
             EntityHealthOrb.award(serverLevel, target, player, devourCount);
         }
     }
@@ -286,10 +286,10 @@ public class ItemScythe extends Item {
         }
 
         for (int i = 0; i < 96; i++) {
-            double velX = (level.random.nextDouble() - 0.5D) * 0.28D;
-            double velY = (level.random.nextDouble() - 0.3D) * 0.28D;
-            double velZ = (level.random.nextDouble() - 0.5D) * 0.28D;
-            serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(net.minecraft.world.item.Items.NETHER_WART_BLOCK)),
+            double velX = (level.getRandom().nextDouble() - 0.5D) * 0.28D;
+            double velY = (level.getRandom().nextDouble() - 0.3D) * 0.28D;
+            double velZ = (level.getRandom().nextDouble() - 0.5D) * 0.28D;
+            serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.NETHER_WART_BLOCK),
                     position.x, position.y, position.z, 1, velX, velY, velZ, 0.0D);
         }
     }
@@ -358,10 +358,10 @@ public class ItemScythe extends Item {
         int baneLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.BANE_OF_ARTHROPODS), stack);
         int sharpnessLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), stack);
         float damage = sharpnessLevel > 0 ? 0.5F * sharpnessLevel + 0.5F : 0.0F;
-        if (target.getType().is(EntityTypeTags.UNDEAD)) {
+        if (target.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD)) {
             damage += 2.5F * smiteLevel;
         }
-        if (target.getType().is(EntityTypeTags.ARTHROPOD)) {
+        if (target.getType().builtInRegistryHolder().is(EntityTypeTags.ARTHROPOD)) {
             damage += 2.5F * baneLevel;
         }
         return damage;

@@ -53,7 +53,7 @@ public class BlockCheese extends Block {
             if (!worldIn.isClientSide()) {
                 slice(worldIn, pos, state, player, handIn, heldItem);
             }
-            worldIn.playSound(player, pos, xerca.xercafood.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.random.nextFloat() * 0.1f);
+            worldIn.playSound(player, pos, xerca.xercafood.common.SoundEvents.SNEAK_HIT, SoundSource.BLOCKS, 0.4f, 0.9f + worldIn.getRandom().nextFloat() * 0.1f);
             return InteractionResult.SUCCESS;
         }
         InteractionResult ate = useWithoutItem(state, worldIn, pos, player, hit);
@@ -65,7 +65,7 @@ public class BlockCheese extends Block {
         if (worldIn.isClientSide()) {
             if (eat(worldIn, pos, state, player).consumesAction()) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
-                        1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
+                        1.0F, 1.0F + (worldIn.getRandom().nextFloat() - worldIn.getRandom().nextFloat()) * 0.4F);
                 return InteractionResult.SUCCESS;
             }
 
@@ -75,7 +75,7 @@ public class BlockCheese extends Block {
         InteractionResult ate = eat(worldIn, pos, state, player);
         if (ate.consumesAction()) {
             worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
-                    1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
+                    1.0F, 1.0F + (worldIn.getRandom().nextFloat() - worldIn.getRandom().nextFloat()) * 0.4F);
         }
         return ate;
     }

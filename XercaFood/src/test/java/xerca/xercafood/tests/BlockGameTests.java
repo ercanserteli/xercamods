@@ -13,7 +13,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FarmBlock;
+import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import xerca.xercafood.common.Mod;
@@ -69,7 +69,7 @@ public class BlockGameTests {
         BlockPos unsupportedSoilPos = unsupportedPlantPos.below();
         BlockPos supportedPlantPos = helper.absolutePos(new BlockPos(4, 2, 1));
         BlockPos supportedSoilPos = supportedPlantPos.below();
-        BlockState moistFarmland = Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7);
+        BlockState moistFarmland = Blocks.FARMLAND.defaultBlockState().setValue(FarmlandBlock.MOISTURE, 7);
 
         level.setBlockAndUpdate(unsupportedSoilPos, moistFarmland);
         level.setBlockAndUpdate(unsupportedSoilPos.north(), Blocks.WATER.defaultBlockState());
@@ -89,7 +89,7 @@ public class BlockGameTests {
         ServerLevel level = helper.getLevel();
         BlockPos plantPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos soilPos = plantPos.below();
-        BlockState moistFarmland = Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7);
+        BlockState moistFarmland = Blocks.FARMLAND.defaultBlockState().setValue(FarmlandBlock.MOISTURE, 7);
 
         level.setBlockAndUpdate(soilPos, moistFarmland);
         level.setBlockAndUpdate(soilPos.north(), Blocks.WATER.defaultBlockState());
@@ -97,7 +97,7 @@ public class BlockGameTests {
         level.setBlockAndUpdate(plantPos, xerca.xercafood.common.block.Blocks.BLOCK_RICE_PLANT.defaultBlockState());
 
         level.setBlockAndUpdate(soilPos.south(), Blocks.AIR.defaultBlockState());
-        xerca.xercafood.common.block.Blocks.BLOCK_RICE_PLANT.tick(level.getBlockState(plantPos), level, plantPos, level.random);
+        xerca.xercafood.common.block.Blocks.BLOCK_RICE_PLANT.tick(level.getBlockState(plantPos), level, plantPos, level.getRandom());
 
         assertTrue(helper, level.getBlockState(plantPos).isAir(), "Expected unsupported rice plant tick to destroy the crop");
         helper.succeed();
@@ -267,7 +267,7 @@ public class BlockGameTests {
         useBlockWithItem(helper, vatPos, player, milkBucket);
         assertTrue(helper, helper.getLevel().getBlockState(vatPos).is(xerca.xercafood.common.block.Blocks.VAT_MILK), "Expected vat to become milk vat");
 
-        xerca.xercafood.common.block.Blocks.VAT_MILK.randomTick(helper.getLevel().getBlockState(vatPos), helper.getLevel(), vatPos, helper.getLevel().random);
+        xerca.xercafood.common.block.Blocks.VAT_MILK.randomTick(helper.getLevel().getBlockState(vatPos), helper.getLevel(), vatPos, helper.getLevel().getRandom());
         assertTrue(helper, helper.getLevel().getBlockState(vatPos).is(xerca.xercafood.common.block.Blocks.VAT_CHEESE), "Expected milk vat to curdle into cheese vat");
 
         useBlockWithoutItem(helper, vatPos, player);
@@ -325,10 +325,10 @@ public class BlockGameTests {
             BlockState teaState = level.getBlockState(teaPos);
             BlockState tomatoState = level.getBlockState(tomatoPos);
             if (tea.isValidBonemealTarget(level, teaPos, teaState)) {
-                tea.performBonemeal(level, level.random, teaPos, teaState);
+                tea.performBonemeal(level, level.getRandom(), teaPos, teaState);
             }
             if (tomato.isValidBonemealTarget(level, tomatoPos, tomatoState)) {
-                tomato.performBonemeal(level, level.random, tomatoPos, tomatoState);
+                tomato.performBonemeal(level, level.getRandom(), tomatoPos, tomatoState);
             }
         }
 

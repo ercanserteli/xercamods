@@ -1,6 +1,6 @@
 package xerca.xercablocks.item;
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -46,17 +46,17 @@ public final class Items {
         Blocks.terratileSlabs().forEach(Items::registerColoredBlockItem);
         Blocks.terratileStairs().forEach(Items::registerColoredBlockItem);
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> {
             entries.accept(BOOKCASE);
             entries.accept(ROPE);
             entries.accept(CARVING_STATION);
         });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.BUILDING_BLOCKS).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.BUILDING_BLOCKS).register(entries -> {
             entries.accept(BLOCK_LEATHER);
             entries.accept(BLOCK_STRAW);
             BUILDING_TAB_ITEMS.forEach(entries::accept);
         });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries ->
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries ->
                 COLORED_TAB_ITEMS.forEach(entries::accept));
     }
 

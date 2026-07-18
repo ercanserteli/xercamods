@@ -3,14 +3,13 @@ package xerca.xercamusic.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
-
-import javax.annotation.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -61,6 +60,7 @@ public class SoundController extends Thread {
     }
 
     @Override
+    @SuppressWarnings("PMD.UselessPureMethodCall")
     public void run() {
         if (bps == 0) {
             Mod.LOGGER.error("BPS is 0! This should not happen!");
@@ -121,6 +121,7 @@ public class SoundController extends Thread {
      * Play all notes from index fromIdx (inclusive) to toIdx (exclusive) in a single
      * main-thread submission. Only spawns one particle per batch to reduce overhead.
      */
+    @SuppressWarnings("PMD.UselessPureMethodCall")
     private void playNotes(int fromIdx, int toIdx) {
         Minecraft.getInstance().submit(() -> {
             ClientLevel level = Minecraft.getInstance().level;
@@ -195,6 +196,7 @@ public class SoundController extends Thread {
         }).isDone();
     }
 
+    @SuppressWarnings("PMD.UselessPureMethodCall")
     private void updateActiveSounds(int currentBeat) {
         if (activeSounds.isEmpty()) return;
         final int beat = currentBeat;

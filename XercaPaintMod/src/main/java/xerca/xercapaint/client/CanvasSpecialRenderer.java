@@ -34,11 +34,11 @@ public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecial
     }
 
     @Override
-    public void submit(@Nullable CanvasData data, ItemDisplayContext displayContext, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
+    public void submit(@Nullable CanvasData data, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
         if (data == null) {
             return;
         }
-        renderer.renderCanvas(data.instance(), data.width(), data.height(), data.glass(), displayContext, poseStack, collector, light);
+        renderer.renderCanvas(data.instance(), data.width(), data.height(), data.glass(), ItemDisplayContext.NONE, poseStack, collector, light);
     }
 
     @Override
@@ -49,16 +49,16 @@ public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecial
         extents.accept(new Vector3f(1.0f, 1.0f, 0.5f));
     }
 
-    public record Unbaked() implements SpecialModelRenderer.Unbaked {
+    public record Unbaked() implements SpecialModelRenderer.Unbaked<CanvasSpecialRenderer.CanvasData> {
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
 
         @Override
-        public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext context) {
+        public SpecialModelRenderer<CanvasSpecialRenderer.CanvasData> bake(SpecialModelRenderer.BakingContext context) {
             return new CanvasSpecialRenderer();
         }
 
         @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
+        public MapCodec<? extends SpecialModelRenderer.Unbaked<CanvasSpecialRenderer.CanvasData>> type() {
             return MAP_CODEC;
         }
     }

@@ -172,7 +172,6 @@ public class EntityEasel extends Entity {
         if (!itemStack.isEmpty()) {
             itemStack = itemStack.copy();
             itemStack.setCount(1);
-            itemStack.setEntityRepresentation(this);
         }
 
         this.getEntityData().set(DATA_CANVAS, itemStack);
@@ -204,12 +203,6 @@ public class EntityEasel extends Entity {
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
         super.onSyncedDataUpdated(accessor);
-        if (accessor.equals(DATA_CANVAS)) {
-            ItemStack itemStack = this.getItem();
-            if (!itemStack.isEmpty() && !this.equals(itemStack.getEntityRepresentation())) {
-                itemStack.setEntityRepresentation(this);
-            }
-        }
     }
 
     @Override
@@ -225,7 +218,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 hitPos) {
         ItemStack itemInHand = player.getItemInHand(hand);
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;

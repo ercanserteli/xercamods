@@ -1,11 +1,11 @@
 package xerca.xercatools;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -92,7 +92,7 @@ public class Mod implements ModInitializer {
         Registry.register(BuiltInRegistries.ENTITY_TYPE, id("health_orb"), HEALTH_ORB);
         Items.register();
 
-        PayloadTypeRegistry.playS2C().register(ConfettiParticlePacket.PACKET_ID, ConfettiParticlePacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ConfettiParticlePacket.PACKET_ID, ConfettiParticlePacket.PACKET_CODEC);
 
         Registry.register(BuiltInRegistries.ENTITY_TYPE, id("confetti_ball"), ENTITY_CONFETTI_BALL);
         Registry.register(BuiltInRegistries.PARTICLE_TYPE, id("confetti_particle"), CONFETTI_PARTICLE);
@@ -115,7 +115,7 @@ public class Mod implements ModInitializer {
         registerCombatHooks();
         ServerTickEvents.END_SERVER_TICK.register(xerca.xercatools.item.WarhammerDashManager::onServerTick);
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             entries.accept(Items.WOODEN_SCYTHE);
             entries.accept(Items.STONE_SCYTHE);
             entries.accept(Items.IRON_SCYTHE);
@@ -133,7 +133,7 @@ public class Mod implements ModInitializer {
             entries.accept(Items.CONFETTI);
             entries.accept(Items.CONFETTI_BALL);
         });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register(entries -> {
             entries.accept(Items.WOODEN_SCYTHE);
             entries.accept(Items.STONE_SCYTHE);
             entries.accept(Items.IRON_SCYTHE);

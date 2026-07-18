@@ -34,7 +34,7 @@ public class OpenGuiPacketHandler implements ClientPlayNetworking.PlayPayloadHan
                     Mod.LOGGER.error("Could not find easel");
                 }
             } else {
-                player.displayClientMessage(Component.translatable("easel.deny").withStyle(ChatFormatting.RED), false);
+                player.sendSystemMessage(Component.translatable("easel.deny").withStyle(ChatFormatting.RED));
             }
         }
     }

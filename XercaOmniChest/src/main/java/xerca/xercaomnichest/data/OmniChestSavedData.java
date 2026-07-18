@@ -6,6 +6,7 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import xerca.xercaomnichest.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class OmniChestSavedData extends SavedData {
     }
 
     public static final SavedDataType<OmniChestSavedData> TYPE = new SavedDataType<>(
-            "omni_chest",
+            Mod.id("omni_chest"),
             OmniChestSavedData::new,
             SlotEntry.CODEC.listOf().optionalFieldOf("OmniChest", List.of()).codec()
                     .xmap(OmniChestSavedData::load, OmniChestSavedData::toEntries),

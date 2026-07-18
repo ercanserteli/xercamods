@@ -32,9 +32,9 @@ abstract class MixinStonecutterMenu {
             return entry.recipe().recipe().orElseThrow().value() instanceof CarvingRecipe;
         }
         if (entry.recipe().optionDisplay() instanceof SlotDisplay.ItemStackSlotDisplay(
-                net.minecraft.world.item.ItemStack stack
+                net.minecraft.world.item.ItemStackTemplate template
         )) {
-            return CarvingRecipe.isCarvingOutput(stack.getItem());
+            return CarvingRecipe.isCarvingOutput(template.item().value());
         }
         return false;
     }

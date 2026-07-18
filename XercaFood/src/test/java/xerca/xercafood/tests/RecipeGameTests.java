@@ -31,7 +31,7 @@ public class RecipeGameTests {
         );
 
         assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected apple cupcake recipe to match");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         assertTrue(helper, result.is(Items.APPLE_CUPCAKE), "Expected apple cupcake result item");
         assertTrue(helper, result.getCount() == 6, "Expected apple cupcake recipe to craft 6 items");
         helper.succeed();
@@ -47,7 +47,7 @@ public class RecipeGameTests {
         );
 
         assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected cola powder recipe to match");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         assertTrue(helper, result.is(Items.COLA_POWDER), "Expected cola powder result item");
         helper.succeed();
     }
@@ -64,7 +64,7 @@ public class RecipeGameTests {
         );
 
         assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected tomato slicing recipe to match");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         assertTrue(helper, result.is(Items.TOMATO_SLICES), "Expected tomato slicing to produce tomato slices");
         assertTrue(helper, result.getCount() == 3, "Expected tomato slicing recipe to craft 3 slices");
 
@@ -97,7 +97,7 @@ public class RecipeGameTests {
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_PATTY));
 
         assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected smelting recipe to match raw patty input");
-        ItemStack result = recipe.assemble(input, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(input);
         assertTrue(helper, result.is(Items.COOKED_PATTY), "Expected smelting recipe to produce cooked patty");
         helper.succeed();
     }
@@ -108,7 +108,7 @@ public class RecipeGameTests {
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_SAUSAGE));
 
         assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected smoking recipe to match raw sausage input");
-        ItemStack result = recipe.assemble(input, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(input);
         assertTrue(helper, result.is(Items.COOKED_SAUSAGE), "Expected smoking recipe to produce cooked sausage");
         helper.succeed();
     }
@@ -119,7 +119,7 @@ public class RecipeGameTests {
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_PIZZA_CHICKEN_MUSHROOM_MUSHROOM));
 
         assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected campfire pizza recipe to match raw pizza input");
-        ItemStack result = recipe.assemble(input, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(input);
         assertTrue(helper, result.is(Items.PIZZA_CHICKEN_MUSHROOM_MUSHROOM), "Expected cooked pizza variant result item");
         helper.succeed();
     }
@@ -133,7 +133,7 @@ public class RecipeGameTests {
         );
 
         assertTrue(helper, pizzaBaseRecipe.matches(pizzaBaseGrid, helper.getLevel()), "Expected raw pizza base recipe to match");
-        ItemStack rawPizza = pizzaBaseRecipe.assemble(pizzaBaseGrid, helper.getLevel().registryAccess());
+        ItemStack rawPizza = pizzaBaseRecipe.assemble(pizzaBaseGrid);
         assertTrue(helper, rawPizza.is(Items.RAW_PIZZA), "Expected raw pizza base recipe to produce raw pizza");
 
         CraftingRecipe toppingRecipe = requireCraftingRecipe(helper, recipeId("raw_pizza_chicken_mushroom"));
@@ -144,13 +144,13 @@ public class RecipeGameTests {
         );
 
         assertTrue(helper, toppingRecipe.matches(toppingGrid, helper.getLevel()), "Expected pizza topping recipe to match");
-        ItemStack toppedPizza = toppingRecipe.assemble(toppingGrid, helper.getLevel().registryAccess());
+        ItemStack toppedPizza = toppingRecipe.assemble(toppingGrid);
         assertTrue(helper, toppedPizza.is(Items.RAW_PIZZA_CHICKEN_MUSHROOM), "Expected topped pizza recipe to produce raw chicken mushroom pizza");
 
         CampfireCookingRecipe cookingRecipe = requireCampfireRecipe(helper, recipeId("campfire_cooking_pizza_chicken_mushroom"));
         SingleRecipeInput cookingInput = new SingleRecipeInput(toppedPizza.copy());
         assertTrue(helper, cookingRecipe.matches(cookingInput, helper.getLevel()), "Expected campfire recipe to match topped raw pizza");
-        ItemStack cookedPizza = cookingRecipe.assemble(cookingInput, helper.getLevel().registryAccess());
+        ItemStack cookedPizza = cookingRecipe.assemble(cookingInput);
         assertTrue(helper, cookedPizza.is(Items.PIZZA_CHICKEN_MUSHROOM), "Expected end-to-end pizza flow to produce cooked chicken mushroom pizza");
         helper.succeed();
     }
@@ -165,7 +165,7 @@ public class RecipeGameTests {
         );
 
         assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected tea pouring recipe to match teapot plus cups");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         assertTrue(helper, result.is(Items.FULL_TEACUP_0), "Expected tea pouring to produce filled teacups");
         assertTrue(helper, result.getCount() == 2, "Expected tea pouring to fill two teacups");
 
@@ -184,7 +184,7 @@ public class RecipeGameTests {
         );
 
         assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected tea sugaring recipe to match teacup plus sugar");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         assertTrue(helper, result.is(Items.FULL_TEACUP_2), "Expected two sugars to produce the two-sugar teacup");
         helper.succeed();
     }
@@ -214,7 +214,7 @@ public class RecipeGameTests {
             );
 
             assertTrue(helper, colaRecipe.matches(colaGrid, helper.getLevel()), "Expected cola recipe to accept brewed cola extract");
-            ItemStack colaResult = colaRecipe.assemble(colaGrid, helper.getLevel().registryAccess());
+            ItemStack colaResult = colaRecipe.assemble(colaGrid);
             assertTrue(helper, colaResult.is(Items.COLA), "Expected cola recipe to craft cola");
             assertTrue(helper, colaResult.getCount() == 6, "Expected cola recipe to craft 6 cola items");
 
@@ -231,7 +231,7 @@ public class RecipeGameTests {
         SmeltingRecipe recipe = requireSmeltingRecipe(helper, recipeId("smelting_tea_dried"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.TEA_LEAF));
         assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected tea leaf smelting recipe to match");
-        assertTrue(helper, recipe.assemble(input, helper.getLevel().registryAccess()).is(Items.TEA_DRIED), "Expected tea leaf smelting result to be dried tea");
+        assertTrue(helper, recipe.assemble(input).is(Items.TEA_DRIED), "Expected tea leaf smelting result to be dried tea");
         helper.succeed();
     }
 
@@ -244,7 +244,7 @@ public class RecipeGameTests {
                 new ItemStack(Items.TEA_DRIED), new ItemStack(Items.TEA_DRIED), new ItemStack(Items.TEA_DRIED)
         );
         assertTrue(helper, filling.matches(fillToFull, helper.getLevel()), "Expected full tea fill path to match");
-        assertTrue(helper, filling.assemble(fillToFull, helper.getLevel().registryAccess()).is(Items.FULL_TEAPOT_7), "Expected full tea fill path to produce 7-tea teapot");
+        assertTrue(helper, filling.assemble(fillToFull).is(Items.FULL_TEAPOT_7), "Expected full tea fill path to produce 7-tea teapot");
 
         CraftingRecipe refilling = requireCraftingRecipe(helper, recipeId("tea_refilling"));
         CraftingInput tooManyLeaves = craftingGrid(3, 3,
@@ -295,7 +295,7 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
         assertTrue(helper, sodaRecipe.matches(sodaGrid, helper.getLevel()), "Expected soda recipe to match");
-        assertTrue(helper, sodaRecipe.assemble(sodaGrid, helper.getLevel().registryAccess()).is(Items.SODA), "Expected soda recipe output");
+        assertTrue(helper, sodaRecipe.assemble(sodaGrid).is(Items.SODA), "Expected soda recipe output");
 
         CraftingRecipe colaRecipe = requireCraftingRecipe(helper, recipeId("cola"));
         CraftingInput colaGrid = craftingGrid(3, 3,
@@ -304,7 +304,7 @@ public class RecipeGameTests {
                 new ItemStack(Items.CARBONATED_WATER), new ItemStack(Items.CARBONATED_WATER), new ItemStack(Items.CARBONATED_WATER)
         );
         assertTrue(helper, colaRecipe.matches(colaGrid, helper.getLevel()), "Expected cola recipe to match");
-        assertTrue(helper, colaRecipe.assemble(colaGrid, helper.getLevel().registryAccess()).is(Items.COLA), "Expected cola recipe output");
+        assertTrue(helper, colaRecipe.assemble(colaGrid).is(Items.COLA), "Expected cola recipe output");
         helper.succeed();
     }
 }

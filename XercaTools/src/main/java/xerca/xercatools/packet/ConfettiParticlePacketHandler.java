@@ -11,7 +11,7 @@ public class ConfettiParticlePacketHandler implements ClientPlayNetworking.PlayP
         Vec3i dir = pkt.direction();
         Level world = Minecraft.getInstance().level;
         if (world != null) {
-            ConfettiParticles.spawnHandBurst(world, world.random, pkt.posX(), pkt.posY(), pkt.posZ(), dir);
+            ConfettiParticles.spawnHandBurst(world, world.getRandom(), pkt.posX(), pkt.posY(), pkt.posZ(), dir);
         }
     }
 

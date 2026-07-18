@@ -121,7 +121,7 @@ public class BlockVat extends Block {
     public void randomTick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource random) {
         if (content == VatContent.MILK) {
             level.setBlockAndUpdate(blockPos, Blocks.VAT_CHEESE.defaultBlockState());
-            level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_STEP, SoundSource.BLOCKS, 0.7F, 0.9F + level.random.nextFloat() * 0.2f);
+            level.playSound(null, blockPos, SoundEvents.SLIME_BLOCK_STEP, SoundSource.BLOCKS, 0.7F, 0.9F + level.getRandom().nextFloat() * 0.2f);
         }
     }
 }

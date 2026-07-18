@@ -16,7 +16,7 @@
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "1.21.11",
+    "minecraft": "26.1.2",
     "xercatools": "*"
   }
 }

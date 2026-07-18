@@ -144,7 +144,7 @@ public final class ConfettiBallGameTests {
         );
 
         TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected confetti recipe to match paper plus cyan/magenta/yellow dye");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         TestAsserts.assertTrue(helper, result.is(Items.CONFETTI), "Expected confetti recipe to produce confetti");
         TestAsserts.assertTrue(helper, result.getCount() == 12, "Expected confetti recipe to produce 12 confetti items");
         helper.succeed();
@@ -161,7 +161,7 @@ public final class ConfettiBallGameTests {
         );
 
         TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected confetti ball recipe to match its cross pattern");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         TestAsserts.assertTrue(helper, result.is(Items.CONFETTI_BALL), "Expected confetti ball recipe to produce confetti balls");
         TestAsserts.assertTrue(helper, result.getCount() == 2, "Expected confetti ball recipe to produce 2 confetti balls");
         helper.succeed();

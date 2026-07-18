@@ -2,7 +2,7 @@ package xerca.xercapaint.item;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,7 +14,6 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
@@ -45,9 +44,9 @@ public final class Items {
         return new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Mod.id(name)));
     }
 
-    public static final RecipeSerializer<RecipeFillPalette> CRAFTING_SPECIAL_PALETTE_FILLING = new CustomRecipe.Serializer<>(RecipeFillPalette::new);
-    public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = new CustomRecipe.Serializer<>(RecipeCanvasCloning::new);
-    public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = new RecipeTaglessShaped.TaglessSerializer();
+    public static final RecipeSerializer<RecipeFillPalette> CRAFTING_SPECIAL_PALETTE_FILLING = new RecipeSerializer<>(RecipeFillPalette.MAP_CODEC, RecipeFillPalette.STREAM_CODEC);
+    public static final RecipeSerializer<RecipeCanvasCloning> CRAFTING_SPECIAL_CANVAS_CLONING = new RecipeSerializer<>(RecipeCanvasCloning.MAP_CODEC, RecipeCanvasCloning.STREAM_CODEC);
+    public static final RecipeSerializer<RecipeTaglessShaped> CRAFTING_TAGLESS_SHAPED = new RecipeSerializer<>(RecipeTaglessShaped.MAP_CODEC, RecipeTaglessShaped.STREAM_CODEC);
     public static final DataComponentType<List<Integer>> CANVAS_PIXELS = DataComponentType.<List<Integer>>builder().persistent(Codec.list(Codec.INT)).networkSynchronized(ByteBufCodecs.fromCodec(Codec.list(Codec.INT))).build();
     public static final DataComponentType<Boolean> CANVAS_SIDES_ACTIVE = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<List<Integer>> CANVAS_SIDE_PIXELS = DataComponentType.<List<Integer>>builder().persistent(Codec.list(Codec.INT)).networkSynchronized(ByteBufCodecs.fromCodec(Codec.list(Codec.INT))).build();
@@ -59,7 +58,7 @@ public final class Items {
     public static final DataComponentType<byte[]> PALETTE_BASIC_COLORS = DataComponentType.<byte[]>builder().persistent(Codec.BYTE_BUFFER.flatXmap(byteBuffer -> DataResult.success(byteBuffer.array()), bytes -> DataResult.success(ByteBuffer.wrap(bytes)))).networkSynchronized(ByteBufCodecs.BYTE_ARRAY).build();
     public static final DataComponentType<ItemPalette.ComponentCustomColor> PALETTE_CUSTOM_COLORS = DataComponentType.<ItemPalette.ComponentCustomColor>builder().persistent(ItemPalette.ComponentCustomColor.CODEC).build();
 
-    public static final CreativeModeTab PAINT_TAB = FabricItemGroup.builder()
+    public static final CreativeModeTab PAINT_TAB = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(ITEM_PALETTE))
             .displayItems((params, output) -> {
                 ItemStack fullPalette = new ItemStack(ITEM_PALETTE);

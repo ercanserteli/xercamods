@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -64,10 +64,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
     private Identifier createWhiteTexture() {
         DynamicTexture texture = new DynamicTexture("xercapaint white", 1, 1, false);
         NativeImage image = texture.getPixels();
-        if (image != null) {
-            image.setPixel(0, 0, 0xFFFFFFFF);
-            texture.upload();
-        }
+        image.setPixel(0, 0, 0xFFFFFFFF);
+        texture.upload();
         return registerDynamicTexture("canvas_side_white", texture);
     }
 
@@ -204,18 +202,16 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
                 }
 
                 NativeImage image = canvasTexture.getPixels();
-                if (image != null) {
-                    for (int y = 0; y < height; ++y) {
-                        for (int x = 0; x < width; ++x) {
-                            int idx = x + y * width;
-                            // setPixel takes ARGB (converts to native ABGR internally), so feed the raw pixel
-                            image.setPixel(x, y, pixels[idx]);
-                        }
+                for (int y = 0; y < height; ++y) {
+                    for (int x = 0; x < width; ++x) {
+                        int idx = x + y * width;
+                        // setPixel takes ARGB (converts to native ABGR internally), so feed the raw pixel
+                        image.setPixel(x, y, pixels[idx]);
                     }
-                    canvasTexture.upload();
-                    this.version = version;
-                    this.started = true;
                 }
+                canvasTexture.upload();
+                this.version = version;
+                this.started = true;
             }
         }
 
@@ -291,7 +287,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
 
                 if (sidesActive) {
                     // Painted side pixels (no-cull so they are visible from inside the canvas too)
-                    collector.submitCustomGeometry(ms, RenderTypes.entityCutoutNoCull(renderer.whiteLocation), (pose, sides) ->
+                    collector.submitCustomGeometry(ms, RenderTypes.entityCutout(renderer.whiteLocation), (pose, sides) ->
                             renderPaintedSides(sides, pose, w32, h32, packedLight, true));
                 } else {
                     // Glass-pane frame
@@ -338,7 +334,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             });
             if (paintedSides) {
                 // No-cull so painted sides are visible from inside the canvas too
-                collector.submitCustomGeometry(ms, RenderTypes.entityCutoutNoCull(renderer.whiteLocation), (pose, sides) ->
+                collector.submitCustomGeometry(ms, RenderTypes.entityCutout(renderer.whiteLocation), (pose, sides) ->
                         renderPaintedSides(sides, pose, w32, h32, packedLight, false));
             }
 

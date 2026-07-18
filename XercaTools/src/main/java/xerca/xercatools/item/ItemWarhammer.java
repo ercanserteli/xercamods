@@ -233,13 +233,13 @@ public class ItemWarhammer extends Item {
                 level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SMITE), stack);
         int baneLevel = EnchantmentHelper.getItemEnchantmentLevel(
                 level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.BANE_OF_ARTHROPODS), stack);
-        if (target.getType().is(EntityTypeTags.UNDEAD)) {
+        if (target.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD)) {
             damage += 2.5f * smiteLevel;
-        } else if (target.getType().is(EntityTypeTags.ARTHROPOD)) {
+        } else if (target.getType().builtInRegistryHolder().is(EntityTypeTags.ARTHROPOD)) {
             damage += 2.5f * baneLevel;
         }
 
-        level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), xerca.xercatools.SoundEvents.HAMMER, SoundSource.PLAYERS, 1.0f, level.random.nextFloat() * 0.1F + 0.4F + (2.0f / (damage + densityLevel)));
+        level.playSound(null, target.getX(), target.getY() + 0.5d, target.getZ(), xerca.xercatools.SoundEvents.HAMMER, SoundSource.PLAYERS, 1.0f, level.getRandom().nextFloat() * 0.1F + 0.4F + (2.0f / (damage + densityLevel)));
         stack.hurtAndBreak(1, player, slot);
         if (level instanceof ServerLevel serverLevel) {
             target.hurtServer(serverLevel, player.damageSources().playerAttack(player), damage);
@@ -298,7 +298,7 @@ public class ItemWarhammer extends Item {
 
         spawnQuakeParticles(level, position, pullDuration, range);
         level.playSound(null, position.x, position.y, position.z, xerca.xercatools.SoundEvents.STOMP, SoundSource.PLAYERS,
-                (float) Math.min(1.0, Math.log10(10.0 * pullDuration + 1.0)), level.random.nextFloat() * 0.1F + 0.4F + pitch);
+                (float) Math.min(1.0, Math.log10(10.0 * pullDuration + 1.0)), level.getRandom().nextFloat() * 0.1F + 0.4F + pitch);
 
         if (!targets.isEmpty()) {
             stack.hurtAndBreak(1, player, slot);
@@ -312,8 +312,8 @@ public class ItemWarhammer extends Item {
 
         int particleCount = (int) (Math.min(1.0, Math.log10(10.0 * pullDuration + 1.0)) * 64.0);
         for (int i = 0; i < particleCount; i++) {
-            double angle = level.random.nextDouble() * 2.0 * Math.PI;
-            double radius = Math.sqrt(level.random.nextDouble()) * range;
+            double angle = level.getRandom().nextDouble() * 2.0 * Math.PI;
+            double radius = Math.sqrt(level.getRandom().nextDouble()) * range;
             double posX = position.x + Math.cos(angle) * radius;
             double posZ = position.z + Math.sin(angle) * radius;
             Vec3 particlePos = new Vec3(posX, position.y, posZ);
@@ -337,7 +337,7 @@ public class ItemWarhammer extends Item {
         windCharge.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, velocity, 1.0F);
         level.addFreshEntity(windCharge);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), net.minecraft.sounds.SoundEvents.WIND_CHARGE_THROW,
-                SoundSource.PLAYERS, 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+                SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
     }
 
     @Override

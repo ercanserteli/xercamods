@@ -104,7 +104,7 @@ public final class CanvasSidesRenderClientTest implements FabricClientGameTest {
         context.waitTicks(5);
         spawnCanvas(singleplayer, item, canvasId, customSides);
         context.waitTicks(40);
-        singleplayer.getClientWorld().waitForChunksRender();
+        singleplayer.getClientLevel().waitForChunksRender();
         context.assertScreenshotEquals(TestScreenshotComparisonOptions.of(golden)
                 .withAlgorithm(SsimComparisonAlgorithm.withThreshold(EQUALS_THRESHOLD))
                 .save());

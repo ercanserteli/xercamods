@@ -8,7 +8,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
@@ -28,7 +27,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class CanvasSidesGameTests {
 
-    private static final RecipeCanvasCloning CLONING_RECIPE = new RecipeCanvasCloning(CraftingBookCategory.MISC);
+    private static final RecipeCanvasCloning CLONING_RECIPE = RecipeCanvasCloning.INSTANCE;
 
     private static CraftingInput createGrid(int width, int height, ItemStack... input) {
         List<ItemStack> stacks = new ArrayList<>(Collections.nCopies(width * height, ItemStack.EMPTY));
@@ -105,8 +104,7 @@ public class CanvasSidesGameTests {
         List<Integer> sideList = Arrays.stream(sampleSidePixels(type)).boxed().toList();
         original.set(Items.CANVAS_SIDE_PIXELS, sideList);
 
-        ItemStack result = CLONING_RECIPE.assemble(createGrid(2, 2, original, new ItemStack(Items.ITEM_CANVAS)),
-                helper.getLevel().registryAccess());
+        ItemStack result = CLONING_RECIPE.assemble(createGrid(2, 2, original, new ItemStack(Items.ITEM_CANVAS)));
 
         TestAsserts.assertTrue(helper, !result.isEmpty(), "Expected a clone result");
         TestAsserts.assertTrue(helper, Boolean.TRUE.equals(result.get(Items.CANVAS_SIDES_ACTIVE)), "Clone must copy sidesActive");

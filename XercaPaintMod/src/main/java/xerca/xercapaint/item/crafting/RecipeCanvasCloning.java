@@ -1,9 +1,10 @@
 package xerca.xercapaint.item.crafting;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -14,8 +15,11 @@ import xerca.xercapaint.item.Items;
 
 @NullMarked
 public class RecipeCanvasCloning extends CustomRecipe {
-    public RecipeCanvasCloning(CraftingBookCategory category) {
-        super(category);
+    public static final RecipeCanvasCloning INSTANCE = new RecipeCanvasCloning();
+    public static final MapCodec<RecipeCanvasCloning> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RecipeCanvasCloning> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    private RecipeCanvasCloning() {
     }
 
     /**
@@ -65,7 +69,7 @@ public class RecipeCanvasCloning extends CustomRecipe {
      * Returns an Item that is the result of this recipe
      */
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv) {
         ItemStack orgCanvas = ItemStack.EMPTY;
         ItemStack freshCanvas = ItemStack.EMPTY;
 

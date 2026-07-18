@@ -1,7 +1,7 @@
 package xerca.xercapaint.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -139,13 +139,13 @@ public abstract class BasePalette extends Screen {
         }
     }
 
-    protected void superRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    protected void superRender(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
 
         // Draw basic colors
@@ -207,7 +207,8 @@ public abstract class BasePalette extends Screen {
             for (int i = 0; i < BASIC_COLOR_CENTERS.length; i++) {
                 if (basicColorFlags[i] && sqrDist(clickVec, BASIC_COLOR_CENTERS[i]) <= sqrBasicRadius) {
                     if (mouseButton == 0) {
-                        carriedColor = currentColor = BASIC_COLORS[i];
+                        currentColor = BASIC_COLORS[i];
+                        carriedColor = currentColor;
                         setCarryingColor();
                         playSound(SoundEvents.MIX, 0.6f);
                     }
@@ -220,7 +221,8 @@ public abstract class BasePalette extends Screen {
                 for (int i = 0; i < CUSTOM_COLOR_CENTERS.length; i++) {
                     if (sqrDist(clickVec, CUSTOM_COLOR_CENTERS[i]) <= sqrCustomRadius) {
                         if (mouseButton == 0 && customColors[i].getNumberOfColors() > 0) {
-                            carriedColor = currentColor = customColors[i].getColor();
+                            currentColor = customColors[i].getColor();
+                            carriedColor = currentColor;
                             carriedCustomColorId = i;
                             setCarryingColor();
                             playSound(SoundEvents.MIX, 0.3f);
@@ -324,7 +326,7 @@ public abstract class BasePalette extends Screen {
         Minecraft m = Minecraft.getInstance();
         if (m.level != null && m.player != null) {
             m.getSoundManager().play(new SimpleSoundInstance(soundEvent, SoundSource.MASTER, volume,
-                    0.8f + m.level.random.nextFloat() * 0.4f, m.player.getRandom(), m.player.blockPosition()));
+                    0.8f + m.level.getRandom().nextFloat() * 0.4f, m.player.getRandom(), m.player.blockPosition()));
         }
     }
 

@@ -92,7 +92,7 @@ public class CanvasRecipeGameTests {
             CraftingInput grid = createFilledGrid(spec.width(), spec.height(), createFreshSmallCanvas());
 
             TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected recipe to match for " + spec.recipeId());
-            ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+            ItemStack result = recipe.assemble(grid);
             TestAsserts.assertTrue(helper, result.is(spec.expectedResult()), "Expected " + spec.recipeId() + " result item");
         }
 
@@ -107,7 +107,7 @@ public class CanvasRecipeGameTests {
             CraftingInput grid = createFilledGrid(spec.width(), spec.height(), freshGlass);
 
             TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected glass recipe to match for " + spec.recipeId());
-            ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+            ItemStack result = recipe.assemble(grid);
             TestAsserts.assertTrue(helper, result.is(spec.expectedResult()), "Expected " + spec.recipeId() + " result item");
         }
 
@@ -128,7 +128,7 @@ public class CanvasRecipeGameTests {
         CraftingInput grid = CraftingInput.of(3, 3, stacks);
 
         TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected glass canvas recipe to match");
-        ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = recipe.assemble(grid);
         TestAsserts.assertTrue(helper, result.is(Items.ITEM_CANVAS_GLASS), "Expected glass canvas result item");
 
         helper.succeed();
@@ -150,7 +150,7 @@ public class CanvasRecipeGameTests {
             CraftingInput grid = CraftingInput.of(spec.width(), spec.height(), stacks);
 
             TestAsserts.assertTrue(helper, !recipe.matches(grid, helper.getLevel()), "Expected painted input to fail matching for " + spec.recipeId());
-            TestAsserts.assertTrue(helper, recipe.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+            TestAsserts.assertTrue(helper, recipe.assemble(grid).isEmpty(),
                     "Expected painted input to assemble empty for " + spec.recipeId());
         }
 
@@ -169,7 +169,7 @@ public class CanvasRecipeGameTests {
 
             TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()),
                     "Expected foreign-tagged fresh input to match for " + spec.recipeId());
-            ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
+            ItemStack result = recipe.assemble(grid);
             TestAsserts.assertTrue(helper, result.is(spec.expectedResult()),
                     "Expected foreign-tagged fresh input to craft expected result for " + spec.recipeId());
         }

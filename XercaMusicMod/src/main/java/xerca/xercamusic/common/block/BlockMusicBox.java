@@ -142,9 +142,9 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
                     itemStack
             );
             itemEntity.setDeltaMovement(
-                    world.random.nextDouble() * 0.2 - 0.1,
+                    world.getRandom().nextDouble() * 0.2 - 0.1,
                     0.1,
-                    world.random.nextDouble() * 0.2 - 0.1
+                    world.getRandom().nextDouble() * 0.2 - 0.1
             );
             return itemEntity;
         }
@@ -160,7 +160,7 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
                 pos.getZ() + zOffset * 0.625D,
                 itemStack
         );
-        double speed = world.random.nextDouble() * 0.1 + 0.2;
+        double speed = world.getRandom().nextDouble() * 0.1 + 0.2;
         itemEntity.setDeltaMovement(xOffset * speed, 0.1, zOffset * speed);
         return itemEntity;
     }

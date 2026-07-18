@@ -16,7 +16,7 @@ public class ItemBadge extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.OBJECTION, SoundSource.PLAYERS, 1.0F,
-                level.random.nextFloat() * 0.2F + 0.8F);
+                level.getRandom().nextFloat() * 0.2F + 0.8F);
         player.getCooldowns().addCooldown(player.getItemInHand(hand), 20);
         return InteractionResult.SUCCESS;
     }

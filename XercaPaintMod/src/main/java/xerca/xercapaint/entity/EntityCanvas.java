@@ -417,7 +417,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 hitPos) {
         CanvasType canvasType = this.requireCanvasType();
         if (canvasType == CanvasType.SMALL || canvasType == CanvasType.LARGE) {
             if (!this.level().isClientSide()) {

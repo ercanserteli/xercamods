@@ -39,7 +39,7 @@ public class ItemGoldenCupcake extends Item {
         }
 
         if (!worldIn.isClientSide()) {
-            int n = worldIn.random.nextInt(5);
+            int n = worldIn.getRandom().nextInt(5);
             switch (n) {
                 case 0 -> applyLuckyStorm(worldIn, player);
                 case 1 -> applyHolyBuffs(worldIn, player);
@@ -71,9 +71,9 @@ public class ItemGoldenCupcake extends Item {
 
     private void spawnBonusCupcakes(Level world, Player player) {
         float multiplier = 0.5f;
-        float motionX = world.random.nextFloat() - 0.5f;
-        float motionY = world.random.nextFloat() - 0.5f;
-        float motionZ = world.random.nextFloat() - 0.5f;
+        float motionX = world.getRandom().nextFloat() - 0.5f;
+        float motionY = world.getRandom().nextFloat() - 0.5f;
+        float motionZ = world.getRandom().nextFloat() - 0.5f;
 
         ItemEntity newCupcake = new ItemEntity(
                 world,
@@ -87,7 +87,7 @@ public class ItemGoldenCupcake extends Item {
     }
 
     private void applyHolyBuffs(Level world, Player player) {
-        world.playSound(null, player.getX(), player.getY() + 1, player.getZ(), SoundEvents.HOLY, SoundSource.MASTER, 1.0f, world.random.nextFloat() * 0.2F + 0.9F);
+        world.playSound(null, player.getX(), player.getY() + 1, player.getZ(), SoundEvents.HOLY, SoundSource.MASTER, 1.0f, world.getRandom().nextFloat() * 0.2F + 0.9F);
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 500, 3));
         player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 500, 3));
         player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 500, 3));
@@ -103,17 +103,17 @@ public class ItemGoldenCupcake extends Item {
                 player.getBoundingBox().inflate(16.0D, 8.0D, 16.0D), p -> p != player && p.isAlive()));
         targets.add(player);
         for (Player target : targets) {
-            world.playSound(null, target.getX(), target.getY() + 3, target.getZ(), SoundEvents.YAHOO, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.9F);
+            world.playSound(null, target.getX(), target.getY() + 3, target.getZ(), SoundEvents.YAHOO, SoundSource.PLAYERS, 1.0f, world.getRandom().nextFloat() * 0.2F + 0.9F);
             target.push(0, 2, 0);
             target.hurtMarked = true;
-            int time = 1100 + world.random.nextInt(200);
+            int time = 1100 + world.getRandom().nextInt(200);
             target.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, time, 6));
             target.addEffect(new MobEffectInstance(MobEffects.SPEED, time, 1));
         }
     }
 
     private void applySparkleRoulette(Level world, Player player) {
-        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SPARKLES, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.4F + 0.8F);
+        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SPARKLES, SoundSource.PLAYERS, 1.0f, world.getRandom().nextFloat() * 0.4F + 0.8F);
         List<Holder<net.minecraft.world.effect.MobEffect>> effects = new ArrayList<>(Arrays.asList(
                 MobEffects.HEALTH_BOOST, MobEffects.REGENERATION, MobEffects.SATURATION, MobEffects.SLOW_FALLING,
                 MobEffects.NAUSEA, MobEffects.SPEED, MobEffects.HUNGER, MobEffects.WEAKNESS,
@@ -121,12 +121,12 @@ public class ItemGoldenCupcake extends Item {
         ));
         Collections.shuffle(effects);
         for (int i = 0; i < 3; i++) {
-            player.addEffect(new MobEffectInstance(effects.get(i), 200 + world.random.nextInt(400), 2 + world.random.nextInt(5)));
+            player.addEffect(new MobEffectInstance(effects.get(i), 200 + world.getRandom().nextInt(400), 2 + world.getRandom().nextInt(5)));
         }
     }
 
     private void applyScarySummon(Level world, Player player) {
-        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SCARY, SoundSource.PLAYERS, 1.0f, world.random.nextFloat() * 0.2F + 0.9F);
+        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SCARY, SoundSource.PLAYERS, 1.0f, world.getRandom().nextFloat() * 0.2F + 0.9F);
         player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0));
         player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 200, 2));
         player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 200, 1));
@@ -149,14 +149,14 @@ public class ItemGoldenCupcake extends Item {
     }
 
     private void equipMob(Level world, Player player, Item[] weapons, LivingEntity mob, ItemStack head) {
-        mob.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapons[world.random.nextInt(weapons.length)]));
-        mob.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(weapons[world.random.nextInt(weapons.length)]));
+        mob.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapons[world.getRandom().nextInt(weapons.length)]));
+        mob.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(weapons[world.getRandom().nextInt(weapons.length)]));
         mob.setItemSlot(EquipmentSlot.HEAD, head);
         mob.snapTo(
-                player.getX() + world.random.nextInt(3),
-                player.getY() + world.random.nextInt(5),
-                player.getZ() + world.random.nextInt(3),
-                world.random.nextFloat() * 360.0F,
+                player.getX() + world.getRandom().nextInt(3),
+                player.getY() + world.getRandom().nextInt(5),
+                player.getZ() + world.getRandom().nextInt(3),
+                world.getRandom().nextFloat() * 360.0F,
                 0.0F
         );
     }

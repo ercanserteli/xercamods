@@ -66,11 +66,11 @@ public final class MusicRecipeGameTests {
 
     private static void assertCrafts(GameTestHelper helper, String expectedPath, CraftingInput input) {
         Level level = helper.getLevel();
-        Optional<RecipeHolder<CraftingRecipe>> holder = level.getServer().getRecipeManager()
+        Optional<RecipeHolder<CraftingRecipe>> holder = helper.getLevel().recipeAccess()
                 .getRecipeFor(RecipeType.CRAFTING, input, level);
         assertTrue(helper, holder.isPresent(), "Expected a crafting recipe to match for " + expectedPath);
         if (holder.isPresent()) {
-            ItemStack result = holder.get().value().assemble(input, level.registryAccess());
+            ItemStack result = holder.get().value().assemble(input);
             Identifier resultId = BuiltInRegistries.ITEM.getKey(result.getItem());
             assertTrue(helper, Mod.id(expectedPath).equals(resultId),
                     "Expected " + expectedPath + " recipe to craft xercamusic:" + expectedPath + " but got " + resultId);

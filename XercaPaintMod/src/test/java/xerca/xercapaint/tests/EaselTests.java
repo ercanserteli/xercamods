@@ -130,18 +130,18 @@ public class EaselTests {
         EntityEasel easel = requireSingleEaselNear(helper, easelLand, "No easel was spawned near placement area");
 
         player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_CANVAS, 1));
-        InteractionResult putCanvasResult = player.interactOn(easel, InteractionHand.MAIN_HAND);
+        InteractionResult putCanvasResult = player.interactOn(easel, InteractionHand.MAIN_HAND, easel.position());
         TestAsserts.assertTrue(helper, putCanvasResult.consumesAction(), "Expected right-click with canvas to consume interaction");
         TestAsserts.assertTrue(helper, easel.getItem().is(Items.ITEM_CANVAS), "Expected canvas to be inserted into easel");
         TestAsserts.assertTrue(helper, player.getMainHandItem().isEmpty(), "Expected canvas stack to shrink to empty after insertion");
 
         player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-        InteractionResult viewResult = player.interactOn(easel, InteractionHand.MAIN_HAND);
+        InteractionResult viewResult = player.interactOn(easel, InteractionHand.MAIN_HAND, easel.position());
         TestAsserts.assertTrue(helper, viewResult.consumesAction(), "Expected empty-hand interaction to consume interaction");
         TestAsserts.assertTrue(helper, getPainter(helper, easel) == null, "Expected empty-hand interaction to stay in view mode (no editor lock)");
 
         player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE, 1));
-        InteractionResult editResult = player.interactOn(easel, InteractionHand.MAIN_HAND);
+        InteractionResult editResult = player.interactOn(easel, InteractionHand.MAIN_HAND, easel.position());
         TestAsserts.assertTrue(helper, editResult.consumesAction(), "Expected palette interaction to consume interaction");
         TestAsserts.assertTrue(helper, Objects.equals(getPainter(helper, easel), player), "Expected palette interaction to acquire easel editor lock");
 
@@ -166,17 +166,17 @@ public class EaselTests {
         EntityEasel easel = requireSingleEaselNear(helper, easelLand, "No easel was spawned for two-player test");
 
         firstPlayer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_CANVAS, 1));
-        firstPlayer.interactOn(easel, InteractionHand.MAIN_HAND);
+        firstPlayer.interactOn(easel, InteractionHand.MAIN_HAND, easel.position());
         TestAsserts.assertTrue(helper, easel.getItem().is(Items.ITEM_CANVAS), "Expected canvas on easel before edit-lock checks");
 
         firstPlayer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE, 1));
-        firstPlayer.interactOn(easel, InteractionHand.MAIN_HAND);
+        firstPlayer.interactOn(easel, InteractionHand.MAIN_HAND, easel.position());
         TestAsserts.assertTrue(helper, Objects.equals(getPainter(helper, easel), firstPlayer), "First player should hold the edit lock");
 
         secondPlayer.snapTo(target.x - 1.0D, absEaselLand.getY(), target.z, 0.0F, 0.0F);
         secondPlayer.lookAt(EntityAnchorArgument.Anchor.EYES, target);
         secondPlayer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE, 1));
-        secondPlayer.interactOn(easel, InteractionHand.MAIN_HAND);
+        secondPlayer.interactOn(easel, InteractionHand.MAIN_HAND, easel.position());
         TestAsserts.assertTrue(helper, Objects.equals(getPainter(helper, easel), firstPlayer), "Second player should not replace first player as editor");
 
         DamageSource secondAttack = helper.getLevel().damageSources().playerAttack(secondPlayer);
@@ -214,7 +214,7 @@ public class EaselTests {
         EntityEasel easel = requireSingleEaselNear(helper, easelLand, "No easel was spawned for explosion test");
 
         player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_CANVAS, 1));
-        player.interactOn(easel, InteractionHand.MAIN_HAND);
+        player.interactOn(easel, InteractionHand.MAIN_HAND, easel.position());
         TestAsserts.assertTrue(helper, easel.getItem().is(Items.ITEM_CANVAS), "Expected canvas to be mounted before explosion break test");
 
         DamageSource explosion = helper.getLevel().damageSources().explosion(null, null);

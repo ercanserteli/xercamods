@@ -1,7 +1,7 @@
 package xerca.xercacourt;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTabs;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +21,7 @@ public class Mod implements ModInitializer {
         SoundEvents.register();
         Items.register();
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             entries.accept(Items.GAVEL);
             entries.accept(Items.ATTORNEY_BADGE);
             entries.accept(Items.PROSECUTOR_BADGE);

@@ -34,7 +34,7 @@ public final class CarvedCrimsonClientTest implements FabricClientGameTest {
 
         // Consistent settings (default) give a superflat, fixed-seed world with daylight/weather/mob cycles off.
         try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
-            singleplayer.getClientWorld().waitForChunksRender();
+            singleplayer.getClientLevel().waitForChunksRender();
 
             TestServerContext server = singleplayer.getServer();
             server.runCommand("gamerule doDaylightCycle false");
@@ -50,7 +50,7 @@ public final class CarvedCrimsonClientTest implements FabricClientGameTest {
 
             // Let the client receive the block changes and rebuild the chunk mesh.
             context.waitTicks(40);
-            singleplayer.getClientWorld().waitForChunksRender();
+            singleplayer.getClientLevel().waitForChunksRender();
 
             // The live (glowing) frame must match the glowing golden...
             context.assertScreenshotEquals(TestScreenshotComparisonOptions.of(GOLDEN)

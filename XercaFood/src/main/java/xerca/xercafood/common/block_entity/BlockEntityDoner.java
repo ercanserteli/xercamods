@@ -32,7 +32,7 @@ public class BlockEntityDoner extends BlockEntity {
             return;
         }
 
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         t.isSpinning = true;
         t.spinTicks++;
 

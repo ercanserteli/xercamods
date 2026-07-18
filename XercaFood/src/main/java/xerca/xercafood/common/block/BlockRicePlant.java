@@ -27,7 +27,7 @@ public class BlockRicePlant extends CropBlock implements BonemealableBlock {
 
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        if (state.getBlock() == Blocks.FARMLAND && state.getValue(FarmBlock.MOISTURE) > 6) {
+        if (state.getBlock() == Blocks.FARMLAND && state.getValue(FarmlandBlock.MOISTURE) > 6) {
             int waterCount = 0;
             for (Direction direction : Direction.Plane.HORIZONTAL) {
                 BlockState blockstate = worldIn.getBlockState(pos.relative(direction));

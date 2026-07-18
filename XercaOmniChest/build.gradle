@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.14.10'
+    id 'net.fabricmc.fabric-loom' version '1.17.16'
     id 'maven-publish'
     id("com.github.spotbugs") version "6.5.9"
     id "pmd"
@@ -14,30 +14,22 @@ base {
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'ParchmentMC'
-        url = 'https://maven.parchmentmc.org'
-    }
 }
 
 tasks.register('buildCopy', Copy) {
-    dependsOn tasks.named('remapJar')
-    from(tasks.named('remapJar').flatMap { it.archiveFile })
+    dependsOn tasks.named('jar')
+    from(tasks.named('jar').flatMap { it.archiveFile })
     into(layout.projectDirectory.dir("../builds"))
 }
 
 dependencies {
     compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.21.11:2025.12.20@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Client game test API for screenshot-diff rendering regression tests.
-    modImplementation fabricApi.module("fabric-client-gametest-api-v1", project.fabric_version)
+    implementation fabricApi.module("fabric-client-gametest-api-v1", project.fabric_version)
 }
 
 processResources {
@@ -49,7 +41,7 @@ processResources {
     }
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
     it.options.release = targetJavaVersion
@@ -68,7 +60,7 @@ tasks.named('spotbugsMain') {
 }
 
 pmd {
-    toolVersion = "7.11.0"
+    toolVersion = "7.26.0"
     ignoreFailures = true
     consoleOutput = true
     ruleSets = []

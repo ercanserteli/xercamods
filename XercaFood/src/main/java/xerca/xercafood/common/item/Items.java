@@ -1,6 +1,6 @@
 package xerca.xercafood.common.item;
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -11,7 +11,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.Consumable;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
@@ -265,10 +264,10 @@ public final class Items {
     public static final Item PIZZA_CHICKEN = new ItemPizza(Blocks.PIZZA_CHICKEN, BlockPizza.Ingredient.CHICKEN, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
     public static final Item PIZZA = new ItemPizza(Blocks.PIZZA, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
 
-    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING = new CustomRecipe.Serializer<>(RecipeTeaSugaring::new);
-    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING = new CustomRecipe.Serializer<>(RecipeTeaPouring::new);
-    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new CustomRecipe.Serializer<>(RecipeTeaFilling::new);
-    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING = new CustomRecipe.Serializer<>(RecipeTeaRefilling::new);
+    public static final RecipeSerializer<RecipeTeaSugaring> CRAFTING_SPECIAL_TEA_SUGARING = new RecipeSerializer<>(RecipeTeaSugaring.MAP_CODEC, RecipeTeaSugaring.STREAM_CODEC);
+    public static final RecipeSerializer<RecipeTeaPouring> CRAFTING_SPECIAL_TEA_POURING = new RecipeSerializer<>(RecipeTeaPouring.MAP_CODEC, RecipeTeaPouring.STREAM_CODEC);
+    public static final RecipeSerializer<RecipeTeaFilling> CRAFTING_SPECIAL_TEA_FILLING = new RecipeSerializer<>(RecipeTeaFilling.MAP_CODEC, RecipeTeaFilling.STREAM_CODEC);
+    public static final RecipeSerializer<RecipeTeaRefilling> CRAFTING_SPECIAL_TEA_REFILLING = new RecipeSerializer<>(RecipeTeaRefilling.MAP_CODEC, RecipeTeaRefilling.STREAM_CODEC);
 
     private static Item.Properties properties(String name) {
         return new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Mod.id(name)));
@@ -569,7 +568,7 @@ public final class Items {
         registerItem("pizza", PIZZA);
 
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
             entries.accept(TOMATO);
             entries.accept(RAW_SHISH_KEBAB);
             entries.accept(SHISH_KEBAB);
@@ -663,21 +662,21 @@ public final class Items {
             entries.accept(FULL_TEACUP_0);
             entries.accept(HOT_TEAPOT_7);
         });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             if (REGISTER_LOCAL_KNIFE) {
                 entries.accept(requireLocalKnife());
             }
         });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
             entries.accept(GLASS);
             entries.accept(TEACUP);
             entries.accept(TEAPOT);
         });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.NATURAL_BLOCKS).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.NATURAL_BLOCKS).register(entries -> {
             entries.accept(TOMATO_SEEDS);
             entries.accept(RICE_SEEDS);
             entries.accept(TEA_SEEDS);
         });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> entries.accept(VAT));
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> entries.accept(VAT));
     }
 }

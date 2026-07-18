@@ -84,7 +84,7 @@ final class PaintClientTests {
             Screen screen = client.screen;
             if (screen != null) {
                 for (int i = 0; i < text.length(); i++) {
-                    screen.charTyped(new CharacterEvent(text.charAt(i), 0));
+                    screen.charTyped(new CharacterEvent(text.charAt(i)));
                 }
             }
         });

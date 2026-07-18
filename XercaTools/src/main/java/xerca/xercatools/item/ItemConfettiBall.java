@@ -22,7 +22,7 @@ public class ItemConfettiBall extends Item {
     @Override
     public InteractionResult use(Level worldIn, Player playerIn, InteractionHand hand) {
         final ItemStack heldItem = playerIn.getItemInHand(hand);
-        worldIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (worldIn.random.nextFloat() * 0.4F + 0.8F));
+        worldIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (worldIn.getRandom().nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isClientSide()) {
             EntityConfettiBall entityball = new EntityConfettiBall(worldIn, playerIn);

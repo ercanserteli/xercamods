@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
@@ -19,9 +18,7 @@ import java.util.List;
 
 public class RecipeFillPaletteGameTests {
 
-    private static final RecipeFillPalette RECIPE = new RecipeFillPalette(
-            CraftingBookCategory.MISC
-    );
+    private static final RecipeFillPalette RECIPE = RecipeFillPalette.INSTANCE;
 
     private static int slot(int width, int row, int col) {
         return row * width + col;
@@ -62,7 +59,7 @@ public class RecipeFillPaletteGameTests {
         CraftingInput grid = createGrid(3, 3, items);
 
         TestAsserts.assertTrue(helper, RECIPE.matches(grid, helper.getLevel()), "Expected palette + dyes to match filling recipe");
-        ItemStack result = RECIPE.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack result = RECIPE.assemble(grid);
         TestAsserts.assertTrue(helper, result.is(Items.ITEM_PALETTE), "Expected filled palette output");
 
         byte[] basic = result.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[0]);
@@ -88,7 +85,7 @@ public class RecipeFillPaletteGameTests {
         CraftingInput grid = createGrid(3, 3, items);
 
         TestAsserts.assertTrue(helper, RECIPE.matches(grid, helper.getLevel()), "Expected recipe to match before duplicate-color validation");
-        TestAsserts.assertTrue(helper, RECIPE.assemble(grid, helper.getLevel().registryAccess()).isEmpty(),
+        TestAsserts.assertTrue(helper, RECIPE.assemble(grid).isEmpty(),
                 "Expected assembling to fail when dye color is already present");
 
         helper.succeed();
@@ -102,7 +99,7 @@ public class RecipeFillPaletteGameTests {
         CraftingInput unknownItemGrid = createGrid(3, 3, unknownItems);
 
         TestAsserts.assertTrue(helper, !RECIPE.matches(unknownItemGrid, helper.getLevel()), "Expected non-dye ingredient to fail matching");
-        TestAsserts.assertTrue(helper, RECIPE.assemble(unknownItemGrid, helper.getLevel().registryAccess()).isEmpty(),
+        TestAsserts.assertTrue(helper, RECIPE.assemble(unknownItemGrid).isEmpty(),
                 "Expected non-dye ingredient to assemble empty");
 
         List<ItemStack> noDyeItems = emptyGrid(3, 3);
@@ -110,7 +107,7 @@ public class RecipeFillPaletteGameTests {
         CraftingInput noDyeGrid = createGrid(3, 3, noDyeItems);
 
         TestAsserts.assertTrue(helper, !RECIPE.matches(noDyeGrid, helper.getLevel()), "Expected missing dye to fail matching");
-        TestAsserts.assertTrue(helper, RECIPE.assemble(noDyeGrid, helper.getLevel().registryAccess()).isEmpty(),
+        TestAsserts.assertTrue(helper, RECIPE.assemble(noDyeGrid).isEmpty(),
                 "Expected missing dye to assemble empty");
 
         helper.succeed();

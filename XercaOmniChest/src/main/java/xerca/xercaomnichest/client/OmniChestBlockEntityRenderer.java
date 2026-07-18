@@ -10,11 +10,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -24,13 +23,13 @@ import xerca.xercaomnichest.block.BlockOmniChest;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
 
 public final class OmniChestBlockEntityRenderer implements BlockEntityRenderer<BlockEntityOmniChest, OmniChestBlockEntityRenderer.OmniChestRenderState> {
-    private static final Material MATERIAL = new Material(Sheets.CHEST_SHEET, Mod.id("entity/chest/omni_chest"));
+    private static final SpriteId SPRITE = new SpriteId(Sheets.CHEST_SHEET, Mod.id("entity/chest/omni_chest"));
 
     private final ChestModel model;
-    private final MaterialSet materials;
+    private final SpriteGetter sprites;
 
     public OmniChestBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.materials = context.materials();
+        this.sprites = context.sprites();
         this.model = new ChestModel(context.bakeLayer(ModelLayers.CHEST));
     }
 
@@ -41,7 +40,7 @@ public final class OmniChestBlockEntityRenderer implements BlockEntityRenderer<B
 
     @Override
     public void extractRenderState(BlockEntityOmniChest blockEntity, OmniChestRenderState state, float partialTick, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
-        BlockEntityRenderState.extractBase(blockEntity, state, breakProgress);
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPos, breakProgress);
         BlockState blockState = blockEntity.getBlockState();
         Direction direction = blockState.hasProperty(BlockOmniChest.FACING) ? blockState.getValue(BlockOmniChest.FACING) : Direction.SOUTH;
         state.angle = direction.toYRot();
@@ -58,8 +57,8 @@ public final class OmniChestBlockEntityRenderer implements BlockEntityRenderer<B
         float openness = 1.0F - state.open;
         openness = 1.0F - openness * openness * openness;
 
-        collector.submitModel(model, openness, poseStack, MATERIAL.renderType(RenderTypes::entityCutout),
-                state.lightCoords, OverlayTexture.NO_OVERLAY, -1, materials.get(MATERIAL), 0, state.breakProgress);
+        collector.submitModel(model, openness, poseStack, state.lightCoords, OverlayTexture.NO_OVERLAY, -1,
+                SPRITE, sprites, 0, state.breakProgress);
         poseStack.popPose();
     }
 

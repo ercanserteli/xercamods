@@ -2,8 +2,8 @@ package xerca.xercamusic.common.data;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import xerca.xercamusic.common.block.Blocks;
 
@@ -17,8 +17,8 @@ public class BlockTags implements DataGeneratorEntrypoint {
         pack.addProvider(BlockTagGenerator::new);
     }
 
-    private static class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
-        BlockTagGenerator(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> future) {
+    private static class BlockTagGenerator extends FabricTagsProvider.BlockTagsProvider {
+        BlockTagGenerator(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> future) {
             super(dataOutput, future);
         }
 

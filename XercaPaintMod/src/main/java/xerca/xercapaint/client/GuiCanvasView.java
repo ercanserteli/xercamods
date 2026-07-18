@@ -1,7 +1,7 @@
 package xerca.xercapaint.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -90,12 +90,12 @@ public class GuiCanvasView extends Screen {
     private static final int CHECKER_LIGHT = 0xFFBFBFBF;
     private static final int CHECKER_DARK = 0xFF7F7F7F;
 
-    private void fillChecker(GuiGraphics guiGraphics, int x, int y, int parity) {
+    private void fillChecker(GuiGraphicsExtractor guiGraphics, int x, int y, int parity) {
         guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, (parity & 1) == 0 ? CHECKER_LIGHT : CHECKER_DARK);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
         if (glass) {
             for (int i = 0; i < canvasPixelHeight; i++) {
                 for (int j = 0; j < canvasPixelWidth; j++) {
@@ -149,8 +149,8 @@ public class GuiCanvasView extends Screen {
 
             guiGraphics.fill((int) (minX - 10), canvasY - 40, (int) (maxX + 10), canvasY - 14, 0xFFEEEEEE);
 
-            guiGraphics.drawString(font, title, (int) titleX, (canvasY - 35), 0xFF111111, false);
-            guiGraphics.drawString(font, gen, (int) genX, canvasY - 24, 0xFF444444, false);
+            guiGraphics.text(font, title, (int) titleX, (canvasY - 35), 0xFF111111, false);
+            guiGraphics.text(font, gen, (int) genX, canvasY - 24, 0xFF444444, false);
         }
     }
 

@@ -53,7 +53,7 @@ public class ItemKnife extends Item {
                 ClientboundAnimatePacket packet = new ClientboundAnimatePacket(target, 4);
                 ((ServerLevel) target.level()).getChunkSource().sendToTrackingPlayersAndSelf(attacker, packet);
             }
-            attacker.level().playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 1.0F, attacker.level().random.nextFloat() * 0.2F + 0.8F);
+            attacker.level().playSound(null, target.getX(), target.getY() + 0.5D, target.getZ(), SoundEvents.SNEAK_HIT, SoundSource.PLAYERS, 1.0F, attacker.level().getRandom().nextFloat() * 0.2F + 0.8F);
             float bonus = DEFAULT_CRIT_BONUS;
             bonus += EnchantmentHelper.getItemEnchantmentLevel(KnifeEnchantments.stealthEnchantment(attacker.level().registryAccess()), stack) * 2.0F;
             return bonus;
@@ -94,14 +94,14 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public ItemStack getRecipeRemainder(ItemStack stack) {
+    public net.minecraft.world.item.ItemStackTemplate getCraftingRemainder(ItemStack stack) {
         ItemStack remainder = stack.copy();
         remainder.setCount(1);
         remainder.setDamageValue(stack.getDamageValue() + 1);
         if (remainder.getDamageValue() >= remainder.getMaxDamage()) {
-            return ItemStack.EMPTY;
+            return null;
         }
-        return remainder;
+        return net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(remainder);
     }
 
     @Override

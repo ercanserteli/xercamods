@@ -12,15 +12,15 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public ItemStack getRecipeRemainder(ItemStack stack) {
+    public net.minecraft.world.item.ItemStackTemplate getCraftingRemainder(ItemStack stack) {
         ItemStack remainder = stack.copy();
         remainder.setCount(1);
         remainder.setDamageValue(stack.getDamageValue() + 1);
 
         if (remainder.getDamageValue() >= remainder.getMaxDamage()) {
-            return ItemStack.EMPTY;
+            return null;
         }
 
-        return remainder;
+        return net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(remainder);
     }
 }

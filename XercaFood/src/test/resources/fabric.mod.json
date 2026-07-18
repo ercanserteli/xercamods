@@ -9,13 +9,14 @@
       "xerca.xercafood.tests.RecipeGameTests",
       "xerca.xercafood.tests.BlockGameTests",
       "xerca.xercafood.tests.FoodItemGameTests",
-      "xerca.xercafood.tests.AdvancementGameTests"
+      "xerca.xercafood.tests.AdvancementGameTests",
+      "xerca.xercafood.tests.VillagerTradeGameTests"
     ]
   },
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "1.21.11",
+    "minecraft": "26.1.2",
     "xercafood": "*"
   }
 }

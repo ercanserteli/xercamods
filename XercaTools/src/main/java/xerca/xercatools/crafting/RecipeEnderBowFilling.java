@@ -1,11 +1,12 @@
 package xerca.xercatools.crafting;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ThrowablePotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -26,8 +27,11 @@ public class RecipeEnderBowFilling extends CustomRecipe {
         private boolean lingering;
     }
 
-    public RecipeEnderBowFilling(CraftingBookCategory category) {
-        super(category);
+    public static final RecipeEnderBowFilling INSTANCE = new RecipeEnderBowFilling();
+    public static final MapCodec<RecipeEnderBowFilling> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RecipeEnderBowFilling> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    private RecipeEnderBowFilling() {
     }
 
     @Override
@@ -41,7 +45,7 @@ public class RecipeEnderBowFilling extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv) {
         ParsedInput parsed = parseInput(inv);
         if (!parsed.valid()
                 || parsed.launcherStack().isEmpty()
@@ -52,7 +56,7 @@ public class RecipeEnderBowFilling extends CustomRecipe {
 
         int oldCharges = ItemFlask.getCharges(parsed.launcherStack());
         int newCharges = oldCharges + parsed.potionCount();
-        if (newCharges <= ItemFlask.getMaxCharges(parsed.launcherStack(), provider)) {
+        if (newCharges <= ItemFlask.getMaxCharges(parsed.launcherStack())) {
             ItemStack result = parsed.launcherStack().copy();
             result.setCount(1);
             result.set(DataComponents.POTION_CONTENTS, parsed.potionType());

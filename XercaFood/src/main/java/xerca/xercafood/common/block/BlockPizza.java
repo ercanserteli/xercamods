@@ -70,7 +70,7 @@ public class BlockPizza extends Block {
         if (worldIn.isClientSide()) {
             if (eat(worldIn, pos, state, player, hungerPerBite).consumesAction()) {
                 worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
-                        1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
+                        1.0F, 1.0F + (worldIn.getRandom().nextFloat() - worldIn.getRandom().nextFloat()) * 0.4F);
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.CONSUME;
@@ -79,7 +79,7 @@ public class BlockPizza extends Block {
         InteractionResult ate = eat(worldIn, pos, state, player, hungerPerBite);
         if (ate.consumesAction()) {
             worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL,
-                    1.0F, 1.0F + (worldIn.random.nextFloat() - worldIn.random.nextFloat()) * 0.4F);
+                    1.0F, 1.0F + (worldIn.getRandom().nextFloat() - worldIn.getRandom().nextFloat()) * 0.4F);
         }
         return ate;
     }

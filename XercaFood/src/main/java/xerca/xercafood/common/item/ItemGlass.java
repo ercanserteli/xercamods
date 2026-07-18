@@ -33,7 +33,7 @@ public class ItemGlass extends Item {
             ctx.getItemInHand().shrink(1);
             player.addItem(new ItemStack(Items.CARBONATED_WATER));
             ctx.getLevel().playSound(player, ctx.getClickedPos(), SoundEvents.FIZZY, SoundSource.PLAYERS,
-                    1.0f, 0.9f + ctx.getLevel().random.nextFloat() * 0.2f);
+                    1.0f, 0.9f + ctx.getLevel().getRandom().nextFloat() * 0.2f);
             return true;
         }
         return false;

@@ -3,7 +3,7 @@ package xerca.xercamusic.client;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -302,8 +302,8 @@ public class GuiMusicSheet extends Screen {
         super.keyReleased(new KeyEvent(key, scan, mods));
     }
 
-    void callSuperCharTyped(char c, int mods) {
-        super.charTyped(new CharacterEvent(c, mods));
+    void callSuperCharTyped(char c) {
+        super.charTyped(new CharacterEvent(c));
     }
 
     boolean callSuperMouseScrolled(double x, double y, double sx, double sy) {
@@ -327,6 +327,7 @@ public class GuiMusicSheet extends Screen {
         startSound(noteId, (byte) (data.volume() * 128.f));
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     void startSound(int noteId, byte volume) {
         //TEMP
         if (noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
@@ -653,8 +654,10 @@ public class GuiMusicSheet extends Screen {
             buttonFinalize.visible = this.gettingSigned;
             buttonFinalize.active = !this.noteTitle.trim().isEmpty();
         }
-        bpmDown.visible = bpmUp.visible = showNormal && editable;
-        bpmDown.active = bpmUp.active = notRecording;
+        bpmUp.visible = showNormal && editable;
+        bpmDown.visible = bpmUp.visible;
+        bpmUp.active = notRecording;
+        bpmDown.active = bpmUp.active;
         buttonPreview.visible = showNormal;
         buttonPreview.active = notRecording;
         buttonLockPrevIns.visible = showNormal;
@@ -713,10 +716,11 @@ public class GuiMusicSheet extends Screen {
         ++this.tickCount;
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private void playMetronomeTick() {
         try {
             onlyCallOnClient(() -> () ->
-                    ModClient.playNote(SoundEvents.TICK, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), SoundSource.PLAYERS, 1.0f, 0.975f + editingPlayer.level().random.nextFloat() * 0.05f, (byte) -1));
+                    ModClient.playNote(SoundEvents.TICK, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), SoundSource.PLAYERS, 1.0f, 0.975f + editingPlayer.level().getRandom().nextFloat() * 0.05f, (byte) -1));
         } catch (Exception e) {
             Mod.LOGGER.error("Exception in playMetronomeTick", e);
         }
@@ -726,6 +730,7 @@ public class GuiMusicSheet extends Screen {
         return playSound(event, previewInstrument, volume);
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private @Nullable NoteSound playSound(NoteEvent event, int previewInstrument, float sheetVolume) {
         if (event.note < IItemInstrument.MIN_NOTE || event.note > IItemInstrument.MAX_NOTE) {
             Mod.LOGGER.warn("Note is invalid: {}", event.note);
@@ -837,7 +842,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void drawSigning(GuiGraphics guiGraphics) {
+    private void drawSigning(GuiGraphicsExtractor guiGraphics) {
         int i = noteImageLeftX;
         int j = noteImageY;
 
@@ -857,20 +862,20 @@ public class GuiMusicSheet extends Screen {
         }
         String writeTitleStr = I18n.get("note.editTitle");
         int k = this.font.width(writeTitleStr);
-        guiGraphics.drawString(font, writeTitleStr, (int) (left + (width - k) / 2.0f), top + 16, 0xFF000000, false);
+        guiGraphics.text(font, writeTitleStr, (int) (left + (width - k) / 2.0f), top + 16, 0xFF000000, false);
         int l = this.font.width(titleStr);
-        guiGraphics.drawString(font, titleStr, (int) (left + (width - l) / 2.0f), top + 30, 0xFF000000, false);
+        guiGraphics.text(font, titleStr, (int) (left + (width - l) / 2.0f), top + 30, 0xFF000000, false);
         String authorStr = I18n.get("note.byAuthor", this.editingPlayer.getName().getString());
         int i1 = this.font.width(authorStr);
-        guiGraphics.drawString(font, ChatFormatting.DARK_GRAY + authorStr, (int) (left + (116 - i1) / 2.0f), top + 42, 0xFF000000, false);
-        guiGraphics.drawWordWrap(font, Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0xFF000000, false);
+        guiGraphics.text(font, ChatFormatting.DARK_GRAY + authorStr, (int) (left + (116 - i1) / 2.0f), top + 42, 0xFF000000, false);
+        guiGraphics.textWithWordWrap(font, Component.translatable("note.finalizeWarning"), left + 10, top + 60, 116, 0xFF000000, false);
     }
 
     private int noteToPixelX(int noteX) {
         return noteImageLeftX + NOTE_REGION_LEFT + noteX * 3;
     }
 
-    private void drawCursor(GuiGraphics guiGraphics, int cursorX, int color) {
+    private void drawCursor(GuiGraphicsExtractor guiGraphics, int cursorX, int color) {
         if (inScreen(cursorX)) {
             int x = noteToPixelX(cursorX - sliderPosition);
             int y = noteImageY + NOTE_REGION_TOP;
@@ -921,12 +926,12 @@ public class GuiMusicSheet extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         // Rendering is handled in render()
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         Matrix3x2fStack stack = guiGraphics.pose();
         renderMouseX = mouseX;
         renderMouseY = mouseY;
@@ -1025,7 +1030,7 @@ public class GuiMusicSheet extends Screen {
                     guiGraphics.fill(x+11, y+1, x+13, y+7, halfAlpha);
                     guiGraphics.fill(x+13, y+2, x+14, y+6, halfAlpha);
                 }
-                guiGraphics.drawCenteredString(font, OCTAVE_NAMES[i + currentOctavePos], x, y, OCTAVE_COLORS[i + currentOctavePos]);
+                guiGraphics.centeredText(font, OCTAVE_NAMES[i + currentOctavePos], x, y, OCTAVE_COLORS[i + currentOctavePos]);
             }
 
             // Draw measure lines
@@ -1046,7 +1051,7 @@ public class GuiMusicSheet extends Screen {
                         final int y = noteImageY + NOTE_REGION_TOP - 5;
                         final String name = Integer.toString((i / highlightInterval) + 1);
                         final int w = font.width(name);
-                        guiGraphics.drawString(font, name, (int) ((x - (w - 6.0f) / 4.0f) * 2.f), y * 2, 0xFF444400, false);
+                        guiGraphics.text(font, name, (int) ((x - (w - 6.0f) / 4.0f) * 2.f), y * 2, 0xFF444400, false);
                     }
                 }
                 stack.popMatrix();
@@ -1060,11 +1065,11 @@ public class GuiMusicSheet extends Screen {
                 drawVolumeMarker(guiGraphics, currentlyAddedMarker, true);
             }
 
-            guiGraphics.drawString(font, "M:", noteImageLeftX + HL_BUT_X + 14, noteImageY + HL_BUT_Y + 2, 0xFF000000, false);
-            guiGraphics.drawString(font, "" + (highlightInterval > 1 ? highlightInterval : "-"), noteImageLeftX + HL_BUT_X + 22, noteImageY + HL_BUT_Y + 2, 0xFF000000, false);
+            guiGraphics.text(font, "M:", noteImageLeftX + HL_BUT_X + 14, noteImageY + HL_BUT_Y + 2, 0xFF000000, false);
+            guiGraphics.text(font, "" + (highlightInterval > 1 ? highlightInterval : "-"), noteImageLeftX + HL_BUT_X + 22, noteImageY + HL_BUT_Y + 2, 0xFF000000, false);
 
-            guiGraphics.drawString(font, "Tempo", noteImageLeftX + BPM_BUT_X - 30, noteImageY + BPM_BUT_Y, 0xFF000000, false);
-            guiGraphics.drawString(font, Integer.toString(bpm), noteImageLeftX + BPM_BUT_X - 30, noteImageY + BPM_BUT_Y + 10, 0xFF000000, false);
+            guiGraphics.text(font, "Tempo", noteImageLeftX + BPM_BUT_X - 30, noteImageY + BPM_BUT_Y, 0xFF000000, false);
+            guiGraphics.text(font, Integer.toString(bpm), noteImageLeftX + BPM_BUT_X - 30, noteImageY + BPM_BUT_Y + 10, 0xFF000000, false);
             drawCursor(guiGraphics, editCursor, 0xFFAA2222);
             if (!this.isSigned) {
                 if (editCursor != editCursorEnd) {
@@ -1073,7 +1078,7 @@ public class GuiMusicSheet extends Screen {
                 }
             } else {
                 int k = this.font.width(noteTitle);
-                guiGraphics.drawString(font, noteTitle, (int) (noteImageLeftX + (NOTE_IMAGE_WIDTH + NOTE_IMAGE_LEFT_WIDTH - k) / 2.0f), noteImageY + 14, 0xFF990000, false);
+                guiGraphics.text(font, noteTitle, (int) (noteImageLeftX + (NOTE_IMAGE_WIDTH + NOTE_IMAGE_LEFT_WIDTH - k) / 2.0f), noteImageY + 14, 0xFF990000, false);
 
                 if (this.selfSigned) {
                     drawCursor(guiGraphics, editCursor, 0xFFAA2222);
@@ -1105,7 +1110,7 @@ public class GuiMusicSheet extends Screen {
             drawCursor(guiGraphics, i, 0xFFAA8822);
         }
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         if (requireWidget(this.buttonHelp, "buttonHelp").isHovered()) {
             guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.helpTooltip"), mouseX, mouseY);
@@ -1128,7 +1133,7 @@ public class GuiMusicSheet extends Screen {
 
             // Title (centered, bold)
             String title = I18n.get("note.helpTitle");
-            guiGraphics.drawCenteredString(font, "§l" + title, helpPanelX + panelW / 2, helpPanelY + 4, 0xFFFFCC00);
+            guiGraphics.centeredText(font, "§l" + title, helpPanelX + panelW / 2, helpPanelY + 4, 0xFFFFCC00);
 
             // Tab bar
             helpTabY = helpPanelY + 16;
@@ -1152,7 +1157,7 @@ public class GuiMusicSheet extends Screen {
                 if (active) {
                     guiGraphics.fill(tabX, helpTabY, tabX + helpTabW[i], helpTabY + HELP_TAB_H, 0xFF444477);
                 }
-                guiGraphics.drawString(font, tabLabel, tabX + 3, helpTabY + 2,
+                guiGraphics.text(font, tabLabel, tabX + 3, helpTabY + 2,
                         active ? 0xFFFFFF55 : 0xFFAAAAAA, false);
                 tabX += helpTabW[i] + 2;
             }
@@ -1178,7 +1183,7 @@ public class GuiMusicSheet extends Screen {
                 String[] section = HELP_SECTIONS[s];
 
                 // Section header
-                guiGraphics.drawString(font, "§n§e" + I18n.get(section[0]),
+                guiGraphics.text(font, "§n§e" + I18n.get(section[0]),
                         contentX, cy, 0xFFFFCC00, false);
                 cy += lineH + 2;
 
@@ -1258,7 +1263,7 @@ public class GuiMusicSheet extends Screen {
                 int textWidth = font.width(textLines[0]);
                 int textX = barLeft + (maxBarWidth - textWidth) / 2;
                 int textY = barTop + (barHeight - 8) / 2 + 1;
-                guiGraphics.drawString(font, textLines[0], textX, textY, 0xFFFFFFFF, true);
+                guiGraphics.text(font, textLines[0], textX, textY, 0xFFFFFFFF, true);
             } else {
                 // Two lines: center each vertically with spacing
                 int line1Width = font.width(textLines[0]);
@@ -1267,8 +1272,8 @@ public class GuiMusicSheet extends Screen {
                 int textX2 = barLeft + (maxBarWidth - line2Width) / 2;
                 int textY1 = barTop + 3;
                 int textY2 = barTop + 12;
-                guiGraphics.drawString(font, textLines[0], textX1, textY1, 0xFFFFFFFF, true);
-                guiGraphics.drawString(font, textLines[1], textX2, textY2, 0xFFFFFFFF, true);
+                guiGraphics.text(font, textLines[0], textX1, textY1, 0xFFFFFFFF, true);
+                guiGraphics.text(font, textLines[1], textX2, textY2, 0xFFFFFFFF, true);
             }
         }
     }
@@ -1343,12 +1348,12 @@ public class GuiMusicSheet extends Screen {
         return parts;
     }
 
-    private void drawHelpLine(GuiGraphics guiGraphics, int x, int y, String key, String desc) {
-        guiGraphics.drawString(font, key + ": ", x, y, 0xFFDDDD44, false);
-        guiGraphics.drawString(font, desc, x + font.width(key + ": "), y, 0xFFCCCCCC, false);
+    private void drawHelpLine(GuiGraphicsExtractor guiGraphics, int x, int y, String key, String desc) {
+        guiGraphics.text(font, key + ": ", x, y, 0xFFDDDD44, false);
+        guiGraphics.text(font, desc, x + font.width(key + ": "), y, 0xFFCCCCCC, false);
     }
 
-    private void drawSelectionRect(GuiGraphics guiGraphics) {
+    private void drawSelectionRect(GuiGraphicsExtractor guiGraphics) {
         if (inScreen(editCursor) || inScreen(editCursorEnd) || (editCursor < sliderPosition && editCursorEnd >= sliderPosition + BEATS_IN_SCREEN)) {
             final int selectionColor = 0x882222AA;
             int timeDrawBeginning = Math.max(editCursor - sliderPosition, 0);
@@ -1378,7 +1383,7 @@ public class GuiMusicSheet extends Screen {
         return time >= sliderPosition && time < sliderPosition + BEATS_IN_SCREEN;
     }
 
-    private void drawNote(GuiGraphics guiGraphics, NoteEvent event, boolean isNeighbor) {
+    private void drawNote(GuiGraphicsExtractor guiGraphics, NoteEvent event, boolean isNeighbor) {
         int octave = octaveFromNote(event.note);
         if ((octave >= currentOctavePos && octave < currentOctavePos + 4) && (inScreen(event.time) || inScreen(event.time + event.length))) {
             int timeDrawBeginning = Math.max(event.time - sliderPosition, 0);
@@ -1452,7 +1457,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void drawVolumeMarker(GuiGraphics guiGraphics, VolumeMarker marker, boolean isBeingAdded) {
+    private void drawVolumeMarker(GuiGraphicsExtractor guiGraphics, VolumeMarker marker, boolean isBeingAdded) {
         // Check if any part of the marker is visible in the current octave range
         int lowOctave = octaveFromNote(marker.lowNote);
         int highOctave = octaveFromNote(marker.highNote);
@@ -1515,7 +1520,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    private void drawPendingGlissandoPreview(GuiGraphics guiGraphics, NoteEvent event, int xBegin, int xEnd, int y) {
+    private void drawPendingGlissandoPreview(GuiGraphicsExtractor guiGraphics, NoteEvent event, int xBegin, int xEnd, int y) {
         int noteLength = event.length & 0xFF;
         if (noteLength <= 0) {
             return;
@@ -1823,7 +1828,7 @@ public class GuiMusicSheet extends Screen {
 
     @Override
     public boolean charTyped(CharacterEvent event) {
-        return inputHandler.handleCharTyped((char) event.codepoint(), event.modifiers());
+        return inputHandler.handleCharTyped((char) event.codepoint());
     }
 
     @Override
@@ -1869,7 +1874,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         midiHandler.closeDevices();
-        editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.level().random.nextFloat() * 0.4f);
+        editingPlayer.playSound(SoundEvents.CLOSE_SCROLL, 1.0f, 0.8f + editingPlayer.level().getRandom().nextFloat() * 0.4f);
     }
 
     static <T> T requireWidget(@Nullable T widget, String name) {
@@ -1929,7 +1934,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
         }
@@ -1950,7 +1955,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
             int yTexStartNew = preRender();
 
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.xTexStart, yTexStartNew, this.width, this.height, this.texWidth, this.texHeight);
@@ -2048,19 +2053,19 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible && event != null) {
                 guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFFEEEEEE);
                 Minecraft minecraft = Minecraft.getInstance();
                 Font font = minecraft.font;
                 int noteId = IItemInstrument.noteToId(event.note);
                 int octave = noteId / 12;
-                guiGraphics.drawString(font, noteNames[noteId % 12] + (noteId % 12 < 3 ? octave : octave + 1), getX() + 15, getY() + NOTE_Y, 0xFFD3C200, false);
-                guiGraphics.drawString(font, noteNamesSolfege[noteId % 12], getX() + 35, getY() + NOTE_Y, 0xFFD3C200, false);
-                guiGraphics.drawString(font, event.length + (event.length == 1 ? " Beat" : " Beats"), getX() + 15, getY() + LENGTH_Y, 0xFF495EE5, false);
+                guiGraphics.text(font, noteNames[noteId % 12] + (noteId % 12 < 3 ? octave : octave + 1), getX() + 15, getY() + NOTE_Y, 0xFFD3C200, false);
+                guiGraphics.text(font, noteNamesSolfege[noteId % 12], getX() + 35, getY() + NOTE_Y, 0xFFD3C200, false);
+                guiGraphics.text(font, event.length + (event.length == 1 ? " Beat" : " Beats"), getX() + 15, getY() + LENGTH_Y, 0xFF495EE5, false);
 
                 for (AbstractWidget widget : children) {
-                    widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+                    widget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
                 }
 
                 if (buttonPrev.isHovered()) {
@@ -2216,7 +2221,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible && marker != null) {
                 guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFFEEEEEE);
                 Minecraft minecraft = Minecraft.getInstance();
@@ -2225,14 +2230,14 @@ public class GuiMusicSheet extends Screen {
                 // Draw marker type label
                 String typeLabel = marker.isCrescendo() ? "Crescendo" : "Decrescendo";
                 int typeColor = marker.isCrescendo() ? 0xFFAA2222 : 0xFF22AA22;
-                guiGraphics.drawString(font, typeLabel, getX() + 5, getY() + 5, typeColor, false);
+                guiGraphics.text(font, typeLabel, getX() + 5, getY() + 5, typeColor, false);
                 
                 // Draw duration info
                 int duration = marker.endTime - marker.startTime;
-                guiGraphics.drawString(font, duration + " beats", getX() + 5, getY() + 18, 0xFF333333, false);
+                guiGraphics.text(font, duration + " beats", getX() + 5, getY() + 18, 0xFF333333, false);
 
                 for(AbstractWidget widget : children) {
-                    widget.render(guiGraphics, mouseX, mouseY, partialTicks);
+                    widget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
                 }
             }
         }

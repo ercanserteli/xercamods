@@ -32,6 +32,7 @@ public class TileEntityMetronome extends BlockEntity {
         super(BlockEntities.METRONOME, blockPos, blockState);
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public static void tick(Level level, TileEntityMetronome metronome) {
         BlockState state = metronome.getBlockState();
         boolean powered = state.getValue(BlockMetronome.POWERED);
@@ -47,7 +48,7 @@ public class TileEntityMetronome extends BlockEntity {
                 if (level.isClientSide()) {// note: doesn't work if this function is only called in server
                     try {
                         onlyCallOnClient(() -> () ->
-                                ModClient.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat() * 0.1f, (byte) -1));
+                                ModClient.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.getRandom().nextFloat() * 0.1f, (byte) -1));
                     } catch (Exception e) {
                         Mod.LOGGER.error("Error playing metronome note", e);
                     }

@@ -122,7 +122,7 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected rope recipe to match three string"));
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.ROPE), Component.literal("Expected rope recipe to produce rope"));
+        helper.assertTrue(recipe.assemble(grid).is(Items.ROPE), Component.literal("Expected rope recipe to produce rope"));
         helper.succeed();
     }
 
@@ -136,7 +136,7 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected leather block recipe to match nine leather"));
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.BLOCK_LEATHER), Component.literal("Expected leather block recipe to produce the leather block item"));
+        helper.assertTrue(recipe.assemble(grid).is(Items.BLOCK_LEATHER), Component.literal("Expected leather block recipe to produce the leather block item"));
         helper.succeed();
     }
 
@@ -150,7 +150,7 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected straw block recipe to match nine sugar cane"));
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.BLOCK_STRAW), Component.literal("Expected straw block recipe to produce the straw block item"));
+        helper.assertTrue(recipe.assemble(grid).is(Items.BLOCK_STRAW), Component.literal("Expected straw block recipe to produce the straw block item"));
         helper.succeed();
     }
 
@@ -163,7 +163,7 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected terratile recipe to match black terracotta"));
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(modItem("black_terratile")),
+        helper.assertTrue(recipe.assemble(grid).is(modItem("black_terratile")),
                 Component.literal("Expected recipe to produce black terracotta tiles"));
         helper.succeed();
     }
@@ -178,7 +178,7 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected black terratile slab recipe to match three black terratiles"));
-        ItemStack output = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack output = recipe.assemble(grid);
         helper.assertTrue(output.is(modItem("black_terratile_slab")), Component.literal("Expected black terratile slab recipe to produce black terratile slabs"));
         helper.assertValueEqual(output.getCount(), 6, Component.literal("Expected black terratile slab recipe to produce six slabs"));
         helper.succeed();
@@ -194,7 +194,7 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected black terratile stairs recipe to match the staircase pattern"));
-        ItemStack output = recipe.assemble(grid, helper.getLevel().registryAccess());
+        ItemStack output = recipe.assemble(grid);
         helper.assertTrue(output.is(modItem("black_terratile_stairs")), Component.literal("Expected black terratile stairs recipe to produce black terratile stairs"));
         helper.assertValueEqual(output.getCount(), 4, Component.literal("Expected black terratile stairs recipe to produce four stairs"));
         helper.succeed();
@@ -205,19 +205,19 @@ public final class BlocksGameTests {
         SingleRecipeInput terracottaInput = new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.BLACK_TERRACOTTA));
         StonecutterRecipe tileRecipe = requireStonecuttingRecipe(helper, recipeId("terracotta_tile/black_terratile_from_black_terracotta_stonecutting"));
         helper.assertTrue(tileRecipe.matches(terracottaInput, helper.getLevel()), Component.literal("Expected black terratile stonecutting recipe to accept black terracotta"));
-        helper.assertTrue(tileRecipe.assemble(terracottaInput, helper.getLevel().registryAccess()).is(modItem("black_terratile")),
+        helper.assertTrue(tileRecipe.assemble(terracottaInput).is(modItem("black_terratile")),
                 Component.literal("Expected black terratile stonecutting recipe to produce black terratile"));
 
         SingleRecipeInput terratileInput = new SingleRecipeInput(new ItemStack(modItem("black_terratile")));
         StonecutterRecipe slabRecipe = requireStonecuttingRecipe(helper, recipeId("terracotta_tile/black_terratile_slab_from_black_terratile_stonecutting"));
         helper.assertTrue(slabRecipe.matches(terratileInput, helper.getLevel()), Component.literal("Expected black terratile slab stonecutting recipe to accept black terratile"));
-        ItemStack slabOutput = slabRecipe.assemble(terratileInput, helper.getLevel().registryAccess());
+        ItemStack slabOutput = slabRecipe.assemble(terratileInput);
         helper.assertTrue(slabOutput.is(modItem("black_terratile_slab")), Component.literal("Expected black terratile slab stonecutting recipe to produce black terratile slabs"));
         helper.assertValueEqual(slabOutput.getCount(), 2, Component.literal("Expected black terratile slab stonecutting recipe to produce two slabs"));
 
         StonecutterRecipe stairsRecipe = requireStonecuttingRecipe(helper, recipeId("terracotta_tile/black_terratile_stairs_from_black_terratile_stonecutting"));
         helper.assertTrue(stairsRecipe.matches(terratileInput, helper.getLevel()), Component.literal("Expected black terratile stairs stonecutting recipe to accept black terratile"));
-        helper.assertTrue(stairsRecipe.assemble(terratileInput, helper.getLevel().registryAccess()).is(modItem("black_terratile_stairs")),
+        helper.assertTrue(stairsRecipe.assemble(terratileInput).is(modItem("black_terratile_stairs")),
                 Component.literal("Expected black terratile stairs stonecutting recipe to produce black terratile stairs"));
         helper.succeed();
     }
@@ -228,7 +228,7 @@ public final class BlocksGameTests {
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG));
 
         helper.assertTrue(recipe.matches(input, helper.getLevel()), Component.literal("Expected carving station recipe to accept oak logs"));
-        helper.assertTrue(recipe.assemble(input, helper.getLevel().registryAccess()).is(modItem("carved_oak_1")),
+        helper.assertTrue(recipe.assemble(input).is(modItem("carved_oak_1")),
                 Component.literal("Expected carving station recipe to produce carved oak"));
         helper.succeed();
     }
@@ -247,7 +247,7 @@ public final class BlocksGameTests {
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected carving station recipe to match planks plus shears"));
-        helper.assertTrue(recipe.assemble(grid, helper.getLevel().registryAccess()).is(modItem("carving_station")),
+        helper.assertTrue(recipe.assemble(grid).is(modItem("carving_station")),
                 Component.literal("Expected carving station recipe to produce carving station"));
 
         var remainingItems = recipe.getRemainingItems(grid);
@@ -375,7 +375,7 @@ public final class BlocksGameTests {
         BlockState state = modBlock("carved_acacia_1").defaultBlockState();
 
         helper.assertTrue(state.propagatesSkylightDown(), Component.literal("Expected carved acacia to let skylight through"));
-        helper.assertTrue(state.getLightBlock() == 0, Component.literal("Expected carved acacia to not block any light"));
+        helper.assertTrue(state.getLightDampening() == 0, Component.literal("Expected carved acacia to not block any light"));
         helper.assertTrue(state.skipRendering(state, Direction.NORTH),
                 Component.literal("Expected carved acacia to cull inner faces against the same carved acacia block"));
         helper.assertTrue(state.skipRendering(modBlock("carved_acacia_2").defaultBlockState(), Direction.NORTH),
@@ -549,13 +549,13 @@ public final class BlocksGameTests {
 
     @GameTest
     public void carvingRecipesDoNotLoadAsStonecuttingRecipes(GameTestHelper helper) {
-        Optional<RecipeHolder<StonecutterRecipe>> stonecutterRecipe = helper.getLevel().getServer().getRecipeManager().getRecipeFor(
+        Optional<RecipeHolder<StonecutterRecipe>> stonecutterRecipe = helper.getLevel().recipeAccess().getRecipeFor(
                 RecipeType.STONECUTTING,
                 new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG)),
                 helper.getLevel()
         );
 
-        Optional<RecipeHolder<CarvingRecipe>> carvingRecipe = helper.getLevel().getServer().getRecipeManager().getRecipeFor(
+        Optional<RecipeHolder<CarvingRecipe>> carvingRecipe = helper.getLevel().recipeAccess().getRecipeFor(
                 Recipes.CARVING_TYPE,
                 new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG)),
                 helper.getLevel()

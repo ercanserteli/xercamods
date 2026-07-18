@@ -1,9 +1,8 @@
 package xerca.xercatools.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -22,7 +21,9 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import xerca.xercatools.enchantment.FlaskEnchantments;
 
@@ -117,8 +118,14 @@ public class ItemFlask extends Item {
         return BASE_MAX_CHARGES * (cap + 1);
     }
 
-    public static int getMaxCharges(ItemStack stack, HolderLookup.Provider provider) {
-        int cap = EnchantmentHelper.getItemEnchantmentLevel(provider.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(FlaskEnchantments.CAPACITY), stack);
+    public static int getMaxCharges(ItemStack stack) {
+        ItemEnchantments enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        int cap = 0;
+        for (Holder<Enchantment> holder : enchantments.keySet()) {
+            if (holder.is(FlaskEnchantments.CAPACITY)) {
+                cap = enchantments.getLevel(holder);
+            }
+        }
         return BASE_MAX_CHARGES * (cap + 1);
     }
 

@@ -1,12 +1,13 @@
 package xerca.xercatools.crafting;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -25,8 +26,11 @@ public class RecipeFlaskFilling extends CustomRecipe {
         private int potionCount;
     }
 
-    public RecipeFlaskFilling(CraftingBookCategory category) {
-        super(category);
+    public static final RecipeFlaskFilling INSTANCE = new RecipeFlaskFilling();
+    public static final MapCodec<RecipeFlaskFilling> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RecipeFlaskFilling> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    private RecipeFlaskFilling() {
     }
 
     @Override
@@ -40,7 +44,7 @@ public class RecipeFlaskFilling extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv) {
         ParsedInput parsed = parseInput(inv);
         if (!parsed.valid()
                 || parsed.flaskStack().isEmpty()
@@ -51,7 +55,7 @@ public class RecipeFlaskFilling extends CustomRecipe {
 
         int oldCharges = ItemFlask.getCharges(parsed.flaskStack());
         int newCharges = oldCharges + parsed.potionCount();
-        if (newCharges <= ItemFlask.getMaxCharges(parsed.flaskStack(), provider)) {
+        if (newCharges <= ItemFlask.getMaxCharges(parsed.flaskStack())) {
             ItemStack result = parsed.flaskStack().copy();
             result.setCount(1);
             result.set(DataComponents.POTION_CONTENTS, parsed.potionType());
@@ -68,9 +72,9 @@ public class RecipeFlaskFilling extends CustomRecipe {
 
         for (int i = 0; i < remainingItems.size(); ++i) {
             ItemStack itemStack = inv.getItem(i);
-            ItemStack remainder = itemStack.getItem().getCraftingRemainder();
-            if (!remainder.isEmpty()) {
-                remainingItems.set(i, remainder);
+            net.minecraft.world.item.ItemStackTemplate remainder = itemStack.getItem().getCraftingRemainder();
+            if (remainder != null) {
+                remainingItems.set(i, remainder.create());
             } else if (itemStack.getItem() instanceof PotionItem) {
                 remainingItems.set(i, new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE));
             }

@@ -7,11 +7,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import org.lwjgl.system.NonnullDefault;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.function.Consumer;
 
-@NonnullDefault
+@NullMarked
 public class ItemTeacup extends ItemStackableContainedFood {
     private final int sugarAmount;
 

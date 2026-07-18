@@ -12,6 +12,7 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
 public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<TripleNoteClientPacket> {
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private static void processMessage(TripleNoteClientPacket msg) {
         int entityId = msg.entityId();
         ClientLevel level = Minecraft.getInstance().level;
