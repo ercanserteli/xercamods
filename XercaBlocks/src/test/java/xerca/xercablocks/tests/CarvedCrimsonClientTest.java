@@ -47,7 +47,11 @@ public final class CarvedCrimsonClientTest implements FabricClientGameTest {
             server.runCommand("tp @a 0.5 100.5 3 180 0");
 
             // Hide the HUD so only the world is captured.
-            context.runOnClient(client -> client.options.hideGui = true);
+            context.runOnClient(client -> {
+                if (!client.gui.hud.isHidden()) {
+                    client.gui.hud.toggle();
+                }
+            });
 
             // Let the client receive the block changes and rebuild the chunk mesh.
             context.waitTicks(40);

@@ -83,7 +83,7 @@ public final class InstrumentGuiClientTest implements FabricClientGameTest {
 
     private static int pushedNoteCount(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            boolean[] states = MusicClientTests.readField(client.screen, GuiInstrument.class, "buttonPushStates");
+            boolean[] states = MusicClientTests.readField(client.gui.screen(), GuiInstrument.class, "buttonPushStates");
             int count = 0;
             for (boolean pushed : states) {
                 if (pushed) {

@@ -45,7 +45,7 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityD
         poseStack.mulPose(Axis.YP.rotationDegrees(2 * state.animationProgress));
         poseStack.translate(-0.5f, 0.f, -0.5f);
 
-        collector.submitMovingBlock(poseStack, state.movingBlockRenderState);
+        collector.submitMovingBlock(poseStack, state.movingBlockRenderState, 0);
 
         poseStack.popPose();
     }

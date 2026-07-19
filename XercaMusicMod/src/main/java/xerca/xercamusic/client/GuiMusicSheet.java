@@ -445,7 +445,7 @@ public class GuiMusicSheet extends Screen {
                     dirtyFlag.hasSigned = true;
                     dirtyFlag.hasTitle = true;
                     isSigned = true;
-                    minecraft.setScreen(null);
+                    minecraft.gui.setScreen(null);
                 }
             }).bounds(noteImageLeftX + 112, 145, 98, 20).build());
             this.buttonCancel = this.addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), button -> {

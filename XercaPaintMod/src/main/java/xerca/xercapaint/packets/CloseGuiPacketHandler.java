@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 
 public class CloseGuiPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<CloseGuiPacket> {
     private static void processMessage() {
-        Minecraft.getInstance().setScreen(null);
+        Minecraft.getInstance().gui.setScreen(null);
     }
 
     @Override

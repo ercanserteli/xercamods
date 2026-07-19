@@ -55,8 +55,8 @@ public class RecipeFillPaletteGameTests {
         customTag.putString("custom_meta", "keep_me");
         palette.set(DataComponents.CUSTOM_DATA, CustomData.of(customTag));
         items.set(slot(3, 1, 1), palette);
-        items.set(slot(3, 0, 0), new ItemStack(net.minecraft.world.item.Items.RED_DYE));
-        items.set(slot(3, 2, 2), new ItemStack(net.minecraft.world.item.Items.BLUE_DYE));
+        items.set(slot(3, 0, 0), new ItemStack(net.minecraft.world.item.Items.DYE.red()));
+        items.set(slot(3, 2, 2), new ItemStack(net.minecraft.world.item.Items.DYE.blue()));
         CraftingInput grid = createGrid(3, 3, items);
 
         TestAsserts.assertTrue(helper, RECIPE.matches(grid, helper.getLevel()), "Expected palette + dyes to match filling recipe");
@@ -82,7 +82,7 @@ public class RecipeFillPaletteGameTests {
         List<ItemStack> items = emptyGrid(3, 3);
         ItemStack palette = createPaletteWithBasicColors(DyeColor.RED);
         items.set(slot(3, 1, 1), palette);
-        items.set(slot(3, 0, 0), new ItemStack(net.minecraft.world.item.Items.RED_DYE));
+        items.set(slot(3, 0, 0), new ItemStack(net.minecraft.world.item.Items.DYE.red()));
         CraftingInput grid = createGrid(3, 3, items);
 
         TestAsserts.assertTrue(helper, RECIPE.matches(grid, helper.getLevel()), "Expected recipe to match before duplicate-color validation");

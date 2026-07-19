@@ -47,16 +47,16 @@ public final class MusicSheetPlaybackClientTest implements FabricClientGameTest 
             }
 
             // Preview toggles on and off.
-            context.runOnClient(client -> ((GuiMusicSheet) client.screen).editCursor = 0);
-            context.runOnClient(client -> ((GuiMusicSheet) client.screen).previewButton());
+            context.runOnClient(client -> ((GuiMusicSheet) client.gui.screen()).editCursor = 0);
+            context.runOnClient(client -> ((GuiMusicSheet) client.gui.screen()).previewButton());
             check(boolField(context, s -> s.previewing), "Expected preview to start");
-            context.runOnClient(client -> ((GuiMusicSheet) client.screen).previewButton());
+            context.runOnClient(client -> ((GuiMusicSheet) client.gui.screen()).previewButton());
             check(!boolField(context, s -> s.previewing), "Expected a second press to stop preview");
 
             // Record toggles on (pre-recording) and off.
-            context.runOnClient(client -> ((GuiMusicSheet) client.screen).recordButton());
+            context.runOnClient(client -> ((GuiMusicSheet) client.gui.screen()).recordButton());
             check(boolField(context, s -> s.preRecording), "Expected the record button to enter pre-recording");
-            context.runOnClient(client -> ((GuiMusicSheet) client.screen).recordButton());
+            context.runOnClient(client -> ((GuiMusicSheet) client.gui.screen()).recordButton());
             check(!boolField(context, s -> s.preRecording) && !boolField(context, s -> s.recording),
                     "Expected a second record press to stop recording");
 
@@ -78,25 +78,25 @@ public final class MusicSheetPlaybackClientTest implements FabricClientGameTest 
 
     private static void pressButton(ClientGameTestContext context, String fieldName) {
         context.runOnClient(client -> {
-            Button button = readField(client.screen, GuiMusicSheet.class, fieldName);
+            Button button = readField(client.gui.screen(), GuiMusicSheet.class, fieldName);
             button.onPress(new net.minecraft.client.input.MouseButtonInfo(0, 0));
         });
         context.waitTick();
     }
 
     private static Object sheet(ClientGameTestContext context) {
-        return context.computeOnClient(client -> client.screen);
+        return context.computeOnClient(client -> client.gui.screen());
     }
 
     private static int intField(ClientGameTestContext context, java.util.function.ToIntFunction<GuiMusicSheet> getter) {
-        return context.computeOnClient(client -> getter.applyAsInt((GuiMusicSheet) client.screen));
+        return context.computeOnClient(client -> getter.applyAsInt((GuiMusicSheet) client.gui.screen()));
     }
 
     private static boolean boolField(ClientGameTestContext context, java.util.function.Predicate<GuiMusicSheet> getter) {
-        return context.computeOnClient(client -> getter.test((GuiMusicSheet) client.screen));
+        return context.computeOnClient(client -> getter.test((GuiMusicSheet) client.gui.screen()));
     }
 
     private static String strField(ClientGameTestContext context, java.util.function.Function<GuiMusicSheet, String> getter) {
-        return context.computeOnClient(client -> getter.apply((GuiMusicSheet) client.screen));
+        return context.computeOnClient(client -> getter.apply((GuiMusicSheet) client.gui.screen()));
     }
 }

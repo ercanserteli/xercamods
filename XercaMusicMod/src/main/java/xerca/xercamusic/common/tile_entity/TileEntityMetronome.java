@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.SoundEvents;
@@ -57,7 +58,7 @@ public class TileEntityMetronome extends BlockEntity {
                 } else {
                     // Server side
                     if (metronome.countDown == 3) {
-                        List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(metronome.worldPosition.subtract(HALF_RANGE).getCenter(), metronome.worldPosition.offset(HALF_RANGE).getCenter()),
+                        List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(Vec3.atCenterOf(metronome.worldPosition.subtract(HALF_RANGE)), Vec3.atCenterOf(metronome.worldPosition.offset(HALF_RANGE))),
                                 player -> player.getMainHandItem().getItem() instanceof IItemInstrument &&
                                         player.getOffhandItem().getItem() instanceof ItemMusicSheet && (int) player.getOffhandItem().getOrDefault(Items.SHEET_BPS, (byte) 0) == bps);
                         Mod.LOGGER.info("Metronome found {} players", players.size());

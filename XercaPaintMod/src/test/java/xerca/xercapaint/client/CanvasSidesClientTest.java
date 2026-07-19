@@ -113,8 +113,8 @@ public final class CanvasSidesClientTest implements FabricClientGameTest {
 
     private static void clickSidesToggle(ClientGameTestContext context) {
         double[] toggle = context.computeOnClient(client -> {
-            int x = PaintClientTests.<Integer>readField(client.screen, GuiCanvasEdit.class, "sidesToggleX");
-            int y = PaintClientTests.<Integer>readField(client.screen, GuiCanvasEdit.class, "sidesToggleY");
+            int x = PaintClientTests.<Integer>readField(client.gui.screen(), GuiCanvasEdit.class, "sidesToggleX");
+            int y = PaintClientTests.<Integer>readField(client.gui.screen(), GuiCanvasEdit.class, "sidesToggleY");
             return new double[]{x, y};
         });
         // Click the centre of the 8px toggle.
@@ -146,52 +146,52 @@ public final class CanvasSidesClientTest implements FabricClientGameTest {
 
     private static boolean sidesActive(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.<Boolean>readField(client.screen, GuiCanvasEdit.class, "sidesActive"));
+                PaintClientTests.<Boolean>readField(client.gui.screen(), GuiCanvasEdit.class, "sidesActive"));
     }
 
     private static boolean hasSidePixels(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.<int[]>readField(client.screen, GuiCanvasEdit.class, "sidePixels") != null);
+                PaintClientTests.<int[]>readField(client.gui.screen(), GuiCanvasEdit.class, "sidePixels") != null);
     }
 
     private static int sidePixelsLength(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            int[] sidePixels = PaintClientTests.readField(client.screen, GuiCanvasEdit.class, "sidePixels");
+            int[] sidePixels = PaintClientTests.readField(client.gui.screen(), GuiCanvasEdit.class, "sidePixels");
             return sidePixels == null ? -1 : sidePixels.length;
         });
     }
 
     private static int sidePixel(ClientGameTestContext context, int index) {
         return context.computeOnClient(client -> {
-            int[] sidePixels = PaintClientTests.readField(client.screen, GuiCanvasEdit.class, "sidePixels");
+            int[] sidePixels = PaintClientTests.readField(client.gui.screen(), GuiCanvasEdit.class, "sidePixels");
             return sidePixels[index];
         });
     }
 
     private static int frontPixel(ClientGameTestContext context, int col, int row) {
         return context.computeOnClient(client -> {
-            int[] pixels = PaintClientTests.readField(client.screen, GuiCanvasEdit.class, "pixels");
+            int[] pixels = PaintClientTests.readField(client.gui.screen(), GuiCanvasEdit.class, "pixels");
             return pixels[row * CanvasType.getWidth(CanvasType.SMALL) + col];
         });
     }
 
     private static int brushSize(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.<Integer>readField(client.screen, GuiCanvasEdit.class, "brushSize"));
+                PaintClientTests.<Integer>readField(client.gui.screen(), GuiCanvasEdit.class, "brushSize"));
     }
 
     private static double[] geometry(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            double cx = PaintClientTests.<Double>readField(client.screen, GuiCanvasEdit.class, "canvasX");
-            double cy = PaintClientTests.<Double>readField(client.screen, GuiCanvasEdit.class, "canvasY");
-            int scale = PaintClientTests.<Integer>readField(client.screen, GuiCanvasEdit.class, "canvasPixelScale");
+            double cx = PaintClientTests.<Double>readField(client.gui.screen(), GuiCanvasEdit.class, "canvasX");
+            double cy = PaintClientTests.<Double>readField(client.gui.screen(), GuiCanvasEdit.class, "canvasY");
+            int scale = PaintClientTests.<Integer>readField(client.gui.screen(), GuiCanvasEdit.class, "canvasPixelScale");
             return new double[]{cx, cy, scale};
         });
     }
 
     private static double[] palettePos(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            BasePalette palette = (BasePalette) client.screen;
+            BasePalette palette = (BasePalette) client.gui.screen();
             return new double[]{palette.paletteX, palette.paletteY};
         });
     }

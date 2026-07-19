@@ -58,7 +58,7 @@ public class ItemGoldenCupcake extends Item {
         player.heal(10);
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 2));
 
-        LightningBolt lightningBoltEntity = EntityType.LIGHTNING_BOLT.create(world, EntitySpawnReason.MOB_SUMMONED);
+        LightningBolt lightningBoltEntity = EntityTypes.LIGHTNING_BOLT.create(world, EntitySpawnReason.MOB_SUMMONED);
         if (lightningBoltEntity != null) {
             lightningBoltEntity.teleportTo(player.getX(), player.getY(), player.getZ());
             lightningBoltEntity.setVisualOnly(true);
@@ -135,13 +135,13 @@ public class ItemGoldenCupcake extends Item {
                 Items.RAW_SAUSAGE, Items.COOKED_SAUSAGE, KnifeCompat.getKnifeItem(), Items.HOT_TEAPOT_1, Items.ROTTEN_BURGER
         };
 
-        Skeleton skeleton = EntityType.SKELETON.create(world, EntitySpawnReason.MOB_SUMMONED);
+        Skeleton skeleton = EntityTypes.SKELETON.create(world, EntitySpawnReason.MOB_SUMMONED);
         if (skeleton != null) {
             equipMob(world, player, weapons, skeleton, new ItemStack(net.minecraft.world.item.Items.WITHER_SKELETON_SKULL));
             world.addFreshEntity(skeleton);
         }
 
-        Zombie zombie = EntityType.ZOMBIE.create(world, EntitySpawnReason.MOB_SUMMONED);
+        Zombie zombie = EntityTypes.ZOMBIE.create(world, EntitySpawnReason.MOB_SUMMONED);
         if (zombie != null) {
             equipMob(world, player, weapons, zombie, new ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD));
             world.addFreshEntity(zombie);

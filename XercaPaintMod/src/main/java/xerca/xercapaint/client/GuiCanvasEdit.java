@@ -202,7 +202,7 @@ public class GuiCanvasEdit extends BasePalette {
             if (!isSigned) {
                 canvasDirty = true;
                 isSigned = true;
-                minecraft.setScreen(null);
+                minecraft.gui.setScreen(null);
             }
 
         }).bounds((int) canvasX - 100, 100, 98, 20).build());
@@ -574,7 +574,7 @@ public class GuiCanvasEdit extends BasePalette {
                 case Integer k when k == GLFW_KEY_ENTER && !this.canvasTitle.isEmpty() -> {
                     canvasDirty = true;
                     this.isSigned = true;
-                    this.minecraft.setScreen(null);
+                    this.minecraft.gui.setScreen(null);
                 }
                 default -> {
                     // Do nothing

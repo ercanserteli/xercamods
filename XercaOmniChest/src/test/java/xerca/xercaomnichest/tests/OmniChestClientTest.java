@@ -38,11 +38,13 @@ public final class OmniChestClientTest implements FabricClientGameTest {
     public void runTest(ClientGameTestContext context) {
         context.restoreDefaultGameOptions();
         // Clouds drift with game time and chat lines would fade mid-run; both break determinism.
-        // hideGui is transient (not restored by restoreDefaultGameOptions), so force the HUD visible.
+        // The HUD hidden flag is transient (not restored by restoreDefaultGameOptions), so force the HUD visible.
         // MINIMAL suppresses the omni chest's particles, whose random count
         // Short render distance keeps the aliasing-prone distant grass horizon out of frame
         context.runOnClient(client -> {
-            client.options.hideGui = false;
+            if (client.gui.hud.isHidden()) {
+                client.gui.hud.toggle();
+            }
             client.options.cloudStatus().set(CloudStatus.OFF);
             client.options.chatVisibility().set(ChatVisiblity.HIDDEN);
             client.options.particles().set(ParticleStatus.MINIMAL);

@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -104,7 +104,7 @@ public class GrabHookGameTests {
 
         // Pig at relative (2, 3, 3) → center at (abs+2.5, abs+3.0, abs+3.5).
         // Hook eye y = abs+2.0+1.62 = abs+3.62, inside pig box y=[abs+3, abs+3.9] ✓
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        Pig pig = helper.spawn(EntityTypes.PIG, new BlockPos(2, 3, 3));
         pig.setNoAi(true);
 
         ItemStack rod = new ItemStack(Items.GRAB_HOOK);
@@ -124,7 +124,7 @@ public class GrabHookGameTests {
     public void grabHookDamagesEntityByDefault(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        Pig pig = helper.spawn(EntityTypes.PIG, new BlockPos(2, 3, 3));
         pig.setNoAi(true);
 
         EntityGrabHook hook = new EntityGrabHook(level, player, new ItemStack(Items.GRAB_HOOK), 1.0f);
@@ -142,7 +142,7 @@ public class GrabHookGameTests {
     public void grabHookKeepsCorpseWhenEntityDiesOnImpact(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        Pig pig = helper.spawn(EntityTypes.PIG, new BlockPos(2, 3, 3));
         pig.setNoAi(true);
         pig.setHealth(1.0f); // 3 damage on impact will kill it
 
@@ -164,7 +164,7 @@ public class GrabHookGameTests {
     public void grabHookGentleGrabDealsNoDamage(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        Pig pig = helper.spawn(EntityTypes.PIG, new BlockPos(2, 3, 3));
         pig.setNoAi(true);
 
         ItemStack rod = new ItemStack(Items.GRAB_HOOK);

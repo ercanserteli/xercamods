@@ -413,7 +413,7 @@ class SheetInputHandler {
                             gui.dirtyFlag.hasSigned = true;
                             gui.dirtyFlag.hasTitle = true;
                             gui.isSigned = true;
-                            Minecraft.getInstance().setScreen(null);
+                            Minecraft.getInstance().gui.setScreen(null);
                         }
                     }
                     default -> {

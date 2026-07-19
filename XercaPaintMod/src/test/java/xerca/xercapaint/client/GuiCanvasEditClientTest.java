@@ -171,7 +171,9 @@ public final class GuiCanvasEditClientTest implements FabricClientGameTest {
             server.runCommand("fill -4 110 -3 4 110 8 minecraft:black_concrete"); // floor to stand on
             server.runCommand("fill -16 111 5 16 141 5 minecraft:black_concrete"); // backdrop wall
             server.runCommand("tp @p 0.5 111 3 0 0"); // stand on the floor, face the wall
-            context.runOnClient(client -> client.options.hideGui = true);
+            context.runOnClient(client -> {
+                if (!client.gui.hud.isHidden()) client.gui.hud.toggle();
+            });
             context.waitTicks(40);
             singleplayer.getClientLevel().waitForChunksRender();
             context.assertScreenshotEquals(TestScreenshotComparisonOptions.of(GOLDEN)
@@ -286,8 +288,8 @@ public final class GuiCanvasEditClientTest implements FabricClientGameTest {
     // The drawSigning box (canvasX+10, canvasY+10, 140x140) in framebuffer pixels, inset to skip edges.
     private static int[] signingBoxFramebufferRect(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            double cx = PaintClientTests.<Double>readField(client.screen, GuiCanvasEdit.class, "canvasX");
-            double cy = PaintClientTests.<Double>readField(client.screen, GuiCanvasEdit.class, "canvasY");
+            double cx = PaintClientTests.<Double>readField(client.gui.screen(), GuiCanvasEdit.class, "canvasX");
+            double cy = PaintClientTests.<Double>readField(client.gui.screen(), GuiCanvasEdit.class, "canvasY");
             int scale = client.getWindow().getGuiScale();
             return new int[]{(int) ((cx + 12) * scale), (int) ((cy + 12) * scale), 136 * scale, 136 * scale};
         });
@@ -320,7 +322,7 @@ public final class GuiCanvasEditClientTest implements FabricClientGameTest {
 
     private static void pressButton(ClientGameTestContext context, String fieldName) {
         context.runOnClient(client -> {
-            Button button = PaintClientTests.readField(client.screen, GuiCanvasEdit.class, fieldName);
+            Button button = PaintClientTests.readField(client.gui.screen(), GuiCanvasEdit.class, fieldName);
             button.onPress(new net.minecraft.client.input.MouseButtonInfo(0, 0));
         });
         context.waitTick();
@@ -328,63 +330,63 @@ public final class GuiCanvasEditClientTest implements FabricClientGameTest {
 
     private static double[] geometry(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            double cx = PaintClientTests.<Double>readField(client.screen, GuiCanvasEdit.class, "canvasX");
-            double cy = PaintClientTests.<Double>readField(client.screen, GuiCanvasEdit.class, "canvasY");
-            int scale = PaintClientTests.<Integer>readField(client.screen, GuiCanvasEdit.class, "canvasPixelScale");
+            double cx = PaintClientTests.<Double>readField(client.gui.screen(), GuiCanvasEdit.class, "canvasX");
+            double cy = PaintClientTests.<Double>readField(client.gui.screen(), GuiCanvasEdit.class, "canvasY");
+            int scale = PaintClientTests.<Integer>readField(client.gui.screen(), GuiCanvasEdit.class, "canvasPixelScale");
             return new double[]{cx, cy, scale};
         });
     }
 
     private static double[] palettePos(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            BasePalette palette = (BasePalette) client.screen;
+            BasePalette palette = (BasePalette) client.gui.screen();
             return new double[]{palette.paletteX, palette.paletteY};
         });
     }
 
     private static int pixel(ClientGameTestContext context, int index) {
         return context.computeOnClient(client -> {
-            int[] pixels = PaintClientTests.readField(client.screen, GuiCanvasEdit.class, "pixels");
+            int[] pixels = PaintClientTests.readField(client.gui.screen(), GuiCanvasEdit.class, "pixels");
             return pixels[index];
         });
     }
 
     private static CanvasType canvasType(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.readField(client.screen, GuiCanvasEdit.class, "canvasType"));
+                PaintClientTests.readField(client.gui.screen(), GuiCanvasEdit.class, "canvasType"));
     }
 
     private static boolean glass(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.<Boolean>readField(client.screen, GuiCanvasEdit.class, "glass"));
+                PaintClientTests.<Boolean>readField(client.gui.screen(), GuiCanvasEdit.class, "glass"));
     }
 
     private static int brushSize(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.<Integer>readField(client.screen, GuiCanvasEdit.class, "brushSize"));
+                PaintClientTests.<Integer>readField(client.gui.screen(), GuiCanvasEdit.class, "brushSize"));
     }
 
     private static int brushOpacity(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.<Integer>readField(client.screen, GuiCanvasEdit.class, "brushOpacitySetting"));
+                PaintClientTests.<Integer>readField(client.gui.screen(), GuiCanvasEdit.class, "brushOpacitySetting"));
     }
 
     private static boolean gettingSigned(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.<Boolean>readField(client.screen, GuiCanvasEdit.class, "gettingSigned"));
+                PaintClientTests.<Boolean>readField(client.gui.screen(), GuiCanvasEdit.class, "gettingSigned"));
     }
 
     private static String canvasTitle(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                PaintClientTests.readField(client.screen, GuiCanvasEdit.class, "canvasTitle"));
+                PaintClientTests.readField(client.gui.screen(), GuiCanvasEdit.class, "canvasTitle"));
     }
 
     private static boolean pickingColor(ClientGameTestContext context) {
-        return context.computeOnClient(client -> ((BasePalette) client.screen).isPickingColor);
+        return context.computeOnClient(client -> ((BasePalette) client.gui.screen()).isPickingColor);
     }
 
     private static int carriedColorRgb(ClientGameTestContext context) {
-        return context.computeOnClient(client -> ((BasePalette) client.screen).carriedColor.rgbVal());
+        return context.computeOnClient(client -> ((BasePalette) client.gui.screen()).carriedColor.rgbVal());
     }
 
     private static boolean pollServer(ClientGameTestContext context, TestSingleplayerContext singleplayer,

@@ -115,20 +115,20 @@ public final class GuiPaletteClientTest implements FabricClientGameTest {
     }
 
     private static boolean paletteComplete(ClientGameTestContext context) {
-        return context.computeOnClient(client -> ((BasePalette) client.screen).paletteComplete);
+        return context.computeOnClient(client -> ((BasePalette) client.gui.screen()).paletteComplete);
     }
 
     private static boolean paletteDirty(ClientGameTestContext context) {
-        return context.computeOnClient(client -> ((BasePalette) client.screen).paletteDirty);
+        return context.computeOnClient(client -> ((BasePalette) client.gui.screen()).paletteDirty);
     }
 
     private static int customColorCount(ClientGameTestContext context, int slot) {
-        return context.computeOnClient(client -> ((BasePalette) client.screen).customColors[slot].getNumberOfColors());
+        return context.computeOnClient(client -> ((BasePalette) client.gui.screen()).customColors[slot].getNumberOfColors());
     }
 
     private static double[] palettePos(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            BasePalette palette = (BasePalette) client.screen;
+            BasePalette palette = (BasePalette) client.gui.screen();
             return new double[]{palette.paletteX, palette.paletteY};
         });
     }

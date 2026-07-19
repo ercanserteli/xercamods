@@ -10,7 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +34,7 @@ public class WeaponsGameTests {
 
     // NoAI keeps targets exactly where placed; hurt pigs otherwise panic-run into other tests' sight lines.
     private static Pig spawnStillPig(GameTestHelper helper, BlockPos pos) {
-        Pig pig = helper.spawn(EntityType.PIG, pos);
+        Pig pig = helper.spawn(EntityTypes.PIG, pos);
         pig.setNoAi(true);
         return pig;
     }

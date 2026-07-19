@@ -29,7 +29,7 @@ final class PaintClientTests {
 
     static void pressKey(ClientGameTestContext context, int keyCode, int scanCode, int modifiers) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
             }
@@ -39,7 +39,7 @@ final class PaintClientTests {
 
     static void clickAt(ClientGameTestContext context, double x, double y, int button) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 MouseButtonEvent event = new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0));
                 screen.mouseClicked(event, false);
@@ -51,7 +51,7 @@ final class PaintClientTests {
 
     static void mouseDown(ClientGameTestContext context, double x, double y, int button) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)), false);
             }
@@ -61,7 +61,7 @@ final class PaintClientTests {
 
     static void mouseDragTo(ClientGameTestContext context, double x, double y, int button, double deltaX, double deltaY) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.mouseDragged(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)), deltaX, deltaY);
             }
@@ -71,7 +71,7 @@ final class PaintClientTests {
 
     static void mouseUp(ClientGameTestContext context, double x, double y, int button) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.mouseReleased(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)));
             }
@@ -81,7 +81,7 @@ final class PaintClientTests {
 
     static void typeChars(ClientGameTestContext context, String text) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 for (int i = 0; i < text.length(); i++) {
                     screen.charTyped(new CharacterEvent(text.charAt(i)));
@@ -93,7 +93,7 @@ final class PaintClientTests {
 
     static void scrollVertically(ClientGameTestContext context, double x, double y, double amount) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.mouseScrolled(x, y, 0, amount);
             }

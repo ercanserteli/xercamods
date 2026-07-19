@@ -39,9 +39,9 @@ public class ModClient implements ClientModInitializer {
                 UUID id = heldItem.get(Items.SHEET_ID);
                 int version = heldItem.getOrDefault(Items.SHEET_VERSION, -1);
                 if (id != null && version >= 0) {
-                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, heldItem, Component.translatable("item.xercamusic.music_sheet"))));
+                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().gui.setScreen(new GuiMusicSheet(player, heldItem, Component.translatable("item.xercamusic.music_sheet"))));
                 } else {
-                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, heldItem, Component.translatable("item.xercamusic.music_sheet")));
+                    Minecraft.getInstance().gui.setScreen(new GuiMusicSheet(player, heldItem, Component.translatable("item.xercamusic.music_sheet")));
                 }
             }
         }
@@ -52,7 +52,7 @@ public class ModClient implements ClientModInitializer {
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
             if (!heldItem.isEmpty() && heldItem.getItem() instanceof IItemInstrument iItemInstrument) {
-                Minecraft.getInstance().setScreen(new GuiInstrument(player, iItemInstrument, Component.translatable("item.xercamusic.instrument_gui"), null));
+                Minecraft.getInstance().gui.setScreen(new GuiInstrument(player, iItemInstrument, Component.translatable("item.xercamusic.instrument_gui"), null));
             }
         }
     }
@@ -60,7 +60,7 @@ public class ModClient implements ClientModInitializer {
     public static void showInstrumentGui(IItemInstrument instrument, BlockPos blockInsPos) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
-            Minecraft.getInstance().setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), blockInsPos));
+            Minecraft.getInstance().gui.setScreen(new GuiInstrument(player, instrument, Component.translatable("item.xercamusic.instrument_gui"), blockInsPos));
         }
     }
 

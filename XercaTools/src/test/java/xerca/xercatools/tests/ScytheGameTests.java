@@ -6,7 +6,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -160,7 +160,7 @@ public class ScytheGameTests {
         player.setYRot(0.0f);   // facing south (+Z)
         player.setXRot(0.0f);
 
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        Pig pig = helper.spawn(EntityTypes.PIG, new BlockPos(2, 3, 3));
         pig.setNoAi(true);
 
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
@@ -188,7 +188,7 @@ public class ScytheGameTests {
         player.setYRot(0.0f);   // facing south (+Z)
         player.setXRot(0.0f);
 
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        Pig pig = helper.spawn(EntityTypes.PIG, new BlockPos(2, 3, 3));
         pig.setNoAi(true);
         pig.setHealth(1.0f); // near-dead so the strike kills it
 

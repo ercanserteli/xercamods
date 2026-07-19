@@ -33,7 +33,7 @@ final class MusicClientTests {
 
     static void pressKey(ClientGameTestContext context, int keyCode, int scanCode, int modifiers) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
             }
@@ -43,7 +43,7 @@ final class MusicClientTests {
 
     static void releaseKey(ClientGameTestContext context, int keyCode, int scanCode, int modifiers) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.keyReleased(new KeyEvent(keyCode, scanCode, modifiers));
             }
@@ -68,7 +68,7 @@ final class MusicClientTests {
 
     static void clickAt(ClientGameTestContext context, double x, double y, int button) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 MouseButtonEvent event = new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0));
                 screen.mouseClicked(event, false);
@@ -80,7 +80,7 @@ final class MusicClientTests {
 
     static void mouseDown(ClientGameTestContext context, double x, double y, int button) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)), false);
             }
@@ -90,7 +90,7 @@ final class MusicClientTests {
 
     static void mouseDragTo(ClientGameTestContext context, double x, double y, int button, double deltaX, double deltaY) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.mouseDragged(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)), deltaX, deltaY);
             }
@@ -100,7 +100,7 @@ final class MusicClientTests {
 
     static void mouseUp(ClientGameTestContext context, double x, double y, int button) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.mouseReleased(new MouseButtonEvent(x, y, new MouseButtonInfo(button, 0)));
             }
@@ -110,7 +110,7 @@ final class MusicClientTests {
 
     static void scrollVertically(ClientGameTestContext context, double amount) {
         context.runOnClient(client -> {
-            Screen screen = client.screen;
+            Screen screen = client.gui.screen();
             if (screen != null) {
                 screen.mouseScrolled(0, 0, 0, amount);
             }

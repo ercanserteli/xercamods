@@ -158,8 +158,8 @@ public final class BlocksGameTests {
     public void blackTerratileRecipeCraftsFromBlackTerracotta(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("terracotta_tile/black_terratile"));
         CraftingInput grid = craftingGrid(2, 2,
-                new ItemStack(net.minecraft.world.item.Items.BLACK_TERRACOTTA), new ItemStack(net.minecraft.world.item.Items.BLACK_TERRACOTTA),
-                new ItemStack(net.minecraft.world.item.Items.BLACK_TERRACOTTA), new ItemStack(net.minecraft.world.item.Items.BLACK_TERRACOTTA)
+                new ItemStack(net.minecraft.world.item.Items.DYED_TERRACOTTA.black()), new ItemStack(net.minecraft.world.item.Items.DYED_TERRACOTTA.black()),
+                new ItemStack(net.minecraft.world.item.Items.DYED_TERRACOTTA.black()), new ItemStack(net.minecraft.world.item.Items.DYED_TERRACOTTA.black())
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected terratile recipe to match black terracotta"));
@@ -202,7 +202,7 @@ public final class BlocksGameTests {
 
     @GameTest
     public void blackTerratileStonecuttingRecipesProduceTileSlabAndStairs(GameTestHelper helper) {
-        SingleRecipeInput terracottaInput = new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.BLACK_TERRACOTTA));
+        SingleRecipeInput terracottaInput = new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.DYED_TERRACOTTA.black()));
         StonecutterRecipe tileRecipe = requireStonecuttingRecipe(helper, recipeId("terracotta_tile/black_terratile_from_black_terracotta_stonecutting"));
         helper.assertTrue(tileRecipe.matches(terracottaInput, helper.getLevel()), Component.literal("Expected black terratile stonecutting recipe to accept black terracotta"));
         helper.assertTrue(tileRecipe.assemble(terracottaInput).is(modItem("black_terratile")),

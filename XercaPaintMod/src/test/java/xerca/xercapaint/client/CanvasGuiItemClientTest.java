@@ -54,7 +54,9 @@ public final class CanvasGuiItemClientTest implements FabricClientGameTest {
             server.runCommand("fill -16 111 5 16 141 5 minecraft:black_concrete");
             server.runCommand("tp @p 0.5 111 3 0 0");
             // Earlier tests hide the HUD and restoreDefaultGameOptions does not reset it; the hotbar must show.
-            context.runOnClient(client -> client.options.hideGui = false);
+            context.runOnClient(client -> {
+                if (client.gui.hud.isHidden()) client.gui.hud.toggle();
+            });
             context.waitTicks(40);
             singleplayer.getClientLevel().waitForChunksRender();
 

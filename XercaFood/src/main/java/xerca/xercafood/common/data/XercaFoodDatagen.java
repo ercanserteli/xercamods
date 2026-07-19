@@ -5,11 +5,14 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.level.block.Block;
 import xerca.xercafood.common.block.Blocks;
 import xerca.xercafood.common.item.Items;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 public class XercaFoodDatagen implements DataGeneratorEntrypoint {
@@ -27,11 +30,11 @@ public class XercaFoodDatagen implements DataGeneratorEntrypoint {
 
         @Override
         protected void addTags(HolderLookup.Provider registries) {
-            valueLookupBuilder(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(
-                    Blocks.VAT,
+            builder(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).addAll(Stream.of(
+                    (Block) Blocks.VAT,
                     Blocks.VAT_MILK,
                     Blocks.VAT_CHEESE
-            );
+            ).map(b -> BuiltInRegistries.BLOCK.getResourceKey(b).orElseThrow()));
         }
     }
 
@@ -42,7 +45,7 @@ public class XercaFoodDatagen implements DataGeneratorEntrypoint {
 
         @Override
         protected void addTags(HolderLookup.Provider registries) {
-            valueLookupBuilder(ItemTags.MEAT).add(
+            builder(ItemTags.MEAT).addAll(Stream.of(
                     Items.GLOW_SQUID_INK_PAELLA,
                     Items.SQUID_INK_PAELLA,
                     Items.CHEESEBURGER,
@@ -77,7 +80,7 @@ public class XercaFoodDatagen implements DataGeneratorEntrypoint {
                     Items.COOKED_SCHNITZEL,
                     Items.FRIED_EGG,
                     Items.SHISH_KEBAB
-            );
+            ).map(i -> BuiltInRegistries.ITEM.getResourceKey(i).orElseThrow()));
         }
     }
 }

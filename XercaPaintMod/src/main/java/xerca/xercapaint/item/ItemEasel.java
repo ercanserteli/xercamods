@@ -9,6 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PostSpawnProcessor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -19,8 +20,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
-
-import java.util.function.Consumer;
 
 public class ItemEasel extends Item {
 
@@ -42,7 +41,7 @@ public class ItemEasel extends Item {
             AABB aabb = Entities.EASEL.getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
             if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
                 if (level instanceof ServerLevel serverlevel) {
-                    Consumer<EntityEasel> consumer = EntityType.createDefaultStackConfig(serverlevel, itemstack, ctx.getPlayer());
+                    PostSpawnProcessor<EntityEasel> consumer = EntityType.createDefaultStackConfig(serverlevel, itemstack, ctx.getPlayer());
                     EntityEasel easel = Entities.EASEL.create(serverlevel, consumer, blockpos, EntitySpawnReason.SPAWN_ITEM_USE, true, true);
                     if (easel == null) {
                         return InteractionResult.FAIL;

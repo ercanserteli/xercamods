@@ -137,7 +137,7 @@ public final class MusicSheetEditClientTest implements FabricClientGameTest {
             context.getInput().releaseShift();
             check(markerCount(context) == markersBefore + 1, "Expected shift+drag to add a crescendo volume marker");
             // Dismiss the marker edit box so it doesn't intercept the next clicks.
-            context.runOnClient(client -> ((GuiMusicSheet) client.screen).updateButtons());
+            context.runOnClient(client -> ((GuiMusicSheet) client.gui.screen()).updateButtons());
 
             // Shift + right drag starts a rectangular (note-bounded) selection.
             context.getInput().holdShift();
@@ -166,7 +166,7 @@ public final class MusicSheetEditClientTest implements FabricClientGameTest {
     // The drawSigning box (noteImageLeftX+100, noteImageY+40, 120x100) in framebuffer pixels, inset to skip edges.
     private static int[] signingBoxFramebufferRect(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            GuiMusicSheet sheet = (GuiMusicSheet) client.screen;
+            GuiMusicSheet sheet = (GuiMusicSheet) client.gui.screen();
             int scale = client.getWindow().getGuiScale();
             return new int[]{(sheet.noteImageLeftX + 102) * scale, (sheet.noteImageY + 42) * scale, 116 * scale, 96 * scale};
         });
@@ -200,7 +200,7 @@ public final class MusicSheetEditClientTest implements FabricClientGameTest {
     private static void pressButton(ClientGameTestContext context, String fieldName, int times) {
         for (int i = 0; i < times; i++) {
             context.runOnClient(client -> {
-                Button button = readField(client.screen, GuiMusicSheet.class, fieldName);
+                Button button = readField(client.gui.screen(), GuiMusicSheet.class, fieldName);
                 button.onPress(new net.minecraft.client.input.MouseButtonInfo(0, 0));
             });
             context.waitTick();
@@ -208,16 +208,16 @@ public final class MusicSheetEditClientTest implements FabricClientGameTest {
     }
 
     private static int noteCount(ClientGameTestContext context) {
-        return context.computeOnClient(client -> ((GuiMusicSheet) client.screen).notes.size());
+        return context.computeOnClient(client -> ((GuiMusicSheet) client.gui.screen()).notes.size());
     }
 
     private static int markerCount(ClientGameTestContext context) {
-        return context.computeOnClient(client -> ((GuiMusicSheet) client.screen).volumeMarkers.size());
+        return context.computeOnClient(client -> ((GuiMusicSheet) client.gui.screen()).volumeMarkers.size());
     }
 
     private static boolean hasNoteAtTime(ClientGameTestContext context, int time) {
         return context.computeOnClient(client -> {
-            for (NoteEvent note : ((GuiMusicSheet) client.screen).notes) {
+            for (NoteEvent note : ((GuiMusicSheet) client.gui.screen()).notes) {
                 if (note.time == time) {
                     return true;
                 }
@@ -228,7 +228,7 @@ public final class MusicSheetEditClientTest implements FabricClientGameTest {
 
     private static boolean hasNoteWithVolume(ClientGameTestContext context, byte volume) {
         return context.computeOnClient(client -> {
-            for (NoteEvent note : ((GuiMusicSheet) client.screen).notes) {
+            for (NoteEvent note : ((GuiMusicSheet) client.gui.screen()).notes) {
                 if (note.volume == volume) {
                     return true;
                 }
@@ -239,26 +239,26 @@ public final class MusicSheetEditClientTest implements FabricClientGameTest {
 
     private static int bps(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                (int) MusicClientTests.<Byte>readField(client.screen, GuiMusicSheet.class, "bps"));
+                (int) MusicClientTests.<Byte>readField(client.gui.screen(), GuiMusicSheet.class, "bps"));
     }
 
     private static int highlightInterval(ClientGameTestContext context) {
         return context.computeOnClient(client ->
-                (int) MusicClientTests.<Byte>readField(client.screen, GuiMusicSheet.class, "highlightInterval"));
+                (int) MusicClientTests.<Byte>readField(client.gui.screen(), GuiMusicSheet.class, "highlightInterval"));
     }
 
     private static int[] layout(ClientGameTestContext context) {
         return context.computeOnClient(client -> {
-            GuiMusicSheet sheet = (GuiMusicSheet) client.screen;
+            GuiMusicSheet sheet = (GuiMusicSheet) client.gui.screen();
             return new int[]{sheet.noteImageLeftX, sheet.noteImageY};
         });
     }
 
     private static int intField(ClientGameTestContext context, java.util.function.ToIntFunction<GuiMusicSheet> getter) {
-        return context.computeOnClient(client -> getter.applyAsInt((GuiMusicSheet) client.screen));
+        return context.computeOnClient(client -> getter.applyAsInt((GuiMusicSheet) client.gui.screen()));
     }
 
     private static boolean boolField(ClientGameTestContext context, java.util.function.Predicate<GuiMusicSheet> getter) {
-        return context.computeOnClient(client -> getter.test((GuiMusicSheet) client.screen));
+        return context.computeOnClient(client -> getter.test((GuiMusicSheet) client.gui.screen()));
     }
 }

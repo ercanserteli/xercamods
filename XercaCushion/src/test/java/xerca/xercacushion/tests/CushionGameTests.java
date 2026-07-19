@@ -57,9 +57,9 @@ public final class CushionGameTests {
     public void blackCushionRecipeCraftsFromWoolAndFeather(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("black_cushion"));
         CraftingInput grid = craftingGrid(1, 3,
-                new ItemStack(net.minecraft.world.item.Items.BLACK_WOOL),
+                new ItemStack(net.minecraft.world.item.Items.WOOL.black()),
                 new ItemStack(net.minecraft.world.item.Items.FEATHER),
-                new ItemStack(net.minecraft.world.item.Items.BLACK_WOOL)
+                new ItemStack(net.minecraft.world.item.Items.WOOL.black())
         );
 
         helper.assertTrue(recipe.matches(grid, helper.getLevel()), Component.literal("Expected black cushion recipe to match wool-feather-wool"));

@@ -37,14 +37,14 @@ public class ModClient implements ClientModInitializer {
         ItemStack canvasStack = easel.getItem();
         ItemCanvas canvasItem = (ItemCanvas) canvasStack.getItem();
         if ((canvasStack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) || paletteStack.isEmpty()) {
-            minecraft.setScreen(new GuiCanvasView(canvasStack,
+            minecraft.gui.setScreen(new GuiCanvasView(canvasStack,
                     Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
                     canvasItem.getCanvasType(), canvasItem.isGlass(), easel));
         } else {
             if (minecraft.player == null) {
                 return;
             }
-            minecraft.setScreen(new GuiCanvasEdit(minecraft.player, canvasStack, paletteStack,
+            minecraft.gui.setScreen(new GuiCanvasEdit(minecraft.player, canvasStack, paletteStack,
                     Component.translatable(ITEM_CANVAS_TRANSLATION_KEY),
                     canvasItem.getCanvasType(), canvasItem.isGlass(), easel));
         }
@@ -61,18 +61,18 @@ public class ModClient implements ClientModInitializer {
 
         if (heldItem.getItem() instanceof ItemCanvas itemCanvas) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemPalette) || (heldItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0)) {
-                minecraft.setScreen(new GuiCanvasView(heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), itemCanvas.isGlass(), null));
+                minecraft.gui.setScreen(new GuiCanvasView(heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), itemCanvas.isGlass(), null));
             } else {
-                minecraft.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), itemCanvas.isGlass(), null));
+                minecraft.gui.setScreen(new GuiCanvasEdit(minecraft.player, heldItem, offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), itemCanvas.getCanvasType(), itemCanvas.isGlass(), null));
             }
         } else if (heldItem.getItem() instanceof ItemPalette) {
             if (offhandItem.isEmpty() || !(offhandItem.getItem() instanceof ItemCanvas offhandCanvas)) {
-                minecraft.setScreen(new GuiPalette(heldItem, Component.translatable("item.xercapaint.item_palette")));
+                minecraft.gui.setScreen(new GuiPalette(heldItem, Component.translatable("item.xercapaint.item_palette")));
             } else {
                 if (offhandItem.getOrDefault(Items.CANVAS_GENERATION, 0) > 0) {
-                    minecraft.setScreen(new GuiCanvasView(offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), offhandCanvas.getCanvasType(), offhandCanvas.isGlass(), null));
+                    minecraft.gui.setScreen(new GuiCanvasView(offhandItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), offhandCanvas.getCanvasType(), offhandCanvas.isGlass(), null));
                 } else {
-                    minecraft.setScreen(new GuiCanvasEdit(minecraft.player, offhandItem, heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), offhandCanvas.getCanvasType(), offhandCanvas.isGlass(), null));
+                    minecraft.gui.setScreen(new GuiCanvasEdit(minecraft.player, offhandItem, heldItem, Component.translatable(ITEM_CANVAS_TRANSLATION_KEY), offhandCanvas.getCanvasType(), offhandCanvas.isGlass(), null));
                 }
             }
         }

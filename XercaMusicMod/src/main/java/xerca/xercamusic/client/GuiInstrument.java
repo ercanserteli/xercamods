@@ -97,10 +97,10 @@ public class GuiInstrument extends Screen {
         if (blockInsPos != null) {
             if (player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns) {
                 if (!Objects.equals(blockIns.getItemInstrument(), instrument)) {
-                    client.setScreen(null);
+                    client.gui.setScreen(null);
                 }
             } else {
-                client.setScreen(null);
+                client.gui.setScreen(null);
             }
         }
     }

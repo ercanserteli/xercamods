@@ -139,9 +139,9 @@ public final class ConfettiBallGameTests {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("confetti_alt"));
         CraftingInput grid = craftingGrid(2, 2,
                 new ItemStack(net.minecraft.world.item.Items.PAPER),
-                new ItemStack(net.minecraft.world.item.Items.CYAN_DYE),
-                new ItemStack(net.minecraft.world.item.Items.MAGENTA_DYE),
-                new ItemStack(net.minecraft.world.item.Items.YELLOW_DYE)
+                new ItemStack(net.minecraft.world.item.Items.DYE.cyan()),
+                new ItemStack(net.minecraft.world.item.Items.DYE.magenta()),
+                new ItemStack(net.minecraft.world.item.Items.DYE.yellow())
         );
 
         TestAsserts.assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected confetti recipe to match paper plus cyan/magenta/yellow dye");

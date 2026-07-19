@@ -85,8 +85,8 @@ public class ItemFlask extends Item {
         }
         PotionContents potionContents = getPotionContents(stack);
         for (MobEffectInstance effect : potionContents.getAllEffects()) {
-            if (effect.getEffect().value().isInstantenous()) {
-                effect.getEffect().value().applyInstantenousEffect((ServerLevel) level, player, player, entity, effect.getAmplifier(), 1.0D);
+            if (effect.getEffect().value().isInstantaneous()) {
+                effect.getEffect().value().applyInstantaneousEffect((ServerLevel) level, player, player, entity, effect.getAmplifier(), 1.0D);
             } else {
                 entity.addEffect(new MobEffectInstance(effect));
             }

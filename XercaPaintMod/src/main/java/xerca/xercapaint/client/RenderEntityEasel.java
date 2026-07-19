@@ -78,7 +78,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel, EaselRenderSt
     @Override
     protected boolean shouldShowName(EntityEasel easel, double distanceToCameraSq) {
         HitResult result = Minecraft.getInstance().hitResult;
-        if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
+        if (result instanceof EntityHitResult entityHitResult && !Minecraft.getInstance().gui.hud.isHidden() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
             float range = easel.isDiscrete() ? 32.0F : 64.0F;
             return distanceToCameraSq < range * range;
         }

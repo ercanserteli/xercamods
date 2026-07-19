@@ -42,7 +42,7 @@ public class CushionRenderer extends EntityRenderer<EntityCushion, CushionRender
         poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
         poseStack.translate(-0.5F, -0.5F, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-        collector.submitMovingBlock(poseStack, state.movingBlockRenderState);
+        collector.submitMovingBlock(poseStack, state.movingBlockRenderState, state.outlineColor);
         poseStack.popPose();
         super.submit(state, poseStack, collector, cameraState);
     }
