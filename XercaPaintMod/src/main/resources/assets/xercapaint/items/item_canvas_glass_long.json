@@ -8,10 +8,27 @@
       "model": "xercapaint:item/item_canvas_glass_long"
     },
     "on_true": {
-      "type": "minecraft:special",
-      "base": "xercapaint:item/item_canvas_long_drawn",
-      "model": {
-        "type": "xercapaint:canvas"
+      "type": "minecraft:select",
+      "property": "minecraft:display_context",
+      "cases": [
+        {
+          "when": "gui",
+          "model": {
+            "type": "minecraft:special",
+            "base": "xercapaint:item/item_canvas_long_drawn",
+            "model": {
+              "type": "xercapaint:canvas",
+              "gui_tint": true
+            }
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:special",
+        "base": "xercapaint:item/item_canvas_long_drawn",
+        "model": {
+          "type": "xercapaint:canvas"
+        }
       }
     }
   }

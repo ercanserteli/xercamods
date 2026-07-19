@@ -21,7 +21,8 @@
       "xerca.xercapaint.client.CanvasSidesClientTest",
       "xerca.xercapaint.client.CanvasSidesRenderClientTest",
       "xerca.xercapaint.client.PaintCommandsClientTest",
-      "xerca.xercapaint.client.CanvasTooltipClientTest"
+      "xerca.xercapaint.client.CanvasTooltipClientTest",
+      "xerca.xercapaint.client.CanvasGuiItemClientTest"
     ]
   },
   "depends": {
