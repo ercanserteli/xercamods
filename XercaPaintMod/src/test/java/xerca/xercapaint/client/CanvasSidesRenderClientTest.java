@@ -15,6 +15,7 @@ import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityCanvas;
 import xerca.xercapaint.item.Items;
+import xerca.xercapaint.tests.PixelCountComparisonAlgorithm;
 import xerca.xercapaint.tests.SsimComparisonAlgorithm;
 
 import javax.imageio.ImageIO;
@@ -40,6 +41,9 @@ public final class CanvasSidesRenderClientTest implements FabricClientGameTest {
     // separate them; a direct pixel count over the edges does. At least this many pixels must differ clearly.
     private static final int MIN_DIFFERING_PIXELS = 300;
     private static final int CHANNEL_DIFF = 48;
+    // Glass captures also get a strict per-pixel budget: SSIM tolerated the mirrored back image
+    // ghosting through transparent front pixels when the front/back quads lost back-face culling.
+    private static final int MAX_STRICT_DIFF_PIXELS = 300;
     private static final String GOLDEN_DEFAULT = "canvas_sides_default_frame";
     private static final String GOLDEN_CUSTOM = "canvas_sides_custom_frame";
     private static final String GOLDEN_GLASS_DEFAULT = "canvas_sides_glass_default_frame";
@@ -84,11 +88,11 @@ public final class CanvasSidesRenderClientTest implements FabricClientGameTest {
             context.runOnClient(client -> client.options.hideGui = true);
 
             // Paper: custom painted frame, then the default wooden (birch) frame.
-            captureCanvas(context, singleplayer, Items.ITEM_CANVAS, "sides_custom_frame", true, GOLDEN_CUSTOM);
-            captureCanvas(context, singleplayer, Items.ITEM_CANVAS, "sides_default_frame", false, GOLDEN_DEFAULT);
+            captureCanvas(context, singleplayer, Items.ITEM_CANVAS, "sides_custom_frame", true, GOLDEN_CUSTOM, false);
+            captureCanvas(context, singleplayer, Items.ITEM_CANVAS, "sides_default_frame", false, GOLDEN_DEFAULT, false);
             // Glass: custom painted frame, then the default glass-pane frame.
-            captureCanvas(context, singleplayer, Items.ITEM_CANVAS_GLASS, "sides_glass_custom_frame", true, GOLDEN_GLASS_CUSTOM);
-            captureCanvas(context, singleplayer, Items.ITEM_CANVAS_GLASS, "sides_glass_default_frame", false, GOLDEN_GLASS_DEFAULT);
+            captureCanvas(context, singleplayer, Items.ITEM_CANVAS_GLASS, "sides_glass_custom_frame", true, GOLDEN_GLASS_CUSTOM, true);
+            captureCanvas(context, singleplayer, Items.ITEM_CANVAS_GLASS, "sides_glass_default_frame", false, GOLDEN_GLASS_DEFAULT, true);
 
             // Within each material the two goldens must differ over the painted edges: the toggle changes the
             // render. Guarded so a regeneration run (goldens freshly written) does not race the on-disk files.
@@ -100,7 +104,7 @@ public final class CanvasSidesRenderClientTest implements FabricClientGameTest {
     }
 
     private static void captureCanvas(ClientGameTestContext context, TestSingleplayerContext singleplayer,
-                                      Item item, String canvasId, boolean customSides, String golden) {
+                                      Item item, String canvasId, boolean customSides, String golden, boolean strictPixels) {
         removeCanvases(singleplayer);
         context.waitTicks(5);
         spawnCanvas(singleplayer, item, canvasId, customSides);
@@ -109,6 +113,10 @@ public final class CanvasSidesRenderClientTest implements FabricClientGameTest {
         context.assertScreenshotEquals(TestScreenshotComparisonOptions.of(golden)
                 .withAlgorithm(SsimComparisonAlgorithm.withThreshold(EQUALS_THRESHOLD))
                 .save());
+        if (strictPixels) {
+            context.assertScreenshotEquals(TestScreenshotComparisonOptions.of(golden)
+                    .withAlgorithm(new PixelCountComparisonAlgorithm(CHANNEL_DIFF, MAX_STRICT_DIFF_PIXELS)));
+        }
     }
 
     private static boolean goldenExists(String name) {

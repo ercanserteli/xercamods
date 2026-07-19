@@ -257,8 +257,8 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
             final float h32 = 32.0F * hScale;
             final float sideWidth = 1.0F / 16.0F;
 
-            // FRONT (facing -Z): glass uses single-sided cutout so transparent pixels are see-through
-            collector.submitCustomGeometry(ms, glass ? RenderTypes.entityCutout(location) : RenderTypes.entitySolid(location), (pose, front) -> {
+            // FRONT (facing -Z): glass uses single-sided (culled) cutout so transparent pixels are see-through
+            collector.submitCustomGeometry(ms, glass ? RenderTypes.entityCutoutCull(location) : RenderTypes.entitySolid(location), (pose, front) -> {
                 addVertex(front, pose, 0.0F, h32, -1.0F, 1.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
                 addVertex(front, pose, w32, h32, -1.0F, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, -1.0F);
                 addVertex(front, pose, w32, 0.0F, -1.0F, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, -1.0F);
@@ -267,7 +267,7 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
 
             if (glass) {
                 // BACK (facing +Z): the front image seen through the glass appears mirrored
-                collector.submitCustomGeometry(ms, RenderTypes.entityCutout(location), (pose, back) -> {
+                collector.submitCustomGeometry(ms, RenderTypes.entityCutoutCull(location), (pose, back) -> {
                     addVertex(back, pose, 0.0D, 0.0D, 1.0D, 1.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
                     addVertex(back, pose, w32, 0.0D, 1.0D, 0.0F, 1.0F, packedLight, 0.0F, 0.0F, 1.0F);
                     addVertex(back, pose, w32, h32, 1.0D, 0.0F, 0.0F, packedLight, 0.0F, 0.0F, 1.0F);
