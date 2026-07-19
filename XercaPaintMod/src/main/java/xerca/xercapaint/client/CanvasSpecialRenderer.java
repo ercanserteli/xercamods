@@ -18,7 +18,8 @@ import java.util.function.Consumer;
 public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecialRenderer.CanvasData> {
     private final CanvasItemRenderer renderer = new CanvasItemRenderer();
 
-    public record CanvasData(@Nullable RenderEntityCanvas.Instance instance, int width, int height, boolean glass) {
+    public record CanvasData(@Nullable RenderEntityCanvas.Instance instance, int width, int height, boolean glass,
+                             int version) {
     }
 
     @Override
@@ -30,7 +31,8 @@ public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecial
         if (stack.get(Items.CANVAS_PIXELS) != null && RenderEntityCanvas.theInstance != null) {
             instance = RenderEntityCanvas.theInstance.getCanvasRendererInstance(stack, itemCanvas.getWidth(), itemCanvas.getHeight());
         }
-        return new CanvasData(instance, itemCanvas.getWidth(), itemCanvas.getHeight(), itemCanvas.isGlass());
+        int version = stack.getOrDefault(Items.CANVAS_VERSION, 1);
+        return new CanvasData(instance, itemCanvas.getWidth(), itemCanvas.getHeight(), itemCanvas.isGlass(), version);
     }
 
     @Override
