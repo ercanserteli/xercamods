@@ -2,12 +2,22 @@ package xerca.xercaomnichest.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import xerca.xercaomnichest.Mod;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +40,31 @@ public class OmniChestSavedData extends SavedData {
 
     public OmniChestSavedData() {
         this.inventory = new OmniChestInventory(this::setDirty);
+    }
+
+    public static void migrateLegacyData(MinecraftServer server) {
+        migrateLegacyFile(server.getDataStorage(), server.registryAccess(),
+                server.getWorldPath(LevelResource.DATA).resolve("omni_chest.dat"));
+    }
+
+    // Worlds from before 26.x stored this data as world/data/omni_chest.dat instead of the namespaced file
+    public static void migrateLegacyFile(SavedDataStorage storage, HolderLookup.Provider registries, Path legacyFile) {
+        if (!Files.exists(legacyFile) || storage.get(TYPE) != null) {
+            return;
+        }
+        try {
+            CompoundTag root = storage.readTagFromDisk(legacyFile, TYPE.dataFixType(),
+                    SharedConstants.getCurrentVersion().dataVersion().version());
+            TYPE.codec().parse(registries.createSerializationContext(NbtOps.INSTANCE), root.get("data"))
+                    .resultOrPartial(error -> Mod.LOGGER.error("Failed to migrate legacy omni chest data: {}", error))
+                    .ifPresent(data -> {
+                        data.setDirty();
+                        storage.set(TYPE, data);
+                        Mod.LOGGER.info("Migrated legacy omni chest data from {}", legacyFile);
+                    });
+        } catch (IOException e) {
+            Mod.LOGGER.error("Failed to read legacy omni chest data file {}", legacyFile, e);
+        }
     }
 
     private static OmniChestSavedData load(List<SlotEntry> entries) {

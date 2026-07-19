@@ -1,18 +1,26 @@
 package xerca.xercamusic.common;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
@@ -25,7 +33,7 @@ public final class MusicManager {
     private static final Map<UUID, TempNotesBuffer> TEMP_NOTES_MAP = new HashMap<>();
 
     public static @Nullable MusicData getMusicData(UUID id, int ver, MinecraftServer server) {
-        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic.TYPE);
+        SavedDataMusic savedDataMusic = server.getDataStorage().computeIfAbsent(SavedDataMusic.TYPE);
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         if (musicMap.containsKey(id)) {
             MusicData data = musicMap.get(id);
@@ -42,7 +50,7 @@ public final class MusicManager {
     }
 
     public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers, MinecraftServer server) {
-        SavedDataMusic savedDataMusic = server.overworld().getDataStorage().computeIfAbsent(SavedDataMusic.TYPE);
+        SavedDataMusic savedDataMusic = server.getDataStorage().computeIfAbsent(SavedDataMusic.TYPE);
         Map<UUID, MusicData> musicMap = savedDataMusic.getMusicMap();
         NoteEvent.sortNotes(notes);
         NoteEvent.removeDuplicates(notes);
@@ -98,6 +106,31 @@ public final class MusicManager {
             TEMP_NOTES_MAP.put(pkt.uuid(), buffer);
         }
         return buffer.isFinished();
+    }
+
+    public static void migrateLegacyData(MinecraftServer server) {
+        migrateLegacyFile(server.getDataStorage(), server.registryAccess(),
+                server.getWorldPath(LevelResource.DATA).resolve("music_map.dat"));
+    }
+
+    // Worlds from before 26.x stored this data as world/data/music_map.dat instead of the namespaced file
+    public static void migrateLegacyFile(SavedDataStorage storage, HolderLookup.Provider registries, Path legacyFile) {
+        if (!Files.exists(legacyFile) || storage.get(SavedDataMusic.TYPE) != null) {
+            return;
+        }
+        try {
+            CompoundTag root = storage.readTagFromDisk(legacyFile, SavedDataMusic.TYPE.dataFixType(),
+                    SharedConstants.getCurrentVersion().dataVersion().version());
+            SavedDataMusic.TYPE.codec().parse(registries.createSerializationContext(NbtOps.INSTANCE), root.get("data"))
+                    .resultOrPartial(error -> Mod.LOGGER.error("Failed to migrate legacy music data: {}", error))
+                    .ifPresent(data -> {
+                        data.setDirty();
+                        storage.set(SavedDataMusic.TYPE, data);
+                        Mod.LOGGER.info("Migrated legacy music data from {}", legacyFile);
+                    });
+        } catch (IOException e) {
+            Mod.LOGGER.error("Failed to read legacy music data file {}", legacyFile, e);
+        }
     }
 
     public record MusicData(int version, List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers) {

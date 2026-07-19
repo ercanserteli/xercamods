@@ -2,6 +2,7 @@ package xerca.xercamusic.tests;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -9,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -22,6 +24,8 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -1178,6 +1182,43 @@ public final class MusicRegressionGameTests {
         assertTrue(helper, empty1.getMaxStackSize() == 1, "Expected an empty music sheet to keep stack size 1");
         assertTrue(helper, ItemStack.isSameItemSameComponents(empty1, empty2),
                 "Expected empty music sheets to remain stackable with each other");
+        helper.succeed();
+    }
+
+    @GameTest
+    public void legacyMusicSavedDataFileMigratesToNamespacedStorage(GameTestHelper helper) {
+        MinecraftServer server = helper.getLevel().getServer();
+        UUID id = UUID.randomUUID();
+        MusicManager.SavedDataMusic legacy = new MusicManager.SavedDataMusic();
+        legacy.getMusicMap().put(id, new MusicManager.MusicData(3,
+                List.of(NoteEvent.fromNBT(noteTag(36, 0, 64, 2))), null));
+        CompoundTag root = new CompoundTag();
+        root.putInt("DataVersion", SharedConstants.getCurrentVersion().dataVersion().version());
+        root.put("data", legacy.save(new CompoundTag()));
+
+        try {
+            Path testDir = server.getWorldPath(LevelResource.DATA).resolve("music_migration_test");
+            Files.createDirectories(testDir);
+            Path legacyFile = testDir.resolve("music_map.dat");
+            NbtIo.writeCompressed(root, legacyFile);
+            Path storageDir = testDir.resolve("new");
+            Files.createDirectories(storageDir);
+            Files.deleteIfExists(storageDir.resolve("xercamusic").resolve("music_map.dat"));
+            try (SavedDataStorage storage = new SavedDataStorage(storageDir, server.getFixerUpper(), server.registryAccess())) {
+                assertTrue(helper, storage.get(MusicManager.SavedDataMusic.TYPE) == null,
+                        "Expected fresh storage to have no music data");
+                MusicManager.migrateLegacyFile(storage, server.registryAccess(), legacyFile);
+                MusicManager.SavedDataMusic migrated = storage.get(MusicManager.SavedDataMusic.TYPE);
+                assertTrue(helper, migrated != null, "Expected migration to load legacy music data");
+                MusicManager.MusicData data = migrated.getMusicMap().get(id);
+                assertTrue(helper, data != null, "Expected migrated music data to contain the legacy song");
+                assertTrue(helper, data.version() == 3, "Expected migrated song version to be preserved");
+                assertTrue(helper, data.notes().size() == 1 && data.notes().getFirst().note == 36,
+                        "Expected migrated song notes to be preserved");
+            }
+        } catch (IOException e) {
+            assertTrue(helper, false, "Failed to run legacy music data migration: " + e);
+        }
         helper.succeed();
     }
 

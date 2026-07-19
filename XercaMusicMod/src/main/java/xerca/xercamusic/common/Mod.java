@@ -3,6 +3,7 @@ package xerca.xercamusic.common;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -109,5 +110,7 @@ public class Mod implements ModInitializer {
             CommandImport.register(dispatcher);
             CommandExport.register(dispatcher);
         });
+
+        ServerLifecycleEvents.SERVER_STARTED.register(MusicManager::migrateLegacyData);
     }
 }

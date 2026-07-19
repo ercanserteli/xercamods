@@ -1,12 +1,16 @@
 package xerca.xercaomnichest.tests;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +26,8 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import xerca.xercaomnichest.Mod;
@@ -32,6 +38,9 @@ import xerca.xercaomnichest.data.OmniChestInventory;
 import xerca.xercaomnichest.data.OmniChestSavedData;
 import xerca.xercaomnichest.item.Items;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -191,6 +200,39 @@ public final class OmniChestGameTests {
         ItemStack restoredStack = restored.getInventory().getItem(4);
         assertTrue(helper, restoredStack.is(net.minecraft.world.item.Items.DIAMOND), "Expected saved data to restore the stored item");
         assertTrue(helper, restoredStack.getCount() == 5, "Expected saved data to restore the stored item count");
+        helper.succeed();
+    }
+
+    @GameTest
+    public void omniChestLegacySavedDataFileMigratesToNamespacedStorage(GameTestHelper helper) {
+        MinecraftServer server = helper.getLevel().getServer();
+        OmniChestSavedData legacy = new OmniChestSavedData();
+        legacy.getInventory().setItem(3, new ItemStack(net.minecraft.world.item.Items.DIAMOND, 9));
+        RegistryOps<Tag> ops = helper.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        CompoundTag root = new CompoundTag();
+        root.putInt("DataVersion", SharedConstants.getCurrentVersion().dataVersion().version());
+        root.put("data", OmniChestSavedData.TYPE.codec().encodeStart(ops, legacy).getOrThrow());
+
+        try {
+            Path testDir = server.getWorldPath(LevelResource.DATA).resolve("omni_chest_migration_test");
+            Files.createDirectories(testDir);
+            Path legacyFile = testDir.resolve("omni_chest.dat");
+            NbtIo.writeCompressed(root, legacyFile);
+            Path storageDir = testDir.resolve("new");
+            Files.createDirectories(storageDir);
+            Files.deleteIfExists(storageDir.resolve("xercaomnichest").resolve("omni_chest.dat"));
+            try (SavedDataStorage storage = new SavedDataStorage(storageDir, server.getFixerUpper(), server.registryAccess())) {
+                assertTrue(helper, storage.get(OmniChestSavedData.TYPE) == null, "Expected fresh storage to have no omni chest data");
+                OmniChestSavedData.migrateLegacyFile(storage, server.registryAccess(), legacyFile);
+                OmniChestSavedData migrated = storage.get(OmniChestSavedData.TYPE);
+                assertTrue(helper, migrated != null, "Expected migration to load legacy omni chest data");
+                ItemStack migratedStack = migrated.getInventory().getItem(3);
+                assertTrue(helper, migratedStack.is(net.minecraft.world.item.Items.DIAMOND), "Expected migrated omni chest to keep the stored item");
+                assertTrue(helper, migratedStack.getCount() == 9, "Expected migrated omni chest to keep the stored item count");
+            }
+        } catch (IOException e) {
+            assertTrue(helper, false, "Failed to run legacy omni chest data migration: " + e);
+        }
         helper.succeed();
     }
 

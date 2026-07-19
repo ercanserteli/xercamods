@@ -1,6 +1,7 @@
 package xerca.xercaomnichest;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercaomnichest.block.Blocks;
 import xerca.xercaomnichest.block_entity.BlockEntities;
+import xerca.xercaomnichest.data.OmniChestSavedData;
 import xerca.xercaomnichest.item.Items;
 
 public final class Mod implements ModInitializer {
@@ -33,6 +35,7 @@ public final class Mod implements ModInitializer {
         Blocks.registerBlocks();
         BlockEntities.registerBlockEntities();
         Items.registerItems();
+        ServerLifecycleEvents.SERVER_STARTED.register(OmniChestSavedData::migrateLegacyData);
         LOGGER.info(MOD_ID + " initialized");
     }
 }

@@ -124,7 +124,7 @@ public class BlockOmniChest extends BaseEntityBlock implements SimpleWaterlogged
     }
 
     public static OmniChestInventory getContainer(MinecraftServer server) {
-        OmniChestSavedData data = server.overworld().getDataStorage().computeIfAbsent(OmniChestSavedData.TYPE);
+        OmniChestSavedData data = server.getDataStorage().computeIfAbsent(OmniChestSavedData.TYPE);
         data.setDirty();
         return data.getInventory();
     }
