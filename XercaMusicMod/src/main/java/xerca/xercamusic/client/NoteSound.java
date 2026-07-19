@@ -6,7 +6,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class NoteSound extends AbstractSoundInstance implements TickableSoundInstance {
     private static final float[] FADE_VOLUMES = {0.0f, 0.02f, 0.12f, 0.3f};
@@ -18,8 +18,8 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
     private int remainingTicks = -1;
 
     // Glissando (pitch slide) - supports multi-point
-    private @Nullable float[] pitchWaypoints;   // null means no glissando; array of target pitches for each segment
-    private @Nullable float[] waypointPositions; // null = evenly spaced; values 0.0-1.0 indicating when each waypoint is reached
+    private float @Nullable [] pitchWaypoints;   // null means no glissando; array of target pitches for each segment
+    private float @Nullable [] waypointPositions; // null = evenly spaced; values 0.0-1.0 indicating when each waypoint is reached
     private int glissandoTotalTicks;
     private int glissandoTicksElapsed;
 
@@ -68,7 +68,7 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
      * @param positions     parallel array of fractional positions (0.0-1.0) when each waypoint is reached; null = evenly spaced
      * @param durationTicks total glissando duration
      */
-    public void setGlissando(float[] targetPitches, @Nullable float[] positions, int durationTicks) {
+    public void setGlissando(float[] targetPitches, float @Nullable [] positions, int durationTicks) {
         this.pitchWaypoints = targetPitches;
         this.waypointPositions = (positions != null && positions.length == targetPitches.length) ? positions : null;
         this.glissandoTotalTicks = Math.max(1, durationTicks);

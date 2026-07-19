@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings({"PMD.AvoidAccessibilityAlteration", "unused"})
 public final class ConfettiBallGameTests {
     private static final Method DISPENSE_METHOD;
 

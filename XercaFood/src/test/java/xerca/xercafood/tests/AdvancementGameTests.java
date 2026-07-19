@@ -11,6 +11,7 @@ import xerca.xercafood.common.item.Items;
 
 import static xerca.xercafood.tests.GameTestHelpers.*;
 
+@SuppressWarnings("unused")
 public class AdvancementGameTests {
 
     @GameTest

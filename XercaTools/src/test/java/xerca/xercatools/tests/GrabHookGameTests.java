@@ -16,6 +16,7 @@ import xerca.xercatools.enchantment.GrabHookEnchantments;
 import xerca.xercatools.entity.EntityGrabHook;
 import xerca.xercatools.item.Items;
 
+@SuppressWarnings("unused")
 public class GrabHookGameTests {
     private static final double DEFAULT_SPEED = 1.5;
 
@@ -38,7 +39,7 @@ public class GrabHookGameTests {
 
         double speed = hook.getDeltaMovement().length();
         TestAsserts.assertTrue(helper, Math.abs(speed - DEFAULT_SPEED) < 0.01,
-            "Hook default launch speed should be " + DEFAULT_SPEED + ", got " + speed);
+                "Hook default launch speed should be " + DEFAULT_SPEED + ", got " + speed);
         helper.succeed();
     }
 
@@ -56,7 +57,7 @@ public class GrabHookGameTests {
         double expectedSpeed = DEFAULT_SPEED * 1.25;  // 1 + turbo*0.25
         double speed = hook.getDeltaMovement().length();
         TestAsserts.assertTrue(helper, Math.abs(speed - expectedSpeed) < 0.01,
-            "Turbo Grab I launch speed should be " + expectedSpeed + ", got " + speed);
+                "Turbo Grab I launch speed should be " + expectedSpeed + ", got " + speed);
         helper.succeed();
     }
 
@@ -68,7 +69,7 @@ public class GrabHookGameTests {
         double expectedSpeed = DEFAULT_SPEED * 0.5;
         double speed = hook.getDeltaMovement().length();
         TestAsserts.assertTrue(helper, Math.abs(speed - expectedSpeed) < 0.01,
-            "Pull amount 0.5 should give half speed, got " + speed);
+                "Pull amount 0.5 should give half speed, got " + speed);
         helper.succeed();
     }
 
@@ -89,7 +90,7 @@ public class GrabHookGameTests {
         // ticksInAir reaches 20 on the 20th server tick; check after 22 ticks.
         helper.runAtTickTime(helper.getTick() + 22, () -> {
             TestAsserts.assertTrue(helper, hook.isReturning(),
-                "Hook should be returning after 20 ticks in air");
+                    "Hook should be returning after 20 ticks in air");
             helper.succeed();
         });
     }
@@ -115,7 +116,7 @@ public class GrabHookGameTests {
         hook.tick();
 
         TestAsserts.assertTrue(helper, hook.getCaughtEntity() == pig,
-            "Hook should catch the pig on first tick");
+                "Hook should catch the pig on first tick");
         helper.succeed();
     }
 
@@ -133,7 +134,7 @@ public class GrabHookGameTests {
         hook.tick();
 
         TestAsserts.assertTrue(helper, pig.getHealth() < healthBefore,
-            "Hook without Gentle Grab should deal 3 damage on catch");
+                "Hook without Gentle Grab should deal 3 damage on catch");
         helper.succeed();
     }
 
@@ -153,9 +154,9 @@ public class GrabHookGameTests {
         TestAsserts.assertTrue(helper, !pig.isAlive(), "Pig should be killed by the impact damage");
         TestAsserts.assertTrue(helper, !pig.isRemoved(), "Corpse should still exist right after death");
         TestAsserts.assertTrue(helper, hook.getCaughtEntity() == pig,
-            "Hook should keep the corpse caught instead of dropping it");
+                "Hook should keep the corpse caught instead of dropping it");
         TestAsserts.assertTrue(helper, !hook.isRemoved(),
-            "Hook should not be discarded when the catch dies on impact");
+                "Hook should not be discarded when the catch dies on impact");
         helper.succeed();
     }
 
@@ -178,9 +179,9 @@ public class GrabHookGameTests {
         hook.tick();
 
         TestAsserts.assertTrue(helper, hook.getCaughtEntity() == pig,
-            "Gentle Grab should still catch the entity");
+                "Gentle Grab should still catch the entity");
         TestAsserts.assertTrue(helper, pig.getHealth() == healthBefore,
-            "Gentle Grab should deal no damage on catch");
+                "Gentle Grab should deal no damage on catch");
         helper.succeed();
     }
 }

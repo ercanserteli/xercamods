@@ -25,6 +25,7 @@ import static xerca.xercamusic.client.MusicClientTests.check;
  * sends the chat command, the server bounces a packet back to the client, and the client performs the
  * file IO and re-import.
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class MusicCommandsClientTest implements FabricClientGameTest {
     private static final String EXPORT_NAME = "clienttest_export";
     private static final String EXPORT_FILE = "music_sheets/" + EXPORT_NAME + ".sheet";
@@ -54,7 +55,12 @@ public final class MusicCommandsClientTest implements FabricClientGameTest {
                     && client.player.getMainHandItem().get(Items.SHEET_ID) != null);
 
             // Export: the client sends the command, the server bounces it back, the client writes the file.
-            context.runOnClient(client -> new File(EXPORT_FILE).delete());
+            context.runOnClient(client -> {
+                File exportFile = new File(EXPORT_FILE);
+                if (exportFile.exists() && !exportFile.delete()) {
+                    throw new IllegalStateException("Could not remove stale music export");
+                }
+            });
             sendCommand(context, "musicexport " + EXPORT_NAME);
             check(pollClient(context, client -> new File(EXPORT_FILE).exists()),
                     "Expected /musicexport to write " + EXPORT_FILE);

@@ -24,6 +24,7 @@ import static xerca.xercamusic.tests.TestAsserts.assertTrue;
  * {@code data/xercamusic/recipe/*.json}) is fed to the recipe manager and the resolved output is
  * asserted, replacing the Sikuli test that drove the crafting-table GUI by pixel.
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class MusicRecipeGameTests {
 
     private static Map<Character, Item> key(Object... charItemPairs) {

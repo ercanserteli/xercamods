@@ -6,9 +6,9 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 public class CanvasSpecialRenderer implements SpecialModelRenderer<CanvasSpecialRenderer.CanvasData> {
     private final CanvasItemRenderer renderer = new CanvasItemRenderer();
 
-    public record CanvasData(@Nullable RenderEntityCanvas.Instance instance, int width, int height, boolean glass) {
+    public record CanvasData(RenderEntityCanvas.@Nullable Instance instance, int width, int height, boolean glass) {
     }
 
     @Override

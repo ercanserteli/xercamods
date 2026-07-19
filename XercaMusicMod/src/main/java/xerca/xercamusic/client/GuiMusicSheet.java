@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix3x2fStack;
+import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.common.*;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -30,7 +31,6 @@ import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket;
 import xerca.xercamusic.common.packets.serverbound.MusicUpdatePacket;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static xerca.xercamusic.client.ModClient.sendToServer;
@@ -220,7 +220,7 @@ public class GuiMusicSheet extends Screen {
             MusicManager.MusicData data = MusicManagerClient.getMusicData(sheetId, version);
             if (data != null) {
                 notes.addAll(data.notes());
-                if(data.volumeMarkers() != null){
+                if (data.volumeMarkers() != null) {
                     volumeMarkers.addAll(data.volumeMarkers());
                 }
             }
@@ -327,7 +327,7 @@ public class GuiMusicSheet extends Screen {
         startSound(noteId, (byte) (data.volume() * 128.f));
     }
 
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "DataFlowIssue"})
     void startSound(int noteId, byte volume) {
         //TEMP
         if (noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
@@ -369,6 +369,7 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
+    @SuppressWarnings({"ConstantValue", "DataFlowIssue"})
     void endSound(int noteId) {
         if (noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId]) {
             buttonPushStates[noteId] = false;
@@ -444,9 +445,7 @@ public class GuiMusicSheet extends Screen {
                     dirtyFlag.hasSigned = true;
                     dirtyFlag.hasTitle = true;
                     isSigned = true;
-                    if (minecraft != null) {
-                        minecraft.setScreen(null);
-                    }
+                    minecraft.setScreen(null);
                 }
             }).bounds(noteImageLeftX + 112, 145, 98, 20).build());
             this.buttonCancel = this.addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), button -> {
@@ -486,7 +485,7 @@ public class GuiMusicSheet extends Screen {
 
         this.bpmUp = this.addRenderableWidget(Button.builder(Component.translatable("note.upButton"), button -> {
             if (!isSigned || selfSigned || generation > 1) {
-                if (minecraft != null && minecraft.hasShiftDown()) {
+                if (minecraft.hasShiftDown()) {
                     int mult = minecraft.hasControlDown() ? 3 : 2;
                     if (bps * mult <= 50) {
                         pushUndo();
@@ -513,7 +512,7 @@ public class GuiMusicSheet extends Screen {
         }).bounds(noteImageLeftX + BPM_BUT_X, noteImageY + BPM_BUT_Y, BPM_BUT_W, BPM_BUT_H).build());
         this.bpmDown = this.addRenderableWidget(Button.builder(Component.translatable("note.downButton"), button -> {
             if (!isSigned || selfSigned || generation > 1) {
-                if (minecraft != null && minecraft.hasShiftDown()) {
+                if (minecraft.hasShiftDown()) {
                     float mult = minecraft.hasControlDown() ? 0.33f : 0.5f;
                     if (Math.round(bps * mult) >= 1) {
                         pushUndo();
@@ -726,7 +725,8 @@ public class GuiMusicSheet extends Screen {
         }
     }
 
-    @Nullable NoteSound playSound(NoteEvent event, int previewInstrument) {
+    @Nullable
+    NoteSound playSound(NoteEvent event, int previewInstrument) {
         return playSound(event, previewInstrument, volume);
     }
 
@@ -762,7 +762,7 @@ public class GuiMusicSheet extends Screen {
         try {
             sound = onlyCallOnClient(() -> () ->
                     ModClient.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
-                            sheetVolume*effectiveVolume, insSound.pitch(), (byte)beatsToTicks(event.length)));
+                            sheetVolume * effectiveVolume, insSound.pitch(), (byte) beatsToTicks(event.length)));
         } catch (Exception e) {
             Mod.LOGGER.error("Error playing preview sound", e);
             return null;
@@ -774,7 +774,7 @@ public class GuiMusicSheet extends Screen {
             if (wps != null && wps.length > 0) {
                 float[] pitchWaypoints = new float[wps.length];
                 for (int i = 0; i < wps.length; i++) {
-                    pitchWaypoints[i] = insSound.pitch() * (float)Math.pow(2.0, wps[i] / 12.0);
+                    pitchWaypoints[i] = insSound.pitch() * (float) Math.pow(2.0, wps[i] / 12.0);
                 }
                 byte[] posBuf = event.getEffectivePositions();
                 if (posBuf != null && posBuf.length == wps.length) {
@@ -800,7 +800,7 @@ public class GuiMusicSheet extends Screen {
         if (previewNextNoteID < notes.size()) {
             NoteEvent event = notes.get(previewNextNoteID);
             while (event.time >= curStart && event.time < curEnd) {
-                if(!recordingNotes.contains(event)){
+                if (!recordingNotes.contains(event)) {
                     NoteSound sound = playSound(event, previewInstrument);
                     // Track sustained notes inside volume markers for dynamic volume
                     if (sound != null && event.length > 1) {
@@ -1014,21 +1014,21 @@ public class GuiMusicSheet extends Screen {
             // Draw octave names
             for (int i = 0; i < 4; i++) {
                 final int x = x1 - 24;
-                final int y = noteImageY + NOTE_REGION_BOTTOM - 18 - i*36;
-                if(currentOctave == i + currentOctavePos){
+                final int y = noteImageY + NOTE_REGION_BOTTOM - 18 - i * 36;
+                if (currentOctave == i + currentOctavePos) {
                     // Prominent active octave indicator: 50% transparent border + filled background
                     int color = OCTAVE_COLORS[i + currentOctavePos];
                     int halfAlpha = (color & 0x00FFFFFF) | 0x80000000; // 50% transparent
                     int bgColor = (color & 0x00FFFFFF) | 0x30000000;  // Light background fill
-                    guiGraphics.fill(x-11, y-5, x+11, y+13, halfAlpha);        // Outer border
-                    guiGraphics.fill(x-10, y-4, x+10, y+12, bgColor);          // Filled background
-                    guiGraphics.fill(x-10, y-4, x+10, y-3, halfAlpha);         // Top edge
-                    guiGraphics.fill(x-10, y+11, x+10, y+12, halfAlpha);       // Bottom edge
-                    guiGraphics.fill(x-10, y-4, x-9, y+12, halfAlpha);         // Left edge
-                    guiGraphics.fill(x+9, y-4, x+10, y+12, halfAlpha);         // Right edge
+                    guiGraphics.fill(x - 11, y - 5, x + 11, y + 13, halfAlpha);        // Outer border
+                    guiGraphics.fill(x - 10, y - 4, x + 10, y + 12, bgColor);          // Filled background
+                    guiGraphics.fill(x - 10, y - 4, x + 10, y - 3, halfAlpha);         // Top edge
+                    guiGraphics.fill(x - 10, y + 11, x + 10, y + 12, halfAlpha);       // Bottom edge
+                    guiGraphics.fill(x - 10, y - 4, x - 9, y + 12, halfAlpha);         // Left edge
+                    guiGraphics.fill(x + 9, y - 4, x + 10, y + 12, halfAlpha);         // Right edge
                     // Draw a small triangle/arrow indicator
-                    guiGraphics.fill(x+11, y+1, x+13, y+7, halfAlpha);
-                    guiGraphics.fill(x+13, y+2, x+14, y+6, halfAlpha);
+                    guiGraphics.fill(x + 11, y + 1, x + 13, y + 7, halfAlpha);
+                    guiGraphics.fill(x + 13, y + 2, x + 14, y + 6, halfAlpha);
                 }
                 guiGraphics.centeredText(font, OCTAVE_NAMES[i + currentOctavePos], x, y, OCTAVE_COLORS[i + currentOctavePos]);
             }
@@ -1058,10 +1058,10 @@ public class GuiMusicSheet extends Screen {
             }
 
             // Draw volume markers (crescendo/decrescendo)
-            for(VolumeMarker marker : volumeMarkers) {
+            for (VolumeMarker marker : volumeMarkers) {
                 drawVolumeMarker(guiGraphics, marker, false);
             }
-            if(currentlyAddedMarker != null) {
+            if (currentlyAddedMarker != null) {
                 drawVolumeMarker(guiGraphics, currentlyAddedMarker, true);
             }
 
@@ -1116,7 +1116,7 @@ public class GuiMusicSheet extends Screen {
             guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.helpTooltip"), mouseX, mouseY);
         }
 
-        if(helpOn) {
+        if (helpOn) {
             // === Scrollable help panel ===
             int panelW = 380;
             helpPanelX = (this.width - panelW) / 2;
@@ -1150,7 +1150,7 @@ public class GuiMusicSheet extends Screen {
                 boolean active;
                 if (i < HELP_SECTIONS.length - 1) {
                     active = helpScrollOffset >= helpSectionContentY[i]
-                          && helpScrollOffset < helpSectionContentY[i + 1];
+                            && helpScrollOffset < helpSectionContentY[i + 1];
                 } else {
                     active = helpScrollOffset >= helpSectionContentY[i];
                 }
@@ -1208,8 +1208,7 @@ public class GuiMusicSheet extends Screen {
                 guiGraphics.fill(sbX, helpContentTop, sbX + 3, helpContentBottomY, 0xFF333333);
                 guiGraphics.fill(sbX, thumbY, sbX + 3, thumbY + thumbH, 0xFF888888);
             }
-        }
-        else{
+        } else {
             if (requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors").isHovered()) {
                 guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.toggleTooltip"), mouseX, mouseY);
             } else if (requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns").isHovered()) {
@@ -1245,7 +1244,7 @@ public class GuiMusicSheet extends Screen {
             int barRight = noteImageLeftX + NOTE_IMAGE_WIDTH + NOTE_IMAGE_LEFT_WIDTH - 20;
             int maxBarWidth = barRight - barLeft;
             int barTop = noteImageY + 7;
-            
+
             // Wrap text to two lines if needed
             String[] textLines = wrapGlissandoText(modeText, maxBarWidth - 8);
             int barHeight = textLines.length == 1 ? 18 : 28;  // 28px for two lines
@@ -1283,7 +1282,7 @@ public class GuiMusicSheet extends Screen {
         if (font.width(text) <= maxWidth) {
             return new String[]{text};
         }
-        
+
         // Split by spaces and find the best break point
         List<String> words = splitByLiteralSpace(text);
         StringBuilder line1 = new StringBuilder();
@@ -1372,7 +1371,7 @@ public class GuiMusicSheet extends Screen {
                 y2 = Math.min(y2, noteImageY + NOTE_REGION_TOP + 36 * 4);
             } else {
                 y1 = noteImageY + NOTE_REGION_TOP;
-                y2 = y1 + 36*4;
+                y2 = y1 + 36 * 4;
             }
 
             guiGraphics.fill(x1 + 1, y1, x2 + 2, y2, selectionColor);
@@ -1404,7 +1403,7 @@ public class GuiMusicSheet extends Screen {
             final int fillColor = ((event == currentlyAddedNote || isNeighbor) ? 0x77000000 : 0xFF000000) | red << 16 | green << 8;
 
             guiGraphics.fill(xBegin, y, xEnd, y + 3, outlineColor);
-            guiGraphics.fill(xFillBegin, y+1, xFillEnd, y + 2, fillColor);
+            guiGraphics.fill(xFillBegin, y + 1, xFillEnd, y + 2, fillColor);
 
             // Draw glissando indicator (lines showing pitch path through waypoints)
             if (!isNeighbor && event.hasGlissando()) {
@@ -1461,7 +1460,7 @@ public class GuiMusicSheet extends Screen {
         // Check if any part of the marker is visible in the current octave range
         int lowOctave = octaveFromNote(marker.lowNote);
         int highOctave = octaveFromNote(marker.highNote);
-        
+
         // Check if marker is visible horizontally and vertically
         boolean verticallyVisible = (highOctave >= currentOctavePos && lowOctave < currentOctavePos + 4);
         boolean horizontallyVisible = marker.startTime < sliderPosition + BEATS_IN_SCREEN
@@ -1470,25 +1469,25 @@ public class GuiMusicSheet extends Screen {
         if (!verticallyVisible || !horizontallyVisible) {
             return;
         }
-        
+
         // Calculate horizontal bounds
         int timeDrawBeginning = Math.max(marker.startTime - sliderPosition, 0);
         int timeDrawEnd = Math.min(marker.endTime - sliderPosition, BEATS_IN_SCREEN);
-        
+
         int xBegin = noteImageLeftX + NOTE_REGION_LEFT + timeDrawBeginning * 3;
         int xEnd = noteImageLeftX + NOTE_REGION_LEFT + timeDrawEnd * 3;
-        
+
         if (xBegin >= xEnd) {
             return;
         }
-        
+
         // Calculate vertical bounds (clipped to visible octave range)
-        int visibleLowNote = Math.max(marker.lowNote, (byte)(IItemInstrument.MIN_NOTE + currentOctavePos * 12));
-        int visibleHighNote = Math.min(marker.highNote, (byte)(IItemInstrument.MIN_NOTE + (currentOctavePos + 4) * 12 - 1));
-        
+        int visibleLowNote = Math.max(marker.lowNote, (byte) (IItemInstrument.MIN_NOTE + currentOctavePos * 12));
+        int visibleHighNote = Math.min(marker.highNote, (byte) (IItemInstrument.MIN_NOTE + (currentOctavePos + 4) * 12 - 1));
+
         int yTop = noteImageY + NOTE_REGION_TOP + (47 - visibleHighNote + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36;
         int yBottom = noteImageY + NOTE_REGION_TOP + (47 - visibleLowNote + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36 + 3;
-        
+
         // Choose color based on crescendo (red) or decrescendo (green)
         // Use semi-transparent colors so notes are still visible
         int alpha = isBeingAdded ? 0x66 : 0x55;
@@ -1500,17 +1499,17 @@ public class GuiMusicSheet extends Screen {
             // Green for decrescendo (getting softer)
             color = (alpha << 24) | 0x44FF44;
         }
-        
+
         guiGraphics.fill(xBegin, yTop, xEnd, yBottom, color);
-        
+
         // Draw a thin border to make the marker more visible
         int borderAlpha = isBeingAdded ? 0xAA : 0x88;
         int borderColor = marker.isCrescendo() ? ((borderAlpha << 24) | 0xAA2222) : ((borderAlpha << 24) | 0x22AA22);
-        
+
         // Top and bottom borders
         guiGraphics.fill(xBegin, yTop, xEnd, yTop + 1, borderColor);
         guiGraphics.fill(xBegin, yBottom - 1, xEnd, yBottom, borderColor);
-        
+
         // Left and right borders (only if visible)
         if (timeDrawBeginning == marker.startTime - sliderPosition) {
             guiGraphics.fill(xBegin, yTop, xBegin + 1, yBottom, borderColor);
@@ -1746,11 +1745,11 @@ public class GuiMusicSheet extends Screen {
 
     void updateLength(boolean updateSliderPos) {
         lengthBeats = 0;
-        if(!notes.isEmpty()){
+        if (!notes.isEmpty()) {
             // Notes are sorted by time, so scan from the end to find max endTime quickly
             for (int i = notes.size() - 1; i >= 0; i--) {
                 NoteEvent event = notes.get(i);
-                short endTime = (short)(event.time + event.length);
+                short endTime = (short) (event.time + event.length);
                 if (endTime > lengthBeats) lengthBeats = endTime;
                 // Once we're far enough from the tail that no earlier note can beat current max, stop
                 if (event.time + 127 < lengthBeats) break; // 127 = max possible note length (byte)
@@ -1832,7 +1831,7 @@ public class GuiMusicSheet extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY){
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
         return inputHandler.handleMouseScrolled(x, y, scrollX, scrollY);
     }
 
@@ -1854,16 +1853,16 @@ public class GuiMusicSheet extends Screen {
 
             try {
                 MusicUpdatePacket pack = MusicUpdatePacket.create(dirtyFlag, notes, dirtyFlag.hasVolumeMarkers ? volumeMarkers : null, lengthBeats, bps, volume, isSigned,
-                        noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
+                        noteTitle, (byte) previewInstrument, prevInsLocked, id, version, highlightInterval);
                 sendToServer(pack);
             } catch (ImportMusicSendPacket.NotesTooLargeException e) {
                 int partsCount = (int) Math.ceil((double) notes.size() / (double) MAX_NOTES_IN_PACKET);
 
                 try {
                     MusicUpdatePacket pack = MusicUpdatePacket.create(dirtyFlag, null, dirtyFlag.hasVolumeMarkers ? volumeMarkers : null, lengthBeats, bps, volume, isSigned,
-                            noteTitle, (byte)previewInstrument, prevInsLocked, id, version, highlightInterval);
-                    NotesPartAckFromServerPacketHandler.addCallback(id, ()-> sendToServer(pack));
-                    for(int i=0; i<partsCount; i++) {
+                            noteTitle, (byte) previewInstrument, prevInsLocked, id, version, highlightInterval);
+                    NotesPartAckFromServerPacketHandler.addCallback(id, () -> sendToServer(pack));
+                    for (int i = 0; i < partsCount; i++) {
                         SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(id, partsCount, i, notes.subList(i * MAX_NOTES_IN_PACKET, Math.clamp((long) (i + 1) * MAX_NOTES_IN_PACKET, 0, notes.size())));
                         sendToServer(partPack);
                     }
@@ -1888,7 +1887,8 @@ public class GuiMusicSheet extends Screen {
         return noteImageY + NOTE_REGION_TOP + (47 - note + IItemInstrument.MIN_NOTE) * 3 + currentOctavePos * 36;
     }
 
-    private record GlissandoPreviewPoint(int beatIndex, byte interval) {}
+    private record GlissandoPreviewPoint(int beatIndex, byte interval) {
+    }
 
     public enum MidiControl {
         BEGINNING, END, STOP, PREVIEW, RECORD
@@ -2189,13 +2189,15 @@ public class GuiMusicSheet extends Screen {
         public MarkerEditBox(int x, int y, int w, int h, Component msg) {
             super(x, y, w, h, msg);
             sliderStartVolume = new BetterSlider(10, 0, 70, 10, Component.literal("Start "), Component.literal(" Vol"), 0, 100, 50, true) {
-                @Override public void applyValue() {
+                @Override
+                public void applyValue() {
                     setChanged();
                     requireMarker().startVolume = (byte) Math.round(value * 127.0f);
                 }
             };
             sliderEndVolume = new BetterSlider(10, 0, 70, 10, Component.literal("End "), Component.literal(" Vol"), 0, 100, 50, true) {
-                @Override public void applyValue() {
+                @Override
+                public void applyValue() {
                     setChanged();
                     requireMarker().endVolume = (byte) Math.round(value * 127.0f);
                 }
@@ -2214,7 +2216,7 @@ public class GuiMusicSheet extends Screen {
         }
 
         private void setChanged() {
-            if(!changed) {
+            if (!changed) {
                 changed = true;
                 dirtyFlag.hasNotes = true;
             }
@@ -2226,17 +2228,17 @@ public class GuiMusicSheet extends Screen {
                 guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFFEEEEEE);
                 Minecraft minecraft = Minecraft.getInstance();
                 Font font = minecraft.font;
-                
+
                 // Draw marker type label
                 String typeLabel = marker.isCrescendo() ? "Crescendo" : "Decrescendo";
                 int typeColor = marker.isCrescendo() ? 0xFFAA2222 : 0xFF22AA22;
                 guiGraphics.text(font, typeLabel, getX() + 5, getY() + 5, typeColor, false);
-                
+
                 // Draw duration info
                 int duration = marker.endTime - marker.startTime;
                 guiGraphics.text(font, duration + " beats", getX() + 5, getY() + 18, 0xFF333333, false);
 
-                for(AbstractWidget widget : children) {
+                for (AbstractWidget widget : children) {
                     widget.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
                 }
             }
@@ -2252,11 +2254,11 @@ public class GuiMusicSheet extends Screen {
             this.visible = true;
             this.active = true;
             this.marker = marker;
-            
+
             sliderStartVolume.setX(x + 10);
             sliderStartVolume.setY(y + 30);
             sliderStartVolume.setSliderValue(marker.startVolume / 127.0f * 100.0f);
-            
+
             sliderEndVolume.setX(x + 10);
             sliderEndVolume.setY(y + 45);
             sliderEndVolume.setSliderValue(marker.endVolume / 127.0f * 100.0f);
@@ -2277,9 +2279,9 @@ public class GuiMusicSheet extends Screen {
                     close();
                 }
 
-                for(AbstractWidget widget : children) {
-                    if(mouseX >= widget.getX() && mouseX < widget.getX() + widget.getWidth() &&
-                            mouseY >= widget.getY() && mouseY < widget.getY() + widget.getHeight()){
+                for (AbstractWidget widget : children) {
+                    if (mouseX >= widget.getX() && mouseX < widget.getX() + widget.getWidth() &&
+                            mouseY >= widget.getY() && mouseY < widget.getY() + widget.getHeight()) {
                         widget.mouseClicked(event, isDoubleClick);
                         return true;
                     }
@@ -2298,12 +2300,12 @@ public class GuiMusicSheet extends Screen {
         public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
             double posX = event.x();
             double posY = event.y();
-            if(posX >= sliderStartVolume.getX() && posX < sliderStartVolume.getX() + sliderStartVolume.getWidth() &&
-                    posY >= sliderStartVolume.getY() && posY < sliderStartVolume.getY() + sliderStartVolume.getHeight()){
+            if (posX >= sliderStartVolume.getX() && posX < sliderStartVolume.getX() + sliderStartVolume.getWidth() &&
+                    posY >= sliderStartVolume.getY() && posY < sliderStartVolume.getY() + sliderStartVolume.getHeight()) {
                 sliderStartVolume.mouseDragged(event, deltaX, deltaY);
             }
-            if(posX >= sliderEndVolume.getX() && posX < sliderEndVolume.getX() + sliderEndVolume.getWidth() &&
-                    posY >= sliderEndVolume.getY() && posY < sliderEndVolume.getY() + sliderEndVolume.getHeight()){
+            if (posX >= sliderEndVolume.getX() && posX < sliderEndVolume.getX() + sliderEndVolume.getWidth() &&
+                    posY >= sliderEndVolume.getY() && posY < sliderEndVolume.getY() + sliderEndVolume.getHeight()) {
                 sliderEndVolume.mouseDragged(event, deltaX, deltaY);
             }
             return true;

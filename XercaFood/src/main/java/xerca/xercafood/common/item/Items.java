@@ -14,7 +14,7 @@ import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.BlockPizza;
 import xerca.xercafood.common.block.Blocks;

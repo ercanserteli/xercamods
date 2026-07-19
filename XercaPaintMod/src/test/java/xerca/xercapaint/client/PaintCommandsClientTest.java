@@ -25,6 +25,7 @@ import static xerca.xercapaint.client.PaintClientTests.check;
  * the server bounces a packet back to the client, the client performs the file IO, and (for import) the
  * client sends the parsed painting back to the server, which puts a fresh canvas in the inventory.
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class PaintCommandsClientTest implements FabricClientGameTest {
     private static final int BLACK = 0xFF1D1D21;
     private static final int WHITE = 0xFFF9FFFE;
@@ -51,7 +52,12 @@ public final class PaintCommandsClientTest implements FabricClientGameTest {
                     && client.player.getMainHandItem().get(Items.CANVAS_ID) != null);
 
             // Export: the client sends the command, the server bounces it back, the client writes the file.
-            context.runOnClient(client -> new File(EXPORT_FILE).delete());
+            context.runOnClient(client -> {
+                File exportFile = new File(EXPORT_FILE);
+                if (exportFile.exists() && !exportFile.delete()) {
+                    throw new IllegalStateException("Could not remove stale painting export");
+                }
+            });
             sendCommand(context, "paintexport " + EXPORT_NAME);
             check(pollClient(context, client -> new File(EXPORT_FILE).exists()),
                     "Expected /paintexport to write " + EXPORT_FILE);

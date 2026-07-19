@@ -29,7 +29,6 @@ import xerca.xercafood.common.entity.Entities;
 import xerca.xercafood.common.entity.EntityTomato;
 import xerca.xercafood.common.item.Items;
 
-
 public class Mod implements ModInitializer {
     public static final String MOD_ID = "xercafood";
     public static final Logger LOGGER = LogManager.getLogger();

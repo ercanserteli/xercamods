@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.minecraft.client.CloudStatus;
+import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.world.entity.player.ChatVisiblity;
 
 import javax.imageio.ImageIO;
@@ -22,6 +23,7 @@ import java.util.Objects;
  * additionally compared on its own so that GUI item model regressions cannot hide inside the
  * full-frame average.
  */
+@SuppressWarnings("unused")
 public final class OmniChestClientTest implements FabricClientGameTest {
     // SSIM >= this to pass. 1.0 is identical; rendering the same static scene twice sits very close to 1.0.
     private static final double SSIM_THRESHOLD = 0.98;
@@ -37,10 +39,14 @@ public final class OmniChestClientTest implements FabricClientGameTest {
         context.restoreDefaultGameOptions();
         // Clouds drift with game time and chat lines would fade mid-run; both break determinism.
         // hideGui is transient (not restored by restoreDefaultGameOptions), so force the HUD visible.
+        // MINIMAL suppresses the omni chest's particles, whose random count
+        // Short render distance keeps the aliasing-prone distant grass horizon out of frame
         context.runOnClient(client -> {
             client.options.hideGui = false;
             client.options.cloudStatus().set(CloudStatus.OFF);
             client.options.chatVisibility().set(ChatVisiblity.HIDDEN);
+            client.options.particles().set(ParticleStatus.MINIMAL);
+            client.options.renderDistance().set(4);
         });
 
         // Consistent settings (default) give a superflat, fixed-seed world with daylight/weather/mob cycles off.

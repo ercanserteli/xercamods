@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 

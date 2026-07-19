@@ -27,6 +27,7 @@ import xerca.xercatools.item.ItemKnife;
 import xerca.xercatools.item.ItemWarhammer;
 import xerca.xercatools.item.Items;
 
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public class WeaponsGameTests {
 
     // ── existing tests ────────────────────────────────────────────────────────
@@ -441,7 +442,7 @@ public class WeaponsGameTests {
 
         // full charge, no point-blank target
         xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, false);
-        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(java.util.Objects.requireNonNull(level.getServer()));
 
         double vz = player.getDeltaMovement().z;
         TestAsserts.assertTrue(helper, vz > 0.5, "Dashing II at full charge should launch the player forward (+z), got " + vz);
@@ -469,7 +470,7 @@ public class WeaponsGameTests {
 
         float initialHealth = pig.getHealth();
         xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, false);
-        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(java.util.Objects.requireNonNull(level.getServer()));
 
         TestAsserts.assertTrue(helper, pig.getHealth() < initialHealth, "Dash should strike a pig that is within reach");
         helper.succeed();
@@ -496,7 +497,7 @@ public class WeaponsGameTests {
         // alreadyHit=true → the dash must not deal a second hit even though the pig is in reach
         float initialHealth = pig.getHealth();
         xerca.xercatools.item.WarhammerDashManager.startDash(player, warhammer, EquipmentSlot.MAINHAND, 1.0f, 2, true);
-        xerca.xercatools.item.WarhammerDashManager.onServerTick(level.getServer());
+        xerca.xercatools.item.WarhammerDashManager.onServerTick(java.util.Objects.requireNonNull(level.getServer()));
 
         TestAsserts.assertTrue(helper, pig.getHealth() == initialHealth,
                 "Dash should not strike again when the release already hit a target");

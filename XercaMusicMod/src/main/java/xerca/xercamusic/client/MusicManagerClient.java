@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
@@ -102,7 +102,7 @@ public final class MusicManagerClient {
         sendToServer(packet);
     }
 
-    public static @Nullable MusicManager.MusicData getMusicData(UUID id, int ver) {
+    public static MusicManager.@Nullable MusicData getMusicData(UUID id, int ver) {
         if (MUSIC_MAP.containsKey(id)) {
             MusicManager.MusicData data = MUSIC_MAP.get(id);
             int dataVer = data.version();

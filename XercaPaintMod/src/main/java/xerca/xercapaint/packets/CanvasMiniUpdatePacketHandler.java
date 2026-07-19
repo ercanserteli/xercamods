@@ -3,6 +3,7 @@ package xerca.xercapaint.packets;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
@@ -28,7 +29,8 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
-            if (entityEasel.getPainter() == null || !entityEasel.getPainter().getUUID().equals(pl.getUUID())) {
+            Player painter = entityEasel.getPainter();
+            if (painter == null || !painter.getUUID().equals(pl.getUUID())) {
                 Mod.LOGGER.warn("CanvasMiniUpdatePacket: Unauthorized paint update. easelId: {} player: {}", msg.easelId(), pl.getName().getString());
                 return;
             }

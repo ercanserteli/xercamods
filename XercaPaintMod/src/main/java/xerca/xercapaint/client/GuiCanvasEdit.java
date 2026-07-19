@@ -16,7 +16,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.PaletteUtil;
@@ -170,9 +170,6 @@ public class GuiCanvasEdit extends BasePalette {
 
     @Override
     public void init() {
-        if (minecraft == null) {
-            return;
-        }
         int typeIndex = canvasType.toByte();
         canvasX = CANVAS_XS[typeIndex];
         canvasY = CANVAS_YS[typeIndex];
@@ -205,9 +202,7 @@ public class GuiCanvasEdit extends BasePalette {
             if (!isSigned) {
                 canvasDirty = true;
                 isSigned = true;
-                if (minecraft != null) {
-                    minecraft.setScreen(null);
-                }
+                minecraft.setScreen(null);
             }
 
         }).bounds((int) canvasX - 100, 100, 98, 20).build());
@@ -579,9 +574,7 @@ public class GuiCanvasEdit extends BasePalette {
                 case Integer k when k == GLFW_KEY_ENTER && !this.canvasTitle.isEmpty() -> {
                     canvasDirty = true;
                     this.isSigned = true;
-                    if (this.minecraft != null) {
-                        this.minecraft.setScreen(null);
-                    }
+                    this.minecraft.setScreen(null);
                 }
                 default -> {
                     // Do nothing

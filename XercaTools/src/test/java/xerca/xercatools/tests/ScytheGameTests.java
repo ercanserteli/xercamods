@@ -25,6 +25,7 @@ import xerca.xercatools.item.Items;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class ScytheGameTests {
 
     private static BlockState maxAgeWheat() {
@@ -60,8 +61,8 @@ public class ScytheGameTests {
         BlockPos center = new BlockPos(2, 2, 2);
         BlockPos north = center.north();
         BlockPos south = center.south();
-        BlockPos east  = center.east();
-        BlockPos west  = center.west();
+        BlockPos east = center.east();
+        BlockPos west = center.west();
 
         BlockState farmland = Blocks.FARMLAND.defaultBlockState();
         BlockState maxWheat = maxAgeWheat();
@@ -77,12 +78,12 @@ public class ScytheGameTests {
 
         Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
-        TestAsserts.assertTrue(helper, 
-            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(north)))).is(Blocks.WHEAT) &&
-            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(south)))).is(Blocks.WHEAT) &&
-            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(east)))).is(Blocks.WHEAT)  &&
-            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(west)))).is(Blocks.WHEAT),
-            "Sweeping Edge I should harvest all four cardinal neighbor crops");
+        TestAsserts.assertTrue(helper,
+                !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(north)))).is(Blocks.WHEAT) &&
+                        !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(south)))).is(Blocks.WHEAT) &&
+                        !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(east)))).is(Blocks.WHEAT) &&
+                        !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(west)))).is(Blocks.WHEAT),
+                "Sweeping Edge I should harvest all four cardinal neighbor crops");
         helper.succeed();
     }
 
@@ -112,12 +113,12 @@ public class ScytheGameTests {
 
         Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
-        TestAsserts.assertTrue(helper, 
-            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(ne)))).is(Blocks.WHEAT) &&
-            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(nw)))).is(Blocks.WHEAT) &&
-            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(se)))).is(Blocks.WHEAT) &&
-            !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(sw)))).is(Blocks.WHEAT),
-            "Sweeping Edge II should also harvest diagonal crops");
+        TestAsserts.assertTrue(helper,
+                !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(ne)))).is(Blocks.WHEAT) &&
+                        !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(nw)))).is(Blocks.WHEAT) &&
+                        !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(se)))).is(Blocks.WHEAT) &&
+                        !level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(sw)))).is(Blocks.WHEAT),
+                "Sweeping Edge II should also harvest diagonal crops");
         helper.succeed();
     }
 
@@ -127,8 +128,8 @@ public class ScytheGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 
         BlockPos center = new BlockPos(2, 2, 2);
-        BlockPos north  = center.north();
-        BlockPos south  = center.south();
+        BlockPos north = center.north();
+        BlockPos south = center.south();
 
         BlockState farmland = Blocks.FARMLAND.defaultBlockState();
         BlockState maxWheat = maxAgeWheat();
@@ -141,10 +142,10 @@ public class ScytheGameTests {
 
         Items.IRON_SCYTHE.mineBlock(scythe, level, maxWheat, BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(center))), player);
 
-        TestAsserts.assertTrue(helper, 
-            level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(north)))).is(Blocks.WHEAT) &&
-            level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(south)))).is(Blocks.WHEAT),
-            "Scythe without Sweeping Edge must not harvest neighbors");
+        TestAsserts.assertTrue(helper,
+                level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(north)))).is(Blocks.WHEAT) &&
+                        level.getBlockState(BlockPos.containing(helper.absoluteVec(Vec3.atCenterOf(south)))).is(Blocks.WHEAT),
+                "Scythe without Sweeping Edge must not harvest neighbors");
         helper.succeed();
     }
 
@@ -174,7 +175,7 @@ public class ScytheGameTests {
         Items.IRON_SCYTHE.releaseUsing(scythe, level, player, 72000 - 17);
 
         TestAsserts.assertTrue(helper, pig.getHealth() == initialHealth,
-            "Guillotine below 0.9 pull should not deal damage");
+                "Guillotine below 0.9 pull should not deal damage");
         helper.succeed();
     }
 
@@ -205,7 +206,7 @@ public class ScytheGameTests {
         TestAsserts.assertTrue(helper, pig.isDeadOrDying(), "Guillotine at ≥0.9 pull should kill the pig");
 
         AABB searchBox = new AABB(pigPos.x - 3, pigPos.y - 3, pigPos.z - 3,
-                                   pigPos.x + 3, pigPos.y + 3, pigPos.z + 3);
+                pigPos.x + 3, pigPos.y + 3, pigPos.z + 3);
         boolean headDropped = !level.getEntitiesOfClass(ItemEntity.class, searchBox).isEmpty();
         TestAsserts.assertTrue(helper, headDropped, "Guillotine kill should drop a head item entity");
         helper.succeed();

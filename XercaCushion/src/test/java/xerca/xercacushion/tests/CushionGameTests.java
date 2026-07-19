@@ -30,12 +30,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public final class CushionGameTests {
 
     private static Identifier recipeId(String path) {
         return Identifier.fromNamespaceAndPath(Mod.MOD_ID, path);
     }
 
+    @SuppressWarnings("DataFlowIssue")
     private static CraftingRecipe requireCraftingRecipe(GameTestHelper helper, Identifier recipeId) {
         ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId);
         Optional<RecipeHolder<?>> recipeOptional = helper.getLevel().recipeAccess().byKey(recipeKey);

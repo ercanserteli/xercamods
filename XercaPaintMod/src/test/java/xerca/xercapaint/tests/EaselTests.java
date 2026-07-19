@@ -30,7 +30,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+@SuppressWarnings({"PMD.AvoidAccessibilityAlteration", "unused"})
 public class EaselTests {
     private static final Field PAINTER_FIELD;
     private static final Field DROP_DEFERRED_FIELD;

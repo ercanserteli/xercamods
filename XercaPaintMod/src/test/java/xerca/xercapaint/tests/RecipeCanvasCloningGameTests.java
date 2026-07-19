@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class RecipeCanvasCloningGameTests {
 
     private static final RecipeCanvasCloning RECIPE = RecipeCanvasCloning.INSTANCE;

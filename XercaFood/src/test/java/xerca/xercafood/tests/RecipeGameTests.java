@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static xerca.xercafood.tests.GameTestHelpers.*;
 
+@SuppressWarnings("unused")
 public class RecipeGameTests {
 
     @GameTest
@@ -170,7 +171,7 @@ public class RecipeGameTests {
         assertTrue(helper, result.getCount() == 2, "Expected tea pouring to fill two teacups");
 
         NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
-        assertTrue(helper, remainingItems.get(0).is(Items.HOT_TEAPOT_1), "Expected pouring two cups from a 3-cup teapot to leave a 1-cup hot teapot");
+        assertTrue(helper, remainingItems.getFirst().is(Items.HOT_TEAPOT_1), "Expected pouring two cups from a 3-cup teapot to leave a 1-cup hot teapot");
         helper.succeed();
     }
 
@@ -272,7 +273,7 @@ public class RecipeGameTests {
                 ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         );
         NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(grid);
-        assertTrue(helper, remainingItems.get(0).is(Items.TEAPOT), "Expected empty teapot after pouring the final cup");
+        assertTrue(helper, remainingItems.getFirst().is(Items.TEAPOT), "Expected empty teapot after pouring the final cup");
         helper.succeed();
     }
 

@@ -16,7 +16,8 @@ import xerca.xercatools.item.ItemFlask;
 import xerca.xercatools.item.Items;
 
 public class RecipeFlaskFilling extends CustomRecipe {
-    private record ParsedInput(ItemStack flaskStack, PotionContents potionType, PotionContents currentFlaskPotion, int potionCount, boolean valid) {
+    private record ParsedInput(ItemStack flaskStack, PotionContents potionType, PotionContents currentFlaskPotion,
+                               int potionCount, boolean valid) {
     }
 
     private static final class ParseState {

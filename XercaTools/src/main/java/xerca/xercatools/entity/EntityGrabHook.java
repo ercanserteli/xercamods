@@ -26,8 +26,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import xerca.xercatools.Mod;
 import xerca.xercatools.SoundEvents;
 import xerca.xercatools.enchantment.GrabHookEnchantments;
@@ -104,7 +104,7 @@ public class EntityGrabHook extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         builder.define(DATA_OWNER, -1);
         builder.define(DATA_CAUGHT, 0);
     }

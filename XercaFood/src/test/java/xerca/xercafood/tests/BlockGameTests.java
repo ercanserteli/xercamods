@@ -15,7 +15,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.item.Items;
 
@@ -23,6 +23,7 @@ import java.util.List;
 
 import static xerca.xercafood.tests.GameTestHelpers.*;
 
+@SuppressWarnings("unused")
 public class BlockGameTests {
     @Nullable
     private static BlockState invokePlacementState(GameTestHelper helper, net.minecraft.world.item.Item item, BlockPlaceContext context) {

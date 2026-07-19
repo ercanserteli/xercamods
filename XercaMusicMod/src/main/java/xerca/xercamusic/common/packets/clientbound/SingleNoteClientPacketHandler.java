@@ -15,6 +15,7 @@ import xerca.xercamusic.common.item.IItemInstrument.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<SingleNoteClientPacket> {
     static final Map<Pair<Player, Integer>, NoteSoundEntry> NOTE_SOUNDS = new HashMap<>();
@@ -34,7 +35,12 @@ public class SingleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
             return;
         }
 
-        if (!playerEntity.equals(Minecraft.getInstance().player)) {
+        Player localPlayer = Minecraft.getInstance().player;
+        if (localPlayer == null) {
+            return;
+        }
+
+        if (!Objects.equals(playerEntity, localPlayer)) {
             IItemInstrument.InsSound sound = msg.instrumentItem().getSound(msg.note());
             if (sound == null) {
                 return;

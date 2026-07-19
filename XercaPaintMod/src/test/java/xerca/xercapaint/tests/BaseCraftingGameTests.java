@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static xerca.xercapaint.Mod.MOD_ID;
 
+@SuppressWarnings("unused")
 public class BaseCraftingGameTests {
 
     private static final ItemStackTemplate STICK = new ItemStackTemplate(net.minecraft.world.item.Items.STICK);

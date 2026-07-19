@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import xerca.xercapaint.PaletteUtil;
 
+@SuppressWarnings("unused")
 public class PaletteDropperGameTests {
 
     private static void assertRgb(GameTestHelper helper, PaletteUtil.Color color, int r, int g, int b, String message) {

@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static xerca.xercapaint.Mod.MOD_ID;
 
+@SuppressWarnings("unused")
 public class CanvasRecipeGameTests {
 
     private record CanvasRecipeSpec(Identifier recipeId, int width, int height, Item expectedResult) {

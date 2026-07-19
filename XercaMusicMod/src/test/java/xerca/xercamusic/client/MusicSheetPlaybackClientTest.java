@@ -19,6 +19,7 @@ import static xerca.xercamusic.client.MusicClientTests.*;
  * preview-instrument taken from the offhand, locking the previous instrument, and the sign flow
  * (entering a title and finalizing).
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class MusicSheetPlaybackClientTest implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext context) {

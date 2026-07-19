@@ -11,8 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
+import org.jspecify.annotations.Nullable;
 import java.util.function.Predicate;
 
 public final class EmissiveOverlayBlockStateModel extends WrapperBlockStateModel {

@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;

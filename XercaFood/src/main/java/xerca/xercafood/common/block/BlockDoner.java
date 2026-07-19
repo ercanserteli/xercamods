@@ -26,10 +26,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 import xerca.xercafood.common.KnifeCompat;
 import xerca.xercafood.common.block_entity.BlockEntityDoner;
-
-import javax.annotation.Nullable;
 
 public class BlockDoner extends Block implements EntityBlock {
     // While raw this is the filling stage (1-6): each mutton adds a stage of height.

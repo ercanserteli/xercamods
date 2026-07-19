@@ -24,6 +24,7 @@ import static xerca.xercapaint.client.PaintClientTests.check;
  * on keeps the painted side pixels, and closing the editor persists {@code CANVAS_SIDES_ACTIVE} plus
  * {@code CANVAS_SIDE_PIXELS} to the held stack on the server.
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class CanvasSidesClientTest implements FabricClientGameTest {
     private static final int BLACK = 0xFF1D1D21; // BasePalette.BASIC_COLORS[0]
     private static final int RED = 0xFFB02E26;   // BasePalette.BASIC_COLORS[1]

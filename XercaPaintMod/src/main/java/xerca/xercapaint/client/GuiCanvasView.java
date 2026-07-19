@@ -7,7 +7,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.entity.EntityEasel;
@@ -29,7 +29,7 @@ public class GuiCanvasView extends Screen {
     private int @Nullable [] pixels;
     private final boolean sidesActive;
     private int @Nullable [] sidePixels;
-    private @Nullable String authorName = "";
+    private String authorName = "";
     private String canvasTitle = "";
     private int generation;
     private final @Nullable EntityEasel easel;
@@ -49,7 +49,7 @@ public class GuiCanvasView extends Screen {
 
         List<Integer> stackPixels = canvasStack.get(Items.CANVAS_PIXELS);
         if (stackPixels != null) {
-            this.authorName = canvasStack.get(Items.CANVAS_AUTHOR);
+            this.authorName = canvasStack.getOrDefault(Items.CANVAS_AUTHOR, "");
             this.canvasTitle = canvasStack.getOrDefault(Items.CANVAS_TITLE, "");
             this.generation = canvasStack.getOrDefault(Items.CANVAS_GENERATION, 0);
 

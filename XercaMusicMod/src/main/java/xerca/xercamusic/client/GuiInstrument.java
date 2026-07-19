@@ -13,13 +13,13 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.packets.serverbound.SingleNotePacket;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static xerca.xercamusic.client.ModClient.sendToServer;
@@ -94,7 +94,7 @@ public class GuiInstrument extends Screen {
     public void tick() {
         super.tick();
         Minecraft client = minecraft;
-        if (blockInsPos != null && client != null) {
+        if (blockInsPos != null) {
             if (player.level().getBlockState(blockInsPos).getBlock() instanceof BlockInstrument blockIns) {
                 if (!Objects.equals(blockIns.getItemInstrument(), instrument)) {
                     client.setScreen(null);
@@ -190,6 +190,7 @@ public class GuiInstrument extends Screen {
         }
     }
 
+    @SuppressWarnings({"ConstantValue", "DataFlowIssue"})
     private void stopSound(int noteId) {
         if (noteId >= 0 && noteId < buttonPushStates.length && buttonPushStates[noteId] && noteSounds[noteId] != null) {
             noteSounds[noteId].stopSound();

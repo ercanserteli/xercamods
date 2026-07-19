@@ -3,7 +3,7 @@ package xerca.xercamusic.common;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 

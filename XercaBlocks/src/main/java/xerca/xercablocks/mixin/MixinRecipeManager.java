@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Mixin(RecipeManager.class)
+@SuppressWarnings({"DataFlowIssue", "NotNullFieldNotInitialized", "unused"})
 @SuppressFBWarnings("BC_IMPOSSIBLE_CAST")
 abstract class MixinRecipeManager {
     @Shadow

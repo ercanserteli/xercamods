@@ -12,6 +12,7 @@ import net.minecraft.world.item.trading.VillagerTrade;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public final class VillagerTradeGameTests {
     private static final List<String> FARMER_TRADES = List.of(
             "farmer/1/rice_seeds_emerald",

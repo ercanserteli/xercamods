@@ -20,6 +20,7 @@ import java.util.Objects;
  * emissive glow is actually rendered — that it does NOT match a "no-glow" reference of the same wall.
  * Guards the emissive-overlay block state model ({@link xerca.xercablocks.client.EmissiveOverlayBlockStateModel}).
  */
+@SuppressWarnings("unused")
 public final class CarvedCrimsonClientTest implements FabricClientGameTest {
     // SSIM >= this to pass. 1.0 is identical; rendering the same static scene twice sits very close to 1.0.
     private static final double SSIM_THRESHOLD = 0.98;

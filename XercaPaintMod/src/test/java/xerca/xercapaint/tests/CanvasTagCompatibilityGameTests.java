@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class CanvasTagCompatibilityGameTests {
 
     private static final RecipeCanvasCloning CLONING_RECIPE = RecipeCanvasCloning.INSTANCE;

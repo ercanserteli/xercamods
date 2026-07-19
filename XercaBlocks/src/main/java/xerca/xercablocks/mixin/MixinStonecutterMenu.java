@@ -14,6 +14,7 @@ import xerca.xercablocks.recipe.CarvingRecipe;
 import java.util.List;
 
 @Mixin(StonecutterMenu.class)
+@SuppressWarnings({"ConstantValue", "unused"})
 abstract class MixinStonecutterMenu {
     @Redirect(
             method = {"setupRecipeList", "quickMoveStack"},

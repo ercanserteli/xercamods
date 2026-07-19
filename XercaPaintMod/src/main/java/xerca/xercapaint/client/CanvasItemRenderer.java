@@ -10,8 +10,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
@@ -32,7 +32,7 @@ public class CanvasItemRenderer {
         }
     }
 
-    void renderCanvas(@Nullable RenderEntityCanvas.Instance canvasIns, int width, int height, boolean glass, ItemDisplayContext displayContext, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight) {
+    void renderCanvas(RenderEntityCanvas.@Nullable Instance canvasIns, int width, int height, boolean glass, ItemDisplayContext displayContext, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight) {
         if (canvasIns != null) {
             int tint = (glass && displayContext == ItemDisplayContext.GUI) ? GLASS_INVENTORY_TINT : RenderEntityCanvas.NO_TINT;
             canvasIns.render(false, 0, 0, 0, matrixStack, collector, Direction.UP, combinedLight, glass, tint);

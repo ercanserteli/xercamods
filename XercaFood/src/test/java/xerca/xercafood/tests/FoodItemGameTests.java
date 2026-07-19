@@ -15,6 +15,7 @@ import xerca.xercafood.common.item.Items;
 import static xerca.xercafood.tests.GameTestHelpers.hasNearbyItem;
 import static xerca.xercafood.tests.GameTestHelpers.requireFoodProperties;
 
+@SuppressWarnings("unused")
 public class FoodItemGameTests {
 
     @GameTest

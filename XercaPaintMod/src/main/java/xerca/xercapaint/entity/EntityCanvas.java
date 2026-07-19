@@ -28,15 +28,14 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.PictureRequestPacket;
 
 import java.util.*;
-
 
 public class EntityCanvas extends HangingEntity {
     @Nullable
@@ -142,7 +141,7 @@ public class EntityCanvas extends HangingEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(CANVAS_ID, "");
         builder.define(CANVAS_VERSION, 0);

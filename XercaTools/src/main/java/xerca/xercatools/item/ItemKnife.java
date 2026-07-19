@@ -26,6 +26,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 import xerca.xercatools.SoundEvents;
 import xerca.xercatools.enchantment.KnifeEnchantments;
 
@@ -94,7 +95,7 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStackTemplate getCraftingRemainder(ItemStack stack) {
+    public net.minecraft.world.item.@Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
         ItemStack remainder = stack.copy();
         remainder.setCount(1);
         remainder.setDamageValue(stack.getDamageValue() + 1);

@@ -30,6 +30,7 @@ import static xerca.xercapaint.client.PaintClientTests.check;
  * black-concrete backdrop and the frame is SSIM-diffed against a golden, guarding that the palette and the
  * canvas (with its painted pixels) draw correctly.
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class GuiCanvasEditClientTest implements FabricClientGameTest {
     private static final int BLACK = 0xFF1D1D21; // BasePalette.BASIC_COLORS[0]
     private static final int WHITE = 0xFFF9FFFE; // BasePalette.BASIC_COLORS[15], the paper canvas default fill

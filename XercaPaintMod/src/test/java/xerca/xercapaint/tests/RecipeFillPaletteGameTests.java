@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class RecipeFillPaletteGameTests {
 
     private static final RecipeFillPalette RECIPE = RecipeFillPalette.INSTANCE;

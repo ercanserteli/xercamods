@@ -35,6 +35,7 @@ import xerca.xercaomnichest.item.Items;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public final class OmniChestGameTests {
 
     private static void assertTrue(GameTestHelper helper, boolean condition, String message) {

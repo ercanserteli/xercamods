@@ -25,8 +25,8 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
@@ -34,7 +34,6 @@ import xerca.xercapaint.packets.CloseGuiPacket;
 import xerca.xercapaint.packets.OpenGuiPacket;
 
 import java.util.Objects;
-
 
 public class EntityEasel extends Entity {
     private static final int MAX_PAINTER_DISTANCE_SQR = 64;
@@ -116,7 +115,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         builder.define(DATA_CANVAS, ItemStack.EMPTY);
     }
 
@@ -185,6 +184,7 @@ public class EntityEasel extends Entity {
     }
 
     @Override
+    @Nullable
     public SlotAccess getSlot(int i) {
         return i == 0 ? new SlotAccess() {
             @Override
@@ -198,11 +198,6 @@ public class EntityEasel extends Entity {
                 return true;
             }
         } : super.getSlot(i);
-    }
-
-    @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
-        super.onSyncedDataUpdated(accessor);
     }
 
     @Override

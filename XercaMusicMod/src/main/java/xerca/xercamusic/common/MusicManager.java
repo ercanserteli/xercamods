@@ -10,9 +10,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
@@ -147,8 +147,9 @@ public final class MusicManager {
                 nbt.store(KEY_ID, UUIDUtil.CODEC, entry.getKey());
                 nbt.putInt(KEY_VERSION, entry.getValue().version);
                 NoteEvent.fillNBTFromArray(entry.getValue().notes, nbt);
-                if (entry.getValue().volumeMarkers != null) {
-                    VolumeMarker.fillNBTFromArray(entry.getValue().volumeMarkers(), nbt);
+                var volumeMarkers = entry.getValue().volumeMarkers();
+                if (volumeMarkers != null) {
+                    VolumeMarker.fillNBTFromArray(volumeMarkers, nbt);
                 }
                 musicDataList.add(nbt);
             }

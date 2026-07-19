@@ -9,13 +9,13 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringUtil;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xerca.xercamusic.common.MusicClipboard;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.IItemInstrument;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
@@ -282,53 +282,56 @@ class SheetInputHandler {
     }
 
     private boolean handleTopLevelMouseClicked(double mouseX, double mouseY, int mouseButton) {
+        MouseButtonEvent event = new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(mouseButton, 0));
         if (isActive(gui.markerEditBox)) {
-            gui.markerEditBox.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(mouseButton, 0)), false);
+            gui.markerEditBox.mouseClicked(event, false);
             return true;
         }
         if (isActive(gui.noteEditBox)) {
-            gui.noteEditBox.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(mouseButton, 0)), false);
+            gui.noteEditBox.mouseClicked(event, false);
             return true;
         }
         return false;
     }
 
     private boolean handleTopLevelMouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        MouseButtonEvent event = new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0));
         if (isActive(gui.markerEditBox)) {
-            gui.markerEditBox.mouseDragged(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)), deltaX, deltaY);
+            gui.markerEditBox.mouseDragged(event, deltaX, deltaY);
             return true;
         }
         if (isActive(gui.noteEditBox)) {
-            gui.noteEditBox.mouseDragged(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)), deltaX, deltaY);
+            gui.noteEditBox.mouseDragged(event, deltaX, deltaY);
             return true;
         }
         return false;
     }
 
     private boolean handleTopLevelMouseReleased(double posX, double posY, int mouseButton) {
+        MouseButtonEvent event = new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0));
         if (isActive(gui.markerEditBox)) {
-            gui.markerEditBox.mouseReleased(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)));
+            gui.markerEditBox.mouseReleased(event);
             return true;
         }
         if (isActive(gui.noteEditBox)) {
-            gui.noteEditBox.mouseReleased(new MouseButtonEvent(posX, posY, new MouseButtonInfo(mouseButton, 0)));
+            gui.noteEditBox.mouseReleased(event);
             return true;
         }
         return false;
     }
 
-    private static boolean isActive(@Nullable GuiMusicSheet.NoteEditBox editBox) {
+    private static boolean isActive(GuiMusicSheet.@Nullable NoteEditBox editBox) {
         return editBox != null && editBox.active && editBox.visible;
     }
 
-    private static boolean isActive(@Nullable GuiMusicSheet.MarkerEditBox editBox) {
+    private static boolean isActive(GuiMusicSheet.@Nullable MarkerEditBox editBox) {
         return editBox != null && editBox.active && editBox.visible;
     }
 
     boolean handleMouseScrolled(double x, double y, double scrollX, double scrollY) {
         if (gui.helpOn) {
             if (scrollY != 0) {
-                gui.helpScrollOffset -= (int)(scrollY * 10);
+                gui.helpScrollOffset -= (int) (scrollY * 10);
             }
             return true;
         }
@@ -461,7 +464,8 @@ class SheetInputHandler {
                     case GLFW.GLFW_KEY_SPACE -> putSpace(x - 1);
                     case GLFW.GLFW_KEY_RIGHT -> {
                         addEditCursor(1);
-                        if (gui.editCursor > GuiMusicSheet.MAX_LENGTH_BEATS - 1) setEditCursor(GuiMusicSheet.MAX_LENGTH_BEATS - 1);
+                        if (gui.editCursor > GuiMusicSheet.MAX_LENGTH_BEATS - 1)
+                            setEditCursor(GuiMusicSheet.MAX_LENGTH_BEATS - 1);
                     }
                     case GLFW.GLFW_KEY_LEFT -> {
                         addEditCursor(-1);

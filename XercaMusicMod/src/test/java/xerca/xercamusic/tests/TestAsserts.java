@@ -11,7 +11,4 @@ final class TestAsserts {
         helper.assertTrue(condition, Component.literal(message));
     }
 
-    static void assertFalse(GameTestHelper helper, boolean condition, String message) {
-        helper.assertFalse(condition, Component.literal(message));
-    }
 }

@@ -3,7 +3,7 @@ package xerca.xercamusic.tests;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonAlgorithm;
 import org.joml.Vector2i;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Screenshot comparison using the Structural Similarity Index (SSIM).

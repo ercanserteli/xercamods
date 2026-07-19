@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import xerca.xercamusic.common.Mod;
 
-
 public class Blocks {
     public static final Block BLOCK_METRONOME = new BlockMetronome(properties("block_metronome").mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD));
     public static final Block MUSIC_BOX = new BlockMusicBox(properties("music_box").mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).isRedstoneConductor((blockState, blockGetter, blockPos) -> false));

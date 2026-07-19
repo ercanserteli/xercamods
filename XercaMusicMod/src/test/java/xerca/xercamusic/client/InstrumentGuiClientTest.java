@@ -18,6 +18,7 @@ import static xerca.xercamusic.client.MusicClientTests.check;
  * half of {@code testItemsInCreative}: opening the GUI, playing notes from the keyboard, and moving
  * the octave with the on-screen buttons (with clamping).
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class InstrumentGuiClientTest implements FabricClientGameTest {
     private static final double SSIM_THRESHOLD = 0.95;
     private static final String GOLDEN = "instrument_gui_guitar";

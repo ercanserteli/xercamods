@@ -25,6 +25,7 @@ import xerca.xercatools.item.Items;
 
 import java.util.List;
 
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public class FlaskAndLauncherGameTests {
 
     // Builds a regular potion stack (PotionItem) with the given potion type.
@@ -136,13 +137,13 @@ public class FlaskAndLauncherGameTests {
         ItemStack potion = makeRegularPotion(Potions.HEALING);
         // 3×3 grid: flask + one potion, rest empty
         CraftingInput input = CraftingInput.of(3, 3, List.of(
-            flask, potion, ItemStack.EMPTY,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
+                flask, potion, ItemStack.EMPTY,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         ));
 
         TestAsserts.assertTrue(helper, recipe.matches(input, level),
-            "Flask + potion recipe should match");
+                "Flask + potion recipe should match");
         helper.succeed();
     }
 
@@ -155,13 +156,13 @@ public class FlaskAndLauncherGameTests {
         ItemFlask.setCharges(flask, 16); // already at max capacity
         ItemStack potion = makeRegularPotion(Potions.HEALING);
         CraftingInput input = CraftingInput.of(3, 3, List.of(
-            flask, potion, ItemStack.EMPTY,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
+                flask, potion, ItemStack.EMPTY,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         ));
 
         TestAsserts.assertTrue(helper, !recipe.matches(input, level),
-            "Flask filling should be rejected when already full");
+                "Flask filling should be rejected when already full");
         helper.succeed();
     }
 
@@ -174,13 +175,13 @@ public class FlaskAndLauncherGameTests {
         ItemStack healing = makeRegularPotion(Potions.HEALING);
         ItemStack regen = makeRegularPotion(Potions.REGENERATION);
         CraftingInput input = CraftingInput.of(3, 3, List.of(
-            flask, healing, regen,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
+                flask, healing, regen,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         ));
 
         TestAsserts.assertTrue(helper, !recipe.matches(input, level),
-            "Flask filling with mixed potion types should be rejected");
+                "Flask filling with mixed potion types should be rejected");
         helper.succeed();
     }
 
@@ -205,7 +206,7 @@ public class FlaskAndLauncherGameTests {
         Items.FLASK.finishUsingItem(flask, level, player);
 
         TestAsserts.assertTrue(helper, player.getHealth() > healthBefore,
-            "Drinking a healing flask should increase player health");
+                "Drinking a healing flask should increase player health");
         helper.succeed();
     }
 
@@ -219,13 +220,13 @@ public class FlaskAndLauncherGameTests {
         ItemStack launcher = new ItemStack(Items.ENDER_BOW);
         ItemStack splash = makeSplashPotion(Potions.HEALING);
         CraftingInput input = CraftingInput.of(3, 3, List.of(
-            launcher, splash, ItemStack.EMPTY,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
+                launcher, splash, ItemStack.EMPTY,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY
         ));
 
         TestAsserts.assertTrue(helper, recipe.matches(input, level),
-            "Ender Bow + splash potion recipe should match");
+                "Ender Bow + splash potion recipe should match");
         helper.succeed();
     }
 
@@ -247,11 +248,11 @@ public class FlaskAndLauncherGameTests {
         Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
 
         AABB searchBox = new AABB(abs.x - 10, abs.y - 10, abs.z - 10,
-                                   abs.x + 10, abs.y + 10, abs.z + 10);
+                abs.x + 10, abs.y + 10, abs.z + 10);
         List<AbstractThrownPotion> projectiles = level.getEntitiesOfClass(AbstractThrownPotion.class, searchBox);
         TestAsserts.assertTrue(helper, !projectiles.isEmpty(), "Ender Bow use should spawn a AbstractThrownPotion");
 
-        boolean isSplash = projectiles.get(0).getItem().is(net.minecraft.world.item.Items.SPLASH_POTION);
+        boolean isSplash = projectiles.getFirst().getItem().is(net.minecraft.world.item.Items.SPLASH_POTION);
         TestAsserts.assertTrue(helper, isSplash, "Ender Bow without lingering flag should fire a splash potion");
         helper.succeed();
     }
@@ -275,11 +276,11 @@ public class FlaskAndLauncherGameTests {
         Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
 
         AABB searchBox = new AABB(abs.x - 10, abs.y - 10, abs.z - 10,
-                                   abs.x + 10, abs.y + 10, abs.z + 10);
+                abs.x + 10, abs.y + 10, abs.z + 10);
         List<AbstractThrownPotion> projectiles = level.getEntitiesOfClass(AbstractThrownPotion.class, searchBox);
         TestAsserts.assertTrue(helper, !projectiles.isEmpty(), "Ender Bow use should spawn a AbstractThrownPotion");
 
-        boolean isLingering = projectiles.get(0).getItem().is(net.minecraft.world.item.Items.LINGERING_POTION);
+        boolean isLingering = projectiles.getFirst().getItem().is(net.minecraft.world.item.Items.LINGERING_POTION);
         TestAsserts.assertTrue(helper, isLingering, "Ender Bow with lingering flag should fire a lingering potion");
         helper.succeed();
     }
@@ -298,12 +299,12 @@ public class FlaskAndLauncherGameTests {
         var result = Items.ENDER_BOW.use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
 
         TestAsserts.assertTrue(helper, result == net.minecraft.world.InteractionResult.FAIL,
-            "Ender Bow with zero charges should return FAIL");
+                "Ender Bow with zero charges should return FAIL");
 
         AABB searchBox = new AABB(abs.x - 10, abs.y - 10, abs.z - 10,
-                                   abs.x + 10, abs.y + 10, abs.z + 10);
+                abs.x + 10, abs.y + 10, abs.z + 10);
         TestAsserts.assertTrue(helper, level.getEntitiesOfClass(AbstractThrownPotion.class, searchBox).isEmpty(),
-            "No projectile should be spawned when charges are zero");
+                "No projectile should be spawned when charges are zero");
         helper.succeed();
     }
 }

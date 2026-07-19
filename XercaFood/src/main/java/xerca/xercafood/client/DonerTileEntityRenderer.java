@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercafood.common.block_entity.BlockEntityDoner;
 
 public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityDoner, DonerTileEntityRenderer.DonerRenderState> {
@@ -24,7 +24,7 @@ public class DonerTileEntityRenderer implements BlockEntityRenderer<BlockEntityD
     }
 
     @Override
-    public void extractRenderState(BlockEntityDoner blockEntity, DonerRenderState state, float partialTick, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(BlockEntityDoner blockEntity, DonerRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPos, breakProgress);
         state.animationProgress = blockEntity.getAnimationProgress(partialTick);
         state.movingBlockRenderState.randomSeedPos = blockEntity.getBlockPos();

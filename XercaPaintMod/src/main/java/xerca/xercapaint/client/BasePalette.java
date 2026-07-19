@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.PaletteUtil;
 import xerca.xercapaint.SoundEvents;
@@ -106,7 +106,7 @@ public abstract class BasePalette extends Screen {
     boolean isCarryingWater;
     boolean canvasDirty;
     boolean paletteDirty;
-    @Nullable PaletteUtil.Color carriedColor;
+    PaletteUtil.@Nullable Color carriedColor;
     int carriedCustomColorId = -1;
     // Static so the last picked color is remembered across GUI openings
     static PaletteUtil.Color currentColor = BASIC_COLORS[0];

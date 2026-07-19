@@ -16,7 +16,8 @@ import xerca.xercatools.item.ItemPotionLauncher;
 import xerca.xercatools.item.Items;
 
 public class RecipeEnderBowFilling extends CustomRecipe {
-    private record ParsedInput(ItemStack launcherStack, PotionContents potionType, PotionContents launcherPotion, int potionCount, boolean lingering, boolean valid) {
+    private record ParsedInput(ItemStack launcherStack, PotionContents potionType, PotionContents launcherPotion,
+                               int potionCount, boolean lingering, boolean valid) {
     }
 
     private static final class ParseState {

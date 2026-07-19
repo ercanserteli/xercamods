@@ -42,7 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"DataFlowIssue", "PMD.AvoidAccessibilityAlteration", "unused"})
 public final class BlocksGameTests {
 
     private static Identifier recipeId(String path) {
@@ -401,10 +401,10 @@ public final class BlocksGameTests {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 target = Vec3.atCenterOf(pos).add(0.08, 0.0, 0.08);
         Vec3 start = target.add(0.0, 2.0, 0.0);
-        net.minecraft.world.phys.HitResult hit = helper.getLevel().clip(new net.minecraft.world.level.ClipContext(
+        BlockHitResult hit = helper.getLevel().clip(new net.minecraft.world.level.ClipContext(
                 start, target, net.minecraft.world.level.ClipContext.Block.OUTLINE, net.minecraft.world.level.ClipContext.Fluid.NONE, player));
         helper.assertTrue(hit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK
-                        && ((BlockHitResult) hit).getBlockPos().equals(pos),
+                        && hit.getBlockPos().equals(pos),
                 Component.literal("Expected an off-center ray to hit the rope click box"));
         helper.succeed();
     }

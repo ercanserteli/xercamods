@@ -7,6 +7,7 @@ import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.datafix.fixes.ItemStackComponentizationFix;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xerca.xercamusic.common.Mod;
 
 import java.util.UUID;
-import java.util.function.Function;
 
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
@@ -24,21 +24,11 @@ public abstract class ItemStackComponentizationFixMixin {
     @Inject(at = @At("TAIL"), method = "fixItemStack(Lnet/minecraft/util/datafix/fixes/ItemStackComponentizationFix$ItemStackData;Lcom/mojang/serialization/Dynamic;)V")
     private static void fixItemStackMixin(ItemStackComponentizationFix.ItemStackData itemStackData, Dynamic<?> tag, CallbackInfo info) {
         if (itemStackData.is("xercamusic:music_sheet")) {
-            Function<Dynamic<?>, UUID> getUuidFromDynamic = (Dynamic<?> dynamic) -> {
-                if (dynamic.getOps() == NbtOps.INSTANCE) {
-                    Tag nbtElement = (Tag) dynamic.getValue();
-                    if (nbtElement instanceof IntArrayTag intArrayTag) {
-                        return UUIDUtil.uuidFromIntArray(intArrayTag.getAsIntArray());
-                    }
-                }
-                return null;
-            };
-
             Mod.LOGGER.debug("Found a music sheet, porting it to the component format");
 
             OptionalDynamic<?> id = itemStackData.removeTag(KEY_ID);
             id.get().ifSuccess((Dynamic<?> dynamic) -> {
-                UUID sheetId = getUuidFromDynamic.apply(dynamic);
+                UUID sheetId = getUuidFromDynamic(dynamic);
                 if (sheetId != null) {
                     itemStackData.setComponent("xercamusic:sheet_id", tag.createString(sheetId.toString()));
                 }
@@ -55,5 +45,16 @@ public abstract class ItemStackComponentizationFixMixin {
             itemStackData.moveTagToComponent(KEY_TITLE, "xercamusic:sheet_title");
             itemStackData.moveTagToComponent(KEY_AUTHOR, "xercamusic:sheet_author");
         }
+    }
+
+    @Nullable
+    private static UUID getUuidFromDynamic(Dynamic<?> dynamic) {
+        if (dynamic.getOps() == NbtOps.INSTANCE) {
+            Tag nbtElement = (Tag) dynamic.getValue();
+            if (nbtElement instanceof IntArrayTag intArrayTag) {
+                return UUIDUtil.uuidFromIntArray(intArrayTag.getAsIntArray());
+            }
+        }
+        return null;
     }
 }

@@ -104,8 +104,8 @@ class GameTestHelpers {
         return Objects.requireNonNull(food, "Food component unexpectedly missing after assertion");
     }
 
+    @SuppressWarnings("removal")
     static ServerPlayer makeServerPlayer(GameTestHelper helper) {
-        //noinspection removal
         return helper.makeMockServerPlayerInLevel();  // NOSONAR
     }
 
@@ -136,6 +136,7 @@ class GameTestHelpers {
         return false;
     }
 
+    @SuppressWarnings("ExtractMethodRecommender")
     static void useBlockWithoutItem(GameTestHelper helper, BlockPos pos, Player player) {
         BlockState state = helper.getLevel().getBlockState(pos);
         try {

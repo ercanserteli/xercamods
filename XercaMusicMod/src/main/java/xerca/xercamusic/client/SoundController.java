@@ -3,13 +3,13 @@ package xerca.xercamusic.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
+import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -110,7 +110,8 @@ public class SoundController extends Thread {
 
         // Music over
         if (spiritID >= 0 && minecraft.player != null) {
-            minecraft.submit(() -> ModClient.endMusic(spiritID, minecraft.player.getId()))
+            int playerId = minecraft.player.getId();
+            minecraft.submit(() -> ModClient.endMusic(spiritID, playerId))
                     .whenComplete((v, t) -> {
                         if (t != null) Mod.LOGGER.error("Failed to end music", t);
                     }).isDone();

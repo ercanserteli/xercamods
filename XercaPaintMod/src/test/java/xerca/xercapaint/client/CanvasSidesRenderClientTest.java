@@ -32,6 +32,7 @@ import java.util.Arrays;
  * against its golden; within each material the two goldens are additionally asserted to differ (by a pixel
  * count over the painted edges), proving the sides toggle actually changes the rendered frame.
  */
+@SuppressWarnings("unused")
 public final class CanvasSidesRenderClientTest implements FabricClientGameTest {
     // Same-scene renders sit ~1.0; the equals threshold catches gross render breakage.
     private static final double EQUALS_THRESHOLD = 0.99;

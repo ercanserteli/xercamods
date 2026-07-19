@@ -22,6 +22,7 @@ import static xerca.xercapaint.client.PaintClientTests.check;
  * one shows it, dragging basic colours onto a custom slot mixes them, dragging water empties the slot again, and the
  * mixed colours persist to the server so a re-opened palette keeps them.
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class GuiPaletteClientTest implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext context) {

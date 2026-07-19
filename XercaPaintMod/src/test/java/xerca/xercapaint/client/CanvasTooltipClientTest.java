@@ -21,6 +21,7 @@ import static xerca.xercapaint.client.PaintClientTests.check;
  * Regression test for tooltip component hiding: the author/generation/empty lines must respect
  * the stack's {@code tooltip_display} component.
  */
+@SuppressWarnings({"deprecation", "unused"})
 public final class CanvasTooltipClientTest implements FabricClientGameTest {
 
     @Override

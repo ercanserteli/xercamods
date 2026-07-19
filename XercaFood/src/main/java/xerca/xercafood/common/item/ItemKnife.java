@@ -2,6 +2,7 @@ package xerca.xercafood.common.item;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 import xerca.xercafood.common.Mod;
 
 public class ItemKnife extends Item {
@@ -12,7 +13,7 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public net.minecraft.world.item.ItemStackTemplate getCraftingRemainder(ItemStack stack) {
+    public net.minecraft.world.item.@Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
         ItemStack remainder = stack.copy();
         remainder.setCount(1);
         remainder.setDamageValue(stack.getDamageValue() + 1);

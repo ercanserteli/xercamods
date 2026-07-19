@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
@@ -29,7 +30,6 @@ import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemBlockInstrument;
 import xerca.xercamusic.common.item.Items;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;

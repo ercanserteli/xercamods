@@ -61,6 +61,7 @@ public final class WarhammerDashManager {
     /**
      * Registered as a server tick callback; advances every active dash.
      */
+    @SuppressWarnings("unused")
     public static void onServerTick(MinecraftServer server) {
         if (ACTIVE.isEmpty()) {
             return;
@@ -94,7 +95,9 @@ public final class WarhammerDashManager {
         return state.ticksRemaining > 0;
     }
 
-    /** Emits some particles behind the dashing player. */
+    /**
+     * Emits some particles behind the dashing player.
+     */
     private static void spawnDashTrail(DashState state) {
         Player player = state.player;
         if (player.level() instanceof ServerLevel serverLevel) {

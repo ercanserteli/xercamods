@@ -22,6 +22,7 @@ import java.util.Objects;
  * (hotbar slot) item models at once; the hand and hotbar regions are additionally compared on
  * their own so localized item model regressions cannot hide inside the full-frame average.
  */
+@SuppressWarnings("unused")
 public final class CarvedCrimsonInventoryClientTest implements FabricClientGameTest {
     // SSIM >= this to pass. 1.0 is identical; rendering the same static scene twice sits very close to 1.0.
     private static final double SSIM_THRESHOLD = 0.98;
@@ -41,10 +42,12 @@ public final class CarvedCrimsonInventoryClientTest implements FabricClientGameT
         context.restoreDefaultGameOptions();
         // Clouds drift with game time and chat lines would fade mid-run; both break determinism.
         // hideGui is transient (not restored by restoreDefaultGameOptions) and an earlier test sets it.
+        // Short render distance keeps the aliasing-prone distant grass horizon out of frame
         context.runOnClient(client -> {
             client.options.hideGui = false;
             client.options.cloudStatus().set(CloudStatus.OFF);
             client.options.chatVisibility().set(ChatVisiblity.HIDDEN);
+            client.options.renderDistance().set(2);
             CarvedCrimsonAnimationTestHelper.freezeAtFirstFrame(client);
         });
 

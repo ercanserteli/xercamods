@@ -23,6 +23,7 @@ import static xerca.xercamusic.client.MusicClientTests.*;
  * {@code SheetInputHandler.isShiftHeld()} reads {@code InputConstants.isKeyDown}, which the
  * client-gametest harness intercepts for {@link net.fabricmc.fabric.api.client.gametest.v1.TestInput#holdShift()}.
  */
+@SuppressWarnings({"DataFlowIssue", "unused"})
 public final class MusicSheetEditClientTest implements FabricClientGameTest {
     // Note-grid layout constants, mirroring GuiMusicSheet (3 screen px per beat).
     private static final int NOTE_REGION_LEFT = 44;

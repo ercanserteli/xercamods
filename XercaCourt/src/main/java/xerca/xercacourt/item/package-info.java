@@ -1,7 +1,4 @@
-@ParametersAreNonnullByDefault
 @NullMarked
 package xerca.xercacourt.item;
 
 import org.jspecify.annotations.NullMarked;
-
-import javax.annotation.ParametersAreNonnullByDefault;

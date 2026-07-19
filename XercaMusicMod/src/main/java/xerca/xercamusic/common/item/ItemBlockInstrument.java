@@ -11,7 +11,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.common.Mod;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class ItemBlockInstrument extends BlockItem implements IItemInstrument {
     private final int minOctave;
     private final int maxOctave;
     private final int instrumentId;
-    private @Nullable IItemInstrument.InsSound[] insSounds;
+    private IItemInstrument.InsSound @Nullable [] insSounds;
 
     public ItemBlockInstrument(int instrumentId, int minOctave, int maxOctave, Properties properties, Block block) {
         super(block, properties);

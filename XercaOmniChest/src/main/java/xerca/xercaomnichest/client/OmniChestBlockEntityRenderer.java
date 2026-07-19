@@ -17,7 +17,7 @@ import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercaomnichest.Mod;
 import xerca.xercaomnichest.block.BlockOmniChest;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
@@ -39,7 +39,7 @@ public final class OmniChestBlockEntityRenderer implements BlockEntityRenderer<B
     }
 
     @Override
-    public void extractRenderState(BlockEntityOmniChest blockEntity, OmniChestRenderState state, float partialTick, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(BlockEntityOmniChest blockEntity, OmniChestRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPos, breakProgress);
         BlockState blockState = blockEntity.getBlockState();
         Direction direction = blockState.hasProperty(BlockOmniChest.FACING) ? blockState.getValue(BlockOmniChest.FACING) : Direction.SOUTH;
