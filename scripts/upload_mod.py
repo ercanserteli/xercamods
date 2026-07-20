@@ -184,8 +184,10 @@ def upload_mod_to_modrinth(
 def main():
     parser = argparse.ArgumentParser(description="Upload a Minecraft mod to CurseForge.")
 
-    parser.add_argument("--curseforge-api-token", help="Your CurseForge API token")
-    parser.add_argument("--modrinth-api-token", help="Your Modrinth API token")
+    parser.add_argument("--curseforge-api-token",
+                        help="Your CurseForge API token (falls back to CURSEFORGE_API_TOKEN env var)")
+    parser.add_argument("--modrinth-api-token",
+                        help="Your Modrinth API token (falls back to MODRINTH_API_TOKEN env var)")
     parser.add_argument("--project-id", required=True, help="Your CurseForge project ID")
     parser.add_argument("--game-version", required=True, help="Supported Minecraft game version (e.g. 1.21.3)")
     parser.add_argument("--mod-version", required=True, help="Mod version (e.g. 2.0.0)")
@@ -206,6 +208,11 @@ def main():
                         help="The status of the version")
 
     args = parser.parse_args()
+
+    if not args.curseforge_api_token:
+        args.curseforge_api_token = os.environ.get("CURSEFORGE_API_TOKEN")
+    if not args.modrinth_api_token:
+        args.modrinth_api_token = os.environ.get("MODRINTH_API_TOKEN")
 
     jar_prefix = MOD_NAME_TO_JAR_PREFIX.get(args.project_id, args.project_id)
     file_path = os.path.join(args.builds_dir, f"{jar_prefix}-{args.game_version}-{args.mod_version}.jar")

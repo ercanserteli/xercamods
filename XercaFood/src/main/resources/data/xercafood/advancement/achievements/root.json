@@ -9,7 +9,7 @@
     "description": {
       "translate": "advancements.xercafood.achievements.root.description"
     },
-    "background": "xercafood:textures/block/apple_pie_top.png",
+    "background": "xercafood:block/apple_pie_top",
     "show_toast": false,
     "announce_to_chat": false
   },
