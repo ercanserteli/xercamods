@@ -9,7 +9,7 @@
     "description": {
       "translate": "advancements.xercamusic.achievements.root.description"
     },
-    "background": "xercamusic:textures/item/instruments/lyre.png",
+    "background": "xercamusic:item/instruments/lyre",
     "show_toast": false,
     "announce_to_chat": false
   },
