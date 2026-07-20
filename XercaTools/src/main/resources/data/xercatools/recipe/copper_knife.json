@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "i",
+    "s"
+  ],
+  "key": {
+    "s": "minecraft:stick",
+    "i": "minecraft:copper_ingot"
+  },
+  "result": {
+    "id": "xercatools:copper_knife"
+  }
+}
