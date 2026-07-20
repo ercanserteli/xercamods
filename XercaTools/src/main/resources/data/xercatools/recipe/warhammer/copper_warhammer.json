@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "tst",
+    " s ",
+    " s "
+  ],
+  "key": {
+    "s": "minecraft:stick",
+    "t": "minecraft:copper_ingot"
+  },
+  "result": {
+    "id": "xercatools:copper_warhammer"
+  }
+}
