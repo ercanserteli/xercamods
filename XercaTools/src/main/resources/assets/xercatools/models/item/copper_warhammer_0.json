@@ -1,0 +1,14 @@
+{
+  "parent": "xercatools:item/copper_warhammer",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 0, 90, -60 ],
+      "translation": [ 0.00, 1, 0 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, 90, -60 ],
+      "translation": [ 0.00, 1, 0 ]
+    }
+  }
+}
+
