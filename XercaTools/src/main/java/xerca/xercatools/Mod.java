@@ -118,11 +118,13 @@ public class Mod implements ModInitializer {
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
             entries.accept(Items.WOODEN_SCYTHE);
             entries.accept(Items.STONE_SCYTHE);
+            entries.accept(Items.COPPER_SCYTHE);
             entries.accept(Items.IRON_SCYTHE);
             entries.accept(Items.GOLDEN_SCYTHE);
             entries.accept(Items.DIAMOND_SCYTHE);
             entries.accept(Items.NETHERITE_SCYTHE);
             entries.accept(Items.STONE_KNIFE);
+            entries.accept(Items.COPPER_KNIFE);
             entries.accept(Items.IRON_KNIFE);
             entries.accept(Items.GOLDEN_KNIFE);
             entries.accept(Items.DIAMOND_KNIFE);
@@ -136,16 +138,19 @@ public class Mod implements ModInitializer {
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register(entries -> {
             entries.accept(Items.WOODEN_SCYTHE);
             entries.accept(Items.STONE_SCYTHE);
+            entries.accept(Items.COPPER_SCYTHE);
             entries.accept(Items.IRON_SCYTHE);
             entries.accept(Items.GOLDEN_SCYTHE);
             entries.accept(Items.DIAMOND_SCYTHE);
             entries.accept(Items.NETHERITE_SCYTHE);
             entries.accept(Items.STONE_WARHAMMER);
+            entries.accept(Items.COPPER_WARHAMMER);
             entries.accept(Items.IRON_WARHAMMER);
             entries.accept(Items.GOLD_WARHAMMER);
             entries.accept(Items.DIAMOND_WARHAMMER);
             entries.accept(Items.NETHERITE_WARHAMMER);
             entries.accept(Items.STONE_KNIFE);
+            entries.accept(Items.COPPER_KNIFE);
             entries.accept(Items.IRON_KNIFE);
             entries.accept(Items.GOLDEN_KNIFE);
             entries.accept(Items.DIAMOND_KNIFE);
@@ -290,6 +295,7 @@ public class Mod implements ModInitializer {
 
     private static boolean isWarhammer(ItemStack stack) {
         return stack.is(Items.STONE_WARHAMMER)
+                || stack.is(Items.COPPER_WARHAMMER)
                 || stack.is(Items.IRON_WARHAMMER)
                 || stack.is(Items.GOLD_WARHAMMER)
                 || stack.is(Items.DIAMOND_WARHAMMER)
@@ -299,6 +305,7 @@ public class Mod implements ModInitializer {
     private static boolean isScythe(ItemStack stack) {
         return stack.is(Items.WOODEN_SCYTHE)
                 || stack.is(Items.STONE_SCYTHE)
+                || stack.is(Items.COPPER_SCYTHE)
                 || stack.is(Items.IRON_SCYTHE)
                 || stack.is(Items.GOLDEN_SCYTHE)
                 || stack.is(Items.DIAMOND_SCYTHE)
@@ -311,6 +318,7 @@ public class Mod implements ModInitializer {
 
     private static boolean isKnife(ItemStack stack) {
         return stack.is(Items.STONE_KNIFE)
+                || stack.is(Items.COPPER_KNIFE)
                 || stack.is(Items.IRON_KNIFE)
                 || stack.is(Items.GOLDEN_KNIFE)
                 || stack.is(Items.DIAMOND_KNIFE)
