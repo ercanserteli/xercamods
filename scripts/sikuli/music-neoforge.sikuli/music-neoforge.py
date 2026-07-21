@@ -1,7 +1,8 @@
 import math
 import os
-from javax.sound.sampled import AudioSystem
+
 from java.io import File
+from javax.sound.sampled import AudioSystem
 
 
 def playSound(filename):
@@ -227,46 +228,46 @@ def testItemsInCreative(mc, win, mcLoc):
     wheelUp(3)
     testAssert(exists("1689794960532.png"))
     wheelDown(3)
-    testAssert(exists("1690571257297.png"))
+    testAssert(exists("1776459405681.png"))
     
     # Help
     clickw(813, 76)
-    testAssert(exists("1690626104673.png"))
+    testAssert(exists("1776459457198.png"))
     clickw(813, 76)
-    testAssert(exists("1689795099653.png"))
+    testAssert(exists("1689795099653-1.png"))
 
     # Exit to save
     win.type(Key.ESC)
     wait(1)
     rclick()
-    testAssert(exists("1690571257297.png"))
+    testAssert(exists("1776459405681.png"))
     clickw(412, 67)
 
     # Middle click
     mclickw(274, 242)
-    testAssert(exists("1689795184606.png"))
+    testAssert(exists("1689795184606-1.png"))
     clickw(287, 287)
     clickw(287, 287)
     clickw(287, 287)
-    testAssert(exists("1689795231588.png"))
+    testAssert(exists("1689795231588-1.png"))
     clickw(400, 287)
     clickw(400, 287)
     clickw(400, 287)
     clickw(400, 287)
     clickw(400, 287)
     clickw(400, 287)
-    testAssert(exists("1689795245162.png"))
+    testAssert(exists("1689795245162-1.png"))
     clickw(287, 287)
     clickw(287, 287)
     clickw(287, 287)
     
     clickw(285, 307)
     clickw(285, 307)
-    testAssert(exists("1689795306689.png"))
+    testAssert(exists("1689795306689-1.png"))
     clickw(400, 307)
     clickw(400, 307)
     clickw(400, 307)
-    testAssert(exists("1689795580613.png"))
+    testAssert(exists("1689795580613-1.png"))
     clickw(298, 333)
     clickw(290, 255)
     clickw(392, 333)
@@ -283,18 +284,18 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("c", KeyModifier.CTRL)
     win.type(Key.RIGHT)
     win.type("v", KeyModifier.CTRL)
-    testAssert(exists("1690571480492.png"))
+    testAssert(exists("1762370798104.png"))
 
     # Select all, delete with backspace (delete button does not work for some reason)
     win.type("a", KeyModifier.CTRL)
     win.type(Key.BACKSPACE)
-    testAssert(exists("1689796061344.png"))
+    testAssert(exists("1776459556984.png"))
     win.type("z", KeyModifier.CTRL)
-    testAssert(exists("1690571480492.png"))
+    testAssert(exists("1762370798104.png"))
 
     # Record
     rclickw(398, 264)
-    win.click("1689799024685.png")
+    win.click("1689799024685-1.png")
     clickw(300, 75)
     wait(2)
     keyDown("t")
@@ -308,7 +309,7 @@ def testItemsInCreative(mc, win, mcLoc):
     keyUp("t")
     wait(0.5)
     keyUp("e")
-    win.click("1689796476256.png")
+    win.click("1689796476256-1.png")
 
     # Preview instrument
     win.type(Key.ESC)
@@ -317,7 +318,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("f")
     win.type("1")
     rclick()
-    testAssert(exists("1689796993328.png"))
+    testAssert(exists("1689796993328-1.png"))
     win.click(preview_btn)
     wait(1)
     win.click(preview_btn)
@@ -329,7 +330,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type("f")
     win.type("1")
     rclick()
-    testAssert(exists("1689797210766.png"))
+    testAssert(exists("1689797210766-1.png"))
     win.click(preview_btn)
     wait(1)
     win.click(preview_btn)
@@ -341,7 +342,7 @@ def testItemsInCreative(mc, win, mcLoc):
     win.type(Key.ESC)
     win.type("2")
     rclick()
-    testAssert(exists("1689797385621.png"))
+    testAssert(exists("1776459869286.png"))
     
     clickw(596, 68)
     clickw(596, 68)
@@ -350,22 +351,22 @@ def testItemsInCreative(mc, win, mcLoc):
     clickw(596, 68)
     win.type(Key.ESC)
     rclick()
-    neighbor_btn = exists("1689797421033.png")
-    testAssert(neighbor_btn and exists("1689797429976.png"))
+    neighbor_btn = exists("1689797421033-1.png")
+    testAssert(neighbor_btn and exists("1776459907562.png"))
     dragw(217, 168)
     dropw(325, 172)
     win.click(preview_btn)
     wait(2)
     win.click(neighbor_btn)
     clickw(328, 55)
-    testAssert(exists("1689797625523.png") and exists("1689797634099.png"))
+    testAssert(exists("1689797625523-1.png") and exists("1689797634099-1.png"))
     win.type(Key.ESC)
     win.type("1")
     rclick()
     win.click("1689797679952.png")
     testAssert(exists("1690571576218.png"))
     win.click("1689797728271.png")
-    testAssert(exists("1690571643086.png") and exists("1690571652749.png"))
+    testAssert(exists("1762370988448.png") and exists("1690571652749-1.png"))
     win.click("1689797679952.png")
     win.type("Masterpiece")
     win.click("1689797794031.png")
