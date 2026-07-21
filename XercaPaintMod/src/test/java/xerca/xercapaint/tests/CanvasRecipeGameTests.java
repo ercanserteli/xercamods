@@ -1,6 +1,5 @@
 package xerca.xercapaint.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -86,7 +85,6 @@ public class CanvasRecipeGameTests {
         return stack;
     }
 
-    @GameTest
     public void smallFreshCanvasesCraftLongTallAndLarge(GameTestHelper helper) {
         for (CanvasRecipeSpec spec : SMALL_CANVAS_RECIPES) {
             CraftingRecipe recipe = requireCraftingRecipe(helper, spec.recipeId());
@@ -100,7 +98,6 @@ public class CanvasRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void smallFreshGlassCanvasesCraftLongTallAndLarge(GameTestHelper helper) {
         ItemStack freshGlass = new ItemStack(Items.ITEM_CANVAS_GLASS);
         for (CanvasRecipeSpec spec : SMALL_GLASS_CANVAS_RECIPES) {
@@ -115,7 +112,6 @@ public class CanvasRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void glassCanvasCraftsFromGlassPaneAndSticks(GameTestHelper helper) {
         Identifier recipeId = Identifier.fromNamespaceAndPath(MOD_ID, "item_canvas_glass");
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId);
@@ -135,7 +131,6 @@ public class CanvasRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void paintedCanvasesCannotBeUsedInFreshCanvasRecipes(GameTestHelper helper) {
         ItemStack paintedSmallCanvas = createPaintedSmallCanvas();
         TestAsserts.assertTrue(helper, paintedSmallCanvas.get(Items.CANVAS_PIXELS) != null,
@@ -158,7 +153,6 @@ public class CanvasRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void foreignTaggedFreshCanvasesCanBeUsedInFreshCanvasRecipes(GameTestHelper helper) {
         ItemStack foreignTaggedSmallCanvas = createForeignTaggedFreshSmallCanvas();
         TestAsserts.assertTrue(helper, foreignTaggedSmallCanvas.get(Items.CANVAS_PIXELS) == null,

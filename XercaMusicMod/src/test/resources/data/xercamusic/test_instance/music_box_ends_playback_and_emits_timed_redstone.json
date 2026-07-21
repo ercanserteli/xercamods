@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercamusic:music_box_ends_playback_and_emits_timed_redstone",
+  "structure": "minecraft:empty",
+  "max_ticks": 600,
+  "setup_ticks": 0,
+  "required": true
+}

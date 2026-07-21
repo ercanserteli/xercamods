@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercatools:scythe_mine_block_harvests_adjacent_crops_with_sweeping_edge",
+  "structure": "minecraft:empty",
+  "max_ticks": 100,
+  "setup_ticks": 0,
+  "required": true
+}

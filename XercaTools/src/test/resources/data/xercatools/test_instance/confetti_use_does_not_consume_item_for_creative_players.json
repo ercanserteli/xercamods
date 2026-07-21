@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercatools:confetti_use_does_not_consume_item_for_creative_players",
+  "structure": "minecraft:empty",
+  "max_ticks": 100,
+  "setup_ticks": 0,
+  "required": true
+}

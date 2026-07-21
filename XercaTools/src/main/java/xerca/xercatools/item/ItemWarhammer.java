@@ -345,4 +345,14 @@ public class ItemWarhammer extends Item {
         MutableComponent text = Component.translatable("xercatools.warhammer_tooltip");
         tooltip.accept(text.withStyle(ChatFormatting.BLUE));
     }
+
+    @Override
+    public boolean supportsEnchantment(net.minecraft.world.item.ItemStack stack, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return xerca.xercatools.Mod.toolSupportsEnchantment(stack, enchantment) || super.supportsEnchantment(stack, enchantment);
+    }
+
+    @Override
+    public boolean isPrimaryItemFor(net.minecraft.world.item.ItemStack stack, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return xerca.xercatools.Mod.toolSupportsEnchantment(stack, enchantment) || super.isPrimaryItemFor(stack, enchantment);
+    }
 }

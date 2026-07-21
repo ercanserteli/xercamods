@@ -1,15 +1,18 @@
 package xerca.xercacushion.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import xerca.xercacushion.Mod;
 
-@Environment(EnvType.CLIENT)
-public class ModClient implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        EntityRenderers.register(Mod.CUSHION, CushionRenderer::new);
+@EventBusSubscriber(modid = Mod.MOD_ID, value = Dist.CLIENT)
+public final class ModClient {
+    private ModClient() {
+    }
+
+    @SubscribeEvent
+    static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(Mod.CUSHION, CushionRenderer::new);
     }
 }

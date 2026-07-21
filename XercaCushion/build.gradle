@@ -1,20 +1,88 @@
 plugins {
-    id 'net.fabricmc.fabric-loom' version '1.17.16'
+    id 'net.neoforged.moddev' version '2.0.141'
     id 'maven-publish'
     id("com.github.spotbugs") version "6.5.9"
     id "pmd"
 }
 
 version = project.mod_version
-group = project.maven_group
+group = project.mod_group_id
 
 base {
-    archivesName = project.archives_base_name
+    archivesName = "${project.mod_id}-neoforge"
 }
 
 repositories {
     mavenCentral()
 }
+
+def targetJavaVersion = 25
+java.toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+
+neoForge {
+    version = project.neo_version
+
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        data {
+            clientData()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${project.mod_id}" {
+            sourceSet sourceSets.main
+        }
+        "${project.mod_id}_tests" {
+            sourceSet sourceSets.test
+        }
+    }
+}
+
+// Put NeoForge/Minecraft on the test source set classpath (gametests live there).
+neoForge.addModdingDependenciesTo(sourceSets.test)
+
+dependencies {
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
+    testCompileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
+    testImplementation sourceSets.main.output
+}
+
+// Expand placeholders in the templated mod metadata (neoforge.mods.toml).
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 tasks.register('buildCopy', Copy) {
     dependsOn tasks.named('jar')
@@ -22,24 +90,6 @@ tasks.register('buildCopy', Copy) {
     into(layout.projectDirectory.dir("../builds"))
 }
 
-dependencies {
-    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
-
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-}
-
-processResources {
-    inputs.property "version", project.version
-    filteringCharset "UTF-8"
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
-}
-
-def targetJavaVersion = 25
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
     it.options.release = targetJavaVersion
@@ -66,16 +116,8 @@ pmd {
 }
 
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
     withSourcesJar()
 }
-
-SourceSet mainSourceSet = sourceSets.main
-SourceSet testSourceSet = sourceSets.test
-SoftwareComponent javaComponent = components.named("java").get()
 
 jar {
     from("LICENSE") {
@@ -83,51 +125,20 @@ jar {
     }
 }
 
-loom {
-    runs {
-        gameTest {
-            inherit server
-            name "Game Test Server"
-            vmArg "-Dfabric-api.gametest"
-            vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
-            source(mainSourceSet)
-            source(testSourceSet)
-            ideConfigGenerated = true
-            runDir "build/gametest"
-        }
-    }
-}
-
 tasks.named('check') {
-    dependsOn(tasks.named('runGameTest'))
+    dependsOn(tasks.named('runGameTestServer'))
 }
 
 tasks.named('test') {
     enabled = false
 }
 
-tasks.named('runGameTest').configure {
-    doFirst {
-        def gameTestDir = file("build/gametest")
-        gameTestDir.mkdirs()
-        def serverProperties = new File(gameTestDir, "server.properties")
-        if (!serverProperties.exists()) {
-            serverProperties.text = "online-mode=false\nmotd=GameTest\n"
-        }
-        def eulaFile = new File(gameTestDir, "eula.txt")
-        if (!eulaFile.exists()) {
-            eulaFile.text = "eula=true\n"
-        }
-    }
-}
-
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
-            from(javaComponent)
+            from(components.java)
         }
     }
-
     repositories {
     }
 }

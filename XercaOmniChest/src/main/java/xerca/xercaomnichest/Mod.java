@@ -1,12 +1,16 @@
 package xerca.xercaomnichest;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercaomnichest.block.Blocks;
@@ -14,9 +18,17 @@ import xerca.xercaomnichest.block_entity.BlockEntities;
 import xerca.xercaomnichest.data.OmniChestSavedData;
 import xerca.xercaomnichest.item.Items;
 
-public final class Mod implements ModInitializer {
+@net.neoforged.fml.common.Mod(Mod.MOD_ID)
+public final class Mod {
     public static final String MOD_ID = "xercaomnichest";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+
+    public Mod(IEventBus modEventBus) {
+        modEventBus.addListener(this::onRegister);
+        modEventBus.addListener(this::addCreative);
+        NeoForge.EVENT_BUS.addListener(this::onServerStarted);
+        LOGGER.info("{} initialized", MOD_ID);
+    }
 
     public static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
@@ -30,12 +42,19 @@ public final class Mod implements ModInitializer {
         return ResourceKey.create(Registries.BLOCK, id(path));
     }
 
-    @Override
-    public void onInitialize() {
-        Blocks.registerBlocks();
-        BlockEntities.registerBlockEntities();
-        Items.registerItems();
-        ServerLifecycleEvents.SERVER_STARTED.register(OmniChestSavedData::migrateLegacyData);
-        LOGGER.info(MOD_ID + " initialized");
+    private void onRegister(RegisterEvent event) {
+        event.register(Registries.BLOCK, helper -> helper.register(id("omni_chest"), Blocks.OMNI_CHEST));
+        event.register(Registries.ITEM, helper -> helper.register(id("omni_chest"), Items.OMNI_CHEST));
+        event.register(Registries.BLOCK_ENTITY_TYPE, helper -> helper.register(id("omni_chest"), BlockEntities.OMNI_CHEST));
+    }
+
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(Items.OMNI_CHEST);
+        }
+    }
+
+    private void onServerStarted(ServerStartedEvent event) {
+        OmniChestSavedData.migrateLegacyData(event.getServer());
     }
 }

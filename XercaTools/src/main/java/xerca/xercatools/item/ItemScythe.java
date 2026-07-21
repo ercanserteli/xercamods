@@ -287,10 +287,10 @@ public class ItemScythe extends Item {
 
         for (int i = 0; i < 96; i++) {
             double velX = (level.getRandom().nextDouble() - 0.5D) * 0.28D;
-            double velY = (level.getRandom().nextDouble() - 0.3D) * 0.28D;
+            double velY = level.getRandom().nextDouble() * 0.5D + 0.15D;
             double velZ = (level.getRandom().nextDouble() - 0.5D) * 0.28D;
             serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.NETHER_WART_BLOCK),
-                    position.x, position.y, position.z, 1, velX, velY, velZ, 0.0D);
+                    position.x, position.y, position.z, 0, velX, velY, velZ, 1.0D);
         }
     }
 
@@ -394,5 +394,15 @@ public class ItemScythe extends Item {
         }
 
         return closestEntity != null ? new EntityHitResult(closestEntity, closestHitPos) : null;
+    }
+
+    @Override
+    public boolean supportsEnchantment(net.minecraft.world.item.ItemStack stack, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return xerca.xercatools.Mod.toolSupportsEnchantment(stack, enchantment) || super.supportsEnchantment(stack, enchantment);
+    }
+
+    @Override
+    public boolean isPrimaryItemFor(net.minecraft.world.item.ItemStack stack, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return xerca.xercatools.Mod.toolSupportsEnchantment(stack, enchantment) || super.isPrimaryItemFor(stack, enchantment);
     }
 }

@@ -129,7 +129,8 @@ public abstract class BasePalette extends Screen {
             }
         }
 
-        byte[] basics = paletteStack.get(Items.PALETTE_BASIC_COLORS);
+        Items.BasicColors basicsComp = paletteStack.get(Items.PALETTE_BASIC_COLORS);
+        byte[] basics = basicsComp == null ? null : basicsComp.value();
         if (basics != null) {
             paletteComplete = true;
             for (int i = 0; i < basics.length; i++) {

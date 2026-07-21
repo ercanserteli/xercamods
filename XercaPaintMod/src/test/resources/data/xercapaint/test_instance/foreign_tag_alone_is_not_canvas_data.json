@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercapaint:foreign_tag_alone_is_not_canvas_data",
+  "structure": "minecraft:empty",
+  "max_ticks": 200,
+  "setup_ticks": 0,
+  "required": true
+}

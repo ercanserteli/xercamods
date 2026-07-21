@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercablocks:carving_recipes_do_not_load_as_stonecutting_recipes",
+  "structure": "minecraft:empty",
+  "max_ticks": 400,
+  "setup_ticks": 0,
+  "required": true
+}

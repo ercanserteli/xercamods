@@ -1,6 +1,5 @@
 package xerca.xercaomnichest.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -117,7 +116,6 @@ public final class OmniChestGameTests {
         }
     }
 
-    @GameTest
     public void omniChestRecipeCraftsFromAmethystEyesAndEnderChest(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("omni_chest"));
         CraftingInput grid = CraftingInput.of(3, 3, java.util.List.of(
@@ -132,7 +130,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void omniChestInventoryIsSharedAcrossPlacedChests(GameTestHelper helper) {
         BlockPos firstPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos secondPos = helper.absolutePos(new BlockPos(3, 2, 1));
@@ -166,7 +163,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void omniChestTracksDifferentActiveChestsPerPlayer(GameTestHelper helper) {
         BlockPos firstPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos secondPos = helper.absolutePos(new BlockPos(3, 2, 1));
@@ -188,7 +184,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void omniChestSavedDataRoundTripsStoredItems(GameTestHelper helper) {
         OmniChestSavedData original = new OmniChestSavedData();
         original.getInventory().setItem(4, new ItemStack(net.minecraft.world.item.Items.DIAMOND, 5));
@@ -203,7 +198,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void omniChestLegacySavedDataFileMigratesToNamespacedStorage(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
         OmniChestSavedData legacy = new OmniChestSavedData();
@@ -236,7 +230,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void omniChestBreaksAtPickaxeSpeedLikeEnderChest(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());
@@ -265,7 +258,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void omniChestLootRequiresSilkTouchForFullBlockDrop(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());
@@ -306,7 +298,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void omniChestCanBePlacedWaterlogged(GameTestHelper helper) {
         BlockPos supportPos = helper.absolutePos(new BlockPos(1, 1, 1));
         BlockPos chestPos = supportPos.above();
@@ -325,7 +316,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void omniChestUseItemOpensMenuAndTracksActiveChest(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());
@@ -341,7 +331,6 @@ public final class OmniChestGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void blockedOmniChestDoesNotOpenMenu(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.OMNI_CHEST.defaultBlockState());

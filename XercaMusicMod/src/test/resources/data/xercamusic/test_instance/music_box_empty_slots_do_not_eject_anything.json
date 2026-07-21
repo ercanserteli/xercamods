@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercamusic:music_box_empty_slots_do_not_eject_anything",
+  "structure": "minecraft:empty",
+  "max_ticks": 600,
+  "setup_ticks": 0,
+  "required": true
+}

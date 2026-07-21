@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercamusic:fill_array_from_nbt_sorts_and_removes_overlaps",
+  "structure": "minecraft:empty",
+  "max_ticks": 600,
+  "setup_ticks": 0,
+  "required": true
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercatools:potion_launcher_fires_splash_potion_by_default",
+  "structure": "minecraft:empty",
+  "max_ticks": 100,
+  "setup_ticks": 0,
+  "required": true
+}

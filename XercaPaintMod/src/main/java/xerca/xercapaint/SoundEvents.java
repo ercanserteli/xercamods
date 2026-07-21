@@ -1,9 +1,7 @@
 package xerca.xercapaint;
 
-import net.minecraft.core.Registry;
 import net.minecraft.sounds.SoundEvent;
-
-import static net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 public class SoundEvents {
     private SoundEvents() {
@@ -16,12 +14,12 @@ public class SoundEvents {
     public static final SoundEvent WATER = SoundEvent.createVariableRangeEvent(Mod.id("water"));
     public static final SoundEvent WATER_DROP = SoundEvent.createVariableRangeEvent(Mod.id("water_drop"));
 
-    public static void registerSoundEvents() {
-        Registry.register(SOUND_EVENT, STROKE_LOOP.location(), STROKE_LOOP);
-        Registry.register(SOUND_EVENT, MIX.location(), MIX);
-        Registry.register(SOUND_EVENT, COLOR_PICKER.location(), COLOR_PICKER);
-        Registry.register(SOUND_EVENT, COLOR_PICKER_SUCK.location(), COLOR_PICKER_SUCK);
-        Registry.register(SOUND_EVENT, WATER.location(), WATER);
-        Registry.register(SOUND_EVENT, WATER_DROP.location(), WATER_DROP);
+    public static void registerSoundEvents(RegisterEvent.RegisterHelper<SoundEvent> helper) {
+        helper.register(STROKE_LOOP.location(), STROKE_LOOP);
+        helper.register(MIX.location(), MIX);
+        helper.register(COLOR_PICKER.location(), COLOR_PICKER);
+        helper.register(COLOR_PICKER_SUCK.location(), COLOR_PICKER_SUCK);
+        helper.register(WATER.location(), WATER);
+        helper.register(WATER_DROP.location(), WATER_DROP);
     }
 }

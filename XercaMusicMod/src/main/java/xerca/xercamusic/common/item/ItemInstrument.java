@@ -1,9 +1,7 @@
 package xerca.xercamusic.common.item;
 
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.Mod;
@@ -21,11 +20,9 @@ import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.packets.clientbound.TripleNoteClientPacket;
 
-import java.util.Collection;
 import java.util.List;
 
 import static xerca.xercamusic.common.Mod.onlyRunOnClient;
-import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class ItemInstrument extends Item implements IItemInstrument {
     public final int minOctave;
@@ -86,11 +83,8 @@ public class ItemInstrument extends Item implements IItemInstrument {
             int note2 = MIN_NOTE + minOctave * 12 + world.getRandom().nextInt((maxOctave + 1) * 12 - minOctave * 12);
             int note3 = MIN_NOTE + minOctave * 12 + world.getRandom().nextInt((maxOctave + 1) * 12 - minOctave * 12);
 
-            Collection<ServerPlayer> players = PlayerLookup.around((ServerLevel) target.level(), target.position(), 24.0D);
             TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, instrument, target);
-            for (ServerPlayer player : players) {
-                sendToClient(player, packet);
-            }
+            PacketDistributor.sendToPlayersNear((ServerLevel) target.level(), null, target.getX(), target.getY(), target.getZ(), 24.0D, packet);
         }
     }
 

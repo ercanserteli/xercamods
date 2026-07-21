@@ -1,21 +1,27 @@
 package xerca.xercablocks.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
-import net.minecraft.client.renderer.item.ItemModels;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import xerca.xercablocks.Mod;
 import xerca.xercablocks.menu.Menus;
 
-@Environment(EnvType.CLIENT)
-public final class ModClient implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        CarvedCrimsonModels.register();
-        ItemModels.ID_MAPPER.put(Mod.id("translucent_model"), TranslucentModelWrapper.Unbaked.MAP_CODEC);
-        MenuScreens.register(Menus.CARVING_STATION, StonecutterScreen::new);
-        MenuScreens.register(Menus.BOOKCASE, BookcaseScreen::new);
+@EventBusSubscriber(modid = Mod.MOD_ID, value = Dist.CLIENT)
+public final class ModClient {
+    private ModClient() {
+    }
+
+    @SubscribeEvent
+    public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(Menus.CARVING_STATION, StonecutterScreen::new);
+        event.register(Menus.BOOKCASE, BookcaseScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterItemModels(RegisterItemModelsEvent event) {
+        event.register(Mod.id("translucent_model"), TranslucentModelWrapper.Unbaked.MAP_CODEC);
     }
 }

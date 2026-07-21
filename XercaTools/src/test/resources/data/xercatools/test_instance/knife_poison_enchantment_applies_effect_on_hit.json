@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercatools:knife_poison_enchantment_applies_effect_on_hit",
+  "structure": "minecraft:empty",
+  "max_ticks": 100,
+  "setup_ticks": 0,
+  "required": true
+}

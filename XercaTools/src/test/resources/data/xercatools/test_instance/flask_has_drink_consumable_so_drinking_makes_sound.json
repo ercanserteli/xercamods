@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercatools:flask_has_drink_consumable_so_drinking_makes_sound",
+  "structure": "minecraft:empty",
+  "max_ticks": 100,
+  "setup_ticks": 0,
+  "required": true
+}

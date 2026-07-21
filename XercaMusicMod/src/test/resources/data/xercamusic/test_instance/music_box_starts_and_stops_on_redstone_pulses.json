@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercamusic:music_box_starts_and_stops_on_redstone_pulses",
+  "structure": "minecraft:empty",
+  "max_ticks": 600,
+  "setup_ticks": 0,
+  "required": true
+}

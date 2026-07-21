@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercafood:tomato_plant_drops_tomato_when_grown",
+  "structure": "minecraft:empty",
+  "max_ticks": 500,
+  "setup_ticks": 0,
+  "required": true
+}

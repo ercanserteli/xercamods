@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRenderState> {
     static @Nullable RenderEntityCanvas theInstance;
     private static final Identifier BACK_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
@@ -161,7 +160,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas, CanvasRende
         return instance;
     }
 
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public static final class Instance implements AutoCloseable {
         private final RenderEntityCanvas renderer;
         int version;

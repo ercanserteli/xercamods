@@ -1,12 +1,11 @@
 package xerca.xercablocks.block_entity;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,17 +18,12 @@ import net.minecraft.world.level.storage.ValueOutput;
 import xerca.xercablocks.block.BlockFunctionalBookcase;
 import xerca.xercablocks.menu.BookcaseMenu;
 
-public class FunctionalBookcaseBlockEntity extends BlockEntity implements Container, ExtendedMenuProvider<BlockPos> {
+public class FunctionalBookcaseBlockEntity extends BlockEntity implements Container, MenuProvider {
     private static final int SLOT_COUNT = 6;
     private final NonNullList<ItemStack> items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 
     public FunctionalBookcaseBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntities.FUNCTIONAL_BOOKCASE, pos, state);
-    }
-
-    @Override
-    public BlockPos getScreenOpeningData(ServerPlayer player) {
-        return worldPosition;
     }
 
     @Override

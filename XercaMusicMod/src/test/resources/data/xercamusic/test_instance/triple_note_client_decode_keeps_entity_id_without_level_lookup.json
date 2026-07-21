@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercamusic:triple_note_client_decode_keeps_entity_id_without_level_lookup",
+  "structure": "minecraft:empty",
+  "max_ticks": 600,
+  "setup_ticks": 0,
+  "required": true
+}

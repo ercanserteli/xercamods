@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercablocks:carved_acacia_lets_light_through_and_culls_like_agrate",
+  "structure": "minecraft:empty",
+  "max_ticks": 400,
+  "setup_ticks": 0,
+  "required": true
+}

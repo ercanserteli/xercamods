@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercafood:tea_filling_and_refilling_edge_cases_work",
+  "structure": "minecraft:empty",
+  "max_ticks": 500,
+  "setup_ticks": 0,
+  "required": true
+}

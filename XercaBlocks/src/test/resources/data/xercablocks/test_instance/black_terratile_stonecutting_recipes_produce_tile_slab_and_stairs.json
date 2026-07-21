@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercablocks:black_terratile_stonecutting_recipes_produce_tile_slab_and_stairs",
+  "structure": "minecraft:empty",
+  "max_ticks": 400,
+  "setup_ticks": 0,
+  "required": true
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercapaint:glass_canvas_crafts_from_glass_pane_and_sticks",
+  "structure": "minecraft:empty",
+  "max_ticks": 200,
+  "setup_ticks": 0,
+  "required": true
+}

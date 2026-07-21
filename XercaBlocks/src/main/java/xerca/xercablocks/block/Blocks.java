@@ -1,13 +1,12 @@
 package xerca.xercablocks.block;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercablocks.Mod;
 
 import java.util.LinkedHashMap;
@@ -102,8 +101,8 @@ public final class Blocks {
         return block;
     }
 
-    public static void registerBlocks() {
-        BLOCKS.forEach((id, block) -> Registry.register(BuiltInRegistries.BLOCK, Mod.id(id), block));
+    public static void register(RegisterEvent.RegisterHelper<Block> helper) {
+        BLOCKS.forEach((id, block) -> helper.register(Mod.id(id), block));
     }
 
     public static Map<String, Block> terratiles() {

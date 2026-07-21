@@ -7,7 +7,7 @@ import javax.xml.XMLConstants
 import javax.xml.parsers.DocumentBuilderFactory
 
 plugins {
-    id 'net.fabricmc.fabric-loom' version '1.17.16' apply false
+    id 'net.neoforged.moddev' version '2.0.141' apply false
     id 'com.github.spotbugs' version '6.5.9' apply false
     id 'org.sonarqube' version '7.3.1.8318'
 }
@@ -113,7 +113,7 @@ def registerAggregateTask = { String name, String taskGroup, String taskDescript
         ['buildCopyAll', 'build', 'Builds and copies all mod jars into the root builds directory.', 'buildCopy'],
         ['checkAll', 'verification', 'Runs the check lifecycle for all mod projects.', 'check'],
         ['testAll', 'verification', 'Runs Java test tasks for all mod projects that enable them.', 'test'],
-        ['gameTestAll', 'verification', 'Runs Fabric game tests for all mod projects.', 'runGameTest']
+        ['gameTestAll', 'verification', 'Runs NeoForge game tests for all mod projects.', 'runGameTestServer']
 ].each { aggregateTask ->
     registerAggregateTask(aggregateTask[0], aggregateTask[1], aggregateTask[2], aggregateTask[3])
 }
@@ -186,14 +186,16 @@ subprojects {
     }
 
     afterEvaluate {
-        def gameTestTask = tasks.named('runGameTest')
-        def gameTestTasks = [gameTestTask]
+        def gameTestTasks = []
+        if (tasks.findByName('runGameTestServer') != null) {
+            gameTestTasks << tasks.named('runGameTestServer')
+        }
         if (tasks.findByName('runClientGameTest') != null) {
             gameTestTasks << tasks.named('runClientGameTest')
         }
         def jacocoGameTestReportTask = tasks.register('jacocoGameTestReport', JacocoReport) {
             group = 'verification'
-            description = 'Generates JaCoCo coverage from Fabric server and client game tests.'
+            description = 'Generates JaCoCo coverage from NeoForge game tests.'
             dependsOn(gameTestTasks)
 
             executionData(gameTestTasks.collect { task ->
@@ -211,8 +213,8 @@ subprojects {
 
         tasks.register('sonarGameTestExecutionReport') {
             group = 'verification'
-            description = 'Converts Fabric game test results to Sonar generic test execution XML.'
-            dependsOn(gameTestTask)
+            description = 'Converts NeoForge game test results to Sonar generic test execution XML.'
+            dependsOn(gameTestTasks)
 
             def inputFile = project.layout.buildDirectory.file(gameTestResultsFilePath)
             def outputFile = project.layout.buildDirectory.file('reports/sonar/test-execution.xml')
@@ -262,7 +264,12 @@ subprojects {
 
         gameTestTasks.each { task ->
             task.configure {
-                jacoco.applyTo(it)
+                if (it instanceof org.gradle.process.JavaForkOptions) {
+                    jacoco.applyTo(it)
+                    // Only instrument mod classes; instrumenting vanilla (e.g. Blocks.<clinit>) blows
+                    // past the JVM method-size limit and spams a JaCoCo MethodTooLargeException.
+                    it.jacoco.includes = ['xerca.*']
+                }
                 finalizedBy(jacocoGameTestReportTask)
             }
         }

@@ -1,18 +1,21 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.client.ModClient;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemPalette;
 
-public class OpenGuiPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<OpenGuiPacket> {
+public final class OpenGuiPacketHandler {
+    private OpenGuiPacketHandler() {
+    }
+
     private static void processMessage(OpenGuiPacket msg) {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
@@ -39,8 +42,7 @@ public class OpenGuiPacketHandler implements ClientPlayNetworking.PlayPayloadHan
         }
     }
 
-    @Override
-    public void receive(OpenGuiPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet));
+    public static void handle(OpenGuiPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet));
     }
 }

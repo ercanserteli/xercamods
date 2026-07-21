@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercablocks:carving_output_classification_routes_stripped_logs_to_carving_station",
+  "structure": "minecraft:empty",
+  "max_ticks": 400,
+  "setup_ticks": 0,
+  "required": true
+}

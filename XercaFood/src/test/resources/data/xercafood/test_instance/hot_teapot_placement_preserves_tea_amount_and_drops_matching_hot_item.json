@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercafood:hot_teapot_placement_preserves_tea_amount_and_drops_matching_hot_item",
+  "structure": "minecraft:empty",
+  "max_ticks": 500,
+  "setup_ticks": 0,
+  "required": true
+}

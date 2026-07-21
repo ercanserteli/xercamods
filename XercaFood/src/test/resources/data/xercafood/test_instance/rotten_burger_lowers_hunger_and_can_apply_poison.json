@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercafood:rotten_burger_lowers_hunger_and_can_apply_poison",
+  "structure": "minecraft:empty",
+  "max_ticks": 500,
+  "setup_ticks": 0,
+  "required": true
+}

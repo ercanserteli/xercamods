@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercablocks:straw_block_recipe_crafts_from_nine_sugar_cane",
+  "structure": "minecraft:empty",
+  "max_ticks": 400,
+  "setup_ticks": 0,
+  "required": true
+}

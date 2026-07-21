@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercapaint:cloning_glass_canvas_produces_glass_canvas",
+  "structure": "minecraft:empty",
+  "max_ticks": 200,
+  "setup_ticks": 0,
+  "required": true
+}

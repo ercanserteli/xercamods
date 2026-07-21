@@ -1,7 +1,5 @@
 package xerca.xercatools.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -11,7 +9,6 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
-@Environment(EnvType.CLIENT)
 public class ConfettiParticle extends SingleQuadParticle {
     private static final float PIECE_GRID = 8.0F;
     private final float rollSpeed;
@@ -77,7 +74,6 @@ public class ConfettiParticle extends SingleQuadParticle {
         return this.sprite.getV((this.vo + 1.0F) / PIECE_GRID);
     }
 
-    @Environment(EnvType.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 

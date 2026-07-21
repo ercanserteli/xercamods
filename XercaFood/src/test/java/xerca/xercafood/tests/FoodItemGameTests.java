@@ -1,6 +1,5 @@
 package xerca.xercafood.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.tags.ItemTags;
@@ -18,7 +17,6 @@ import static xerca.xercafood.tests.GameTestHelpers.requireFoodProperties;
 @SuppressWarnings("unused")
 public class FoodItemGameTests {
 
-    @GameTest
     public void rottenBurgerLowersHungerAndCanApplyPoison(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getFoodData().setFoodLevel(20);
@@ -30,7 +28,6 @@ public class FoodItemGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ultimateBurgerAppliesSaturationEffect(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.getFoodData().setFoodLevel(10);
@@ -39,7 +36,6 @@ public class FoodItemGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void chorusCupcakeTeleportsPlayer(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         BlockPos platformCenter = new BlockPos(4, 2, 4);
@@ -60,7 +56,6 @@ public class FoodItemGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void goldenCupcakeProducesRandomOutcomes(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         boolean sawLevitation = false;
@@ -81,7 +76,6 @@ public class FoodItemGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void teacupSugarLevelsChangeNutritionAndEffects(GameTestHelper helper) {
         net.minecraft.world.food.FoodProperties sugar0 = requireFoodProperties(helper, Items.FULL_TEACUP_0);
         net.minecraft.world.food.FoodProperties sugar6 = requireFoodProperties(helper, Items.FULL_TEACUP_6);
@@ -89,7 +83,6 @@ public class FoodItemGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void meatFoodsUseMinecraftTags(GameTestHelper helper) {
         ItemStack cookedPatty = new ItemStack(Items.COOKED_PATTY);
         GameTestHelpers.assertTrue(helper, cookedPatty.is(ItemTags.MEAT), "Expected cooked patty to be tagged as meat");
@@ -98,7 +91,6 @@ public class FoodItemGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void teaUseDurationAndDrinkEffectsAreCorrect(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         GameTestHelpers.assertTrue(helper, Items.FULL_TEACUP_0.getUseDuration(new ItemStack(Items.FULL_TEACUP_0), player) == 64, "Expected teacup drink time to be 64 ticks");
@@ -107,7 +99,6 @@ public class FoodItemGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void tomatoProjectileHitDamagesEntity(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Zombie zombie = new Zombie(helper.getLevel());

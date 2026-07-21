@@ -1,6 +1,5 @@
 package xerca.xercapaint.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,7 +75,6 @@ public class EaselTests {
         }
     }
 
-    @GameTest
     public void placingEaselFacesPlayerFromAllEightDirections(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -115,7 +113,6 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest
     public void rightClickWithCanvasEmptyHandAndPaletteHasExpectedModes(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -148,7 +145,6 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest
     public void secondPlayerCannotStealEditLockAndCanBreakAndDropBothItems(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         BlockPos absEaselLand = helper.absolutePos(easelLand);
@@ -199,7 +195,6 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest
     public void easelCanBeBrokenByExplosion(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -229,7 +224,6 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest
     public void invulnerableTaggedEaselIgnoresPlayerAndExplosionDamage(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);

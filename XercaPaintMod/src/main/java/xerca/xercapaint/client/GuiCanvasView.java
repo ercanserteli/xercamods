@@ -15,7 +15,6 @@ import xerca.xercapaint.item.Items;
 
 import java.util.List;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiCanvasView extends Screen {
     private int canvasX;
     private int canvasY = 50;

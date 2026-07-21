@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercapaint:invulnerable_tagged_easel_ignores_player_and_explosion_damage",
+  "structure": "minecraft:empty",
+  "max_ticks": 200,
+  "setup_ticks": 0,
+  "required": true
+}

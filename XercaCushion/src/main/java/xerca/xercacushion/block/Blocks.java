@@ -1,12 +1,12 @@
 package xerca.xercacushion.block;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercacushion.Mod;
 import xerca.xercacushion.item.Items;
 
@@ -64,9 +64,9 @@ public final class Blocks {
         return new BlockCushion(properties, variant);
     }
 
-    public static void register() {
+    public static void register(RegisterEvent.RegisterHelper<Block> helper) {
         for (BlockCushion block : ALL) {
-            Registry.register(BuiltInRegistries.BLOCK, Mod.id(Items.pathByVariant(block.getVariant())), block);
+            helper.register(Mod.id(Items.pathByVariant(block.getVariant())), block);
         }
     }
 

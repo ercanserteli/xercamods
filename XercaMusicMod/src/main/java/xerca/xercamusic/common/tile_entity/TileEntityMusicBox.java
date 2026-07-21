@@ -1,6 +1,5 @@
 package xerca.xercamusic.common.tile_entity;
 
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -9,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -18,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
@@ -33,8 +32,6 @@ import xerca.xercamusic.common.packets.clientbound.MusicBoxUpdatePacket;
 
 import java.util.ArrayList;
 import java.util.UUID;
-
-import static xerca.xercamusic.common.Mod.sendToClient;
 
 public class TileEntityMusicBox extends BlockEntity {
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
@@ -341,8 +338,8 @@ public class TileEntityMusicBox extends BlockEntity {
     // Send update to clients
     private void updateClient(@Nullable ItemStack sheetStack, @Nullable Item itemInstrument) {
         MusicBoxUpdatePacket packet = MusicBoxUpdatePacket.create(worldPosition, sheetStack, itemInstrument);
-        for (ServerPlayer player : PlayerLookup.tracking(this)) {
-            sendToClient(player, packet);
+        if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new net.minecraft.world.level.ChunkPos(worldPosition.getX() >> 4, worldPosition.getZ() >> 4), packet);
         }
     }
 

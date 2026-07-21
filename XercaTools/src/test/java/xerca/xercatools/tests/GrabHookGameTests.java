@@ -1,6 +1,5 @@
 package xerca.xercatools.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -32,7 +31,6 @@ public class GrabHookGameTests {
 
     // ── speed on launch ───────────────────────────────────────────────────────
 
-    @GameTest
     public void grabHookLaunchesWithDefaultSpeed(GameTestHelper helper) {
         Player player = makeSouthPlayer(helper);
         EntityGrabHook hook = new EntityGrabHook(helper.getLevel(), player, new ItemStack(Items.GRAB_HOOK), 1.0f);
@@ -43,7 +41,6 @@ public class GrabHookGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void grabHookTurboGrabIncreasesLaunchSpeed(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
@@ -61,7 +58,6 @@ public class GrabHookGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void grabHookPullAmountScalesSpeed(GameTestHelper helper) {
         Player player = makeSouthPlayer(helper);
 
@@ -75,7 +71,6 @@ public class GrabHookGameTests {
 
     // ── retracting after 20 ticks in air ─────────────────────────────────────
 
-    @GameTest(maxTicks = 60)
     public void grabHookStartsRetractingAfterAirTime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
@@ -97,7 +92,6 @@ public class GrabHookGameTests {
 
     // ── catching entities ─────────────────────────────────────────────────────
 
-    @GameTest
     public void grabHookCatchesEntityOnPath(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
@@ -120,7 +114,6 @@ public class GrabHookGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void grabHookDamagesEntityByDefault(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
@@ -138,7 +131,6 @@ public class GrabHookGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void grabHookKeepsCorpseWhenEntityDiesOnImpact(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);
@@ -160,7 +152,6 @@ public class GrabHookGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void grabHookGentleGrabDealsNoDamage(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = makeSouthPlayer(helper);

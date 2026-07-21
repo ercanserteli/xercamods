@@ -59,7 +59,7 @@ public class BlockFunctionalBookcase extends BaseEntityBlock {
     private InteractionResult openMenu(Level level, BlockPos pos, Player player) {
         if (level.getBlockEntity(pos) instanceof FunctionalBookcaseBlockEntity bookcase) {
             if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(bookcase);
+                serverPlayer.openMenu(bookcase, pos);
             }
             return InteractionResult.SUCCESS;
         }

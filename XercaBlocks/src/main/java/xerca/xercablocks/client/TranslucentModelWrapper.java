@@ -3,11 +3,11 @@ package xerca.xercablocks.client;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.item.*;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.ResolvedModel;
@@ -22,6 +22,7 @@ import org.joml.Matrix4fc;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 // Like minecraft:model but renders on the translucent item sheet, so semi-transparent
@@ -47,13 +48,21 @@ public final class TranslucentModelWrapper implements ItemModel {
         layer.setExtents(this.extents);
         layer.setLocalTransform(this.transformation);
         this.properties.applyToLayer(layer, displayContext);
-        QuadEmitter emitter = layer.emitter();
+        List<BakedQuad> layerQuads = layer.prepareQuadList();
         for (BakedQuad quad : this.quads.getAll()) {
-            emitter.fromBakedQuad(quad).itemRenderType(Sheets.translucentBlockItemSheet()).emit();
+            layerQuads.add(withItemRenderType(quad, Sheets.translucentBlockItemSheet()));
         }
         if (this.quads.hasMaterialFlag(BakedQuad.FLAG_ANIMATED)) {
             renderState.setAnimated();
         }
+    }
+
+    private static BakedQuad withItemRenderType(BakedQuad quad, RenderType renderType) {
+        BakedQuad.MaterialInfo info = quad.materialInfo();
+        BakedQuad.MaterialInfo updated = new BakedQuad.MaterialInfo(info.sprite(), info.layer(), renderType,
+                info.tintIndex(), info.shade(), info.lightEmission());
+        return new BakedQuad(quad.position0(), quad.position1(), quad.position2(), quad.position3(),
+                quad.packedUV0(), quad.packedUV1(), quad.packedUV2(), quad.packedUV3(), quad.direction(), updated);
     }
 
     public record Unbaked(Identifier model) implements ItemModel.Unbaked {

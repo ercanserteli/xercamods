@@ -1,6 +1,5 @@
 package xerca.xercacushion.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -53,7 +52,6 @@ public final class CushionGameTests {
         return CraftingInput.of(width, height, list);
     }
 
-    @GameTest
     public void blackCushionRecipeCraftsFromWoolAndFeather(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("black_cushion"));
         CraftingInput grid = craftingGrid(1, 3,
@@ -67,7 +65,6 @@ public final class CushionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void allSixteenCushionRecipesLoad(GameTestHelper helper) {
         for (String path : Items.PATHS) {
             ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, recipeId(path));
@@ -76,7 +73,6 @@ public final class CushionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void redCushionEntityKeepsItsItemVariant(GameTestHelper helper) {
         Vec3 pos = helper.absoluteVec(new Vec3(1.5D, 2.0D, 1.5D));
         EntityCushion cushion = new EntityCushion(helper.getLevel(), pos.x, pos.y, pos.z, Items.RED_CUSHION.getVariant());
@@ -86,7 +82,6 @@ public final class CushionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void interactingWithCushionMountsPlayer(GameTestHelper helper) {
         Vec3 pos = helper.absoluteVec(new Vec3(1.5D, 2.0D, 1.5D));
         EntityCushion cushion = new EntityCushion(helper.getLevel(), pos.x, pos.y, pos.z, 0);
@@ -101,7 +96,6 @@ public final class CushionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void unsupportedCushionFallsSlowly(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 2, 1), Blocks.STONE);
         Vec3 pos = helper.absoluteVec(new Vec3(1.5D, 4.0D, 1.5D));
@@ -115,7 +109,6 @@ public final class CushionGameTests {
                 .thenSucceed();
     }
 
-    @GameTest
     public void groundedCushionDoesNotSlideFromHorizontalVelocity(GameTestHelper helper) {
         helper.setBlock(new BlockPos(1, 1, 1), Blocks.STONE);
         Vec3 pos = helper.absoluteVec(new Vec3(1.5D, 2.0D, 1.5D));
@@ -132,7 +125,6 @@ public final class CushionGameTests {
                 .thenSucceed();
     }
 
-    @GameTest
     public void pistonPushesCushionExactlyOneBlock(GameTestHelper helper) {
         BlockPos pistonPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos powerPos = helper.absolutePos(new BlockPos(0, 2, 1));
@@ -154,7 +146,6 @@ public final class CushionGameTests {
                 .thenSucceed();
     }
 
-    @GameTest
     public void movingCushionDropsWhenItIntersectsAnotherCushion(GameTestHelper helper) {
         BlockPos pistonPos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos powerPos = helper.absolutePos(new BlockPos(0, 2, 1));

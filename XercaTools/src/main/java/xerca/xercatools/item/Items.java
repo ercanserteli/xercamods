@@ -1,10 +1,9 @@
 package xerca.xercatools.item;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercatools.Mod;
 import xerca.xercatools.crafting.RecipeEnderBowFilling;
 import xerca.xercatools.crafting.RecipeFlaskFilling;
@@ -40,32 +39,35 @@ public final class Items {
     private Items() {
     }
 
-    public static void register() {
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("flask"), FLASK);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("ender_bow"), ENDER_BOW);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("stone_knife"), STONE_KNIFE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("copper_knife"), COPPER_KNIFE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("knife"), IRON_KNIFE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("golden_knife"), GOLDEN_KNIFE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("diamond_knife"), DIAMOND_KNIFE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("netherite_knife"), NETHERITE_KNIFE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("grab_hook"), GRAB_HOOK);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("wooden_scythe"), WOODEN_SCYTHE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("stone_scythe"), STONE_SCYTHE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("copper_scythe"), COPPER_SCYTHE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("iron_scythe"), IRON_SCYTHE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("golden_scythe"), GOLDEN_SCYTHE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("diamond_scythe"), DIAMOND_SCYTHE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("netherite_scythe"), NETHERITE_SCYTHE);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("diamond_warhammer"), DIAMOND_WARHAMMER);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("gold_warhammer"), GOLD_WARHAMMER);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("iron_warhammer"), IRON_WARHAMMER);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("stone_warhammer"), STONE_WARHAMMER);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("copper_warhammer"), COPPER_WARHAMMER);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("netherite_warhammer"), NETHERITE_WARHAMMER);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_flask_filling"), CRAFTING_SPECIAL_FLASK_FILLING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_ender_bow_filling"), CRAFTING_SPECIAL_ENDER_BOW_FILLING);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("confetti"), CONFETTI);
-        Registry.register(BuiltInRegistries.ITEM, Mod.id("confetti_ball"), CONFETTI_BALL);
+    public static void registerItems(RegisterEvent.RegisterHelper<Item> helper) {
+        helper.register(Mod.id("flask"), FLASK);
+        helper.register(Mod.id("ender_bow"), ENDER_BOW);
+        helper.register(Mod.id("stone_knife"), STONE_KNIFE);
+        helper.register(Mod.id("copper_knife"), COPPER_KNIFE);
+        helper.register(Mod.id("knife"), IRON_KNIFE);
+        helper.register(Mod.id("golden_knife"), GOLDEN_KNIFE);
+        helper.register(Mod.id("diamond_knife"), DIAMOND_KNIFE);
+        helper.register(Mod.id("netherite_knife"), NETHERITE_KNIFE);
+        helper.register(Mod.id("grab_hook"), GRAB_HOOK);
+        helper.register(Mod.id("wooden_scythe"), WOODEN_SCYTHE);
+        helper.register(Mod.id("stone_scythe"), STONE_SCYTHE);
+        helper.register(Mod.id("copper_scythe"), COPPER_SCYTHE);
+        helper.register(Mod.id("iron_scythe"), IRON_SCYTHE);
+        helper.register(Mod.id("golden_scythe"), GOLDEN_SCYTHE);
+        helper.register(Mod.id("diamond_scythe"), DIAMOND_SCYTHE);
+        helper.register(Mod.id("netherite_scythe"), NETHERITE_SCYTHE);
+        helper.register(Mod.id("diamond_warhammer"), DIAMOND_WARHAMMER);
+        helper.register(Mod.id("gold_warhammer"), GOLD_WARHAMMER);
+        helper.register(Mod.id("iron_warhammer"), IRON_WARHAMMER);
+        helper.register(Mod.id("stone_warhammer"), STONE_WARHAMMER);
+        helper.register(Mod.id("copper_warhammer"), COPPER_WARHAMMER);
+        helper.register(Mod.id("netherite_warhammer"), NETHERITE_WARHAMMER);
+        helper.register(Mod.id("confetti"), CONFETTI);
+        helper.register(Mod.id("confetti_ball"), CONFETTI_BALL);
+    }
+
+    public static void registerRecipeSerializers(RegisterEvent.RegisterHelper<RecipeSerializer<?>> helper) {
+        helper.register(Mod.id("crafting_special_flask_filling"), CRAFTING_SPECIAL_FLASK_FILLING);
+        helper.register(Mod.id("crafting_special_ender_bow_filling"), CRAFTING_SPECIAL_ENDER_BOW_FILLING);
     }
 }

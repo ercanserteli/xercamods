@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "xercafood:rice_plant_tick_breaks_when_support_water_drops_below_requirement",
+  "structure": "minecraft:empty",
+  "max_ticks": 500,
+  "setup_ticks": 0,
+  "required": true
+}

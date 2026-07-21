@@ -1,12 +1,15 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercapaint.CommandExport;
 
-public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<ExportPaintingPacket> {
+public final class ExportPaintingPacketHandler {
+    private ExportPaintingPacketHandler() {
+    }
+
     private static void processMessage(ExportPaintingPacket msg) {
         Minecraft m = Minecraft.getInstance();
         if (m.player != null) {
@@ -18,8 +21,7 @@ public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayPay
         }
     }
 
-    @Override
-    public void receive(ExportPaintingPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet));
+    public static void handle(ExportPaintingPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet));
     }
 }

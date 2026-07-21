@@ -1,7 +1,5 @@
 package xerca.xercafood.tests;
 
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
@@ -37,7 +35,6 @@ public class BlockGameTests {
         }
     }
 
-    @GameTest
     public void tomatoPlantDropsTomatoWhenGrown(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(Mod.MOD_ID, "block_tomato_plant"));
@@ -50,7 +47,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ricePlantDropsRiceSeedsWhenGrown(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(Mod.MOD_ID, "block_rice_plant"));
@@ -63,7 +59,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ricePlantRequiresTwoAdjacentWaterSourcesToSurvive(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos unsupportedPlantPos = helper.absolutePos(new BlockPos(1, 2, 1));
@@ -85,7 +80,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ricePlantTickBreaksWhenSupportWaterDropsBelowRequirement(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos plantPos = helper.absolutePos(new BlockPos(1, 2, 1));
@@ -104,7 +98,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void teaPlantDropsTeaLeafWhenGrown(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(Mod.MOD_ID, "block_tea_plant"));
@@ -117,7 +110,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void vatDropsVat(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         net.minecraft.world.level.block.Block block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(Mod.MOD_ID, "vat"));
@@ -130,7 +122,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void vatBreaksFasterWithPickaxeThanByHand(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, xerca.xercafood.common.block.Blocks.VAT.defaultBlockState());
@@ -148,7 +139,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void vatDropsItselfWithoutAnyTool(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, xerca.xercafood.common.block.Blocks.VAT.defaultBlockState());
@@ -168,7 +158,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void piesBreakAtCakeSpeed(GameTestHelper helper) {
         BlockPos cakePos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos applePiePos = helper.absolutePos(new BlockPos(2, 2, 1));
@@ -196,7 +185,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void piesConsumeBySlicesUntilRemoved(GameTestHelper helper) {
         BlockPos applePiePos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos berryPiePos = helper.absolutePos(new BlockPos(2, 2, 1));
@@ -222,7 +210,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cheeseWheelAndPizzaConsumeByQuarters(GameTestHelper helper) {
         BlockPos cheesePos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockPos pizzaPos = helper.absolutePos(new BlockPos(2, 2, 1));
@@ -245,7 +232,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cheeseWheelSlicingWithKnifeDropsSlice(GameTestHelper helper) {
         BlockPos cheesePos = helper.absolutePos(new BlockPos(1, 2, 1));
         net.minecraft.world.level.block.Block cheeseBlock = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(Mod.MOD_ID, "cheese_wheel"));
@@ -258,7 +244,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void vatMilkToCheeseConversionFlowWorks(GameTestHelper helper) {
         BlockPos vatPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(vatPos, xerca.xercafood.common.block.Blocks.VAT.defaultBlockState());
@@ -277,7 +262,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void donerCreationCookingAndSlicingFlowWorks(GameTestHelper helper) {
         BlockPos donerPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(donerPos, Blocks.IRON_BARS.defaultBlockState());
@@ -287,7 +271,7 @@ public class BlockGameTests {
 
         ItemStack mutton = new ItemStack(net.minecraft.world.item.Items.MUTTON, 6);
         player.getInventory().setSelectedItem(mutton);
-        UseBlockCallback.EVENT.invoker().interact(player, helper.getLevel(), InteractionHand.MAIN_HAND, hitTopOf(donerPos));
+        xerca.xercafood.common.Mod.tryCreateDoner(player, helper.getLevel(), InteractionHand.MAIN_HAND, donerPos);
         assertTrue(helper, helper.getLevel().getBlockState(donerPos).is(xerca.xercafood.common.block.Blocks.BLOCK_DONER), "Expected mutton+iron bars to create doner");
 
         for (int i = 0; i < 5; i++) {
@@ -308,7 +292,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cropGrowthAndBoneMealBehaviorForTeaAndTomato(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos teaPos = helper.absolutePos(new BlockPos(1, 2, 1));
@@ -338,7 +321,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void shortGrassCanDropTeaAndTomatoSeeds(GameTestHelper helper) {
         BlockPos grassPos = helper.absolutePos(new BlockPos(1, 2, 1));
         for (int i = 0; i < 200; i++) {
@@ -350,7 +332,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void teapotBlockInteractionFillsCup(GameTestHelper helper) {
         BlockPos teapotPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(teapotPos, xerca.xercafood.common.block.Blocks.BLOCK_TEAPOT.defaultBlockState().setValue(xerca.xercafood.common.block.BlockTeapot.TEA_AMOUNT, 2));
@@ -364,7 +345,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void hotTeapotPlacementPreservesTeaAmountAndDropsMatchingHotItem(GameTestHelper helper) {
         BlockPos supportPos = helper.absolutePos(new BlockPos(1, 1, 1));
         BlockPos teapotPos = supportPos.above();
@@ -393,7 +373,6 @@ public class BlockGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void coldFilledTeapotCannotBePlacedAsBlock(GameTestHelper helper) {
         BlockPos supportPos = helper.absolutePos(new BlockPos(1, 1, 1));
         helper.getLevel().setBlockAndUpdate(supportPos, Blocks.STONE.defaultBlockState());

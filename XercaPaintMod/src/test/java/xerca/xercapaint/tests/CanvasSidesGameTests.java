@@ -1,7 +1,6 @@
 package xerca.xercapaint.tests;
 
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -46,7 +45,6 @@ public class CanvasSidesGameTests {
         return sides;
     }
 
-    @GameTest
     public void sidesLayoutMatchesDimensions(GameTestHelper helper) {
         for (CanvasType type : CanvasType.values()) {
             int width = CanvasType.getWidth(type);
@@ -66,7 +64,6 @@ public class CanvasSidesGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void canvasUpdatePacketRoundTripsSides(GameTestHelper helper) {
         CanvasType type = CanvasType.LARGE;
         int area = CanvasType.getWidth(type) * CanvasType.getHeight(type);
@@ -90,7 +87,6 @@ public class CanvasSidesGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cloningCopiesSidePixels(GameTestHelper helper) {
         ItemStack original = new ItemStack(Items.ITEM_CANVAS);
         ItemCanvas itemCanvas = (ItemCanvas) original.getItem();
@@ -112,7 +108,6 @@ public class CanvasSidesGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void glassFlagSurvivesEntityNbtRoundTrip(GameTestHelper helper) {
         ItemStack glassStack = new ItemStack(Items.ITEM_CANVAS_GLASS);
         ItemCanvas itemCanvas = (ItemCanvas) glassStack.getItem();

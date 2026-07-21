@@ -1,20 +1,21 @@
 package xerca.xercafood.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block_entity.BlockEntities;
 import xerca.xercafood.common.entity.Entities;
 
+@EventBusSubscriber(modid = Mod.MOD_ID, value = Dist.CLIENT)
+public class ModClient {
+    private ModClient() {
+    }
 
-@Environment(EnvType.CLIENT)
-public class ModClient implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        EntityRenderers.register(Entities.TOMATO, new RenderTomatoFactory());
-
-        BlockEntityRenderers.register(BlockEntities.DONER, DonerTileEntityRenderer::new);
+    @SubscribeEvent
+    static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(Entities.TOMATO, new RenderTomatoFactory());
+        event.registerBlockEntityRenderer(BlockEntities.DONER, DonerTileEntityRenderer::new);
     }
 }

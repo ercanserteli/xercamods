@@ -1,6 +1,5 @@
 package xerca.xercapaint.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +35,6 @@ public class RecipeCanvasCloningGameTests {
         return canvas;
     }
 
-    @GameTest
     public void cloningRejectsGenerationZeroOriginalCanvas(GameTestHelper helper) {
         CraftingInput grid = createGrid(
                 2, 2,
@@ -52,7 +50,6 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cloningStopsAtGenerationThree(GameTestHelper helper) {
         CraftingInput grid = createGrid(
                 2, 2,
@@ -68,7 +65,6 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cloningRejectsDifferentCanvasTypes(GameTestHelper helper) {
         CraftingInput grid = createGrid(
                 2, 2,
@@ -84,7 +80,6 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cloningRejectsMixedMaterials(GameTestHelper helper) {
         // A painted paper original with a fresh glass canvas of the same size must not clone
         CraftingInput grid = createGrid(
@@ -101,7 +96,6 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cloningGlassCanvasProducesGlassCanvas(GameTestHelper helper) {
         ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS_GLASS), 1, "glass_clone");
         CraftingInput grid = createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS_GLASS));
@@ -114,7 +108,6 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void signedCanvasesStackToSixteenBySameGeneration(GameTestHelper helper) {
         ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "stackable");
         ItemStack clone = RECIPE.assemble(createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS)));
@@ -141,7 +134,6 @@ public class RecipeCanvasCloningGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cloningConsumesFreshCanvasAndKeepsOriginalAsRemainder(GameTestHelper helper) {
         ItemStack original = createPaintedCanvas(new ItemStack(Items.ITEM_CANVAS), 1, "original");
         CraftingInput grid = createGrid(2, 2, original.copy(), new ItemStack(Items.ITEM_CANVAS));

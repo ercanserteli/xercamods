@@ -1,6 +1,5 @@
 package xerca.xercafood.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -22,7 +21,6 @@ import static xerca.xercafood.tests.GameTestHelpers.*;
 @SuppressWarnings("unused")
 public class RecipeGameTests {
 
-    @GameTest
     public void shapedRecipeCraftsAppleCupcake(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("apple_cupcake"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -38,7 +36,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void shapelessRecipeCraftsColaPowder(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("cola_powder"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -53,7 +50,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void slicingTomatoDamagesKnife(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tomato_slices"));
         net.minecraft.world.item.Item knifeItem = requireKnifeItem();
@@ -75,7 +71,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void repairingKnivesHasNoCraftingRecipe(GameTestHelper helper) {
         net.minecraft.world.item.Item knifeItem = requireKnifeItem();
         ItemStack firstKnife = new ItemStack(knifeItem);
@@ -92,7 +87,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void smeltingRecipeCooksRawPatty(GameTestHelper helper) {
         SmeltingRecipe recipe = requireSmeltingRecipe(helper, recipeId("smelting_cooked_patty"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_PATTY));
@@ -103,7 +97,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void smokingRecipeCooksRawSausage(GameTestHelper helper) {
         SmokingRecipe recipe = requireSmokingRecipe(helper, recipeId("smoking_cooked_sausage"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_SAUSAGE));
@@ -114,7 +107,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void campfireRecipeLoadsAndCooksPizzaVariant(GameTestHelper helper) {
         CampfireCookingRecipe recipe = requireCampfireRecipe(helper, recipeId("campfire_cooking_pizza_chicken_mushroom_mushroom"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.RAW_PIZZA_CHICKEN_MUSHROOM_MUSHROOM));
@@ -125,7 +117,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(maxTicks = 500)
     public void pizzaRecipeWorksEndToEnd(GameTestHelper helper) {
         CraftingRecipe pizzaBaseRecipe = requireCraftingRecipe(helper, recipeId("raw_pizza"));
         CraftingInput pizzaBaseGrid = craftingGrid(3, 2,
@@ -156,7 +147,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void teaPouringFillsCupsAndReturnsReducedTeapot(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tea_pouring"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -175,7 +165,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void teaSugaringIncreasesSugarLevel(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tea_sugaring"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -190,7 +179,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest(maxTicks = 500)
     public void brewingProducesTexturedColaExtractAndCraftsCola(GameTestHelper helper) {
         BlockPos brewingStandPos = new BlockPos(1, 1, 1);
         helper.setBlock(brewingStandPos, Blocks.BREWING_STAND);
@@ -227,7 +215,6 @@ public class RecipeGameTests {
         });
     }
 
-    @GameTest
     public void teaLeafSmeltsToDriedTeaLeaves(GameTestHelper helper) {
         SmeltingRecipe recipe = requireSmeltingRecipe(helper, recipeId("smelting_tea_dried"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(Items.TEA_LEAF));
@@ -236,7 +223,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void teaFillingAndRefillingEdgeCasesWork(GameTestHelper helper) {
         CraftingRecipe filling = requireCraftingRecipe(helper, recipeId("tea_filling"));
         CraftingInput fillToFull = craftingGrid(3, 3,
@@ -264,7 +250,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void pouringLastCupRevertsHotTeapotToEmptyTeapot(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("tea_pouring"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -277,7 +262,6 @@ public class RecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void sparklingWaterAndSodaColaFlowsWork(GameTestHelper helper) {
         BlockPos soulSandPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(soulSandPos, net.minecraft.world.level.block.Blocks.SOUL_SAND.defaultBlockState());

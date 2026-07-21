@@ -5,7 +5,6 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import xerca.xercapaint.SoundEvents;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class BrushSound extends AbstractTickableSoundInstance {
     private int age;
     private int fadingTicks = 4;

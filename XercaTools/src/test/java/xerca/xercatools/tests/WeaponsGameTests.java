@@ -1,9 +1,5 @@
 package xerca.xercatools.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.fabricmc.fabric.api.item.v1.EnchantingContext;
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -39,7 +35,6 @@ public class WeaponsGameTests {
         return pig;
     }
 
-    @GameTest
     public void warhammerDamagesEntityAndLosesDurability(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
@@ -55,7 +50,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void devourKillSpawnsHealthOrbs(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -75,7 +69,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void healthOrbHealsPlayerOnTouch(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -104,7 +97,6 @@ public class WeaponsGameTests {
         return spawnStillPig(helper, new BlockPos(2, 3, 3));
     }
 
-    @GameTest
     public void warhammerGetFullUseSecondsBaseIsOne(GameTestHelper helper) {
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
         float seconds = ItemWarhammer.getFullUseSeconds(helper.getLevel().registryAccess(), stack);
@@ -112,7 +104,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerPullBelowThresholdDoesNothing(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = spawnPigInSight(helper, player);
@@ -132,7 +123,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerShortPullDealsReducedDamage(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = spawnPigInSight(helper, player);
@@ -155,7 +145,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerMediumPullDealsMoreDamageThanShort(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -183,7 +172,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerFullPullDealsMaxDamage(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -214,7 +202,6 @@ public class WeaponsGameTests {
 
     // ── Group B: enchantment effects ──────────────────────────────────────────
 
-    @GameTest
     public void warhammerDensityIncreasesFullUseSeconds(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
@@ -230,7 +217,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerQuickDecreasesFullUseSeconds(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
@@ -246,7 +232,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerDensityTakesPrecedenceOverQuick(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
@@ -263,7 +248,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerWindBurstFiresWindChargeOnMiss(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -287,7 +271,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerMaimAppliesSlowness(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -313,7 +296,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerMaimLevel2AppliesStrongerSlowness(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -336,7 +318,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerUppercutAppliesUpwardVelocity(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -359,7 +340,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerQuakeHitsNearbyEntitiesWhenGroundHit(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -394,7 +374,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerQuakeDoesNothingWithoutEnchantment(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -423,7 +402,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerDashAppliesForwardVelocity(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -449,7 +427,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerDashStrikesEntityInRange(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -476,7 +453,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerDashAlreadyHitDoesNotStrikeAgain(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -506,41 +482,36 @@ public class WeaponsGameTests {
 
     // ── Group C: enchanting-table availability ────────────────────────────────
 
-    @GameTest
     public void warhammerAllowsModSpecificEnchantments(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
-        EnchantingContext ctx = EnchantingContext.PRIMARY;
 
-        TestAsserts.assertTrue(helper, stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.MAIM), ctx),
+        TestAsserts.assertTrue(helper, stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.MAIM)),
                 "Warhammer should allow Maim enchantment");
-        TestAsserts.assertTrue(helper, stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.QUICK), ctx),
+        TestAsserts.assertTrue(helper, stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.QUICK)),
                 "Warhammer should allow Quick enchantment");
-        TestAsserts.assertTrue(helper, stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.QUAKE), ctx),
+        TestAsserts.assertTrue(helper, stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.QUAKE)),
                 "Warhammer should allow Quake enchantment");
-        TestAsserts.assertTrue(helper, stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.UPPERCUT), ctx),
+        TestAsserts.assertTrue(helper, stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.UPPERCUT)),
                 "Warhammer should allow Uppercut enchantment");
-        TestAsserts.assertTrue(helper, stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.DASHING), ctx),
+        TestAsserts.assertTrue(helper, stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.DASHING)),
                 "Warhammer should allow Dashing enchantment");
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerAllowsMaceEnchantments(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
-        EnchantingContext ctx = EnchantingContext.PRIMARY;
 
         for (var key : java.util.List.of(Enchantments.DENSITY, Enchantments.BREACH, Enchantments.WIND_BURST)) {
-            TestAsserts.assertTrue(helper, stack.canBeEnchantedWith(reg.getOrThrow(key), ctx),
+            TestAsserts.assertTrue(helper, stack.isPrimaryItemFor(reg.getOrThrow(key)),
                     "Warhammer should allow mace enchantment " + key.identifier());
         }
         helper.succeed();
     }
 
-    @GameTest
     public void densityIsExclusiveWithBreachAndQuick(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
@@ -555,7 +526,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerAllowsVanillaWhitelistedEnchantments(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
@@ -563,24 +533,21 @@ public class WeaponsGameTests {
 
         for (var key : java.util.List.of(Enchantments.UNBREAKING, Enchantments.MENDING,
                 Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS, Enchantments.LOOTING)) {
-            TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker()
-                    .allowEnchanting(reg.getOrThrow(key), stack, EnchantingContext.PRIMARY);
-            TestAsserts.assertTrue(helper, result == TriState.TRUE,
+            boolean result = xerca.xercatools.Mod.toolSupportsEnchantment(stack, reg.getOrThrow(key));
+            TestAsserts.assertTrue(helper, result,
                     "Warhammer should allow vanilla enchantment " + key.identifier());
         }
         helper.succeed();
     }
 
-    @GameTest
     public void warhammerBlocksOffLimitEnchantments(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
 
         for (var key : java.util.List.of(Enchantments.SHARPNESS, Enchantments.SWEEPING_EDGE, Enchantments.FORTUNE)) {
-            TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker()
-                    .allowEnchanting(reg.getOrThrow(key), stack, EnchantingContext.PRIMARY);
-            TestAsserts.assertTrue(helper, result != TriState.TRUE,
+            boolean result = xerca.xercatools.Mod.toolSupportsEnchantment(stack, reg.getOrThrow(key));
+            TestAsserts.assertTrue(helper, !result,
                     "Warhammer should not allow enchantment " + key.identifier());
         }
         helper.succeed();
@@ -588,7 +555,6 @@ public class WeaponsGameTests {
 
     // ── Group H: Knife ────────────────────────────────────────────────────────
 
-    @GameTest
     public void knifeBackstabBonusWhenSneak(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
@@ -604,7 +570,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeNoBackstabBonusFromFront(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
@@ -620,7 +585,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeNoBackstabBonusWhenNotSneaking(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Pig pig = spawnStillPig(helper, new BlockPos(1, 2, 1));
@@ -635,7 +599,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeStealthEnchantmentIncreasesBackstabBonus(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -656,7 +619,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeStealthLevel2IncreasesBackstabFurther(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -677,7 +639,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeOffhandUseAddsCooldown(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack knife = new ItemStack(Items.IRON_KNIFE);
@@ -690,7 +651,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifePoisonEnchantmentAppliesEffectOnHit(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -714,7 +674,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifePoisonLevel2HasLongerDuration(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -736,7 +695,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeStealthHitDealsFullBonusDespiteHurtResistance(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -761,7 +719,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeOffhandDamageMatchesMainHandForEveryTier(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -783,7 +740,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeOffhandInteractionDealsMainHandDamage(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -793,8 +749,7 @@ public class WeaponsGameTests {
         player.setItemSlot(EquipmentSlot.OFFHAND, knife);
 
         float initialHealth = pig.getHealth();
-        net.minecraft.world.InteractionResult result = net.fabricmc.fabric.api.event.player.UseEntityCallback.EVENT.invoker()
-                .interact(player, level, net.minecraft.world.InteractionHand.OFF_HAND, pig, null);
+        net.minecraft.world.InteractionResult result = xerca.xercatools.Mod.handleKnifeOffhand(player, level, net.minecraft.world.InteractionHand.OFF_HAND, pig);
 
         TestAsserts.assertTrue(helper, result == net.minecraft.world.InteractionResult.SUCCESS,
                 "Offhand knife interaction should be handled");
@@ -805,7 +760,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeOffhandDamageBaseIsThree(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -818,7 +772,6 @@ public class WeaponsGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void knifeOffhandDamageScalesWithSharpness(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);

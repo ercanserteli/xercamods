@@ -1,6 +1,5 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -10,10 +9,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
-public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPayloadHandler<MusicBoxUpdatePacket> {
+public final class MusicBoxUpdatePacketHandler {
     private static void processMessage(MusicBoxUpdatePacket msg) {
         Level world = Minecraft.getInstance().level;
         if (world == null) {
@@ -52,8 +52,7 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayPay
         }
     }
 
-    @Override
-    public void receive(MusicBoxUpdatePacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet));
+    public static void handle(MusicBoxUpdatePacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet));
     }
 }

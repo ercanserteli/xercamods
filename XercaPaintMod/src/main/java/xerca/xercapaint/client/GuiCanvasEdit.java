@@ -1,7 +1,6 @@
 package xerca.xercapaint.client;
 
 import com.mojang.blaze3d.platform.Window;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -33,7 +32,6 @@ import java.util.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiCanvasEdit extends BasePalette {
     private static final int BRUSH_LEVEL_COUNT = 4;
     private static final int SMALL_CANVAS_PIXEL_SCALE = 10;
@@ -873,14 +871,14 @@ public class GuiCanvasEdit extends BasePalette {
             if (canvasDirty) {
                 version++;
                 int easelId = easel == null ? -1 : easel.getId();
-                ClientPlayNetworking.send(new CanvasUpdatePacket(pixels, isSigned, canvasTitle, canvasId, version, easelId, customColors, canvasType, sidesActive, sideData));
+                net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(new CanvasUpdatePacket(pixels, isSigned, canvasTitle, canvasId, version, easelId, customColors, canvasType, sidesActive, sideData));
             } else {
                 if (easel != null) {
-                    ClientPlayNetworking.send(new EaselLeftPacket(easel.getId()));
+                    net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(new EaselLeftPacket(easel.getId()));
                 }
                 if (paletteDirty) {
                     PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
-                    ClientPlayNetworking.send(pack);
+                    net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(pack);
                 }
             }
         } else {
@@ -890,7 +888,7 @@ public class GuiCanvasEdit extends BasePalette {
                 } else {
                     version++;
                     if (easel != null) {
-                        ClientPlayNetworking.send(new CanvasMiniUpdatePacket(pixels, canvasId, version, easel.getId(), canvasType, sidesActive, sideData));
+                        net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(new CanvasMiniUpdatePacket(pixels, canvasId, version, easel.getId(), canvasType, sidesActive, sideData));
                     }
                     canvasDirty = false;
                     timeSinceLastUpdate = 0;

@@ -1,6 +1,5 @@
 package xerca.xercapaint.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import xerca.xercapaint.PaletteUtil;
 
@@ -12,7 +11,6 @@ public class PaletteDropperGameTests {
                 message + " (actual=" + color.r + "," + color.g + "," + color.b + ")");
     }
 
-    @GameTest
     public void droppingPureBlackIntoCustomSlotDoesNotDivideByZero(GameTestHelper helper) {
         PaletteUtil.CustomColor slot = new PaletteUtil.CustomColor();
         PaletteUtil.Color pickedBlack = new PaletteUtil.Color(0xFF000000);
@@ -31,7 +29,6 @@ public class PaletteDropperGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void droppingSingleColorKeepsExactColor(GameTestHelper helper) {
         PaletteUtil.CustomColor slot = new PaletteUtil.CustomColor();
         PaletteUtil.Color picked = new PaletteUtil.Color(0xFF0C2238);
@@ -42,7 +39,6 @@ public class PaletteDropperGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void droppingTwoSaturatedColorsMixesPredictably(GameTestHelper helper) {
         PaletteUtil.CustomColor slot = new PaletteUtil.CustomColor();
         slot.mix(new PaletteUtil.Color(0xFFFF0000)); // red
@@ -54,7 +50,6 @@ public class PaletteDropperGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void droppingManyColorsAlwaysStaysInRgbRange(GameTestHelper helper) {
         PaletteUtil.CustomColor slot = new PaletteUtil.CustomColor();
         int[] colors = {

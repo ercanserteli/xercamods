@@ -1,6 +1,5 @@
 package xerca.xercapaint.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -43,11 +42,10 @@ public class RecipeFillPaletteGameTests {
         for (DyeColor color : colors) {
             basic[basicIndex(color)] = 1;
         }
-        palette.set(Items.PALETTE_BASIC_COLORS, basic);
+        palette.set(Items.PALETTE_BASIC_COLORS, new Items.BasicColors(basic));
         return palette;
     }
 
-    @GameTest
     public void fillPaletteAddsNewBasicColorsAndPreservesCustomTag(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(3, 3);
         ItemStack palette = createPaletteWithBasicColors(DyeColor.WHITE);
@@ -63,7 +61,8 @@ public class RecipeFillPaletteGameTests {
         ItemStack result = RECIPE.assemble(grid);
         TestAsserts.assertTrue(helper, result.is(Items.ITEM_PALETTE), "Expected filled palette output");
 
-        byte[] basic = result.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[0]);
+        Items.BasicColors basicComp = result.get(Items.PALETTE_BASIC_COLORS);
+        byte[] basic = basicComp == null ? new byte[0] : basicComp.value();
         TestAsserts.assertTrue(helper, basic.length == 16, "Expected basic color array length to be 16");
         TestAsserts.assertTrue(helper, basic[basicIndex(DyeColor.WHITE)] == 1, "Expected existing white color to remain enabled");
         TestAsserts.assertTrue(helper, basic[basicIndex(DyeColor.RED)] == 1, "Expected red color to be enabled");
@@ -77,7 +76,6 @@ public class RecipeFillPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void fillPaletteRejectsAlreadyPresentDye(GameTestHelper helper) {
         List<ItemStack> items = emptyGrid(3, 3);
         ItemStack palette = createPaletteWithBasicColors(DyeColor.RED);
@@ -92,7 +90,6 @@ public class RecipeFillPaletteGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void fillPaletteRejectsUnknownItemsAndNoDye(GameTestHelper helper) {
         List<ItemStack> unknownItems = emptyGrid(3, 3);
         unknownItems.set(slot(3, 1, 1), new ItemStack(Items.ITEM_PALETTE));

@@ -1,9 +1,9 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
@@ -14,7 +14,7 @@ import xerca.xercamusic.common.item.Items;
 import java.util.List;
 import java.util.UUID;
 
-public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<MusicUpdatePacket> {
+public final class MusicUpdatePacketHandler {
     private static byte sanitizeBps(byte bps) {
         return (byte) Math.clamp(bps & 0xFF, 1, 50);
     }
@@ -78,8 +78,8 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayPayloa
         }
     }
 
-    @Override
-    public void receive(MusicUpdatePacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player(), context.server()));
+    public static void handle(MusicUpdatePacket packet, IPayloadContext context) {
+        ServerPlayer player = (ServerPlayer) context.player();
+        context.enqueueWork(() -> processMessage(packet, player, player.level().getServer()));
     }
 }

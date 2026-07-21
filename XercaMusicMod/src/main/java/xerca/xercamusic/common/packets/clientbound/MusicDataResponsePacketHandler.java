@@ -1,6 +1,7 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.VolumeMarker;
@@ -8,7 +9,7 @@ import xerca.xercamusic.common.VolumeMarker;
 import java.util.List;
 import java.util.UUID;
 
-public class MusicDataResponsePacketHandler implements ClientPlayNetworking.PlayPayloadHandler<MusicDataResponsePacket> {
+public final class MusicDataResponsePacketHandler {
     private static void processMessage(MusicDataResponsePacket msg) {
         UUID id = msg.id();
         int version = msg.version();
@@ -17,8 +18,7 @@ public class MusicDataResponsePacketHandler implements ClientPlayNetworking.Play
         MusicManagerClient.setMusicData(id, version, notes, volumeMarkers);
     }
 
-    @Override
-    public void receive(MusicDataResponsePacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet));
+    public static void handle(MusicDataResponsePacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet));
     }
 }

@@ -1,6 +1,5 @@
 package xerca.xercamusic.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
@@ -78,7 +77,6 @@ public final class MusicRecipeGameTests {
         }
     }
 
-    @GameTest
     public void stringInstrumentsCraft(GameTestHelper helper) {
         assertShaped(helper, "guitar", new String[]{" s ", "pip", " p "},
                 key('p', Items.OAK_PLANKS, 's', Items.STICK, 'i', Items.STRING));
@@ -97,7 +95,6 @@ public final class MusicRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void percussionInstrumentsCraft(GameTestHelper helper) {
         assertShaped(helper, "drum", new String[]{" p ", "plp", " p "},
                 key('p', Items.OAK_PLANKS, 'l', Items.LEATHER));
@@ -114,7 +111,6 @@ public final class MusicRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void windInstrumentsCraft(GameTestHelper helper) {
         assertShaped(helper, "flute", new String[]{"sss"},
                 key('s', Items.STICK));
@@ -129,7 +125,6 @@ public final class MusicRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void keyboardInstrumentsCraft(GameTestHelper helper) {
         assertShaped(helper, "piano", new String[]{"ppp", "sis", "ppp"},
                 key('p', Items.OAK_PLANKS, 's', Items.STRING, 'i', Items.IRON_NUGGET));
@@ -140,7 +135,6 @@ public final class MusicRecipeGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicItemsCraft(GameTestHelper helper) {
         assertShaped(helper, "music_box", new String[]{"www", "wew", "wrw"},
                 key('w', Items.OAK_PLANKS, 'e', Items.GOLD_INGOT, 'r', Items.REDSTONE));

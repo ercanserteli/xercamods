@@ -1,12 +1,15 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 
-public class EaselLeftPacketHandler implements ServerPlayNetworking.PlayPayloadHandler<EaselLeftPacket> {
+public final class EaselLeftPacketHandler {
+    private EaselLeftPacketHandler() {
+    }
+
     private static void processMessage(EaselLeftPacket msg, ServerPlayer pl) {
         if (msg.easelId() > -1) {
             Entity entityEasel = pl.level().getEntity(msg.easelId());
@@ -22,8 +25,7 @@ public class EaselLeftPacketHandler implements ServerPlayNetworking.PlayPayloadH
         }
     }
 
-    @Override
-    public void receive(EaselLeftPacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+    public static void handle(EaselLeftPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet, (ServerPlayer) context.player()));
     }
 }

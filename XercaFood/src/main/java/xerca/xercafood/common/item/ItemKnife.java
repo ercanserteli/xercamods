@@ -13,7 +13,10 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public net.minecraft.world.item.@Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
+    public net.minecraft.world.item.@Nullable ItemStackTemplate getCraftingRemainder(net.minecraft.world.item.ItemInstance instance) {
+        if (!(instance instanceof ItemStack stack)) {
+            return null;
+        }
         ItemStack remainder = stack.copy();
         remainder.setCount(1);
         remainder.setDamageValue(stack.getDamageValue() + 1);

@@ -1,6 +1,5 @@
 package xerca.xercafood.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +13,6 @@ import static xerca.xercafood.tests.GameTestHelpers.*;
 @SuppressWarnings("unused")
 public class AdvancementGameTests {
 
-    @GameTest
     public void teaAdvancementOnlyTriggersForHotTeapots(GameTestHelper helper) {
         ServerPlayer player = makeServerPlayer(helper);
         AdvancementHolder advancement = requireAdvancement(helper, advancementId("achievements/brew_tea"));
@@ -29,7 +27,6 @@ public class AdvancementGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void recipeAdvancementUnlocksTomatoSlicingRecipe(GameTestHelper helper) {
         ServerPlayer player = makeServerPlayer(helper);
         net.minecraft.resources.ResourceKey<net.minecraft.world.item.crafting.Recipe<?>> tomatoSlicesRecipeId =
@@ -46,7 +43,6 @@ public class AdvancementGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void advancementTriggersForUltimateBurgerTomatoHitAndGoldenCupcake(GameTestHelper helper) {
         ServerPlayer player = makeServerPlayer(helper);
         AdvancementHolder ultimateBurgerAdv = requireAdvancement(helper, advancementId("achievements/fat_fuck"));

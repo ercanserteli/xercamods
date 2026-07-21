@@ -1,6 +1,5 @@
 package xerca.xercatools.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -35,7 +34,6 @@ public class ScytheGameTests {
 
     // ── Group D: crop harvesting ──────────────────────────────────────────────
 
-    @GameTest
     public void scytheCanHarvestMaxAgeCrop(GameTestHelper helper) {
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         float speed = Items.IRON_SCYTHE.getDestroySpeed(scythe, maxAgeWheat());
@@ -43,7 +41,6 @@ public class ScytheGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void scytheCannotHarvestYoungCrop(GameTestHelper helper) {
         ItemStack scythe = new ItemStack(Items.IRON_SCYTHE);
         BlockState youngWheat = Blocks.WHEAT.defaultBlockState(); // age=0, not max
@@ -52,7 +49,6 @@ public class ScytheGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void scytheMineBlockHarvestsAdjacentCropsWithSweepingEdge(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -87,7 +83,6 @@ public class ScytheGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void scytheMineBlockSweepingLevel2HarvestsDiagonals(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -122,7 +117,6 @@ public class ScytheGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void scytheWithoutSweepingEdgeDoesNotHarvestNeighbors(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -149,9 +143,19 @@ public class ScytheGameTests {
         helper.succeed();
     }
 
+    public void allKnivesAreInKnifeTag(GameTestHelper helper) {
+        net.minecraft.tags.TagKey<net.minecraft.world.item.Item> knifeTag = net.minecraft.tags.TagKey.create(
+                Registries.ITEM, net.minecraft.resources.Identifier.fromNamespaceAndPath("c", "tools/knife"));
+        for (net.minecraft.world.item.Item knife : List.of(Items.STONE_KNIFE, Items.COPPER_KNIFE, Items.IRON_KNIFE,
+                Items.GOLDEN_KNIFE, Items.DIAMOND_KNIFE, Items.NETHERITE_KNIFE)) {
+            TestAsserts.assertTrue(helper, new ItemStack(knife).is(knifeTag),
+                    knife + " should be in the c:tools/knife tag");
+        }
+        helper.succeed();
+    }
+
     // ── Group E: guillotine ───────────────────────────────────────────────────
 
-    @GameTest
     public void guillotineRequiresFullPullToActivate(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -179,7 +183,6 @@ public class ScytheGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void guillotineKillDropsHead(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);

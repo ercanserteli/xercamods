@@ -1,6 +1,5 @@
 package xerca.xercapaint.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -36,7 +35,6 @@ public class CanvasTagCompatibilityGameTests {
         return CraftingInput.of(width, height, stacks);
     }
 
-    @GameTest
     public void foreignTagAloneIsNotCanvasData(GameTestHelper helper) {
         ItemStack stack = new ItemStack(Items.ITEM_CANVAS);
         CompoundTag foreign = new CompoundTag();
@@ -48,7 +46,6 @@ public class CanvasTagCompatibilityGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void cloningTreatsForeignTaggedFreshCanvasAsFresh(GameTestHelper helper) {
         ItemStack original = new ItemStack(Items.ITEM_CANVAS);
         ItemCanvas originalItem = (ItemCanvas) original.getItem();
@@ -72,7 +69,6 @@ public class CanvasTagCompatibilityGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void canvasRotationDoesNotClobberVanillaRotationKey(GameTestHelper helper) {
         ItemStack stack = new ItemStack(Items.ITEM_CANVAS);
         stack.set(Items.CANVAS_ID, "rotation_canvas");

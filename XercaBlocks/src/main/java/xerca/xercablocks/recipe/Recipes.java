@@ -1,10 +1,9 @@
 package xerca.xercablocks.recipe;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercablocks.Mod;
 
 public final class Recipes {
@@ -17,9 +16,12 @@ public final class Recipes {
     private Recipes() {
     }
 
-    public static void register() {
-        Registry.register(BuiltInRegistries.RECIPE_TYPE, Mod.id("carving"), CARVING_TYPE);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("carving"), CARVING_SERIALIZER);
+    public static void registerTypes(RegisterEvent.RegisterHelper<RecipeType<?>> helper) {
+        helper.register(Mod.id("carving"), CARVING_TYPE);
+    }
+
+    public static void registerSerializers(RegisterEvent.RegisterHelper<RecipeSerializer<?>> helper) {
+        helper.register(Mod.id("carving"), CARVING_SERIALIZER);
     }
 
     private static class CarvingRecipeType implements RecipeType<CarvingRecipe> {

@@ -1,6 +1,5 @@
 package xerca.xercapaint.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
@@ -45,7 +44,6 @@ public class BaseCraftingGameTests {
         TestAsserts.assertTrue(helper, result.is(expected), "Expected " + path + " recipe to craft " + expected);
     }
 
-    @GameTest
     public void easelCraftsFromSticks(GameTestHelper helper) {
         CraftingInput grid = CraftingInput.of(3, 3, List.of(
                 E.copy(), STICK.create(), E.copy(),
@@ -55,7 +53,6 @@ public class BaseCraftingGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void paletteCraftsFromBrushAndPlanks(GameTestHelper helper) {
         CraftingInput grid = CraftingInput.of(3, 2, List.of(
                 E.copy(), BRUSH.create(), E.copy(),
@@ -64,7 +61,6 @@ public class BaseCraftingGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void smallCanvasCraftsFromPaperAndSticks(GameTestHelper helper) {
         CraftingInput grid = CraftingInput.of(3, 3, List.of(
                 STICK.create(), STICK.create(), STICK.create(),

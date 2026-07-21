@@ -1,17 +1,17 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercamusic.client.ModClient;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.item.IItemInstrument;
 
 import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
-public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<TripleNoteClientPacket> {
+public final class TripleNoteClientPacketHandler {
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private static void processMessage(TripleNoteClientPacket msg) {
         int entityId = msg.entityId();
@@ -47,8 +47,7 @@ public class TripleNoteClientPacketHandler implements ClientPlayNetworking.PlayP
         }
     }
 
-    @Override
-    public void receive(TripleNoteClientPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet));
+    public static void handle(TripleNoteClientPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet));
     }
 }

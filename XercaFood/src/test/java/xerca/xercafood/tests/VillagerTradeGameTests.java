@@ -1,6 +1,5 @@
 package xerca.xercafood.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -20,7 +19,6 @@ public final class VillagerTradeGameTests {
             "farmer/1/tea_seeds_emerald"
     );
 
-    @GameTest
     public void farmerLevelOneTagContainsFoodTrades(GameTestHelper helper) {
         HolderLookup.RegistryLookup<VillagerTrade> trades =
                 helper.getLevel().registryAccess().lookupOrThrow(Registries.VILLAGER_TRADE);

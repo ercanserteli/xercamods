@@ -1,6 +1,5 @@
 package xerca.xercablocks.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -112,7 +111,6 @@ public final class BlocksGameTests {
         return Blocks.ROPE.getStateForPlacement(context);
     }
 
-    @GameTest
     public void ropeRecipeCraftsFromThreeString(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("rope/rope"));
         CraftingInput grid = craftingGrid(3, 1,
@@ -126,7 +124,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void leatherBlockRecipeCraftsFromNineLeather(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("leather_straw/block_leather"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -140,7 +137,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void strawBlockRecipeCraftsFromNineSugarCane(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("leather_straw/block_straw"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -154,7 +150,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void blackTerratileRecipeCraftsFromBlackTerracotta(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("terracotta_tile/black_terratile"));
         CraftingInput grid = craftingGrid(2, 2,
@@ -168,7 +163,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void blackTerratileSlabRecipeCraftsSixSlabs(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("terracotta_tile/black_terratile_slab"));
         CraftingInput grid = craftingGrid(3, 1,
@@ -184,7 +178,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void blackTerratileStairsRecipeCraftsFourStairs(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("terracotta_tile/black_terratile_stairs"));
         CraftingInput grid = craftingGrid(3, 3,
@@ -200,7 +193,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void blackTerratileStonecuttingRecipesProduceTileSlabAndStairs(GameTestHelper helper) {
         SingleRecipeInput terracottaInput = new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.BLACK_TERRACOTTA));
         StonecutterRecipe tileRecipe = requireStonecuttingRecipe(helper, recipeId("terracotta_tile/black_terratile_from_black_terracotta_stonecutting"));
@@ -222,7 +214,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvingStationRecipeCutsOakLogIntoCarvedOak(GameTestHelper helper) {
         CarvingRecipe recipe = requireCarvingRecipe(helper, recipeId("carving/carved_oak_1_from_oak_log_carving"));
         SingleRecipeInput input = new SingleRecipeInput(new ItemStack(net.minecraft.world.item.Items.OAK_LOG));
@@ -233,7 +224,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void craftingCarvingStationConsumesShears(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("carving_station"));
         ItemStack leftShears = new ItemStack(net.minecraft.world.item.Items.SHEARS);
@@ -255,7 +245,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void bookcaseMenuRejectsNonBookItems(GameTestHelper helper) {
         FunctionalBookcaseBlockEntity blockEntity = new FunctionalBookcaseBlockEntity(BlockPos.ZERO, Blocks.BLOCK_BOOKCASE.defaultBlockState());
         BookcaseMenu menu = new BookcaseMenu(0, helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL).getInventory(), blockEntity);
@@ -265,7 +254,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void bookcaseStateTracksStoredBooks(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.BLOCK_BOOKCASE.defaultBlockState());
@@ -280,28 +268,24 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void terratileBreaksFasterWithPickaxeThanByHand(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         assertBreaksFasterWithPickaxeThanByHand(helper, modBlock("black_terratile").defaultBlockState(), pos, "black terracotta tile");
         helper.succeed();
     }
 
-    @GameTest
     public void terratileSlabBreaksFasterWithPickaxeThanByHand(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         assertBreaksFasterWithPickaxeThanByHand(helper, modBlock("black_terratile_slab").defaultBlockState(), pos, "black terracotta tile slab");
         helper.succeed();
     }
 
-    @GameTest
     public void terratileStairsBreaksFasterWithPickaxeThanByHand(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         assertBreaksFasterWithPickaxeThanByHand(helper, modBlock("black_terratile_stairs").defaultBlockState(), pos, "black terracotta tile stairs");
         helper.succeed();
     }
 
-    @GameTest
     public void doubleTerratileSlabDropsTwoItems(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         Block slabBlock = modBlock("black_terratile_slab");
@@ -316,7 +300,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void blackTerratileLootDropsItself(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockState state = modBlock("black_terratile").defaultBlockState();
@@ -329,7 +312,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void blackTerratileStairsLootDropsItself(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockState state = modBlock("black_terratile_stairs").defaultBlockState();
@@ -342,7 +324,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvedWoodBreaksFasterWithAxeThanByHand(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockState state = modBlock("carved_oak_1").defaultBlockState();
@@ -359,7 +340,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvedWoodDropsItselfWhenBroken(GameTestHelper helper) {
         BlockPos relativePos = new BlockPos(1, 2, 1);
         BlockPos pos = helper.absolutePos(relativePos);
@@ -370,7 +350,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvedAcaciaLetsLightThroughAndCullsLikeAGrate(GameTestHelper helper) {
         BlockState state = modBlock("carved_acacia_1").defaultBlockState();
 
@@ -385,7 +364,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ropeHasClickBoxMatchingItsModel(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.ROPE.defaultBlockState());
@@ -409,7 +387,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ropeDropsItselfWhenBroken(GameTestHelper helper) {
         BlockPos relativePos = new BlockPos(1, 2, 1);
         BlockPos pos = helper.absolutePos(relativePos);
@@ -420,7 +397,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ropePlacementConnectsToSupportingBlocksAndNeighboringRope(GameTestHelper helper) {
         BlockPos ropePos = new BlockPos(1, 2, 1);
         BlockPos ropeBelowPos = new BlockPos(1, 1, 1);
@@ -444,7 +420,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ropeIsTaggedClimbableAndPlayersRecognizeIt(GameTestHelper helper) {
         BlockPos ropePos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(ropePos, Blocks.ROPE.defaultBlockState());
@@ -458,33 +433,18 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void ropePushesAttachedBlocksBecauseItIsSticky(GameTestHelper helper) {
-        try {
-            var isSticky = net.minecraft.world.level.block.piston.PistonStructureResolver.class.getDeclaredMethod("isSticky", BlockState.class);
-            isSticky.setAccessible(true);
-            boolean ropeSticky = (boolean) isSticky.invoke(null, Blocks.ROPE.defaultBlockState());
-            helper.assertTrue(ropeSticky, Component.literal("Expected rope to be treated as a sticky block by piston resolution"));
-        } catch (ReflectiveOperationException exception) {
-            throw new RuntimeException("Unable to inspect piston stickiness", exception);
-        }
+        boolean ropeSticky = Blocks.ROPE.defaultBlockState().isStickyBlock();
+        helper.assertTrue(ropeSticky, Component.literal("Expected rope to be treated as a sticky block by piston resolution"));
         helper.succeed();
     }
 
-    @GameTest
     public void stickyPistonRetractsRopeAndItsAttachedBlock(GameTestHelper helper) {
-        try {
-            var canStickToEachOther = net.minecraft.world.level.block.piston.PistonStructureResolver.class.getDeclaredMethod("canStickToEachOther", BlockState.class, BlockState.class);
-            canStickToEachOther.setAccessible(true);
-            boolean ropeSticksToStone = (boolean) canStickToEachOther.invoke(null, Blocks.ROPE.defaultBlockState(), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
-            helper.assertTrue(ropeSticksToStone, Component.literal("Expected rope to stick to adjacent blocks during piston pull resolution"));
-        } catch (ReflectiveOperationException exception) {
-            throw new RuntimeException("Unable to inspect piston stickiness rules", exception);
-        }
+        boolean ropeSticksToStone = Blocks.ROPE.defaultBlockState().canStickTo(net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+        helper.assertTrue(ropeSticksToStone, Component.literal("Expected rope to stick to adjacent blocks during piston pull resolution"));
         helper.succeed();
     }
 
-    @GameTest
     public void bookcaseDropsBlockAndStoredBooksWhenBroken(GameTestHelper helper) {
         BlockPos relativePos = new BlockPos(1, 2, 1);
         BlockPos pos = helper.absolutePos(relativePos);
@@ -502,7 +462,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void bookcasePersistsStoredBooksAcrossBlockEntityReload(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(pos, Blocks.BLOCK_BOOKCASE.defaultBlockState());
@@ -529,7 +488,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void bookcaseComparatorOutputTracksStoredBooks(GameTestHelper helper) {
         BlockPos bookcasePos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(bookcasePos, Blocks.BLOCK_BOOKCASE.defaultBlockState());
@@ -547,7 +505,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvingRecipesDoNotLoadAsStonecuttingRecipes(GameTestHelper helper) {
         Optional<RecipeHolder<StonecutterRecipe>> stonecutterRecipe = helper.getLevel().recipeAccess().getRecipeFor(
                 RecipeType.STONECUTTING,
@@ -566,7 +523,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvingOutputClassificationRoutesStrippedLogsToCarvingStation(GameTestHelper helper) {
         helper.assertTrue(CarvingRecipe.isCarvingOutput(net.minecraft.world.item.Items.STRIPPED_OAK_LOG),
                 Component.literal("Expected stripped logs to be classified as carving outputs so they show in the carving station, not the stonecutter"));
@@ -581,7 +537,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvingStationMenuShowsCarvingRecipesButStonecutterDoesNot(GameTestHelper helper) {
         var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         CarvingStationMenu carvingMenu = new CarvingStationMenu(0, player.getInventory(), ContainerLevelAccess.create(helper.getLevel(), helper.absolutePos(new BlockPos(1, 2, 1))));
@@ -596,13 +551,19 @@ public final class BlocksGameTests {
         helper.assertTrue(carvingMenu.getNumberOfVisibleRecipes() > 0, Component.literal("Expected carving station menu to expose carving recipes"));
         helper.assertTrue(stonecutterMenu.getNumberOfVisibleRecipes() == 0, Component.literal("Expected vanilla stonecutter to reject carving recipes"));
 
+        List<SelectableRecipe.SingleInputEntry<StonecutterRecipe>> visibleCarvingRecipes = carvingMenu.getVisibleRecipes().entries();
+        long distinctCarvingRecipes = visibleCarvingRecipes.stream()
+                .map(entry -> entry.recipe().recipe().orElseThrow().id())
+                .distinct().count();
+        helper.assertTrue(visibleCarvingRecipes.size() == distinctCarvingRecipes,
+                Component.literal("Expected carving station menu to list each carving recipe once, but found duplicates"));
+
         helper.assertTrue(carvingMenu.clickMenuButton(player, 0), Component.literal("Expected carving station menu to accept the first carving recipe selection"));
         helper.assertTrue(!carvingMenu.getSlot(1).getItem().isEmpty(),
                 Component.literal("Expected carving station result slot to contain a carving output after selecting a recipe"));
         helper.succeed();
     }
 
-    @GameTest
     public void carvingStationUsesCustomMenuType(GameTestHelper helper) {
         var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         CarvingStationMenu carvingMenu = new CarvingStationMenu(0, player.getInventory());
@@ -612,7 +573,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvingStationRejectsStonecutterInputsWhileStonecutterAcceptsThem(GameTestHelper helper) {
         var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         CarvingStationMenu carvingMenu = new CarvingStationMenu(0, player.getInventory(), ContainerLevelAccess.create(helper.getLevel(), helper.absolutePos(new BlockPos(1, 2, 1))));
@@ -633,7 +593,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void carvingStationConsumesHeldItemUse(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockState state = Blocks.CARVING_STATION.defaultBlockState();
@@ -649,7 +608,6 @@ public final class BlocksGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void functionalBookcaseConsumesHeldItemUse(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
         BlockState state = Blocks.BLOCK_BOOKCASE.defaultBlockState();

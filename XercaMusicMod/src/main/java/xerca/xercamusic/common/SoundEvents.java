@@ -1,17 +1,19 @@
 package xerca.xercamusic.common;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.IItemInstrument.Pair;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SoundEvents {
+    private static final Map<Identifier, SoundEvent> TO_REGISTER = new LinkedHashMap<>();
     public static final SoundEvent TICK = createSoundEvent("tick");
     public static final SoundEvent METRONOME_SET = createSoundEvent("metronome_set");
     public static final SoundEvent OPEN_SCROLL = createSoundEvent("open_scroll");
@@ -71,8 +73,13 @@ public class SoundEvents {
     private static SoundEvent createSoundEvent(String soundName) {
         final Identifier soundID = Mod.id(soundName);
         final SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundID);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, soundID, soundEvent);
+        TO_REGISTER.put(soundID, soundEvent);
         return soundEvent;
+    }
+
+    public static void register(RegisterEvent.RegisterHelper<SoundEvent> helper) {
+        registerSoundEvents();
+        TO_REGISTER.forEach(helper::register);
     }
 
     private static void addSound(List<Pair<Integer, SoundEvent>> array, String insName, int note) {

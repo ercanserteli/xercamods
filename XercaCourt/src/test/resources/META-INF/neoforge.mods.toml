@@ -1,0 +1,25 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "GPL-3.0"
+
+[[mods]]
+modId = "xercacourt_tests"
+version = "1.0.0"
+displayName = "xercacourt Tests"
+
+[[mixins]]
+config = "xercacourt_tests.mixins.json"
+
+[[dependencies.xercacourt_tests]]
+modId = "xercacourt"
+type = "required"
+versionRange = "[0,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.xercacourt_tests]]
+modId = "neoforge"
+type = "required"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"

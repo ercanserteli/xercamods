@@ -1,6 +1,5 @@
 package xerca.xercatools.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
@@ -92,7 +91,6 @@ public final class ConfettiBallGameTests {
         throw new IllegalStateException("Unreachable after GameTest assertion failure");
     }
 
-    @GameTest
     public void playerUseSpawnsConfettiBallAndConsumesOneItem(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 
@@ -113,7 +111,6 @@ public final class ConfettiBallGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void dispenserUseSpawnsConfettiBallWithoutSynchedDataCrash(GameTestHelper helper) {
         BlockPos dispenserPos = new BlockPos(1, 2, 1);
         BlockPos absolutePos = helper.absolutePos(dispenserPos);
@@ -134,7 +131,6 @@ public final class ConfettiBallGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void confettiRecipeCraftsTwelvePiecesFromPaperAndCmyDyes(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("confetti_alt"));
         CraftingInput grid = craftingGrid(2, 2,
@@ -151,7 +147,6 @@ public final class ConfettiBallGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void confettiBallRecipeCraftsTwoBallsFromCrossOfConfettiAndGunpowder(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("confetti_ball"));
         ItemStack confetti = new ItemStack(Items.CONFETTI);
@@ -168,7 +163,6 @@ public final class ConfettiBallGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void confettiBallRecipeRejectsMissingConfettiArm(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("confetti_ball"));
         ItemStack confetti = new ItemStack(Items.CONFETTI);
@@ -182,7 +176,6 @@ public final class ConfettiBallGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void confettiUseConsumesOneItemForSurvivalPlayers(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack stack = new ItemStack(Items.CONFETTI, 2);
@@ -195,7 +188,6 @@ public final class ConfettiBallGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void confettiUseDoesNotConsumeItemForCreativePlayers(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.CREATIVE);
         ItemStack stack = new ItemStack(Items.CONFETTI, 2);
@@ -208,7 +200,6 @@ public final class ConfettiBallGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void confettiDispenseBehaviorConsumesOneItem(GameTestHelper helper) {
         BlockPos dispenserPos = new BlockPos(1, 2, 1);
         BlockPos absolutePos = helper.absolutePos(dispenserPos);

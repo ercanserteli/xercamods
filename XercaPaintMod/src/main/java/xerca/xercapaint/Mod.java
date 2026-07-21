@@ -1,51 +1,57 @@
 package xerca.xercapaint;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.*;
 
-public class Mod implements ModInitializer {
+@net.neoforged.fml.common.Mod(Mod.MOD_ID)
+public class Mod {
     public static final String MOD_ID = "xercapaint";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    @Override
-    public void onInitialize() {
-        Items.registerItems();
-        Items.registerRecipes();
-        Items.registerDataComponents();
-        Entities.registerEntities();
-        SoundEvents.registerSoundEvents();
+    public Mod(IEventBus modEventBus) {
+        modEventBus.addListener(this::onRegister);
+        modEventBus.addListener(this::onRegisterPayloads);
+        NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        LOGGER.info("{} initialized", MOD_ID);
+    }
 
-        PayloadTypeRegistry.clientboundPlay().register(CloseGuiPacket.PACKET_ID, CloseGuiPacket.PACKET_CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(ExportPaintingPacket.PACKET_ID, ExportPaintingPacket.PACKET_CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(ImportPaintingPacket.PACKET_ID, ImportPaintingPacket.PACKET_CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(OpenGuiPacket.PACKET_ID, OpenGuiPacket.PACKET_CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(PictureSendPacket.PACKET_ID, PictureSendPacket.PACKET_CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(CanvasUpdatePacket.PACKET_ID, CanvasUpdatePacket.PACKET_CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(CanvasMiniUpdatePacket.PACKET_ID, CanvasMiniUpdatePacket.PACKET_CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(EaselLeftPacket.PACKET_ID, EaselLeftPacket.PACKET_CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(ImportPaintingSendPacket.PACKET_ID, ImportPaintingSendPacket.PACKET_CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(PaletteUpdatePacket.PACKET_ID, PaletteUpdatePacket.PACKET_CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(PictureRequestPacket.PACKET_ID, PictureRequestPacket.PACKET_CODEC);
+    private void onRegister(RegisterEvent event) {
+        event.register(Registries.ITEM, Items::registerItems);
+        event.register(Registries.RECIPE_SERIALIZER, Items::registerRecipes);
+        event.register(Registries.DATA_COMPONENT_TYPE, Items::registerDataComponents);
+        event.register(Registries.CREATIVE_MODE_TAB, Items::registerCreativeTab);
+        event.register(Registries.ENTITY_TYPE, Entities::registerEntities);
+        event.register(Registries.SOUND_EVENT, SoundEvents::registerSoundEvents);
+    }
 
-        ServerPlayNetworking.registerGlobalReceiver(CanvasUpdatePacket.PACKET_ID, new CanvasUpdatePacketHandler());
-        ServerPlayNetworking.registerGlobalReceiver(CanvasMiniUpdatePacket.PACKET_ID, new CanvasMiniUpdatePacketHandler());
-        ServerPlayNetworking.registerGlobalReceiver(EaselLeftPacket.PACKET_ID, new EaselLeftPacketHandler());
-        ServerPlayNetworking.registerGlobalReceiver(ImportPaintingSendPacket.PACKET_ID, new ImportPaintingSendPacketHandler());
-        ServerPlayNetworking.registerGlobalReceiver(PaletteUpdatePacket.PACKET_ID, new PaletteUpdatePacketHandler());
-        ServerPlayNetworking.registerGlobalReceiver(PictureRequestPacket.PACKET_ID, new PictureRequestPacketHandler());
+    private void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
+        var registrar = event.registrar("1");
+        registrar.playToClient(CloseGuiPacket.PACKET_ID, CloseGuiPacket.PACKET_CODEC, CloseGuiPacketHandler::handle);
+        registrar.playToClient(ExportPaintingPacket.PACKET_ID, ExportPaintingPacket.PACKET_CODEC, ExportPaintingPacketHandler::handle);
+        registrar.playToClient(ImportPaintingPacket.PACKET_ID, ImportPaintingPacket.PACKET_CODEC, ImportPaintingPacketHandler::handle);
+        registrar.playToClient(OpenGuiPacket.PACKET_ID, OpenGuiPacket.PACKET_CODEC, OpenGuiPacketHandler::handle);
+        registrar.playToClient(PictureSendPacket.PACKET_ID, PictureSendPacket.PACKET_CODEC, PictureSendPacketHandler::handle);
+        registrar.playToServer(CanvasUpdatePacket.PACKET_ID, CanvasUpdatePacket.PACKET_CODEC, CanvasUpdatePacketHandler::handle);
+        registrar.playToServer(CanvasMiniUpdatePacket.PACKET_ID, CanvasMiniUpdatePacket.PACKET_CODEC, CanvasMiniUpdatePacketHandler::handle);
+        registrar.playToServer(EaselLeftPacket.PACKET_ID, EaselLeftPacket.PACKET_CODEC, EaselLeftPacketHandler::handle);
+        registrar.playToServer(ImportPaintingSendPacket.PACKET_ID, ImportPaintingSendPacket.PACKET_CODEC, ImportPaintingSendPacketHandler::handle);
+        registrar.playToServer(PaletteUpdatePacket.PACKET_ID, PaletteUpdatePacket.PACKET_CODEC, PaletteUpdatePacketHandler::handle);
+        registrar.playToServer(PictureRequestPacket.PACKET_ID, PictureRequestPacket.PACKET_CODEC, PictureRequestPacketHandler::handle);
+    }
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, env) -> {
-            CommandImport.register(dispatcher);
-            CommandExport.register(dispatcher);
-        });
+    private void onRegisterCommands(RegisterCommandsEvent event) {
+        CommandImport.register(event.getDispatcher());
+        CommandExport.register(event.getDispatcher());
     }
 
     public static Identifier id(String location) {

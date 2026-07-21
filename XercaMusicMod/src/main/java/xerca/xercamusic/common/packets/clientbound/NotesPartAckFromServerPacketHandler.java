@@ -1,12 +1,13 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class NotesPartAckFromServerPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<NotesPartAckFromServerPacket> {
+public final class NotesPartAckFromServerPacketHandler {
     private static final Map<UUID, Runnable> MAP = new HashMap<>();
 
     public static void addCallback(UUID id, Runnable func) {
@@ -21,9 +22,8 @@ public class NotesPartAckFromServerPacketHandler implements ClientPlayNetworking
         }
     }
 
-    @Override
-    public void receive(NotesPartAckFromServerPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet));
+    public static void handle(NotesPartAckFromServerPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet));
     }
 }
 

@@ -1,25 +1,20 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercamusic.common.packets.clientbound.SingleNoteClientPacket;
 
-import java.util.Collection;
-
-import static xerca.xercamusic.common.Mod.sendToClient;
-
-public class SingleNotePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<SingleNotePacket> {
-    private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
-        Collection<ServerPlayer> players = PlayerLookup.around(pl.level(), pl.position(), 24.0D);
-        SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.note(), msg.instrumentItem(), pl, msg.isStop(), msg.volume());
-        for (ServerPlayer player : players) {
-            sendToClient(player, packet);
-        }
+public final class SingleNotePacketHandler {
+    private SingleNotePacketHandler() {
     }
 
-    @Override
-    public void receive(SingleNotePacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+    private static void processMessage(SingleNotePacket msg, ServerPlayer pl) {
+        SingleNoteClientPacket packet = new SingleNoteClientPacket(msg.note(), msg.instrumentItem(), pl, msg.isStop(), msg.volume());
+        PacketDistributor.sendToPlayersNear(pl.level(), null, pl.getX(), pl.getY(), pl.getZ(), 24.0D, packet);
+    }
+
+    public static void handle(SingleNotePacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet, (ServerPlayer) context.player()));
     }
 }

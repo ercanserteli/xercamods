@@ -1,7 +1,5 @@
 package xerca.xercafood.common;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 
 public class SoundEvents {
@@ -20,17 +18,17 @@ public class SoundEvents {
     public static final SoundEvent FIZZY = SoundEvent.createVariableRangeEvent(Mod.id("fizzy"));
     public static final SoundEvent SNEAK_HIT = SoundEvent.createVariableRangeEvent(Mod.id("sneak_hit"));
 
-    public static void registerSoundEvents() {
-        Registry.register(BuiltInRegistries.SOUND_EVENT, TOMATO_SPLASH.location(), TOMATO_SPLASH);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BIG_BURP.location(), BIG_BURP);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, YAHOO.location(), YAHOO);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SCARY.location(), SCARY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, TEA_POUR.location(), TEA_POUR);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SIZZLE.location(), SIZZLE);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BIG_SIZZLE.location(), BIG_SIZZLE);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOLY.location(), HOLY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SPARKLES.location(), SPARKLES);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, FIZZY.location(), FIZZY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SNEAK_HIT.location(), SNEAK_HIT);
+    public static void registerSoundEvents(net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper<net.minecraft.sounds.SoundEvent> helper) {
+        helper.register(TOMATO_SPLASH.location(), TOMATO_SPLASH);
+        helper.register(BIG_BURP.location(), BIG_BURP);
+        helper.register(YAHOO.location(), YAHOO);
+        helper.register(SCARY.location(), SCARY);
+        helper.register(TEA_POUR.location(), TEA_POUR);
+        helper.register(SIZZLE.location(), SIZZLE);
+        helper.register(BIG_SIZZLE.location(), BIG_SIZZLE);
+        helper.register(HOLY.location(), HOLY);
+        helper.register(SPARKLES.location(), SPARKLES);
+        helper.register(FIZZY.location(), FIZZY);
+        helper.register(SNEAK_HIT.location(), SNEAK_HIT);
     }
 }

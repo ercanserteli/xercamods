@@ -1,6 +1,5 @@
 package xerca.xercatools.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -44,7 +43,6 @@ public class FlaskAndLauncherGameTests {
 
     // ── Flask max-charges ─────────────────────────────────────────────────────
 
-    @GameTest
     public void flaskMaxChargesBaseIs16(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack flask = new ItemStack(Items.FLASK);
@@ -53,7 +51,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void flaskHasDrinkConsumableSoDrinkingMakesSound(GameTestHelper helper) {
         ItemStack flask = new ItemStack(Items.FLASK);
         var consumable = flask.get(DataComponents.CONSUMABLE);
@@ -74,7 +71,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void flaskCapacityEnchantmentDoublesMaxCharges(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         ItemStack flask = new ItemStack(Items.FLASK);
@@ -89,7 +85,6 @@ public class FlaskAndLauncherGameTests {
 
     // ── Flask use duration ────────────────────────────────────────────────────
 
-    @GameTest
     public void flaskUseDurationBaseIs32(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         ItemStack flask = new ItemStack(Items.FLASK);
@@ -98,7 +93,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void flaskChugLevel1DecreasesUseDuration(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -112,7 +106,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void flaskChugLevel2DecreasesUseDurationFurther(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -128,7 +121,6 @@ public class FlaskAndLauncherGameTests {
 
     // ── Flask filling recipe ──────────────────────────────────────────────────
 
-    @GameTest
     public void flaskFillingRecipeAcceptsFlaskAndPotion(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         RecipeFlaskFilling recipe = RecipeFlaskFilling.INSTANCE;
@@ -147,7 +139,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void flaskFillingRecipeRejectsOverCapacity(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         RecipeFlaskFilling recipe = RecipeFlaskFilling.INSTANCE;
@@ -166,7 +157,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void flaskFillingRecipeRejectsMixedPotions(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         RecipeFlaskFilling recipe = RecipeFlaskFilling.INSTANCE;
@@ -187,7 +177,6 @@ public class FlaskAndLauncherGameTests {
 
     // ── Flask drinking effect ─────────────────────────────────────────────────
 
-    @GameTest
     public void flaskDrinkingAppliesInstantHealingEffect(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -212,7 +201,6 @@ public class FlaskAndLauncherGameTests {
 
     // ── Potion Launcher (Ender Bow) ───────────────────────────────────────────
 
-    @GameTest
     public void potionLauncherFillingRecipeAcceptsEnderBowAndSplashPotion(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         RecipeEnderBowFilling recipe = RecipeEnderBowFilling.INSTANCE;
@@ -230,7 +218,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void potionLauncherFiresSplashPotionByDefault(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -257,7 +244,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void potionLauncherFiresLingeringPotionWhenFlagSet(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -285,7 +271,6 @@ public class FlaskAndLauncherGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void potionLauncherFailsWithZeroCharges(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);

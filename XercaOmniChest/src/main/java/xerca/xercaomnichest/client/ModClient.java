@@ -1,15 +1,19 @@
 package xerca.xercaomnichest.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import xerca.xercaomnichest.Mod;
 import xerca.xercaomnichest.block_entity.BlockEntities;
 
-@Environment(EnvType.CLIENT)
-public final class ModClient implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        BlockEntityRenderers.register(BlockEntities.OMNI_CHEST, OmniChestBlockEntityRenderer::new);
+@EventBusSubscriber(modid = Mod.MOD_ID, value = Dist.CLIENT)
+public final class ModClient {
+    private ModClient() {
+    }
+
+    @SubscribeEvent
+    static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(BlockEntities.OMNI_CHEST, OmniChestBlockEntityRenderer::new);
     }
 }

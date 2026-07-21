@@ -1,6 +1,5 @@
 package xerca.xercacourt.tests;
 
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -52,7 +51,6 @@ public final class CourtGameTests {
         return CraftingInput.of(width, height, list);
     }
 
-    @GameTest
     public void gavelRecipeCraftsFromPlanksAndSticks(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("gavel"));
         ItemStack plank = new ItemStack(net.minecraft.world.item.Items.OAK_PLANKS);
@@ -69,7 +67,6 @@ public final class CourtGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void prosecutorBadgeAcceptsPoppyAndDandelionVariants(GameTestHelper helper) {
         CraftingRecipe poppyRecipe = requireCraftingRecipe(helper, recipeId("prosecutor_badge"));
         CraftingRecipe dandelionRecipe = requireCraftingRecipe(helper, recipeId("prosecutor_badge_alt"));
@@ -92,7 +89,6 @@ public final class CourtGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void badgeUseStartsCooldown(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ATTORNEY_BADGE));
@@ -103,7 +99,6 @@ public final class CourtGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void gavelUseOnSolidBlockSucceeds(GameTestHelper helper) {
         BlockPos targetPos = helper.absolutePos(new BlockPos(1, 2, 1));
         helper.getLevel().setBlockAndUpdate(targetPos, Blocks.STONE.defaultBlockState());
@@ -120,7 +115,6 @@ public final class CourtGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void gavelOnSolidBlockPlaysSound(GameTestHelper helper) {
         SoundRecorder.clear();
         BlockPos targetPos = helper.absolutePos(new BlockPos(1, 2, 1));
@@ -137,7 +131,6 @@ public final class CourtGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void gavelOnNonSolidBlockPlaysNoSound(GameTestHelper helper) {
         SoundRecorder.clear();
         BlockPos targetPos = helper.absolutePos(new BlockPos(1, 2, 1));
@@ -154,7 +147,6 @@ public final class CourtGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void prosecutorBadgeUsePlaysObjectionSound(GameTestHelper helper) {
         SoundRecorder.clear();
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);

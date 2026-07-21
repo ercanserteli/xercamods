@@ -1,9 +1,9 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
@@ -12,7 +12,9 @@ import xerca.xercapaint.item.Items;
 
 import java.util.Arrays;
 
-public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<CanvasUpdatePacket> {
+public final class CanvasUpdatePacketHandler {
+    private CanvasUpdatePacketHandler() {
+    }
 
     public static void processMessage(CanvasUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
@@ -92,8 +94,7 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayPaylo
         }
     }
 
-    @Override
-    public void receive(CanvasUpdatePacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+    public static void handle(CanvasUpdatePacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet, (ServerPlayer) context.player()));
     }
 }

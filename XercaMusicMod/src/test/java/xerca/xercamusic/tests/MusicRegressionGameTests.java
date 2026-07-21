@@ -1,7 +1,6 @@
 package xerca.xercamusic.tests;
 
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -475,7 +474,6 @@ public final class MusicRegressionGameTests {
     private record UseResult(ItemStack handStack, BlockState state) {
     }
 
-    @GameTest
     public void fillArrayFromNbtSortsAndRemovesOverlaps(GameTestHelper helper) {
         CompoundTag sheetTag = new CompoundTag();
         ListTag notesTag = new ListTag();
@@ -495,7 +493,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void finishedTempBufferIsConsumedOnce(GameTestHelper helper) {
         UUID id = UUID.randomUUID();
         ArrayList<NoteEvent> part0 = new ArrayList<>();
@@ -517,7 +514,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxSheetValuesAreSanitizedOnInsert(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         placeMusicBox(helper, boxPos, Direction.NORTH);
@@ -533,7 +529,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxUnknownSheetWarningStateIsDeduplicatedAndReset(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         placeMusicBox(helper, boxPos, Direction.NORTH);
@@ -563,7 +558,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicSpiritSpawnDataHandlesInvalidBlockInstrument(GameTestHelper helper) {
         EntityMusicSpirit spirit = new EntityMusicSpirit(helper.getLevel());
 
@@ -577,7 +571,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void singleNoteClientDecodeKeepsPlayerIdWithoutLevelLookup(GameTestHelper helper) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeInt(64);
@@ -591,7 +584,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void tripleNoteClientDecodeKeepsEntityIdWithoutLevelLookup(GameTestHelper helper) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeInt(60);
@@ -605,7 +597,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void clipboardDecodeAcceptsCurrentCopyFormat(GameTestHelper helper) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeByte(MusicClipboard.COPY_BEGIN_BYTE);
@@ -630,7 +621,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void clipboardDecodeAcceptsPreGlissandoCopyFormat(GameTestHelper helper) {
         MusicClipboard.ParsedMusic parsed = MusicClipboard.decode(PRE_GLISSANDO_CLIPBOARD_SAMPLE);
         assertTrue(helper, parsed != null, "Expected pre-glissando clipboard sample to parse");
@@ -643,7 +633,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void clipboardDecodeAcceptsVeryOldMusicFormat(GameTestHelper helper) {
         MusicClipboard.ParsedMusic parsed = MusicClipboard.decode(VERY_OLD_CLIPBOARD_SAMPLE);
         assertTrue(helper, parsed != null, "Expected very old clipboard sample to parse");
@@ -654,7 +643,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void clipboardDecodeRejectsNonsenseWithoutThrowing(GameTestHelper helper) {
         assertTrue(helper, MusicClipboard.decode("this is not base64") == null,
                 "Expected non-base64 clipboard data to be ignored");
@@ -673,7 +661,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void signedSheetExportAndImportPreserveIdentityAndMarkers(GameTestHelper helper) {
         String exportName = "signed_sheet_roundtrip";
         Path path = exportPath(exportName);
@@ -743,7 +730,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void unsignedMultipartImportFromExportGetsFreshIdentityAndConsumesBuffer(GameTestHelper helper) {
         String exportName = "unsigned_sheet_roundtrip";
         Path path = exportPath(exportName);
@@ -818,7 +804,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxInsertsAndEjectsMusicSheet(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -840,7 +825,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxInsertsAndEjectsInstrument(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -861,7 +845,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxStartsAndStopsOnRedstonePulses(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         placeMusicBox(helper, boxPos, Direction.NORTH);
@@ -891,7 +874,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxEndsPlaybackAndEmitsTimedRedstone(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         placeMusicBox(helper, boxPos, Direction.NORTH);
@@ -931,7 +913,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxDoesNotStartWithoutSheet(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         placeMusicBox(helper, boxPos, Direction.NORTH);
@@ -953,7 +934,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxDoesNotStartWithoutInstrument(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         placeMusicBox(helper, boxPos, Direction.NORTH);
@@ -975,7 +955,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void musicBoxEmptySlotsDoNotEjectAnything(GameTestHelper helper) {
         BlockPos boxPos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -994,7 +973,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void metronomeCyclesBpsAndCopiesTempoFromSheet(GameTestHelper helper) {
         BlockPos metronomePos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -1013,7 +991,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void metronomePoweredTicksAdvanceCountdownAndResetOnRepower(GameTestHelper helper) {
         BlockPos metronomePos = new BlockPos(1, 2, 1);
         placeMetronome(helper, metronomePos, Direction.NORTH, 20, false);
@@ -1048,7 +1025,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void metronomeSheetWithoutTempoFallsBackToCycle(GameTestHelper helper) {
         BlockPos metronomePos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -1066,7 +1042,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void metronomeUseWithHeldItemCyclesTempoThroughVanillaDispatch(GameTestHelper helper) {
         BlockPos metronomePos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -1085,7 +1060,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void pianoUseWithSheetStartsAndStopsBlockInstrumentPlayback(GameTestHelper helper) {
         BlockPos pianoPos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -1108,7 +1082,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void pianoUseWithoutSheetDoesNotStartPlayback(GameTestHelper helper) {
         BlockPos pianoPos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -1125,7 +1098,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void pianoUseWithBlockInstrumentOpensGuiWithoutPlacingBlock(GameTestHelper helper) {
         BlockPos pianoPos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -1150,7 +1122,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void signedMusicSheetsStackToSixteenBySameGeneration(GameTestHelper helper) {
         RecipeNoteCloning recipe = RecipeNoteCloning.INSTANCE;
         UUID id = UUID.randomUUID();
@@ -1185,7 +1156,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void legacyMusicSavedDataFileMigratesToNamespacedStorage(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
         UUID id = UUID.randomUUID();
@@ -1222,7 +1192,6 @@ public final class MusicRegressionGameTests {
         helper.succeed();
     }
 
-    @GameTest
     public void pianoUseOutOfRangeDoesNotStartPlayback(GameTestHelper helper) {
         BlockPos pianoPos = new BlockPos(1, 2, 1);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);

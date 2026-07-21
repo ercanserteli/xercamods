@@ -105,4 +105,14 @@ public class BlockRope extends PipeBlock {
     protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
         return false;
     }
+
+    @Override
+    public boolean isStickyBlock(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public boolean canStickTo(BlockState state, BlockState other) {
+        return true;
+    }
 }

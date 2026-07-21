@@ -1,12 +1,14 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-public class PaletteUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<PaletteUpdatePacket> {
+public final class PaletteUpdatePacketHandler {
+    private PaletteUpdatePacketHandler() {
+    }
 
     private static void processMessage(PaletteUpdatePacket msg, ServerPlayer pl) {
         ItemStack palette = pl.getMainHandItem();
@@ -21,8 +23,7 @@ public class PaletteUpdatePacketHandler implements ServerPlayNetworking.PlayPayl
         palette.set(Items.PALETTE_CUSTOM_COLORS, new ItemPalette.ComponentCustomColor(msg.paletteColors()));
     }
 
-    @Override
-    public void receive(PaletteUpdatePacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+    public static void handle(PaletteUpdatePacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet, (ServerPlayer) context.player()));
     }
 }

@@ -72,7 +72,8 @@ public class RecipeFillPalette extends CustomRecipe {
     }
 
     private byte[] loadBasicColors(ItemStack palette) {
-        byte[] source = palette.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[0]);
+        Items.BasicColors sourceComp = palette.get(Items.PALETTE_BASIC_COLORS);
+        byte[] source = sourceComp == null ? new byte[0] : sourceComp.value();
         byte[] basicColors = new byte[16];
         System.arraycopy(source, 0, basicColors, 0, Math.min(source.length, basicColors.length));
         return basicColors;
@@ -118,7 +119,7 @@ public class RecipeFillPalette extends CustomRecipe {
 
         // Keep all existing palette components and only update basic colors.
         ItemStack result = inputPalette.copyWithCount(1);
-        result.set(Items.PALETTE_BASIC_COLORS, basicColors);
+        result.set(Items.PALETTE_BASIC_COLORS, new Items.BasicColors(basicColors));
         return result;
     }
 
