@@ -208,9 +208,10 @@ def main():
     args = parser.parse_args()
 
     jar_prefix = MOD_NAME_TO_JAR_PREFIX.get(args.project_id, args.project_id)
-    file_path = os.path.join(args.builds_dir, f"{jar_prefix}-{args.game_version}-{args.mod_version}.jar")
-
     loader = args.loaders[0]
+    loader_infix = "neoforge-" if loader.lower() == "neoforge" else ""
+    file_path = os.path.join(args.builds_dir, f"{jar_prefix}-{loader_infix}{args.game_version}-{args.mod_version}.jar")
+
     loader_display = CF_VERSION_SYNONYMS.get(loader.lower(), loader.capitalize())
     display_name = f"{loader_display} {args.game_version} - Version {args.mod_version}"
 
