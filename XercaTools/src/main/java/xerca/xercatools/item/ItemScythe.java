@@ -277,10 +277,10 @@ public class ItemScythe extends Item {
 
         for (int i = 0; i < 96; i++) {
             double velX = (level.random.nextDouble() - 0.5D) * 0.28D;
-            double velY = (level.random.nextDouble() - 0.3D) * 0.28D;
+            double velY = level.random.nextDouble() * 0.5D + 0.15D;
             double velZ = (level.random.nextDouble() - 0.5D) * 0.28D;
             serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(net.minecraft.world.item.Items.NETHER_WART_BLOCK)),
-                    position.x, position.y, position.z, 1, velX, velY, velZ, 0.0D);
+                    position.x, position.y, position.z, 0, velX, velY, velZ, 1.0D);
         }
     }
 
