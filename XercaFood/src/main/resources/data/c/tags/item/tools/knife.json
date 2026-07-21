@@ -6,6 +6,10 @@
       "required": false
     },
     {
+      "id": "xercatools:copper_knife",
+      "required": false
+    },
+    {
       "id": "xercatools:knife",
       "required": false
     },
