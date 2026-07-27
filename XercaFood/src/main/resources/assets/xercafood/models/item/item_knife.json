@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "xercafood:item/tools/knife"
-    }
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "xercafood:item/tools/knife"
+  }
 }

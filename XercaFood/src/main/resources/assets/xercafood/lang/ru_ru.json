@@ -5,7 +5,6 @@
   "item.xercafood.golden_scythe": "Золотая коса",
   "item.xercafood.diamond_scythe": "Алмазная коса",
   "item.xercafood.netherite_scythe": "Незеритовая коса",
-
   "item.xercafood.raw_shish_kebab": "Сырой шашлык",
   "item.xercafood.item_yoghurt": "Йогурт",
   "item.xercafood.item_honeyberry_yoghurt": "Медово-ягодный йогурт",
@@ -32,7 +31,6 @@
   "item.xercafood.riceball": "Рисовый шарик",
   "item.xercafood.sushi": "Роллы",
   "item.xercafood.cooked_rice": "Приготовленный рис",
-
   "item.xercafood.item_apple_cupcake": "Яблочный кекс",
   "item.xercafood.item_pumpkin_cupcake": "Тыквенный кекс",
   "item.xercafood.item_cocoa_cupcake": "Какао-кекс",
@@ -44,7 +42,6 @@
   "item.xercafood.item_donut": "Пончик",
   "item.xercafood.item_fancy_donut": "Украшенный пончик",
   "item.xercafood.item_sprinkles": "Кондитерская посыпка",
-
   "item.xercafood.item_bun": "Булочка",
   "item.xercafood.item_raw_patty": "Сырая котлета",
   "item.xercafood.item_cooked_patty": "Приготовленная котлета",
@@ -58,14 +55,12 @@
   "item.xercafood.item_ultimate_burger": "ОГРОМНЫЙ БУРГЕР!",
   "item.xercafood.item_rotten_burger": "Испоченный бургер",
   "item.xercafood.cheeseburger": "Чизбургер",
-
   "item.xercafood.item_raw_sausage": "Сырая сосиска",
   "item.xercafood.item_cooked_sausage": "Приготовленная сосиска",
   "item.xercafood.item_hotdog": "Хот-дог",
   "item.xercafood.item_fish_bread": "Пирожок с рыбой",
   "item.xercafood.item_daisy_sandwich": "Ромашковый сэндвич?",
   "item.xercafood.item_chicken_wrap": "Куриный рулет",
-
   "item.xercafood.item_raw_schnitzel": "Сырой шницель",
   "item.xercafood.item_cooked_schnitzel": "Приготовленный шницель",
   "item.xercafood.item_fried_egg": "Жаренное яйцо",
@@ -76,7 +71,6 @@
   "item.xercafood.item_tomato_slices": "Ломтики помидора",
   "item.xercafood.squid_ink_paella": "Паэлья с чернилами кальмара",
   "item.xercafood.glow_squid_ink_paella": "Паэлья со светящимися чернилами кальмара",
-
   "item.xercafood.item_ice_tea": "холодный чай",
   "item.xercafood.item_glass_of_water": "Вода",
   "item.xercafood.item_apple_juice": "Яблочный сок",
@@ -86,7 +80,6 @@
   "item.xercafood.item_tomato_juice": "Томатный сок",
   "item.xercafood.item_wheat_juice": "Пиво",
   "item.xercafood.item_glass_of_milk": "Стакан молока",
-
   "item.xercafood.item_knife": "Нож",
   "item.xercafood.item_glass": "Стакан",
   "item.xercafood.item_tomato": "Помидорка",
@@ -124,7 +117,6 @@
   "item.xercafood.item_gavel": "Молоток",
   "item.xercafood.item_golden_coin_1": "Золотая монета",
   "item.xercafood.item_golden_coin_5": "Пять золотых монет",
-
   "block.xercafood.block_teapot": "Чайник",
   "block.xercafood.block_apple_pie": "Яблочный пирог",
   "block.xercafood.block_sweet_berry_pie": "Ягодный пирог",
@@ -134,13 +126,10 @@
   "block.xercafood.block_bookcase.name": "Полка для книг",
   "block.xercafood.rope": "Веревка",
   "block.xercafood.carving_station": "Столярный столик",
-
   "container.xercafood.bookcase": "Полка для книг",
   "container.xercafood.carving_station": "Столярный столик",
-
   "itemGroup.tea_tab": "Чай",
   "itemGroup.deco_tab": "xercafood блоки",
-
   "item.xercafood.item_attorney_badge": "Defense Attorney Badge",
   "item.xercafood.item_prosecutor_badge": "Prosecutor Badge",
   "item.xercafood.item_confetti": "Конфетти",
@@ -151,7 +140,6 @@
   "item.xercafood.item_diamond_warhammer": "Алмазная кувалда",
   "item.xercafood.item_netherite_warhammer": "Незеритовая кувалда",
   "item.xercafood.item_grab_hook": "Метательный крюк",
-
   "item.xercafood.black_cushion": "Черная подушка",
   "item.xercafood.blue_cushion": "Синяя подушка",
   "item.xercafood.brown_cushion": "Коричневая подушка",
@@ -168,7 +156,6 @@
   "item.xercafood.red_cushion": "Красная подушка",
   "item.xercafood.white_cushion": "Белая подушка",
   "item.xercafood.yellow_cushion": "Желтая подушка",
-
   "block.xercafood.carved_oak_1": "Резной дуб",
   "block.xercafood.carved_oak_2": "Резной дуб",
   "block.xercafood.carved_oak_3": "Резной дуб",
@@ -233,7 +220,6 @@
   "block.xercafood.carved_warped_6": "Резная Искажённая ножка",
   "block.xercafood.carved_warped_7": "Резная Искажённая ножка",
   "block.xercafood.carved_warped_8": "Резная Искажённая ножка",
-
   "block.xercafood.terratile": "Блок терракотовой плитки",
   "block.xercafood.terratile_slab": "Полублок терракотовой плитки",
   "block.xercafood.terratile_stairs": "Терракотовые ступеньки",
@@ -285,7 +271,6 @@
   "block.xercafood.black_terratile_stairs": "Черные терракотовые ступеньки",
   "block.xercafood.black_terratile_slab": "Черный полублок терракотовой плитки",
   "block.xercafood.black_terratile": "Черный блок терракотовой плитки",
-
   "item.xercafood.flask": "Эндер-бутылочка",
   "item.xercafood.flask_milk": "Эндер-бутылочка (Молоко)",
   "item.xercafood.flask.effect.empty": "Эндер-бутылочка",
@@ -310,7 +295,6 @@
   "item.xercafood.flask.effect.luck": "Эндер-бутылочка (Удача)",
   "item.xercafood.flask.effect.turtle_master": "Эндер-бутылочка (Черепашья мощь)",
   "item.xercafood.flask.effect.slow_falling": "Эндер-бутылочка (Плавное падение)",
-
   "item.xercafood.ender_bow": "Зельемет",
   "item.xercafood.ender_bow.effect.empty": "Зельемет",
   "item.xercafood.ender_bow.effect.water": "Зельемет (Вода)",
@@ -334,7 +318,6 @@
   "item.xercafood.ender_bow.effect.luck": "Зельемет (Удача)",
   "item.xercafood.ender_bow.effect.turtle_master": "Зельемет (Черепашья мощь)",
   "item.xercafood.ender_bow.effect.slow_falling": "Зельемет (Плавное падение)",
-
   "advancements.xercafood.achievements.root.title": "xercafood",
   "advancements.xercafood.achievements.root.description": "The only advancements that matter",
   "advancements.xercafood.achievements.sneaky.title": "Плащ и кинжал",
@@ -359,7 +342,6 @@
   "advancements.xercafood.achievements.quake.description": "Нанесите урон нескольким противникам зачарованной кувалдой",
   "advancements.xercafood.achievements.behead.title": "Пожинатель скорби",
   "advancements.xercafood.achievements.behead.description": "Подмените на работе Мрачного Жнеца - обезглавьте своих врагов и соберите их головы",
-
   "enchantment.xercafood.enchantment_heavy": "Тяжеловес",
   "enchantment.xercafood.enchantment_maim": "Калечение",
   "enchantment.xercafood.enchantment_quick": "Легкость",
@@ -374,7 +356,6 @@
   "enchantment.xercafood.enchantment_capacity": "Вместимость",
   "enchantment.xercafood.enchantment_range": "Дальность",
   "enchantment.xercafood.enchantment_chug": "Скорость питья",
-
   "enchantment.xercafood.enchantment_heavy.desc": "Зачарование кувалды. Увеличивает максимальное время замаха, но также добавляет больше урона и эффект откидывания.",
   "enchantment.xercafood.enchantment_maim.desc": "Зачарование кувалды. Калечит вашего противника при попадании, применяя эффект замедления.",
   "enchantment.xercafood.enchantment_quick.desc": "Зачарование кувалды. Позволяет вам замахиваться быстрее, ударяя с той же силой.",
@@ -391,10 +372,7 @@
   "enchantment.xercafood.enchantment_chug.desc": "Зачарование Эндер-бутылочки. Увеличивает скорость питья.",
   "enchantment.xercafood.enchantment_devour": "Истребить",
   "enchantment.xercafood.enchantment_devour.desc": "Slain mobs drop hearts that replenish health when picked up, with a chance to drop hearts on non-lethal hits as well. Higher levels increase the amount dropped on death and the drop chance on non-lethal hits.",
-
-
   "entity.xercafood.cushion": "Подушка",
-
   "xercafood.head.cow": "Cow Head",
   "xercafood.head.iron_golem": "Iron Golem Head",
   "xercafood.head.ocelot": "Ocelot Head",
@@ -412,7 +390,6 @@
   "xercafood.head.mooshroom": "Mooshroom Head",
   "xercafood.head.sheep": "Sheep Head",
   "xercafood.head.squid": "Squid Head",
-
   "xercafood.scythe_tooltip": "Не жнет недозревшие ростки",
   "xercafood.guillotine_tooltip": "Добейте врага заряженной атакой(ПКМ), чтобы использовать гильотину.",
   "xercafood.warhammer_tooltip": "Удерживайте ПКМ для мощной атаки.",
@@ -423,7 +400,6 @@
   "xercafood.ender_bow_tooltip": "Зарядите взрывными или туманными зельями.",
   "xercafood.empty_teapot_tooltip": "Залейте сушеными чайными листьями и водой, затем сварите ее, чтобы заварить чай.",
   "xercafood.rope_tooltip": "Можно карабкаться",
-
   "item.xercafood.cheese_toast": "Сырный тост",
   "item.xercafood.cheese_slice": "Ломтик сыра",
   "item.xercafood.cola_powder": "Секретная формула колы",
@@ -436,7 +412,6 @@
   "block.xercafood.cheese_wheel": "Колесо сыра",
   "block.xercafood.omni_chest": "Омни сундук",
   "container.xercafood.omni_chest": "Омни сундук",
-
   "xercafood.pizza": "Пицца",
   "xercafood.pizza_plain": "Пицца маргарита",
   "xercafood.pizza_raw": "Сырая пицца",

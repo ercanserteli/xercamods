@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
-import xerca.xercamusic.common.XercaMusic;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.Blocks;
 
 public final class Items {
@@ -32,13 +32,13 @@ public final class Items {
     public static final Item SAXOPHONE = new ItemInstrument(12, 0, 4);
     public static final Item GOD = new ItemInstrument(13, 0, 5);
     public static final Item PIANO = new ItemBlockInstrument(14, 0, 7, Blocks.PIANO);
-    public static final Item OBOE = new ItemInstrument(15,0, 4);
-    public static final Item REDSTONE_GUITAR = new ItemInstrument(16,0, 5);
-    public static final Item FRENCH_HORN = new ItemInstrument(17,0, 5);
-    public static final Item BASS_GUITAR = new ItemInstrument(18,1, 4);
+    public static final Item OBOE = new ItemInstrument(15, 0, 4);
+    public static final Item REDSTONE_GUITAR = new ItemInstrument(16, 0, 5);
+    public static final Item FRENCH_HORN = new ItemInstrument(17, 0, 5);
+    public static final Item BASS_GUITAR = new ItemInstrument(18, 1, 4);
     public static final Item MUSIC_SHEET = new ItemMusicSheet();
 
-    public static final CreativeModeTab musicTab = FabricItemGroup.builder()
+    public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
             .icon(() -> new ItemStack(Items.GUITAR))
             .displayItems((params, output) -> {
                 output.accept(MUSIC_SHEET);
@@ -67,7 +67,7 @@ public final class Items {
             .title(Component.translatable("itemGroup.xercamusic.music_tab"))
             .build();
 
-    public static final IItemInstrument[] instruments = new IItemInstrument[]{
+    public static final IItemInstrument[] INSTRUMENTS = new IItemInstrument[]{
             (IItemInstrument) GUITAR, (IItemInstrument) LYRE, (IItemInstrument) BANJO, (IItemInstrument) DRUM,
             (IItemInstrument) CYMBAL, (IItemInstrument) DRUM_KIT, (IItemInstrument) XYLOPHONE, (IItemInstrument) TUBULAR_BELL,
             (IItemInstrument) SANSULA, (IItemInstrument) VIOLIN, (IItemInstrument) CELLO, (IItemInstrument) FLUTE,
@@ -79,35 +79,35 @@ public final class Items {
 
 
     public static void registerRecipes() {
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(XercaMusic.MODID,
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Mod.MODID,
                 "crafting_special_notecloning"), CRAFTING_SPECIAL_NOTECLONING);
     }
 
     public static void registerItems() {
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "guitar"), GUITAR);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "lyre"), LYRE);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "banjo"), BANJO);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "drum"), DRUM);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "cymbal"), CYMBAL);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "drum_kit"), DRUM_KIT);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "xylophone"), XYLOPHONE);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "tubular_bell"), TUBULAR_BELL);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "sansula"), SANSULA);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "violin"), VIOLIN);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "cello"), CELLO);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "flute"), FLUTE);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "saxophone"), SAXOPHONE);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "god"), GOD);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "piano"), PIANO);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "oboe"), OBOE);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "redstone_guitar"), REDSTONE_GUITAR);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "french_horn"), FRENCH_HORN);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "bass_guitar"), BASS_GUITAR);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "harp_mc"), HARP_MC);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "music_sheet"), MUSIC_SHEET);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "music_box"), new BlockItem(Blocks.MUSIC_BOX, new Item.Properties()));
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(XercaMusic.MODID, "metronome"), new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties()));
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "guitar"), GUITAR);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "lyre"), LYRE);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "banjo"), BANJO);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "drum"), DRUM);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "cymbal"), CYMBAL);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "drum_kit"), DRUM_KIT);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "xylophone"), XYLOPHONE);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "tubular_bell"), TUBULAR_BELL);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "sansula"), SANSULA);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "violin"), VIOLIN);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "cello"), CELLO);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "flute"), FLUTE);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "saxophone"), SAXOPHONE);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "god"), GOD);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "piano"), PIANO);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "oboe"), OBOE);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "redstone_guitar"), REDSTONE_GUITAR);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "french_horn"), FRENCH_HORN);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "bass_guitar"), BASS_GUITAR);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "harp_mc"), HARP_MC);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "music_sheet"), MUSIC_SHEET);
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "music_box"), new BlockItem(Blocks.MUSIC_BOX, new Item.Properties()));
+        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Mod.MODID, "metronome"), new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties()));
 
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(XercaMusic.MODID, "music_tab"), musicTab);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(Mod.MODID, "music_tab"), MUSIC_TAB);
     }
 }

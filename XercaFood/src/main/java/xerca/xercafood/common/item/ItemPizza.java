@@ -2,7 +2,10 @@ package xerca.xercafood.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import xerca.xercafood.common.XercaFood;
@@ -30,15 +33,15 @@ public class ItemPizza extends BlockItem {
         addPizzaIngredientToTooltip(tooltip, slot3);
     }
 
-    static void addPizzaIngredientToTooltip(List<Component> tooltip, BlockPizza.Ingredient ingredient){
-        if(!ingredient.equals(BlockPizza.Ingredient.EMPTY)) {
+    static void addPizzaIngredientToTooltip(List<Component> tooltip, BlockPizza.Ingredient ingredient) {
+        if (!ingredient.equals(BlockPizza.Ingredient.EMPTY)) {
             tooltip.add(Component.translatable(XercaFood.MODID + ".ingredient." + ingredient.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
         }
     }
 
     @Override
     public Component getName(ItemStack stack) {
-        if(slot1.equals(BlockPizza.Ingredient.EMPTY) && slot2.equals(BlockPizza.Ingredient.EMPTY) && slot3.equals(BlockPizza.Ingredient.EMPTY))
+        if (slot1.equals(BlockPizza.Ingredient.EMPTY) && slot2.equals(BlockPizza.Ingredient.EMPTY) && slot3.equals(BlockPizza.Ingredient.EMPTY))
             return Component.translatable(XercaFood.MODID + ".pizza_plain");
         return Component.translatable(XercaFood.MODID + ".pizza");
     }

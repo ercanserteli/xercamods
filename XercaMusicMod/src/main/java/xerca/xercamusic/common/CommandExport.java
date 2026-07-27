@@ -18,9 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.Mod.sendToClient;
 
-public class CommandExport {
+public final class CommandExport {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicexport")
@@ -29,15 +29,15 @@ public class CommandExport {
         );
     }
 
-    private static int musicExport(CommandSourceStack stack, String name){
-        XercaMusic.LOGGER.debug("Music export called. name: {}", name);
-        if(stack.getEntity() == null){
-            XercaMusic.LOGGER.error("Command entity is not found");
+    private static int musicExport(CommandSourceStack stack, String name) {
+        Mod.LOGGER.debug("Music export called. name: {}", name);
+        if (stack.getEntity() == null) {
+            Mod.LOGGER.error("Command entity is not found");
             return 0;
         }
         Entity commander = stack.getEntity();
-        if(!(commander instanceof ServerPlayer player)){
-            XercaMusic.LOGGER.error("Command entity is not a player");
+        if (!(commander instanceof ServerPlayer player)) {
+            Mod.LOGGER.error("Command entity is not a player");
             return 0;
         }
 
@@ -46,16 +46,16 @@ public class CommandExport {
         return 1;
     }
 
-    public static boolean doExport(Player player, String name){
+    public static boolean doExport(Player player, String name) {
         String dir = "music_sheets";
         String filename = name + ".sheet";
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
-        if (!directory.exists()){
-            directory.mkdir();
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
 
-        for(ItemStack s : player.getHandSlots()){
+        for (ItemStack s : player.getHandSlots()) {
             if (s.getItem() instanceof ItemMusicSheet && s.hasTag() && s.getTag() != null) {
                 CompoundTag tag = s.getTag().copy();
                 if (tag.contains("id") && tag.contains("ver")) {
@@ -64,7 +64,7 @@ public class CommandExport {
                     MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
                         MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
                         if (data != null) {
-                            NoteEvent.fillNBTFromArray(data.notes, tag);
+                            NoteEvent.fillNBTFromArray(data.notes(), tag);
                             try {
                                 NbtIo.write(tag, new File(filepath));
                             } catch (IOException e) {

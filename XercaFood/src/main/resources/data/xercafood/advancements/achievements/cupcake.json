@@ -19,7 +19,9 @@
       "conditions": {
         "items": [
           {
-            "items": ["xercafood:item_golden_cupcake"]
+            "items": [
+              "xercafood:item_golden_cupcake"
+            ]
           }
         ]
       }

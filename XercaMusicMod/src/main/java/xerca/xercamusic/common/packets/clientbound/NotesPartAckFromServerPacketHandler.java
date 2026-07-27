@@ -11,25 +11,25 @@ import java.util.Map;
 import java.util.UUID;
 
 public class NotesPartAckFromServerPacketHandler implements ClientPlayNetworking.PlayChannelHandler {
-    private static final Map<UUID, Runnable> map = new HashMap<>();
+    private static final Map<UUID, Runnable> MAP = new HashMap<>();
 
     public static void addCallback(UUID id, Runnable func) {
-        map.put(id, func);
+        MAP.put(id, func);
     }
 
     private static void processMessage(NotesPartAckFromServerPacket msg) {
         UUID id = msg.getMusicId();
-        if(map.containsKey(id)) {
-            map.get(id).run();
-            map.remove(id);
+        if (MAP.containsKey(id)) {
+            MAP.get(id).run();
+            MAP.remove(id);
         }
     }
 
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         NotesPartAckFromServerPacket packet = NotesPartAckFromServerPacket.decode(buf);
-        if(packet != null){
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 }

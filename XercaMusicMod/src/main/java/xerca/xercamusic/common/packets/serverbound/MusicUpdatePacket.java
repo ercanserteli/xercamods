@@ -3,17 +3,17 @@ package xerca.xercamusic.common.packets.serverbound;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.packets.IPacket;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.XercaMusic.MAX_NOTES_IN_PACKET;
+import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
 
 public class MusicUpdatePacket implements IPacket {
-    public static final ResourceLocation ID = new ResourceLocation(XercaMusic.MODID, "music_update");
+    public static final ResourceLocation ID = new ResourceLocation(Mod.MODID, "music_update");
     private FieldFlag availability;
     private ArrayList<NoteEvent> notes;
     private short lengthBeats;
@@ -42,7 +42,7 @@ public class MusicUpdatePacket implements IPacket {
         this.version = version;
         this.highlightInterval = highlightInterval;
         this.notes = notes;
-        if(availability.hasNotes && this.notes != null && this.notes.size() > MAX_NOTES_IN_PACKET) {
+        if (availability.hasNotes && this.notes != null && this.notes.size() > MAX_NOTES_IN_PACKET) {
             throw new ImportMusicSendPacket.NotesTooLargeException(notes, musicId);
         }
     }
@@ -56,12 +56,12 @@ public class MusicUpdatePacket implements IPacket {
         try {
             FieldFlag flag = FieldFlag.fromInt(buf.readInt());
             result.availability = flag;
-            if(flag.hasTitle) result.title = buf.readUtf(255);
-            if(flag.hasSigned) result.signed = buf.readBoolean();
-            if(flag.hasBps) result.bps = buf.readByte();
-            if(flag.hasVolume) result.volume = buf.readFloat();
-            if(flag.hasLength) result.lengthBeats = buf.readShort();
-            if(flag.hasNotes){
+            if (flag.hasTitle) result.title = buf.readUtf(255);
+            if (flag.hasSigned) result.signed = buf.readBoolean();
+            if (flag.hasBps) result.bps = buf.readByte();
+            if (flag.hasVolume) result.volume = buf.readFloat();
+            if (flag.hasLength) result.lengthBeats = buf.readShort();
+            if (flag.hasNotes) {
                 int eventCount = buf.readInt();
                 if (eventCount < 0 || eventCount > MAX_NOTES_IN_PACKET) {
                     throw new IndexOutOfBoundsException("Invalid eventCount: " + eventCount);
@@ -73,13 +73,13 @@ public class MusicUpdatePacket implements IPacket {
                     }
                 }
             }
-            if(flag.hasPrevIns) result.prevInstrument = buf.readByte();
-            if(flag.hasPrevInsLocked) result.prevInsLocked = buf.readBoolean();
+            if (flag.hasPrevIns) result.prevInstrument = buf.readByte();
+            if (flag.hasPrevInsLocked) result.prevInsLocked = buf.readBoolean();
             if (flag.hasId) result.musicId = buf.readUUID();
-            if(flag.hasVersion) result.version = buf.readInt();
-            if(flag.hasHlInterval) result.highlightInterval = buf.readByte();
+            if (flag.hasVersion) result.version = buf.readInt();
+            if (flag.hasHlInterval) result.highlightInterval = buf.readByte();
         } catch (RuntimeException ioe) {
-            XercaMusic.LOGGER.error("Exception while reading MusicUpdatePacket", ioe);
+            Mod.LOGGER.error("Exception while reading MusicUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;
@@ -89,27 +89,26 @@ public class MusicUpdatePacket implements IPacket {
     public FriendlyByteBuf encode() {
         FriendlyByteBuf buf = PacketByteBufs.create();
         buf.writeInt(availability.toInt());
-        if(availability.hasTitle) buf.writeUtf(title);
-        if(availability.hasSigned) buf.writeBoolean(signed);
-        if(availability.hasBps) buf.writeByte(bps);
-        if(availability.hasVolume) buf.writeFloat(volume);
-        if(availability.hasLength) buf.writeShort(lengthBeats);
-        if(availability.hasNotes){
-            if(notes != null) {
+        if (availability.hasTitle) buf.writeUtf(title);
+        if (availability.hasSigned) buf.writeBoolean(signed);
+        if (availability.hasBps) buf.writeByte(bps);
+        if (availability.hasVolume) buf.writeFloat(volume);
+        if (availability.hasLength) buf.writeShort(lengthBeats);
+        if (availability.hasNotes) {
+            if (notes != null) {
                 buf.writeInt(notes.size());
                 for (NoteEvent event : notes) {
                     event.encodeToBuffer(buf);
                 }
-            }
-            else{
+            } else {
                 buf.writeInt(0);
             }
         }
-        if(availability.hasPrevIns) buf.writeByte(prevInstrument);
-        if(availability.hasPrevInsLocked) buf.writeBoolean(prevInsLocked);
+        if (availability.hasPrevIns) buf.writeByte(prevInstrument);
+        if (availability.hasPrevInsLocked) buf.writeBoolean(prevInsLocked);
         if (availability.hasId) buf.writeUUID(musicId);
-        if(availability.hasVersion) buf.writeInt(version);
-        if(availability.hasHlInterval) buf.writeByte(highlightInterval);
+        if (availability.hasVersion) buf.writeInt(version);
+        if (availability.hasHlInterval) buf.writeByte(highlightInterval);
         return buf;
     }
 
@@ -218,7 +217,7 @@ public class MusicUpdatePacket implements IPacket {
 
         public FieldFlag(boolean hasNotes, boolean hasLength, boolean hasBps, boolean hasVolume, boolean hasSigned,
                          boolean hasTitle, boolean hasPrevIns, boolean hasPrevInsLocked, boolean hasId,
-                         boolean hasVersion, boolean hasHlInterval){
+                         boolean hasVersion, boolean hasHlInterval) {
             this.hasNotes = hasNotes;
             this.hasLength = hasLength;
             this.hasBps = hasBps;
@@ -232,10 +231,10 @@ public class MusicUpdatePacket implements IPacket {
             this.hasHlInterval = hasHlInterval;
         }
 
-        public FieldFlag(){
+        public FieldFlag() {
         }
 
-        public int toInt(){
+        public int toInt() {
             return (hasNotes ? NOTES_FLAG : 0) |
                     (hasLength ? LENGTH_FLAG : 0) |
                     (hasBps ? BPS_FLAG : 0) |
@@ -262,7 +261,7 @@ public class MusicUpdatePacket implements IPacket {
                     (packed & ID_FLAG) != 0,
                     (packed & VERSION_FLAG) != 0,
                     (packed & HL_INTERVAL_FLAG) != 0
-                    );
+            );
         }
 
         public boolean hasAny() {

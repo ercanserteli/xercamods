@@ -19,7 +19,7 @@ import xerca.xercamusic.common.item.ItemMusicSheet;
 
 import java.util.List;
 
-import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
+import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 
 public abstract class BlockInstrument extends Block {
     protected BlockInstrument(Properties properties) {
@@ -29,19 +29,18 @@ public abstract class BlockInstrument extends Block {
     public abstract IItemInstrument getItemInstrument();
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if(new Vec3(pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5).distanceTo(player.position()) > 4){
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        if (new Vec3(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5).distanceTo(player.position()) > 4) {
             return InteractionResult.PASS;
         }
         ItemStack handStack = player.getItemInHand(hand);
-        if(handStack.getItem() instanceof ItemMusicSheet){
-            playMusic(worldIn, player, pos);
+        if (handStack.getItem() instanceof ItemMusicSheet) {
+            playMusic(level, player, pos);
             return InteractionResult.SUCCESS;
-        }
-        else{
-            ItemStack offhandStack = player.getItemInHand(InteractionHand.values()[(hand.ordinal() + 1)%2]);
-            if(!(offhandStack.getItem() instanceof ItemMusicSheet)){
-                if (worldIn.isClientSide) {
+        } else {
+            ItemStack offhandStack = player.getItemInHand(InteractionHand.values()[(hand.ordinal() + 1) % 2]);
+            if (!(offhandStack.getItem() instanceof ItemMusicSheet)) {
+                if (level.isClientSide) {
                     onlyRunOnClient(() -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
                 }
                 return InteractionResult.SUCCESS;
@@ -50,12 +49,11 @@ public abstract class BlockInstrument extends Block {
         return InteractionResult.PASS;
     }
 
-    private void playMusic(Level worldIn, Player playerIn, BlockPos pos){
+    private void playMusic(Level worldIn, Player playerIn, BlockPos pos) {
         List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
-        if(musicSpirits.isEmpty()){
+        if (musicSpirits.isEmpty()) {
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, pos, getItemInstrument()));
-        }
-        else {
+        } else {
             musicSpirits.forEach(spirit -> spirit.setPlaying(false));
         }
     }

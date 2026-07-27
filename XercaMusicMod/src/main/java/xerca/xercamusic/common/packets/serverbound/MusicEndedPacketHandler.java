@@ -10,9 +10,9 @@ import net.minecraft.world.entity.Entity;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 
 public class MusicEndedPacketHandler implements ServerPlayNetworking.PlayChannelHandler {
-     private static void processMessage(MusicEndedPacket msg, ServerPlayer pl) {
+    private static void processMessage(MusicEndedPacket msg, ServerPlayer pl) {
         Entity ent = pl.level().getEntity(msg.getPlayerId());
-        if(ent instanceof EntityMusicSpirit spirit){
+        if (ent instanceof EntityMusicSpirit spirit) {
             spirit.setPlaying(false);
         }
     }
@@ -20,8 +20,8 @@ public class MusicEndedPacketHandler implements ServerPlayNetworking.PlayChannel
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         MusicEndedPacket packet = MusicEndedPacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

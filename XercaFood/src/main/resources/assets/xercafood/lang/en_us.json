@@ -23,7 +23,6 @@
   "item.xercafood.riceball": "Riceball",
   "item.xercafood.sushi": "Maki Sushi",
   "item.xercafood.cooked_rice": "Cooked Rice",
-
   "item.xercafood.item_apple_cupcake": "Apple Cupcake",
   "item.xercafood.item_pumpkin_cupcake": "Pumpkin Cupcake",
   "item.xercafood.item_cocoa_cupcake": "Cocoa Cupcake",
@@ -39,7 +38,6 @@
   "item.xercafood.item_donut": "Donut",
   "item.xercafood.item_fancy_donut": "Fancy Donut",
   "item.xercafood.item_sprinkles": "Sprinkles",
-
   "item.xercafood.item_bun": "Bun",
   "item.xercafood.item_raw_patty": "Raw Patty",
   "item.xercafood.item_cooked_patty": "Cooked Patty",
@@ -53,14 +51,12 @@
   "item.xercafood.item_ultimate_burger": "Ultimate Burger",
   "item.xercafood.item_rotten_burger": "Rotten Burger",
   "item.xercafood.cheeseburger": "Cheeseburger",
-
   "item.xercafood.item_raw_sausage": "Raw Sausage",
   "item.xercafood.item_cooked_sausage": "Cooked Sausage",
   "item.xercafood.item_hotdog": "Hotdog",
   "item.xercafood.item_fish_bread": "Fish Bread",
   "item.xercafood.item_daisy_sandwich": "Daisy Sandwich",
   "item.xercafood.item_chicken_wrap": "Chicken Wrap",
-
   "item.xercafood.item_raw_schnitzel": "Raw Schnitzel",
   "item.xercafood.item_cooked_schnitzel": "Cooked Schnitzel",
   "item.xercafood.item_fried_egg": "Fried Egg",
@@ -71,7 +67,6 @@
   "item.xercafood.item_tomato_slices": "Tomato Slices",
   "item.xercafood.squid_ink_paella": "Squid Ink Paella",
   "item.xercafood.glow_squid_ink_paella": "Glow Squid Ink Paella",
-
   "item.xercafood.cola_powder": "Secret Cola Formula",
   "item.xercafood.cola_extract": "Cola Extract",
   "item.xercafood.cola": "Cola",
@@ -86,7 +81,6 @@
   "item.xercafood.item_tomato_juice": "Tomato Juice",
   "item.xercafood.item_wheat_juice": "Beer",
   "item.xercafood.item_glass_of_milk": "Glass of Milk",
-
   "item.xercafood.item_knife": "Knife",
   "item.xercafood.item_glass": "Glass",
   "item.xercafood.item_tomato": "Tomato",
@@ -121,7 +115,6 @@
   "item.xercafood.item_hot_teapot_6": "Hot Teapot",
   "item.xercafood.item_hot_teapot_7": "Hot Teapot",
   "item.xercafood.item_teacup": "Teacup",
-
   "block.xercafood.block_tomato_plant": "Tomato Seeds",
   "block.xercafood.block_rice_plant": "Rice",
   "block.xercafood.block_tea_plant": "Tea Seeds",
@@ -131,9 +124,7 @@
   "block.xercafood.block_sweet_berry_pie": "Sweet Berry Pie",
   "block.xercafood.vat": "Curdling Vat",
   "block.xercafood.cheese_wheel": "Cheese Wheel",
-
   "itemGroup.xercafood.tea_tab": "Tea",
-
   "advancements.xercafood.achievements.root.title": "xercafood",
   "advancements.xercafood.achievements.root.description": "The only advancements that matter",
   "advancements.xercafood.achievements.cupcake.title": "The Cupcake of Chaos",
@@ -148,9 +139,7 @@
   "advancements.xercafood.achievements.diabetes.description": "Ruin a perfectly good beverage for your questionable desires",
   "advancements.xercafood.achievements.diabetes2.title": "Type 99 Diabetes",
   "advancements.xercafood.achievements.diabetes2.description": "Build up your insulin resistance to levels you never knew were possible",
-
   "xercafood.empty_teapot_tooltip": "Fill with dried tea leaves and water, then cook it to make tea",
-
   "xercafood.pizza": "Pizza",
   "xercafood.pizza_plain": "Pizza Margherita",
   "xercafood.pizza_raw": "Raw Pizza",

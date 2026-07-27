@@ -101,7 +101,7 @@ public class Foods {
 
     static private FoodProperties.Builder makeFood(int hunger, float saturation, boolean isMeat) {
         FoodProperties.Builder builder = (new FoodProperties.Builder()).nutrition(hunger).saturationMod(saturation);
-        if(isMeat){
+        if (isMeat) {
             builder.meat();
         }
         return builder;

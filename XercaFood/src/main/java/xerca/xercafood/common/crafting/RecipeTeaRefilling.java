@@ -23,7 +23,7 @@ public class RecipeTeaRefilling extends CustomRecipe {
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemTeapot teapot = null;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemTeapot) {
@@ -33,7 +33,7 @@ public class RecipeTeaRefilling extends CustomRecipe {
 
                     teapotStack = itemstack;
                     teapot = (ItemTeapot) itemstack.getItem();
-                    if(teapot.isHot() || teapot.getTeaAmount() > 6){
+                    if (teapot.isHot() || teapot.getTeaAmount() > 6) {
                         return false;
                     }
                 } else {
@@ -57,7 +57,7 @@ public class RecipeTeaRefilling extends CustomRecipe {
         ItemStack teapotStack = ItemStack.EMPTY;
         ItemTeapot teapot = null;
 
-        for(int j = 0; j < inv.getContainerSize(); ++j) {
+        for (int j = 0; j < inv.getContainerSize(); ++j) {
             ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof ItemTeapot) {
@@ -67,10 +67,10 @@ public class RecipeTeaRefilling extends CustomRecipe {
 
                     teapotStack = itemstack;
                     teapot = (ItemTeapot) itemstack.getItem();
-                    if(teapot.isHot() || teapot.getTeaAmount() > 6){
+                    if (teapot.isHot() || teapot.getTeaAmount() > 6) {
                         return ItemStack.EMPTY;
                     }
-                }else {
+                } else {
                     if (itemstack.getItem() != Items.ITEM_TEA_DRIED) {
                         return ItemStack.EMPTY;
                     }

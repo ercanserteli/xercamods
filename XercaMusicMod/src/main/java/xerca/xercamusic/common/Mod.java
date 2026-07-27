@@ -21,16 +21,33 @@ import xerca.xercamusic.common.packets.IPacket;
 import xerca.xercamusic.common.packets.serverbound.*;
 import xerca.xercamusic.common.tile_entity.BlockEntities;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 
-public class XercaMusic implements ModInitializer
-{
+public class Mod implements ModInitializer {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
 
+    public static void sendToClient(ServerPlayer player, IPacket packet) {
+        ServerPlayNetworking.send(player, packet.getID(), packet.encode());
+    }
+
+    @Nullable
+    public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) throws Exception {
+        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+            return toRun.get().call();
+        }
+        return null;
+    }
+
+    public static void onlyRunOnClient(Supplier<Runnable> toRun) {
+        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
+            toRun.get().run();
+        }
+    }
 
     private void networkRegistry() {
         ServerPlayNetworking.registerGlobalReceiver(MusicUpdatePacket.ID, new MusicUpdatePacketHandler());
@@ -71,32 +88,5 @@ public class XercaMusic implements ModInitializer
             CommandImport.register(dispatcher);
             CommandExport.register(dispatcher);
         });
-    }
-
-    public static void sendToClient(ServerPlayer player, IPacket packet) {
-        ServerPlayNetworking.send(player, packet.getID(), packet.encode());
-    }
-
-    public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
-            try {
-                return toRun.get().call();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
-    public static void onlyRunOnClient(Supplier<Runnable> toRun) {
-        if (EnvType.CLIENT == FabricLoader.getInstance().getEnvironmentType()) {
-            try {
-                toRun.get().run();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }

@@ -1,7 +1,6 @@
-
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "xercafood:item/pizza/pizza_generic"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercafood:item/pizza/pizza_generic"
+  }
 }

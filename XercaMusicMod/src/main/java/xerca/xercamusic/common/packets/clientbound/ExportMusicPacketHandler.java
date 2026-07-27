@@ -14,7 +14,7 @@ public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayChanne
 
     private static void processMessage(ExportMusicPacket msg) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if(player != null) {
+        if (player != null) {
             if (CommandExport.doExport(player, msg.getName())) {
                 player.sendSystemMessage(Component.translatable("xercamusic.export.success", msg.getName()).withStyle(ChatFormatting.GREEN));
             } else {
@@ -26,8 +26,8 @@ public class ExportMusicPacketHandler implements ClientPlayNetworking.PlayChanne
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ExportMusicPacket packet = ExportMusicPacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 }

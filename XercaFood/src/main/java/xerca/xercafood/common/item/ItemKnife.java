@@ -7,7 +7,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
@@ -34,8 +33,7 @@ public class ItemKnife extends Item implements FabricItem {
     }
 
     @Override
-    public int getEnchantmentValue()
-    {
+    public int getEnchantmentValue() {
         return Tiers.IRON.getEnchantmentValue();
     }
 
@@ -45,7 +43,7 @@ public class ItemKnife extends Item implements FabricItem {
         ret.setTag(stack.getTag());
 
         ret.setDamageValue(stack.getDamageValue() + 1);
-        if(ret.getDamageValue() >= ret.getMaxDamage()){
+        if (ret.getDamageValue() >= ret.getMaxDamage()) {
             return ItemStack.EMPTY;
         }
         return ret;

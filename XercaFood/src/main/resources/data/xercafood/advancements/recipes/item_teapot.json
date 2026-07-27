@@ -1,4 +1,3 @@
-
 {
   "parent": "xercafood:recipes/root",
   "rewards": {
@@ -11,7 +10,11 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          {"items": ["minecraft:clay_ball"]}
+          {
+            "items": [
+              "minecraft:clay_ball"
+            ]
+          }
         ]
       }
     },

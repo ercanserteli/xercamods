@@ -1,13 +1,20 @@
-
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        " p ",
-        "plp",
-        " p "
-    ],
-    "key": {"p": {"tag": "minecraft:planks"}, "l": {"item": "minecraft:leather"}},
-    "result": {"item": "xercamusic:drum"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " p ",
+    "plp",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "l": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "item": "xercamusic:drum"
+  }
 }
         

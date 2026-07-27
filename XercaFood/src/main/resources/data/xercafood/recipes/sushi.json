@@ -1,8 +1,19 @@
-
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "xercafood:cooked_rice"}, {"item": "minecraft:dried_kelp"}, {"item": "xercafood:sashimi"}],
-    "result": {"item": "xercafood:sushi", "count": 2}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "xercafood:cooked_rice"
+    },
+    {
+      "item": "minecraft:dried_kelp"
+    },
+    {
+      "item": "xercafood:sashimi"
+    }
+  ],
+  "result": {
+    "item": "xercafood:sushi",
+    "count": 2
+  }
 }
         

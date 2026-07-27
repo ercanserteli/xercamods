@@ -25,7 +25,7 @@ public class BetterSlider extends AbstractSliderButton {
     private final DecimalFormat format;
     private static final ResourceLocation SLIDER_LOCATION = new ResourceLocation("textures/gui/slider.png");
 
-    public BetterSlider(int x, int y, int width, int height, Component prefix, Component suffix, double minValue, double maxValue, double currentValue, double stepSize, boolean drawString) {
+    protected BetterSlider(int x, int y, int width, int height, Component prefix, Component suffix, double minValue, double maxValue, double currentValue, double stepSize, boolean drawString) {
         super(x, y, width, height, Component.empty(), 0D);
         this.prefix = prefix;
         this.suffix = suffix;
@@ -33,60 +33,48 @@ public class BetterSlider extends AbstractSliderButton {
         this.maxValue = maxValue;
         this.interval = maxValue - minValue;
         this.stepSize = Math.abs(stepSize);
-        this.value = this.snapToNearest((currentValue - minValue) / (interval));
+        this.value = this.snapToNearest((currentValue - minValue) / interval);
         this.drawString = drawString;
 
         if (Mth.equal(this.stepSize, Math.floor(this.stepSize))) {
             this.format = new DecimalFormat("0");
-        }
-        else {
+        } else {
             this.format = new DecimalFormat(Double.toString(this.stepSize).replaceAll("\\d", "0"));
         }
 
         this.updateMessage();
     }
 
-    public BetterSlider(int x, int y, int width, int height, Component prefix, Component suffix, double minValue, double maxValue, double currentValue, boolean drawString)
-    {
+    protected BetterSlider(int x, int y, int width, int height, Component prefix, Component suffix, double minValue, double maxValue, double currentValue, boolean drawString) {
         this(x, y, width, height, prefix, suffix, minValue, maxValue, currentValue, 1D, drawString);
     }
 
-    public double getValue()
-    {
-        return value * (interval) + minValue;
+    public double getValue() {
+        return value * interval + minValue;
     }
 
-    public void setValue(double newValue)
-    {
-        value = snapToNearest((newValue - minValue) / (interval));
+    public void setValue(double newValue) {
+        value = snapToNearest((newValue - minValue) / interval);
         updateMessage();
     }
 
-    public String getValueString()
-    {
+    public String getValueString() {
         return format.format(getValue());
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY)
-    {
+    public void onClick(double mouseX, double mouseY) {
         this.setValueFromMouse(mouseX);
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY)
-    {
+    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
         super.onDrag(mouseX, mouseY, dragX, dragY);
         this.setValueFromMouse(mouseX);
     }
 
-    private void setValueFromMouse(double mouseX)
-    {
-        this.setSliderValue((mouseX - (this.getX() + 4)) / (this.width - 8));
-    }
-
-    private void setSliderValue(double newValue)
-    {
+    private void setValueFromMouse(double mouseX) {
+        double newValue = (mouseX - (this.getX() + 4)) / (this.width - 8);
         double oldValue = value;
         value = snapToNearest(newValue);
         if (!Mth.equal(oldValue, value)) {
@@ -95,9 +83,8 @@ public class BetterSlider extends AbstractSliderButton {
         updateMessage();
     }
 
-    private double snapToNearest(double sliderValue)
-    {
-        if(stepSize <= 0D) {
+    private double snapToNearest(double sliderValue) {
+        if (stepSize <= 0D) {
             return Mth.clamp(sliderValue, 0D, 1D);
         }
 
@@ -106,8 +93,7 @@ public class BetterSlider extends AbstractSliderButton {
 
         if (minValue > maxValue) {
             sliderValue = Mth.clamp(sliderValue, maxValue, minValue);
-        }
-        else {
+        } else {
             sliderValue = Mth.clamp(sliderValue, minValue, maxValue);
         }
 
@@ -153,8 +139,7 @@ public class BetterSlider extends AbstractSliderButton {
     }
 
     public static void blitWithBorder(PoseStack poseStack, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight,
-                                      int topBorder, int bottomBorder, int leftBorder, int rightBorder, float zLevel)
-    {
+                                      int topBorder, int bottomBorder, int leftBorder, int rightBorder, float zLevel) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -199,8 +184,7 @@ public class BetterSlider extends AbstractSliderButton {
         }
     }
 
-    public static void drawTexturedModalRect(PoseStack poseStack, int x, int y, int u, int v, int width, int height, float zLevel)
-    {
+    public static void drawTexturedModalRect(PoseStack poseStack, int x, int y, int u, int v, int width, int height, float zLevel) {
         final float uScale = 1f / 0x100;
         final float vScale = 1f / 0x100;
 
@@ -211,17 +195,15 @@ public class BetterSlider extends AbstractSliderButton {
         wr.vertex(matrix, x, (float) y + height, zLevel).uv(u * uScale, ((v + height) * vScale)).endVertex();
         wr.vertex(matrix, (float) x + width, (float) y + height, zLevel).uv((u + width) * uScale, ((v + height) * vScale)).endVertex();
         wr.vertex(matrix, (float) x + width, y, zLevel).uv((u + width) * uScale, (v * vScale)).endVertex();
-        wr.vertex(matrix, x, y , zLevel).uv(u * uScale, (v * vScale)).endVertex();
+        wr.vertex(matrix, x, y, zLevel).uv(u * uScale, (v * vScale)).endVertex();
         tesselator.end();
     }
 
     @Override
-    protected void updateMessage()
-    {
+    protected void updateMessage() {
         if (this.drawString) {
             this.setMessage(Component.empty().append(prefix).append(this.getValueString()).append(suffix));
-        }
-        else {
+        } else {
             this.setMessage(Component.empty());
         }
     }

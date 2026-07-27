@@ -13,6 +13,7 @@ public class ConfettiParticlePacket extends ParticlePacket implements IPacket {
     public ConfettiParticlePacket(int count, double posX, double posY, double posZ) {
         this(count, posX, posY, posZ, Vec3i.ZERO);
     }
+
     public ConfettiParticlePacket(int count, double posX, double posY, double posZ, Vec3i direction) {
         super(count, posX, posY, posZ);
         this.direction = direction;

@@ -1,13 +1,30 @@
-
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        "nan",
-        "mem",
-        "www"
-    ],
-    "key": {"a": {"item": "minecraft:golden_apple", "data": 0}, "e": {"item": "minecraft:egg"}, "w": {"item": "minecraft:wheat"}, "m": {"item": "minecraft:milk_bucket"}, "n": {"item": "minecraft:gold_nugget"}},
-    "result": {"item": "xercafood:item_golden_cupcake"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "nan",
+    "mem",
+    "www"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:golden_apple",
+      "data": 0
+    },
+    "e": {
+      "item": "minecraft:egg"
+    },
+    "w": {
+      "item": "minecraft:wheat"
+    },
+    "m": {
+      "item": "minecraft:milk_bucket"
+    },
+    "n": {
+      "item": "minecraft:gold_nugget"
+    }
+  },
+  "result": {
+    "item": "xercafood:item_golden_cupcake"
+  }
 }
         

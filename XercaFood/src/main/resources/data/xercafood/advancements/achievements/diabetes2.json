@@ -23,7 +23,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["minecraft:cookie"]
+          "items": [
+            "minecraft:cookie"
+          ]
         }
       }
     },
@@ -31,7 +33,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["minecraft:pumpkin_pie"]
+          "items": [
+            "minecraft:pumpkin_pie"
+          ]
         }
       }
     },
@@ -39,7 +43,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_apple_cupcake"]
+          "items": [
+            "xercafood:item_apple_cupcake"
+          ]
         }
       }
     },
@@ -47,7 +53,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_pumpkin_cupcake"]
+          "items": [
+            "xercafood:item_pumpkin_cupcake"
+          ]
         }
       }
     },
@@ -55,7 +63,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_cocoa_cupcake"]
+          "items": [
+            "xercafood:item_cocoa_cupcake"
+          ]
         }
       }
     },
@@ -63,7 +73,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_melon_cupcake"]
+          "items": [
+            "xercafood:item_melon_cupcake"
+          ]
         }
       }
     },
@@ -71,7 +83,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_carrot_cupcake"]
+          "items": [
+            "xercafood:item_carrot_cupcake"
+          ]
         }
       }
     },
@@ -79,7 +93,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_fancy_apple_cupcake"]
+          "items": [
+            "xercafood:item_fancy_apple_cupcake"
+          ]
         }
       }
     },
@@ -87,7 +103,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_fancy_pumpkin_cupcake"]
+          "items": [
+            "xercafood:item_fancy_pumpkin_cupcake"
+          ]
         }
       }
     },
@@ -95,7 +113,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_donut"]
+          "items": [
+            "xercafood:item_donut"
+          ]
         }
       }
     },
@@ -103,7 +123,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_fancy_donut"]
+          "items": [
+            "xercafood:item_fancy_donut"
+          ]
         }
       }
     },
@@ -111,7 +133,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_chocolate"]
+          "items": [
+            "xercafood:item_chocolate"
+          ]
         }
       }
     },
@@ -119,7 +143,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_croissant"]
+          "items": [
+            "xercafood:item_croissant"
+          ]
         }
       }
     },
@@ -127,7 +153,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_ice_tea"]
+          "items": [
+            "xercafood:item_ice_tea"
+          ]
         }
       }
     },
@@ -135,7 +163,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_apple_juice"]
+          "items": [
+            "xercafood:item_apple_juice"
+          ]
         }
       }
     },
@@ -143,7 +173,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_carrot_juice"]
+          "items": [
+            "xercafood:item_carrot_juice"
+          ]
         }
       }
     },
@@ -151,7 +183,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_melon_juice"]
+          "items": [
+            "xercafood:item_melon_juice"
+          ]
         }
       }
     },
@@ -159,7 +193,9 @@
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["xercafood:item_pumpkin_juice"]
+          "items": [
+            "xercafood:item_pumpkin_juice"
+          ]
         }
       }
     }

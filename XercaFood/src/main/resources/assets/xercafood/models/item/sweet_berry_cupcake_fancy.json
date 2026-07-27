@@ -1,7 +1,6 @@
-
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "xercafood:item/cupcakes/cupcake_sweet_berry_fancy"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercafood:item/cupcakes/cupcake_sweet_berry_fancy"
+  }
 }

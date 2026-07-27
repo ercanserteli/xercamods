@@ -1,6 +1,5 @@
 {
   "itemGroup.xercamusic.music_tab": "Музыка",
-
   "item.xercamusic.music_sheet": "Нотный лист",
   "item.xercamusic.guitar": "Гитара",
   "item.xercamusic.flute": "Флейта",
@@ -21,17 +20,14 @@
   "item.xercamusic.redstone_guitar": "Электрогитара",
   "item.xercamusic.french_horn": "Валторна",
   "item.xercamusic.bass_guitar": "Бас-гитара",
-
   "block.xercamusic.block_metronome": "Метроном",
   "block.xercamusic.music_box": "Музыкальная шкатулка",
   "block.xercamusic.piano": "Пианино",
   "block.xercamusic.drum_kit": "Барабанная установка",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Музыка",
   "advancements.xercamusic.achievements.musician.title": "Музыкант",
   "advancements.xercamusic.achievements.musician.description": "Напишите свою первую мелодию",
-
   "note.byAuthor": "Автор: %1$s",
   "note.signButton": "Подписать",
   "note.editTitle": "Введите название мелодии:",

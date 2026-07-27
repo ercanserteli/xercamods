@@ -43,80 +43,15 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     public static final BooleanProperty HAS_INSTRUMENT = BooleanProperty.create("has_instrument");
 
     public BlockMusicBox() {
-        super(Properties.of().mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).isRedstoneConductor((blockState, blockGetter, blockPos)->false));
+        super(Properties.of().mapColor(MapColor.WOOD).ignitedByLava().instrument(NoteBlockInstrument.BASS).strength(2.f, 6.f).sound(SoundType.WOOD).isRedstoneConductor((blockState, blockGetter, blockPos) -> false));
         this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).
                 setValue(HAS_MUSIC, false).setValue(HAS_INSTRUMENT, false).setValue(FACING, Direction.NORTH).setValue(POWERING, false));
     }
 
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos())).
-                setValue(FACING, context.getHorizontalDirection());
-    }
-
-    @Override
-    public void neighborChanged(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
-        if(!worldIn.isClientSide){
-            boolean powered = worldIn.hasNeighborSignal(pos);
-            if(powered && state.getValue(POWERING)){
-                return;
-            }
-            if (powered != state.getValue(POWERED)) {
-                worldIn.setBlock(pos, state.setValue(POWERED, powered), 2);
-            }
-        }
-    }
-
-    private void ejectItem(Level world, BlockPos pos, BlockState state, boolean isMusic, boolean isBreaking) {
-        if (!world.isClientSide) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof TileEntityMusicBox te) {
-                ItemStack itemstack;
-                if (isMusic) {
-                    itemstack = te.getNoteStack();
-                } else {
-                    IItemInstrument instrument = te.getInstrument();
-                    itemstack = instrument != null ? new ItemStack((ItemLike) instrument) : ItemStack.EMPTY;
-                }
-                if (!itemstack.isEmpty()) {
-                    if (!isBreaking) {
-                        if (isMusic) {
-                            te.removeNoteStack();
-                            world.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.FALSE), 3);
-                        }
-                        else {
-                            te.removeInstrument();
-                            world.setBlock(pos, state.setValue(HAS_INSTRUMENT, Boolean.FALSE), 3);
-                        }
-                    }
-
-                    ItemEntity itemEntity;
-                    if(isMusic){
-                        itemEntity = new ItemEntity(world, pos.getX(), (double)pos.getY() + 1, pos.getZ(), itemstack);
-
-                        itemEntity.setDeltaMovement(world.random.nextDouble() * 0.2 - 0.1, 0.1, world.random.nextDouble() * 0.2 - 0.1);
-                    }
-                    else{
-                        Direction backFace = state.getValue(FACING).getOpposite();
-                        int xOffset = backFace.getStepX();
-                        int zOffset = backFace.getStepZ();
-
-                        itemEntity = new ItemEntity(world, pos.getX() + xOffset*0.625, pos.getY() + 0.5D, pos.getZ() + zOffset*0.625, itemstack);
-                        double speed = world.random.nextDouble() * 0.1 + 0.2;
-                        itemEntity.setDeltaMovement(xOffset * speed, 0.1, zOffset * speed);
-                    }
-
-                    itemEntity.setDefaultPickUpDelay();
-                    world.addFreshEntity(itemEntity);
-                }
-            }
-        }
-    }
-
-    public static void insertMusic(LevelAccessor worldIn, BlockPos pos, BlockState state, ItemStack noteStack) {
+    public static void insertMusic(LevelAccessor worldIn, BlockPos pos, BlockState state, ItemStack sheetStack) {
         BlockEntity blockEntity = worldIn.getBlockEntity(pos);
         if (blockEntity instanceof TileEntityMusicBox tileEntityMusicBox) {
-            tileEntityMusicBox.setNoteStack(noteStack, true);
+            tileEntityMusicBox.setSheetStack(sheetStack, true);
             worldIn.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.TRUE), 3);
         }
     }
@@ -131,20 +66,114 @@ public class BlockMusicBox extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos())).
+                setValue(FACING, context.getHorizontalDirection());
+    }
+
+    @Override
+    public void neighborChanged(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
+        if (!worldIn.isClientSide) {
+            boolean powered = worldIn.hasNeighborSignal(pos);
+            if (powered && state.getValue(POWERING)) {
+                return;
+            }
+            if (powered != state.getValue(POWERED)) {
+                worldIn.setBlock(pos, state.setValue(POWERED, powered), 2);
+            }
+        }
+    }
+
+    private void ejectItem(Level world, BlockPos pos, BlockState state, boolean isMusic, boolean isBreaking) {
+        if (world.isClientSide) {
+            return;
+        }
+
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!(blockEntity instanceof TileEntityMusicBox te)) {
+            return;
+        }
+
+        ItemStack itemStack = getEjectedStack(te, isMusic);
+        if (itemStack.isEmpty()) {
+            return;
+        }
+
+        if (!isBreaking) {
+            updateBlockAndInventory(world, pos, state, te, isMusic);
+        }
+
+        ItemEntity itemEntity = createItemEntity(world, pos, state, itemStack, isMusic);
+        itemEntity.setDefaultPickUpDelay();
+        world.addFreshEntity(itemEntity);
+    }
+
+    private ItemStack getEjectedStack(TileEntityMusicBox te, boolean isMusic) {
+        if (isMusic) {
+            return te.getSheetStack();
+        }
+        IItemInstrument instrument = te.getInstrument();
+        return instrument != null ? new ItemStack((ItemLike) instrument) : ItemStack.EMPTY;
+    }
+
+    private void updateBlockAndInventory(Level world, BlockPos pos, BlockState state, TileEntityMusicBox te, boolean isMusic) {
+        if (isMusic) {
+            te.removeSheetStack();
+            world.setBlock(pos, state.setValue(HAS_MUSIC, Boolean.FALSE), 3);
+        } else {
+            te.removeInstrument();
+            world.setBlock(pos, state.setValue(HAS_INSTRUMENT, Boolean.FALSE), 3);
+        }
+    }
+
+    private ItemEntity createItemEntity(Level world, BlockPos pos, BlockState state, ItemStack itemStack, boolean isMusic) {
+        if (isMusic) {
+            ItemEntity itemEntity = new ItemEntity(
+                    world,
+                    pos.getX(),
+                    pos.getY() + 1.0D,
+                    pos.getZ(),
+                    itemStack
+            );
+            itemEntity.setDeltaMovement(
+                    world.random.nextDouble() * 0.2 - 0.1,
+                    0.1,
+                    world.random.nextDouble() * 0.2 - 0.1
+            );
+            return itemEntity;
+        }
+
+        Direction backFace = state.getValue(FACING).getOpposite();
+        int xOffset = backFace.getStepX();
+        int zOffset = backFace.getStepZ();
+
+        ItemEntity itemEntity = new ItemEntity(
+                world,
+                pos.getX() + xOffset * 0.625D,
+                pos.getY() + 0.5D,
+                pos.getZ() + zOffset * 0.625D,
+                itemStack
+        );
+        double speed = world.random.nextDouble() * 0.1 + 0.2;
+        itemEntity.setDeltaMovement(xOffset * speed, 0.1, zOffset * speed);
+        return itemEntity;
+    }
+
+    @Override
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, BlockHitResult hitResult) {
         ItemStack heldItem = player.getItemInHand(hand);
-        if (hit.getDirection() == Direction.UP && state.getValue(HAS_MUSIC)) {
-            if(heldItem.getItem() instanceof IItemInstrument && !state.getValue(HAS_INSTRUMENT)){
+        if (hitResult.getDirection() == Direction.UP && state.getValue(HAS_MUSIC)) {
+            if (heldItem.getItem() instanceof IItemInstrument && !state.getValue(HAS_INSTRUMENT)) {
                 return InteractionResult.PASS;
             }
-            ejectItem(worldIn, pos, state, true, false);
+            ejectItem(level, pos, state, true, false);
             return InteractionResult.SUCCESS;
-        } else if (hit.getDirection() == state.getValue(FACING).getOpposite() && state.getValue(HAS_INSTRUMENT)) {
-            if(heldItem.getItem() == Items.MUSIC_SHEET && !state.getValue(HAS_MUSIC)){
+        } else if (hitResult.getDirection() == state.getValue(FACING).getOpposite() && state.getValue(HAS_INSTRUMENT)) {
+            if (heldItem.getItem() == Items.MUSIC_SHEET && !state.getValue(HAS_MUSIC)) {
                 return InteractionResult.PASS;
             }
-            worldIn.playSound(player, pos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1.0F, worldIn.getRandom().nextFloat() * 0.1F + 0.9F);
-            ejectItem(worldIn, pos, state, false, false);
+            level.playSound(player, pos, SoundEvents.WOODEN_DOOR_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+            ejectItem(level, pos, state, false, false);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;

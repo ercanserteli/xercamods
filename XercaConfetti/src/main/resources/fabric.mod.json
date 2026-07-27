@@ -4,7 +4,9 @@
   "version": "${version}",
   "name": "XercaConfetti",
   "description": "",
-  "authors": ["xerca"],
+  "authors": [
+    "xerca"
+  ],
   "contact": {},
   "license": "GPL-3.0",
   "icon": "assets/xercaconfetti/icon.png",

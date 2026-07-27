@@ -1,6 +1,5 @@
 {
   "itemGroup.xercamusic.music_tab": "Música",
-
   "item.xercamusic.music_sheet": "Partitura",
   "item.xercamusic.guitar": "Guitarra",
   "item.xercamusic.flute": "Flauta",
@@ -21,17 +20,14 @@
   "item.xercamusic.redstone_guitar": "Guitarra Redstone",
   "item.xercamusic.french_horn": "Trompa",
   "item.xercamusic.bass_guitar": "Bajo Redstone",
-
   "block.xercamusic.block_metronome": "Metrónomo",
   "block.xercamusic.music_box": "Caja musical",
   "block.xercamusic.piano": "Piano",
   "block.xercamusic.drum_kit": "Kit de batería",
-
   "advancements.xercamusic.achievements.root.title": "XercaMusic",
   "advancements.xercamusic.achievements.root.description": "Música",
   "advancements.xercamusic.achievements.musician.title": "Músico",
   "advancements.xercamusic.achievements.musician.description": "Compone tu primera pieza",
-
   "note.byAuthor": "por %1$s",
   "note.signButton": "Firmar",
   "note.editTitle": "Título de la música:",

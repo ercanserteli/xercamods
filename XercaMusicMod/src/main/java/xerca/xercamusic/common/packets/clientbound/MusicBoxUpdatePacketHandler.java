@@ -16,27 +16,26 @@ import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayChannelHandler {
     private static void processMessage(MusicBoxUpdatePacket msg) {
         Level world = Minecraft.getInstance().level;
-        if(world == null || !world.hasChunkAt(msg.getPos())){
+        if (world == null || !world.hasChunkAt(msg.getPos())) {
             return;
         }
 
-        BlockEntity te =  world.getBlockEntity(msg.getPos());
-        if(te instanceof TileEntityMusicBox tileEntityMusicBox){
+        BlockEntity te = world.getBlockEntity(msg.getPos());
+        if (te instanceof TileEntityMusicBox tileEntityMusicBox) {
 
-            if(msg.getNoteStackNBT() != null){
-                if(msg.getNoteStackNBT().isEmpty()){
-                    tileEntityMusicBox.removeNoteStack();
-                }
-                else{
+            if (msg.getNoteStackNBT() != null) {
+                if (msg.getNoteStackNBT().isEmpty()) {
+                    tileEntityMusicBox.removeSheetStack();
+                } else {
                     ItemStack noteStack = new ItemStack(Items.MUSIC_SHEET);
                     noteStack.setTag(msg.getNoteStackNBT());
-                    tileEntityMusicBox.setNoteStack(noteStack, false);
+                    tileEntityMusicBox.setSheetStack(noteStack, false);
                 }
             }
 
-            if(!msg.getInstrumentId().isEmpty()){
+            if (!msg.getInstrumentId().isEmpty()) {
                 tileEntityMusicBox.setInstrument(BuiltInRegistries.ITEM.get(new ResourceLocation(msg.getInstrumentId())));
-            }else{
+            } else {
                 tileEntityMusicBox.removeInstrument();
             }
         }
@@ -45,8 +44,8 @@ public class MusicBoxUpdatePacketHandler implements ClientPlayNetworking.PlayCha
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         MusicBoxUpdatePacket packet = MusicBoxUpdatePacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 }

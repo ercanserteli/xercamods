@@ -1,8 +1,27 @@
-
 {
-    "type": "minecraft:crafting_shapeless",
-    
-    "ingredients": [{"item": "minecraft:warped_roots"}, {"item": "minecraft:rotten_flesh"}, {"item": "minecraft:spider_eye"}, {"item": "minecraft:sugar"}, {"item": "minecraft:sugar"}, {"item": "minecraft:sugar"}],
-    "result": {"item": "xercafood:cola_powder"}
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:warped_roots"
+    },
+    {
+      "item": "minecraft:rotten_flesh"
+    },
+    {
+      "item": "minecraft:spider_eye"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:sugar"
+    }
+  ],
+  "result": {
+    "item": "xercafood:cola_powder"
+  }
 }
         

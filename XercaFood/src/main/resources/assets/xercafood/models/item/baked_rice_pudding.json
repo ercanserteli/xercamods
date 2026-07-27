@@ -1,7 +1,6 @@
-
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "xercafood:item/baked_rice_pudding"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "xercafood:item/baked_rice_pudding"
+  }
 }

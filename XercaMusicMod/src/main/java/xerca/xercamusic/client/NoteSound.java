@@ -7,21 +7,22 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 
 public class NoteSound extends AbstractSoundInstance implements TickableSoundInstance {
-    private boolean donePlaying = false;
-    private int remainingTicks = -1;
-    private static final float[] fadeVolumes = {0.0f, 0.02f, 0.12f, 0.3f};
+    private static final float[] FADE_VOLUMES = {0.0f, 0.02f, 0.12f, 0.3f};
     private final float originalVolume;
+    private boolean donePlaying;
+    private int remainingTicks = -1;
 
     NoteSound(SoundEvent soundEvent, SoundSource category, float x, float y, float z, float volume, float pitch, int lengthTicks) {
         super(soundEvent, category, RandomSource.create());
-        this.volume = this.originalVolume = volume;
+        this.originalVolume = volume;
+        this.volume = volume;
         this.pitch = pitch;
         this.x = x;
         this.y = y;
         this.z = z;
         this.looping = false;
         this.attenuation = Attenuation.LINEAR;
-        if(lengthTicks > 0){
+        if (lengthTicks > 0) {
             this.remainingTicks = lengthTicks + 3;
         }
     }
@@ -37,12 +38,12 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
 
     @Override
     public void tick() {
-        if(remainingTicks == 0){
+        if (remainingTicks == 0) {
             donePlaying = true;
             remainingTicks = -1;
         }
-        if(remainingTicks > 0){
-            volume = originalVolume * (remainingTicks >= fadeVolumes.length ? 1 : fadeVolumes[remainingTicks]);
+        if (remainingTicks > 0) {
+            volume = originalVolume * (remainingTicks >= FADE_VOLUMES.length ? 1 : FADE_VOLUMES[remainingTicks]);
             remainingTicks--;
         }
     }

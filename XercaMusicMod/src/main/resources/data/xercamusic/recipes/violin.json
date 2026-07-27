@@ -1,13 +1,23 @@
-
 {
-    "type": "minecraft:crafting_shaped",
-    
-    "pattern": [
-        " s ",
-        "pip",
-        " p "
-    ],
-    "key": {"p": {"item": "minecraft:spruce_planks"}, "s": {"item": "minecraft:stick"}, "i": {"item": "minecraft:string"}},
-    "result": {"item": "xercamusic:violin"}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " s ",
+    "pip",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "item": "minecraft:spruce_planks"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    },
+    "i": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "item": "xercamusic:violin"
+  }
 }
         

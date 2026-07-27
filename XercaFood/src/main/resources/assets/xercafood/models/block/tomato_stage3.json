@@ -1,6 +1,6 @@
 {
-    "parent": "block/crop",
-    "textures": {
-        "crop": "xercafood:block/tomato_stage3"
-    }
+  "parent": "block/crop",
+  "textures": {
+    "crop": "xercafood:block/tomato_stage3"
+  }
 }

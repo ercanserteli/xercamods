@@ -13,7 +13,7 @@ import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
 import xerca.xercamusic.common.item.Items;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChannelHandler {
@@ -36,39 +36,39 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChanne
 
             MusicUpdatePacket.FieldFlag flag = msg.getAvailability();
             if (flag.hasId) comp.putUUID("id", msg.getMusicId());
-            if(flag.hasVersion) comp.putInt("ver", msg.getVersion());
+            if (flag.hasVersion) comp.putInt("ver", msg.getVersion());
             if (flag.hasLength) comp.putInt("l", Math.max(0, msg.getLengthBeats()));
             if (flag.hasBps) comp.putByte("bps", sanitizeBps(msg.getBps()));
             if (flag.hasVolume) comp.putFloat("vol", sanitizeVolume(msg.getVolume()));
-            if(flag.hasPrevIns) comp.putByte("prevIns", msg.getPrevInstrument());
-            if(flag.hasPrevInsLocked) comp.putBoolean("piLocked", msg.getPrevInsLocked());
+            if (flag.hasPrevIns) comp.putByte("prevIns", msg.getPrevInstrument());
+            if (flag.hasPrevInsLocked) comp.putBoolean("piLocked", msg.getPrevInsLocked());
             if (flag.hasHlInterval) comp.putByte("hl", sanitizeHighlightInterval(msg.getHighlightInterval()));
-            if(flag.hasSigned && msg.getSigned()) {
-                if(flag.hasTitle) comp.putString("title", msg.getTitle().trim());
+            if (flag.hasSigned && msg.getSigned()) {
+                if (flag.hasTitle) comp.putString("title", msg.getTitle().trim());
                 comp.putString("author", pl.getName().getString());
                 comp.putInt("generation", 1);
                 Triggers.BECOME_MUSICIAN.trigger(pl);
             }
-            if(!comp.contains("generation")){
+            if (!comp.contains("generation")) {
                 comp.putInt("generation", 0);
             }
-            if(flag.hasNotes){
+            if (flag.hasNotes) {
                 if (!comp.contains("id") || !comp.contains("ver")) {
                     return;
                 }
 
-                ArrayList<NoteEvent> notes = msg.getNotes();
+                List<NoteEvent> notes = msg.getNotes();
                 UUID id = comp.getUUID("id");
-                if(notes == null) {
+                if (notes == null) {
                     // Get if large note was sent in parts
                     notes = MusicManager.getFinishedNotesFromBuffer(id);
-                    if(notes == null){
+                    if (notes == null) {
                         return;
                     }
                 }
                 MusicManager.setMusicData(id, comp.getInt("ver"), notes, pl.server);
-                if(!comp.contains("bps")) {
-                    comp.putByte("bps", (byte)8);
+                if (!comp.contains("bps")) {
+                    comp.putByte("bps", (byte) 8);
                 }
             }
         }
@@ -77,8 +77,8 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChanne
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         MusicUpdatePacket packet = MusicUpdatePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }
