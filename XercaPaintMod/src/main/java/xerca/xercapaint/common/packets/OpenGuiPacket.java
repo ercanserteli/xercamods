@@ -1,6 +1,7 @@
 package xerca.xercapaint.common.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.common.XercaPaint;
 import net.minecraft.world.InteractionHand;
 
 public class OpenGuiPacket {
@@ -35,13 +36,13 @@ public class OpenGuiPacket {
             result.allowed = buf.readBoolean();
             result.edit = buf.readBoolean();
             int handOrdinal = buf.readByte();
-            if (InteractionHand.values().length > handOrdinal) {
+            if (handOrdinal >= 0 && InteractionHand.values().length > handOrdinal) {
                 result.hand = InteractionHand.values()[handOrdinal];
             } else {
                 result.hand = InteractionHand.MAIN_HAND;
             }
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading OpenGuiPacket: " + ioe);
+        } catch (RuntimeException ioe) {
+            XercaPaint.LOGGER.error("Exception while reading OpenGuiPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

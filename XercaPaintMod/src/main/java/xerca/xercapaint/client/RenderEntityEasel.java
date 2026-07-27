@@ -16,24 +16,22 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.item.ItemCanvas;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
 public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements RenderLayerParent<EntityEasel, EaselModel> {
     protected final EaselModel model;
     protected final List<RenderLayer<EntityEasel, EaselModel>> layers = Lists.newArrayList();
-    static public RenderEntityEasel theInstance;
-    static private final ResourceLocation woodTexture = new ResourceLocation(XercaPaint.MODID, "textures/block/birch_long.png");
+    static @Nullable RenderEntityEasel theInstance;
+    private static final ResourceLocation WOOD_TEXTURE = new ResourceLocation(XercaPaint.MODID, "textures/block/birch_long.png");
 
     RenderEntityEasel(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -42,13 +40,13 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     }
 
     @Override
-    public @NotNull EaselModel getModel() {
+    public EaselModel getModel() {
         return this.model;
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityEasel entity) {
-        return woodTexture;
+    public ResourceLocation getTextureLocation(EntityEasel entity) {
+        return WOOD_TEXTURE;
     }
 
     @Override
@@ -59,7 +57,7 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
 
         this.model.setupAnim(entity, 0, 0, 0, 0, 0);
 
-        matrixStackIn.mulPose((new Quaternionf()).rotationXYZ((float) Math.PI, 0, 0));
+        matrixStackIn.mulPose(new Quaternionf().rotationXYZ((float) Math.PI, 0, 0));
         matrixStackIn.translate(0, -1.5, 0);
 
         RenderType rendertype = this.model.renderType(this.getTextureLocation(entity));
@@ -77,29 +75,28 @@ public class RenderEntityEasel extends EntityRenderer<EntityEasel> implements Re
     @Override
     protected boolean shouldShowName(EntityEasel easel) {
         HitResult result = Minecraft.getInstance().hitResult;
-        if (result instanceof EntityHitResult entityHitResult) {
-            if (Minecraft.renderNames() && entityHitResult.getEntity() == easel && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
-                double d0 = this.entityRenderDispatcher.distanceToSqr(easel);
-                float f = easel.isDiscrete() ? 32.0F : 64.0F;
-                return d0 < (double) (f * f);
-            }
+        if (result instanceof EntityHitResult entityHitResult && Minecraft.renderNames() && easel.equals(entityHitResult.getEntity()) && !easel.getItem().isEmpty() && ItemCanvas.hasTitle(easel.getItem())) {
+            double distanceSquared = this.entityRenderDispatcher.distanceToSqr(easel);
+            float range = easel.isDiscrete() ? 32.0F : 64.0F;
+            return distanceSquared < range * range;
         }
         return false;
     }
 
     @Override
-    protected void renderNameTag(EntityEasel easel, Component component, PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight) {
+    protected void renderNameTag(EntityEasel easel, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
         poseStack.translate(0, -0.5, 0);
-        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, pPackedLight);
+        super.renderNameTag(easel, ItemCanvas.getFullLabel(easel.getItem()), poseStack, bufferSource, packedLight);
         poseStack.popPose();
     }
 
     public static class RenderEntityEaselFactory implements EntityRendererProvider<EntityEasel> {
         @Override
-        public @NotNull EntityRenderer<EntityEasel> create(Context ctx) {
-            theInstance = new RenderEntityEasel(ctx);
-            return theInstance;
+        public EntityRenderer<EntityEasel> create(Context ctx) {
+            RenderEntityEasel instance = new RenderEntityEasel(ctx);
+            theInstance = instance;
+            return instance;
         }
     }
 }

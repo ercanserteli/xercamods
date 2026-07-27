@@ -3,16 +3,16 @@ package xerca.xercapaint.client;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
+import xerca.xercapaint.common.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import xerca.xercapaint.common.SoundEvents;
 
 @OnlyIn(Dist.CLIENT)
 public class BrushSound extends AbstractTickableSoundInstance {
-    private int age = 0;
+    private int age;
     private int fadingTicks = 4;
 
-    private static final float[] fadeVolumes = {0.0f, 0.3f, 0.7f};
+    private static final float[] FADE_VOLUMES = {0.0f, 0.3f, 0.7f};
 
     public BrushSound() {
         super(SoundEvents.STROKE_LOOP.get(), SoundSource.MASTER, SoundInstance.createUnseededRandom());
@@ -38,8 +38,8 @@ public class BrushSound extends AbstractTickableSoundInstance {
             this.stop();
         }
         if (fadingTicks >= 0) {
-            if (fadingTicks < fadeVolumes.length) {
-                volume = fadeVolumes[fadingTicks];
+            if (fadingTicks < FADE_VOLUMES.length) {
+                volume = FADE_VOLUMES[fadingTicks];
             }
             fadingTicks--;
         }

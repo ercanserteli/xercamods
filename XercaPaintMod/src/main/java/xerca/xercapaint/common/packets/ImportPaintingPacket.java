@@ -1,6 +1,7 @@
 package xerca.xercapaint.common.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.common.XercaPaint;
 
 public class ImportPaintingPacket {
     private String name;
@@ -22,8 +23,8 @@ public class ImportPaintingPacket {
         ImportPaintingPacket result = new ImportPaintingPacket();
         try {
             result.name = buf.readUtf(64);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ImportPaintingPacket: " + ioe);
+        } catch (RuntimeException ioe) {
+            XercaPaint.LOGGER.error("Exception while reading ImportPaintingPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

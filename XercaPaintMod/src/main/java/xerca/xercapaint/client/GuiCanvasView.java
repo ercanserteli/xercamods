@@ -1,63 +1,83 @@
 package xerca.xercapaint.client;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import xerca.xercapaint.common.CanvasSides;
 import xerca.xercapaint.common.CanvasType;
 import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.item.ItemCanvas;
-
-import java.util.Arrays;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCanvasView extends Screen {
-    private int canvasX; // = 140;
-    private int canvasY = 40;
+    private int canvasX;
+    private int canvasY = 50;
     private final int canvasWidth;
     private final int canvasPixelScale;
     private final int canvasPixelWidth;
     private final int canvasPixelHeight;
     private final CanvasType canvasType;
+    private final boolean glass;
 
-    private int[] pixels;
-    private String authorName = "";
+    private int @Nullable [] pixels;
+    private final boolean sidesActive;
+    private int @Nullable [] sidePixels;
+    private @Nullable String authorName = "";
     private String canvasTitle = "";
-    private int generation = 0;
-    private final EntityEasel easel;
-    private final Player player;
+    private int generation;
+    private final @Nullable EntityEasel easel;
+    private final @Nullable Player player;
 
-    protected GuiCanvasView(CompoundTag canvasTag, Component title, CanvasType canvasType, EntityEasel easel) {
+    protected GuiCanvasView(ItemStack canvasStack, Component title, CanvasType canvasType, boolean glass, @Nullable EntityEasel easel) {
         super(title);
 
         this.canvasType = canvasType;
+        this.glass = glass;
         this.canvasPixelScale = canvasType == CanvasType.SMALL ? 10 : 5;
         this.canvasPixelWidth = CanvasType.getWidth(canvasType);
         this.canvasPixelHeight = CanvasType.getHeight(canvasType);
-        int canvasPixelArea = canvasPixelHeight * canvasPixelWidth;
         this.canvasWidth = this.canvasPixelWidth * this.canvasPixelScale;
         this.easel = easel;
         this.player = Minecraft.getInstance().player;
 
-        if (ItemCanvas.hasCanvasData(canvasTag, this.canvasPixelWidth, this.canvasPixelHeight)) {
-            int[] nbtPixels = canvasTag.getIntArray("pixels");
-            this.authorName = canvasTag.getString("author");
-            this.canvasTitle = canvasTag.getString("title");
-            this.generation = canvasTag.getInt("generation");
-            this.pixels = Arrays.copyOfRange(nbtPixels, 0, canvasPixelArea);
+        CompoundTag tag = canvasStack.getTag();
+        if (tag != null && tag.contains(ItemCanvas.TAG_PIXELS)) {
+            this.authorName = tag.getString(ItemCanvas.TAG_AUTHOR);
+            this.canvasTitle = tag.getString(ItemCanvas.TAG_TITLE);
+            this.generation = tag.getInt(ItemCanvas.TAG_GENERATION);
+
+            this.pixels = tag.getIntArray(ItemCanvas.TAG_PIXELS);
         }
+
+        this.sidesActive = tag != null && tag.getBoolean(ItemCanvas.TAG_SIDES_ACTIVE);
+        int[] stackSidePixels = tag == null ? new int[0] : tag.getIntArray(ItemCanvas.TAG_SIDE_PIXELS);
+        if (stackSidePixels.length == CanvasSides.count(canvasType)) {
+            this.sidePixels = stackSidePixels;
+        }
+    }
+
+    private int getSidePixel(int index) {
+        if (sidePixels != null && index >= 0 && index < sidePixels.length) {
+            return sidePixels[index];
+        }
+        return CanvasSides.DEFAULT_COLOR;
     }
 
     @Override
     public void init() {
         canvasX = (this.width - canvasWidth) / 2;
-        if (canvasType.equals(CanvasType.LONG)) {
+        if (canvasType == CanvasType.LONG) {
             canvasY += 40;
         }
     }
@@ -71,13 +91,65 @@ public class GuiCanvasView extends Screen {
         return false;
     }
 
+    private static final int CHECKER_LIGHT = 0xFFBFBFBF;
+    private static final int CHECKER_DARK = 0xFF7F7F7F;
+
+    /**
+     * Writes one coloured quad into the shared GUI buffer, like {@link GuiGraphics#fill} but without flushing.
+     */
+    private static void batchFill(VertexConsumer buffer, Matrix4f matrix, int x1, int y1, int x2, int y2, int color) {
+        buffer.vertex(matrix, x1, y1, 0.0f).color(color).endVertex();
+        buffer.vertex(matrix, x1, y2, 0.0f).color(color).endVertex();
+        buffer.vertex(matrix, x2, y2, 0.0f).color(color).endVertex();
+        buffer.vertex(matrix, x2, y1, 0.0f).color(color).endVertex();
+    }
+
+    private void fillChecker(VertexConsumer buffer, Matrix4f matrix, int x, int y, int parity) {
+        batchFill(buffer, matrix, x, y, x + canvasPixelScale, y + canvasPixelScale, (parity & 1) == 0 ? CHECKER_LIGHT : CHECKER_DARK);
+    }
+
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+        // Write cells straight into the shared GUI buffer (guiGraphics.fill flushes per quad and tanks the FPS)
+        Matrix4f matrix = guiGraphics.pose().last().pose();
+        VertexConsumer buffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
+
+        if (glass) {
+            for (int i = 0; i < canvasPixelHeight; i++) {
+                for (int j = 0; j < canvasPixelWidth; j++) {
+                    fillChecker(buffer, matrix, canvasX + j * canvasPixelScale, canvasY + i * canvasPixelScale, i + j);
+                }
+            }
+        }
+
         for (int i = 0; i < canvasPixelHeight; i++) {
             for (int j = 0; j < canvasPixelWidth; j++) {
                 int x = canvasX + j * canvasPixelScale;
                 int y = canvasY + i * canvasPixelScale;
-                guiGraphics.fill(x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
+                batchFill(buffer, matrix, x, y, x + canvasPixelScale, y + canvasPixelScale, getPixelAt(j, i));
+            }
+        }
+
+        if (sidesActive) {
+            int scale = canvasPixelScale;
+            int canvasHeight = canvasPixelHeight * scale;
+            for (int k = 0; k < canvasPixelWidth; k++) {
+                int x = canvasX + k * scale;
+                if (glass) {
+                    fillChecker(buffer, matrix, x, canvasY - scale, k - 1);
+                    fillChecker(buffer, matrix, x, canvasY + canvasHeight, k + canvasPixelHeight);
+                }
+                batchFill(buffer, matrix, x, canvasY - scale, x + scale, canvasY, getSidePixel(CanvasSides.topOffset() + k));
+                batchFill(buffer, matrix, x, canvasY + canvasHeight, x + scale, canvasY + canvasHeight + scale, getSidePixel(CanvasSides.bottomOffset(canvasType) + k));
+            }
+            for (int i = 0; i < canvasPixelHeight; i++) {
+                int y = canvasY + i * scale;
+                if (glass) {
+                    fillChecker(buffer, matrix, canvasX - scale, y, i - 1);
+                    fillChecker(buffer, matrix, canvasX + canvasWidth, y, i + canvasPixelWidth);
+                }
+                batchFill(buffer, matrix, canvasX - scale, y, canvasX, y + scale, getSidePixel(CanvasSides.leftOffset(canvasType) + i));
+                batchFill(buffer, matrix, canvasX + canvasWidth, y, canvasX + canvasWidth + scale, y + scale, getSidePixel(CanvasSides.rightOffset(canvasType) + i));
             }
         }
 
@@ -93,19 +165,18 @@ public class GuiCanvasView extends Screen {
             float minX = Math.min(genX, titleX);
             float maxX = Math.max(genX + genWidth, titleX + titleWidth);
 
-            guiGraphics.fill((int) (minX - 10), canvasY - 30, (int) (maxX + 10), canvasY - 4, 0xFFEEEEEE);
+            guiGraphics.fill((int) (minX - 10), canvasY - 40, (int) (maxX + 10), canvasY - 14, 0xFFEEEEEE);
 
-            guiGraphics.drawString(font, title, (int) titleX, (canvasY - 25), 0xFF111111, false);
-            guiGraphics.drawString(font, gen, (int) genX, canvasY - 14, 0xFF444444, false);
+            guiGraphics.drawString(font, title, (int) titleX, (canvasY - 35), 0xFF111111, false);
+            guiGraphics.drawString(font, gen, (int) genX, canvasY - 24, 0xFF444444, false);
         }
     }
 
     @Override
     public void tick() {
-        if (easel != null) {
-            if (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 64) {
-                this.onClose();
-            }
+        if (easel != null && player != null
+                && (easel.getItem().isEmpty() || easel.isRemoved() || easel.distanceToSqr(player) > 64)) {
+            this.onClose();
         }
         super.tick();
     }

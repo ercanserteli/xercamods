@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -12,26 +14,29 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import xerca.xercapaint.common.entity.Entities;
 import xerca.xercapaint.common.entity.EntityEasel;
 import xerca.xercapaint.common.item.Items;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 
 import static xerca.xercapaint.common.XercaPaint.MODID;
 
+@SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 @GameTestHolder(MODID)
 public class EaselTests {
+    private static final String BASIC_TEMPLATE = "basic_test";
+    private static final int STRUCTURE_SIZE = 6;
     private static final Field PAINTER_FIELD;
     private static final Field DROP_DEFERRED_FIELD;
 
@@ -46,15 +51,35 @@ public class EaselTests {
         }
     }
 
+    /**
+     * Game tests share the world and 1.20.1 does not evict entities when it hands a structure area to the
+     * next test, so drops and easels from earlier tests can still be standing here. Vanilla refuses to place
+     * an easel while any entity overlaps the target box, and a stale easel would be found instead of ours,
+     * so wipe this structure clean before every placement.
+     */
+    private static void clearStructure(GameTestHelper helper) {
+        AABB bounds = structureBounds(helper);
+        helper.getLevel().getEntitiesOfClass(ItemEntity.class, bounds).forEach(Entity::discard);
+        helper.getLevel().getEntities(Entities.EASEL.get(), bounds, Entity::isAlive).forEach(Entity::discard);
+    }
+
+    /**
+     * The world box this test owns. Entity lookups are clipped to it so neighbouring tests, which use the
+     * same relative positions, never leak their easels or drops into this one.
+     */
+    private static AABB structureBounds(GameTestHelper helper) {
+        return new AABB(helper.absolutePos(BlockPos.ZERO)).expandTowards(STRUCTURE_SIZE, STRUCTURE_SIZE, STRUCTURE_SIZE);
+    }
+
     private static EntityEasel requireSingleEaselNear(GameTestHelper helper, BlockPos relativePos, String failureMessage) {
-        AABB searchBox = new AABB(helper.absolutePos(relativePos)).inflate(1.5D, 2.0D, 1.5D);
+        AABB searchBox = new AABB(helper.absolutePos(relativePos)).inflate(1.5D, 2.0D, 1.5D).intersect(structureBounds(helper));
         List<? extends Entity> list = helper.getLevel().getEntities(Entities.EASEL.get(), searchBox, Entity::isAlive);
         helper.assertTrue(!list.isEmpty(), failureMessage);
         return (EntityEasel) list.get(0);
     }
 
     private static long countItemDropsNear(GameTestHelper helper, BlockPos relativePos, Item item) {
-        AABB searchBox = new AABB(helper.absolutePos(relativePos)).inflate(2.5D, 2.5D, 2.5D);
+        AABB searchBox = new AABB(helper.absolutePos(relativePos)).inflate(2.5D, 2.5D, 2.5D).intersect(structureBounds(helper));
         return helper.getLevel().getEntitiesOfClass(ItemEntity.class, searchBox, it -> it.getItem().is(item)).size();
     }
 
@@ -63,7 +88,7 @@ public class EaselTests {
             return (Player) PAINTER_FIELD.get(easel);
         } catch (IllegalAccessException e) {
             helper.assertTrue(false, "Failed to read easel painter field: " + e);
-            return null;
+            throw new IllegalStateException("Unreachable after GameTest assertion failure", e);
         }
     }
 
@@ -72,18 +97,20 @@ public class EaselTests {
             return (Runnable) DROP_DEFERRED_FIELD.get(easel);
         } catch (IllegalAccessException e) {
             helper.assertTrue(false, "Failed to read easel deferred-drop field: " + e);
-            return null;
+            throw new IllegalStateException("Unreachable after GameTest assertion failure", e);
         }
     }
 
-    @GameTest(template = "basic_test")
     @PrefixGameTestTemplate(false)
+
+    @GameTest(template = BASIC_TEMPLATE)
     public static void placingEaselFacesPlayerFromAllEightDirections(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockSurvivalPlayer();
         BlockPos absEaselLand = helper.absolutePos(easelLand);
         Vec3 target = Vec3.atCenterOf(absEaselLand);
         helper.setBlock(easelLand, Blocks.STONE);
+        clearStructure(helper);
 
         int[][] offsets = {
                 {0, -1},  // north
@@ -103,6 +130,7 @@ public class EaselTests {
             player.lookAt(EntityAnchorArgument.Anchor.EYES, target);
             float expectedYaw = (float) Mth.floor((Mth.wrapDegrees(player.getYRot() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
 
+            clearStructure(helper);
             helper.placeAt(player, player.getMainHandItem(), easelLand, Direction.UP);
             EntityEasel easel = requireSingleEaselNear(helper, easelLand, "Missing easel after placement in case " + i);
 
@@ -116,14 +144,16 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest(template = "basic_test")
     @PrefixGameTestTemplate(false)
+
+    @GameTest(template = BASIC_TEMPLATE)
     public static void rightClickWithCanvasEmptyHandAndPaletteHasExpectedModes(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockSurvivalPlayer();
         BlockPos absEaselLand = helper.absolutePos(easelLand);
 
         helper.setBlock(easelLand, Blocks.STONE);
+        clearStructure(helper);
         player.moveTo(Vec3.atBottomCenterOf(absEaselLand).add(1.0D, 0.0D, 0.0D));
         player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(absEaselLand));
 
@@ -145,13 +175,14 @@ public class EaselTests {
         player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE.get(), 1));
         InteractionResult editResult = player.interactOn(easel, InteractionHand.MAIN_HAND);
         helper.assertTrue(editResult.consumesAction(), "Expected palette interaction to consume interaction");
-        helper.assertTrue(getPainter(helper, easel) == player, "Expected palette interaction to acquire easel editor lock");
+        helper.assertTrue(Objects.equals(getPainter(helper, easel), player), "Expected palette interaction to acquire easel editor lock");
 
         helper.succeed();
     }
 
-    @GameTest(template = "basic_test")
     @PrefixGameTestTemplate(false)
+
+    @GameTest(template = BASIC_TEMPLATE)
     public static void secondPlayerCannotStealEditLockAndCanBreakAndDropBothItems(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         BlockPos absEaselLand = helper.absolutePos(easelLand);
@@ -161,6 +192,7 @@ public class EaselTests {
         Player secondPlayer = helper.makeMockSurvivalPlayer();
 
         helper.setBlock(easelLand, Blocks.STONE);
+        clearStructure(helper);
 
         firstPlayer.moveTo(target.x + 1.0D, absEaselLand.getY(), target.z, 0.0F, 0.0F);
         firstPlayer.lookAt(EntityAnchorArgument.Anchor.EYES, target);
@@ -174,13 +206,13 @@ public class EaselTests {
 
         firstPlayer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE.get(), 1));
         firstPlayer.interactOn(easel, InteractionHand.MAIN_HAND);
-        helper.assertTrue(getPainter(helper, easel) == firstPlayer, "First player should hold the edit lock");
+        helper.assertTrue(Objects.equals(getPainter(helper, easel), firstPlayer), "First player should hold the edit lock");
 
         secondPlayer.moveTo(target.x - 1.0D, absEaselLand.getY(), target.z, 0.0F, 0.0F);
         secondPlayer.lookAt(EntityAnchorArgument.Anchor.EYES, target);
         secondPlayer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.ITEM_PALETTE.get(), 1));
         secondPlayer.interactOn(easel, InteractionHand.MAIN_HAND);
-        helper.assertTrue(getPainter(helper, easel) == firstPlayer, "Second player should not replace first player as editor");
+        helper.assertTrue(Objects.equals(getPainter(helper, easel), firstPlayer), "Second player should not replace first player as editor");
 
         DamageSource secondAttack = helper.getLevel().damageSources().playerAttack(secondPlayer);
         easel.hurt(secondAttack, 1.0F);
@@ -202,14 +234,16 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest(template = "basic_test")
     @PrefixGameTestTemplate(false)
+
+    @GameTest(template = BASIC_TEMPLATE)
     public static void easelCanBeBrokenByExplosion(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockSurvivalPlayer();
         BlockPos absEaselLand = helper.absolutePos(easelLand);
 
         helper.setBlock(easelLand, Blocks.STONE);
+        clearStructure(helper);
         player.moveTo(Vec3.atBottomCenterOf(absEaselLand).add(1.0D, 0.0D, 0.0D));
         player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(absEaselLand));
 
@@ -221,7 +255,7 @@ public class EaselTests {
         player.interactOn(easel, InteractionHand.MAIN_HAND);
         helper.assertTrue(easel.getItem().is(Items.ITEM_CANVAS.get()), "Expected canvas to be mounted before explosion break test");
 
-        DamageSource explosion = helper.getLevel().damageSources().explosion((Entity) null, null);
+        DamageSource explosion = helper.getLevel().damageSources().explosion(null, null);
         easel.hurt(explosion, 1.0F);
 
         helper.assertTrue(easel.isRemoved(), "Expected easel entity to be removed by explosion damage");
@@ -233,23 +267,23 @@ public class EaselTests {
         helper.succeed();
     }
 
-    @GameTest(template = "basic_test")
     @PrefixGameTestTemplate(false)
+
+    @GameTest(template = BASIC_TEMPLATE)
     public static void invulnerableTaggedEaselIgnoresPlayerAndExplosionDamage(GameTestHelper helper) {
         final BlockPos easelLand = new BlockPos(3, 1, 2);
         Player player = helper.makeMockSurvivalPlayer();
         BlockPos absEaselLand = helper.absolutePos(easelLand);
 
         helper.setBlock(easelLand, Blocks.STONE);
+        clearStructure(helper);
         player.moveTo(Vec3.atBottomCenterOf(absEaselLand).add(1.0D, 0.0D, 0.0D));
         player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(absEaselLand));
 
         ItemStack invulnerableEaselStack = new ItemStack(Items.ITEM_EASEL.get(), 1);
-        CompoundTag rootTag = invulnerableEaselStack.getOrCreateTag();
-        rootTag.putBoolean("Invulnerable", true);
         CompoundTag entityTag = new CompoundTag();
         entityTag.putBoolean("Invulnerable", true);
-        rootTag.put("EntityTag", entityTag);
+        invulnerableEaselStack.getOrCreateTag().put("EntityTag", entityTag);
         player.setItemSlot(EquipmentSlot.MAINHAND, invulnerableEaselStack);
 
         helper.placeAt(player, player.getMainHandItem(), easelLand, Direction.UP);
@@ -260,7 +294,7 @@ public class EaselTests {
                 "Expected no easel drops before invulnerability damage checks");
 
         DamageSource playerDamage = helper.getLevel().damageSources().playerAttack(player);
-        DamageSource explosionDamage = helper.getLevel().damageSources().explosion((Entity) null, null);
+        DamageSource explosionDamage = helper.getLevel().damageSources().explosion(null, null);
         easel.hurt(playerDamage, 1.0F);
         easel.hurt(explosionDamage, 1.0F);
 

@@ -2,6 +2,7 @@ package xerca.xercapaint.common.packets;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
+import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.CommandImport;
 
 import java.util.function.Supplier;
@@ -9,7 +10,7 @@ import java.util.function.Supplier;
 public class ImportPaintingSendPacketHandler {
     public static void handle(final ImportPaintingSendPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
-            System.err.println("Packet was invalid");
+            XercaPaint.LOGGER.error("Packet was invalid");
             return;
         }
 

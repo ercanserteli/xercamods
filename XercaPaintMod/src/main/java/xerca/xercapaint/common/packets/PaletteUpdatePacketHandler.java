@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
+import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.item.Items;
 
 import java.util.function.Supplier;
@@ -13,12 +14,12 @@ import static xerca.xercapaint.common.PaletteUtil.writeCustomColorArrayToNBT;
 public class PaletteUpdatePacketHandler {
     public static void handle(final PaletteUpdatePacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
-            System.err.println("Packet was invalid");
+            XercaPaint.LOGGER.error("Packet was invalid");
             return;
         }
         ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
-            System.err.println("EntityPlayerMP was null when PaletteUpdatePacket was received");
+            XercaPaint.LOGGER.error("Sending player was null when PaletteUpdatePacket was received");
             return;
         }
 

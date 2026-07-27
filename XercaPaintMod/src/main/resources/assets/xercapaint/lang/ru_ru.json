@@ -1,5 +1,5 @@
 {
-  "item_group.xercapaint.paint_tab": "Картина",
+  "itemGroup.xercapaint.paint_tab": "Картина",
   "item.xercapaint.item_palette": "Палитра",
   "item.xercapaint.item_canvas": "Холст",
   "item.xercapaint.item_canvas_large": "Большой холст",
@@ -27,7 +27,16 @@
   "xercapaint.import.fail.4": "Не удалось проанализировать команду или прочитать файл картины (%1$s)",
   "xercapaint.import.fail.5": "Файл с картинкой сломан",
   "easel.deny": "Кто-то уже работает над этой картиной",
-
+  "canvas.help.toggleHelp": "Показать/скрыть подсказки",
+  "canvas.help.brushSize": "Размер кисти (%1$s)",
+  "canvas.help.brushOpacity": "Непрозрачность кисти (%1$s%%)",
+  "canvas.help.colorPicker": "Пипетка",
+  "canvas.help.colorPicker.desc": "Выберите инструмент, возьмите цвет с холста и перетащите его в ячейку особого цвета.",
+  "canvas.help.colorRemover": "Удаление цвета",
+  "canvas.help.colorRemover.desc": "Возьмите немного воды и перетащите её в ячейку особого цвета, чтобы очистить её.",
+  "canvas.help.canvasHolder": "Держатель холста",
+  "canvas.help.canvasHolder.desc": "Возьмите холст и переместите его. Палитру можно перемещать так же.",
+  "canvas.help.toggleSides": "Переключить рамки",
   "entity.xercapaint.canvas": "Холст",
   "entity.xercapaint.easel": "Мольберт"
 }

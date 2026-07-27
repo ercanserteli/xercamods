@@ -37,9 +37,11 @@ import xerca.xercapaint.common.packets.CloseGuiPacket;
 import xerca.xercapaint.common.packets.OpenGuiPacket;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 
 public class EntityEasel extends Entity {
+    private static final int MAX_PAINTER_DISTANCE_SQR = 64;
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
     private Player painter = null;
     private Runnable dropDeferred = null;
@@ -61,8 +63,29 @@ public class EntityEasel extends Entity {
         super(Entities.EASEL.get(), world);
     }
 
-    public void setPainter(Player painter) {
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityEasel other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityEasel.class, this.getUUID());
+    }
+
+    public void setPainter(@Nullable Player painter) {
         this.painter = painter;
+    }
+
+    @Nullable
+    public Player getPainter() {
+        return painter;
     }
 
     @Override
@@ -97,7 +120,7 @@ public class EntityEasel extends Entity {
     @Override
     public void kill() {
         showBreakingParticles();
-        this.remove(Entity.RemovalReason.KILLED);
+        this.remove(RemovalReason.KILLED);
     }
 
     @Override
@@ -192,7 +215,7 @@ public class EntityEasel extends Entity {
         super.onSyncedDataUpdated(accessor);
         if (accessor.equals(DATA_CANVAS)) {
             ItemStack itemStack = this.getItem();
-            if (!itemStack.isEmpty() && itemStack.getEntityRepresentation() != this) {
+            if (!itemStack.isEmpty() && !this.equals(itemStack.getEntityRepresentation())) {
                 itemStack.setEntityRepresentation(this);
             }
         }
@@ -233,10 +256,10 @@ public class EntityEasel extends Entity {
                 }
             } else {
                 boolean unused = this.painter == null;
-                boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag() != null && getItem().getTag().getInt("generation") > 0);
+                boolean toEdit = handHoldsPalette && ItemCanvas.getGeneration(getItem()) <= 0;
                 boolean allowed = unused || !toEdit;
-                OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
                 if (player instanceof ServerPlayer serverPlayer) {
+                    OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
                     NetworkSender.sendToPlayer(serverPlayer, pack);
                 }
                 if (toEdit && allowed) {
@@ -272,7 +295,7 @@ public class EntityEasel extends Entity {
             }
         }
 
-        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > 64)) {
+        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > MAX_PAINTER_DISTANCE_SQR)) {
             painter = null;
         }
     }

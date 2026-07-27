@@ -1,5 +1,5 @@
 {
-  "type": "xercapaint:crafting_fresh_canvas_shaped",
+  "type": "xercapaint:crafting_tagless_shaped",
   "pattern": [
     "cc",
     "cc"
@@ -13,4 +13,3 @@
     "item": "xercapaint:item_canvas_large"
   }
 }
-        

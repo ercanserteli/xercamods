@@ -16,9 +16,12 @@ import xerca.xercapaint.common.packets.ExportPaintingPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class CommandExport {
+    private CommandExport() {
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("paintexport")
@@ -50,26 +53,33 @@ public class CommandExport {
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
         if (!directory.exists()) {
-            directory.mkdir();
+            try {
+                Files.createDirectories(directory.toPath());
+            } catch (IOException e) {
+                XercaPaint.LOGGER.error("Could not create paintings directory", e);
+                return false;
+            }
         }
 
         for (ItemStack s : player.getHandSlots()) {
-            if (s.getItem() instanceof ItemCanvas) {
-                if (ItemCanvas.hasCanvasData(s)) {
-                    try {
-                        CompoundTag tag = s.getTag().copy();
-                        tag.putByte("ct", (byte) ((ItemCanvas) s.getItem()).getCanvasType().ordinal());
-                        if (!tag.contains("author")) {
-                            tag.remove("name");
-                            tag.remove("v");
-                            tag.remove("generation");
-                            tag.remove("title");
-                        }
-                        NbtIo.write(tag, new File(filepath));
-                        return true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            CompoundTag stackTag = s.getTag();
+            if (s.getItem() instanceof ItemCanvas itemCanvas && stackTag != null && stackTag.contains(ItemCanvas.TAG_PIXELS)) {
+                try {
+                    CompoundTag tag = stackTag.copy();
+                    tag.putByte("ct", itemCanvas.getCanvasType().toByte());
+                    if (itemCanvas.isGlass()) {
+                        tag.putBoolean("glass", true);
                     }
+                    if (!tag.contains(ItemCanvas.TAG_AUTHOR)) {
+                        tag.remove(ItemCanvas.TAG_CANVAS_ID);
+                        tag.remove(ItemCanvas.TAG_VERSION);
+                        tag.remove(ItemCanvas.TAG_GENERATION);
+                        tag.remove(ItemCanvas.TAG_TITLE);
+                    }
+                    NbtIo.write(tag, new File(filepath));
+                    return true;
+                } catch (IOException e) {
+                    XercaPaint.LOGGER.error("Error while exporting painting", e);
                 }
             }
         }

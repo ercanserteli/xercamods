@@ -2,6 +2,7 @@ package xerca.xercapaint.common.packets;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.common.XercaPaint;
 
 public class ImportPaintingSendPacket {
     private CompoundTag tag;
@@ -23,8 +24,8 @@ public class ImportPaintingSendPacket {
         ImportPaintingSendPacket result = new ImportPaintingSendPacket();
         try {
             result.tag = buf.readNbt();
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading ImportPaintingSendPacket: " + ioe);
+        } catch (RuntimeException ioe) {
+            XercaPaint.LOGGER.error("Exception while reading ImportPaintingSendPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

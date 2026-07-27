@@ -1,6 +1,7 @@
 package xerca.xercapaint.common.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.entity.EntityEasel;
 
 public class EaselLeftPacket {
@@ -23,8 +24,8 @@ public class EaselLeftPacket {
         EaselLeftPacket result = new EaselLeftPacket();
         try {
             result.easelId = buf.readInt();
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading CanvasUpdatePacket: " + ioe);
+        } catch (RuntimeException ioe) {
+            XercaPaint.LOGGER.error("Exception while reading CanvasUpdatePacket", ioe);
             return null;
         }
         result.messageIsValid = true;

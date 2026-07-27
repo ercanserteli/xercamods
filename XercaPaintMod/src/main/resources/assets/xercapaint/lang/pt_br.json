@@ -1,5 +1,5 @@
 {
-  "item_group.xercapaint.paint_tab": "Pintar",
+  "itemGroup.xercapaint.paint_tab": "Pintar",
   "item.xercapaint.item_palette": "Paleta",
   "item.xercapaint.item_canvas": "Canvas",
   "item.xercapaint.item_canvas_large": "Canvas Grande",
@@ -27,7 +27,16 @@
   "xercapaint.import.fail.4": "Não foi possível executar o comando ou ler o arquivo de pintura! (%1$s)",
   "xercapaint.import.fail.5": "O arquivo de pintura está quebrado",
   "easel.deny": "Alguém já esta pintando nesta pintura no momento.",
-
+  "canvas.help.toggleHelp": "Alternar dicas de ajuda",
+  "canvas.help.brushSize": "Tamanho do pincel (%1$s)",
+  "canvas.help.brushOpacity": "Opacidade do pincel (%1$s%%)",
+  "canvas.help.colorPicker": "Seletor de cor",
+  "canvas.help.colorPicker.desc": "Selecione a ferramenta, pegue uma cor do canvas e arraste-a para um espaço de cor personalizada.",
+  "canvas.help.colorRemover": "Removedor de cor",
+  "canvas.help.colorRemover.desc": "Pegue um pouco de água e arraste-a para um espaço de cor personalizada para limpá-lo.",
+  "canvas.help.canvasHolder": "Suporte do canvas",
+  "canvas.help.canvasHolder.desc": "Pegue o canvas e mova-o. Você pode mover a paleta da mesma forma.",
+  "canvas.help.toggleSides": "Alternar molduras",
   "entity.xercapaint.canvas": "Canvas",
   "entity.xercapaint.easel": "Cavalete"
 }

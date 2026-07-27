@@ -16,17 +16,34 @@ import net.minecraft.world.level.Level;
 import xerca.xercapaint.common.item.ItemPalette;
 import xerca.xercapaint.common.item.Items;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
-
-import static xerca.xercapaint.common.item.crafting.RecipeCraftPalette.isDye;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeFillPalette extends CustomRecipe {
     public RecipeFillPalette(ResourceLocation id, CraftingBookCategory category) {
         super(id, category);
+    }
+
+    static int getBasicColorIndex(ItemStack stack) {
+        if (!(stack.getItem() instanceof DyeItem dyeItem)) {
+            return -1;
+        }
+        DyeColor dyeColor = dyeItem.getDyeColor();
+        if (!DyeItem.byColor(dyeColor).equals(stack.getItem())) {
+            return -1;
+        }
+        int colorId = dyeColor.getId();
+        if (colorId < 0 || colorId >= ItemPalette.BASIC_COLOR_COUNT) {
+            return -1;
+        }
+        return ItemPalette.BASIC_COLOR_COUNT - 1 - colorId;
+    }
+
+    static boolean isDye(ItemStack stack) {
+        return getBasicColorIndex(stack) >= 0;
     }
 
     private boolean isPalette(ItemStack stack) {
@@ -43,9 +60,8 @@ public class RecipeFillPalette extends CustomRecipe {
         return -1;
     }
 
-    @Nullable
-    private ArrayList<ItemStack> findDyes(CraftingContainer inv, int paletteId) {
-        ArrayList<ItemStack> dyes = new ArrayList<>();
+    private List<ItemStack> findDyes(CraftingContainer inv, int paletteId) {
+        List<ItemStack> dyes = new ArrayList<>();
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             if (i == paletteId) {
                 continue;
@@ -54,12 +70,19 @@ public class RecipeFillPalette extends CustomRecipe {
             if (isDye(stack)) {
                 dyes.add(stack);
             } else if (!stack.isEmpty()) {
-                return null;
+                return new ArrayList<>();
             }
         }
+
         return dyes;
     }
 
+    private byte[] loadBasicColors(CompoundTag paletteTag) {
+        byte[] source = paletteTag.getByteArray(ItemPalette.TAG_BASIC_COLORS);
+        byte[] basicColors = new byte[ItemPalette.BASIC_COLOR_COUNT];
+        System.arraycopy(source, 0, basicColors, 0, Math.min(source.length, basicColors.length));
+        return basicColors;
+    }
 
     /**
      * Used to check if a recipe matches current crafting inventory
@@ -70,8 +93,9 @@ public class RecipeFillPalette extends CustomRecipe {
         if (paletteId < 0) {
             return false;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
-        return dyes != null && !dyes.isEmpty();
+
+        List<ItemStack> dyes = findDyes(inv, paletteId);
+        return !dyes.isEmpty();
     }
 
     /**
@@ -83,32 +107,30 @@ public class RecipeFillPalette extends CustomRecipe {
         if (paletteId < 0) {
             return ItemStack.EMPTY;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
-        if (dyes == null || dyes.isEmpty()) {
+
+        List<ItemStack> dyes = findDyes(inv, paletteId);
+        if (dyes.isEmpty()) {
             return ItemStack.EMPTY;
         }
 
-        byte[] basicColors;
         ItemStack inputPalette = inv.getItem(paletteId);
-        CompoundTag orgTag = inputPalette.getOrCreateTag().copy();
-        if (orgTag.contains("basic")) {
-            basicColors = orgTag.getByteArray("basic");
-        } else {
-            basicColors = new byte[16];
-        }
+
+        // Keep all existing palette tags and only update basic colors.
+        CompoundTag resultTag = inputPalette.getOrCreateTag().copy();
+        byte[] basicColors = loadBasicColors(resultTag);
 
         for (ItemStack dye : dyes) {
-            DyeColor color = ((DyeItem) (dye.getItem())).getDyeColor();
-            int realColorId = 15 - color.getId();
-            if (basicColors[realColorId] > 0) {
+            int realColorId = getBasicColorIndex(dye);
+            if (realColorId < 0 || basicColors[realColorId] > 0) {
                 return ItemStack.EMPTY;
             }
             basicColors[realColorId] = 1;
         }
-        orgTag.putByteArray("basic", basicColors);
 
-        ItemStack result = new ItemStack(Items.ITEM_PALETTE.get());
-        result.setTag(orgTag);
+        resultTag.putByteArray(ItemPalette.TAG_BASIC_COLORS, basicColors);
+
+        ItemStack result = inputPalette.copyWithCount(1);
+        result.setTag(resultTag);
         return result;
     }
 

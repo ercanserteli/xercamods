@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public class ImportPaintingPacketHandler {
     public static void handle(final ImportPaintingPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
-            System.err.println("Packet was invalid");
+            XercaPaint.LOGGER.error("Packet was invalid");
             return;
         }
 
@@ -36,7 +36,7 @@ public class ImportPaintingPacketHandler {
             ImportPaintingSendPacket pack = new ImportPaintingSendPacket(tag);
             XercaPaint.NETWORK_HANDLER.sendToServer(pack);
         } catch (IOException e) {
-            e.printStackTrace();
+            XercaPaint.LOGGER.error("Error while importing painting", e);
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.4", filepath).withStyle(ChatFormatting.RED));

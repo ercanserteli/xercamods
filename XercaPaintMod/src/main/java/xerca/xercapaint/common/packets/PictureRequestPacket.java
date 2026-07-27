@@ -1,6 +1,7 @@
 package xerca.xercapaint.common.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.common.XercaPaint;
 
 public class PictureRequestPacket {
     private String name;
@@ -22,8 +23,8 @@ public class PictureRequestPacket {
         PictureRequestPacket result = new PictureRequestPacket();
         try {
             result.name = buf.readUtf(64);
-        } catch (IndexOutOfBoundsException ioe) {
-            System.err.println("Exception while reading PictureRequestPacket: " + ioe);
+        } catch (RuntimeException ioe) {
+            XercaPaint.LOGGER.error("Exception while reading PictureRequestPacket", ioe);
             return null;
         }
         result.messageIsValid = true;

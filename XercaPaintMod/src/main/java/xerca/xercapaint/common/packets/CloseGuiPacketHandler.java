@@ -4,13 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
+import xerca.xercapaint.common.XercaPaint;
 
 import java.util.function.Supplier;
 
 public class CloseGuiPacketHandler {
     public static void handle(final CloseGuiPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
-            System.err.println("Packet was invalid");
+            XercaPaint.LOGGER.error("Packet was invalid");
             return;
         }
 

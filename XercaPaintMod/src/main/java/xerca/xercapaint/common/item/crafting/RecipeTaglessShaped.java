@@ -2,11 +2,11 @@ package xerca.xercapaint.common.item.crafting;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
@@ -17,10 +17,18 @@ import java.util.Objects;
 
 import static xerca.xercapaint.common.item.Items.CRAFTING_TAGLESS_SHAPED;
 
-public class RecipeFreshCanvasShaped extends ShapedRecipe {
+public class RecipeTaglessShaped extends ShapedRecipe {
+    public RecipeTaglessShaped(ShapedRecipe shapedRecipe) {
+        super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.category(), shapedRecipe.getRecipeWidth(),
+                shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem(RegistryAccess.EMPTY));
+    }
 
-    public RecipeFreshCanvasShaped(ShapedRecipe shapedRecipe, CraftingBookCategory category) {
-        super(shapedRecipe.getId(), shapedRecipe.getGroup(), category, shapedRecipe.getRecipeWidth(), shapedRecipe.getRecipeHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem(RegistryAccess.EMPTY));
+    /**
+     * A canvas that has already been painted is not a valid ingredient, but a foreign tag from another mod is fine
+     */
+    private static boolean hasPixels(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(ItemCanvas.TAG_PIXELS);
     }
 
     /**
@@ -31,7 +39,7 @@ public class RecipeFreshCanvasShaped extends ShapedRecipe {
         if (super.matches(inv, worldIn)) {
             for (int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
-                if (!stackInSlot.isEmpty() && ItemCanvas.hasCanvasData(stackInSlot)) {
+                if (!stackInSlot.isEmpty() && hasPixels(stackInSlot)) {
                     return false;
                 }
             }
@@ -49,7 +57,7 @@ public class RecipeFreshCanvasShaped extends ShapedRecipe {
         if (!result.isEmpty()) {
             for (int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
-                if (!stackInSlot.isEmpty() && ItemCanvas.hasCanvasData(stackInSlot)) {
+                if (!stackInSlot.isEmpty() && hasPixels(stackInSlot)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -64,28 +72,27 @@ public class RecipeFreshCanvasShaped extends ShapedRecipe {
         return CRAFTING_TAGLESS_SHAPED.get();
     }
 
-    public static class TaglessSerializer implements RecipeSerializer<RecipeFreshCanvasShaped> {
-        private static final ShapedRecipe.Serializer shapedSerializer = new ShapedRecipe.Serializer();
+    public static class TaglessSerializer implements RecipeSerializer<RecipeTaglessShaped> {
+        private static final ShapedRecipe.Serializer SHAPED_SERIALIZER = new ShapedRecipe.Serializer();
 
         public TaglessSerializer() {
         }
 
         @Override
-        public @NotNull RecipeFreshCanvasShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-            ShapedRecipe shapedRecipe = shapedSerializer.fromJson(recipeId, json);
-            return new RecipeFreshCanvasShaped(shapedRecipe, CraftingBookCategory.MISC);
+        public @NotNull RecipeTaglessShaped fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
+            ShapedRecipe shapedRecipe = SHAPED_SERIALIZER.fromJson(recipeId, json);
+            return new RecipeTaglessShaped(shapedRecipe);
         }
 
         @Override
-        public RecipeFreshCanvasShaped fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
-            ShapedRecipe shapedRecipe = shapedSerializer.fromNetwork(recipeId, buffer);
-            return new RecipeFreshCanvasShaped(Objects.requireNonNull(shapedRecipe), CraftingBookCategory.MISC);
+        public @NotNull RecipeTaglessShaped fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+            ShapedRecipe shapedRecipe = SHAPED_SERIALIZER.fromNetwork(recipeId, buffer);
+            return new RecipeTaglessShaped(Objects.requireNonNull(shapedRecipe));
         }
 
         @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RecipeFreshCanvasShaped recipe) {
-            shapedSerializer.toNetwork(buffer, recipe);
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RecipeTaglessShaped recipe) {
+            SHAPED_SERIALIZER.toNetwork(buffer, recipe);
         }
-
     }
 }

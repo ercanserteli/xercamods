@@ -11,12 +11,12 @@ import java.util.function.Supplier;
 public class EaselLeftPacketHandler {
     public static void handle(final EaselLeftPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
-            System.err.println("Packet was invalid");
+            XercaPaint.LOGGER.error("Packet was invalid");
             return;
         }
         ServerPlayer sendingPlayer = ctx.get().getSender();
         if (sendingPlayer == null) {
-            System.err.println("EntityPlayerMP was null when EaselLeftPacket was received");
+            XercaPaint.LOGGER.error("Sending player was null when EaselLeftPacket was received");
             return;
         }
 

@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class OpenGuiPacketHandler {
     public static void handle(final OpenGuiPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
-            System.err.println("Packet was invalid");
+            XercaPaint.LOGGER.error("Packet was invalid");
             return;
         }
 

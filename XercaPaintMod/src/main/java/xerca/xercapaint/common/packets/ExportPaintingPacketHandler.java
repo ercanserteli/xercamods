@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
+import xerca.xercapaint.common.XercaPaint;
 import xerca.xercapaint.common.CommandExport;
 
 import java.util.function.Supplier;
@@ -14,7 +15,7 @@ import java.util.function.Supplier;
 public class ExportPaintingPacketHandler {
     public static void handle(final ExportPaintingPacket message, Supplier<NetworkEvent.Context> ctx) {
         if (!message.isMessageValid()) {
-            System.err.println("Packet was invalid");
+            XercaPaint.LOGGER.error("Packet was invalid");
             return;
         }
 
@@ -29,7 +30,7 @@ public class ExportPaintingPacketHandler {
             if (CommandExport.doExport(player, msg.getName())) {
                 player.sendSystemMessage(Component.translatable("xercapaint.export.success", msg.getName()).withStyle(ChatFormatting.GREEN));
             } else {
-                player.sendSystemMessage(Component.translatable("xercapaint.export.fail").withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.translatable("xercapaint.export.fail", msg.getName()).withStyle(ChatFormatting.RED));
             }
         }
     }
