@@ -3,6 +3,9 @@ import json
 import os
 import requests
 
+# Platforms that mods can be uploaded to.
+VALID_PLATFORMS = ("curseforge", "modrinth")
+
 # Common synonyms / normalization for CurseForge "game version" names
 CF_VERSION_SYNONYMS = {
     "forge": "Forge",
@@ -182,10 +185,15 @@ def upload_mod_to_modrinth(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Upload a Minecraft mod to CurseForge.")
+    parser = argparse.ArgumentParser(description="Upload a Minecraft mod to CurseForge and/or Modrinth.")
 
-    parser.add_argument("--curseforge-api-token", help="Your CurseForge API token")
-    parser.add_argument("--modrinth-api-token", help="Your Modrinth API token")
+    parser.add_argument("--platform", default="curseforge,modrinth",
+                        help="Comma-separated list of platforms to upload to (curseforge, modrinth). "
+                             "E.g. 'curseforge,modrinth', 'curseforge', or 'modrinth'. Defaults to both.")
+    parser.add_argument("--curseforge-api-token",
+                        help="Your CurseForge API token (falls back to CURSEFORGE_API_TOKEN env var)")
+    parser.add_argument("--modrinth-api-token",
+                        help="Your Modrinth API token (falls back to MODRINTH_API_TOKEN env var)")
     parser.add_argument("--project-id", required=True, help="Your CurseForge project ID")
     parser.add_argument("--game-version", required=True, help="Supported Minecraft game version (e.g. 1.21.3)")
     parser.add_argument("--mod-version", required=True, help="Mod version (e.g. 2.0.0)")
@@ -207,6 +215,18 @@ def main():
 
     args = parser.parse_args()
 
+    platforms = [p.strip().lower() for p in args.platform.split(",") if p.strip()]
+    if not platforms:
+        parser.error("--platform must name at least one platform (curseforge, modrinth).")
+    invalid = [p for p in platforms if p not in VALID_PLATFORMS]
+    if invalid:
+        parser.error(f"Unknown platform(s): {', '.join(invalid)}. Valid options: {', '.join(VALID_PLATFORMS)}.")
+
+    if not args.curseforge_api_token:
+        args.curseforge_api_token = os.environ.get("CURSEFORGE_API_TOKEN")
+    if not args.modrinth_api_token:
+        args.modrinth_api_token = os.environ.get("MODRINTH_API_TOKEN")
+
     jar_prefix = MOD_NAME_TO_JAR_PREFIX.get(args.project_id, args.project_id)
     loader = args.loaders[0]
     loader_infix = "neoforge-" if loader.lower() == "neoforge" else ""
@@ -215,7 +235,10 @@ def main():
     loader_display = CF_VERSION_SYNONYMS.get(loader.lower(), loader.capitalize())
     display_name = f"{loader_display} {args.game_version} - Version {args.mod_version}"
 
-    if args.curseforge_api_token:
+    if "curseforge" in platforms:
+        if not args.curseforge_api_token:
+            parser.error("Platform 'curseforge' selected but no API token provided "
+                         "(--curseforge-api-token or CURSEFORGE_API_TOKEN).")
         mod_name_to_id = {"xercamod": 341575, "music": 341448, "paint": 350727, "blocks": 1581682, "cushion": 1582875,
                           "food": 1588028, "omnichest": 1589544, "tools": 1590824}
         cf_project_id = args.project_id
@@ -242,7 +265,10 @@ def main():
             args.dry
         )
 
-    if args.modrinth_api_token:
+    if "modrinth" in platforms:
+        if not args.modrinth_api_token:
+            parser.error("Platform 'modrinth' selected but no API token provided "
+                         "(--modrinth-api-token or MODRINTH_API_TOKEN).")
         mod_name_to_id = {"xercamod": "Z110yRfL", "music": "qQpWCN75", "paint": "YOs4tZea", "blocks": "pAXaLv6Y",
                           "cushion": "ARQMEkyi", "food": "CZY6IAGS", "omnichest": "jFgOQPbE", "tools": "LOcXQ0ra"}
         mod_name_to_title = {"xercamod": "XercaMod", "music": "Music Maker Mod", "paint": "Joy of Painting",
