@@ -2,12 +2,12 @@ package xerca.xercapaint;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +46,7 @@ public class CommandExport {
         }
 
         ExportPaintingPacket pack = new ExportPaintingPacket(name);
-        ServerPlayNetworking.send(player, pack);
+        PacketDistributor.sendToPlayer(player, pack);
         return 1;
     }
 

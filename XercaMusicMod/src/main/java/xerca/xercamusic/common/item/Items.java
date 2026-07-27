@@ -1,11 +1,8 @@
 package xerca.xercamusic.common.item;
 
 import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
@@ -15,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.block.Blocks;
 
@@ -48,7 +46,7 @@ public final class Items {
     public static final Item ORGAN = new ItemInstrument(21, 1, 6);  // Full organ range
     public static final Item MUSIC_SHEET = new ItemMusicSheet();
 
-    public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
+    public static final CreativeModeTab MUSIC_TAB = CreativeModeTab.builder()
             .icon(() -> new ItemStack(GUITAR))
             .displayItems((params, output) -> {
                 output.accept(MUSIC_SHEET);
@@ -106,64 +104,54 @@ public final class Items {
     private Items() {
     }
 
-    public static void registerDataComponents() {
-        registerComponentType("sheet_bps", SHEET_BPS);
-        registerComponentType("sheet_length", SHEET_LENGTH);
-        registerComponentType("sheet_version", SHEET_VERSION);
-        registerComponentType("sheet_prev_instrument", SHEET_PREV_INSTRUMENT);
-        registerComponentType("sheet_prev_instrument_locked", SHEET_PREV_INSTRUMENT_LOCKED);
-        registerComponentType("sheet_highlight_interval", SHEET_HIGHLIGHT_INTERVAL);
-        registerComponentType("sheet_volume", SHEET_VOLUME);
-        registerComponentType("sheet_id", SHEET_ID);
-        registerComponentType("sheet_title", SHEET_TITLE);
-        registerComponentType("sheet_author", SHEET_AUTHOR);
-        registerComponentType("sheet_generation", SHEET_GENERATION);
+    public static void registerDataComponents(RegisterEvent.RegisterHelper<DataComponentType<?>> helper) {
+        helper.register(Mod.id("sheet_bps"), SHEET_BPS);
+        helper.register(Mod.id("sheet_length"), SHEET_LENGTH);
+        helper.register(Mod.id("sheet_version"), SHEET_VERSION);
+        helper.register(Mod.id("sheet_prev_instrument"), SHEET_PREV_INSTRUMENT);
+        helper.register(Mod.id("sheet_prev_instrument_locked"), SHEET_PREV_INSTRUMENT_LOCKED);
+        helper.register(Mod.id("sheet_highlight_interval"), SHEET_HIGHLIGHT_INTERVAL);
+        helper.register(Mod.id("sheet_volume"), SHEET_VOLUME);
+        helper.register(Mod.id("sheet_id"), SHEET_ID);
+        helper.register(Mod.id("sheet_title"), SHEET_TITLE);
+        helper.register(Mod.id("sheet_author"), SHEET_AUTHOR);
+        helper.register(Mod.id("sheet_generation"), SHEET_GENERATION);
     }
 
-    public static void registerRecipes() {
-        registerRecipeSerializer("crafting_special_notecloning", CRAFTING_SPECIAL_NOTECLONING);
+    public static void registerRecipes(RegisterEvent.RegisterHelper<RecipeSerializer<?>> helper) {
+        helper.register(Mod.id("crafting_special_notecloning"), CRAFTING_SPECIAL_NOTECLONING);
     }
 
-    public static void registerItems() {
-        registerItem("guitar", GUITAR);
-        registerItem("lyre", LYRE);
-        registerItem("banjo", BANJO);
-        registerItem("drum", DRUM);
-        registerItem("cymbal", CYMBAL);
-        registerItem("drum_kit", DRUM_KIT);
-        registerItem("xylophone", XYLOPHONE);
-        registerItem("tubular_bell", TUBULAR_BELL);
-        registerItem("sansula", SANSULA);
-        registerItem("violin", VIOLIN);
-        registerItem("cello", CELLO);
-        registerItem("flute", FLUTE);
-        registerItem("saxophone", SAXOPHONE);
-        registerItem("god", GOD);
-        registerItem("piano", PIANO);
-        registerItem("oboe", OBOE);
-        registerItem("redstone_guitar", REDSTONE_GUITAR);
-        registerItem("french_horn", FRENCH_HORN);
-        registerItem("bass_guitar", BASS_GUITAR);
-        registerItem("trumpet", TRUMPET);
-        registerItem("redstone_piano", REDSTONE_PIANO);
-        registerItem("organ", ORGAN);
-        registerItem("harp_mc", HARP_MC);
-        registerItem("music_sheet", MUSIC_SHEET);
-        registerItem("music_box", new BlockItem(Blocks.MUSIC_BOX, new Item.Properties()));
-        registerItem("metronome", new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties()));
-
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Mod.id("music_tab"), MUSIC_TAB);
+    public static void registerItems(RegisterEvent.RegisterHelper<Item> helper) {
+        helper.register(Mod.id("guitar"), GUITAR);
+        helper.register(Mod.id("lyre"), LYRE);
+        helper.register(Mod.id("banjo"), BANJO);
+        helper.register(Mod.id("drum"), DRUM);
+        helper.register(Mod.id("cymbal"), CYMBAL);
+        helper.register(Mod.id("drum_kit"), DRUM_KIT);
+        helper.register(Mod.id("xylophone"), XYLOPHONE);
+        helper.register(Mod.id("tubular_bell"), TUBULAR_BELL);
+        helper.register(Mod.id("sansula"), SANSULA);
+        helper.register(Mod.id("violin"), VIOLIN);
+        helper.register(Mod.id("cello"), CELLO);
+        helper.register(Mod.id("flute"), FLUTE);
+        helper.register(Mod.id("saxophone"), SAXOPHONE);
+        helper.register(Mod.id("god"), GOD);
+        helper.register(Mod.id("piano"), PIANO);
+        helper.register(Mod.id("oboe"), OBOE);
+        helper.register(Mod.id("redstone_guitar"), REDSTONE_GUITAR);
+        helper.register(Mod.id("french_horn"), FRENCH_HORN);
+        helper.register(Mod.id("bass_guitar"), BASS_GUITAR);
+        helper.register(Mod.id("trumpet"), TRUMPET);
+        helper.register(Mod.id("redstone_piano"), REDSTONE_PIANO);
+        helper.register(Mod.id("organ"), ORGAN);
+        helper.register(Mod.id("harp_mc"), HARP_MC);
+        helper.register(Mod.id("music_sheet"), MUSIC_SHEET);
+        helper.register(Mod.id("music_box"), new BlockItem(Blocks.MUSIC_BOX, new Item.Properties()));
+        helper.register(Mod.id("metronome"), new BlockItem(Blocks.BLOCK_METRONOME, new Item.Properties()));
     }
 
-    private static void registerComponentType(String name, DataComponentType<?> type) {
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Mod.id(name), type);
-    }
-
-    private static void registerItem(String name, Item item) {
-        Registry.register(BuiltInRegistries.ITEM, Mod.id(name), item);
-    }
-
-    private static void registerRecipeSerializer(String name, RecipeSerializer<?> recipeSerializer) {
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id(name), recipeSerializer);
+    public static void registerCreativeTab(RegisterEvent.RegisterHelper<CreativeModeTab> helper) {
+        helper.register(Mod.id("music_tab"), MUSIC_TAB);
     }
 }

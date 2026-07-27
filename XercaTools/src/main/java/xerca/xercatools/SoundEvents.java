@@ -1,8 +1,7 @@
 package xerca.xercatools;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 public final class SoundEvents {
     public static final SoundEvent SNEAK_HIT = SoundEvent.createVariableRangeEvent(Mod.id("sneak_hit"));
@@ -21,18 +20,18 @@ public final class SoundEvents {
     private SoundEvents() {
     }
 
-    public static void register() {
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SNEAK_HIT.getLocation(), SNEAK_HIT);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HAMMER.getLocation(), HAMMER);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, STOMP.getLocation(), STOMP);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_CHAIN.getLocation(), HOOK_CHAIN);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_IMPACT.getLocation(), HOOK_IMPACT);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_CLINK.getLocation(), HOOK_CLINK);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOOK_RETURN.getLocation(), HOOK_RETURN);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BEHEAD.getLocation(), BEHEAD);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, ABSORB.getLocation(), ABSORB);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CRACK.getLocation(), SOUND_CRACK);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SOUND_CONFETTI.getLocation(), SOUND_CONFETTI);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SWOOSH.getLocation(), SWOOSH);
+    public static void register(RegisterEvent.RegisterHelper<SoundEvent> helper) {
+        helper.register(SNEAK_HIT.getLocation(), SNEAK_HIT);
+        helper.register(HAMMER.getLocation(), HAMMER);
+        helper.register(STOMP.getLocation(), STOMP);
+        helper.register(HOOK_CHAIN.getLocation(), HOOK_CHAIN);
+        helper.register(HOOK_IMPACT.getLocation(), HOOK_IMPACT);
+        helper.register(HOOK_CLINK.getLocation(), HOOK_CLINK);
+        helper.register(HOOK_RETURN.getLocation(), HOOK_RETURN);
+        helper.register(BEHEAD.getLocation(), BEHEAD);
+        helper.register(ABSORB.getLocation(), ABSORB);
+        helper.register(SOUND_CRACK.getLocation(), SOUND_CRACK);
+        helper.register(SOUND_CONFETTI.getLocation(), SOUND_CONFETTI);
+        helper.register(SWOOSH.getLocation(), SWOOSH);
     }
 }

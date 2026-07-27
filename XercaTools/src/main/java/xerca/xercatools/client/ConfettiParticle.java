@@ -1,13 +1,10 @@
 package xerca.xercatools.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 
-@Environment(EnvType.CLIENT)
 public class ConfettiParticle extends TextureSheetParticle {
     private static final float PIECE_GRID = 8.0F;
     private final float rollSpeed;
@@ -73,7 +70,6 @@ public class ConfettiParticle extends TextureSheetParticle {
         return this.sprite.getV((this.vo + 1.0F) / PIECE_GRID);
     }
 
-    @Environment(EnvType.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 

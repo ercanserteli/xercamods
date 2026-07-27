@@ -161,7 +161,6 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     @Override
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         List<Integer> pixels = stack.get(Items.CANVAS_PIXELS);
         if (pixels != null) {
@@ -183,7 +182,6 @@ public class ItemCanvas extends HangingEntityItem {
     }
 
     @Override
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public boolean isFoil(ItemStack stack) {
         return stack.getOrDefault(Items.CANVAS_GENERATION, 0) > 0;
     }

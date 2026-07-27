@@ -6,7 +6,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.NotNull;
 
 public class OmniChestSavedData extends SavedData {
     private final OmniChestInventory inventory;
@@ -15,7 +14,7 @@ public class OmniChestSavedData extends SavedData {
         this.inventory = new OmniChestInventory(this::setDirty);
     }
 
-    public static OmniChestSavedData load(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+    public static OmniChestSavedData load(CompoundTag tag, HolderLookup.Provider registries) {
         OmniChestSavedData data = new OmniChestSavedData();
         Tag chestTag = tag.get("OmniChest");
         if (chestTag instanceof ListTag listTag) {
@@ -38,7 +37,7 @@ public class OmniChestSavedData extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         ListTag listTag = new ListTag();
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
             ItemStack stack = inventory.getItem(i);

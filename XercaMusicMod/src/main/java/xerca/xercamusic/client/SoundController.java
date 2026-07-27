@@ -112,7 +112,7 @@ public class SoundController extends Thread {
             minecraft.submit(() -> ModClient.endMusic(spiritID, minecraft.player.getId()))
                     .whenComplete((v, t) -> {
                         if (t != null) Mod.LOGGER.error("Failed to end music", t);
-                    }).isDone();
+                    });
         }
     }
 
@@ -191,7 +191,7 @@ public class SoundController extends Thread {
             }
         }).whenComplete((v, t) -> {
             if (t != null) Mod.LOGGER.error("Failed to play notes", t);
-        }).isDone();
+        });
     }
 
     private void updateActiveSounds(int currentBeat) {
@@ -214,7 +214,7 @@ public class SoundController extends Thread {
             }
         }).whenComplete((v, t) -> {
             if (t != null) Mod.LOGGER.error("Failed to update active sounds", t);
-        }).isDone();
+        });
     }
 
     public void setStop() {

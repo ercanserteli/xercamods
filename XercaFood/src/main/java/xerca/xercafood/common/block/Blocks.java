@@ -1,8 +1,7 @@
 package xerca.xercafood.common.block;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercafood.common.Mod;
 
 public class Blocks {
@@ -81,8 +80,15 @@ public class Blocks {
     public static final BlockPizza PIZZA = new BlockPizza(BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY, BlockPizza.Ingredient.EMPTY);
     // PIZZA END
 
+    private static final java.util.Map<String, Block> TO_REGISTER = new java.util.LinkedHashMap<>();
+
     private static void registerBlock(String name, Block block) {
-        Registry.register(BuiltInRegistries.BLOCK, Mod.id(name), block);
+        TO_REGISTER.put(name, block);
+    }
+
+    public static void register(RegisterEvent.RegisterHelper<Block> helper) {
+        registerBlocks();
+        TO_REGISTER.forEach((name, block) -> helper.register(Mod.id(name), block));
     }
 
     public static void registerBlocks() {

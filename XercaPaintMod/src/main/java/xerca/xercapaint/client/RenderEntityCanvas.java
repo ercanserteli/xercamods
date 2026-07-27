@@ -27,7 +27,6 @@ import xerca.xercapaint.item.Items;
 import java.util.List;
 import java.util.Map;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
     static @Nullable RenderEntityCanvas theInstance;
     private static final ResourceLocation BACK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/birch_planks.png");
@@ -131,7 +130,6 @@ public class RenderEntityCanvas extends EntityRenderer<EntityCanvas> {
         return instance;
     }
 
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public final class Instance implements AutoCloseable {
         int version;
         final int width;

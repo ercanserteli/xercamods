@@ -1,0 +1,22 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "GPL-3.0"
+
+[[mods]]
+modId = "xercaomnichest_tests"
+version = "1.0.0"
+displayName = "xercaomnichest Tests"
+
+[[dependencies.xercaomnichest_tests]]
+modId = "xercaomnichest"
+type = "required"
+versionRange = "[0,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.xercaomnichest_tests]]
+modId = "neoforge"
+type = "required"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"

@@ -128,7 +128,8 @@ public abstract class BasePalette extends Screen {
             }
         }
 
-        byte[] basics = paletteStack.get(Items.PALETTE_BASIC_COLORS);
+        Items.BasicColors basicsComp = paletteStack.get(Items.PALETTE_BASIC_COLORS);
+        byte[] basics = basicsComp == null ? null : basicsComp.value();
         if (basics != null) {
             paletteComplete = true;
             for (int i = 0; i < basics.length; i++) {
@@ -208,7 +209,8 @@ public abstract class BasePalette extends Screen {
             for (int i = 0; i < BASIC_COLOR_CENTERS.length; i++) {
                 if (basicColorFlags[i] && sqrDist(clickVec, BASIC_COLOR_CENTERS[i]) <= sqrBasicRadius) {
                     if (mouseButton == 0) {
-                        carriedColor = currentColor = BASIC_COLORS[i];
+                        currentColor = BASIC_COLORS[i];
+                        carriedColor = currentColor;
                         setCarryingColor();
                         playSound(SoundEvents.MIX, 0.6f);
                     }
@@ -221,7 +223,8 @@ public abstract class BasePalette extends Screen {
                 for (int i = 0; i < CUSTOM_COLOR_CENTERS.length; i++) {
                     if (sqrDist(clickVec, CUSTOM_COLOR_CENTERS[i]) <= sqrCustomRadius) {
                         if (mouseButton == 0 && customColors[i].getNumberOfColors() > 0) {
-                            carriedColor = currentColor = customColors[i].getColor();
+                            currentColor = customColors[i].getColor();
+                            carriedColor = currentColor;
                             carriedCustomColorId = i;
                             setCarryingColor();
                             playSound(SoundEvents.MIX, 0.3f);

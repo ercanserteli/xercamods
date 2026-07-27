@@ -1,18 +1,20 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xerca.xercapaint.entity.EntityCanvas;
 
-public class PictureSendPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<PictureSendPacket> {
+public final class PictureSendPacketHandler {
+    private PictureSendPacketHandler() {
+    }
+
+    public static void handle(PictureSendPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet));
+    }
+
     private static void processMessage(PictureSendPacket msg) {
         EntityCanvas.PICTURES.put(msg.canvasId(), new EntityCanvas.Picture(msg.version(), msg.pixels(), msg.sidesActive(), msg.sidePixels()));
         if (EntityCanvas.isPictureRequested(msg.canvasId())) {
             EntityCanvas.clearPictureRequest(msg.canvasId());
         }
-    }
-
-    @Override
-    public void receive(PictureSendPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet));
     }
 }

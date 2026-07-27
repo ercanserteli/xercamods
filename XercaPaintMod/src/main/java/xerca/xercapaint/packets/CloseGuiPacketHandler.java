@@ -1,15 +1,15 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import xerca.xercapaint.client.ClientPacketHandler;
 
-public class CloseGuiPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<CloseGuiPacket> {
-    private static void processMessage() {
-        Minecraft.getInstance().setScreen(null);
+public final class CloseGuiPacketHandler {
+    private CloseGuiPacketHandler() {
     }
 
-    @Override
-    public void receive(CloseGuiPacket payload, ClientPlayNetworking.Context context) {
-        context.client().execute(CloseGuiPacketHandler::processMessage);
+    // Client-only handling lives in ClientPacketHandler: referencing client types here would link
+    // them on the dedicated server when this handler is registered (RegisterPayloadHandlersEvent).
+    public static void handle(CloseGuiPacket packet, IPayloadContext context) {
+        context.enqueueWork(ClientPacketHandler::closeGui);
     }
 }

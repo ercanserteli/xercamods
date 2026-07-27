@@ -105,6 +105,7 @@ public class MidiHandler {
             if (msg instanceof ShortMessage sm) {
                 int command = sm.getCommand();
                 if (command == CONTROL && midiControlHandler != null) {
+                    final java.util.function.Consumer<GuiMusicSheet.MidiControl> handler = midiControlHandler;
                     int data = sm.getData1();
                     int value = sm.getData2();
                     if (value == 0) {
@@ -113,14 +114,14 @@ public class MidiHandler {
                     }
                     switch (data) {
                         case DATA_BEGINNING ->
-                                submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.BEGINNING));
-                        case DATA_END -> submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.END));
+                                submitAndCheck(() -> handler.accept(GuiMusicSheet.MidiControl.BEGINNING));
+                        case DATA_END -> submitAndCheck(() -> handler.accept(GuiMusicSheet.MidiControl.END));
                         case DATA_STOP ->
-                                submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.STOP));
+                                submitAndCheck(() -> handler.accept(GuiMusicSheet.MidiControl.STOP));
                         case DATA_PREVIEW ->
-                                submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.PREVIEW));
+                                submitAndCheck(() -> handler.accept(GuiMusicSheet.MidiControl.PREVIEW));
                         case DATA_RECORD ->
-                                submitAndCheck(() -> midiControlHandler.accept(GuiMusicSheet.MidiControl.RECORD));
+                                submitAndCheck(() -> handler.accept(GuiMusicSheet.MidiControl.RECORD));
                         default -> Mod.LOGGER.info("Unhandled midi control {}", data);
                     }
                     return;

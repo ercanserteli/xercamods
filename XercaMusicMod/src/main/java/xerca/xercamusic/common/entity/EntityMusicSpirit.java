@@ -238,18 +238,19 @@ public class EntityMusicSpirit extends Entity {
             }
         }
 
-        if (this.note == null || !level().isClientSide) {
+        net.minecraft.world.item.ItemStack noteStack = this.note;
+        if (noteStack == null || !level().isClientSide) {
             return;
         }
-        UUID id = this.note.get(Items.SHEET_ID);
-        int ver = this.note.getOrDefault(Items.SHEET_VERSION, -1);
-        length = this.note.getOrDefault(Items.SHEET_LENGTH, 0);
+        UUID id = noteStack.get(Items.SHEET_ID);
+        int ver = noteStack.getOrDefault(Items.SHEET_VERSION, -1);
+        length = noteStack.getOrDefault(Items.SHEET_LENGTH, 0);
         if (id == null || ver < 0 || length <= 0) {
             return;
         }
 
-        bps = sanitizeBps(this.note.getOrDefault(Items.SHEET_BPS, (byte) 8));
-        volume = sanitizeVolume(this.note.getOrDefault(Items.SHEET_VOLUME, 1.f));
+        bps = sanitizeBps(noteStack.getOrDefault(Items.SHEET_BPS, (byte) 8));
+        volume = sanitizeVolume(noteStack.getOrDefault(Items.SHEET_VOLUME, 1.f));
         MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
             MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
             if (data != null) {
@@ -292,8 +293,9 @@ public class EntityMusicSpirit extends Entity {
             this.remove(RemovalReason.DISCARDED);
             return true;
         }
-        if (this.blockInsPos != null && this.blockInstrument != null) {
-            if (!Objects.equals(level().getBlockState(this.blockInsPos).getBlock(), this.blockInstrument)) {
+        net.minecraft.core.BlockPos insPos = this.blockInsPos;
+        if (insPos != null && this.blockInstrument != null) {
+            if (!Objects.equals(level().getBlockState(insPos).getBlock(), this.blockInstrument)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
             }

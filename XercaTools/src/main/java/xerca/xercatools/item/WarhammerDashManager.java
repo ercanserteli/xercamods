@@ -89,7 +89,8 @@ public final class WarhammerDashManager {
             }
         }
 
-        return --state.ticksRemaining > 0;
+        state.ticksRemaining--;
+        return state.ticksRemaining > 0;
     }
 
     /** Emits some particles behind the dashing player. */

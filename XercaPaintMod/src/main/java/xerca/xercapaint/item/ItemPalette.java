@@ -43,7 +43,8 @@ public class ItemPalette extends Item {
         if (stack.getItem() != Items.ITEM_PALETTE) {
             return 0;
         }
-        byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
+        Items.BasicColors basicColorsComp = stack.get(Items.PALETTE_BASIC_COLORS);
+        byte[] basicColors = basicColorsComp == null ? null : basicColorsComp.value();
         if (basicColors != null && basicColors.length == BASIC_COLOR_COUNT) {
             int basicCount = 0;
             for (byte basicColor : basicColors) {
@@ -55,9 +56,9 @@ public class ItemPalette extends Item {
     }
 
     @Override
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
-        byte[] basicColors = stack.get(Items.PALETTE_BASIC_COLORS);
+        Items.BasicColors basicColorsComp = stack.get(Items.PALETTE_BASIC_COLORS);
+        byte[] basicColors = basicColorsComp == null ? null : basicColorsComp.value();
         ComponentCustomColor customColorComp = stack.get(Items.PALETTE_CUSTOM_COLORS);
         if (basicColors == null && customColorComp == null) {
             tooltip.add(Component.translatable("palette.empty").withStyle(ChatFormatting.GRAY));

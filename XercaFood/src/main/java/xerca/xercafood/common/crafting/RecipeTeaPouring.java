@@ -39,12 +39,13 @@ public class RecipeTeaPouring extends CustomRecipe {
      */
     public boolean matches(CraftingInput inv, Level worldIn) {
         ParsedInput parsed = parseInput(inv);
+        ItemTeapot teapot = parsed.teapot();
         return parsed.valid()
                 && !parsed.teapotStack().isEmpty()
-                && parsed.teapot() != null
+                && teapot != null
                 && parsed.teacupCount() > 0
-                && parsed.teapot().isHot()
-                && (parsed.teapot().getTeaAmount() - parsed.teacupCount()) >= 0;
+                && teapot.isHot()
+                && (teapot.getTeaAmount() - parsed.teacupCount()) >= 0;
     }
 
     /**
@@ -52,11 +53,12 @@ public class RecipeTeaPouring extends CustomRecipe {
      */
     public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
         ParsedInput parsed = parseInput(inv);
+        ItemTeapot teapot = parsed.teapot();
         if (!parsed.valid()
                 || parsed.teapotStack().isEmpty()
-                || parsed.teapot() == null
+                || teapot == null
                 || parsed.teacupCount() < 1
-                || (parsed.teapot().getTeaAmount() - parsed.teacupCount()) < 0) {
+                || (teapot.getTeaAmount() - parsed.teacupCount()) < 0) {
             return ItemStack.EMPTY;
         }
         return new ItemStack(Items.FULL_TEACUP_0, parsed.teacupCount());

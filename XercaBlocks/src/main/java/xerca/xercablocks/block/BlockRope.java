@@ -19,6 +19,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.EnumMap;
+import java.util.Objects;
 
 public class BlockRope extends PipeBlock {
     public static final MapCodec<BlockRope> CODEC = simpleCodec(properties -> new BlockRope());
@@ -86,7 +87,7 @@ public class BlockRope extends PipeBlock {
 
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
-        return state.setValue(PROPERTY_BY_DIRECTION.get(direction), isConnectable(level, currentPos, direction));
+        return state.setValue(Objects.requireNonNull(PROPERTY_BY_DIRECTION.get(direction)), isConnectable(level, currentPos, direction));
     }
 
     @Override
@@ -97,5 +98,15 @@ public class BlockRope extends PipeBlock {
     @Override
     protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
         return false;
+    }
+
+    @Override
+    public boolean isStickyBlock(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public boolean canStickTo(BlockState state, BlockState other) {
+        return true;
     }
 }

@@ -1,19 +1,18 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import xerca.xercapaint.CommandImport;
 
-public class ImportPaintingSendPacketHandler implements ServerPlayNetworking.PlayPayloadHandler<ImportPaintingSendPacket> {
+public final class ImportPaintingSendPacketHandler {
 
     private static void processMessage(ImportPaintingSendPacket msg, ServerPlayer sender) {
         CompoundTag tag = msg.tag();
         CommandImport.doImport(tag, sender);
     }
 
-    @Override
-    public void receive(ImportPaintingSendPacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+    public static void handle(ImportPaintingSendPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet, (ServerPlayer) context.player()));
     }
 }

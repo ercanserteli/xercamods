@@ -1,25 +1,13 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import xerca.xercapaint.CommandExport;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import xerca.xercapaint.client.ClientPacketHandler;
 
-public class ExportPaintingPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<ExportPaintingPacket> {
-    private static void processMessage(ExportPaintingPacket msg) {
-        Minecraft m = Minecraft.getInstance();
-        if (m.player != null) {
-            if (CommandExport.doExport(m.player, msg.canvasId())) {
-                m.player.sendSystemMessage(Component.translatable("xercapaint.export.success", msg.canvasId()).withStyle(ChatFormatting.GREEN));
-            } else {
-                m.player.sendSystemMessage(Component.translatable("xercapaint.export.fail", msg.canvasId()).withStyle(ChatFormatting.RED));
-            }
-        }
+public final class ExportPaintingPacketHandler {
+    private ExportPaintingPacketHandler() {
     }
 
-    @Override
-    public void receive(ExportPaintingPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet));
+    public static void handle(ExportPaintingPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> ClientPacketHandler.exportPainting(packet));
     }
 }

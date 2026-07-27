@@ -6,6 +6,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -38,8 +40,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@GameTestHolder(Mod.MOD_ID)
+@PrefixGameTestTemplate(false)
 public final class BlocksGameTests {
-    private static final String BASIC_TEMPLATE = "xercablocks:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String BATCH = "xercablocks_regressions";
 
     private static ResourceLocation recipeId(String path) {
@@ -429,27 +433,18 @@ public final class BlocksGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void ropePushesAttachedBlocksBecauseItIsSticky(GameTestHelper helper) {
-        try {
-            var isSticky = net.minecraft.world.level.block.piston.PistonStructureResolver.class.getDeclaredMethod("isSticky", BlockState.class);
-            isSticky.setAccessible(true);
-            boolean ropeSticky = (boolean) isSticky.invoke(null, Blocks.ROPE.defaultBlockState());
-            helper.assertTrue(ropeSticky, "Expected rope to be treated as a sticky block by piston resolution");
-        } catch (ReflectiveOperationException exception) {
-            throw new RuntimeException("Unable to inspect piston stickiness", exception);
-        }
+        // NeoForge routes piston stickiness through BlockState.isStickyBlock() (see BlockRope), replacing
+        // the Fabric mixin into PistonStructureResolver.isSticky, which NeoForge no longer exposes.
+        boolean ropeSticky = Blocks.ROPE.defaultBlockState().isStickyBlock();
+        helper.assertTrue(ropeSticky, "Expected rope to be treated as a sticky block by piston resolution");
         helper.succeed();
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = BATCH)
     public static void stickyPistonRetractsRopeAndItsAttachedBlock(GameTestHelper helper) {
-        try {
-            var canStickToEachOther = net.minecraft.world.level.block.piston.PistonStructureResolver.class.getDeclaredMethod("canStickToEachOther", BlockState.class, BlockState.class);
-            canStickToEachOther.setAccessible(true);
-            boolean ropeSticksToStone = (boolean) canStickToEachOther.invoke(null, Blocks.ROPE.defaultBlockState(), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
-            helper.assertTrue(ropeSticksToStone, "Expected rope to stick to adjacent blocks during piston pull resolution");
-        } catch (ReflectiveOperationException exception) {
-            throw new RuntimeException("Unable to inspect piston stickiness rules", exception);
-        }
+        // NeoForge routes piston pull adhesion through BlockState.canStickTo(other) (see BlockRope).
+        boolean ropeSticksToStone = Blocks.ROPE.defaultBlockState().canStickTo(net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+        helper.assertTrue(ropeSticksToStone, "Expected rope to stick to adjacent blocks during piston pull resolution");
         helper.succeed();
     }
 

@@ -2,6 +2,8 @@ package xerca.xercafood.tests;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.monster.Zombie;
@@ -14,6 +16,8 @@ import xerca.xercafood.common.item.Items;
 
 import static xerca.xercafood.tests.GameTestHelpers.*;
 
+@GameTestHolder("xercafood")
+@PrefixGameTestTemplate(false)
 public class FoodItemGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)

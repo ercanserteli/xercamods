@@ -4,6 +4,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,8 +27,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@GameTestHolder("xercapaint")
+@PrefixGameTestTemplate(false)
 public class CanvasSidesGameTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String SIDES_BATCH = "canvas_sides";
 
     private static final RecipeCanvasCloning CLONING_RECIPE = new RecipeCanvasCloning(CraftingBookCategory.MISC);

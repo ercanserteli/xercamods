@@ -2,7 +2,7 @@ package xerca.xercapaint.entity;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -123,7 +123,7 @@ public class EntityCanvas extends HangingEntity {
             Picture picture = PICTURES.get(getCanvasID());
             if ((picture == null || picture.version < getVersion()) && !isPictureRequested(canvasID)) {
                 markPictureRequested(canvasID);
-                ClientPlayNetworking.send(new PictureRequestPacket(canvasID));
+                PacketDistributor.sendToServer(new PictureRequestPacket(canvasID));
             }
         }
     }

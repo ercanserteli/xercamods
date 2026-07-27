@@ -1,62 +1,13 @@
 package xerca.xercamusic.common.packets.clientbound;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.chat.Component;
-import xerca.xercamusic.common.Mod;
-import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.packets.serverbound.ImportMusicSendPacket;
-import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import xerca.xercamusic.client.MusicClientPacketHandler;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-
-import static xerca.xercamusic.client.ModClient.sendToServer;
-import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
-import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_NOTES;
-
-public class ImportMusicPacketHandler implements ClientPlayNetworking.PlayPayloadHandler<ImportMusicPacket> {
-    private static void processMessage(ImportMusicPacket msg, LocalPlayer player) {
-        String filename = msg.name() + ".sheet";
-        String filepath = "music_sheets/" + filename;
-        try {
-            CompoundTag tag = NbtIo.read(Path.of(filepath));
-            if (tag == null) {
-                throw new IOException("File not found!");
-            }
-            sendMusic(tag);
-        } catch (IOException | ImportMusicSendPacket.NotesTooLargeException e) {
-            Mod.LOGGER.error("Exception while reading music sheet: ", e);
-            player.sendSystemMessage(Component.translatable("xercamusic.import.fail.4", filepath).withStyle(ChatFormatting.RED));
-        }
+public final class ImportMusicPacketHandler {
+    private ImportMusicPacketHandler() {
     }
 
-    private static void sendMusic(CompoundTag tag) throws IOException, ImportMusicSendPacket.NotesTooLargeException {
-        try {
-            ImportMusicSendPacket pack = ImportMusicSendPacket.create(tag);
-            sendToServer(pack);
-        } catch (ImportMusicSendPacket.NotesTooLargeException e) {
-            if (e.id == null) {
-                throw new IOException("Music has many notes, but no UUID!");
-            }
-            List<NoteEvent> notes = e.getNotes();
-            int partsCount = (int) Math.ceil((double) notes.size() / (double) MAX_NOTES_IN_PACKET);
-            tag.remove(KEY_NOTES);
-            ImportMusicSendPacket pack = ImportMusicSendPacket.create(tag);
-            NotesPartAckFromServerPacketHandler.addCallback(e.id, () -> sendToServer(pack));
-            for (int i = 0; i < partsCount; i++) {
-                SendNotesPartToServerPacket partPack = new SendNotesPartToServerPacket(e.id, partsCount, i, notes.subList(i * MAX_NOTES_IN_PACKET, Math.min((i + 1) * MAX_NOTES_IN_PACKET, notes.size())));
-                sendToServer(partPack);
-            }
-        }
-    }
-
-    @Override
-    public void receive(ImportMusicPacket packet, ClientPlayNetworking.Context context) {
-        context.client().execute(() -> processMessage(packet, context.player()));
+    public static void handle(ImportMusicPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> MusicClientPacketHandler.importMusic(packet));
     }
 }

@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -25,8 +27,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@GameTestHolder(Mod.MOD_ID)
+@PrefixGameTestTemplate(false)
 public final class CourtGameTests {
-    private static final String BASIC_TEMPLATE = "xercacourt:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String COURTROOM_BATCH = "xercacourt_regressions";
 
     private static ResourceLocation recipeId(String path) {

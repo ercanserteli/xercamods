@@ -62,12 +62,16 @@ public class ItemWarhammer extends Item {
     }
 
     private float getPushFromMaterial(Tier mat) {
-        return switch (mat) {
-            case Tiers.STONE -> 0.15f;
-            case Tiers.IRON -> 0.3f;
-            case Tiers.DIAMOND -> 0.4f;
-            default -> 0.5f; // Gold and Netherite
-        };
+        if (mat == Tiers.STONE) {
+            return 0.15f;
+        }
+        if (mat == Tiers.IRON) {
+            return 0.3f;
+        }
+        if (mat == Tiers.DIAMOND) {
+            return 0.4f;
+        }
+        return 0.5f; // Gold and Netherite
     }
 
     @Override
@@ -355,5 +359,15 @@ public class ItemWarhammer extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
         MutableComponent text = Component.translatable("xercatools.warhammer_tooltip");
         tooltip.add(text.withStyle(ChatFormatting.BLUE));
+    }
+
+    @Override
+    public boolean supportsEnchantment(net.minecraft.world.item.ItemStack stack, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return xerca.xercatools.Mod.toolSupportsEnchantment(stack, enchantment) || super.supportsEnchantment(stack, enchantment);
+    }
+
+    @Override
+    public boolean isPrimaryItemFor(net.minecraft.world.item.ItemStack stack, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return xerca.xercatools.Mod.toolSupportsEnchantment(stack, enchantment) || super.isPrimaryItemFor(stack, enchantment);
     }
 }

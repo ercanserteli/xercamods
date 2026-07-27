@@ -2,6 +2,8 @@ package xerca.xercapaint.tests;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -16,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@GameTestHolder("xercapaint")
+@PrefixGameTestTemplate(false)
 public class CanvasTagCompatibilityGameTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String CANVAS_COMPAT_BATCH = "canvas_compat";
 
     private static final RecipeCanvasCloning CLONING_RECIPE = new RecipeCanvasCloning(

@@ -1,11 +1,17 @@
 {
-  "parent": "xercablocks:block/carved_wood/carved_crimson",
-  "textures": {
-    "south": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_side_a",
-    "north": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_side_c",
-    "down": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_top",
-    "west": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_side_d",
-    "up": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_top",
-    "east": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_side_b"
+  "loader": "xercablocks:emissive_overlay",
+  "base": {
+    "parent": "xercablocks:block/carved_wood/carved_crimson",
+    "textures": {
+      "south": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_side_a",
+      "north": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_side_c",
+      "down": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_top",
+      "west": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_side_d",
+      "up": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_top",
+      "east": "xercablocks:block/carved_wood/crimson_bg/carved_crimson_1_side_b"
+    }
+  },
+  "overlay": {
+    "parent": "xercablocks:block/carved_wood/carved_crimson_1_overlay"
   }
 }

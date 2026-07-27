@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import xerca.xercablocks.block_entity.FunctionalBookcaseBlockEntity;
 
 public class BlockFunctionalBookcase extends BaseEntityBlock {
@@ -59,7 +59,7 @@ public class BlockFunctionalBookcase extends BaseEntityBlock {
     private ItemInteractionResult openMenu(Level level, BlockPos pos, Player player) {
         if (level.getBlockEntity(pos) instanceof FunctionalBookcaseBlockEntity bookcase) {
             if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(bookcase);
+                serverPlayer.openMenu(bookcase, pos);
             }
             return ItemInteractionResult.SUCCESS;
         }

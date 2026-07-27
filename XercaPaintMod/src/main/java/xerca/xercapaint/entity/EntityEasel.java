@@ -1,6 +1,6 @@
 package xerca.xercapaint.entity;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -129,7 +129,7 @@ public class EntityEasel extends Entity {
             if (!this.level().isClientSide && dropDeferred == null) {
                 if (painter instanceof ServerPlayer serverPainter) {
                     CloseGuiPacket pack = new CloseGuiPacket();
-                    ServerPlayNetworking.send(serverPainter, pack);
+                    PacketDistributor.sendToPlayer(serverPainter, pack);
                 }
                 dropDeferred = () -> doDrop(entity, dropSelf);
             }
@@ -247,7 +247,7 @@ public class EntityEasel extends Entity {
                 boolean allowed = unused || !toEdit;
                 if (player instanceof ServerPlayer serverPlayer) {
                     OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
-                    ServerPlayNetworking.send(serverPlayer, pack);
+                    PacketDistributor.sendToPlayer(serverPlayer, pack);
                 }
                 if (toEdit && allowed) {
                     this.painter = player;

@@ -1,14 +1,7 @@
 package xerca.xercatools.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -16,44 +9,73 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import xerca.xercatools.Mod;
 import xerca.xercatools.entity.EntityGrabHook;
-import xerca.xercatools.item.*;
-import xerca.xercatools.packet.ConfettiParticlePacket;
-import xerca.xercatools.packet.ConfettiParticlePacketHandler;
+import xerca.xercatools.item.ItemFlask;
+import xerca.xercatools.item.ItemGrabHook;
+import xerca.xercatools.item.ItemScythe;
+import xerca.xercatools.item.ItemWarhammer;
+import xerca.xercatools.item.Items;
 
-@Environment(EnvType.CLIENT)
-public final class ModClient implements ClientModInitializer {
+@EventBusSubscriber(modid = Mod.MOD_ID, value = Dist.CLIENT)
+public final class ModClient {
     private static final ResourceLocation PULLING = ResourceLocation.fromNamespaceAndPath("minecraft", "pulling");
     private static final ResourceLocation PULL = ResourceLocation.fromNamespaceAndPath("minecraft", "pull");
     private static final ResourceLocation CAST = Mod.id("cast");
 
-    @Override
-    public void onInitializeClient() {
-        EntityRendererRegistry.register(Mod.HOOK, RenderGrabHook::new);
-        EntityRendererRegistry.register(Mod.HEALTH_ORB, RenderHealthOrb::new);
-        EntityRendererRegistry.register(Mod.ENTITY_CONFETTI_BALL, new RenderConfettiBallFactory());
-        ClientPlayNetworking.registerGlobalReceiver(ConfettiParticlePacket.PACKET_ID, new ConfettiParticlePacketHandler());
-        ParticleFactoryRegistry.getInstance().register(Mod.CONFETTI_PARTICLE, ConfettiParticle.Provider::new);
-        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-            if (entity instanceof EntityGrabHook hook) {
-                Minecraft.getInstance().getSoundManager().queueTickingSound(new HookSound(hook));
-            }
+    private ModClient() {
+    }
+
+    @SubscribeEvent
+    static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(Mod.HOOK, RenderGrabHook::new);
+        event.registerEntityRenderer(Mod.HEALTH_ORB, RenderHealthOrb::new);
+        event.registerEntityRenderer(Mod.ENTITY_CONFETTI_BALL, new RenderConfettiBallFactory());
+    }
+
+    @SubscribeEvent
+    static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(Mod.CONFETTI_PARTICLE, ConfettiParticle.Provider::new);
+    }
+
+    @SubscribeEvent
+    static void onRegisterItemColors(RegisterColorHandlersEvent.Item event) {
+        ItemColor flaskColor = (stack, tintIndex) -> tintIndex > 0 ? -1 : ItemFlask.getPotionContents(stack).getColor();
+        event.register(flaskColor, Items.FLASK, Items.ENDER_BOW);
+    }
+
+    @SubscribeEvent
+    static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            registerBowLikeProperties(Items.GRAB_HOOK);
+            registerProperty(Items.GRAB_HOOK, CAST, (stack, level, entity, seed) -> ItemGrabHook.isCast(stack) ? 1.0F : 0.0F);
+            registerBowLikeProperties(Items.WOODEN_SCYTHE);
+            registerBowLikeProperties(Items.STONE_SCYTHE);
+            registerBowLikeProperties(Items.IRON_SCYTHE);
+            registerBowLikeProperties(Items.GOLDEN_SCYTHE);
+            registerBowLikeProperties(Items.DIAMOND_SCYTHE);
+            registerBowLikeProperties(Items.NETHERITE_SCYTHE);
+            registerBowLikeProperties(Items.STONE_WARHAMMER);
+            registerBowLikeProperties(Items.IRON_WARHAMMER);
+            registerBowLikeProperties(Items.GOLD_WARHAMMER);
+            registerBowLikeProperties(Items.DIAMOND_WARHAMMER);
+            registerBowLikeProperties(Items.NETHERITE_WARHAMMER);
         });
-        registerBowLikeProperties(Items.GRAB_HOOK);
-        registerProperty(Items.GRAB_HOOK, CAST, (stack, level, entity, seed) -> ItemGrabHook.isCast(stack) ? 1.0F : 0.0F);
-        registerBowLikeProperties(Items.WOODEN_SCYTHE);
-        registerBowLikeProperties(Items.STONE_SCYTHE);
-        registerBowLikeProperties(Items.IRON_SCYTHE);
-        registerBowLikeProperties(Items.GOLDEN_SCYTHE);
-        registerBowLikeProperties(Items.DIAMOND_SCYTHE);
-        registerBowLikeProperties(Items.NETHERITE_SCYTHE);
-        registerBowLikeProperties(Items.STONE_WARHAMMER);
-        registerBowLikeProperties(Items.IRON_WARHAMMER);
-        registerBowLikeProperties(Items.GOLD_WARHAMMER);
-        registerBowLikeProperties(Items.DIAMOND_WARHAMMER);
-        registerBowLikeProperties(Items.NETHERITE_WARHAMMER);
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex > 0 ? -1 : ItemFlask.getPotionContents(stack).getColor(), Items.FLASK, Items.ENDER_BOW);
+    }
+
+    @SubscribeEvent
+    static void onEntityJoinLevel(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide() && event.getEntity() instanceof EntityGrabHook hook) {
+            Minecraft.getInstance().getSoundManager().queueTickingSound(new HookSound(hook));
+        }
     }
 
     private static void registerBowLikeProperties(Item item) {

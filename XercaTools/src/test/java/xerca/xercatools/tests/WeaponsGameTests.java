@@ -1,13 +1,12 @@
 package xerca.xercatools.tests;
 
-import net.fabricmc.fabric.api.item.v1.EnchantingContext;
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
+import xerca.xercatools.Mod;
 import xerca.xercatools.enchantment.KnifeEnchantments;
 import xerca.xercatools.enchantment.ScytheEnchantments;
 import xerca.xercatools.enchantment.WarhammerEnchantments;
@@ -27,8 +27,10 @@ import xerca.xercatools.item.ItemKnife;
 import xerca.xercatools.item.ItemWarhammer;
 import xerca.xercatools.item.Items;
 
+@GameTestHolder(Mod.MOD_ID)
+@PrefixGameTestTemplate(false)
 public class WeaponsGameTests {
-    private static final String BASIC_TEMPLATE = "xercatools:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String WEAPONS_BATCH = "xercatools_tests";
 
     // ── existing tests ────────────────────────────────────────────────────────
@@ -95,7 +97,9 @@ public class WeaponsGameTests {
         player.setPos(abs.x, abs.y, abs.z);
         player.setYRot(0.0f);  // facing south (+z)
         player.setXRot(0.0f);
-        return helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 3, 3));
+        pig.setNoAi(true);  // hurt pigs otherwise panic-run into other tests' sight lines
+        return pig;
     }
 
     @GameTest(template = BASIC_TEMPLATE, batch = WEAPONS_BATCH)
@@ -366,6 +370,8 @@ public class WeaponsGameTests {
 
         Pig pig1 = helper.spawn(EntityType.PIG, new BlockPos(2, 2, 3));
         Pig pig2 = helper.spawn(EntityType.PIG, new BlockPos(6, 2, 3));
+        pig1.setNoAi(true);
+        pig2.setNoAi(true);
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         ItemEnchantments.Mutable enc = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
@@ -398,6 +404,8 @@ public class WeaponsGameTests {
 
         Pig pig1 = helper.spawn(EntityType.PIG, new BlockPos(2, 2, 3));
         Pig pig2 = helper.spawn(EntityType.PIG, new BlockPos(6, 2, 3));
+        pig1.setNoAi(true);
+        pig2.setNoAi(true);
 
         ItemStack warhammer = new ItemStack(Items.IRON_WARHAMMER);
         player.setItemSlot(EquipmentSlot.MAINHAND, warhammer);
@@ -501,17 +509,16 @@ public class WeaponsGameTests {
         ServerLevel level = helper.getLevel();
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
-        EnchantingContext ctx = EnchantingContext.PRIMARY;
 
-        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.MAIM), ctx),
+        helper.assertTrue(stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.MAIM)),
                 "Warhammer should allow Maim enchantment");
-        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.QUICK), ctx),
+        helper.assertTrue(stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.QUICK)),
                 "Warhammer should allow Quick enchantment");
-        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.QUAKE), ctx),
+        helper.assertTrue(stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.QUAKE)),
                 "Warhammer should allow Quake enchantment");
-        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.UPPERCUT), ctx),
+        helper.assertTrue(stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.UPPERCUT)),
                 "Warhammer should allow Uppercut enchantment");
-        helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(WarhammerEnchantments.DASHING), ctx),
+        helper.assertTrue(stack.isPrimaryItemFor(reg.getOrThrow(WarhammerEnchantments.DASHING)),
                 "Warhammer should allow Dashing enchantment");
         helper.succeed();
     }
@@ -521,10 +528,9 @@ public class WeaponsGameTests {
         ServerLevel level = helper.getLevel();
         var reg = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
-        EnchantingContext ctx = EnchantingContext.PRIMARY;
 
         for (var key : java.util.List.of(Enchantments.DENSITY, Enchantments.BREACH, Enchantments.WIND_BURST)) {
-            helper.assertTrue(stack.canBeEnchantedWith(reg.getOrThrow(key), ctx),
+            helper.assertTrue(stack.isPrimaryItemFor(reg.getOrThrow(key)),
                     "Warhammer should allow mace enchantment " + key.location());
         }
         helper.succeed();
@@ -553,9 +559,8 @@ public class WeaponsGameTests {
 
         for (var key : java.util.List.of(Enchantments.UNBREAKING, Enchantments.MENDING,
                 Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS, Enchantments.LOOTING)) {
-            TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker()
-                    .allowEnchanting(reg.getOrThrow(key), stack, EnchantingContext.PRIMARY);
-            helper.assertTrue(result == TriState.TRUE,
+            boolean result = Mod.toolSupportsEnchantment(stack, reg.getOrThrow(key));
+            helper.assertTrue(result,
                     "Warhammer should allow vanilla enchantment " + key.location());
         }
         helper.succeed();
@@ -568,9 +573,8 @@ public class WeaponsGameTests {
         ItemStack stack = new ItemStack(Items.IRON_WARHAMMER);
 
         for (var key : java.util.List.of(Enchantments.SHARPNESS, Enchantments.SWEEPING_EDGE, Enchantments.FORTUNE)) {
-            TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker()
-                    .allowEnchanting(reg.getOrThrow(key), stack, EnchantingContext.PRIMARY);
-            helper.assertTrue(result != TriState.TRUE,
+            boolean result = Mod.toolSupportsEnchantment(stack, reg.getOrThrow(key));
+            helper.assertTrue(!result,
                     "Warhammer should not allow enchantment " + key.location());
         }
         helper.succeed();
@@ -783,8 +787,7 @@ public class WeaponsGameTests {
         player.setItemSlot(EquipmentSlot.OFFHAND, knife);
 
         float initialHealth = pig.getHealth();
-        net.minecraft.world.InteractionResult result = net.fabricmc.fabric.api.event.player.UseEntityCallback.EVENT.invoker()
-                .interact(player, level, net.minecraft.world.InteractionHand.OFF_HAND, pig, null);
+        net.minecraft.world.InteractionResult result = Mod.handleKnifeOffhand(player, level, net.minecraft.world.InteractionHand.OFF_HAND, pig);
 
         helper.assertTrue(result == net.minecraft.world.InteractionResult.SUCCESS,
                 "Offhand knife interaction should be handled");

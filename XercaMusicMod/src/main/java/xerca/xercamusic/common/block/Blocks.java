@@ -1,12 +1,11 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercamusic.common.Mod;
 
 
@@ -19,10 +18,10 @@ public class Blocks {
     private Blocks() {
     }
 
-    public static void registerBlocks() {
-        Registry.register(BuiltInRegistries.BLOCK, Mod.id("block_metronome"), BLOCK_METRONOME);
-        Registry.register(BuiltInRegistries.BLOCK, Mod.id("music_box"), MUSIC_BOX);
-        Registry.register(BuiltInRegistries.BLOCK, Mod.id("piano"), PIANO);
-        Registry.register(BuiltInRegistries.BLOCK, Mod.id("drum_kit"), DRUM_KIT);
+    public static void registerBlocks(RegisterEvent.RegisterHelper<Block> helper) {
+        helper.register(Mod.id("block_metronome"), BLOCK_METRONOME);
+        helper.register(Mod.id("music_box"), MUSIC_BOX);
+        helper.register(Mod.id("piano"), PIANO);
+        helper.register(Mod.id("drum_kit"), DRUM_KIT);
     }
 }

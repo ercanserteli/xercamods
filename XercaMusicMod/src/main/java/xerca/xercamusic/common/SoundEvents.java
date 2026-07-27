@@ -1,9 +1,8 @@
 package xerca.xercamusic.common;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.IItemInstrument.Pair;
 import xerca.xercamusic.common.item.Items;
@@ -12,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SoundEvents {
+    // Declared before the SoundEvent fields below: their initializers call createSoundEvent(), which
+    // populates this map, so it must exist first (static fields initialize in declaration order).
+    private static final java.util.Map<ResourceLocation, SoundEvent> TO_REGISTER = new java.util.LinkedHashMap<>();
+
     public static final SoundEvent TICK = createSoundEvent("tick");
     public static final SoundEvent METRONOME_SET = createSoundEvent("metronome_set");
     public static final SoundEvent OPEN_SCROLL = createSoundEvent("open_scroll");
@@ -71,8 +74,13 @@ public class SoundEvents {
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = Mod.id(soundName);
         final SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundID);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, soundID, soundEvent);
+        TO_REGISTER.put(soundID, soundEvent);
         return soundEvent;
+    }
+
+    public static void registerSoundEvents(RegisterEvent.RegisterHelper<SoundEvent> helper) {
+        registerSoundEvents();
+        TO_REGISTER.forEach(helper::register);
     }
 
     private static void addSound(List<Pair<Integer, SoundEvent>> array, String insName, int note) {

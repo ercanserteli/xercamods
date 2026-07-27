@@ -1,7 +1,6 @@
 package xerca.xercaomnichest.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -13,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercaomnichest.block.Blocks;
 import xerca.xercaomnichest.block_entity.BlockEntityOmniChest;
 
-public final class OmniChestItemRenderer extends BlockEntityWithoutLevelRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
+public final class OmniChestItemRenderer extends BlockEntityWithoutLevelRenderer {
     private final BlockEntityOmniChest chest;
 
     public OmniChestItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet entityModelSet) {
@@ -25,10 +24,5 @@ public final class OmniChestItemRenderer extends BlockEntityWithoutLevelRenderer
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
         BlockEntityRenderDispatcher dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
         dispatcher.renderItem(chest, matrices, vertexConsumers, light, overlay);
-    }
-
-    @Override
-    public void render(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
-        renderByItem(stack, displayContext, matrices, vertexConsumers, light, overlay);
     }
 }

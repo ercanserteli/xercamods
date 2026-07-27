@@ -3,13 +3,13 @@ package xerca.xercapaint;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
@@ -41,7 +41,7 @@ public class CommandImport {
         ImportPaintingPacket pack = new ImportPaintingPacket(name);
         try {
             ServerPlayer player = stack.getPlayerOrException();
-            ServerPlayNetworking.send(player, pack);
+            PacketDistributor.sendToPlayer(player, pack);
         } catch (CommandSyntaxException e) {
             Mod.LOGGER.debug("Command executor is not a player", e);
             return 0;

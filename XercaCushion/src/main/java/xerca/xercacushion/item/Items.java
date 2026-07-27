@@ -1,8 +1,7 @@
 package xerca.xercacushion.item;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercacushion.Mod;
 import xerca.xercacushion.block.Blocks;
 
@@ -77,9 +76,9 @@ public final class Items {
         return PATHS[variant];
     }
 
-    public static void register() {
+    public static void register(RegisterEvent.RegisterHelper<Item> helper) {
         for (int i = 0; i < ALL.length; i++) {
-            Registry.register(BuiltInRegistries.ITEM, Mod.id(PATHS[i]), ALL[i]);
+            helper.register(Mod.id(PATHS[i]), ALL[i]);
         }
     }
 

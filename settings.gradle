@@ -1,21 +1,27 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/releases'
         }
         mavenCentral()
-        gradlePluginPortal()
     }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
 rootProject.name = 'XercaMods'
 
-include 'XercaBlocks'
+// Modules are included as they are ported to NeoForge. Un-ported modules still use
+// Fabric Loom and would fail to configure, so they are added back one at a time.
 include 'XercaCourt'
 include 'XercaCushion'
-include 'XercaFood'
-include 'XercaMusicMod'
 include 'XercaOmniChest'
-include 'XercaPaintMod'
+include 'XercaBlocks'
 include 'XercaTools'
+include 'XercaFood'
+include 'XercaPaintMod'
+include 'XercaMusicMod'

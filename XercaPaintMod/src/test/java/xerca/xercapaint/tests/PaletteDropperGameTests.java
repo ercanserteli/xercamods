@@ -1,11 +1,15 @@
 package xerca.xercapaint.tests;
 
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import xerca.xercapaint.PaletteUtil;
 
+@GameTestHolder("xercapaint")
+@PrefixGameTestTemplate(false)
 public class PaletteDropperGameTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String PALETTE_DROPPER_BATCH = "palette_dropper";
 
     private static void assertRgb(GameTestHelper helper, PaletteUtil.Color color, int r, int g, int b, String message) {

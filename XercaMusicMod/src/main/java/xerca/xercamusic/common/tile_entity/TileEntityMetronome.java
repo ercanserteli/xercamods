@@ -19,7 +19,7 @@ import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
 
-import static xerca.xercamusic.common.Mod.onlyCallOnClient;
+import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 
 public class TileEntityMetronome extends BlockEntity {
     private static final Vec3i HALF_RANGE = new Vec3i(8, 2, 8);
@@ -45,12 +45,8 @@ public class TileEntityMetronome extends BlockEntity {
             int pause = Math.max(40 / bps, 1);
             if (metronome.age % pause == 0) {
                 if (level.isClientSide) {// note: doesn't work if this function is only called in server
-                    try {
-                        onlyCallOnClient(() -> () ->
-                                ModClient.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat() * 0.1f, (byte) -1));
-                    } catch (Exception e) {
-                        Mod.LOGGER.error("Error playing metronome note", e);
-                    }
+                    onlyRunOnClient(() -> () ->
+                            ModClient.playNote(SoundEvents.TICK, metronome.worldPosition.getX(), metronome.worldPosition.getY(), metronome.worldPosition.getZ(), SoundSource.BLOCKS, 1.0f, 0.9f + level.random.nextFloat() * 0.1f, (byte) -1));
 
                     level.addParticle(ParticleTypes.NOTE, metronome.worldPosition.getX() + 0.5D, metronome.worldPosition.getY() + 1.2D, metronome.worldPosition.getZ() + 0.5D, 0.0D, 0.0D, 0.0D);
                 } else {

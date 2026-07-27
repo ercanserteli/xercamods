@@ -24,8 +24,10 @@ public class NoteSound extends AbstractSoundInstance implements TickableSoundIns
 
     NoteSound(SoundEvent soundEvent, SoundSource category, float x, float y, float z, float volume, float pitch, int lengthTicks) {
         super(soundEvent, category, RandomSource.create());
-        this.volume = this.originalVolume = volume;
-        this.pitch = this.originalPitch = pitch;
+        this.originalVolume = volume;
+        this.volume = volume;
+        this.originalPitch = pitch;
+        this.pitch = pitch;
         this.x = x;
         this.y = y;
         this.z = z;

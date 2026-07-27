@@ -1,22 +1,36 @@
 package xerca.xercaomnichest.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import xerca.xercaomnichest.Mod;
 import xerca.xercaomnichest.block_entity.BlockEntities;
 import xerca.xercaomnichest.item.Items;
 
-@Environment(EnvType.CLIENT)
-public final class ModClient implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        BlockEntityRenderers.register(BlockEntities.OMNI_CHEST, OmniChestBlockEntityRenderer::new);
-        BuiltinItemRendererRegistry.INSTANCE.register(
-                Items.OMNI_CHEST,
-                new OmniChestItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels())
-        );
+@EventBusSubscriber(modid = Mod.MOD_ID, value = Dist.CLIENT)
+public final class ModClient {
+    private ModClient() {
+    }
+
+    @SubscribeEvent
+    static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(BlockEntities.OMNI_CHEST, OmniChestBlockEntityRenderer::new);
+    }
+
+    @SubscribeEvent
+    static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        OmniChestItemRenderer renderer = new OmniChestItemRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return renderer;
+            }
+        }, Items.OMNI_CHEST);
     }
 }

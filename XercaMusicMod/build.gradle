@@ -2,81 +2,101 @@ import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 
 plugins {
-    id 'fabric-loom' version '1.6-SNAPSHOT'
+    id 'net.neoforged.moddev' version '2.0.141'
     id 'maven-publish'
-    id("com.github.spotbugs") version "6.4.4"
-    id("net.ltgt.errorprone") version "4.3.0"
+    id("com.github.spotbugs") version "6.5.9"
     id "pmd"
 }
 
 version = project.mod_version
-group = project.maven_group
+group = project.mod_group_id
 
 base {
-    archivesName = project.archives_base_name
+    archivesName = "${project.mod_id}-neoforge"
 }
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'ParchmentMC'
-        url = 'https://maven.parchmentmc.org'
-    }
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
-}
-
-tasks.register('buildCopy', Copy) {
-    dependsOn tasks.named('remapJar')
-    from(tasks.named('remapJar').flatMap { it.archiveFile })
-    into(rootProject.layout.projectDirectory.dir("../builds"))
-}
-
-dependencies {
-    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.21:2024.07.28@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // Error Prone
-    errorprone("com.google.errorprone:error_prone_core:2.43.0")
-
-    // Uncomment the following line to enable the deprecated Fabric API modules.
-    // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
-
-    // modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
-}
-
-processResources {
-    inputs.property "version", project.version
-    filteringCharset "UTF-8"
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
 }
 
 def targetJavaVersion = 21
+java.toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+
+neoForge {
+    version = project.neo_version
+
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        data {
+            clientData()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${project.mod_id}" {
+            sourceSet sourceSets.main
+        }
+        "${project.mod_id}_tests" {
+            sourceSet sourceSets.test
+        }
+    }
+}
+
+// Put NeoForge/Minecraft on the test source set classpath (gametests live there).
+neoForge.addModdingDependenciesTo(sourceSets.test)
+
+dependencies {
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
+    compileOnly 'org.jspecify:jspecify:1.0.0'
+    testCompileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.6'
+    testImplementation sourceSets.main.output
+}
+
+// Expand placeholders in the templated mod metadata (neoforge.mods.toml).
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+tasks.register('buildCopy', Copy) {
+    dependsOn tasks.named('jar')
+    from(tasks.named('jar').flatMap { it.archiveFile })
+    into(layout.projectDirectory.dir("../builds"))
+}
+
 tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
     it.options.release = targetJavaVersion
-    options.errorprone {
-        disableWarningsInGeneratedCode.set(true)
-    }
 }
 
 spotbugs {
@@ -86,8 +106,15 @@ spotbugs {
     reportLevel = Confidence.valueOf("HIGH")
 }
 
+tasks.named('spotbugsMain') {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
 pmd {
-    toolVersion = "7.11.0"
+    toolVersion = "7.26.0"
     ignoreFailures = true
     consoleOutput = true
     ruleSets = []
@@ -95,69 +122,7 @@ pmd {
 }
 
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-    archivesBaseName = project.archives_base_name
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
     withSourcesJar()
-}
-
-SourceSet mainSourceSet = sourceSets.main
-SourceSet testSourceSet = sourceSets.test
-
-loom {
-    accessWidenerPath.set(file("src/main/resources/xercamusic.accesswidener"))
-    runs {
-        gameTest {
-            inherit server
-            name "Game Test Server"
-            vmArg "-Dfabric-api.gametest"
-            vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
-            source(mainSourceSet)
-            source(testSourceSet)
-            ideConfigGenerated = true
-            runDir "build/gametest"
-        }
-
-        // This adds a new gradle task that runs the datagen API: "gradlew runDatagenClient"
-        datagenClient {
-            inherit client
-            name "Data Generation"
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-            vmArg "-Dfabric-api.datagen.strict-validation"
-
-            ideConfigGenerated = true
-            runDir "build/datagen"
-        }
-    }
-}
-
-tasks.named('check') {
-    dependsOn(tasks.named('runGameTest'))
-}
-
-tasks.named('test') {
-    enabled = false
-}
-
-tasks.named('runGameTest').configure {
-    doFirst {
-        def gameTestDir = file("build/gametest")
-        gameTestDir.mkdirs()
-        def serverProperties = new File(gameTestDir, "server.properties")
-        if (!serverProperties.exists()) {
-            serverProperties.text = "online-mode=false\nmotd=GameTest\n"
-        }
-        def eulaFile = new File(gameTestDir, "eula.txt")
-        if (!eulaFile.exists()) {
-            eulaFile.text = "eula=true\n"
-        }
-    }
 }
 
 jar {
@@ -166,13 +131,20 @@ jar {
     }
 }
 
-// Add the datagenned files into the jar.
-sourceSets {
-    main {
-        resources {
-            srcDirs += [
-                    'src/main/generated'
-            ]
+tasks.named('check') {
+    dependsOn(tasks.named('runGameTestServer'))
+}
+
+tasks.named('test') {
+    enabled = false
+}
+
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            from(components.java)
         }
+    }
+    repositories {
     }
 }

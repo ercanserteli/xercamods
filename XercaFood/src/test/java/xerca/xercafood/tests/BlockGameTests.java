@@ -1,8 +1,9 @@
 package xerca.xercafood.tests;
 
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +24,8 @@ import java.util.List;
 
 import static xerca.xercafood.tests.GameTestHelpers.*;
 
+@GameTestHolder("xercafood")
+@PrefixGameTestTemplate(false)
 public class BlockGameTests {
     @Nullable
     private static BlockState invokePlacementState(GameTestHelper helper, net.minecraft.world.item.Item item, BlockPlaceContext context) {
@@ -286,7 +289,7 @@ public class BlockGameTests {
 
         ItemStack mutton = new ItemStack(net.minecraft.world.item.Items.MUTTON, 6);
         player.getInventory().setItem(player.getInventory().selected, mutton);
-        UseBlockCallback.EVENT.invoker().interact(player, helper.getLevel(), InteractionHand.MAIN_HAND, hitTopOf(donerPos));
+        Mod.tryCreateDoner(player, helper.getLevel(), InteractionHand.MAIN_HAND, donerPos);
         helper.assertTrue(helper.getLevel().getBlockState(donerPos).is(xerca.xercafood.common.block.Blocks.BLOCK_DONER), "Expected mutton+iron bars to create doner");
 
         for (int i = 0; i < 5; i++) {

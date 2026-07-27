@@ -2,6 +2,8 @@ package xerca.xercapaint.tests;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -14,8 +16,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@GameTestHolder("xercapaint")
+@PrefixGameTestTemplate(false)
 public class RecipeCanvasCloningGameTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String CANVAS_CLONE_BATCH = "canvas_clone";
 
     private static final RecipeCanvasCloning RECIPE = new RecipeCanvasCloning(

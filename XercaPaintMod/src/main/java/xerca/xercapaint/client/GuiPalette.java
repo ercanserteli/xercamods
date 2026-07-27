@@ -1,12 +1,11 @@
 package xerca.xercapaint.client;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.packets.PaletteUpdatePacket;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiPalette extends BasePalette {
 
     protected GuiPalette(ItemStack paletteStack, Component title) {
@@ -63,7 +62,7 @@ public class GuiPalette extends BasePalette {
     @Override
     public void removed() {
         if (paletteDirty) {
-            ClientPlayNetworking.send(new PaletteUpdatePacket(customColors));
+            PacketDistributor.sendToServer(new PaletteUpdatePacket(customColors));
         }
     }
 }

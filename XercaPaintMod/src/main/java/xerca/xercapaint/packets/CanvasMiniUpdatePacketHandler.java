@@ -1,6 +1,6 @@
 package xerca.xercapaint.packets;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,7 @@ import xerca.xercapaint.item.Items;
 
 import java.util.Arrays;
 
-public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayPayloadHandler<CanvasMiniUpdatePacket> {
+public final class CanvasMiniUpdatePacketHandler {
     public static void processMessage(CanvasMiniUpdatePacket msg, ServerPlayer pl) {
         ItemStack canvas;
         ItemStack palette;
@@ -28,7 +28,8 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.easelId());
                 return;
             }
-            if (entityEasel.getPainter() == null || !entityEasel.getPainter().getUUID().equals(pl.getUUID())) {
+            var painter = entityEasel.getPainter();
+            if (painter == null || !painter.getUUID().equals(pl.getUUID())) {
                 Mod.LOGGER.warn("CanvasMiniUpdatePacket: Unauthorized paint update. easelId: {} player: {}", msg.easelId(), pl.getName().getString());
                 return;
             }
@@ -68,8 +69,7 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayP
         }
     }
 
-    @Override
-    public void receive(CanvasMiniUpdatePacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+    public static void handle(CanvasMiniUpdatePacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet, (ServerPlayer) context.player()));
     }
 }

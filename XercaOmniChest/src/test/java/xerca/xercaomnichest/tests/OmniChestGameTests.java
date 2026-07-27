@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import xerca.xercaomnichest.Mod;
 import xerca.xercaomnichest.block.BlockOmniChest;
 import xerca.xercaomnichest.block.Blocks;
@@ -34,8 +36,10 @@ import xerca.xercaomnichest.item.Items;
 import java.util.List;
 import java.util.Optional;
 
+@GameTestHolder(Mod.MOD_ID)
+@PrefixGameTestTemplate(false)
 public final class OmniChestGameTests {
-    private static final String BASIC_TEMPLATE = "xercaomnichest:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String BATCH = "xercaomnichest.omni_chest";
 
     private static ResourceLocation recipeId(String path) {

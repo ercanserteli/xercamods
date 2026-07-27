@@ -1,9 +1,5 @@
 package xerca.xercafood.common.item;
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -12,7 +8,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import org.jspecify.annotations.Nullable;
 import xerca.xercafood.common.Mod;
 import xerca.xercafood.common.block.BlockPizza;
 import xerca.xercafood.common.block.Blocks;
@@ -27,7 +26,7 @@ public final class Items {
     private Items() {
     }
 
-    private static final boolean REGISTER_LOCAL_KNIFE = !FabricLoader.getInstance().isModLoaded("xercatools");
+    private static final boolean REGISTER_LOCAL_KNIFE = !ModList.get().isLoaded("xercatools");
     public static final @Nullable Item KNIFE = REGISTER_LOCAL_KNIFE ? new ItemKnife() : null;
     public static final Item GLASS = new ItemGlass();
     public static final Item ENDER_CUPCAKE = new ItemEnderCupcake();
@@ -284,8 +283,15 @@ public final class Items {
         return Objects.requireNonNull(KNIFE, "Local knife must exist when XercaTools knife is not active");
     }
 
+    private static final java.util.Map<String, Item> TO_REGISTER = new java.util.LinkedHashMap<>();
+
     private static void registerItem(String name, Item item) {
-        Registry.register(BuiltInRegistries.ITEM, Mod.id(name), item);
+        TO_REGISTER.put(name, item);
+    }
+
+    public static void register(RegisterEvent.RegisterHelper<Item> helper) {
+        registerItems();
+        TO_REGISTER.forEach((name, item) -> helper.register(Mod.id(name), item));
     }
 
     static void registerCompostable(float chance, ItemLike itemIn) {
@@ -301,11 +307,11 @@ public final class Items {
         registerCompostable(0.65f, TEA_LEAF);
     }
 
-    public static void registerRecipes() {
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Mod.id("crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
+    public static void registerRecipes(RegisterEvent.RegisterHelper<RecipeSerializer<?>> helper) {
+        helper.register(Mod.id("crafting_special_tea_sugaring"), CRAFTING_SPECIAL_TEA_SUGARING);
+        helper.register(Mod.id("crafting_special_tea_pouring"), CRAFTING_SPECIAL_TEA_POURING);
+        helper.register(Mod.id("crafting_special_tea_filling"), CRAFTING_SPECIAL_TEA_FILLING);
+        helper.register(Mod.id("crafting_special_tea_refilling"), CRAFTING_SPECIAL_TEA_REFILLING);
     }
 
     public static void registerItems() {
@@ -545,115 +551,120 @@ public final class Items {
         registerItem("pizza", PIZZA);
 
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
-            entries.accept(TOMATO);
-            entries.accept(RAW_SHISH_KEBAB);
-            entries.accept(SHISH_KEBAB);
-            entries.accept(YOGHURT);
-            entries.accept(HONEYBERRY_YOGHURT);
-            entries.accept(HONEY_CUPCAKE);
-            entries.accept(DONER_WRAP);
-            entries.accept(CHUBBY_DONER);
-            entries.accept(ALEXANDER);
-            entries.accept(AYRAN);
-            entries.accept(DONER_SLICE);
-            entries.accept(BAKED_RICE_PUDDING);
-            entries.accept(SWEET_BERRY_JUICE);
-            entries.accept(RICE_PUDDING);
-            entries.accept(SWEET_BERRY_CUPCAKE_FANCY);
-            entries.accept(SWEET_BERRY_CUPCAKE);
-            entries.accept(ENDER_CUPCAKE);
-            entries.accept(SASHIMI);
-            entries.accept(OYAKODON);
-            entries.accept(BEEF_DONBURI);
-            entries.accept(EGG_SUSHI);
-            entries.accept(NIGIRI_SUSHI);
-            entries.accept(OMURICE);
-            entries.accept(SAKE);
-            entries.accept(RICEBALL);
-            entries.accept(SUSHI);
-            entries.accept(COOKED_RICE);
-            entries.accept(COLA);
-            entries.accept(APPLE_CUPCAKE);
-            entries.accept(PUMPKIN_CUPCAKE);
-            entries.accept(COCOA_CUPCAKE);
-            entries.accept(MELON_CUPCAKE);
-            entries.accept(CARROT_CUPCAKE);
-            entries.accept(FANCY_APPLE_CUPCAKE);
-            entries.accept(FANCY_PUMPKIN_CUPCAKE);
-            entries.accept(GLOWBERRY_CUPCAKE);
-            entries.accept(DONUT);
-            entries.accept(FANCY_DONUT);
-            entries.accept(SPRINKLES);
-            entries.accept(CHOCOLATE);
-            entries.accept(BUN);
-            entries.accept(RAW_PATTY);
-            entries.accept(COOKED_PATTY);
-            entries.accept(RAW_CHICKEN_PATTY);
-            entries.accept(COOKED_CHICKEN_PATTY);
-            entries.accept(HAMBURGER);
-            entries.accept(CHICKEN_BURGER);
-            entries.accept(MUSHROOM_BURGER);
-            entries.accept(ULTIMATE_BOTTOM);
-            entries.accept(ULTIMATE_TOP);
-            entries.accept(CHEESEBURGER);
-            entries.accept(COLA_EXTRACT);
-            entries.accept(COLA_POWDER);
-            entries.accept(CARBONATED_WATER);
-            entries.accept(ULTIMATE_BURGER);
-            entries.accept(ROTTEN_BURGER);
-            entries.accept(COOKED_SAUSAGE);
-            entries.accept(HOTDOG);
-            entries.accept(FISH_BREAD);
-            entries.accept(DAISY_SANDWICH);
-            entries.accept(CHICKEN_WRAP);
-            entries.accept(RAW_SCHNITZEL);
-            entries.accept(COOKED_SCHNITZEL);
-            entries.accept(FRIED_EGG);
-            entries.accept(CROISSANT);
-            entries.accept(POTATO_FRIES);
-            entries.accept(ICE_TEA);
-            entries.accept(APPLE_JUICE);
-            entries.accept(CARROT_JUICE);
-            entries.accept(MELON_JUICE);
-            entries.accept(PUMPKIN_JUICE);
-            entries.accept(TOMATO_JUICE);
-            entries.accept(WHEAT_JUICE);
-            entries.accept(GLASS_OF_MILK);
-            entries.accept(GLASS_OF_WATER);
-            entries.accept(SODA);
-            entries.accept(CHEESE_TOAST);
-            entries.accept(SQUID_INK_PAELLA);
-            entries.accept(GLOW_SQUID_INK_PAELLA);
-            entries.accept(APPLE_PIE);
-            entries.accept(SWEET_BERRY_PIE);
-            entries.accept(RAW_PIZZA);
-            entries.accept(PIZZA);
-            entries.accept(TOMATO_SLICES);
-            entries.accept(POTATO_SLICES);
-            entries.accept(RAW_SAUSAGE);
-            entries.accept(CHEESE_WHEEL);
-            entries.accept(CHEESE_SLICE);
-            entries.accept(TEA_LEAF);
-            entries.accept(TEA_DRIED);
-            entries.accept(FULL_TEACUP_0);
-            entries.accept(HOT_TEAPOT_7);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> {
+    }
+
+    public static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
+            event.accept(TOMATO);
+            event.accept(RAW_SHISH_KEBAB);
+            event.accept(SHISH_KEBAB);
+            event.accept(YOGHURT);
+            event.accept(HONEYBERRY_YOGHURT);
+            event.accept(HONEY_CUPCAKE);
+            event.accept(DONER_WRAP);
+            event.accept(CHUBBY_DONER);
+            event.accept(ALEXANDER);
+            event.accept(AYRAN);
+            event.accept(DONER_SLICE);
+            event.accept(BAKED_RICE_PUDDING);
+            event.accept(SWEET_BERRY_JUICE);
+            event.accept(RICE_PUDDING);
+            event.accept(SWEET_BERRY_CUPCAKE_FANCY);
+            event.accept(SWEET_BERRY_CUPCAKE);
+            event.accept(ENDER_CUPCAKE);
+            event.accept(SASHIMI);
+            event.accept(OYAKODON);
+            event.accept(BEEF_DONBURI);
+            event.accept(EGG_SUSHI);
+            event.accept(NIGIRI_SUSHI);
+            event.accept(OMURICE);
+            event.accept(SAKE);
+            event.accept(RICEBALL);
+            event.accept(SUSHI);
+            event.accept(COOKED_RICE);
+            event.accept(COLA);
+            event.accept(APPLE_CUPCAKE);
+            event.accept(PUMPKIN_CUPCAKE);
+            event.accept(COCOA_CUPCAKE);
+            event.accept(MELON_CUPCAKE);
+            event.accept(CARROT_CUPCAKE);
+            event.accept(FANCY_APPLE_CUPCAKE);
+            event.accept(FANCY_PUMPKIN_CUPCAKE);
+            event.accept(GLOWBERRY_CUPCAKE);
+            event.accept(DONUT);
+            event.accept(FANCY_DONUT);
+            event.accept(SPRINKLES);
+            event.accept(CHOCOLATE);
+            event.accept(BUN);
+            event.accept(RAW_PATTY);
+            event.accept(COOKED_PATTY);
+            event.accept(RAW_CHICKEN_PATTY);
+            event.accept(COOKED_CHICKEN_PATTY);
+            event.accept(HAMBURGER);
+            event.accept(CHICKEN_BURGER);
+            event.accept(MUSHROOM_BURGER);
+            event.accept(ULTIMATE_BOTTOM);
+            event.accept(ULTIMATE_TOP);
+            event.accept(CHEESEBURGER);
+            event.accept(COLA_EXTRACT);
+            event.accept(COLA_POWDER);
+            event.accept(CARBONATED_WATER);
+            event.accept(ULTIMATE_BURGER);
+            event.accept(ROTTEN_BURGER);
+            event.accept(COOKED_SAUSAGE);
+            event.accept(HOTDOG);
+            event.accept(FISH_BREAD);
+            event.accept(DAISY_SANDWICH);
+            event.accept(CHICKEN_WRAP);
+            event.accept(RAW_SCHNITZEL);
+            event.accept(COOKED_SCHNITZEL);
+            event.accept(FRIED_EGG);
+            event.accept(CROISSANT);
+            event.accept(POTATO_FRIES);
+            event.accept(ICE_TEA);
+            event.accept(APPLE_JUICE);
+            event.accept(CARROT_JUICE);
+            event.accept(MELON_JUICE);
+            event.accept(PUMPKIN_JUICE);
+            event.accept(TOMATO_JUICE);
+            event.accept(WHEAT_JUICE);
+            event.accept(GLASS_OF_MILK);
+            event.accept(GLASS_OF_WATER);
+            event.accept(SODA);
+            event.accept(CHEESE_TOAST);
+            event.accept(SQUID_INK_PAELLA);
+            event.accept(GLOW_SQUID_INK_PAELLA);
+            event.accept(APPLE_PIE);
+            event.accept(SWEET_BERRY_PIE);
+            event.accept(RAW_PIZZA);
+            event.accept(PIZZA);
+            event.accept(TOMATO_SLICES);
+            event.accept(POTATO_SLICES);
+            event.accept(RAW_SAUSAGE);
+            event.accept(CHEESE_WHEEL);
+            event.accept(CHEESE_SLICE);
+            event.accept(TEA_LEAF);
+            event.accept(TEA_DRIED);
+            event.accept(FULL_TEACUP_0);
+            event.accept(HOT_TEAPOT_7);
+        }
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             if (REGISTER_LOCAL_KNIFE) {
-                entries.accept(requireLocalKnife());
+                event.accept(requireLocalKnife());
             }
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
-            entries.accept(GLASS);
-            entries.accept(TEACUP);
-            entries.accept(TEAPOT);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.NATURAL_BLOCKS).register(entries -> {
-            entries.accept(TOMATO_SEEDS);
-            entries.accept(RICE_SEEDS);
-            entries.accept(TEA_SEEDS);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> entries.accept(VAT));
+        }
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(GLASS);
+            event.accept(TEACUP);
+            event.accept(TEAPOT);
+        }
+        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
+            event.accept(TOMATO_SEEDS);
+            event.accept(RICE_SEEDS);
+            event.accept(TEA_SEEDS);
+        }
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(VAT);
+        }
     }
 }

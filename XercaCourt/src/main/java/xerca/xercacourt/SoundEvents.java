@@ -1,8 +1,7 @@
 package xerca.xercacourt;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 public final class SoundEvents {
     public static final SoundEvent GAVEL = SoundEvent.createVariableRangeEvent(Mod.id("gavel"));
@@ -11,8 +10,8 @@ public final class SoundEvents {
     private SoundEvents() {
     }
 
-    public static void register() {
-        Registry.register(BuiltInRegistries.SOUND_EVENT, GAVEL.getLocation(), GAVEL);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, OBJECTION.getLocation(), OBJECTION);
+    public static void register(RegisterEvent.RegisterHelper<SoundEvent> helper) {
+        helper.register(GAVEL.getLocation(), GAVEL);
+        helper.register(OBJECTION.getLocation(), OBJECTION);
     }
 }

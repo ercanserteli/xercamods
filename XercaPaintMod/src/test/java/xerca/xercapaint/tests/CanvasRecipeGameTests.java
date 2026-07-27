@@ -2,6 +2,8 @@ package xerca.xercapaint.tests;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +24,10 @@ import java.util.Optional;
 
 import static xerca.xercapaint.Mod.MOD_ID;
 
+@GameTestHolder("xercapaint")
+@PrefixGameTestTemplate(false)
 public class CanvasRecipeGameTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String CANVAS_RECIPES_BATCH = "canvas_recipes";
 
     private record CanvasRecipeSpec(ResourceLocation recipeId, int width, int height, Item expectedResult) {

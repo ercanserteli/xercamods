@@ -4,6 +4,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -50,8 +52,10 @@ import java.nio.file.Path;
 import java.util.*;
 
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+@GameTestHolder(xerca.xercamusic.common.Mod.MODID)
+@PrefixGameTestTemplate(false)
 public final class MusicRegressionGameTests {
-    private static final String BASIC_TEMPLATE = Mod.MODID + ":basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final Field MUSIC_BOX_IS_PLAYING_FIELD;
     private static final Field MUSIC_BOX_BPS_FIELD;
     private static final Field MUSIC_BOX_VOLUME_FIELD;

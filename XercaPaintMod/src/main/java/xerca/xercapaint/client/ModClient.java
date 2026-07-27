@@ -1,35 +1,38 @@
 package xerca.xercapaint.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import org.jspecify.annotations.Nullable;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.Entities;
 import xerca.xercapaint.entity.EntityEasel;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
-import xerca.xercapaint.packets.*;
 
-@Environment(EnvType.CLIENT)
-public class ModClient implements ClientModInitializer {
+@EventBusSubscriber(modid = Mod.MOD_ID, value = Dist.CLIENT)
+public final class ModClient {
     public static final ModelLayerLocation EASEL_MAIN_LAYER = new ModelLayerLocation(Mod.id("easel"), "main");
     public static final ModelLayerLocation EASEL_CANVAS_LAYER = new ModelLayerLocation(Mod.id("easel"), "canvas");
     private static final String ITEM_CANVAS_TRANSLATION_KEY = "item.xercapaint.item_canvas";
     private static final String DRAWN_PREDICATE_ID = "drawn";
     private static @Nullable CanvasItemRenderer canvasItemRenderer;
+
+    private ModClient() {
+    }
 
     public static void showCanvasGui(EntityEasel easel, ItemStack palette) {
         showCanvasGui(easel, palette, Minecraft.getInstance());
@@ -87,43 +90,53 @@ public class ModClient implements ClientModInitializer {
         return canvasItemRenderer;
     }
 
-    @Override
-    public void onInitializeClient() {
-        canvasItemRenderer = new CanvasItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS, canvasItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LARGE, canvasItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_LONG, canvasItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_TALL, canvasItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_GLASS, canvasItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_GLASS_LARGE, canvasItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_GLASS_LONG, canvasItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(Items.ITEM_CANVAS_GLASS_TALL, canvasItemRenderer);
+    @SubscribeEvent
+    static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
+        event.registerEntityRenderer(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
+    }
 
-        EntityRendererRegistry.register(Entities.EASEL, new RenderEntityEasel.RenderEntityEaselFactory());
-        EntityRendererRegistry.register(Entities.CANVAS, new RenderEntityCanvas.RenderEntityCanvasFactory());
-        EntityModelLayerRegistry.registerModelLayer(EASEL_MAIN_LAYER, EaselModel::createBodyLayer);
-        EntityModelLayerRegistry.registerModelLayer(EASEL_CANVAS_LAYER, EaselModel::createBodyLayer);
+    @SubscribeEvent
+    static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(EASEL_MAIN_LAYER, EaselModel::createBodyLayer);
+        event.registerLayerDefinition(EASEL_CANVAS_LAYER, EaselModel::createBodyLayer);
+    }
 
-        ClampedItemPropertyFunction drawn = (itemStack, level, livingEntity, i) -> {
-            if (itemStack.get(Items.CANVAS_PIXELS) == null) return 0.0f;
-            else return 1.0F;
+    @SubscribeEvent
+    static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        canvasItemRenderer = new CanvasItemRenderer(minecraft.getBlockEntityRenderDispatcher(), minecraft.getEntityModels());
+        IClientItemExtensions ext = new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return canvasItemRenderer;
+            }
         };
-        ClampedItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
-                ItemPalette.basicColorCount(stack) / 16.0F;
-        ItemProperties.register(Items.ITEM_CANVAS, Mod.id(DRAWN_PREDICATE_ID), drawn);
-        ItemProperties.register(Items.ITEM_CANVAS_LARGE, Mod.id(DRAWN_PREDICATE_ID), drawn);
-        ItemProperties.register(Items.ITEM_CANVAS_LONG, Mod.id(DRAWN_PREDICATE_ID), drawn);
-        ItemProperties.register(Items.ITEM_CANVAS_TALL, Mod.id(DRAWN_PREDICATE_ID), drawn);
-        ItemProperties.register(Items.ITEM_CANVAS_GLASS, Mod.id(DRAWN_PREDICATE_ID), drawn);
-        ItemProperties.register(Items.ITEM_CANVAS_GLASS_LARGE, Mod.id(DRAWN_PREDICATE_ID), drawn);
-        ItemProperties.register(Items.ITEM_CANVAS_GLASS_LONG, Mod.id(DRAWN_PREDICATE_ID), drawn);
-        ItemProperties.register(Items.ITEM_CANVAS_GLASS_TALL, Mod.id(DRAWN_PREDICATE_ID), drawn);
-        ItemProperties.register(Items.ITEM_PALETTE, Mod.id("colors"), colors);
+        event.registerItem(ext, Items.ITEM_CANVAS, Items.ITEM_CANVAS_LARGE, Items.ITEM_CANVAS_LONG, Items.ITEM_CANVAS_TALL,
+                Items.ITEM_CANVAS_GLASS, Items.ITEM_CANVAS_GLASS_LARGE, Items.ITEM_CANVAS_GLASS_LONG, Items.ITEM_CANVAS_GLASS_TALL);
+    }
 
-        ClientPlayNetworking.registerGlobalReceiver(CloseGuiPacket.PACKET_ID, new CloseGuiPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(ExportPaintingPacket.PACKET_ID, new ExportPaintingPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(ImportPaintingPacket.PACKET_ID, new ImportPaintingPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(OpenGuiPacket.PACKET_ID, new OpenGuiPacketHandler());
-        ClientPlayNetworking.registerGlobalReceiver(PictureSendPacket.PACKET_ID, new PictureSendPacketHandler());
+    @SubscribeEvent
+    static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ClampedItemPropertyFunction drawn = (itemStack, level, livingEntity, i) -> {
+                if (itemStack.get(Items.CANVAS_PIXELS) == null) {
+                    return 0.0f;
+                } else {
+                    return 1.0F;
+                }
+            };
+            ClampedItemPropertyFunction colors = (stack, worldIn, entityIn, i) ->
+                    ItemPalette.basicColorCount(stack) / 16.0F;
+            ItemProperties.register(Items.ITEM_CANVAS, Mod.id(DRAWN_PREDICATE_ID), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_LARGE, Mod.id(DRAWN_PREDICATE_ID), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_LONG, Mod.id(DRAWN_PREDICATE_ID), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_TALL, Mod.id(DRAWN_PREDICATE_ID), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_GLASS, Mod.id(DRAWN_PREDICATE_ID), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_GLASS_LARGE, Mod.id(DRAWN_PREDICATE_ID), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_GLASS_LONG, Mod.id(DRAWN_PREDICATE_ID), drawn);
+            ItemProperties.register(Items.ITEM_CANVAS_GLASS_TALL, Mod.id(DRAWN_PREDICATE_ID), drawn);
+            ItemProperties.register(Items.ITEM_PALETTE, Mod.id("colors"), colors);
+        });
     }
 }

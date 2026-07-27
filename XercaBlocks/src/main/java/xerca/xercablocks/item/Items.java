@@ -1,12 +1,11 @@
 package xerca.xercablocks.item;
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xerca.xercablocks.Mod;
 import xerca.xercablocks.block.Blocks;
 
@@ -25,44 +24,43 @@ public final class Items {
     private Items() {
     }
 
-    public static void registerItems() {
-        register("block_leather", BLOCK_LEATHER);
-        register("block_straw", BLOCK_STRAW);
-        register("bookcase", BOOKCASE);
-        register("rope", ROPE);
-        register("carving_station", CARVING_STATION);
-        Blocks.carvedWoods().forEach(Items::registerBuildingBlockItem);
-        Blocks.terratiles().forEach(Items::registerColoredBlockItem);
-        Blocks.terratileSlabs().forEach(Items::registerColoredBlockItem);
-        Blocks.terratileStairs().forEach(Items::registerColoredBlockItem);
-
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries -> {
-            entries.accept(BOOKCASE);
-            entries.accept(ROPE);
-            entries.accept(CARVING_STATION);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.BUILDING_BLOCKS).register(entries -> {
-            entries.accept(BLOCK_LEATHER);
-            entries.accept(BLOCK_STRAW);
-            BUILDING_TAB_ITEMS.forEach(entries::accept);
-        });
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS).register(entries ->
-                COLORED_TAB_ITEMS.forEach(entries::accept));
+    public static void register(RegisterEvent.RegisterHelper<Item> helper) {
+        helper.register(Mod.id("block_leather"), BLOCK_LEATHER);
+        helper.register(Mod.id("block_straw"), BLOCK_STRAW);
+        helper.register(Mod.id("bookcase"), BOOKCASE);
+        helper.register(Mod.id("rope"), ROPE);
+        helper.register(Mod.id("carving_station"), CARVING_STATION);
+        Blocks.carvedWoods().forEach((id, block) -> registerBuildingBlockItem(helper, id, block));
+        Blocks.terratiles().forEach((id, block) -> registerColoredBlockItem(helper, id, block));
+        Blocks.terratileSlabs().forEach((id, block) -> registerColoredBlockItem(helper, id, block));
+        Blocks.terratileStairs().forEach((id, block) -> registerColoredBlockItem(helper, id, block));
     }
 
-    private static void registerBuildingBlockItem(String id, Block block) {
+    public static void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(BOOKCASE);
+            event.accept(ROPE);
+            event.accept(CARVING_STATION);
+        }
+        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+            event.accept(BLOCK_LEATHER);
+            event.accept(BLOCK_STRAW);
+            BUILDING_TAB_ITEMS.forEach(event::accept);
+        }
+        if (event.getTabKey() == CreativeModeTabs.COLORED_BLOCKS) {
+            COLORED_TAB_ITEMS.forEach(event::accept);
+        }
+    }
+
+    private static void registerBuildingBlockItem(RegisterEvent.RegisterHelper<Item> helper, String id, Block block) {
         Item item = new BlockItem(block, new Item.Properties());
-        register(id, item);
+        helper.register(Mod.id(id), item);
         BUILDING_TAB_ITEMS.add(item);
     }
 
-    private static void registerColoredBlockItem(String id, Block block) {
+    private static void registerColoredBlockItem(RegisterEvent.RegisterHelper<Item> helper, String id, Block block) {
         Item item = new BlockItem(block, new Item.Properties());
-        register(id, item);
+        helper.register(Mod.id(id), item);
         COLORED_TAB_ITEMS.add(item);
-    }
-
-    private static void register(String id, Item item) {
-        Registry.register(BuiltInRegistries.ITEM, Mod.id(id), item);
     }
 }

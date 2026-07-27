@@ -3,6 +3,8 @@ package xerca.xercafood.tests;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +21,8 @@ import java.util.Optional;
 
 import static xerca.xercafood.tests.GameTestHelpers.*;
 
+@GameTestHolder("xercafood")
+@PrefixGameTestTemplate(false)
 public class RecipeGameTests {
 
     @GameTest(template = BASIC_TEMPLATE, batch = RECIPE_BATCH)

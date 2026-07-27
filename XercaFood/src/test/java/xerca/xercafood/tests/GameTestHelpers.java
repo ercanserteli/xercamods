@@ -24,7 +24,7 @@ import xerca.xercafood.common.block_entity.BlockEntityDoner;
 import java.util.*;
 
 class GameTestHelpers {
-    static final String BASIC_TEMPLATE = "xercafood:basic_test";
+    static final String BASIC_TEMPLATE = "basic_test";
     static final String RECIPE_BATCH = "xercafood_recipes";
 
     static ResourceLocation recipeId(String path) {

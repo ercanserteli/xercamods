@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -31,8 +33,10 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
+@GameTestHolder("xercapaint")
+@PrefixGameTestTemplate(false)
 public class EaselTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final Field PAINTER_FIELD;
     private static final Field DROP_DEFERRED_FIELD;
 

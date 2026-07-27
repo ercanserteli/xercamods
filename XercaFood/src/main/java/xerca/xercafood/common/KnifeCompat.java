@@ -1,12 +1,12 @@
 package xerca.xercafood.common;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.ModList;
 import xerca.xercafood.common.item.Items;
 
 public final class KnifeCompat {
@@ -17,7 +17,7 @@ public final class KnifeCompat {
     }
 
     public static boolean useToolsKnife() {
-        return FabricLoader.getInstance().isModLoaded("xercatools") && BuiltInRegistries.ITEM.containsKey(XERCATOOLS_KNIFE_ID);
+        return ModList.get().isLoaded("xercatools") && BuiltInRegistries.ITEM.containsKey(XERCATOOLS_KNIFE_ID);
     }
 
     public static Item getKnifeItem() {

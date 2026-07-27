@@ -17,6 +17,8 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import xerca.xercacushion.Mod;
 import xerca.xercacushion.entity.EntityCushion;
 import xerca.xercacushion.item.Items;
@@ -26,8 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@GameTestHolder(Mod.MOD_ID)
+@PrefixGameTestTemplate(false)
 public final class CushionGameTests {
-    private static final String BASIC_TEMPLATE = "xercacushion:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
 
     private static ResourceLocation recipeId(String path) {
         return ResourceLocation.fromNamespaceAndPath(Mod.MOD_ID, path);

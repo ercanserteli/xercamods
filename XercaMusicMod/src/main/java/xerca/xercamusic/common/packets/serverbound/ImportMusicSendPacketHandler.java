@@ -1,16 +1,15 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.minecraft.server.level.ServerPlayer;
 import xerca.xercamusic.common.CommandImport;
 
-public class ImportMusicSendPacketHandler implements ServerPlayNetworking.PlayPayloadHandler<ImportMusicSendPacket> {
+public final class ImportMusicSendPacketHandler {
     private static void processMessage(ImportMusicSendPacket msg, ServerPlayer sender) {
         CommandImport.doImport(msg.tag(), msg.notes(), msg.uuid(), sender);
     }
 
-    @Override
-    public void receive(ImportMusicSendPacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+    public static void handle(ImportMusicSendPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet, (ServerPlayer) context.player()));
     }
 }

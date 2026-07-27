@@ -1,8 +1,7 @@
 package xerca.xercafood.common;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 public class SoundEvents {
     private SoundEvents() {
@@ -20,17 +19,17 @@ public class SoundEvents {
     public static final SoundEvent FIZZY = SoundEvent.createVariableRangeEvent(Mod.id("fizzy"));
     public static final SoundEvent SNEAK_HIT = SoundEvent.createVariableRangeEvent(Mod.id("sneak_hit"));
 
-    public static void registerSoundEvents() {
-        Registry.register(BuiltInRegistries.SOUND_EVENT, TOMATO_SPLASH.getLocation(), TOMATO_SPLASH);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BIG_BURP.getLocation(), BIG_BURP);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, YAHOO.getLocation(), YAHOO);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SCARY.getLocation(), SCARY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, TEA_POUR.getLocation(), TEA_POUR);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SIZZLE.getLocation(), SIZZLE);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, BIG_SIZZLE.getLocation(), BIG_SIZZLE);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, HOLY.getLocation(), HOLY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SPARKLES.getLocation(), SPARKLES);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, FIZZY.getLocation(), FIZZY);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, SNEAK_HIT.getLocation(), SNEAK_HIT);
+    public static void registerSoundEvents(RegisterEvent.RegisterHelper<SoundEvent> helper) {
+        helper.register(TOMATO_SPLASH.getLocation(), TOMATO_SPLASH);
+        helper.register(BIG_BURP.getLocation(), BIG_BURP);
+        helper.register(YAHOO.getLocation(), YAHOO);
+        helper.register(SCARY.getLocation(), SCARY);
+        helper.register(TEA_POUR.getLocation(), TEA_POUR);
+        helper.register(SIZZLE.getLocation(), SIZZLE);
+        helper.register(BIG_SIZZLE.getLocation(), BIG_SIZZLE);
+        helper.register(HOLY.getLocation(), HOLY);
+        helper.register(SPARKLES.getLocation(), SPARKLES);
+        helper.register(FIZZY.getLocation(), FIZZY);
+        helper.register(SNEAK_HIT.getLocation(), SNEAK_HIT);
     }
 }

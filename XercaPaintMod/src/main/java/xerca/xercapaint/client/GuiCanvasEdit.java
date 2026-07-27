@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -34,7 +34,6 @@ import java.util.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiCanvasEdit extends BasePalette {
     private static final int BRUSH_LEVEL_COUNT = 4;
     private static final int SMALL_CANVAS_PIXEL_SCALE = 10;
@@ -898,14 +897,14 @@ public class GuiCanvasEdit extends BasePalette {
             if (canvasDirty) {
                 version++;
                 int easelId = easel == null ? -1 : easel.getId();
-                ClientPlayNetworking.send(new CanvasUpdatePacket(pixels, isSigned, canvasTitle, canvasId, version, easelId, customColors, canvasType, sidesActive, sideData));
+                PacketDistributor.sendToServer(new CanvasUpdatePacket(pixels, isSigned, canvasTitle, canvasId, version, easelId, customColors, canvasType, sidesActive, sideData));
             } else {
                 if (easel != null) {
-                    ClientPlayNetworking.send(new EaselLeftPacket(easel.getId()));
+                    PacketDistributor.sendToServer(new EaselLeftPacket(easel.getId()));
                 }
                 if (paletteDirty) {
                     PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
-                    ClientPlayNetworking.send(pack);
+                    PacketDistributor.sendToServer(pack);
                 }
             }
         } else {
@@ -915,7 +914,7 @@ public class GuiCanvasEdit extends BasePalette {
                 } else {
                     version++;
                     if (easel != null) {
-                        ClientPlayNetworking.send(new CanvasMiniUpdatePacket(pixels, canvasId, version, easel.getId(), canvasType, sidesActive, sideData));
+                        PacketDistributor.sendToServer(new CanvasMiniUpdatePacket(pixels, canvasId, version, easel.getId(), canvasType, sidesActive, sideData));
                     }
                     canvasDirty = false;
                     timeSinceLastUpdate = 0;

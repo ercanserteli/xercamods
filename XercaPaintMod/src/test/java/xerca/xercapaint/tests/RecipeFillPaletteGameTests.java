@@ -2,6 +2,8 @@ package xerca.xercapaint.tests;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
@@ -17,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@GameTestHolder("xercapaint")
+@PrefixGameTestTemplate(false)
 public class RecipeFillPaletteGameTests {
-    private static final String BASIC_TEMPLATE = "xercapaint:basic_test";
+    private static final String BASIC_TEMPLATE = "basic_test";
     private static final String PALETTE_FILL_BATCH = "palette_fill";
 
     private static final RecipeFillPalette RECIPE = new RecipeFillPalette(
@@ -47,7 +51,7 @@ public class RecipeFillPaletteGameTests {
         for (DyeColor color : colors) {
             basic[basicIndex(color)] = 1;
         }
-        palette.set(Items.PALETTE_BASIC_COLORS, basic);
+        palette.set(Items.PALETTE_BASIC_COLORS, new Items.BasicColors(basic));
         return palette;
     }
 
@@ -67,7 +71,8 @@ public class RecipeFillPaletteGameTests {
         ItemStack result = RECIPE.assemble(grid, helper.getLevel().registryAccess());
         helper.assertTrue(result.is(Items.ITEM_PALETTE), "Expected filled palette output");
 
-        byte[] basic = result.getOrDefault(Items.PALETTE_BASIC_COLORS, new byte[0]);
+        Items.BasicColors basicComp = result.get(Items.PALETTE_BASIC_COLORS);
+        byte[] basic = basicComp == null ? new byte[0] : basicComp.value();
         helper.assertTrue(basic.length == 16, "Expected basic color array length to be 16");
         helper.assertTrue(basic[basicIndex(DyeColor.WHITE)] == 1, "Expected existing white color to remain enabled");
         helper.assertTrue(basic[basicIndex(DyeColor.RED)] == 1, "Expected red color to be enabled");

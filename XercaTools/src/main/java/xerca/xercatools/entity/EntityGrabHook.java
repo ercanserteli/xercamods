@@ -295,8 +295,8 @@ public class EntityGrabHook extends Entity {
             this.level().playSound(null, angler, SoundEvents.HOOK_CLINK, SoundSource.PLAYERS, 0.25F, pitch);
         }
 
-        this.caughtEntity.noPhysics = true;
-        this.caughtEntity.stopRiding();
+        caught.noPhysics = true;
+        caught.stopRiding();
     }
 
     private void pullCaughtEntity(Player angler) {

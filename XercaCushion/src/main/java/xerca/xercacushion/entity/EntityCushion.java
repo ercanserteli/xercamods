@@ -19,8 +19,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import xerca.xercacushion.Mod;
 import xerca.xercacushion.block.BlockCushion;
 import xerca.xercacushion.block.Blocks;
@@ -46,7 +46,7 @@ public class EntityCushion extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         builder.define(DATA_VARIANT, 0);
     }
 

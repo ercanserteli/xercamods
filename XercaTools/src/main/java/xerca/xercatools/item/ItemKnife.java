@@ -107,7 +107,12 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public ItemStack getRecipeRemainder(ItemStack stack) {
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public ItemStack getCraftingRemainingItem(ItemStack stack) {
         ItemStack remainder = stack.copy();
         remainder.setCount(1);
         remainder.setDamageValue(stack.getDamageValue() + 1);
@@ -134,5 +139,15 @@ public class ItemKnife extends Item {
         int sharpnessLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), stack);
         float enchantBonus = sharpnessLevel > 0 ? 0.5F * sharpnessLevel + 0.5F : 0.0F;
         return damage + enchantBonus + bonus;
+    }
+
+    @Override
+    public boolean supportsEnchantment(net.minecraft.world.item.ItemStack stack, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return xerca.xercatools.Mod.toolSupportsEnchantment(stack, enchantment) || super.supportsEnchantment(stack, enchantment);
+    }
+
+    @Override
+    public boolean isPrimaryItemFor(net.minecraft.world.item.ItemStack stack, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment) {
+        return xerca.xercatools.Mod.toolSupportsEnchantment(stack, enchantment) || super.isPrimaryItemFor(stack, enchantment);
     }
 }

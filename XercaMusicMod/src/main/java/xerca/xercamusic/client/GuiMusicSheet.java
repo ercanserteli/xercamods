@@ -32,7 +32,6 @@ import java.util.*;
 
 import static xerca.xercamusic.client.ModClient.sendToServer;
 import static xerca.xercamusic.common.Mod.MAX_NOTES_IN_PACKET;
-import static xerca.xercamusic.common.Mod.onlyCallOnClient;
 
 public class GuiMusicSheet extends Screen {
     public static final int BEATS_IN_SCREEN = 91;
@@ -350,11 +349,7 @@ public class GuiMusicSheet extends Screen {
                 Mod.LOGGER.warn("noteSound not found - noteId: {} vol: {}", noteId, volume);
                 return;
             }
-            try {
-                notePlaySounds[noteId] = onlyCallOnClient(() -> () -> ModClient.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), volume / 128.f, noteSound.pitch()));
-            } catch (Exception e) {
-                Mod.LOGGER.error("Error playing sound", e);
-            }
+            notePlaySounds[noteId] = ModClient.playNote(noteSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), volume / 128.f, noteSound.pitch());
             if (recording) {
                 NoteEvent newNote = new NoteEvent((byte) note, (short) Math.max(0, previewCursor - 1), volume, (byte) 1);
                 addRecordingNote(newNote);
@@ -623,61 +618,63 @@ public class GuiMusicSheet extends Screen {
         boolean hideForHelp = helpOn;
         boolean hideForGlissando = glissandoMode;
         boolean showNormal = !hideForHelp && !hideForGlissando && !this.gettingSigned;
-        requireWidget(this.bpmDown, "bpmDown");
-        requireWidget(this.bpmUp, "bpmUp");
-        requireWidget(this.buttonPreview, "buttonPreview");
-        requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns");
-        requireWidget(this.sliderSheetVolume, "sliderSheetVolume");
-        requireWidget(this.noteEditBox, "noteEditBox");
-        requireWidget(this.markerEditBox, "markerEditBox");
-        requireWidget(this.octaveDown, "octaveDown");
-        requireWidget(this.octaveUp, "octaveUp");
-        requireWidget(this.sliderTime, "sliderTime");
-        requireWidget(this.hlUp, "hlUp");
-        requireWidget(this.hlDown, "hlDown");
-        requireWidget(this.sliderNoteVolume, "sliderNoteVolume");
-        requireWidget(this.buttonHelp, "buttonHelp");
-        requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors");
-        requireWidget(this.buttonRecord, "buttonRecord");
+        var bpmDown = requireWidget(this.bpmDown, "bpmDown");
+        var bpmUp = requireWidget(this.bpmUp, "bpmUp");
+        var buttonPreview = requireWidget(this.buttonPreview, "buttonPreview");
+        var buttonLockPrevIns = requireWidget(this.buttonLockPrevIns, "buttonLockPrevIns");
+        var sliderSheetVolume = requireWidget(this.sliderSheetVolume, "sliderSheetVolume");
+        var noteEditBox = requireWidget(this.noteEditBox, "noteEditBox");
+        var markerEditBox = requireWidget(this.markerEditBox, "markerEditBox");
+        var octaveDown = requireWidget(this.octaveDown, "octaveDown");
+        var octaveUp = requireWidget(this.octaveUp, "octaveUp");
+        var sliderTime = requireWidget(this.sliderTime, "sliderTime");
+        var hlUp = requireWidget(this.hlUp, "hlUp");
+        var hlDown = requireWidget(this.hlDown, "hlDown");
+        var sliderNoteVolume = requireWidget(this.sliderNoteVolume, "sliderNoteVolume");
+        var buttonHelp = requireWidget(this.buttonHelp, "buttonHelp");
+        var buttonHideNeighbors = requireWidget(this.buttonHideNeighbors, "buttonHideNeighbors");
+        var buttonRecord = requireWidget(this.buttonRecord, "buttonRecord");
 
         if (!this.isSigned) {
-            requireWidget(this.buttonSign, "buttonSign");
-            requireWidget(this.buttonCancel, "buttonCancel");
-            requireWidget(this.buttonFinalize, "buttonFinalize");
-            this.buttonSign.visible = !this.gettingSigned;
-            this.buttonSign.active = !this.helpOn && notRecording;
-            this.buttonCancel.visible = this.gettingSigned;
-            this.buttonFinalize.visible = this.gettingSigned;
-            this.buttonFinalize.active = !this.noteTitle.trim().isEmpty();
+            var buttonSign = requireWidget(this.buttonSign, "buttonSign");
+            var buttonCancel = requireWidget(this.buttonCancel, "buttonCancel");
+            var buttonFinalize = requireWidget(this.buttonFinalize, "buttonFinalize");
+            buttonSign.visible = !this.gettingSigned;
+            buttonSign.active = !this.helpOn && notRecording;
+            buttonCancel.visible = this.gettingSigned;
+            buttonFinalize.visible = this.gettingSigned;
+            buttonFinalize.active = !this.noteTitle.trim().isEmpty();
         }
-        this.bpmDown.visible = this.bpmUp.visible = showNormal && editable;
-        this.bpmDown.active = this.bpmUp.active = notRecording;
-        this.buttonPreview.visible = showNormal;
-        this.buttonPreview.active = notRecording;
-        this.buttonLockPrevIns.visible = showNormal;
-        this.buttonLockPrevIns.active = editable && notRecording;
-        this.sliderSheetVolume.visible = showNormal;
-        this.sliderSheetVolume.active = editable && notRecording;
-        this.noteEditBox.visible = false;
-        this.noteEditBox.active = false;
-        this.markerEditBox.visible = false;
-        this.markerEditBox.active = false;
-        this.octaveDown.visible = showNormal;
-        this.octaveUp.visible = showNormal;
-        this.sliderTime.visible = showNormal;
-        this.sliderTime.active = notRecording;
-        this.hlUp.visible = showNormal && editable;
-        this.hlUp.active = editable && notRecording;
-        this.hlDown.visible = showNormal && editable;
-        this.hlDown.active = editable && notRecording;
-        this.sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned;
-        this.sliderNoteVolume.active = this.sliderNoteVolume.visible && notRecording;
-        this.buttonHelp.visible = !this.isSigned && !this.gettingSigned;
-        this.buttonHelp.active = buttonHelp.visible && notRecording;
-        this.buttonHideNeighbors.visible = showNormal && !this.neighborNotes.isEmpty();
-        this.buttonHideNeighbors.active = notRecording;
-        this.buttonRecord.visible = showNormal && !this.isSigned;
-        this.buttonRecord.active = this.recording || this.preRecording || !this.previewing;
+        bpmUp.visible = showNormal && editable;
+        bpmDown.visible = bpmUp.visible;
+        bpmUp.active = notRecording;
+        bpmDown.active = bpmUp.active;
+        buttonPreview.visible = showNormal;
+        buttonPreview.active = notRecording;
+        buttonLockPrevIns.visible = showNormal;
+        buttonLockPrevIns.active = editable && notRecording;
+        sliderSheetVolume.visible = showNormal;
+        sliderSheetVolume.active = editable && notRecording;
+        noteEditBox.visible = false;
+        noteEditBox.active = false;
+        markerEditBox.visible = false;
+        markerEditBox.active = false;
+        octaveDown.visible = showNormal;
+        octaveUp.visible = showNormal;
+        sliderTime.visible = showNormal;
+        sliderTime.active = notRecording;
+        hlUp.visible = showNormal && editable;
+        hlUp.active = editable && notRecording;
+        hlDown.visible = showNormal && editable;
+        hlDown.active = editable && notRecording;
+        sliderNoteVolume.visible = !hideForHelp && !hideForGlissando && !this.isSigned && !this.gettingSigned;
+        sliderNoteVolume.active = sliderNoteVolume.visible && notRecording;
+        buttonHelp.visible = !this.isSigned && !this.gettingSigned;
+        buttonHelp.active = buttonHelp.visible && notRecording;
+        buttonHideNeighbors.visible = showNormal && !this.neighborNotes.isEmpty();
+        buttonHideNeighbors.active = notRecording;
+        buttonRecord.visible = showNormal && !this.isSigned;
+        buttonRecord.active = this.recording || this.preRecording || !this.previewing;
     }
 
     void toggleHelp() {
@@ -711,12 +708,7 @@ public class GuiMusicSheet extends Screen {
     }
 
     private void playMetronomeTick() {
-        try {
-            onlyCallOnClient(() -> () ->
-                    ModClient.playNote(SoundEvents.TICK, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), SoundSource.PLAYERS, 1.0f, 0.975f + editingPlayer.level().random.nextFloat() * 0.05f, (byte) -1));
-        } catch (Exception e) {
-            Mod.LOGGER.error("Exception in playMetronomeTick", e);
-        }
+        ModClient.playNote(SoundEvents.TICK, editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(), SoundSource.PLAYERS, 1.0f, 0.975f + editingPlayer.level().random.nextFloat() * 0.05f, (byte) -1);
     }
 
     @Nullable NoteSound playSound(NoteEvent event, int previewInstrument) {
@@ -751,14 +743,8 @@ public class GuiMusicSheet extends Screen {
         final float effectiveVolume = noteVolume;
 
         NoteSound sound;
-        try {
-            sound = onlyCallOnClient(() -> () ->
-                    ModClient.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
-                            sheetVolume*effectiveVolume, insSound.pitch(), (byte)beatsToTicks(event.length)));
-        } catch (Exception e) {
-            Mod.LOGGER.error("Error playing preview sound", e);
-            return null;
-        }
+        sound = ModClient.playNote(insSound.sound(), editingPlayer.getX(), editingPlayer.getY(), editingPlayer.getZ(),
+                sheetVolume*effectiveVolume, insSound.pitch(), (byte)beatsToTicks(event.length));
 
         // Apply glissando (smooth pitch slide)
         if (event.hasGlissando() && sound != null) {
@@ -1700,9 +1686,9 @@ public class GuiMusicSheet extends Screen {
     void setSliderPos(int time) {
         time = Math.clamp(time, 0, this.maxSliderPosition);
 
-        requireWidget(this.sliderTime, "sliderTime");
-        this.sliderTime.setSliderValue((float) time / (float) this.maxSliderPosition);
-        this.sliderTime.applyValue();
+        var sliderTimeWidget = requireWidget(this.sliderTime, "sliderTime");
+        sliderTimeWidget.setSliderValue((float) time / (float) this.maxSliderPosition);
+        sliderTimeWidget.applyValue();
     }
 
     void stopPreview() {

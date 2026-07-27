@@ -17,7 +17,12 @@ public class ItemKnife extends Item {
     }
 
     @Override
-    public ItemStack getRecipeRemainder(ItemStack stack) {
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public ItemStack getCraftingRemainingItem(ItemStack stack) {
         ItemStack remainder = stack.copy();
         remainder.setCount(1);
         remainder.setDamageValue(stack.getDamageValue() + 1);

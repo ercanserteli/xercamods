@@ -4,7 +4,6 @@
   "package": "xerca.xercablocks.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MixinPistonStructureResolver",
     "MixinStonecutterMenu"
   ],
   "client": [],

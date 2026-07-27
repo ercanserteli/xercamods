@@ -9,7 +9,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -109,11 +108,12 @@ public class EntityHealthOrb extends Entity {
             this.followingPlayer = null;
         }
 
-        if (this.followingPlayer != null) {
+        Player following = this.followingPlayer;
+        if (following != null) {
             Vec3 toPlayer = new Vec3(
-                    this.followingPlayer.getX() - this.getX(),
-                    this.followingPlayer.getY() + this.followingPlayer.getEyeHeight() / 2.0D - this.getY(),
-                    this.followingPlayer.getZ() - this.getZ()
+                    following.getX() - this.getX(),
+                    following.getY() + following.getEyeHeight() / 2.0D - this.getY(),
+                    following.getZ() - this.getZ()
             );
             double distSq = toPlayer.lengthSqr();
             if (distSq < 16.0D) {
@@ -137,10 +137,11 @@ public class EntityHealthOrb extends Entity {
 
     private void scanForEntities() {
         if (this.followingPlayer == null || this.followingPlayer.distanceToSqr(this) > 36.0D) {
+            Player donor = this.donorPlayer;
             if (attackingPlayer != null && attackingPlayer.distanceToSqr(this) <= 36.0D) {
                 followingPlayer = attackingPlayer;
-            } else if (donorPlayer != null) {
-                this.followingPlayer = this.level().getNearestPlayer(TargetingConditions.forNonCombat().range(5.0D), donorPlayer);
+            } else if (donor != null) {
+                this.followingPlayer = this.level().getNearestPlayer(donor.getX(), donor.getY(), donor.getZ(), 5.0D, player -> player.isAlive() && !player.isSpectator());
             } else {
                 this.followingPlayer = this.level().getNearestPlayer(this, 5.0D);
             }

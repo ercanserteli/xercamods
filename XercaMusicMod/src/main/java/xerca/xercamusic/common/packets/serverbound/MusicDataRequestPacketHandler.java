@@ -1,6 +1,6 @@
 package xerca.xercamusic.common.packets.serverbound;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.minecraft.server.level.ServerPlayer;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import static xerca.xercamusic.common.Mod.sendToClient;
 
-public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayPayloadHandler<MusicDataRequestPacket> {
+public final class MusicDataRequestPacketHandler {
     private static void processMessage(MusicDataRequestPacket msg, ServerPlayer pl) {
         UUID id = msg.id();
         int version = msg.version();
@@ -24,8 +24,7 @@ public class MusicDataRequestPacketHandler implements ServerPlayNetworking.PlayP
         sendToClient(pl, packet);
     }
 
-    @Override
-    public void receive(MusicDataRequestPacket packet, ServerPlayNetworking.Context context) {
-        context.server().execute(() -> processMessage(packet, context.player()));
+    public static void handle(MusicDataRequestPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> processMessage(packet, (ServerPlayer) context.player()));
     }
 }
