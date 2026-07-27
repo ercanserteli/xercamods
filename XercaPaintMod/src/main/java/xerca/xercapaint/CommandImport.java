@@ -13,10 +13,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.item.ItemCanvas;
 import xerca.xercapaint.item.ItemPalette;
-import xerca.xercapaint.item.Items;
 import xerca.xercapaint.packets.ImportPaintingPacket;
 
 public class CommandImport {
+    private CommandImport() {
+    }
+
     private static final String IMPORT_FAIL_BROKEN_FILE_KEY = "xercapaint.import.fail.5";
     private static final String BROKEN_PAINT_FILE_LOG = "Broken paint file";
     private static final String TAG_AUTHOR = "author";
@@ -31,7 +33,7 @@ public class CommandImport {
         );
     }
 
-    private static int paintImport(CommandSourceStack stack, String name){
+    private static int paintImport(CommandSourceStack stack, String name) {
         Mod.LOGGER.debug("Paint import called. name: {}", name);
 
         ImportPaintingPacket pack = new ImportPaintingPacket(name);
@@ -39,15 +41,14 @@ public class CommandImport {
             ServerPlayer player = stack.getPlayerOrException();
             ServerPlayNetworking.send(player, Mod.IMPORT_PAINTING_PACKET_ID, pack.encode());
         } catch (CommandSyntaxException e) {
-            Mod.LOGGER.debug("Command executor is not a player");
-            e.printStackTrace();
+            Mod.LOGGER.debug("Command executor is not a player", e);
             return 0;
         }
 
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, ServerPlayer player){
+    public static void doImport(CompoundTag tag, ServerPlayer player) {
         if (tag == null) {
             notifyBrokenPaintFile(player);
             return;
@@ -69,7 +70,7 @@ public class CommandImport {
             tag.putString(TAG_AUTHOR, tag.getString(TAG_AUTHOR).substring(0, 16));
         }
         if (tag.contains(TAG_TITLE)) {
-            if (!tag.contains("name", 8)) {
+            if (!tag.contains(ItemCanvas.TAG_CANVAS_ID, 8)) {
                 notifyBrokenPaintFile(player);
                 return;
             }
@@ -89,48 +90,40 @@ public class CommandImport {
 
         byte canvasType = tag.getByte("ct");
         CanvasType importedCanvasType = CanvasType.fromByte(canvasType);
-        if (importedCanvasType == null) {
-            notifyBrokenPaintFile(player);
-            return;
-        }
+        boolean importedGlass = tag.getBoolean("glass");
         tag.remove("ct");
-        if (tag.getInt(TAG_GENERATION) > 0) {
+        tag.remove("glass");
+        if (tag.getInt(TAG_GENERATION) > 0 && tag.getInt(TAG_GENERATION) < 3) {
             tag.putInt(TAG_GENERATION, tag.getInt(TAG_GENERATION) + 1);
         }
+        int[] sidePixels = tag.getIntArray(ItemCanvas.TAG_SIDE_PIXELS);
+        if (sidePixels.length > 0 && sidePixels.length != CanvasSides.count(importedCanvasType)) {
+            tag.remove(ItemCanvas.TAG_SIDES_ACTIVE);
+            tag.remove(ItemCanvas.TAG_SIDE_PIXELS);
+        }
 
-        if(player.isCreative()){
-            ItemStack itemStack;
-            switch (importedCanvasType) {
-                case SMALL -> itemStack = new ItemStack(Items.ITEM_CANVAS);
-                case LONG -> itemStack = new ItemStack(Items.ITEM_CANVAS_LONG);
-                case TALL -> itemStack = new ItemStack(Items.ITEM_CANVAS_TALL);
-                case LARGE -> itemStack = new ItemStack(Items.ITEM_CANVAS_LARGE);
-                default -> {
-                    Mod.LOGGER.error("Unknown canvas type");
-                    return;
-                }
-            }
+        if (player.isCreative()) {
+            ItemStack itemStack = new ItemStack(ItemCanvas.canvasItemFor(importedCanvasType, importedGlass));
             itemStack.setTag(tag);
             player.addItem(itemStack);
-        }
-        else{
+        } else {
             ItemStack mainHand = player.getMainHandItem();
             ItemStack offHand = player.getOffhandItem();
 
-            if (!(mainHand.getItem() instanceof ItemCanvas) || (mainHand.hasTag() && mainHand.getTag() != null && !mainHand.getTag().isEmpty())) {
+            CompoundTag mainHandTag = mainHand.getTag();
+            if (!(mainHand.getItem() instanceof ItemCanvas heldCanvas)
+                    || (mainHandTag != null && (mainHandTag.contains(ItemCanvas.TAG_PIXELS) || mainHandTag.contains(ItemCanvas.TAG_CANVAS_ID)))) {
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.1").withStyle(ChatFormatting.RED));
                 return;
             }
-            if (((ItemCanvas) mainHand.getItem()).getCanvasType() != importedCanvasType) {
-                Component typeName = Items.ITEM_CANVAS.getName(ItemStack.EMPTY);
-                if (importedCanvasType == CanvasType.LONG) {
-                    typeName = Items.ITEM_CANVAS_LONG.getName(ItemStack.EMPTY);
-                } else if (importedCanvasType == CanvasType.TALL) {
-                    typeName = Items.ITEM_CANVAS_TALL.getName(ItemStack.EMPTY);
-                } else if (importedCanvasType == CanvasType.LARGE) {
-                    typeName = Items.ITEM_CANVAS_LARGE.getName(ItemStack.EMPTY);
-                }
+            if (heldCanvas.getCanvasType() != importedCanvasType) {
+                Component typeName = ItemCanvas.canvasItemFor(importedCanvasType, importedGlass).getName(ItemStack.EMPTY);
                 player.sendSystemMessage(Component.translatable("xercapaint.import.fail.2", typeName).withStyle(ChatFormatting.RED));
+                return;
+            }
+            if (heldCanvas.isGlass() != importedGlass) {
+                Component typeName = ItemCanvas.canvasItemFor(importedCanvasType, importedGlass).getName(ItemStack.EMPTY);
+                player.sendSystemMessage(Component.translatable("xercapaint.import.fail.material", typeName).withStyle(ChatFormatting.RED));
                 return;
             }
             if (!ItemPalette.isFull(offHand)) {

@@ -69,6 +69,47 @@ java {
     withSourcesJar()
 }
 
+SourceSet mainSourceSet = sourceSets.main
+SourceSet testSourceSet = sourceSets.test
+
+loom {
+    runs {
+        gameTest {
+            inherit server
+            name "Game Test Server"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${file("build/test-results/gametest/TEST-gametest.xml")}"
+            source(mainSourceSet)
+            source(testSourceSet)
+            ideConfigGenerated = true
+            runDir "build/gametest"
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn(tasks.named('runGameTest'))
+}
+
+tasks.named('test') {
+    enabled = false
+}
+
+tasks.named('runGameTest').configure {
+    doFirst {
+        def gameTestDir = file("build/gametest")
+        gameTestDir.mkdirs()
+        def serverProperties = new File(gameTestDir, "server.properties")
+        if (!serverProperties.exists()) {
+            serverProperties.text = "online-mode=false\nmotd=GameTest\n"
+        }
+        def eulaFile = new File(gameTestDir, "eula.txt")
+        if (!eulaFile.exists()) {
+            eulaFile.text = "eula=true\n"
+        }
+    }
+}
+
 jar {
     from("LICENSE") {
         rename { "${it}_${base.archivesName.get()}" }

@@ -2,6 +2,7 @@ package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.Mod;
 import net.minecraft.world.InteractionHand;
 
 public class OpenGuiPacket {
@@ -40,8 +41,7 @@ public class OpenGuiPacket {
             int handOrdinal = buf.readByte();
             if (handOrdinal >= 0 && InteractionHand.values().length > handOrdinal) {
                 result.hand = InteractionHand.values()[handOrdinal];
-            }
-            else{
+            } else {
                 result.hand = InteractionHand.MAIN_HAND;
             }
         } catch (IndexOutOfBoundsException ioe) {

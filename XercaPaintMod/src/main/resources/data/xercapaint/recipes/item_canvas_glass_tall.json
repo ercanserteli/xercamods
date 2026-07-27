@@ -1,0 +1,15 @@
+{
+  "type": "xercapaint:crafting_tagless_shaped",
+  "pattern": [
+    "c",
+    "c"
+  ],
+  "key": {
+    "c": {
+      "item": "xercapaint:item_canvas_glass"
+    }
+  },
+  "result": {
+    "item": "xercapaint:item_canvas_glass_tall"
+  }
+}

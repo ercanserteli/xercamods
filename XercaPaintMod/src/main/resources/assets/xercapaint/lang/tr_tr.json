@@ -1,17 +1,14 @@
 {
   "itemGroup.xercapaint.paint_tab": "Resim",
-
   "item.xercapaint.item_palette": "Palet",
   "item.xercapaint.item_canvas": "Tuval",
   "item.xercapaint.item_canvas_large": "Büyük Tuval",
   "item.xercapaint.item_canvas_long": "Geniş Tuval",
   "item.xercapaint.item_canvas_tall": "Uzun Tuval",
   "item.xercapaint.item_easel": "Şövale",
-
   "palette.basic_count": "%1$s temel renk",
   "palette.custom_count": "%1$s özel renk",
   "palette.empty": "Boş palet",
-
   "canvas.empty": "Boş tuval",
   "canvas.byAuthor": "%1$s tarafından",
   "canvas.signButton": "İmzala",
@@ -21,9 +18,18 @@
   "canvas.generation.0": "Orijinal",
   "canvas.generation.1": "Kopya",
   "canvas.generation.2": "Korsan",
-
   "xercapaint.export.success": "Resim dışa aktarıldı: %1$s",
   "xercapaint.import.success": "Resim içe aktarıldı",
+  "canvas.help.toggleHelp": "Yardım ipuçlarını aç/kapat",
+  "canvas.help.brushSize": "Fırça boyutu (%1$s)",
+  "canvas.help.brushOpacity": "Fırça opaklığı (%%%1$s)",
+  "canvas.help.colorPicker": "Renk seçici",
+  "canvas.help.colorPicker.desc": "Aracı seç, tuvalden bir renk al ve bir özel renk yuvasına sürükle bırak.",
+  "canvas.help.colorRemover": "Renk silici",
+  "canvas.help.colorRemover.desc": "Biraz su al ve temizlemek için bir özel renk yuvasına sürükle bırak.",
+  "canvas.help.canvasHolder": "Tuval tutacağı",
+  "canvas.help.canvasHolder.desc": "Tuvali al ve taşı. Paleti de aynı şekilde taşıyabilirsin.",
+  "canvas.help.toggleSides": "Çerçeveleri aç/kapat",
   "entity.xercapaint.canvas": "Tuval",
   "entity.xercapaint.easel": "Şövale"
 }

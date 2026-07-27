@@ -1,11 +1,14 @@
-
 {
-    "type": "xercapaint:crafting_tagless_shaped",
-    
-    "pattern": [
-        "cc"
-    ],
-    "key": {"c": {"item": "xercapaint:item_canvas"}},
-    "result": {"item": "xercapaint:item_canvas_long"}
+  "type": "xercapaint:crafting_tagless_shaped",
+  "pattern": [
+    "cc"
+  ],
+  "key": {
+    "c": {
+      "item": "xercapaint:item_canvas"
+    }
+  },
+  "result": {
+    "item": "xercapaint:item_canvas_long"
+  }
 }
-        

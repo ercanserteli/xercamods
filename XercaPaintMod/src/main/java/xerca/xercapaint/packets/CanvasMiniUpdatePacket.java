@@ -2,6 +2,7 @@ package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.CanvasSides;
 import xerca.xercapaint.CanvasType;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
@@ -14,17 +15,21 @@ public class CanvasMiniUpdatePacket {
     private String name; //name must be unique
     private int version;
     private int easelId;
+    private boolean sidesActive;
+    private int[] sidePixels;
     private boolean messageIsValid;
 
-    public CanvasMiniUpdatePacket(int[] pixels, String name, int version, EntityEasel easel, CanvasType canvasType) {
+    public CanvasMiniUpdatePacket(int[] pixels, String name, int version, EntityEasel easel, CanvasType canvasType, boolean sidesActive, int[] sidePixels) {
         this.name = name;
         this.version = version;
         this.canvasType = canvasType;
-        int area = CanvasType.getHeight(canvasType)*CanvasType.getWidth(canvasType);
+        int area = CanvasType.getHeight(canvasType) * CanvasType.getWidth(canvasType);
         this.pixels = Arrays.copyOfRange(pixels, 0, area);
-        if(easel == null){
+        this.sidesActive = sidesActive;
+        this.sidePixels = Arrays.copyOfRange(sidePixels, 0, CanvasSides.count(canvasType));
+        if (easel == null) {
             easelId = -1;
-        }else{
+        } else {
             easelId = easel.getId();
         }
     }
@@ -36,10 +41,12 @@ public class CanvasMiniUpdatePacket {
     public FriendlyByteBuf encode() {
         FriendlyByteBuf buf = PacketByteBufs.create();
         buf.writeInt(easelId);
-        buf.writeByte(canvasType.ordinal());
+        buf.writeByte(canvasType.toByte());
         buf.writeInt(version);
         buf.writeUtf(name);
         buf.writeVarIntArray(pixels);
+        buf.writeBoolean(sidesActive);
+        buf.writeVarIntArray(sidePixels);
         return buf;
     }
 
@@ -48,13 +55,12 @@ public class CanvasMiniUpdatePacket {
         try {
             result.easelId = buf.readInt();
             result.canvasType = CanvasType.fromByte(buf.readByte());
-            if (result.canvasType == null) {
-                return null;
-            }
             result.version = buf.readInt();
             result.name = buf.readUtf(64);
-            int area = CanvasType.getHeight(result.canvasType)*CanvasType.getWidth(result.canvasType);
+            int area = CanvasType.getHeight(result.canvasType) * CanvasType.getWidth(result.canvasType);
             result.pixels = buf.readVarIntArray(area);
+            result.sidesActive = buf.readBoolean();
+            result.sidePixels = buf.readVarIntArray(CanvasSides.count(result.canvasType));
         } catch (RuntimeException ioe) {
             Mod.LOGGER.error("Exception while reading CanvasUpdatePacket", ioe);
             return null;
@@ -85,5 +91,13 @@ public class CanvasMiniUpdatePacket {
 
     public CanvasType getCanvasType() {
         return canvasType;
+    }
+
+    public boolean isSidesActive() {
+        return sidesActive;
+    }
+
+    public int[] getSidePixels() {
+        return sidePixels;
     }
 }

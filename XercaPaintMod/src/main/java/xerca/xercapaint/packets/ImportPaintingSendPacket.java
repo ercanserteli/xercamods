@@ -3,6 +3,7 @@ package xerca.xercapaint.packets;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.Mod;
 
 public class ImportPaintingSendPacket {
     private CompoundTag tag;

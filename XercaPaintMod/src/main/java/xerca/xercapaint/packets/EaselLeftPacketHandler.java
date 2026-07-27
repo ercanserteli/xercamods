@@ -12,13 +12,13 @@ import xerca.xercapaint.entity.EntityEasel;
 
 public class EaselLeftPacketHandler implements ServerPlayNetworking.PlayChannelHandler {
     private static void processMessage(EaselLeftPacket msg, ServerPlayer pl) {
-        if(msg.getEaselId() > -1){
+        if (msg.getEaselId() > -1) {
             Entity entityEasel = pl.level().getEntity(msg.getEaselId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 Mod.LOGGER.error("EaselLeftPacket: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 Mod.LOGGER.error("EaselLeftPacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
@@ -29,8 +29,8 @@ public class EaselLeftPacketHandler implements ServerPlayNetworking.PlayChannelH
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         EaselLeftPacket packet = EaselLeftPacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

@@ -19,13 +19,13 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
         ItemStack canvas;
         Entity entityEasel = null;
 
-        if(msg.getEaselId() > -1){
+        if (msg.getEaselId() > -1) {
             entityEasel = pl.level().getEntity(msg.getEaselId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
@@ -38,15 +38,14 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
                 return;
             }
             canvas = easel.getItem();
-            if(!(canvas.getItem() instanceof ItemCanvas)){
+            if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasMiniUpdatePacket: Canvas not found inside easel!");
                 return;
             }
-        }
-        else{
+        } else {
             canvas = pl.getMainHandItem();
             ItemStack offHandItem = pl.getOffhandItem();
-            if(canvas.getItem() instanceof ItemPalette){
+            if (canvas.getItem() instanceof ItemPalette) {
                 canvas = offHandItem;
             }
         }
@@ -54,12 +53,16 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
         if (!canvas.isEmpty() && canvas.getItem() instanceof ItemCanvas) {
             CompoundTag comp = canvas.getOrCreateTag();
 
-            comp.putIntArray("pixels", msg.getPixels());
-            comp.putString("name", msg.getName());
-            comp.putInt("v", msg.getVersion());
-            comp.putInt("generation", 0);
+            comp.putIntArray(ItemCanvas.TAG_PIXELS, msg.getPixels());
+            comp.putString(ItemCanvas.TAG_CANVAS_ID, msg.getName());
+            comp.putInt(ItemCanvas.TAG_VERSION, msg.getVersion());
+            comp.putInt(ItemCanvas.TAG_GENERATION, 0);
+            comp.putBoolean(ItemCanvas.TAG_SIDES_ACTIVE, msg.isSidesActive());
+            if (msg.getSidePixels().length > 0) {
+                comp.putIntArray(ItemCanvas.TAG_SIDE_PIXELS, msg.getSidePixels());
+            }
 
-            if(entityEasel instanceof EntityEasel easel){
+            if (entityEasel instanceof EntityEasel easel) {
                 easel.setItem(canvas, false);
             }
 
@@ -70,8 +73,8 @@ public class CanvasMiniUpdatePacketHandler implements ServerPlayNetworking.PlayC
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         CanvasMiniUpdatePacket packet = CanvasMiniUpdatePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

@@ -13,8 +13,8 @@ public class PictureRequestPacketHandler implements ServerPlayNetworking.PlayCha
     private static void processMessage(PictureRequestPacket msg, ServerPlayer pl) {
         String name = msg.getName();
         EntityCanvas.Picture picture = EntityCanvas.PICTURES.get(name);
-        if(picture != null){
-            PictureSendPacket pack = new PictureSendPacket(name, picture.version(), picture.pixels());
+        if (picture != null) {
+            PictureSendPacket pack = new PictureSendPacket(name, picture.version(), picture.pixels(), picture.sidesActive(), picture.sidePixels());
             ServerPlayNetworking.send(pl, Mod.PICTURE_SEND_PACKET_ID, pack.encode());
         }
     }
@@ -22,8 +22,8 @@ public class PictureRequestPacketHandler implements ServerPlayNetworking.PlayCha
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         PictureRequestPacket packet = PictureRequestPacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

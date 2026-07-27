@@ -28,7 +28,7 @@ public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayCha
         } catch (IOException e) {
             e.printStackTrace();
             LocalPlayer player = Minecraft.getInstance().player;
-            if(player != null) {
+            if (player != null) {
                 Minecraft.getInstance().player.sendSystemMessage(Component.translatable("xercapaint.import.fail.4", filepath).withStyle(ChatFormatting.RED));
             }
         }
@@ -37,8 +37,8 @@ public class ImportPaintingPacketHandler implements ClientPlayNetworking.PlayCha
     @Override
     public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ImportPaintingPacket packet = ImportPaintingPacket.decode(buf);
-        if(packet != null) {
-            client.execute(()->processMessage(packet));
+        if (packet != null) {
+            client.execute(() -> processMessage(packet));
         }
     }
 }

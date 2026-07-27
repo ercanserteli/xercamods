@@ -7,10 +7,10 @@ import xerca.xercapaint.SoundEvents;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class BrushSound extends AbstractTickableSoundInstance {
-    private int age = 0;
+    private int age;
     private int fadingTicks = 4;
 
-    private static final float[] fadeVolumes = {0.0f, 0.3f, 0.7f};
+    private static final float[] FADE_VOLUMES = {0.0f, 0.3f, 0.7f};
 
     public BrushSound() {
         super(SoundEvents.STROKE_LOOP, SoundSource.MASTER, SoundInstance.createUnseededRandom());
@@ -24,7 +24,7 @@ public class BrushSound extends AbstractTickableSoundInstance {
         age += 300;
     }
 
-    public void refreshFade(){
+    public void refreshFade() {
         fadingTicks = 3;
         volume = 1.0f;
     }
@@ -32,21 +32,20 @@ public class BrushSound extends AbstractTickableSoundInstance {
     @Override
     public void tick() {
         age++;
-        if(fadingTicks <= 0 && age > 300){
+        if (fadingTicks <= 0 && age > 300) {
             this.stop();
         }
-        if(fadingTicks >= 0){
-            if(fadingTicks < fadeVolumes.length){
-                volume = fadeVolumes[fadingTicks];
+        if (fadingTicks >= 0) {
+            if (fadingTicks < FADE_VOLUMES.length) {
+                volume = FADE_VOLUMES[fadingTicks];
             }
             fadingTicks--;
         }
 
-        float randomPitchChange = 0.03f - random.nextFloat()*0.06f;
-        if(pitch >= 1.2f && randomPitchChange > 0.f){
+        float randomPitchChange = 0.03f - random.nextFloat() * 0.06f;
+        if (pitch >= 1.2f && randomPitchChange > 0.f) {
             randomPitchChange -= 0.03f;
-        }
-        else if(pitch <= 0.8f && randomPitchChange < 0.f){
+        } else if (pitch <= 0.8f && randomPitchChange < 0.f) {
             randomPitchChange += 0.03f;
         }
         pitch += randomPitchChange;

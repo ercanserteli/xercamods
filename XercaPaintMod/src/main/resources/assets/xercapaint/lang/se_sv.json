@@ -1,17 +1,14 @@
 {
   "itemGroup.xercapaint.paint_tab": "Måla",
-
   "item.xercapaint.item_palette": "Palett",
   "item.xercapaint.item_canvas": "Målarduk",
   "item.xercapaint.item_canvas_large": "Stor målarduk",
   "item.xercapaint.item_canvas_long": "Bred målarduk",
   "item.xercapaint.item_canvas_tall": "Lång målarduk",
   "item.xercapaint.item_easel": "Staffli",
-
   "palette.basic_count": "%1$s grundfärger",
   "palette.custom_count": "%1$s anpassade färger",
   "palette.empty": "Tom palett",
-
   "canvas.empty": "Tom målarduk",
   "canvas.byAuthor": "av %1$s",
   "canvas.signButton": "Signera",
@@ -21,7 +18,6 @@
   "canvas.generation.1": "Kopia av originalet",
   "canvas.generation.2": "Kopia av en kopia",
   "canvas.editTitle": "Ange målningens titel:",
-
   "xercapaint.export.success": "Målningen exporterades till %1$s",
   "xercapaint.export.fail": "Kunde inte exportera målningen",
   "xercapaint.import.success": "Målningen importerades",
@@ -31,6 +27,16 @@
   "xercapaint.import.fail.4": "Kunde inte tolka kommandot eller läsa målningens fil (%1$s)",
   "xercapaint.import.fail.5": "Målningsfilen är trasig",
   "easel.deny": "Någon annan håller på med den här målningen just nu",
+  "canvas.help.toggleHelp": "Växla hjälpverktygstips",
+  "canvas.help.brushSize": "Penselstorlek (%1$s)",
+  "canvas.help.brushOpacity": "Penselns opacitet (%1$s%%)",
+  "canvas.help.colorPicker": "Färgväljare",
+  "canvas.help.colorPicker.desc": "Välj verktyget, plocka upp en färg från målarduken och dra och släpp den i en anpassad färgruta.",
+  "canvas.help.colorRemover": "Färgborttagare",
+  "canvas.help.colorRemover.desc": "Plocka upp lite vatten och dra och släpp det i en anpassad färgruta för att tömma den.",
+  "canvas.help.canvasHolder": "Målarduksgrepp",
+  "canvas.help.canvasHolder.desc": "Plocka upp målarduken och flytta den. Du kan flytta paletten på samma sätt.",
+  "canvas.help.toggleSides": "Växla ramar",
   "entity.xercapaint.canvas": "Målarduk",
   "entity.xercapaint.easel": "Staffli"
 }

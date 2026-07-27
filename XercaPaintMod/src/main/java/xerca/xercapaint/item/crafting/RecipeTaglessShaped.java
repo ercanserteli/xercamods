@@ -5,17 +5,27 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import xerca.xercapaint.item.ItemCanvas;
 
 import static xerca.xercapaint.item.Items.CRAFTING_TAGLESS_SHAPED;
 
 public class RecipeTaglessShaped extends ShapedRecipe {
-    public RecipeTaglessShaped(ShapedRecipe shapedRecipe){
+    public RecipeTaglessShaped(ShapedRecipe shapedRecipe) {
         super(shapedRecipe.getId(), shapedRecipe.getGroup(), shapedRecipe.category(), shapedRecipe.getWidth(), shapedRecipe.getHeight(), shapedRecipe.getIngredients(), shapedRecipe.getResultItem(RegistryAccess.EMPTY));
+    }
+
+    /**
+     * A canvas that has already been painted is not a valid ingredient, but a foreign tag from another mod is fine
+     */
+    private static boolean hasPixels(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(ItemCanvas.TAG_PIXELS);
     }
 
     /**
@@ -23,10 +33,10 @@ public class RecipeTaglessShaped extends ShapedRecipe {
      */
     @Override
     public boolean matches(@NotNull CraftingContainer inv, @NotNull Level worldIn) {
-        if(super.matches(inv, worldIn)){
-            for(int j = 0; j < inv.getContainerSize(); ++j) {
+        if (super.matches(inv, worldIn)) {
+            for (int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
-                if (!stackInSlot.isEmpty() && stackInSlot.hasTag()) {
+                if (!stackInSlot.isEmpty() && hasPixels(stackInSlot)) {
                     return false;
                 }
             }
@@ -41,10 +51,10 @@ public class RecipeTaglessShaped extends ShapedRecipe {
     @Override
     public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess access) {
         ItemStack result = super.assemble(inv, access);
-        if(!result.isEmpty()){
-            for(int j = 0; j < inv.getContainerSize(); ++j) {
+        if (!result.isEmpty()) {
+            for (int j = 0; j < inv.getContainerSize(); ++j) {
                 ItemStack stackInSlot = inv.getItem(j);
-                if (!stackInSlot.isEmpty() && stackInSlot.hasTag()) {
+                if (!stackInSlot.isEmpty() && hasPixels(stackInSlot)) {
                     return ItemStack.EMPTY;
                 }
             }

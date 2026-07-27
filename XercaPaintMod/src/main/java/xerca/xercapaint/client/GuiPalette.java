@@ -2,24 +2,23 @@ package xerca.xercapaint.client;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.ItemStack;
 import xerca.xercapaint.Mod;
 import xerca.xercapaint.packets.PaletteUpdatePacket;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class GuiPalette extends BasePalette {
 
-    protected GuiPalette(CompoundTag paletteTag, Component title) {
-        super(title, paletteTag);
+    protected GuiPalette(ItemStack paletteStack, Component title) {
+        super(title, paletteStack);
     }
 
     @Override
     public void init() {
         paletteX = PALETTE_XS[PALETTE_XS.length - 1];
         paletteY = PALETTE_YS[PALETTE_YS.length - 1];
-        if(paletteX == -1000 || paletteY == -1000){
+        if (paletteX == -1000 || paletteY == -1000) {
             paletteX = 140;
             paletteY = 40;
         }
@@ -27,26 +26,26 @@ public class GuiPalette extends BasePalette {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         super.render(guiGraphics, mouseX, mouseY, f);
 
         renderCursor(guiGraphics, mouseX, mouseY);
     }
 
-    private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY){
-        if(isCarryingColor){
+    private void renderCursor(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (isCarryingColor && carriedColor != null) {
             carriedColor.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
 
-        }else if(isCarryingWater){
+        } else if (isCarryingWater) {
             WATER_COLOR.setGLColor();
-            guiGraphics.blit(paletteTextures, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
+            guiGraphics.blit(PALETTE_TEXTURES, mouseX - BRUSH_SPRITE_SIZE / 2, mouseY - BRUSH_SPRITE_SIZE / 2, BRUSH_SPRITE_X + BRUSH_SPRITE_SIZE, BRUSH_SPRITE_Y, DROP_SPRITE_WIDTH, BRUSH_SPRITE_SIZE);
         }
     }
 
     @Override
     public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
-        if(isCarryingPalette){
+        if (isCarryingPalette) {
             boolean ret = super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
             updatePalettePos(deltaX, deltaY);
             return ret;
@@ -54,7 +53,7 @@ public class GuiPalette extends BasePalette {
         return super.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
     }
 
-    private void updatePalettePos(double deltaX, double deltaY){
+    private void updatePalettePos(double deltaX, double deltaY) {
         paletteX += deltaX;
         paletteY += deltaY;
 
@@ -65,8 +64,7 @@ public class GuiPalette extends BasePalette {
     @Override
     public void removed() {
         if (paletteDirty) {
-            PaletteUpdatePacket pack = new PaletteUpdatePacket(customColors);
-            ClientPlayNetworking.send(Mod.PALETTE_UPDATE_PACKET_ID, pack.encode());
+            ClientPlayNetworking.send(Mod.PALETTE_UPDATE_PACKET_ID, new PaletteUpdatePacket(customColors).encode());
         }
     }
 }

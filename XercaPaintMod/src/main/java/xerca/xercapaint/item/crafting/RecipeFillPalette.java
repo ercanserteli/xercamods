@@ -16,9 +16,9 @@ import net.minecraft.world.level.Level;
 import xerca.xercapaint.item.ItemPalette;
 import xerca.xercapaint.item.Items;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -27,42 +27,62 @@ public class RecipeFillPalette extends CustomRecipe {
         super(id, category);
     }
 
-    private boolean isPalette(ItemStack stack){
+    static int getBasicColorIndex(ItemStack stack) {
+        if (!(stack.getItem() instanceof DyeItem dyeItem)) {
+            return -1;
+        }
+        DyeColor dyeColor = dyeItem.getDyeColor();
+        if (!DyeItem.byColor(dyeColor).equals(stack.getItem())) {
+            return -1;
+        }
+        int colorId = dyeColor.getId();
+        if (colorId < 0 || colorId >= ItemPalette.BASIC_COLOR_COUNT) {
+            return -1;
+        }
+        return ItemPalette.BASIC_COLOR_COUNT - 1 - colorId;
+    }
+
+    static boolean isDye(ItemStack stack) {
+        return getBasicColorIndex(stack) >= 0;
+    }
+
+    private boolean isPalette(ItemStack stack) {
         return stack.getItem() instanceof ItemPalette;
     }
 
-    private boolean isDye(ItemStack stack){
-        return stack.getItem() instanceof DyeItem;
-    }
-
-    private int findPalette(CraftingContainer inv){
-        for(int i = 0; i < inv.getContainerSize(); ++i) {
+    private int findPalette(CraftingContainer inv) {
+        for (int i = 0; i < inv.getContainerSize(); ++i) {
             ItemStack stack = inv.getItem(i);
-            if(isPalette(stack)){
+            if (isPalette(stack)) {
                 return i;
             }
         }
         return -1;
     }
 
-    @Nullable
-    private ArrayList<ItemStack> findDyes(CraftingContainer inv, int paletteId){
-        ArrayList<ItemStack> dyes = new ArrayList<>();
-        for(int i = 0; i < inv.getContainerSize(); ++i) {
-            if(i == paletteId){
+    private List<ItemStack> findDyes(CraftingContainer inv, int paletteId) {
+        List<ItemStack> dyes = new ArrayList<>();
+        for (int i = 0; i < inv.getContainerSize(); ++i) {
+            if (i == paletteId) {
                 continue;
             }
             ItemStack stack = inv.getItem(i);
-            if(isDye(stack)){
+            if (isDye(stack)) {
                 dyes.add(stack);
-            }
-            else if(!stack.isEmpty()){
-                return null;
+            } else if (!stack.isEmpty()) {
+                return new ArrayList<>();
             }
         }
+
         return dyes;
     }
 
+    private byte[] loadBasicColors(CompoundTag paletteTag) {
+        byte[] source = paletteTag.getByteArray(ItemPalette.TAG_BASIC_COLORS);
+        byte[] basicColors = new byte[ItemPalette.BASIC_COLOR_COUNT];
+        System.arraycopy(source, 0, basicColors, 0, Math.min(source.length, basicColors.length));
+        return basicColors;
+    }
 
     /**
      * Used to check if a recipe matches current crafting inventory
@@ -70,11 +90,12 @@ public class RecipeFillPalette extends CustomRecipe {
     @Override
     public boolean matches(CraftingContainer inv, Level worldIn) {
         int paletteId = findPalette(inv);
-        if(paletteId < 0){
+        if (paletteId < 0) {
             return false;
         }
-        ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
-        return dyes != null && !dyes.isEmpty();
+
+        List<ItemStack> dyes = findDyes(inv, paletteId);
+        return !dyes.isEmpty();
     }
 
     /**
@@ -82,40 +103,34 @@ public class RecipeFillPalette extends CustomRecipe {
      */
     @Override
     public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
-
         int paletteId = findPalette(inv);
-        if(paletteId < 0){
-            return ItemStack.EMPTY;
-        }
-        ArrayList<ItemStack> dyes = findDyes(inv, paletteId);
-        if(dyes == null || dyes.isEmpty()){
+        if (paletteId < 0) {
             return ItemStack.EMPTY;
         }
 
-        byte[] basicColors;
+        List<ItemStack> dyes = findDyes(inv, paletteId);
+        if (dyes.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
         ItemStack inputPalette = inv.getItem(paletteId);
-        CompoundTag orgTag = inputPalette.getOrCreateTag().copy();
-        if(orgTag.contains("basic")){
-            byte[] loadedBasicColors = orgTag.getByteArray("basic");
-            basicColors = new byte[16];
-            System.arraycopy(loadedBasicColors, 0, basicColors, 0, Math.min(loadedBasicColors.length, basicColors.length));
-        }
-        else{
-            basicColors = new byte[16];
-        }
 
-        for(ItemStack dye : dyes){
-            DyeColor color = ((DyeItem)(dye.getItem())).getDyeColor();
-            int realColorId = 15 - color.getId();
-            if(basicColors[realColorId] > 0){
+        // Keep all existing palette tags and only update basic colors.
+        CompoundTag resultTag = inputPalette.getOrCreateTag().copy();
+        byte[] basicColors = loadBasicColors(resultTag);
+
+        for (ItemStack dye : dyes) {
+            int realColorId = getBasicColorIndex(dye);
+            if (realColorId < 0 || basicColors[realColorId] > 0) {
                 return ItemStack.EMPTY;
             }
             basicColors[realColorId] = 1;
         }
-        orgTag.putByteArray("basic", basicColors);
 
-        ItemStack result = new ItemStack(Items.ITEM_PALETTE);
-        result.setTag(orgTag);
+        resultTag.putByteArray(ItemPalette.TAG_BASIC_COLORS, basicColors);
+
+        ItemStack result = inputPalette.copyWithCount(1);
+        result.setTag(resultTag);
         return result;
     }
 

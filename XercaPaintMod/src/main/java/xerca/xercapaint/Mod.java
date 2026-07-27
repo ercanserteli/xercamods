@@ -14,18 +14,22 @@ public class Mod implements ModInitializer {
     public static final String MOD_ID = "xercapaint";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-    public static final ResourceLocation CANVAS_UPDATE_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "canvas_update");
-    public static final ResourceLocation CANVAS_MINI_UPDATE_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "canvas_mini_update");
-    public static final ResourceLocation CLOSE_GUI_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "close_gui");
-    public static final ResourceLocation EASEL_LEFT_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "easel_left");
-    public static final ResourceLocation EXPORT_PAINTING_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "export_painting");
-    public static final ResourceLocation IMPORT_PAINTING_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "import_painting");
-    public static final ResourceLocation IMPORT_PAINTING_SEND_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "import_painting_send");
-    public static final ResourceLocation OPEN_GUI_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "open_gui");
-    public static final ResourceLocation PALETTE_UPDATE_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "palette_update");
-    public static final ResourceLocation PICTURE_REQUEST_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "picture_request");
-    public static final ResourceLocation PICTURE_SEND_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "picture_send");
-    public static final ResourceLocation ADD_CANVAS_PACKET_ID = new ResourceLocation(Mod.MOD_ID, "add_canvas");
+    public static ResourceLocation id(String location) {
+        return new ResourceLocation(MOD_ID, location);
+    }
+
+    public static final ResourceLocation CANVAS_UPDATE_PACKET_ID = id("canvas_update");
+    public static final ResourceLocation CANVAS_MINI_UPDATE_PACKET_ID = id("canvas_mini_update");
+    public static final ResourceLocation CLOSE_GUI_PACKET_ID = id("close_gui");
+    public static final ResourceLocation EASEL_LEFT_PACKET_ID = id("easel_left");
+    public static final ResourceLocation EXPORT_PAINTING_PACKET_ID = id("export_painting");
+    public static final ResourceLocation IMPORT_PAINTING_PACKET_ID = id("import_painting");
+    public static final ResourceLocation IMPORT_PAINTING_SEND_PACKET_ID = id("import_painting_send");
+    public static final ResourceLocation OPEN_GUI_PACKET_ID = id("open_gui");
+    public static final ResourceLocation PALETTE_UPDATE_PACKET_ID = id("palette_update");
+    public static final ResourceLocation PICTURE_REQUEST_PACKET_ID = id("picture_request");
+    public static final ResourceLocation PICTURE_SEND_PACKET_ID = id("picture_send");
+    public static final ResourceLocation ADD_CANVAS_PACKET_ID = id("add_canvas");
 
     @Override
     public void onInitialize() {

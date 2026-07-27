@@ -1,17 +1,18 @@
 {
   "itemGroup.xercapaint.paint_tab": "Paint",
-
   "item.xercapaint.item_palette": "Palette",
   "item.xercapaint.item_canvas": "Canvas",
   "item.xercapaint.item_canvas_large": "Large Canvas",
   "item.xercapaint.item_canvas_long": "Long Canvas",
   "item.xercapaint.item_canvas_tall": "Tall Canvas",
+  "item.xercapaint.item_canvas_glass": "Glass Canvas",
+  "item.xercapaint.item_canvas_glass_large": "Large Glass Canvas",
+  "item.xercapaint.item_canvas_glass_long": "Long Glass Canvas",
+  "item.xercapaint.item_canvas_glass_tall": "Tall Glass Canvas",
   "item.xercapaint.item_easel": "Easel",
-
   "palette.basic_count": "%1$s basic colors",
   "palette.custom_count": "%1$s custom colors",
   "palette.empty": "Empty palette",
-
   "canvas.empty": "Empty canvas",
   "canvas.byAuthor": "by %1$s",
   "canvas.signButton": "Sign",
@@ -21,7 +22,6 @@
   "canvas.generation.1": "Copy of original",
   "canvas.generation.2": "Copy of copy",
   "canvas.editTitle": "Enter Painting Title:",
-
   "xercapaint.export.success": "Painting exported to %1$s",
   "xercapaint.export.fail": "Could not export painting",
   "xercapaint.import.success": "Painting imported",
@@ -30,7 +30,18 @@
   "xercapaint.import.fail.3": "You must have a palette with all basic colors on your off-hand to import a painting in survival mode",
   "xercapaint.import.fail.4": "Could not parse command or read the painting file (%1$s)",
   "xercapaint.import.fail.5": "Painting file is broken",
+  "xercapaint.import.fail.material": "Your canvas must be the correct material to import this painting in survival mode (%1$s)",
   "easel.deny": "Someone else is working on this painting right now",
+  "canvas.help.toggleHelp": "Toggle help tooltips",
+  "canvas.help.brushSize": "Brush size (%1$s)",
+  "canvas.help.brushOpacity": "Brush opacity (%1$s%%)",
+  "canvas.help.colorPicker": "Color picker",
+  "canvas.help.colorPicker.desc": "Select the tool, pick up a color from the canvas and drag-drop it to a custom color slot.",
+  "canvas.help.colorRemover": "Color remover",
+  "canvas.help.colorRemover.desc": "Pick up some water and drag-drop it to a custom color slot to clear it.",
+  "canvas.help.canvasHolder": "Canvas holder",
+  "canvas.help.canvasHolder.desc": "Pick up the canvas and move it. You can move the palette in the same way.",
+  "canvas.help.toggleSides": "Toggle frames",
   "entity.xercapaint.canvas": "Canvas",
   "entity.xercapaint.easel": "Easel"
 }

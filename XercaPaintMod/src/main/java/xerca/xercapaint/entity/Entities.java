@@ -10,6 +10,12 @@ import net.minecraft.world.entity.MobCategory;
 import xerca.xercapaint.Mod;
 
 public class Entities {
+    private Entities() {
+    }
+
+    public static final ResourceLocation CANVAS_ID = Mod.id("canvas");
+    public static final ResourceLocation EASEL_ID = Mod.id("easel");
+
     public static final EntityType<EntityCanvas> CANVAS = FabricEntityTypeBuilder.<EntityCanvas>create(MobCategory.MISC, EntityCanvas::new)
             .dimensions(new EntityDimensions(0.5f, 0.5f, true)).trackedUpdateRate(2147483647).build();
 
@@ -17,7 +23,7 @@ public class Entities {
             .dimensions(new EntityDimensions(0.8f, 1.975F, true)).build();
 
     public static void registerEntities() {
-        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.MOD_ID, "canvas"), CANVAS);
-        Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(Mod.MOD_ID, "easel"), EASEL);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, CANVAS_ID, CANVAS);
+        Registry.register(BuiltInRegistries.ENTITY_TYPE, EASEL_ID, EASEL);
     }
 }

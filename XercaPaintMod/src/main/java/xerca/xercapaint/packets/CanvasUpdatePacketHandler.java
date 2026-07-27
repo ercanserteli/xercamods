@@ -24,13 +24,13 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
         ItemStack palette;
         Entity entityEasel = null;
 
-        if(msg.getEaselId() > -1){
+        if (msg.getEaselId() > -1) {
             entityEasel = pl.level().getEntity(msg.getEaselId());
-            if(entityEasel == null){
+            if (entityEasel == null) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Easel entity not found! easelId: {}", msg.getEaselId());
                 return;
             }
-            if(!(entityEasel instanceof EntityEasel easel)){
+            if (!(entityEasel instanceof EntityEasel easel)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Entity found is not an easel! easelId: {}", msg.getEaselId());
                 return;
             }
@@ -43,25 +43,24 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
                 return;
             }
             canvas = easel.getItem();
-            if(!(canvas.getItem() instanceof ItemCanvas)){
+            if (!(canvas.getItem() instanceof ItemCanvas)) {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Canvas not found inside easel!");
                 return;
             }
             ItemStack mainHandItem = pl.getMainHandItem();
             ItemStack offHandItem = pl.getOffhandItem();
-            if(mainHandItem.getItem() instanceof ItemPalette){
+            if (mainHandItem.getItem() instanceof ItemPalette) {
                 palette = mainHandItem;
-            }else if(offHandItem.getItem() instanceof ItemPalette){
+            } else if (offHandItem.getItem() instanceof ItemPalette) {
                 palette = offHandItem;
-            }else{
+            } else {
                 Mod.LOGGER.error("CanvasUpdatePacketHandler: Palette not found on player's hands!");
                 return;
             }
-        }
-        else{
+        } else {
             canvas = pl.getMainHandItem();
             palette = pl.getOffhandItem();
-            if(canvas.getItem() instanceof ItemPalette){
+            if (canvas.getItem() instanceof ItemPalette) {
                 ItemStack temp = canvas;
                 canvas = palette;
                 palette = temp;
@@ -71,14 +70,18 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
         if (!canvas.isEmpty() && canvas.getItem() instanceof ItemCanvas) {
             CompoundTag comp = canvas.getOrCreateTag();
 
-            comp.putIntArray("pixels", msg.getPixels());
-            comp.putString("name", msg.getName());
-            comp.putInt("v", msg.getVersion());
-            comp.putInt("generation", 0);
+            comp.putIntArray(ItemCanvas.TAG_PIXELS, msg.getPixels());
+            comp.putString(ItemCanvas.TAG_CANVAS_ID, msg.getName());
+            comp.putInt(ItemCanvas.TAG_VERSION, msg.getVersion());
+            comp.putInt(ItemCanvas.TAG_GENERATION, 0);
+            comp.putBoolean(ItemCanvas.TAG_SIDES_ACTIVE, msg.isSidesActive());
+            if (msg.getSidePixels().length > 0) {
+                comp.putIntArray(ItemCanvas.TAG_SIDE_PIXELS, msg.getSidePixels());
+            }
             if (msg.getSigned()) {
-                comp.putString("author", pl.getName().getString());
-                comp.putString("title", msg.getTitle().trim());
-                comp.putInt("generation", 1);
+                comp.putString(ItemCanvas.TAG_AUTHOR, pl.getName().getString());
+                comp.putString(ItemCanvas.TAG_TITLE, msg.getTitle().trim());
+                comp.putInt(ItemCanvas.TAG_GENERATION, 1);
             }
 
             if (!palette.isEmpty() && palette.getItem() == Items.ITEM_PALETTE) {
@@ -86,7 +89,7 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
                 writeCustomColorArrayToNBT(paletteComp, msg.getPaletteColors());
             }
 
-            if(entityEasel instanceof EntityEasel easel){
+            if (entityEasel instanceof EntityEasel easel) {
                 easel.setItem(canvas, false);
                 easel.setPainter(null);
             }
@@ -98,8 +101,8 @@ public class CanvasUpdatePacketHandler implements ServerPlayNetworking.PlayChann
     @Override
     public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         CanvasUpdatePacket packet = CanvasUpdatePacket.decode(buf);
-        if(packet != null){
-            server.execute(()->processMessage(packet, player));
+        if (packet != null) {
+            server.execute(() -> processMessage(packet, player));
         }
     }
 }

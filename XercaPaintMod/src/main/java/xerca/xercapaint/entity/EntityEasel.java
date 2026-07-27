@@ -39,6 +39,7 @@ import javax.annotation.Nullable;
 
 
 public class EntityEasel extends Entity {
+    private static final int MAX_PAINTER_DISTANCE_SQR = 64;
     private static final EntityDataAccessor<ItemStack> DATA_CANVAS;
     private Player painter = null;
     private Runnable dropDeferred = null;
@@ -56,7 +57,23 @@ public class EntityEasel extends Entity {
         super(entityCanvasEntityType, world);
     }
 
-    public void setPainter(Player painter){
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityEasel other)) {
+            return false;
+        }
+        return java.util.Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(EntityEasel.class, this.getUUID());
+    }
+
+    public void setPainter(@Nullable Player painter) {
         this.painter = painter;
     }
 
@@ -110,19 +127,20 @@ public class EntityEasel extends Entity {
     }
 
     private void dropItem(@Nullable Entity entity, boolean dropSelf) {
-        if(painter != null){
+        if (painter != null) {
             if (!level().isClientSide && dropDeferred == null) {
-                CloseGuiPacket pack = new CloseGuiPacket();
-                ServerPlayNetworking.send((ServerPlayer) painter, Mod.CLOSE_GUI_PACKET_ID, pack.encode());
+                if (painter instanceof ServerPlayer serverPainter) {
+                    CloseGuiPacket pack = new CloseGuiPacket();
+                    ServerPlayNetworking.send(serverPainter, Mod.CLOSE_GUI_PACKET_ID, pack.encode());
+                }
                 dropDeferred = () -> doDrop(entity, dropSelf);
             }
-        }
-        else{
+        } else {
             doDrop(entity, dropSelf);
         }
     }
 
-    public void doDrop(@Nullable Entity entity, boolean dropSelf){
+    public void doDrop(@Nullable Entity entity, boolean dropSelf) {
         ItemStack canvasStack = this.getItem();
         this.setItem(ItemStack.EMPTY);
 
@@ -156,10 +174,10 @@ public class EntityEasel extends Entity {
         }
 
         this.getEntityData().set(DATA_CANVAS, itemStack);
-        if(makeSound){
+        if (makeSound) {
             if (!itemStack.isEmpty()) {
                 this.playSound(SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
-            }else{
+            } else {
                 this.playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
             }
         }
@@ -191,7 +209,7 @@ public class EntityEasel extends Entity {
         super.onSyncedDataUpdated(accessor);
         if (accessor.equals(DATA_CANVAS)) {
             ItemStack itemStack = this.getItem();
-            if (!itemStack.isEmpty() && itemStack.getEntityRepresentation() != this) {
+            if (!itemStack.isEmpty() && !this.equals(itemStack.getEntityRepresentation())) {
                 itemStack.setEntityRepresentation(this);
             }
         }
@@ -222,22 +240,23 @@ public class EntityEasel extends Entity {
         boolean isEaselFilled = !this.getItem().isEmpty();
         boolean handHoldsCanvas = itemInHand.getItem() instanceof ItemCanvas;
         boolean handHoldsPalette = itemInHand.getItem() instanceof ItemPalette;
-        if(this.level().isClientSide){
+        if (this.level().isClientSide) {
             return !isEaselFilled && !handHoldsCanvas ? InteractionResult.PASS : InteractionResult.SUCCESS;
-        }
-        else {
+        } else {
             if (!isEaselFilled) {
                 if (handHoldsCanvas && !this.isRemoved()) {
                     this.setItem(itemInHand);
                     itemInHand.shrink(1);
                 }
-            }else{
+            } else {
                 boolean unused = this.painter == null;
-                boolean toEdit = handHoldsPalette && !(getItem().hasTag() && getItem().getTag() != null && getItem().getTag().getInt("generation") > 0);
+                boolean toEdit = handHoldsPalette && ItemCanvas.getGeneration(getItem()) <= 0;
                 boolean allowed = unused || !toEdit;
-                OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
-                ServerPlayNetworking.send((ServerPlayer) player, Mod.OPEN_GUI_PACKET_ID, pack.encode());
-                if(toEdit && allowed){
+                if (player instanceof ServerPlayer serverPlayer) {
+                    OpenGuiPacket pack = new OpenGuiPacket(this.getId(), allowed, toEdit, hand);
+                    ServerPlayNetworking.send(serverPlayer, Mod.OPEN_GUI_PACKET_ID, pack.encode());
+                }
+                if (toEdit && allowed) {
                     this.painter = player;
                 }
             }
@@ -270,7 +289,7 @@ public class EntityEasel extends Entity {
             }
         }
 
-        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > 64)) {
+        if (painter != null && (painter.isRemoved() || !painter.isAlive() || painter.distanceToSqr(this) > MAX_PAINTER_DISTANCE_SQR)) {
             painter = null;
         }
     }

@@ -13,15 +13,17 @@ public class ClientboundAddCanvasPacket extends ClientboundAddEntityPacket {
     private final byte canvasTypeVal;
     private final BlockPos pos;
     private final byte rotation;
+    private final boolean glass;
 
     public ClientboundAddCanvasPacket(EntityCanvas canvas) {
         super(canvas);
         this.canvasName = canvas.getCanvasName();
         this.canvasVersion = canvas.getCanvasVersion();
         this.directionVal = canvas.getDirection().get3DDataValue();
-        this.canvasTypeVal = (byte)canvas.getCanvasType().ordinal();
+        this.canvasTypeVal = canvas.getCanvasType().toByte();
         this.pos = canvas.getPos();
-        this.rotation = (byte)canvas.getRotation();
+        this.rotation = (byte) canvas.getRotation();
+        this.glass = canvas.isGlass();
     }
 
     public ClientboundAddCanvasPacket(FriendlyByteBuf buf) {
@@ -32,6 +34,7 @@ public class ClientboundAddCanvasPacket extends ClientboundAddEntityPacket {
         this.canvasTypeVal = buf.readByte();
         this.pos = buf.readBlockPos();
         this.rotation = buf.readByte();
+        this.glass = buf.readBoolean();
     }
 
     @Override
@@ -43,6 +46,7 @@ public class ClientboundAddCanvasPacket extends ClientboundAddEntityPacket {
         friendlyByteBuf.writeByte(canvasTypeVal);
         friendlyByteBuf.writeBlockPos(pos); // this has to be written, otherwise pos gets broken
         friendlyByteBuf.writeByte(rotation);
+        friendlyByteBuf.writeBoolean(glass);
     }
 
     public String getCanvasName() {
@@ -67,5 +71,9 @@ public class ClientboundAddCanvasPacket extends ClientboundAddEntityPacket {
 
     public byte getRotation() {
         return rotation;
+    }
+
+    public boolean isGlass() {
+        return glass;
     }
 }

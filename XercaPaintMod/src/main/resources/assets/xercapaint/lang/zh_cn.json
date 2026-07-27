@@ -1,16 +1,24 @@
 {
   "itemGroup.xercapaint.paint_tab": "绘画之乐",
-
   "item.xercapaint.item_palette": "调色板",
   "item.xercapaint.item_canvas": "画布",
   "item.xercapaint.item_canvas_large": "画布（大）",
   "item.xercapaint.item_canvas_long": "画面（横向）",
   "item.xercapaint.item_canvas_tall": "画布（竖向）",
   "item.xercapaint.item_easel": "画架",
-
   "palette.basic_count": "%1$s 基本色",
   "palette.custom_count": "%1$s 自定义颜色",
   "palette.empty": "空调色板",
+  "canvas.help.toggleHelp": "切换帮助提示",
+  "canvas.help.brushSize": "笔刷大小（%1$s）",
+  "canvas.help.brushOpacity": "笔刷不透明度（%1$s%%）",
+  "canvas.help.colorPicker": "取色器",
+  "canvas.help.colorPicker.desc": "选择此工具，从画布上拾取一种颜色，然后拖放到自定义颜色槽中。",
+  "canvas.help.colorRemover": "颜色清除器",
+  "canvas.help.colorRemover.desc": "拾取一些水，然后拖放到自定义颜色槽中即可将其清空。",
+  "canvas.help.canvasHolder": "画布手柄",
+  "canvas.help.canvasHolder.desc": "拾取画布并移动它。你可以用同样的方式移动调色板。",
+  "canvas.help.toggleSides": "切换画框",
   "entity.xercapaint.canvas": "画布",
   "entity.xercapaint.easel": "画架"
 }

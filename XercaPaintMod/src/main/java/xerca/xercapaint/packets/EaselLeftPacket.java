@@ -2,6 +2,7 @@ package xerca.xercapaint.packets;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.FriendlyByteBuf;
+import xerca.xercapaint.Mod;
 import xerca.xercapaint.entity.EntityEasel;
 
 public class EaselLeftPacket {
