@@ -21,7 +21,7 @@ public interface IItemInstrument {
     }
 
     static void playMusic(Level worldIn, Player playerIn, boolean canStop) {
-        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
+        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> playerIn.equals(entity.getBody()));
         if (musicSpirits.isEmpty()) {
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, (IItemInstrument) playerIn.getMainHandItem().getItem()));
         } else if (canStop) {

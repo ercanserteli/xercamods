@@ -4,8 +4,10 @@
   "package": "xerca.xercamusic.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ItemStackMixin"
   ],
   "client": [
+    "AbstractSliderButtonAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

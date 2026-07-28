@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -30,6 +31,11 @@ public class Mod implements ModInitializer {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
+    public static final int MAX_VOLUME_MARKERS_IN_PACKET = 5000;
+
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(MODID, path);
+    }
 
     public static void sendToClient(ServerPlayer player, IPacket packet) {
         ServerPlayNetworking.send(player, packet.getID(), packet.encode());

@@ -19,8 +19,20 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static xerca.xercamusic.common.Mod.sendToClient;
+import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_ID;
+import static xerca.xercamusic.common.item.ItemMusicSheet.KEY_VERSION;
 
 public final class CommandExport {
+    private CommandExport() {
+    }
+
+    private static boolean ensureDirectoryExists(File directory) {
+        if (directory.exists()) {
+            return directory.isDirectory();
+        }
+        return directory.mkdirs();
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicexport")
@@ -51,28 +63,31 @@ public final class CommandExport {
         String filename = name + ".sheet";
         String filepath = dir + "/" + filename;
         File directory = new File(dir);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!ensureDirectoryExists(directory)) {
+            Mod.LOGGER.warn("Could not create music export directory: {}", directory.getAbsolutePath());
+            return false;
         }
 
         for (ItemStack s : player.getHandSlots()) {
-            if (s.getItem() instanceof ItemMusicSheet && s.hasTag() && s.getTag() != null) {
+            if (s.getItem() instanceof ItemMusicSheet && s.hasTag() && s.getTag() != null
+                    && s.getTag().hasUUID(KEY_ID) && s.getTag().contains(KEY_VERSION)) {
                 CompoundTag tag = s.getTag().copy();
-                if (tag.contains("id") && tag.contains("ver")) {
-                    UUID id = tag.getUUID("id");
-                    int ver = tag.getInt("ver");
-                    MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
-                        MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
-                        if (data != null) {
-                            NoteEvent.fillNBTFromArray(data.notes(), tag);
-                            try {
-                                NbtIo.write(tag, new File(filepath));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                UUID id = tag.getUUID(KEY_ID);
+                int ver = tag.getInt(KEY_VERSION);
+                MusicManagerClient.checkMusicDataAndRun(id, ver, () -> {
+                    MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
+                    if (data != null) {
+                        NoteEvent.fillNBTFromArray(data.notes(), tag);
+                        if (data.volumeMarkers() != null && !data.volumeMarkers().isEmpty()) {
+                            VolumeMarker.fillNBTFromArray(data.volumeMarkers(), tag);
                         }
-                    });
-                }
+                        try {
+                            NbtIo.write(tag, new File(filepath));
+                        } catch (IOException e) {
+                            Mod.LOGGER.error("Failed to write music sheet file {}", filepath, e);
+                        }
+                    }
+                });
                 return true;
             }
         }

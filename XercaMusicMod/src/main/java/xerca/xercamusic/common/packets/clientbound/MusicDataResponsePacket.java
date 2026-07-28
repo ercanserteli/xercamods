@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.packets.IPacket;
 
 import java.util.ArrayList;
@@ -16,12 +17,18 @@ public class MusicDataResponsePacket implements IPacket {
     private UUID musicId;
     private int version;
     private List<NoteEvent> notes;
+    private List<VolumeMarker> volumeMarkers;
     private boolean messageIsValid;
 
     public MusicDataResponsePacket(UUID musicId, int version, List<NoteEvent> notes) {
+        this(musicId, version, notes, null);
+    }
+
+    public MusicDataResponsePacket(UUID musicId, int version, List<NoteEvent> notes, List<VolumeMarker> volumeMarkers) {
         this.musicId = musicId;
         this.version = version;
         this.notes = notes;
+        this.volumeMarkers = volumeMarkers;
     }
 
     public MusicDataResponsePacket() {
@@ -41,6 +48,16 @@ public class MusicDataResponsePacket implements IPacket {
             for (int i = 0; i < eventCount; i++) {
                 result.notes.add(NoteEvent.fromBuffer(buf));
             }
+            if (buf.readBoolean()) {
+                int markerCount = buf.readInt();
+                if (markerCount < 0 || markerCount > Mod.MAX_VOLUME_MARKERS_IN_PACKET) {
+                    throw new IndexOutOfBoundsException("Invalid markerCount: " + markerCount);
+                }
+                result.volumeMarkers = new ArrayList<>(markerCount);
+                for (int i = 0; i < markerCount; i++) {
+                    result.volumeMarkers.add(VolumeMarker.fromBuffer(buf));
+                }
+            }
         } catch (RuntimeException ioe) {
             Mod.LOGGER.error("Exception while reading MusicDataRequestPacket", ioe);
             return null;
@@ -56,6 +73,13 @@ public class MusicDataResponsePacket implements IPacket {
         buf.writeInt(notes.size());
         for (NoteEvent event : notes) {
             event.encodeToBuffer(buf);
+        }
+        buf.writeBoolean(volumeMarkers != null);
+        if (volumeMarkers != null) {
+            buf.writeInt(volumeMarkers.size());
+            for (VolumeMarker marker : volumeMarkers) {
+                marker.encodeToBuffer(buf);
+            }
         }
         return buf;
     }
@@ -86,6 +110,10 @@ public class MusicDataResponsePacket implements IPacket {
 
     public List<NoteEvent> getNotes() {
         return notes;
+    }
+
+    public List<VolumeMarker> getVolumeMarkers() {
+        return volumeMarkers;
     }
 
     @SuppressWarnings("unused")

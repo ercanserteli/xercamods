@@ -16,11 +16,13 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.client.MusicManagerClient;
 import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -34,6 +36,9 @@ import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
 public class TileEntityMusicBox extends BlockEntity {
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
+    private final ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
+    private @Nullable UUID warnedMissingSheetId;
+    private int warnedMissingSheetVersion = -1;
     private boolean isPlaying;
     private boolean oldPoweredState;
     private boolean isPowering;
@@ -76,6 +81,10 @@ public class TileEntityMusicBox extends BlockEntity {
                         if (data != null) {
                             t.notes.clear();
                             t.notes.addAll(data.notes());
+                            t.volumeMarkers.clear();
+                            if (data.volumeMarkers() != null) {
+                                t.volumeMarkers.addAll(data.volumeMarkers());
+                            }
                         }
                     });
                 } else {
@@ -85,9 +94,13 @@ public class TileEntityMusicBox extends BlockEntity {
                         if (data != null) {
                             t.notes.clear();
                             t.notes.addAll(data.notes());
+                            t.volumeMarkers.clear();
+                            if (data.volumeMarkers() != null) {
+                                t.volumeMarkers.addAll(data.volumeMarkers());
+                            }
+                            t.clearWarnedMissingSheet();
                         } else {
-                            Mod.LOGGER.info("Clearing tag data from unknown music sheet");
-                            t.sheetStack.setTag(new CompoundTag());
+                            t.warnMissingSheetOnce(id, ver);
                         }
                     }
                 }
@@ -165,7 +178,7 @@ public class TileEntityMusicBox extends BlockEntity {
             if (t.soundController != null) {
                 t.soundController.setStop();
             }
-            t.soundController = new SoundController(t.notes, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
+            t.soundController = new SoundController(t.notes, t.volumeMarkers, blockPos.getX(), blockPos.getY(), blockPos.getZ(), t.instrument, t.bps, t.volume, t);
             t.soundController.start();
         }
     }
@@ -220,6 +233,19 @@ public class TileEntityMusicBox extends BlockEntity {
         return sheetStack;
     }
 
+    private void warnMissingSheetOnce(UUID id, int version) {
+        if (!id.equals(warnedMissingSheetId) || warnedMissingSheetVersion != version) {
+            Mod.LOGGER.warn("Unknown music sheet (id: {}, version: {})", id, version);
+            warnedMissingSheetId = id;
+            warnedMissingSheetVersion = version;
+        }
+    }
+
+    private void clearWarnedMissingSheet() {
+        warnedMissingSheetId = null;
+        warnedMissingSheetVersion = -1;
+    }
+
     public void setSheetStack(ItemStack sheetStack, boolean updateClient) {
         if (sheetStack.getItem() instanceof ItemMusicSheet) {
             if (updateClient && level != null && !level.isClientSide) {
@@ -227,13 +253,14 @@ public class TileEntityMusicBox extends BlockEntity {
             }
 
             this.sheetStack = sheetStack;
+            clearWarnedMissingSheet();
+            this.notes.clear();
+            this.volumeMarkers.clear();
             if (sheetStack.hasTag() && sheetStack.getTag() != null && sheetStack.getTag().contains(KEY_ID) && sheetStack.getTag().contains(KEY_VERSION) && sheetStack.getTag().contains(KEY_LENGTH)) {
                 CompoundTag comp = sheetStack.getTag();
                 bps = sanitizeBps(comp.contains(KEY_BPS) ? comp.getInt(KEY_BPS) : 8);
                 volume = sanitizeVolume(comp.contains(KEY_VOLUME) ? comp.getFloat(KEY_VOLUME) : 1.f);
                 length = Math.max(0, comp.getInt(KEY_LENGTH));
-            } else {
-                this.notes.clear();
             }
             setChanged();
         }
@@ -246,7 +273,9 @@ public class TileEntityMusicBox extends BlockEntity {
             }
 
             this.sheetStack = ItemStack.EMPTY;
+            clearWarnedMissingSheet();
             this.notes.clear();
+            this.volumeMarkers.clear();
             setChanged();
         }
     }

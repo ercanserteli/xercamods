@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.Triggers;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.List;
@@ -62,11 +63,12 @@ public class MusicUpdatePacketHandler implements ServerPlayNetworking.PlayChanne
                 if (notes == null) {
                     // Get if large note was sent in parts
                     notes = MusicManager.getFinishedNotesFromBuffer(id);
-                    if (notes == null) {
+                    if (notes.isEmpty()) {
                         return;
                     }
                 }
-                MusicManager.setMusicData(id, comp.getInt("ver"), notes, pl.server);
+                List<VolumeMarker> volumeMarkers = flag.hasVolumeMarkers ? msg.getVolumeMarkers() : null;
+                MusicManager.setMusicData(id, comp.getInt("ver"), notes, volumeMarkers, pl.server);
                 if (!comp.contains("bps")) {
                     comp.putByte("bps", (byte) 8);
                 }

@@ -16,7 +16,7 @@ public class MusicDataResponsePacketHandler implements ClientPlayNetworking.Play
         UUID id = msg.getMusicId();
         int version = msg.getVersion();
         List<NoteEvent> notes = msg.getNotes();
-        MusicManagerClient.setMusicData(id, version, notes);
+        MusicManagerClient.setMusicData(id, version, notes, msg.getVolumeMarkers());
     }
 
     @Override

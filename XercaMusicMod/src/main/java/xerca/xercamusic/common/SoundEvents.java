@@ -38,6 +38,9 @@ public class SoundEvents {
     public static ArrayList<Pair<Integer, SoundEvent>> redstoneGuitars;
     public static ArrayList<Pair<Integer, SoundEvent>> frenchHorns;
     public static ArrayList<Pair<Integer, SoundEvent>> bassGuitars;
+    public static ArrayList<Pair<Integer, SoundEvent>> trumpets;
+    public static ArrayList<Pair<Integer, SoundEvent>> redstonePianos;
+    public static ArrayList<Pair<Integer, SoundEvent>> organs;
 
     private static final String NAME_GUITAR = "guitar";
     private static final String NAME_DRUM_KIT = "drum_kit";
@@ -59,6 +62,9 @@ public class SoundEvents {
     private static final String NAME_FRENCH_HORN = "french_horn";
     private static final String NAME_BASS_GUITAR = "bass_guitar";
     private static final String NAME_HARP_MC = "harp_mc";
+    private static final String NAME_TRUMPET = "trumpet";
+    private static final String NAME_REDSTONE_PIANO = "redstone_piano";
+    private static final String NAME_ORGAN = "organ";
 
     private static SoundEvent createSoundEvent(String soundName) {
         final ResourceLocation soundID = new ResourceLocation(Mod.MODID, soundName);
@@ -109,6 +115,9 @@ public class SoundEvents {
         xylophones = new ArrayList<>(48);
         cellos = new ArrayList<>(48);
         pianos = new ArrayList<>(48);
+        trumpets = new ArrayList<>(7);
+        redstonePianos = new ArrayList<>(13);
+        organs = new ArrayList<>(11);
 
         // ranges
         addRange(drumKits, NAME_DRUM_KIT, 21, 116);
@@ -168,6 +177,15 @@ public class SoundEvents {
         addFixed(bassGuitars, NAME_BASS_GUITAR,
                 33, 39, 45, 51, 57, 63, 69, 75);
 
+        addFixed(trumpets, NAME_TRUMPET,
+                48, 54, 60, 66, 72, 78, 84);
+
+        addFixed(redstonePianos, NAME_REDSTONE_PIANO,
+                24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96);
+
+        addFixed(organs, NAME_ORGAN,
+                36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96);
+
         // Instrument SoundEvent setting
         ((IItemInstrument) Items.CYMBAL).setSounds(cymbals);
         ((IItemInstrument) Items.DRUM_KIT).setSounds(drumKits);
@@ -188,6 +206,9 @@ public class SoundEvents {
         ((IItemInstrument) Items.REDSTONE_GUITAR).setSounds(redstoneGuitars);
         ((IItemInstrument) Items.FRENCH_HORN).setSounds(frenchHorns);
         ((IItemInstrument) Items.BASS_GUITAR).setSounds(bassGuitars);
+        ((IItemInstrument) Items.TRUMPET).setSounds(trumpets);
+        ((IItemInstrument) Items.REDSTONE_PIANO).setSounds(redstonePianos);
+        ((IItemInstrument) Items.ORGAN).setSounds(organs);
 
         ((IItemInstrument) Items.HARP_MC).setSounds(harpMcs);
     }

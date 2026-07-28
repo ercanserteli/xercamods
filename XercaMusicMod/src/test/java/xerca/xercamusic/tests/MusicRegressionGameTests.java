@@ -7,8 +7,10 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -19,9 +21,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+import xerca.xercamusic.client.MusicManagerClient;
+import xerca.xercamusic.common.CommandExport;
+import xerca.xercamusic.common.CommandImport;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
+import xerca.xercamusic.common.MusicClipboard;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.block.BlockMetronome;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
@@ -34,21 +42,39 @@ import xerca.xercamusic.common.packets.serverbound.SendNotesPartToServerPacket;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 import xerca.xercamusic.common.tile_entity.TileEntityMusicBox;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
 public class MusicRegressionGameTests {
     private static final Field MUSIC_BOX_IS_PLAYING_FIELD;
+    private static final Field MUSIC_BOX_BPS_FIELD;
+    private static final Field MUSIC_BOX_VOLUME_FIELD;
+    private static final Field MUSIC_BOX_WARNED_MISSING_SHEET_ID_FIELD;
+    private static final Field MUSIC_BOX_WARNED_MISSING_SHEET_VERSION_FIELD;
     private static final Field METRONOME_AGE_FIELD;
     private static final Field METRONOME_OLD_POWERED_STATE_FIELD;
     private static final Field METRONOME_COUNTDOWN_FIELD;
+    private static final String PRE_GLISSANDO_CLIPBOARD_SAMPLE = "MgAAAD8AAAAEKAAAQBApABBAECgAIEAQKwAwQBA=";
+    private static final String VERY_OLD_CLIPBOARD_SAMPLE = "JCAiGwAAGyIkIA==";
 
     static {
         try {
             MUSIC_BOX_IS_PLAYING_FIELD = TileEntityMusicBox.class.getDeclaredField("isPlaying");
             MUSIC_BOX_IS_PLAYING_FIELD.setAccessible(true);
+            MUSIC_BOX_BPS_FIELD = TileEntityMusicBox.class.getDeclaredField("bps");
+            MUSIC_BOX_BPS_FIELD.setAccessible(true);
+            MUSIC_BOX_VOLUME_FIELD = TileEntityMusicBox.class.getDeclaredField("volume");
+            MUSIC_BOX_VOLUME_FIELD.setAccessible(true);
+            MUSIC_BOX_WARNED_MISSING_SHEET_ID_FIELD = TileEntityMusicBox.class.getDeclaredField("warnedMissingSheetId");
+            MUSIC_BOX_WARNED_MISSING_SHEET_ID_FIELD.setAccessible(true);
+            MUSIC_BOX_WARNED_MISSING_SHEET_VERSION_FIELD = TileEntityMusicBox.class.getDeclaredField("warnedMissingSheetVersion");
+            MUSIC_BOX_WARNED_MISSING_SHEET_VERSION_FIELD.setAccessible(true);
             METRONOME_AGE_FIELD = TileEntityMetronome.class.getDeclaredField("age");
             METRONOME_AGE_FIELD.setAccessible(true);
             METRONOME_OLD_POWERED_STATE_FIELD = TileEntityMetronome.class.getDeclaredField("oldPoweredState");
@@ -138,6 +164,20 @@ public class MusicRegressionGameTests {
         return new UseResult(player.getMainHandItem(), helper.getLevel().getBlockState(absolutePos));
     }
 
+    private static InteractionResult simulateServerUseItemOn(GameTestHelper helper, Player player, ItemStack stack,
+                                                              BlockPos relativePos, Direction face) {
+        player.setItemSlot(EquipmentSlot.MAINHAND, stack);
+        BlockPos absolutePos = helper.absolutePos(relativePos);
+        BlockState state = helper.getLevel().getBlockState(absolutePos);
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(absolutePos), face, absolutePos, false);
+        InteractionResult blockResult = state.getBlock().use(state, helper.getLevel(), absolutePos, player,
+                InteractionHand.MAIN_HAND, hit);
+        if (blockResult.consumesAction()) {
+            return blockResult;
+        }
+        return stack.useOn(new net.minecraft.world.item.context.UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+    }
+
     private static void useBlockFace(GameTestHelper helper, Player player, BlockPos relativePos, Direction face) {
         player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         BlockPos absolutePos = helper.absolutePos(relativePos);
@@ -163,12 +203,141 @@ public class MusicRegressionGameTests {
         return stack;
     }
 
+    private static ItemStack createSheetStack(UUID id, int version, int generation, int lengthBeats, int bps,
+                                              float volume, @Nullable String title, @Nullable String author) {
+        ItemStack stack = new ItemStack(Items.MUSIC_SHEET);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putUUID(ItemMusicSheet.KEY_ID, id);
+        tag.putInt(ItemMusicSheet.KEY_VERSION, version);
+        tag.putInt(ItemMusicSheet.KEY_GENERATION, generation);
+        tag.putInt(ItemMusicSheet.KEY_LENGTH, lengthBeats);
+        tag.putByte(ItemMusicSheet.KEY_BPS, (byte) bps);
+        tag.putFloat(ItemMusicSheet.KEY_VOLUME, volume);
+        if (title != null) {
+            tag.putString(ItemMusicSheet.KEY_TITLE, title);
+        }
+        if (author != null) {
+            tag.putString(ItemMusicSheet.KEY_AUTHOR, author);
+        }
+        return stack;
+    }
+
+    private static Path exportPath(String filename) {
+        return Path.of("music_sheets", filename + ".sheet");
+    }
+
+    private static void deleteIfExists(GameTestHelper helper, Path path) {
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            helper.fail("Failed to delete test export file " + path + ": " + e);
+        }
+    }
+
+    private static CompoundTag readExportedTag(GameTestHelper helper, Path path) {
+        helper.assertTrue(Files.exists(path), "Expected exported music sheet file at " + path);
+        try {
+            CompoundTag tag = NbtIo.read(path.toFile());
+            helper.assertTrue(tag != null, "Expected exported music sheet NBT at " + path);
+            if (tag != null) {
+                return tag;
+            }
+            throw new IllegalStateException("Expected exported music sheet NBT at " + path);
+        } catch (IOException e) {
+            helper.fail("Failed to read exported music sheet " + path + ": " + e);
+            return new CompoundTag();
+        }
+    }
+
+    private static UUID requireSheetId(GameTestHelper helper, ItemStack stack, String message) {
+        CompoundTag tag = stack.getTag();
+        helper.assertTrue(tag != null && tag.hasUUID(ItemMusicSheet.KEY_ID), message);
+        if (tag != null && tag.hasUUID(ItemMusicSheet.KEY_ID)) {
+            return tag.getUUID(ItemMusicSheet.KEY_ID);
+        }
+        throw new IllegalStateException(message);
+    }
+
+    private static MusicManager.MusicData requireMusicData(GameTestHelper helper, UUID id, int version, String message) {
+        MusicManager.MusicData data = MusicManager.getMusicData(id, version, helper.getLevel().getServer());
+        helper.assertTrue(data != null, message);
+        if (data != null) {
+            return data;
+        }
+        throw new IllegalStateException(message);
+    }
+
+    private static List<NoteEvent> notesFromTag(CompoundTag tag) {
+        ArrayList<NoteEvent> notes = new ArrayList<>();
+        NoteEvent.fillArrayFromNBT(notes, tag);
+        return notes;
+    }
+
+    private static List<VolumeMarker> volumeMarkersFromTag(CompoundTag tag) {
+        ArrayList<VolumeMarker> markers = new ArrayList<>();
+        VolumeMarker.fillArrayFromNBT(markers, tag);
+        return markers;
+    }
+
+    private static byte[] copyWrittenBytes(FriendlyByteBuf buf) {
+        byte[] bytes = new byte[buf.writerIndex()];
+        buf.getBytes(0, bytes);
+        return bytes;
+    }
+
+    private static ItemStack findImportedSheet(Player player) {
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+            ItemStack stack = player.getInventory().getItem(slot);
+            if (stack.is(Items.MUSIC_SHEET) && stack.hasTag() && stack.getTag() != null
+                    && stack.getTag().hasUUID(ItemMusicSheet.KEY_ID)) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
     private static boolean isMusicBoxPlaying(GameTestHelper helper, TileEntityMusicBox musicBox) {
         try {
             return MUSIC_BOX_IS_PLAYING_FIELD.getBoolean(musicBox);
         } catch (IllegalAccessException e) {
             helper.fail("Failed to read music box isPlaying field: " + e);
             return false;
+        }
+    }
+
+    private static byte getMusicBoxBps(GameTestHelper helper, TileEntityMusicBox musicBox) {
+        try {
+            return MUSIC_BOX_BPS_FIELD.getByte(musicBox);
+        } catch (IllegalAccessException e) {
+            helper.fail("Failed to read music box bps field: " + e);
+            return 0;
+        }
+    }
+
+    private static float getMusicBoxVolume(GameTestHelper helper, TileEntityMusicBox musicBox) {
+        try {
+            return MUSIC_BOX_VOLUME_FIELD.getFloat(musicBox);
+        } catch (IllegalAccessException e) {
+            helper.fail("Failed to read music box volume field: " + e);
+            return 0.0f;
+        }
+    }
+
+    private static @Nullable UUID getWarnedMissingSheetId(GameTestHelper helper, TileEntityMusicBox musicBox) {
+        try {
+            return (UUID) MUSIC_BOX_WARNED_MISSING_SHEET_ID_FIELD.get(musicBox);
+        } catch (IllegalAccessException e) {
+            helper.fail("Failed to read music box warnedMissingSheetId field: " + e);
+            return null;
+        }
+    }
+
+    private static int getWarnedMissingSheetVersion(GameTestHelper helper, TileEntityMusicBox musicBox) {
+        try {
+            return MUSIC_BOX_WARNED_MISSING_SHEET_VERSION_FIELD.getInt(musicBox);
+        } catch (IllegalAccessException e) {
+            helper.fail("Failed to read music box warnedMissingSheetVersion field: " + e);
+            return -2;
         }
     }
 
@@ -263,10 +432,294 @@ public class MusicRegressionGameTests {
         helper.assertTrue(doneAfterSecond, "Expected second notes part to complete the buffer");
 
         List<NoteEvent> joined = MusicManager.getFinishedNotesFromBuffer(id);
-        helper.assertTrue(joined != null && joined.size() == 2, "Expected joined notes from finished temp buffer");
+        helper.assertTrue(joined.size() == 2, "Expected joined notes from finished temp buffer");
 
         List<NoteEvent> secondRead = MusicManager.getFinishedNotesFromBuffer(id);
-        helper.assertTrue(secondRead == null, "Expected finished temp buffer to be consumed and removed");
+        helper.assertTrue(secondRead.isEmpty(), "Expected finished temp buffer to be consumed and removed");
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_regressions")
+    public static void musicBoxSheetValuesAreSanitizedOnInsert(GameTestHelper helper) {
+        BlockPos boxPos = new BlockPos(1, 2, 1);
+        placeMusicBox(helper, boxPos, Direction.NORTH);
+        TileEntityMusicBox musicBox = requireMusicBox(helper, boxPos);
+
+        ItemStack sheet = createSheetStack(helper, 8, 8);
+        CompoundTag tag = sheet.getOrCreateTag();
+        tag.putByte(ItemMusicSheet.KEY_BPS, (byte) 0);
+        tag.putFloat(ItemMusicSheet.KEY_VOLUME, 2.5f);
+        musicBox.setSheetStack(sheet, false);
+
+        helper.assertTrue(getMusicBoxBps(helper, musicBox) == 1,
+                "Expected music box bps to clamp to minimum of 1");
+        helper.assertTrue(getMusicBoxVolume(helper, musicBox) == 1.0f,
+                "Expected music box volume to clamp to maximum of 1.0");
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_regressions")
+    public static void musicBoxUnknownSheetWarningStateIsDeduplicatedAndReset(GameTestHelper helper) {
+        BlockPos boxPos = new BlockPos(1, 2, 1);
+        placeMusicBox(helper, boxPos, Direction.NORTH);
+        TileEntityMusicBox musicBox = requireMusicBox(helper, boxPos);
+
+        UUID missingId = UUID.randomUUID();
+        int missingVersion = 7;
+        musicBox.setSheetStack(createSheetStack(missingId, missingVersion, 0, 8, 8, 1.0f,
+                "missing", null), false);
+
+        tickMusicBox(helper, boxPos);
+        helper.assertTrue(missingId.equals(getWarnedMissingSheetId(helper, musicBox)),
+                "Expected music box to remember the missing sheet id after first failed lookup");
+        helper.assertTrue(getWarnedMissingSheetVersion(helper, musicBox) == missingVersion,
+                "Expected music box to remember the missing sheet version after first failed lookup");
+
+        tickMusicBox(helper, boxPos);
+        helper.assertTrue(missingId.equals(getWarnedMissingSheetId(helper, musicBox)),
+                "Expected repeated failed lookups for the same sheet to keep the same warning state");
+        helper.assertTrue(getWarnedMissingSheetVersion(helper, musicBox) == missingVersion,
+                "Expected repeated failed lookups for the same sheet to keep the same warning version");
+
+        musicBox.removeSheetStack();
+        helper.assertTrue(getWarnedMissingSheetId(helper, musicBox) == null,
+                "Expected removing the sheet to clear the missing-sheet warning state");
+        helper.assertTrue(getWarnedMissingSheetVersion(helper, musicBox) == -1,
+                "Expected removing the sheet to reset the missing-sheet warning version");
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_regressions")
+    public static void clipboardPreservesGlissandoAndVolumeMarkers(GameTestHelper helper) {
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeByte(MusicClipboard.COPY_BEGIN_BYTE);
+        buf.writeInt(7);
+        buf.writeInt(1);
+
+        NoteEvent glissando = new NoteEvent((byte) 64, (short) 0, (byte) 96, (byte) 4);
+        glissando.setGlissandoWaypoints(new byte[]{2, 5}, new byte[]{25, 75});
+        glissando.encodeToBuffer(buf);
+        buf.writeInt(1);
+        new VolumeMarker((short) 0, (short) 8, (byte) 32, (byte) 96, (byte) 60, (byte) 72)
+                .encodeToBuffer(buf);
+
+        byte[] encodedBytes = new byte[buf.writerIndex()];
+        buf.getBytes(0, encodedBytes);
+        MusicClipboard.ParsedMusic parsed = MusicClipboard.decode(Base64.getEncoder().encodeToString(encodedBytes));
+
+        helper.assertTrue(parsed != null, "Expected current clipboard payload to parse");
+        helper.assertTrue(parsed != null && parsed.length() == 8, "Expected clipboard length to be preserved");
+        helper.assertTrue(parsed != null && parsed.notes().size() == 1 && parsed.notes().get(0).hasGlissando(),
+                "Expected clipboard glissando data to be preserved");
+        helper.assertTrue(parsed != null && parsed.volumeMarkers().size() == 1,
+                "Expected clipboard volume markers to be preserved");
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_regressions")
+    public static void clipboardDecodeAcceptsPreGlissandoCopyFormat(GameTestHelper helper) {
+        MusicClipboard.ParsedMusic parsed = MusicClipboard.decode(PRE_GLISSANDO_CLIPBOARD_SAMPLE);
+        helper.assertTrue(parsed != null, "Expected pre-glissando clipboard sample to parse");
+        helper.assertTrue(parsed != null && parsed.length() == 64,
+                "Expected pre-glissando clipboard length to be preserved");
+        helper.assertTrue(parsed != null && parsed.notes().size() == 4,
+                "Expected pre-glissando clipboard notes to be preserved");
+        helper.assertTrue(parsed != null && parsed.volumeMarkers().isEmpty(),
+                "Expected pre-glissando clipboard sample to have no volume markers");
+        helper.assertTrue(MusicClipboard.decode(PRE_GLISSANDO_CLIPBOARD_SAMPLE + "\n") != null,
+                "Expected copied sample text with trailing newline to parse");
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_regressions")
+    public static void clipboardDecodeAcceptsVeryOldMusicFormat(GameTestHelper helper) {
+        MusicClipboard.ParsedMusic parsed = MusicClipboard.decode(VERY_OLD_CLIPBOARD_SAMPLE);
+        helper.assertTrue(parsed != null, "Expected very old clipboard sample to parse");
+        helper.assertTrue(parsed != null && parsed.length() == 17,
+                "Expected very old clipboard length to be inferred from notes");
+        helper.assertTrue(parsed != null && parsed.notes().size() == 8,
+                "Expected very old clipboard notes to be preserved");
+        helper.assertTrue(parsed != null && parsed.volumeMarkers().isEmpty(),
+                "Expected very old clipboard sample to have no volume markers");
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_regressions")
+    public static void clipboardDecodeRejectsNonsenseWithoutThrowing(GameTestHelper helper) {
+        helper.assertTrue(MusicClipboard.decode("this is not base64") == null,
+                "Expected non-base64 clipboard data to be ignored");
+        helper.assertTrue(MusicClipboard.decodeBytes(new byte[0]) == null,
+                "Expected empty clipboard data to be ignored");
+        helper.assertTrue(MusicClipboard.decodeBytes(new byte[]{MusicClipboard.COPY_BEGIN_BYTE}) == null,
+                "Expected truncated current clipboard data to be ignored");
+
+        FriendlyByteBuf truncated = new FriendlyByteBuf(Unpooled.buffer());
+        truncated.writeByte(MusicClipboard.COPY_BEGIN_BYTE);
+        truncated.writeInt(3);
+        truncated.writeInt(1);
+        truncated.writeByte(64);
+        helper.assertTrue(MusicClipboard.decodeBytes(copyWrittenBytes(truncated)) == null,
+                "Expected truncated note data to be ignored");
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_import_export")
+    public static void signedSheetExportAndImportPreserveIdentityAndMarkers(GameTestHelper helper) {
+        String exportName = "signed_sheet_roundtrip";
+        Path path = exportPath(exportName);
+        deleteIfExists(helper, path);
+
+        UUID id = UUID.randomUUID();
+        int version = 4;
+        ArrayList<NoteEvent> notes = new ArrayList<>();
+        NoteEvent lead = new NoteEvent((byte) 64, (short) 0, (byte) 96, (byte) 4);
+        lead.setGlissandoWaypoints(new byte[]{2, 5}, new byte[]{25, 75});
+        notes.add(lead);
+        notes.add(new NoteEvent((byte) 67, (short) 5, (byte) 110, (byte) 2));
+        ArrayList<VolumeMarker> markers = new ArrayList<>();
+        markers.add(new VolumeMarker((short) 0, (short) 6, (byte) 40, (byte) 100, (byte) 60, (byte) 72));
+        MusicManagerClient.setMusicData(id, version, notes, markers);
+
+        Player exporter = helper.makeMockPlayer();
+        exporter.setItemSlot(EquipmentSlot.MAINHAND,
+                createSheetStack(id, version, 1, 12, 8, 0.75f, "signed_export", "tester"));
+        helper.assertTrue(CommandExport.doExport(exporter, exportName),
+                "Expected signed music sheet export to find a sheet in hand");
+
+        CompoundTag exportedTag = readExportedTag(helper, path);
+        helper.assertTrue(exportedTag.hasUUID(ItemMusicSheet.KEY_ID),
+                "Expected signed export to store the sheet id");
+        helper.assertTrue(exportedTag.getUUID(ItemMusicSheet.KEY_ID).equals(id),
+                "Expected signed export to preserve the original sheet id");
+        helper.assertTrue(exportedTag.getInt(ItemMusicSheet.KEY_VERSION) == version,
+                "Expected signed export to preserve the original sheet version");
+        helper.assertTrue("signed_export".equals(exportedTag.getString(ItemMusicSheet.KEY_TITLE)),
+                "Expected signed export to include the title");
+        helper.assertTrue("tester".equals(exportedTag.getString(ItemMusicSheet.KEY_AUTHOR)),
+                "Expected signed export to include the author");
+
+        List<NoteEvent> exportedNotes = notesFromTag(exportedTag);
+        List<VolumeMarker> exportedMarkers = volumeMarkersFromTag(exportedTag);
+        helper.assertTrue(exportedNotes.size() == notes.size(),
+                "Expected signed export to write all sheet notes");
+        helper.assertTrue(exportedMarkers.size() == markers.size(),
+                "Expected signed export to write all volume markers");
+
+        Player importer = helper.makeMockPlayer();
+        importer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.MUSIC_SHEET));
+        CommandImport.doImport(exportedTag, exportedNotes, id, importer);
+
+        ItemStack importedSheet = findImportedSheet(importer);
+        helper.assertTrue(!importedSheet.isEmpty(), "Expected signed import to produce a populated music sheet");
+        CompoundTag importedTag = importedSheet.getTag();
+        helper.assertTrue(importedTag != null && id.equals(importedTag.getUUID(ItemMusicSheet.KEY_ID)),
+                "Expected signed import to keep the exported sheet id");
+        helper.assertTrue(importedTag != null && importedTag.getInt(ItemMusicSheet.KEY_VERSION) == version,
+                "Expected signed import to keep the exported sheet version");
+        helper.assertTrue(importedTag != null && importedTag.getInt(ItemMusicSheet.KEY_GENERATION) == 2,
+                "Expected signed import to advance generation from original to copy");
+        helper.assertTrue(importedTag != null && "signed_export".equals(importedTag.getString(ItemMusicSheet.KEY_TITLE)),
+                "Expected signed import to keep the title");
+        helper.assertTrue(importedTag != null && "tester".equals(importedTag.getString(ItemMusicSheet.KEY_AUTHOR)),
+                "Expected signed import to keep the author");
+
+        MusicManager.MusicData importedData = requireMusicData(helper, id, version,
+                "Expected signed import to register music data on the server");
+        helper.assertTrue(importedData.notes().size() == notes.size(),
+                "Expected signed import to restore the exported note count");
+        helper.assertTrue(importedData.volumeMarkers() != null
+                        && importedData.volumeMarkers().size() == markers.size(),
+                "Expected signed import to restore exported volume markers");
+
+        deleteIfExists(helper, path);
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_import_export")
+    public static void unsignedMultipartImportFromExportGetsFreshIdentityAndConsumesBuffer(GameTestHelper helper) {
+        String exportName = "unsigned_sheet_roundtrip";
+        Path path = exportPath(exportName);
+        deleteIfExists(helper, path);
+
+        UUID originalId = UUID.randomUUID();
+        int originalVersion = 9;
+        ArrayList<NoteEvent> notes = new ArrayList<>();
+        notes.add(new NoteEvent((byte) 60, (short) 0, (byte) 90, (byte) 1));
+        notes.add(new NoteEvent((byte) 64, (short) 3, (byte) 100, (byte) 2));
+        notes.add(new NoteEvent((byte) 67, (short) 7, (byte) 110, (byte) 1));
+        ArrayList<VolumeMarker> markers = new ArrayList<>();
+        markers.add(new VolumeMarker((short) 0, (short) 8, (byte) 32, (byte) 96, (byte) 58, (byte) 69));
+        MusicManagerClient.setMusicData(originalId, originalVersion, notes, markers);
+
+        Player exporter = helper.makeMockPlayer();
+        exporter.setItemSlot(EquipmentSlot.MAINHAND,
+                createSheetStack(originalId, originalVersion, 0, 16, 12, 1.0f, null, null));
+        helper.assertTrue(CommandExport.doExport(exporter, exportName),
+                "Expected unsigned music sheet export to find a sheet in hand");
+
+        CompoundTag exportedTag = readExportedTag(helper, path);
+        helper.assertTrue(!exportedTag.contains(ItemMusicSheet.KEY_TITLE),
+                "Expected unsigned export to omit the title");
+        helper.assertTrue(!exportedTag.contains(ItemMusicSheet.KEY_AUTHOR),
+                "Expected unsigned export to omit the author");
+
+        List<NoteEvent> exportedNotes = notesFromTag(exportedTag);
+        List<VolumeMarker> exportedMarkers = volumeMarkersFromTag(exportedTag);
+        helper.assertTrue(exportedNotes.size() == notes.size(),
+                "Expected unsigned export to write the sheet notes");
+        helper.assertTrue(exportedMarkers.size() == markers.size(),
+                "Expected unsigned export to write the sheet volume markers");
+
+        helper.assertTrue(!MusicManager.addNotesPart(new SendNotesPartToServerPacket(originalId, 2, 0,
+                        new ArrayList<>(exportedNotes.subList(0, 1)))),
+                "Expected the first multipart note payload to leave the import buffer incomplete");
+        helper.assertTrue(MusicManager.addNotesPart(new SendNotesPartToServerPacket(originalId, 2, 1,
+                        new ArrayList<>(exportedNotes.subList(1, exportedNotes.size())))),
+                "Expected the second multipart note payload to complete the import buffer");
+
+        Player importer = helper.makeMockPlayer();
+        importer.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.MUSIC_SHEET));
+        CommandImport.doImport(exportedTag, null, originalId, importer);
+
+        ItemStack importedSheet = findImportedSheet(importer);
+        helper.assertTrue(!importedSheet.isEmpty(), "Expected unsigned import to produce a populated music sheet");
+        UUID importedId = requireSheetId(helper, importedSheet,
+                "Expected unsigned import to assign a new sheet id");
+        CompoundTag importedTag = importedSheet.getTag();
+        helper.assertTrue(!originalId.equals(importedId),
+                "Expected unsigned import to regenerate the sheet id instead of reusing the exported one");
+        helper.assertTrue(importedTag != null && importedTag.getInt(ItemMusicSheet.KEY_VERSION) == 1,
+                "Expected unsigned import to reset the version to 1");
+        helper.assertTrue(importedTag != null && importedTag.getInt(ItemMusicSheet.KEY_GENERATION) == 0,
+                "Expected unsigned import to stay unsigned after import");
+        helper.assertTrue(importedTag != null && !importedTag.contains(ItemMusicSheet.KEY_TITLE),
+                "Expected unsigned import to keep the sheet title empty");
+        helper.assertTrue(importedTag != null && !importedTag.contains(ItemMusicSheet.KEY_AUTHOR),
+                "Expected unsigned import to keep the sheet author empty");
+
+        MusicManager.MusicData importedData = requireMusicData(helper, importedId, 1,
+                "Expected unsigned import to store music data under the new id");
+        helper.assertTrue(importedData.notes().size() == notes.size(),
+                "Expected unsigned import to restore the multipart note payload");
+        helper.assertTrue(importedData.volumeMarkers() != null
+                        && importedData.volumeMarkers().size() == markers.size(),
+                "Expected unsigned import to restore exported volume markers");
+        helper.assertTrue(MusicManager.getFinishedNotesFromBuffer(originalId).isEmpty(),
+                "Expected unsigned import to consume and clear the multipart note buffer");
+
+        deleteIfExists(helper, path);
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "music_regressions")
+    public static void onlySignedMusicSheetsStack(GameTestHelper helper) {
+        ItemStack unsigned = new ItemStack(Items.MUSIC_SHEET);
+        helper.assertTrue(unsigned.getMaxStackSize() == 1, "Expected an unsigned sheet to remain unstackable");
+
+        ItemStack signed = new ItemStack(Items.MUSIC_SHEET);
+        signed.getOrCreateTag().putInt(ItemMusicSheet.KEY_GENERATION, 1);
+        helper.assertTrue(signed.getMaxStackSize() == ItemMusicSheet.SIGNED_STACK_SIZE,
+                "Expected a signed sheet to stack up to 16");
         helper.succeed();
     }
 
@@ -614,6 +1067,28 @@ public class MusicRegressionGameTests {
                 new BlockHitResult(Vec3.atCenterOf(absolutePos), Direction.UP, absolutePos, false));
 
         helper.assertTrue(countSpiritsNear(helper, pianoPos) == 0, "Expected piano use without a sheet to not start playback");
+        helper.succeed();
+    }
+
+    @GameTest(template = Mod.MODID + ":basic_test", batch = "piano")
+    public static void pianoUseWithBlockInstrumentDoesNotPlaceBlock(GameTestHelper helper) {
+        BlockPos pianoPos = new BlockPos(1, 2, 1);
+        Player player = helper.makeMockSurvivalPlayer();
+        placePiano(helper, pianoPos, Direction.NORTH);
+
+        BlockPos absolutePos = helper.absolutePos(pianoPos);
+        player.moveTo(Vec3.atCenterOf(absolutePos).add(1.0D, 0.0D, 0.0D));
+
+        ItemStack blockInstrument = new ItemStack(Items.PIANO);
+        int initialCount = blockInstrument.getCount();
+        InteractionResult result = simulateServerUseItemOn(helper, player, blockInstrument, pianoPos, Direction.UP);
+
+        helper.assertTrue(result.consumesAction(),
+                "Expected using a block instrument on an existing instrument to consume the interaction");
+        helper.assertTrue(helper.getLevel().getBlockState(helper.absolutePos(pianoPos.above())).isAir(),
+                "Expected no instrument block to be placed on top of the existing instrument");
+        helper.assertTrue(player.getMainHandItem().getCount() == initialCount,
+                "Expected the held block instrument to not be consumed by block placement");
         helper.succeed();
     }
 

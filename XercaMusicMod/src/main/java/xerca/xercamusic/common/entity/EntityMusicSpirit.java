@@ -21,12 +21,14 @@ import xerca.xercamusic.client.SoundController;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.VolumeMarker;
 import xerca.xercamusic.common.block.BlockInstrument;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemBlockInstrument;
 import xerca.xercamusic.common.item.Items;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 import static xerca.xercamusic.common.item.ItemMusicSheet.*;
@@ -34,6 +36,7 @@ import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 public class EntityMusicSpirit extends Entity {
     public static final ResourceLocation SPAWN_PACKET_ID = new ResourceLocation(Mod.MODID, "spawn_music_spirit");
     private final ArrayList<NoteEvent> notes = new ArrayList<>();
+    private final ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
     private Player body;
     private ItemStack note;
     private IItemInstrument instrument;
@@ -76,6 +79,22 @@ public class EntityMusicSpirit extends Entity {
 
     public EntityMusicSpirit(EntityType<EntityMusicSpirit> type, Level world) {
         super(type, world);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EntityMusicSpirit other)) {
+            return false;
+        }
+        return Objects.equals(this.getUUID(), other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EntityMusicSpirit.class, this.getUUID());
     }
 
     private void setBlockPosAndInstrument(BlockPos pos, int instrumentId) {
@@ -215,9 +234,12 @@ public class EntityMusicSpirit extends Entity {
                     MusicManager.MusicData data = MusicManagerClient.getMusicData(id, ver);
                     if (data != null) {
                         notes.addAll(data.notes());
+                        if (data.volumeMarkers() != null) {
+                            volumeMarkers.addAll(data.volumeMarkers());
+                        }
                     }
 
-                    soundController = new SoundController(notes, getX(), getY(), getZ(), instrument, bps, volume, getId());
+                    soundController = new SoundController(notes, volumeMarkers, getX(), getY(), getZ(), instrument, bps, volume, getId());
                     soundController.start();
                 });
             }

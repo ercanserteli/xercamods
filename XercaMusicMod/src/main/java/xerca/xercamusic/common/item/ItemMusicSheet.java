@@ -33,6 +33,7 @@ import java.util.UUID;
 import static xerca.xercamusic.common.Mod.onlyRunOnClient;
 
 public class ItemMusicSheet extends Item {
+    public static final int SIGNED_STACK_SIZE = 16;
     private static final HashMap<IItemInstrument.Pair<String, String>, UUID> CONVERT_MAP = new HashMap<>();
     private static final int ADD_TO_OLD_END = 8;
     public static final String KEY_NOTES = "notes";
@@ -216,10 +217,14 @@ public class ItemMusicSheet extends Item {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         BlockState blockState = world.getBlockState(blockpos);
-        if (blockState.getBlock() == Blocks.MUSIC_BOX && !blockState.getValue(BlockMusicBox.HAS_MUSIC)) {
+        if (blockState.getBlock() == Blocks.MUSIC_BOX && blockState.hasProperty(BlockMusicBox.HAS_MUSIC)
+                && !blockState.getValue(BlockMusicBox.HAS_MUSIC)) {
             ItemStack itemstack = context.getItemInHand();
-            if (!world.isClientSide && itemstack.hasTag()) {
-                BlockMusicBox.insertMusic(world, blockpos, blockState, itemstack.copy());
+            if (!world.isClientSide && itemstack.hasTag() && itemstack.getTag() != null
+                    && itemstack.getTag().hasUUID(KEY_ID)) {
+                ItemStack insertedSheet = itemstack.copy();
+                insertedSheet.setCount(1);
+                BlockMusicBox.insertMusic(world, blockpos, blockState, insertedSheet);
                 Player player = context.getPlayer();
                 if (player != null && !player.getAbilities().instabuild) {
                     itemstack.shrink(1);

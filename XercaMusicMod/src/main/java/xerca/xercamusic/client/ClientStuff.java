@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.sounds.SoundEvent;
@@ -36,13 +35,13 @@ public class ClientStuff implements ClientModInitializer {
             ItemStack heldItem = player.getMainHandItem();
             if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemMusicSheet) {
                 player.playSound(SoundEvents.openScroll, 1.0f, 0.8f + player.level().random.nextFloat() * 0.4f);
-                CompoundTag noteTag = heldItem.getTag();
+                var noteTag = heldItem.getTag();
                 if (noteTag != null && !noteTag.isEmpty() && noteTag.contains("id") && noteTag.contains("ver")) {
                     UUID id = noteTag.getUUID("id");
                     int version = noteTag.getInt("ver");
-                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet"))));
+                    MusicManagerClient.checkMusicDataAndRun(id, version, () -> Minecraft.getInstance().setScreen(new GuiMusicSheet(player, heldItem, Component.translatable("item.xercamusic.music_sheet"))));
                 } else {
-                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, noteTag, Component.translatable("item.xercamusic.music_sheet")));
+                    Minecraft.getInstance().setScreen(new GuiMusicSheet(player, heldItem, Component.translatable("item.xercamusic.music_sheet")));
                 }
             }
         }
@@ -71,8 +70,8 @@ public class ClientStuff implements ClientModInitializer {
         return playNote(event, x, y, z, SoundSource.PLAYERS, volume, pitch, (byte) -1);
     }
 
-    public static void playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
-        playNote(event, x, y, z, SoundSource.RECORDS, volume, pitch, lengthTicks);
+    public static NoteSound playNoteTE(SoundEvent event, double x, double y, double z, float volume, float pitch, byte lengthTicks) {
+        return playNote(event, x, y, z, SoundSource.RECORDS, volume, pitch, lengthTicks);
     }
 
     public static NoteSound playNote(SoundEvent event, double x, double y, double z, SoundSource category, float volume, float pitch, byte lengthTicks) {
