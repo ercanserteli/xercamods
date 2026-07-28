@@ -2,29 +2,50 @@ package xerca.xercamusic.client;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import org.jetbrains.annotations.Nullable;
+import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.MusicManager;
 import xerca.xercamusic.common.NoteEvent;
-import xerca.xercamusic.common.XercaMusic;
-import xerca.xercamusic.common.packets.MusicDataRequestPacket;
+import xerca.xercamusic.common.VolumeMarker;
+import xerca.xercamusic.common.packets.serverbound.MusicDataRequestPacket;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
-public class MusicManagerClient {
-    static final Map<UUID, MusicManager.MusicData> musicMap = new HashMap<>();
-    static final Map<UUID, Runnable> taskMap = new HashMap<>();
-    static final String cacheDir = "music_sheets/.cache/";
+import static xerca.xercamusic.client.ClientStuff.sendToServer;
+import static xerca.xercamusic.common.item.ItemMusicSheet.*;
+
+public final class MusicManagerClient {
+    static final Map<UUID, MusicManager.MusicData> MUSIC_MAP = new HashMap<>();
+    static final Map<UUID, Runnable> TASK_MAP = new HashMap<>();
+    static final String CACHE_DIR = "music_sheets/.cache/";
+
+    private MusicManagerClient() {
+    }
+
+    private static boolean ensureDirectoryExists(File directory) {
+        if (directory.exists()) {
+            if (!directory.isDirectory()) {
+                XercaMusic.LOGGER.warn("music cache path exists but is not a directory: {}", directory.getAbsolutePath());
+                return false;
+            }
+            return true;
+        }
+        if (!directory.mkdirs()) {
+            XercaMusic.LOGGER.warn("Could not create music cache directory: {}", directory.getAbsolutePath());
+            return false;
+        }
+        return true;
+    }
 
     public static void load() {
         // Load from disk
-        File directory = new File(cacheDir);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        File directory = new File(CACHE_DIR);
+        if (!ensureDirectoryExists(directory)) {
+            return;
         }
         File[] directoryListing = directory.listFiles();
         if (directoryListing != null) {
@@ -33,83 +54,97 @@ public class MusicManagerClient {
                 try {
                     UUID id = UUID.fromString(fileName);
                     CompoundTag tag = NbtIo.readCompressed(file);
-                    if (tag.contains("id") && id.equals(tag.getUUID("id")) && tag.contains("ver") && tag.contains("notes")) {
-                        int version = tag.getInt("ver");
+                    if (tag.contains(KEY_ID) && id.equals(tag.getUUID(KEY_ID)) && tag.contains(KEY_VERSION) && tag.contains(KEY_NOTES)) {
+                        int version = tag.getInt(KEY_VERSION);
                         ArrayList<NoteEvent> notes = new ArrayList<>();
                         NoteEvent.fillArrayFromNBT(notes, tag);
-                        musicMap.put(id, new MusicManager.MusicData(version, notes));
+                        ArrayList<VolumeMarker> markers = new ArrayList<>();
+                        VolumeMarker.fillArrayFromNBT(markers, tag);
+                        MUSIC_MAP.put(id, new MusicManager.MusicData(version, notes, markers.isEmpty() ? null : markers));
                     } else {
-                        file.delete();
+                        deleteInvalidCacheFile(file, "invalid music sheet file");
                     }
                 } catch (IllegalArgumentException | IOException e) {
-                    file.delete();
+                    deleteInvalidCacheFile(file, "music sheet file on exception " + e);
                 }
             }
         }
     }
 
+    private static void deleteInvalidCacheFile(File file, String reason) {
+        try {
+            Files.delete(file.toPath());
+        } catch (IOException deleteError) {
+            XercaMusic.LOGGER.warn("Could not delete {}: {}", reason, file.getAbsolutePath(), deleteError);
+        }
+    }
+
     public static void checkMusicDataAndRun(UUID id, int ver, Runnable task) {
-        if (musicMap.containsKey(id)) {
-            MusicManager.MusicData data = musicMap.get(id);
-            if (data.version() >= ver) {
+        if (MUSIC_MAP.containsKey(id)) {
+            MusicManager.MusicData data = MUSIC_MAP.get(id);
+            int dataVer = data.version();
+            if (dataVer >= ver) {
                 XercaMusic.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
                 task.run();
                 return;
             } else {
-                XercaMusic.LOGGER.debug("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (checkMusicDataAndRun)",
-                        id, data.version(), ver);
+                XercaMusic.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (checkMusicDataAndRun)",
+                        id, dataVer, ver);
             }
         }
-        XercaMusic.LOGGER.debug("Requesting music data from server (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
-        taskMap.put(id, task);
+        XercaMusic.LOGGER.info("Requesting music data from server (id: {}, requested ver: {}) (checkMusicDataAndRun)", id, ver);
+        TASK_MAP.put(id, task);
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
-        XercaMusic.NETWORK_HANDLER.sendToServer(packet);
+        sendToServer(packet);
     }
 
-    public static MusicManager.MusicData getMusicData(UUID id, int ver) {
-        if (musicMap.containsKey(id)) {
-            MusicManager.MusicData data = musicMap.get(id);
-            if (data.version() >= ver) {
+    public static MusicManager.@Nullable MusicData getMusicData(UUID id, int ver) {
+        if (MUSIC_MAP.containsKey(id)) {
+            MusicManager.MusicData data = MUSIC_MAP.get(id);
+            int dataVer = data.version();
+            if (dataVer >= ver) {
                 XercaMusic.LOGGER.debug("Music data found in client (id: {}, requested ver: {}) (getMusicData)", id, ver);
                 return data;
             } else {
-                XercaMusic.LOGGER.debug("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)",
-                        id, data.version(), ver);
+                XercaMusic.LOGGER.info("Music data in client is too old (id: {}, data ver: {}, requested ver: {}) (getMusicData)",
+                        id, dataVer, ver);
             }
         }
-        XercaMusic.LOGGER.debug("Requesting music data from server (id: {}, requested ver: {}) (getMusicData)", id, ver);
+        XercaMusic.LOGGER.info("Requesting music data from server (id: {}, requested ver: {}) (getMusicData)", id, ver);
         // Request music data from server
         MusicDataRequestPacket packet = new MusicDataRequestPacket(id, ver);
-        XercaMusic.NETWORK_HANDLER.sendToServer(packet);
+        sendToServer(packet);
         return null;
     }
 
-    public static void setMusicData(UUID id, int ver, ArrayList<NoteEvent> notes) {
-        musicMap.put(id, new MusicManager.MusicData(ver, notes));
+    public static void setMusicData(UUID id, int ver, List<NoteEvent> notes, @Nullable List<VolumeMarker> volumeMarkers) {
+        MUSIC_MAP.put(id, new MusicManager.MusicData(ver, notes, volumeMarkers));
 
         // Save on disk
         String filename = id.toString();
-        String filepath = cacheDir + "/" + filename;
-        File directory = new File(cacheDir);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        String filepath = CACHE_DIR + "/" + filename;
+        File directory = new File(CACHE_DIR);
+        if (!ensureDirectoryExists(directory)) {
+            return;
         }
 
         CompoundTag tag = new CompoundTag();
-        tag.putUUID("id", id);
-        tag.putInt("ver", ver);
+        tag.putUUID(KEY_ID, id);
+        tag.putInt(KEY_VERSION, ver);
         NoteEvent.fillNBTFromArray(notes, tag);
+        if (volumeMarkers != null) {
+            VolumeMarker.fillNBTFromArray(volumeMarkers, tag);
+        }
         try {
             NbtIo.writeCompressed(tag, new File(filepath));
         } catch (IOException e) {
-            XercaMusic.LOGGER.warn("Could not write music data to cache file: {}", filepath);
-            e.printStackTrace();
+            XercaMusic.LOGGER.warn("Could not write music data to cache file {}: {}", filepath, e);
         }
 
-        if (taskMap.containsKey(id)) {
-            Runnable task = taskMap.get(id);
-            taskMap.remove(id);
+        if (TASK_MAP.containsKey(id)) {
+            Runnable task = TASK_MAP.get(id);
+            TASK_MAP.remove(id);
             task.run();
         }
     }

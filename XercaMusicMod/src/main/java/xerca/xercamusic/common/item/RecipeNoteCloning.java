@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 @MethodsReturnNonnullByDefault
 public class RecipeNoteCloning extends CustomRecipe {
-    public RecipeNoteCloning(ResourceLocation pId, CraftingBookCategory pCategory) {
-        super(pId, pCategory);
+    public RecipeNoteCloning(ResourceLocation location, CraftingBookCategory category) {
+        super(location, category);
     }
 
     /**
@@ -29,20 +29,20 @@ public class RecipeNoteCloning extends CustomRecipe {
         ItemStack freshNote = ItemStack.EMPTY;
 
         for (int j = 0; j < inv.getContainerSize(); ++j) {
-            ItemStack stack = inv.getItem(j);
-            if (!stack.isEmpty()) {
-                if (stack.getItem() == Items.MUSIC_SHEET.get() && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
+            ItemStack item = inv.getItem(j);
+            if (!item.isEmpty()) {
+                if (item.getItem() == Items.MUSIC_SHEET.get() && item.hasTag() && WrittenBookItem.getGeneration(item) > 0) {
                     if (!orgNote.isEmpty()) {
                         return false;
                     }
 
-                    orgNote = stack;
-                } else if (stack.getItem() == Items.MUSIC_SHEET.get() && !stack.hasTag()) {
+                    orgNote = item;
+                } else if (item.getItem() == Items.MUSIC_SHEET.get() && !item.hasTag()) {
                     if (!freshNote.isEmpty()) {
                         return false;
                     }
 
-                    freshNote = stack;
+                    freshNote = item;
                 }
             }
         }
@@ -50,29 +50,26 @@ public class RecipeNoteCloning extends CustomRecipe {
         return !orgNote.isEmpty() && !freshNote.isEmpty();
     }
 
-    /**
-     * Returns an Item that is the result of this recipe
-     */
     @Override
     public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess access) {
         ItemStack orgNote = ItemStack.EMPTY;
         ItemStack freshNote = ItemStack.EMPTY;
 
         for (int j = 0; j < inv.getContainerSize(); ++j) {
-            ItemStack stack = inv.getItem(j);
-            if (!stack.isEmpty()) {
-                if (stack.getItem() == Items.MUSIC_SHEET.get() && stack.hasTag() && WrittenBookItem.getGeneration(stack) > 0) {
+            ItemStack item = inv.getItem(j);
+            if (!item.isEmpty()) {
+                if (item.getItem() == Items.MUSIC_SHEET.get() && item.hasTag() && WrittenBookItem.getGeneration(item) > 0) {
                     if (!orgNote.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
 
-                    orgNote = stack;
-                } else if (stack.getItem() == Items.MUSIC_SHEET.get() && !stack.hasTag()) {
+                    orgNote = item;
+                } else if (item.getItem() == Items.MUSIC_SHEET.get() && !item.hasTag()) {
                     if (!freshNote.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
 
-                    freshNote = stack;
+                    freshNote = item;
                 }
             }
         }
@@ -91,21 +88,19 @@ public class RecipeNoteCloning extends CustomRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        NonNullList<ItemStack> stacks = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+        NonNullList<ItemStack> itemStacks = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
-        for (int i = 0; i < stacks.size(); ++i) {
-            ItemStack itemstack = inv.getItem(i);
-            if (itemstack.hasCraftingRemainingItem()) {
-                stacks.set(i, itemstack.getCraftingRemainingItem());
-            } else if (itemstack.getItem() == Items.MUSIC_SHEET.get() && itemstack.hasTag() && WrittenBookItem.getGeneration(itemstack) > 0) {
-                ItemStack stack = itemstack.copy();
-                stack.setCount(1);
-                stacks.set(i, stack);
+        for (int i = 0; i < itemStacks.size(); ++i) {
+            ItemStack itemStack = inv.getItem(i);
+            if (itemStack.getItem() == Items.MUSIC_SHEET.get() && itemStack.hasTag() && WrittenBookItem.getGeneration(itemStack) > 0) {
+                ItemStack copy = itemStack.copy();
+                copy.setCount(1);
+                itemStacks.set(i, copy);
                 break;
             }
         }
 
-        return stacks;
+        return itemStacks;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -13,16 +12,13 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.Items;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class BlockDrums extends BlockInstrument {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    private static final VoxelShape[] shapes = {
+    private static final VoxelShape[] SHAPES = {
             Block.box(0.0D, 0.0D, 2.0D, 16.0D, 16.0D, 15.0D),
             Block.box(0.0D, 0.0D, 1.0D, 16.0D, 16.0D, 14.0D),
             Block.box(2.0D, 0.0D, 0.0D, 15.0D, 16.0D, 16.0D),
@@ -35,8 +31,8 @@ public class BlockDrums extends BlockInstrument {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return shapes[Math.max(0, state.getValue(FACING).get3DDataValue() - 2)];
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        return SHAPES[Math.max(0, state.getValue(FACING).get3DDataValue() - 2)];
     }
 
     @Override
@@ -50,12 +46,12 @@ public class BlockDrums extends BlockInstrument {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 

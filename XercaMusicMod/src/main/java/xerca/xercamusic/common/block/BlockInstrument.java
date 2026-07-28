@@ -1,7 +1,6 @@
 package xerca.xercamusic.common.block;
 
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,39 +11,37 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.entity.EntityMusicSpirit;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
+import static xerca.xercamusic.common.XercaMusic.onlyRunOnClient;
+
 public abstract class BlockInstrument extends Block {
-    public BlockInstrument(Properties properties) {
+    protected BlockInstrument(Properties properties) {
         super(properties);
     }
 
     public abstract IItemInstrument getItemInstrument();
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (new Vec3(pos.getX() + 0.5, pos.getY() - 0.5, pos.getZ() + 0.5).distanceTo(player.position()) > 4) {
             return InteractionResult.PASS;
         }
         ItemStack handStack = player.getItemInHand(hand);
         if (handStack.getItem() instanceof ItemMusicSheet) {
-            playMusic(worldIn, player, pos);
+            playMusic(level, player, pos);
             return InteractionResult.SUCCESS;
         } else {
             ItemStack offhandStack = player.getItemInHand(InteractionHand.values()[(hand.ordinal() + 1) % 2]);
             if (!(offhandStack.getItem() instanceof ItemMusicSheet)) {
-                if (worldIn.isClientSide) {
-                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
+                if (level.isClientSide) {
+                    onlyRunOnClient(() -> () -> ClientStuff.showInstrumentGui(getItemInstrument(), pos));
                 }
                 return InteractionResult.SUCCESS;
             }
@@ -53,7 +50,7 @@ public abstract class BlockInstrument extends Block {
     }
 
     private void playMusic(Level worldIn, Player playerIn, BlockPos pos) {
-        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> entity.getBody().is(playerIn));
+        List<EntityMusicSpirit> musicSpirits = worldIn.getEntitiesOfClass(EntityMusicSpirit.class, playerIn.getBoundingBox().inflate(3.0), entity -> playerIn.equals(entity.getBody()));
         if (musicSpirits.isEmpty()) {
             worldIn.addFreshEntity(new EntityMusicSpirit(worldIn, playerIn, pos, getItemInstrument()));
         } else {

@@ -18,34 +18,37 @@ public final class Items {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, XercaMusic.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, XercaMusic.MODID);
 
-    public static final RegistryObject<ItemInstrument> HARP_MC = ITEMS.register("harp_mc", () -> new ItemInstrument(false, -1, 0, 7, new Item.Properties()));
+    public static final RegistryObject<ItemInstrument> HARP_MC = ITEMS.register("harp_mc", () -> new ItemInstrument(-1, 0, 7, new Item.Properties()));
     public static final RegistryObject<ItemMusicSheet> MUSIC_SHEET = ITEMS.register("music_sheet", ItemMusicSheet::new);
 
-    public static final RegistryObject<Item> GUITAR = ITEMS.register("guitar", () -> new ItemInstrument(false, 0, 0, 6));
-    public static final RegistryObject<Item> LYRE = ITEMS.register("lyre", () -> new ItemInstrument(false, 1, 1, 5));
-    public static final RegistryObject<Item> BANJO = ITEMS.register("banjo", () -> new ItemInstrument(false, 2, 0, 4));
-    public static final RegistryObject<Item> DRUM = ITEMS.register("drum", () -> new ItemInstrument(false, 3, 1, 4));
-    public static final RegistryObject<Item> CYMBAL = ITEMS.register("cymbal", () -> new ItemInstrument(false, 4, 0, 4));
-    public static final RegistryObject<Item> DRUM_KIT = ITEMS.register("drum_kit", () -> new ItemBlockInstrument(false, 5, 0, 7, Blocks.DRUM_KIT.get()));
-    public static final RegistryObject<Item> XYLOPHONE = ITEMS.register("xylophone", () -> new ItemInstrument(false, 6, 0, 5));
-    public static final RegistryObject<Item> TUBULAR_BELL = ITEMS.register("tubular_bell", () -> new ItemInstrument(false, 7, 1, 4));
-    public static final RegistryObject<Item> SANSULA = ITEMS.register("sansula", () -> new ItemInstrument(false, 8, 1, 5));
-    public static final RegistryObject<Item> VIOLIN = ITEMS.register("violin", () -> new ItemInstrument(true, 9, 1, 5));
-    public static final RegistryObject<Item> CELLO = ITEMS.register("cello", () -> new ItemInstrument(true, 10, 0, 6));
-    public static final RegistryObject<Item> FLUTE = ITEMS.register("flute", () -> new ItemInstrument(true, 11, 1, 6));
-    public static final RegistryObject<Item> SAXOPHONE = ITEMS.register("saxophone", () -> new ItemInstrument(true, 12, 0, 4));
-    public static final RegistryObject<Item> GOD = ITEMS.register("god", () -> new ItemInstrument(false, 13, 0, 5));
-    public static final RegistryObject<Item> PIANO = ITEMS.register("piano", () -> new ItemBlockInstrument(false, 14, 0, 7, Blocks.PIANO.get()));
-    public static final RegistryObject<Item> OBOE = ITEMS.register("oboe", () -> new ItemInstrument(true, 15, 0, 4));
-    public static final RegistryObject<Item> REDSTONE_GUITAR = ITEMS.register("redstone_guitar", () -> new ItemInstrument(true, 16, 0, 5));
-    public static final RegistryObject<Item> FRENCH_HORN = ITEMS.register("french_horn", () -> new ItemInstrument(true, 17, 0, 5));
-    public static final RegistryObject<Item> BASS_GUITAR = ITEMS.register("bass_guitar", () -> new ItemInstrument(false, 18, 1, 4));
+    public static final RegistryObject<Item> GUITAR = ITEMS.register("guitar", () -> new ItemInstrument(0, 0, 6));
+    public static final RegistryObject<Item> LYRE = ITEMS.register("lyre", () -> new ItemInstrument(1, 1, 5));
+    public static final RegistryObject<Item> BANJO = ITEMS.register("banjo", () -> new ItemInstrument(2, 0, 4));
+    public static final RegistryObject<Item> DRUM = ITEMS.register("drum", () -> new ItemInstrument(3, 1, 4));
+    public static final RegistryObject<Item> CYMBAL = ITEMS.register("cymbal", () -> new ItemInstrument(4, 0, 4));
+    public static final RegistryObject<Item> DRUM_KIT = ITEMS.register("drum_kit", () -> new ItemBlockInstrument(5, 0, 7, Blocks.DRUM_KIT.get()));
+    public static final RegistryObject<Item> XYLOPHONE = ITEMS.register("xylophone", () -> new ItemInstrument(6, 0, 5));
+    public static final RegistryObject<Item> TUBULAR_BELL = ITEMS.register("tubular_bell", () -> new ItemInstrument(7, 1, 4));
+    public static final RegistryObject<Item> SANSULA = ITEMS.register("sansula", () -> new ItemInstrument(8, 1, 5));
+    public static final RegistryObject<Item> VIOLIN = ITEMS.register("violin", () -> new ItemInstrument(9, 1, 5));
+    public static final RegistryObject<Item> CELLO = ITEMS.register("cello", () -> new ItemInstrument(10, 0, 6));
+    public static final RegistryObject<Item> FLUTE = ITEMS.register("flute", () -> new ItemInstrument(11, 1, 6));
+    public static final RegistryObject<Item> SAXOPHONE = ITEMS.register("saxophone", () -> new ItemInstrument(12, 0, 4));
+    public static final RegistryObject<Item> GOD = ITEMS.register("god", () -> new ItemInstrument(13, 0, 5));
+    public static final RegistryObject<Item> PIANO = ITEMS.register("piano", () -> new ItemBlockInstrument(14, 0, 7, Blocks.PIANO.get()));
+    public static final RegistryObject<Item> OBOE = ITEMS.register("oboe", () -> new ItemInstrument(15, 0, 4));
+    public static final RegistryObject<Item> REDSTONE_GUITAR = ITEMS.register("redstone_guitar", () -> new ItemInstrument(16, 0, 5));
+    public static final RegistryObject<Item> FRENCH_HORN = ITEMS.register("french_horn", () -> new ItemInstrument(17, 0, 5));
+    public static final RegistryObject<Item> BASS_GUITAR = ITEMS.register("bass_guitar", () -> new ItemInstrument(18, 1, 4));
+    public static final RegistryObject<Item> TRUMPET = ITEMS.register("trumpet", () -> new ItemInstrument(19, 2, 5));
+    public static final RegistryObject<Item> REDSTONE_PIANO = ITEMS.register("redstone_piano", () -> new ItemInstrument(20, 0, 6));
+    public static final RegistryObject<Item> ORGAN = ITEMS.register("organ", () -> new ItemInstrument(21, 1, 6));
 
     public static final RegistryObject<Item> MUSIC_BOX = ITEMS.register("music_box", () -> new BlockItem(Blocks.MUSIC_BOX.get(), new Item.Properties()));
     public static final RegistryObject<Item> METRONOME = ITEMS.register("metronome", () -> new BlockItem(Blocks.BLOCK_METRONOME.get(), new Item.Properties()));
 
     public static final RegistryObject<CreativeModeTab> MUSIC_TAB = TABS.register("music_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("item_group." + XercaMusic.MODID + ".music_tab"))
+            .title(Component.translatable("itemGroup." + XercaMusic.MODID + ".music_tab"))
             .icon(() -> GUITAR.get().getDefaultInstance())
             .displayItems((params, output) -> {
                 output.accept(MUSIC_SHEET.get());
@@ -65,9 +68,12 @@ public final class Items {
                 output.accept(GOD.get());
                 output.accept(PIANO.get());
                 output.accept(OBOE.get());
-                output.accept(REDSTONE_GUITAR.get());
                 output.accept(FRENCH_HORN.get());
+                output.accept(REDSTONE_GUITAR.get());
                 output.accept(BASS_GUITAR.get());
+                output.accept(TRUMPET.get());
+                output.accept(REDSTONE_PIANO.get());
+                output.accept(ORGAN.get());
                 output.accept(MUSIC_BOX.get());
                 output.accept(METRONOME.get());
             }).build());
@@ -98,7 +104,10 @@ public final class Items {
                 (IItemInstrument) OBOE.get(),
                 (IItemInstrument) REDSTONE_GUITAR.get(),
                 (IItemInstrument) FRENCH_HORN.get(),
-                (IItemInstrument) BASS_GUITAR.get()
+                (IItemInstrument) BASS_GUITAR.get(),
+                (IItemInstrument) TRUMPET.get(),
+                (IItemInstrument) REDSTONE_PIANO.get(),
+                (IItemInstrument) ORGAN.get()
         };
     }
 }

@@ -20,39 +20,34 @@ import xerca.xercamusic.client.ClientStuff;
 import xerca.xercamusic.common.XercaMusic;
 import xerca.xercamusic.common.block.BlockMusicBox;
 import xerca.xercamusic.common.block.Blocks;
-import xerca.xercamusic.common.packets.TripleNoteClientPacket;
+import xerca.xercamusic.common.packets.clientbound.TripleNoteClientPacket;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ItemInstrument extends Item implements IItemInstrument {
-    private ArrayList<Pair<Integer, SoundEvent>> sounds;
-    private InsSound[] insSounds;
-    public final boolean isLong;
-    private final int minOctave;
-    private final int maxOctave;
-
+    public final int minOctave;
+    public final int maxOctave;
     private final int instrumentId;
+    private InsSound[] insSounds;
 
-    public ItemInstrument(boolean isLong, int instrumentId, int minOctave, int maxOctave) {
-        this(isLong, instrumentId, minOctave, maxOctave, new Properties());
+    public ItemInstrument(int instrumentId, int minOctave, int maxOctave) {
+        this(instrumentId, minOctave, maxOctave, new Properties());
     }
 
-    public ItemInstrument(boolean isLong, int instrumentId, int minOctave, int maxOctave, Properties properties) {
+    public ItemInstrument(int instrumentId, int minOctave, int maxOctave, Properties properties) {
         super(properties);
-        this.isLong = isLong;
         this.instrumentId = instrumentId;
         this.minOctave = minOctave;
         this.maxOctave = maxOctave;
     }
 
+    @Override
     public int getInstrumentId() {
         return instrumentId;
     }
 
-    @Override
-    @Nonnull
-    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
+    public static InteractionResultHolder<ItemStack> useInstrument(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand handIn) {
         final ItemStack heldItem = playerIn.getItemInHand(handIn);
         ItemStack off = playerIn.getOffhandItem();
         if (handIn == InteractionHand.MAIN_HAND && off.getItem() == Items.MUSIC_SHEET.get()) {
@@ -67,22 +62,48 @@ public class ItemInstrument extends Item implements IItemInstrument {
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, heldItem);
     }
 
-    @Nonnull
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public static boolean useInstrumentOn(@NotNull UseOnContext context) {
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         BlockState blockState = world.getBlockState(blockpos);
-        if (blockState.getBlock() == Blocks.MUSIC_BOX.get() && !blockState.getValue(BlockMusicBox.HAS_INSTRUMENT)) {
+        if (blockState.getBlock() == Blocks.MUSIC_BOX.get() && blockState.hasProperty(BlockMusicBox.HAS_INSTRUMENT)
+                && !blockState.getValue(BlockMusicBox.HAS_INSTRUMENT)) {
             ItemStack itemstack = context.getItemInHand();
             if (!world.isClientSide) {
                 BlockMusicBox.insertInstrument(world, blockpos, blockState, itemstack.getItem());
-
-                if (context.getPlayer() != null && !context.getPlayer().getAbilities().instabuild) {
+                Player player = context.getPlayer();
+                if (player != null && !player.getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
             }
+            return true;
+        }
+        return false;
+    }
 
+    public static void hurtEnemyWithInstrument(@NotNull LivingEntity target, LivingEntity attacker, int minOctave, int maxOctave, IItemInstrument instrument) {
+        Level world = attacker.level();
+        if (!world.isClientSide) {
+            int note1 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note2 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
+            int note3 = MIN_NOTE + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
+
+            PacketDistributor.PacketTarget networkTarget = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(target.getX(), target.getY(), target.getZ(), 24.0D, target.level().dimension()));
+            TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, instrument, target);
+            XercaMusic.NETWORK_HANDLER.send(networkTarget, packet);
+        }
+    }
+
+    @Override
+    @Nonnull
+    public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand handIn) {
+        return useInstrument(worldIn, playerIn, handIn);
+    }
+
+    @Nonnull
+    @Override
+    public InteractionResult useOn(@NotNull UseOnContext context) {
+        if (useInstrumentOn(context)) {
             return InteractionResult.SUCCESS;
         } else {
             return InteractionResult.PASS;
@@ -90,38 +111,29 @@ public class ItemInstrument extends Item implements IItemInstrument {
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, LivingEntity attacker) {
-        Level world = attacker.level();
-        if (!world.isClientSide) {
-            int note1 = minNote + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
-            int note2 = minNote + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
-            int note3 = minNote + minOctave * 12 + world.random.nextInt((maxOctave + 1) * 12 - minOctave * 12);
-
-            PacketDistributor.PacketTarget networkTarget = PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(target.getX(), target.getY(), target.getZ(), 24.0D, target.level().dimension()));
-            TripleNoteClientPacket packet = new TripleNoteClientPacket(note1, note2, note3, this, target);
-            XercaMusic.NETWORK_HANDLER.send(networkTarget, packet);
-        }
+    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+        hurtEnemyWithInstrument(target, attacker, minOctave, maxOctave, this);
         return true;
     }
 
-    public void setSounds(ArrayList<Pair<Integer, SoundEvent>> sounds) {
-        this.sounds = sounds;
-        insSounds = new InsSound[totalNotes];
-        for (int i = 0; i < totalNotes; i++) {
+    @Override
+    public void setSounds(List<Pair<Integer, SoundEvent>> sounds) {
+        insSounds = new InsSound[TOTAL_NOTES];
+        for (int i = 0; i < TOTAL_NOTES; i++) {
             int note = IItemInstrument.idToNote(i);
-            int index = getClosest(note);
+            int index = getClosest(note, sounds);
             if (index < 0 || index >= sounds.size()) {
                 XercaMusic.LOGGER.error("Invalid sound index in Instrument construction");
             }
             int octave = i / 12;
             if (octave >= minOctave && octave <= maxOctave) {
-                float pitch = (float) Math.pow(1.05946314465679, note - sounds.get(index).first());
+                float pitch = (float) Math.pow(1.05946314465679, (double) note - sounds.get(index).first());
                 insSounds[i] = new InsSound(sounds.get(index).second(), pitch);
             }
         }
     }
 
-    private int getClosest(int note) {
+    public static int getClosest(int note, List<Pair<Integer, SoundEvent>> sounds) {
         int minDiff = 100;
         int bestIndex = -1;
         for (int i = 0; i < sounds.size(); i++) {
@@ -134,9 +146,10 @@ public class ItemInstrument extends Item implements IItemInstrument {
         return bestIndex;
     }
 
+    @Override
     public InsSound getSound(int note) {
         int id = IItemInstrument.noteToId(note);
-        if (id >= 0 && id < totalNotes) {
+        if (id >= 0 && id < TOTAL_NOTES) {
             return insSounds[id];
         }
         XercaMusic.LOGGER.warn("Requested invalid note from Instrument getSound: {}", note);

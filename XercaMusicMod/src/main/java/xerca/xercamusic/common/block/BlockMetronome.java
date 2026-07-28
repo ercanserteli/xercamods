@@ -1,6 +1,5 @@
 package xerca.xercamusic.common.block;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -19,16 +18,13 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import xerca.xercamusic.common.SoundEvents;
 import xerca.xercamusic.common.item.Items;
 import xerca.xercamusic.common.tile_entity.TileEntityMetronome;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
-
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class BlockMetronome extends BaseEntityBlock {
     public static final IntegerProperty BPS = IntegerProperty.create("bps", 1, 50);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -39,34 +35,33 @@ public class BlockMetronome extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(BPS, 6).setValue(POWERED, false).setValue(FACING, Direction.NORTH));
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
         boolean flag = worldIn.hasNeighborSignal(pos);
-        if (flag != state.getValue(POWERED)) {
+        boolean powered = state.getValue(POWERED);
+        if (flag != powered) {
             worldIn.setBlock(pos, state.setValue(POWERED, flag), 3);
         }
+
     }
 
 
     public void setBps(BlockState state, Level worldIn, BlockPos pos, int bps) {
-        if (!worldIn.isClientSide) {
-            if (bps >= 1 && bps <= 50) {
-                state = state.setValue(BPS, bps);
-                worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
-            }
+        if (!worldIn.isClientSide && bps >= 1 && bps <= 50) {
+            state = state.setValue(BPS, bps);
+            worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
         }
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!worldIn.isClientSide) {
-            if (SoundEvents.METRONOME_SET != null) {
-                worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.METRONOME_SET, SoundSource.BLOCKS, 1.0f, 1.0f);
-            }
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        if (!level.isClientSide) {
+            level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.metronomeSet, SoundSource.BLOCKS, 1.0f, 1.0f);
             ItemStack note = ItemStack.EMPTY;
             if (player.getItemInHand(hand).getItem() == Items.MUSIC_SHEET.get()) {
                 note = player.getItemInHand(hand);
@@ -76,10 +71,10 @@ public class BlockMetronome extends BaseEntityBlock {
 
             if (!note.isEmpty() && note.getTag() != null && note.getTag().contains("bps")) {
                 int bps = note.getTag().getInt("bps");
-                setBps(state, worldIn, pos, bps);
+                setBps(state, level, pos, bps);
             } else {
                 state = state.cycle(BPS); //cycle
-                worldIn.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
+                level.setBlock(pos, state, 3); // flags 1 | 2 (cause block update and send to clients)
             }
         }
         return InteractionResult.SUCCESS;
@@ -92,31 +87,32 @@ public class BlockMetronome extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new TileEntityMetronome(pos, state);
     }
 
+    @Override
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
         return (level1, blockPos, blockState1, t) -> {
-            if (t instanceof TileEntityMetronome) {
-                TileEntityMetronome.tick(level1, blockPos, blockState1, (TileEntityMetronome) t);
+            if (t instanceof TileEntityMetronome tileEntityMetronome) {
+                TileEntityMetronome.tick(level1, blockPos, blockState1, tileEntityMetronome);
             }
         };
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 

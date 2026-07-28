@@ -1,6 +1,7 @@
 package xerca.xercamusic.client;
 
 import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.XercaMusic;
 
 import javax.sound.midi.*;
@@ -12,10 +13,10 @@ public class MidiHandler {
     final ArrayList<Transmitter> transmitters = new ArrayList<>();
     final Consumer<MidiData> noteOnHandler;
     final Consumer<Integer> noteOffHandler;
-    final Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
-    public volatile int currentOctave;
+    final @Nullable Consumer<GuiMusicSheet.MidiControl> midiControlHandler;
+    private volatile int currentOctave;
 
-    public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler, Consumer<GuiMusicSheet.MidiControl> midiControlHandler) {
+    public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler, @Nullable Consumer<GuiMusicSheet.MidiControl> midiControlHandler) {
         this.noteOnHandler = noteOnHandler;
         this.noteOffHandler = noteOffHandler;
         this.midiControlHandler = midiControlHandler;
@@ -29,7 +30,6 @@ public class MidiHandler {
                 }
 
                 XercaMusic.LOGGER.debug(info);
-
                 device.open();
                 Transmitter trans = device.getTransmitter();
                 trans.setReceiver(new MidiInputReceiver(device.getDeviceInfo().toString()));
@@ -37,15 +37,18 @@ public class MidiHandler {
                 devices.add(device);
 
                 XercaMusic.LOGGER.debug("{} was opened", device.getDeviceInfo());
-
             } catch (MidiUnavailableException exception) {
-                XercaMusic.LOGGER.debug("Midi unavailable: {}", exception.getMessage());
+                XercaMusic.LOGGER.debug("Midi unavailable: ", exception);
             }
         }
     }
 
     public MidiHandler(Consumer<MidiData> noteOnHandler, Consumer<Integer> noteOffHandler) {
         this(noteOnHandler, noteOffHandler, null);
+    }
+
+    public void setCurrentOctave(int currentOctave) {
+        this.currentOctave = currentOctave;
     }
 
     public void closeDevices() {
@@ -62,8 +65,10 @@ public class MidiHandler {
         devices.clear();
     }
 
+    public record MidiData(int noteId, float volume) {
+    }
+
     public class MidiInputReceiver implements Receiver {
-        public final String name;
         public static final int NOTE_ON = 0x90;
         public static final int NOTE_OFF = 0x80;
         public static final int CONTROL = 176;
@@ -72,24 +77,27 @@ public class MidiHandler {
         public static final int DATA_STOP = 105;
         public static final int DATA_END = 104;
         public static final int DATA_BEGINNING = 103;
-        static final float ym = 0.7f;
-        static final float b = (1.f / ym - 1) * (1.f / ym - 1);
+        static final float YM = 0.7f;
+        static final float B = (1.f / YM - 1) * (1.f / YM - 1);
+        @SuppressWarnings("unused")
+        public final String name;
 
         public MidiInputReceiver(String name) {
             this.name = name;
         }
 
         private static float volumeCurve(float x) {
-            return (float) (Math.pow(b, x) / (b - 1.f) - 1.f / (b - 1.f));
+            return (float) (Math.pow(B, x) / (B - 1.f) - 1.f / (B - 1.f));
         }
 
         @SuppressWarnings("FutureReturnValueIgnored")
-        private static void submitAndCheck(Runnable runnable) {
-            Minecraft.getInstance().submit(runnable).whenComplete((result, throwable) -> {
-                if (throwable != null) {
-                    XercaMusic.LOGGER.error("Midi controller task failed", throwable);
-                }
-            });
+        private static void submitAndCheck(Runnable r) {
+            Minecraft.getInstance().submit(r)
+                    .whenComplete((v, t) -> {
+                        if (t != null) {
+                            XercaMusic.LOGGER.error("Midi controller task failed", t);
+                        }
+                    });
         }
 
         @Override
@@ -126,7 +134,7 @@ public class MidiHandler {
                 }
 
                 if (command == NOTE_ON && velocity > 0) {
-                    float vel = ((float) velocity) / 128.0f;
+                    float vel = velocity / 128.0f;
                     float vol = volumeCurve(vel);
                     submitAndCheck(() -> noteOnHandler.accept(new MidiData(key, vol)));
                 } else if (command == NOTE_OFF || (command == NOTE_ON && velocity == 0)) {
@@ -137,9 +145,7 @@ public class MidiHandler {
 
         @Override
         public void close() {
+            // Do nothing
         }
-    }
-
-    public record MidiData(int noteId, float volume) {
     }
 }

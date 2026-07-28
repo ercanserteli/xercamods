@@ -1,0 +1,82 @@
+package xerca.xercamusic.common.packets.serverbound;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkEvent;
+import xerca.xercamusic.common.MusicManager;
+import xerca.xercamusic.common.NoteEvent;
+import xerca.xercamusic.common.Triggers;
+import xerca.xercamusic.common.VolumeMarker;
+import xerca.xercamusic.common.item.Items;
+
+import java.util.function.Supplier;
+import java.util.List;
+import java.util.UUID;
+
+public class MusicUpdatePacketHandler {
+    private static byte sanitizeBps(byte bps) {
+        return (byte) Math.max(1, Math.min(50, bps & 0xFF));
+    }
+
+    private static float sanitizeVolume(float volume) {
+        return Math.max(0.0f, Math.min(1.0f, volume));
+    }
+
+    private static byte sanitizeHighlightInterval(byte interval) {
+        return (byte) Math.max(1, Math.min(24, interval & 0xFF));
+    }
+
+    private static void processMessage(MusicUpdatePacket msg, ServerPlayer pl) {
+        ItemStack note = pl.getMainHandItem();
+        if (!note.isEmpty() && note.getItem() == Items.MUSIC_SHEET.get()) {
+            CompoundTag comp = note.getOrCreateTag();
+
+            MusicUpdatePacket.FieldFlag flag = msg.getAvailability();
+            if (flag.hasId) comp.putUUID("id", msg.getMusicId());
+            if (flag.hasVersion) comp.putInt("ver", msg.getVersion());
+            if (flag.hasLength) comp.putInt("l", Math.max(0, msg.getLengthBeats()));
+            if (flag.hasBps) comp.putByte("bps", sanitizeBps(msg.getBps()));
+            if (flag.hasVolume) comp.putFloat("vol", sanitizeVolume(msg.getVolume()));
+            if (flag.hasPrevIns) comp.putByte("prevIns", msg.getPrevInstrument());
+            if (flag.hasPrevInsLocked) comp.putBoolean("piLocked", msg.getPrevInsLocked());
+            if (flag.hasHlInterval) comp.putByte("hl", sanitizeHighlightInterval(msg.getHighlightInterval()));
+            if (flag.hasSigned && msg.getSigned()) {
+                if (flag.hasTitle) comp.putString("title", msg.getTitle().trim());
+                comp.putString("author", pl.getName().getString());
+                comp.putInt("generation", 1);
+                Triggers.BECOME_MUSICIAN.trigger(pl);
+            }
+            if (!comp.contains("generation")) {
+                comp.putInt("generation", 0);
+            }
+            if (flag.hasNotes) {
+                if (!comp.contains("id") || !comp.contains("ver")) {
+                    return;
+                }
+
+                List<NoteEvent> notes = msg.getNotes();
+                UUID id = comp.getUUID("id");
+                if (notes == null) {
+                    // Get if large note was sent in parts
+                    notes = MusicManager.getFinishedNotesFromBuffer(id);
+                    if (notes.isEmpty()) {
+                        return;
+                    }
+                }
+                List<VolumeMarker> volumeMarkers = flag.hasVolumeMarkers ? msg.getVolumeMarkers() : null;
+                MusicManager.setMusicData(id, comp.getInt("ver"), notes, volumeMarkers, pl.server);
+                if (!comp.contains("bps")) {
+                    comp.putByte("bps", (byte) 8);
+                }
+            }
+        }
+    }
+    public static void handle(final MusicUpdatePacket message, Supplier<NetworkEvent.Context> ctx) {
+        if (message != null) {
+            ServerPlayer sender = ctx.get().getSender();
+            ctx.get().enqueueWork(() -> processMessage(message, sender));
+        }
+        ctx.get().setPacketHandled(true);
+    }
+}

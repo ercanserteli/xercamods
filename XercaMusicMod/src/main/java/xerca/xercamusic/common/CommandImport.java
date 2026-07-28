@@ -7,26 +7,34 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 import xerca.xercamusic.common.item.ItemMusicSheet;
 import xerca.xercamusic.common.item.Items;
-import xerca.xercamusic.common.packets.ImportMusicPacket;
-import xerca.xercamusic.common.packets.MusicDataResponsePacket;
+import xerca.xercamusic.common.packets.clientbound.ImportMusicPacket;
+import xerca.xercamusic.common.packets.clientbound.MusicDataResponsePacket;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-import static xerca.xercamusic.common.item.ItemMusicSheet.convertFromOld;
+import static net.minecraft.network.chat.Component.translatable;
+import static xerca.xercamusic.common.XercaMusic.sendToClient;
+import static xerca.xercamusic.common.item.ItemMusicSheet.*;
 
-public class CommandImport {
+public final class CommandImport {
+    private CommandImport() {
+    }
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("musicimport")
                         .then(Commands.argument("name", StringArgumentType.word())
-                                .executes((p) -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
+                                .executes(p -> musicImport(p.getSource(), StringArgumentType.getString(p, "name"))))
         );
     }
 
@@ -36,80 +44,224 @@ public class CommandImport {
         ImportMusicPacket pack = new ImportMusicPacket(name);
         try {
             ServerPlayer player = stack.getPlayerOrException();
-            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), pack);
+            sendToClient(player, pack);
         } catch (CommandSyntaxException e) {
-            XercaMusic.LOGGER.debug("Command executor is not a player");
-            e.printStackTrace();
+            XercaMusic.LOGGER.warn("Command source is not a player", e);
             return 0;
         }
 
         return 1;
     }
 
-    public static void doImport(CompoundTag tag, ArrayList<NoteEvent> notes, ServerPlayer player) {
-        // Sanitizing
-        if ((tag.contains("author", 8) && !tag.contains("title", 8)) ||
-                (!tag.contains("author", 8) && tag.contains("title", 8))) {
-            player.sendSystemMessage(Component.translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
-            XercaMusic.LOGGER.warn("Broken paint file");
+    public static void doImport(@Nullable CompoundTag tag, @Nullable List<NoteEvent> notes, ServerPlayer player) {
+        UUID importBufferId = tag != null && tag.hasUUID(KEY_ID) ? tag.getUUID(KEY_ID) : null;
+        doImport(tag, notes, importBufferId, player);
+    }
+
+    public static void doImport(@Nullable CompoundTag tag, @Nullable List<NoteEvent> notes,
+                                @Nullable UUID importBufferId, Player player) {
+        if (tag == null) {
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+            XercaMusic.LOGGER.warn("Broken sheet file: missing tag");
             return;
         }
-        if (tag.contains("title", 8) && tag.getString("title").length() > 16) {
-            tag.putString("title", tag.getString("title").substring(0, 16));
-        }
-        if (tag.contains("author", 8) && tag.getString("author").length() > 16) {
-            tag.putString("author", tag.getString("author").substring(0, 16));
-        }
-        if (!tag.contains("ver", 3)) {
-            tag.putInt("ver", 1);
+
+        if (!sanitizeTag(tag, player)) {
+            return;
         }
 
-        if (tag.getInt("generation") > 0) {
-            tag.putInt("generation", tag.getInt("generation") + 1);
+        if (!loadAndSendMusicData(tag, notes, importBufferId, player)) {
+            // load failed / broken / partial
+            return;
         }
-        if (tag.contains("id") && tag.contains("ver")) {
-            UUID id = tag.getUUID("id");
-            int ver = tag.getInt("ver");
+
+        if (!giveImportedSheetToPlayer(tag, player)) {
+            return;
+        }
+
+        player.sendSystemMessage(translatable("xercamusic.import.success").withStyle(ChatFormatting.GREEN));
+    }
+
+    private static boolean sanitizeTag(CompoundTag tag, Player player) {
+        boolean hasAuthor = tag.contains(KEY_AUTHOR, 8);
+        boolean hasTitle = tag.contains(KEY_TITLE, 8);
+        boolean hasLegacyMusic = tag.contains(KEY_MUSIC_OLD);
+
+        // only one of them is present -> broken
+        if (hasAuthor ^ hasTitle) {
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+            XercaMusic.LOGGER.warn("Broken sheet file");
+            return false;
+        }
+
+        if (hasTitle) {
+            String title = tag.getString(KEY_TITLE);
+            if (title.length() > 16) {
+                tag.putString(KEY_TITLE, title.substring(0, 16));
+            }
+        }
+
+        if (hasAuthor) {
+            String author = tag.getString(KEY_AUTHOR);
+            if (author.length() > 16) {
+                tag.putString(KEY_AUTHOR, author.substring(0, 16));
+            }
+        }
+
+        if (!hasLegacyMusic) {
+            if (hasTitle) {
+                if (!tag.contains(KEY_VERSION, Tag.TAG_INT)) {
+                    tag.putInt(KEY_VERSION, 1);
+                }
+            } else {
+                tag.putUUID(KEY_ID, UUID.randomUUID());
+                tag.putInt(KEY_VERSION, 1);
+                tag.putInt(KEY_GENERATION, 0);
+            }
+        }
+
+        if (tag.getInt(KEY_GENERATION) > 0 && tag.getInt(KEY_GENERATION) < 3) {
+            tag.putInt(KEY_GENERATION, tag.getInt(KEY_GENERATION) + 1);
+        }
+
+        List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
+        if (volumeMarkers != null && !validateVolumeMarkers(volumeMarkers)) {
+            player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+            XercaMusic.LOGGER.warn("Broken sheet file: overlapping or invalid volume markers");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static boolean loadAndSendMusicData(CompoundTag tag, @Nullable List<NoteEvent> notes,
+                                                @Nullable UUID importBufferId, Player player) {
+        MinecraftServer server = player.level().getServer();
+        if (server == null) {
+            XercaMusic.LOGGER.warn("Cannot import music data without a server");
+            return false;
+        }
+
+        if (tag.contains(KEY_ID) && tag.contains(KEY_VERSION)) {
+            UUID id = tag.getUUID(KEY_ID);
+            int ver = tag.getInt(KEY_VERSION);
+            List<VolumeMarker> volumeMarkers = readVolumeMarkers(tag);
+
             if (notes == null) {
-                // Get if large note was sent in parts
-                notes = MusicManager.getFinishedNotesFromBuffer(id);
-                if (notes == null) {
-                    return;
+                // maybe it was sent in parts
+                notes = MusicManager.getFinishedNotesFromBuffer(importBufferId != null ? importBufferId : id);
+                if (notes.isEmpty()) {
+                    return false;
                 }
             }
-            MusicManager.setMusicData(id, ver, notes, player.server);
 
-            MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
-            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), packet);
-            tag.remove("notes");
-        } else if (tag.contains("music")) {
-            // Old version
-            XercaMusic.LOGGER.info("Old music file version");
-            notes = convertFromOld(tag, player.server);
-            UUID id = tag.getUUID("id");
-            int ver = tag.getInt("ver");
-
-            MusicDataResponsePacket packet = new MusicDataResponsePacket(id, ver, notes);
-            XercaMusic.NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), packet);
-            tag.remove("notes"); // Just in case
-        } else {
-            XercaMusic.LOGGER.warn("Broken music file");
-            return;
+            if (!validateNotes(notes, player)) {
+                return false;
+            }
+            MusicManager.setMusicData(id, ver, notes, volumeMarkers, server);
+            if (player instanceof ServerPlayer serverPlayer) {
+                sendToClient(serverPlayer, new MusicDataResponsePacket(id, ver, notes, volumeMarkers));
+            }
+            return true;
         }
 
+        if (tag.contains(KEY_MUSIC_OLD)) {
+            // old version
+            XercaMusic.LOGGER.info("Old music file version");
+            List<NoteEvent> converted = convertFromOld(tag, server);
+            if (!validateNotes(converted, player)) {
+                return false;
+            }
+            UUID id = tag.getUUID(KEY_ID);
+            int ver = tag.getInt(KEY_VERSION);
+            if (player instanceof ServerPlayer serverPlayer) {
+                sendToClient(serverPlayer, new MusicDataResponsePacket(id, ver, converted));
+            }
+            return true;
+        }
+
+        XercaMusic.LOGGER.warn("Broken music file");
+        return false;
+    }
+
+    private static List<VolumeMarker> readVolumeMarkers(CompoundTag tag) {
+        ArrayList<VolumeMarker> volumeMarkers = new ArrayList<>();
+        VolumeMarker.fillArrayFromNBT(volumeMarkers, tag);
+        return volumeMarkers.isEmpty() ? null : volumeMarkers;
+    }
+
+    private static boolean validateNotes(List<NoteEvent> notes, Player player) {
+        for (NoteEvent note : notes) {
+            int noteLength = note.length & 0xFF;
+            byte[] glissandoWaypoints = note.getEffectiveWaypoints();
+            if (glissandoWaypoints != null && glissandoWaypoints.length > noteLength) {
+                player.sendSystemMessage(translatable("xercamusic.import.fail.5").withStyle(ChatFormatting.RED));
+                XercaMusic.LOGGER.warn("Broken sheet file: note at time {} has {} glissando points for note length {}",
+                        note.time, glissandoWaypoints.length, noteLength);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean validateVolumeMarkers(List<VolumeMarker> volumeMarkers) {
+        for (int i = 0; i < volumeMarkers.size(); i++) {
+            VolumeMarker marker = volumeMarkers.get(i);
+            if (!marker.isValid()) {
+                return false;
+            }
+            for (int j = i + 1; j < volumeMarkers.size(); j++) {
+                if (marker.overlaps(volumeMarkers.get(j))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean giveImportedSheetToPlayer(CompoundTag tag, Player player) {
         if (player.isCreative()) {
             ItemStack itemStack = new ItemStack(Items.MUSIC_SHEET.get());
-            itemStack.setTag(tag);
+            importIntoStack(itemStack, tag);
             player.addItem(itemStack);
-        } else {
-            ItemStack mainHandStack = player.getMainHandItem();
-
-            if (!(mainHandStack.getItem() instanceof ItemMusicSheet) || (mainHandStack.hasTag() && mainHandStack.getTag() != null && !mainHandStack.getTag().isEmpty())) {
-                player.sendSystemMessage(Component.translatable("xercamusic.import.fail.1").withStyle(ChatFormatting.RED));
-                return;
-            }
-            mainHandStack.setTag(tag);
+            return true;
         }
-        player.sendSystemMessage(Component.translatable("xercamusic.import.success").withStyle(ChatFormatting.GREEN));
+
+        ItemStack mainHandItem = player.getMainHandItem();
+        if (!(mainHandItem.getItem() instanceof ItemMusicSheet) || (mainHandItem.hasTag() && mainHandItem.getTag() != null && !mainHandItem.getTag().isEmpty())) {
+            player.sendSystemMessage(translatable("xercamusic.import.fail.1").withStyle(ChatFormatting.RED));
+            return false;
+        }
+
+        importIntoStack(mainHandItem, tag);
+        return true;
+    }
+
+    private static void importIntoStack(ItemStack sheet, CompoundTag tag) {
+        CompoundTag itemTag = new CompoundTag();
+        itemTag.putUUID(KEY_ID, tag.getUUID(KEY_ID));
+        itemTag.putInt(KEY_GENERATION, tag.getInt(KEY_GENERATION));
+        itemTag.putInt(KEY_VERSION, tag.getInt(KEY_VERSION));
+        itemTag.putInt(KEY_LENGTH, tag.getInt(KEY_LENGTH));
+        if (tag.contains(KEY_BPS, Tag.TAG_BYTE)) {
+            itemTag.putByte(KEY_BPS, tag.getByte(KEY_BPS));
+        }
+        if (tag.contains(KEY_PREV_INSTRUMENT_LOCKED, Tag.TAG_BYTE)) {
+            itemTag.putBoolean(KEY_PREV_INSTRUMENT_LOCKED, tag.getBoolean(KEY_PREV_INSTRUMENT_LOCKED));
+        }
+        if (tag.contains(KEY_PREV_INSTRUMENT, Tag.TAG_BYTE)) {
+            itemTag.putByte(KEY_PREV_INSTRUMENT, tag.getByte(KEY_PREV_INSTRUMENT));
+        }
+        if (tag.contains(KEY_TITLE, Tag.TAG_STRING) && tag.contains(KEY_AUTHOR, Tag.TAG_STRING)) {
+            itemTag.putString(KEY_TITLE, tag.getString(KEY_TITLE));
+            itemTag.putString(KEY_AUTHOR, tag.getString(KEY_AUTHOR));
+        }
+        if (tag.contains(KEY_HIGHLIGHT_INTERVAL, Tag.TAG_BYTE)) {
+            itemTag.putByte(KEY_HIGHLIGHT_INTERVAL, tag.getByte(KEY_HIGHLIGHT_INTERVAL));
+        }
+        if (tag.contains(KEY_VOLUME, Tag.TAG_FLOAT)) {
+            itemTag.putFloat(KEY_VOLUME, tag.getFloat(KEY_VOLUME));
+        }
+        sheet.setTag(itemTag);
     }
 }

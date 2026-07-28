@@ -4,7 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.serialization.Codec;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -16,7 +19,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -27,9 +33,16 @@ import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.data.BlockTags;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.Items;
-import xerca.xercamusic.common.packets.*;
-import xerca.xercamusic.common.tile_entity.TileEntities;
+import xerca.xercamusic.common.packets.IPacket;
+import xerca.xercamusic.common.packets.clientbound.*;
+import xerca.xercamusic.common.packets.serverbound.*;
+import xerca.xercamusic.common.tile_entity.BlockEntities;
 
+import javax.annotation.Nullable;
+import java.util.concurrent.Callable;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 
@@ -38,6 +51,7 @@ public class XercaMusic {
     public static final String MODID = "xercamusic";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final int MAX_NOTES_IN_PACKET = 5000;
+    public static final int MAX_VOLUME_MARKERS_IN_PACKET = 5000;
 
     private static final String PROTOCOL_VERSION = Integer.toString(2);
     public static final SimpleChannel NETWORK_HANDLER = NetworkRegistry.ChannelBuilder
@@ -53,22 +67,53 @@ public class XercaMusic {
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> TEMPLE_VOG = GLMS.register("temple_vog", TempleLootModifier.CODEC);
 
 
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(MODID, path);
+    }
+
+    public static void sendToClient(ServerPlayer player, Object packet) {
+        NETWORK_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    @Nullable
+    public static <T> T onlyCallOnClient(Supplier<Callable<T>> toRun) throws Exception {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            return toRun.get().call();
+        }
+        return null;
+    }
+
+    public static void onlyRunOnClient(Supplier<Runnable> toRun) {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            toRun.get().run();
+        }
+    }
+
+    /**
+     * The packet classes are shared with the Fabric line, where they encode themselves into a fresh buffer.
+     * Forge hands us the target buffer instead, so copy the encoded bytes across.
+     */
+    private static <T extends IPacket> void registerPacket(int id, Class<T> type, Function<FriendlyByteBuf, T> decoder,
+                                                           BiConsumer<T, Supplier<NetworkEvent.Context>> handler) {
+        NETWORK_HANDLER.registerMessage(id, type, (pkt, buf) -> buf.writeBytes(pkt.encode()), decoder::apply, handler);
+    }
+
     @SuppressWarnings("UnusedAssignment")
     private void networkRegistry() {
         int msg_id = 0;
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicUpdatePacket.class, MusicUpdatePacket::encode, MusicUpdatePacket::decode, MusicUpdatePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicEndedPacket.class, MusicEndedPacket::encode, MusicEndedPacket::decode, MusicEndedPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicBoxUpdatePacket.class, MusicBoxUpdatePacket::encode, MusicBoxUpdatePacket::decode, MusicBoxUpdatePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, SingleNotePacket.class, SingleNotePacket::encode, SingleNotePacket::decode, SingleNotePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, SingleNoteClientPacket.class, SingleNoteClientPacket::encode, SingleNoteClientPacket::decode, SingleNoteClientPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, ExportMusicPacket.class, ExportMusicPacket::encode, ExportMusicPacket::decode, ExportMusicPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, ImportMusicPacket.class, ImportMusicPacket::encode, ImportMusicPacket::decode, ImportMusicPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, ImportMusicSendPacket.class, ImportMusicSendPacket::encode, ImportMusicSendPacket::decode, ImportMusicSendPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicDataRequestPacket.class, MusicDataRequestPacket::encode, MusicDataRequestPacket::decode, MusicDataRequestPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, MusicDataResponsePacket.class, MusicDataResponsePacket::encode, MusicDataResponsePacket::decode, MusicDataResponsePacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, TripleNoteClientPacket.class, TripleNoteClientPacket::encode, TripleNoteClientPacket::decode, TripleNoteClientPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, SendNotesPartToServerPacket.class, SendNotesPartToServerPacket::encode, SendNotesPartToServerPacket::decode, SendNotesPartToServerPacketHandler::handle);
-        NETWORK_HANDLER.registerMessage(msg_id++, NotesPartAckFromServerPacket.class, NotesPartAckFromServerPacket::encode, NotesPartAckFromServerPacket::decode, NotesPartAckFromServerPacketHandler::handle);
+        registerPacket(msg_id++, MusicUpdatePacket.class, MusicUpdatePacket::decode, MusicUpdatePacketHandler::handle);
+        registerPacket(msg_id++, MusicEndedPacket.class, MusicEndedPacket::decode, MusicEndedPacketHandler::handle);
+        registerPacket(msg_id++, MusicBoxUpdatePacket.class, MusicBoxUpdatePacket::decode, MusicBoxUpdatePacketHandler::handle);
+        registerPacket(msg_id++, SingleNotePacket.class, SingleNotePacket::decode, SingleNotePacketHandler::handle);
+        registerPacket(msg_id++, SingleNoteClientPacket.class, SingleNoteClientPacket::decode, SingleNoteClientPacketHandler::handle);
+        registerPacket(msg_id++, ExportMusicPacket.class, ExportMusicPacket::decode, ExportMusicPacketHandler::handle);
+        registerPacket(msg_id++, ImportMusicPacket.class, ImportMusicPacket::decode, ImportMusicPacketHandler::handle);
+        registerPacket(msg_id++, ImportMusicSendPacket.class, ImportMusicSendPacket::decode, ImportMusicSendPacketHandler::handle);
+        registerPacket(msg_id++, MusicDataRequestPacket.class, MusicDataRequestPacket::decode, MusicDataRequestPacketHandler::handle);
+        registerPacket(msg_id++, MusicDataResponsePacket.class, MusicDataResponsePacket::decode, MusicDataResponsePacketHandler::handle);
+        registerPacket(msg_id++, TripleNoteClientPacket.class, TripleNoteClientPacket::decode, TripleNoteClientPacketHandler::handle);
+        registerPacket(msg_id++, SendNotesPartToServerPacket.class, SendNotesPartToServerPacket::decode, SendNotesPartToServerPacketHandler::handle);
+        registerPacket(msg_id++, NotesPartAckFromServerPacket.class, NotesPartAckFromServerPacket::decode, NotesPartAckFromServerPacketHandler::handle);
     }
 
     public XercaMusic() {
@@ -84,7 +129,7 @@ public class XercaMusic {
         Items.TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
         Items.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         Entities.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
-        TileEntities.BLOCK_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        BlockEntities.BLOCK_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         GLMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 

@@ -18,39 +18,34 @@ import java.util.Map;
 import java.util.Set;
 
 public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance> {
-    private final ResourceLocation RL;
+    private final ResourceLocation resourceLocation;
     private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
 
+    @SuppressWarnings("SameParameterValue")
     CustomTrigger(String registryName) {
         super();
-        RL = new ResourceLocation(registryName);
+        resourceLocation = new ResourceLocation(registryName);
     }
 
     @Override
     public @NotNull ResourceLocation getId() {
-        return RL;
+        return resourceLocation;
     }
 
     @Override
     public void addPlayerListener(@NotNull PlayerAdvancements playerAdvancementsIn, @NotNull Listener<Instance> listener) {
-        CustomTrigger.Listeners myCustomTrigger$listeners = listeners.get(playerAdvancementsIn);
-
-        if (myCustomTrigger$listeners == null) {
-            myCustomTrigger$listeners = new CustomTrigger.Listeners(playerAdvancementsIn);
-            listeners.put(playerAdvancementsIn, myCustomTrigger$listeners);
-        }
-
-        myCustomTrigger$listeners.add(listener);
+        Listeners customListeners = listeners.computeIfAbsent(playerAdvancementsIn, Listeners::new);
+        customListeners.add(listener);
     }
 
     @Override
     public void removePlayerListener(@NotNull PlayerAdvancements playerAdvancementsIn, @NotNull Listener<Instance> listener) {
-        CustomTrigger.Listeners xercamusicTrigger$listeners = listeners.get(playerAdvancementsIn);
+        Listeners listeners1 = listeners.get(playerAdvancementsIn);
 
-        if (xercamusicTrigger$listeners != null) {
-            xercamusicTrigger$listeners.remove(listener);
+        if (listeners1 != null) {
+            listeners1.remove(listener);
 
-            if (xercamusicTrigger$listeners.isEmpty()) {
+            if (listeners1.isEmpty()) {
                 listeners.remove(playerAdvancementsIn);
             }
         }
@@ -69,8 +64,8 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance> {
      * @return the tame bird trigger. instance
      */
     @Override
-    public CustomTrigger.@NotNull Instance createInstance(@NotNull JsonObject json, @NotNull DeserializationContext context) {
-        return new CustomTrigger.Instance(getId());
+    public @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull DeserializationContext context) {
+        return new Instance(getId());
     }
 
     /**
@@ -79,10 +74,10 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance> {
      * @param parPlayer the player
      */
     public void trigger(ServerPlayer parPlayer) {
-        CustomTrigger.Listeners xercamusicTrigger$listeners = listeners.get(parPlayer.getAdvancements());
+        Listeners listeners1 = listeners.get(parPlayer.getAdvancements());
 
-        if (xercamusicTrigger$listeners != null) {
-            xercamusicTrigger$listeners.trigger(parPlayer);
+        if (listeners1 != null) {
+            listeners1.trigger();
         }
     }
 
@@ -98,7 +93,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance> {
 
     static class Listeners {
         private final PlayerAdvancements playerAdvancements;
-        private final Set<Listener<Instance>> listeners = Sets.newHashSet();
+        private final Set<Listener<Instance>> listenerHashSet = Sets.newHashSet();
 
         /**
          * Instantiates a new listeners.
@@ -115,7 +110,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance> {
          * @return true, if is empty
          */
         public boolean isEmpty() {
-            return listeners.isEmpty();
+            return listenerHashSet.isEmpty();
         }
 
         /**
@@ -124,7 +119,7 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance> {
          * @param listener the listener
          */
         public void add(Listener<Instance> listener) {
-            listeners.add(listener);
+            listenerHashSet.add(listener);
         }
 
         /**
@@ -133,18 +128,17 @@ public class CustomTrigger implements CriterionTrigger<CustomTrigger.Instance> {
          * @param listener the listener
          */
         public void remove(Listener<Instance> listener) {
-            listeners.remove(listener);
+            listenerHashSet.remove(listener);
         }
 
         /**
          * Trigger.
          *
-         * @param ignoredPlayer the player
          */
-        public void trigger(ServerPlayer ignoredPlayer) {
+        public void trigger() {
             ArrayList<Listener<Instance>> list = null;
 
-            for (Listener<Instance> listener : listeners) {
+            for (Listener<Instance> listener : listenerHashSet) {
                 if (list == null) {
                     list = Lists.newArrayList();
                 }
