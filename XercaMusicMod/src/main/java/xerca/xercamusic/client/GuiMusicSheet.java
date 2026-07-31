@@ -65,7 +65,9 @@ public class GuiMusicSheet extends Screen {
     private static final int[] OCTAVE_COLORS_TRANS = {0x165B3200, 0x16FF0000, 0x160AEE00, 0x160059FF, 0x167B00FF, 0x16EF00B7, 0x1600E2DF, 0X16F4E800};
     private static final int[] VIBRATO_WAVE = {0, -1, 0, 1};
     static final int MAX_LENGTH_BEATS = 32000;
-    private static final int MAX_NOTE_LENGTH = 60;
+    static final byte COPY_BEGIN_BYTE = (byte) 50;
+    static final int MAX_NOTE_LENGTH = 120;  // Max note length in beats (byte max is 127)
+    private static final int MAX_EDITABLE_NOTE = IItemInstrument.idToNote(IItemInstrument.TOTAL_NOTES - 1);
     static final int MAX_UNDO_LENGTH = 16;
     private static final String NOTE_LEFT_STR_KEY = "note.leftButton";
     private static final String NOTE_RIGHT_STR_KEY = "note.rightButton";
@@ -151,10 +153,10 @@ public class GuiMusicSheet extends Screen {
     private int maxSliderPosition = 500;
     int currentOctavePos = 1;
     private float volume = 1.f;
-    static final int MAX_PLACED_NOTE_LENGTH = 120;  // Max note length in beats (byte max is 127)
-    boolean helpOn;
-    int helpScrollOffset;
-    private int helpContentHeight;
+    static final int maxNoteLength = MAX_NOTE_LENGTH;
+    boolean helpOn = false;
+    int helpScrollOffset = 0;
+    private int helpContentHeight = 0;
     private final int[] helpSectionContentY = new int[7];
     private int helpPanelX;
     private int helpPanelY;
@@ -253,6 +255,9 @@ public class GuiMusicSheet extends Screen {
         }
 
         this.id = sheetId;
+        if (sanitizeLoadedNotes()) {
+            updateLength(false);
+        }
         if (this.notes.isEmpty()) {
             this.lengthBeats = 0;
         }
@@ -284,6 +289,36 @@ public class GuiMusicSheet extends Screen {
         midiHandler.setCurrentOctave(currentOctave);
         this.notePlaySounds = new NoteSound[IItemInstrument.TOTAL_NOTES];
         this.inputHandler = new SheetInputHandler(this);
+    }
+
+    private static byte clampNoteToEditableRange(byte note) {
+        return (byte) Math.max(IItemInstrument.MIN_NOTE, Math.min(MAX_EDITABLE_NOTE, note));
+    }
+
+    private static byte clampNoteLength(byte length) {
+        int unsignedLength = length & 0xFF;
+        return (byte) Math.max(1, Math.min(MAX_NOTE_LENGTH, unsignedLength));
+    }
+
+    private boolean sanitizeLoadedNotes() {
+        boolean changed = false;
+        for (NoteEvent event : notes) {
+            byte clampedNote = clampNoteToEditableRange(event.note);
+            byte clampedLength = clampNoteLength(event.length);
+            if (event.note != clampedNote || event.length != clampedLength) {
+                event.note = clampedNote;
+                event.length = clampedLength;
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            NoteEvent.sortNotes(notes);
+            NoteEvent.removeDuplicates(notes);
+            dirtyFlag.hasNotes = true;
+            dirtyFlag.hasLength = true;
+        }
+        return changed;
     }
 
     // ---- Super call wrappers for SheetInputHandler ----
@@ -2038,16 +2073,14 @@ public class GuiMusicSheet extends Screen {
                 }
             };
             buttonNoteDown = Button.builder(Component.translatable(NOTE_LEFT_STR_KEY), button -> {
-                NoteEvent event = requireEvent();
-                if (event.note > 0) {
+                if (event.note > IItemInstrument.MIN_NOTE) {
                     setChanged();
                     event.note--;
                     playPrev();
                 }
             }).bounds(0, 0, 10, 8).build();
             buttonNoteUp = Button.builder(Component.translatable(NOTE_RIGHT_STR_KEY), button -> {
-                NoteEvent event = requireEvent();
-                if (event.note < 95) {
+                if (event.note < MAX_EDITABLE_NOTE) {
                     setChanged();
                     event.note++;
                     playPrev();
@@ -2097,6 +2130,24 @@ public class GuiMusicSheet extends Screen {
             children[9] = sliderVibratoFade;
             children[10] = buttonExit;
             children[11] = buttonPrev;
+        }
+
+        private byte clampNote(byte note) {
+            return clampNoteToEditableRange(note);
+        }
+
+        private byte clampLength(byte length) {
+            return clampNoteLength(length);
+        }
+
+        private void sanitizeEditedEvent() {
+            byte clampedNote = clampNote(event.note);
+            byte clampedLength = clampLength(event.length);
+            if (event.note != clampedNote || event.length != clampedLength) {
+                setChanged();
+                event.note = clampedNote;
+                event.length = clampedLength;
+            }
         }
 
         private void setChanged() {
@@ -2222,6 +2273,7 @@ public class GuiMusicSheet extends Screen {
             }
             changed = false;
             this.event = event;
+            sanitizeEditedEvent();
             this.refreshPreviewOnRelease = false;
             this.height = event.hasVibrato() ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT;
             x = Math.max(0, Math.min(x, GuiMusicSheet.this.width - width));

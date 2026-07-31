@@ -3567,5 +3567,95 @@
         "attenuation_distance": 48
       }
     ]
+  },
+  "cuica36": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica36",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica42": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica42",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica84": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica84",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cuica90": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:cuica/cuica90",
+        "attenuation_distance": 48
+      }
+    ]
   }
 }

@@ -5,10 +5,16 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+//aaaaaaa nao sei se necessario
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
+//este é meu, pode n ser necessario
+import net.minecraft.client.renderer.RenderType;
+//este +e do ercan
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -19,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import xerca.xercamusic.common.Mod;
 import xerca.xercamusic.common.NoteEvent;
 import xerca.xercamusic.common.SoundEvents;
+import xerca.xercamusic.common.block.Blocks;
 import xerca.xercamusic.common.entity.Entities;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -133,6 +140,7 @@ public class ModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        // aaaaaa BlockRenderLayerMap.INSTANCE.putBlock(Blocks.STEELPAN, RenderType.cutout());
         EntityRenderers.register(Entities.MUSIC_SPIRIT, new RenderNothingFactory());
 
         ClientPlayNetworking.registerGlobalReceiver(ExportMusicPacket.PACKET_ID, new ExportMusicPacketHandler());
