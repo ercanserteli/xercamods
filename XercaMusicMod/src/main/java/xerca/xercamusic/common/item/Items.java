@@ -51,6 +51,8 @@ public final class Items {
     public static final Item HARPSICHORD = new ItemInstrument(22, 0, 5, properties("harpsichord"));
     public static final Item STEELPAN = new ItemBlockInstrument(23, 1, 5, blockProperties("steelpan"), Blocks.STEELPAN);
     public static final Item CUICA = new ItemInstrument(24, 1, 5, properties("cuica"));
+    public static final Item ACCORDION = new ItemInstrument(25, 0, 5, properties("accordion"));
+    public static final Item TENOR_SAXOPHONE = new ItemInstrument(26, 0, 4, properties("tenor_saxophone"));
     public static final Item MUSIC_SHEET = new ItemMusicSheet(properties("music_sheet"));
 
     public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
@@ -82,6 +84,8 @@ public final class Items {
                 output.accept(HARPSICHORD);
                 output.accept(STEELPAN);
                 output.accept(CUICA);
+                output.accept(ACCORDION);
+                output.accept(TENOR_SAXOPHONE);
                 output.accept(Blocks.MUSIC_BOX);
                 output.accept(Blocks.BLOCK_METRONOME);
             })
@@ -95,7 +99,7 @@ public final class Items {
             (IItemInstrument) SAXOPHONE, (IItemInstrument) GOD, (IItemInstrument) PIANO, (IItemInstrument) OBOE,
             (IItemInstrument) REDSTONE_GUITAR, (IItemInstrument) FRENCH_HORN, (IItemInstrument) BASS_GUITAR,
             (IItemInstrument) TRUMPET, (IItemInstrument) REDSTONE_PIANO, (IItemInstrument) ORGAN, (IItemInstrument) HARPSICHORD, 
-            (IItemInstrument) STEELPAN, (IItemInstrument) CUICA
+            (IItemInstrument) STEELPAN, (IItemInstrument) CUICA, (IItemInstrument) ACCORDION, (IItemInstrument) TENOR_SAXOPHONE
     );
 
     public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = new CustomRecipe.Serializer<>(RecipeNoteCloning::new);
@@ -167,6 +171,8 @@ public final class Items {
         registerItem("harpsichord", HARPSICHORD);
         registerItem("steelpan", STEELPAN);
         registerItem("cuica", CUICA);
+        registerItem("accordion", ACCORDION);
+        registerItem("tenor_saxophone", TENOR_SAXOPHONE);
         registerItem("harp_mc", HARP_MC);
         registerItem("music_sheet", MUSIC_SHEET);
         registerItem("music_box", new BlockItem(Blocks.MUSIC_BOX, blockProperties("music_box")));

@@ -3657,5 +3657,194 @@
         "attenuation_distance": 48
       }
     ]
+  },
+  "accordion30": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion30",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion36": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion36",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion42": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion42",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion84": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion84",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "accordion90": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:accordion/accordion90",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone24": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone24",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone30": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone30",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone36": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone36",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone42": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone42",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tenor_saxophone78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tenor_saxophone/tenor_saxophone78",
+        "attenuation_distance": 48
+      }
+    ]
   }
 }

@@ -44,6 +44,8 @@ public class SoundEvents {
     public static final List<Pair<Integer, SoundEvent>> harpsichords = new ArrayList<>(11);
     public static final List<Pair<Integer, SoundEvent>> steelpans = new ArrayList<>(11);
     public static final List<Pair<Integer, SoundEvent>> cuicas = new ArrayList<>(11);
+    public static final List<Pair<Integer, SoundEvent>> accordions = new ArrayList<>(11);
+    public static final List<Pair<Integer, SoundEvent>> tenor_saxophones = new ArrayList<>(11);
 
     private static final String NAME_GUITAR = "guitar";
     private static final String NAME_DRUM_KIT = "drum_kit";
@@ -66,10 +68,13 @@ public class SoundEvents {
     private static final String NAME_BASS_GUITAR = "bass_guitar";
     private static final String NAME_HARP_MC = "harp_mc";
     private static final String NAME_REDSTONE_PIANO = "redstone_piano";
+        private static final String NAME_TRUMPET = "trumpet";
     private static final String NAME_ORGAN = "organ";
     private static final String NAME_HARPSICHORD = "harpsichord";
     private static final String NAME_STEELPAN = "steelpan";
     private static final String NAME_CUICA = "cuica";
+    private static final String NAME_ACCORDION = "accordion";
+    private static final String NAME_TENOR_SAXOPHONE = "tenor_saxophone";
 
     private SoundEvents() {
     }
@@ -122,6 +127,8 @@ public class SoundEvents {
         harpsichords.clear();
         steelpans.clear();
         cuicas.clear();
+        accordions.clear();
+        tenor_saxophones.clear();
         // ranges
         addRange(drum_kits, NAME_DRUM_KIT, 21, 116);
         addRange(harp_mcs, NAME_HARP_MC, 27, 111, 6);
@@ -181,13 +188,7 @@ public class SoundEvents {
                 33, 39, 45, 51, 57, 63, 69, 75);
 
         // Trumpet samples (MIDI 48-84, step 6)
-        addSound(trumpets, "trumpet", 48);
-        addSound(trumpets, "trumpet", 54);
-        addSound(trumpets, "trumpet", 60);
-        addSound(trumpets, "trumpet", 66);
-        addSound(trumpets, "trumpet", 72);
-        addSound(trumpets, "trumpet", 78);
-        addSound(trumpets, "trumpet", 84);
+        addFixed(trumpets, NAME_TRUMPET, 48, 54, 60, 66, 72, 78, 84);
 
         // Eredstone Piano samples (MIDI 24-96, step 6)
         addFixed(redstone_pianos, NAME_REDSTONE_PIANO,
@@ -201,7 +202,8 @@ public class SoundEvents {
         
         addFixed(steelpans, NAME_STEELPAN, 42, 48, 54, 60, 66, 72, 78, 84, 90);
         addFixed(cuicas, NAME_CUICA,  36, 42, 48, 54, 60, 66, 72, 78, 84, 90);
-
+        addFixed(accordions, NAME_ACCORDION, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90);
+        addFixed(tenor_saxophones, NAME_TENOR_SAXOPHONE, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78);
         // Instrument SoundEvent setting
         ((IItemInstrument) Items.CYMBAL).setSounds(cymbals);
         ((IItemInstrument) Items.DRUM_KIT).setSounds(drum_kits);
@@ -228,6 +230,8 @@ public class SoundEvents {
         ((IItemInstrument) Items.HARPSICHORD).setSounds(harpsichords);
         ((IItemInstrument) Items.STEELPAN).setSounds(steelpans);
         ((IItemInstrument) Items.CUICA).setSounds(cuicas);
+        ((IItemInstrument) Items.ACCORDION).setSounds(accordions);
+        ((IItemInstrument) Items.TENOR_SAXOPHONE).setSounds(tenor_saxophones);
         ((IItemInstrument) Items.HARP_MC).setSounds(harp_mcs);
     }
 

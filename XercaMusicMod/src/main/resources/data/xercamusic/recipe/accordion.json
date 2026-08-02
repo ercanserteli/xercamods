@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "plp",
+    "plp"
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:planks"
+    },
+    "l": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "xercamusic:accordion"
+  }
+}

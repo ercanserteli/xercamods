@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "  g",
+        "g g",
+        "gg "
+    ],
+    "key": {
+        "g": {
+            "item": "minecraft:gold_nugget"
+        }
+    },
+    "result": {
+        "id": "xercamusic:tenor_saxophone"
+    }
+}
