@@ -2,7 +2,7 @@
   "parent": "xercamusic:recipes/root",
   "rewards": {
     "recipes": [
-      "xercamusic:cuica"
+      "xercamusic:accordion"
     ]
   },
   "criteria": {
@@ -12,7 +12,7 @@
         "items": [
           {
             "items": [
-              "minecraft:iron_nugget"
+              "minecraft:planks"
             ]
           },
           {
@@ -26,7 +26,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercamusic:cuica"
+        "recipe": "xercamusic:accordion"
       }
     }
   },

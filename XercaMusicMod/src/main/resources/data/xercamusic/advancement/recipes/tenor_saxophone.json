@@ -2,7 +2,7 @@
   "parent": "xercamusic:recipes/root",
   "rewards": {
     "recipes": [
-      "xercamusic:cuica"
+      "xercamusic:tenor_saxophone"
     ]
   },
   "criteria": {
@@ -12,12 +12,7 @@
         "items": [
           {
             "items": [
-              "minecraft:iron_nugget"
-            ]
-          },
-          {
-            "items": [
-              "minecraft:leather"
+              "minecraft:gold_nugget"
             ]
           }
         ]
@@ -26,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "xercamusic:cuica"
+        "recipe": "xercamusic:tenor_saxophone"
       }
     }
   },

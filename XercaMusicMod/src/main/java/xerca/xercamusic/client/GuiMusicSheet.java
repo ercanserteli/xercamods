@@ -1400,7 +1400,9 @@ public class GuiMusicSheet extends Screen {
 
     private void drawNote(GuiGraphics guiGraphics, NoteEvent event, boolean isNeighbor) {
         int octave = octaveFromNote(event.note);
-        if ((octave >= currentOctavePos && octave < currentOctavePos + 4) && (inScreen(event.time) || inScreen(event.time + event.length))) {
+        boolean noteOverlapsScreen = event.time < sliderPosition + BEATS_IN_SCREEN
+                && event.time + event.length > sliderPosition;
+        if ((octave >= currentOctavePos && octave < currentOctavePos + 4) && noteOverlapsScreen) {
             int timeDrawBeginning = Math.max(event.time - sliderPosition, 0);
             int timeDrawEnd = Math.min(event.time - sliderPosition + event.length, BEATS_IN_SCREEN);
 
