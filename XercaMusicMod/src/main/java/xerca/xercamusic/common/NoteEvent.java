@@ -365,18 +365,10 @@ public class NoteEvent implements Serializable {
         }
         resetVibratoSettings();
         if (hasVibrato()) {
-            if (tag.contains("vd")) {
-                this.vibratoDepthCents = tag.getByte("vd");
-            }
-            if (tag.contains("vr")) {
-                this.vibratoRateTenthsHz = tag.getByte("vr");
-            }
-            if (tag.contains("vy")) {
-                this.vibratoDelayTicks = tag.getByte("vy");
-            }
-            if (tag.contains("vf")) {
-                this.vibratoFadeTicks = tag.getByte("vf");
-            }
+            this.vibratoDepthCents = tag.getByteOr("vd", this.vibratoDepthCents);
+            this.vibratoRateTenthsHz = tag.getByteOr("vr", this.vibratoRateTenthsHz);
+            this.vibratoDelayTicks = tag.getByteOr("vy", this.vibratoDelayTicks);
+            this.vibratoFadeTicks = tag.getByteOr("vf", this.vibratoFadeTicks);
             sanitizeVibratoSettings();
         }
     }

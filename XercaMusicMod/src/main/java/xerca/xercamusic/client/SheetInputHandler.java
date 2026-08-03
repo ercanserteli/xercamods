@@ -54,12 +54,12 @@ class SheetInputHandler {
         if (isInside(gui.noteEditBox, dmouseX, dmouseY)) {
             gui.setFocused(gui.noteEditBox);
             gui.setDragging(true);
-            return gui.noteEditBox.mouseClicked(dmouseX, dmouseY, mouseButton);
+            return gui.noteEditBox.mouseClicked(new MouseButtonEvent(dmouseX, dmouseY, new MouseButtonInfo(mouseButton, 0)), false);
         }
         if (isInside(gui.markerEditBox, dmouseX, dmouseY)) {
             gui.setFocused(gui.markerEditBox);
             gui.setDragging(true);
-            return gui.markerEditBox.mouseClicked(dmouseX, dmouseY, mouseButton);
+            return gui.markerEditBox.mouseClicked(new MouseButtonEvent(dmouseX, dmouseY, new MouseButtonInfo(mouseButton, 0)), false);
         }
 
         if (gui.callSuperMouseClicked(dmouseX, dmouseY, mouseButton)) {
@@ -259,7 +259,7 @@ class SheetInputHandler {
                 }
             } else if (gui.currentlyAddedNote != null && validClick(mx, my)) {
                 int time = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
-                if (gui.currentlyAddedNote.time < time && time - gui.currentlyAddedNote.time <= GuiMusicSheet.MAX_PLACED_NOTE_LENGTH) {
+                if (gui.currentlyAddedNote.time < time && time - gui.currentlyAddedNote.time <= GuiMusicSheet.MAX_NOTE_LENGTH) {
                     gui.currentlyAddedNote.length = (byte) (time - gui.currentlyAddedNote.time);
                 }
             }

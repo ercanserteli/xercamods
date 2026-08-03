@@ -30,7 +30,7 @@ public class BlockTags implements DataGeneratorEntrypoint {
                     Blocks.DRUM_KIT,
                     Blocks.PIANO
             );
-            getOrCreateTagBuilder(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(
+            valueLookupBuilder(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE).add(
                     Blocks.STEELPAN
             );
         }

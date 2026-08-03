@@ -20,7 +20,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import xerca.xercamusic.common.*;
 import xerca.xercamusic.common.item.IItemInstrument;
 import xerca.xercamusic.common.item.ItemMusicSheet;
@@ -802,9 +807,45 @@ public class GuiMusicSheet extends Screen {
             return null;
         }
 
-        ClientStuff.applyNoteEffects(sound, event, insSound.pitch(), beatsToTicks(event.length));
+        this.applyNoteEffects(sound, event, insSound.pitch(), beatsToTicks(event.length));
 
         return sound;
+    }
+    
+    private void applyNoteEffects(NoteSound sound, NoteEvent event, float basePitch, int durationTicks) {
+        if (sound == null) {
+            return;
+        }
+
+        if (event.hasGlissando()) {
+            byte[] waypoints = event.getEffectiveWaypoints();
+            if (waypoints != null && waypoints.length > 0) {
+                float[] pitchWaypoints = new float[waypoints.length];
+                for (int i = 0; i < waypoints.length; i++) {
+                    pitchWaypoints[i] = basePitch * (float) Math.pow(2.0, waypoints[i] / 12.0);
+                }
+
+                byte[] encodedPositions = event.getEffectivePositions();
+                if (encodedPositions != null && encodedPositions.length == waypoints.length) {
+                    float[] positions = new float[encodedPositions.length];
+                    for (int i = 0; i < encodedPositions.length; i++) {
+                        positions[i] = (encodedPositions[i] & 0xFF) / 100.0f;
+                    }
+                    sound.setGlissando(pitchWaypoints, positions, durationTicks);
+                } else {
+                    sound.setGlissando(pitchWaypoints, durationTicks);
+                }
+            }
+        }
+
+        if (event.hasVibrato()) {
+            sound.setVibrato(
+                    event.vibratoDepthSemitones(),
+                    event.vibratoRateHz(),
+                    event.vibratoDelaySeconds(),
+                    event.vibratoFadeSeconds()
+            );
+        }
     }
 
     private int beatsToTicks(int beats) {
@@ -1985,24 +2026,22 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        protected void renderContents(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             if (!instrumentStack.isEmpty()) {
                 guiGraphics.renderItem(instrumentStack, getX(), getY());
             }
 
-            PoseStack pose = guiGraphics.pose();
+            Matrix3x2fStack pose = guiGraphics.pose();
             if (isHovered && active) {
-                pose.pushPose();
-                pose.translate(0.0F, 0.0F, 200.0F);
+                pose.pushMatrix();
                 guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, INSTRUMENT_HOVER_COLOR);
-                pose.popPose();
+                pose.popMatrix();
             }
 
             if (prevInsLocked) {
-                pose.pushPose();
-                pose.translate(0.0F, 0.0F, 201.0F);
-                guiGraphics.blit(LOCK_TEXTURE, getX() + 1, getY(), 0, 0, 5, 7, 5, 7);
-                pose.popPose();
+                pose.pushMatrix();
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LOCK_TEXTURE, getX() + 1, getY(), 0, 0, 5, 7, 5, 7);
+                pose.popMatrix();
             }
         }
     }
@@ -2269,22 +2308,17 @@ public class GuiMusicSheet extends Screen {
                 if (buttonPrev.isHovered()) {
                     guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.previewNoteTooltip"), mouseX, mouseY);
                 } else if (buttonExit.isHovered()) {
-                    guiGraphics.renderTooltip(font, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.closeNoteTooltip"), mouseX, mouseY);
                 } else if (sliderVibratoDepth.visible && sliderVibratoDepth.isHovered()) {
-                    renderWrappedTooltip(guiGraphics, font, "note.vibrato.depthTooltip", mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.vibrato.depthTooltip"), mouseX, mouseY);
                 } else if (sliderVibratoRate.visible && sliderVibratoRate.isHovered()) {
-                    renderWrappedTooltip(guiGraphics, font, "note.vibrato.rateTooltip", mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.vibrato.rateTooltip"), mouseX, mouseY);
                 } else if (sliderVibratoDelay.visible && sliderVibratoDelay.isHovered()) {
-                    renderWrappedTooltip(guiGraphics, font, "note.vibrato.delayTooltip", mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.vibrato.delayTooltip"), mouseX, mouseY);
                 } else if (sliderVibratoFade.visible && sliderVibratoFade.isHovered()) {
-                    renderWrappedTooltip(guiGraphics, font, "note.vibrato.fadeTooltip", mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(font, Component.translatable("note.vibrato.fadeTooltip"), mouseX, mouseY);
                 }
             }
-        }
-
-        private void renderWrappedTooltip(GuiGraphics guiGraphics, Font font, String translationKey, int mouseX, int mouseY) {
-            int maxWidth = Math.max(80, Math.min(180, GuiMusicSheet.this.width - 24));
-            guiGraphics.renderTooltip(font, font.split(Component.translatable(translationKey), maxWidth), mouseX, mouseY);
         }
 
         public void appear(int x, int y, NoteEvent event) {
@@ -2302,11 +2336,11 @@ public class GuiMusicSheet extends Screen {
             this.setY(y);
             this.visible = true;
             this.active = true;
-            sliderVelocity.setValue(event.floatVolume() * 100.0f);
-            sliderVibratoDepth.setValue(event.vibratoDepthCents());
-            sliderVibratoRate.setValue(event.vibratoRateHz());
-            sliderVibratoDelay.setValue(event.vibratoDelaySeconds());
-            sliderVibratoFade.setValue(event.vibratoFadeSeconds());
+            sliderVelocity.setSliderValue(event.floatVolume() * 100.0f);
+            sliderVibratoDepth.setSliderValue(event.vibratoDepthCents());
+            sliderVibratoRate.setSliderValue(event.vibratoRateHz());
+            sliderVibratoDelay.setSliderValue(event.vibratoDelaySeconds());
+            sliderVibratoFade.setSliderValue(event.vibratoFadeSeconds());
 
             updateVibratoControls();
             playPrev();
@@ -2342,12 +2376,14 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseDragged(double posX, double posY, int mouseButton, double deltaX, double deltaY) {
+        public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+            double posX = event.x();
+            double posY = event.y();
             for (AbstractWidget widget : children) {
                 if (widget instanceof BetterSlider slider && slider.active && slider.visible
                         && posX >= slider.getX() && posX < slider.getX() + slider.getWidth()
                         && posY >= slider.getY() && posY < slider.getY() + slider.getHeight()) {
-                    slider.mouseDragged(posX, posY, mouseButton, deltaX, deltaY);
+                    slider.mouseDragged(event, deltaX, deltaY);
                     break;
                 }
             }
@@ -2360,10 +2396,10 @@ public class GuiMusicSheet extends Screen {
         }
 
         @Override
-        public boolean mouseReleased(double posX, double posY, int mouseButton) {
+        public boolean mouseReleased(MouseButtonEvent event) {
             for (AbstractWidget widget : children) {
                 if (widget instanceof BetterSlider slider) {
-                    slider.onRelease(posX, posY);
+                    slider.onRelease(event);
                 }
             }
             if (refreshPreviewOnRelease) {
