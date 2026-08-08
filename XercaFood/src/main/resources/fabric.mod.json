@@ -7,7 +7,7 @@
   "authors": ["xerca"],
   "contact": {},
   "license": "GPL-3.0",
-  "icon": "assets/xercafood/textures/item/cupcakes/cupcake_golden.png",
+  "icon": "assets/xercafood/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
