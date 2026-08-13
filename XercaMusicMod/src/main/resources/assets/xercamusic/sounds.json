@@ -265,101 +265,110 @@
       }
     ]
   },
-  "lyre33": {
+  "lyre40": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre33",
+        "name": "xercamusic:lyre/lyre40",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre39": {
+  "lyre46": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre39",
+        "name": "xercamusic:lyre/lyre46",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre45": {
+  "lyre52": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre45",
+        "name": "xercamusic:lyre/lyre52",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre51": {
+  "lyre58": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre51",
+        "name": "xercamusic:lyre/lyre58",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre57": {
+  "lyre64": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre57",
+        "name": "xercamusic:lyre/lyre64",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre63": {
+  "lyre70": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre63",
+        "name": "xercamusic:lyre/lyre70",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre69": {
+  "lyre76": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre69",
+        "name": "xercamusic:lyre/lyre76",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre75": {
+  "lyre82": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre75",
+        "name": "xercamusic:lyre/lyre82",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre81": {
+  "lyre88": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre81",
+        "name": "xercamusic:lyre/lyre88",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre87": {
+  "lyre94": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre87",
+        "name": "xercamusic:lyre/lyre94",
         "attenuation_distance": 48
       }
     ]
   },
-  "lyre93": {
+  "lyre100": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:lyre/lyre93",
+        "name": "xercamusic:lyre/lyre100",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lyre106": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:lyre/lyre106",
         "attenuation_distance": 48
       }
     ]

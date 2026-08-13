@@ -27,7 +27,7 @@ public final class Items {
     public static final Item HARP_MC = new ItemInstrument(-1, 0, 7, properties("harp_mc"));
 
     public static final Item GUITAR = new ItemInstrument(0, 0, 6, properties("guitar"));
-    public static final Item LYRE = new ItemInstrument(1, 1, 5, properties("lyre"));
+    public static final Item LYRE = new ItemInstrument(1, 2, 7, properties("lyre"));
     public static final Item BANJO = new ItemInstrument(2, 0, 4, properties("banjo"));
     public static final Item DRUM = new ItemInstrument(3, 1, 4, properties("drum"));
     public static final Item CYMBAL = new ItemInstrument(4, 0, 4, properties("cymbal"));
