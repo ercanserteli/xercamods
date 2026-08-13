@@ -3856,146 +3856,65 @@
       }
     ]
   },
-  "vibraphone24": {
+  "vibraphone53": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:vibraphone/vibraphone24",
+        "name": "xercamusic:vibraphone/vibraphone53",
         "attenuation_distance": 48
       }
     ]
   },
-  "vibraphone30": {
+  "vibraphone59": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:vibraphone/vibraphone30",
+        "name": "xercamusic:vibraphone/vibraphone59",
         "attenuation_distance": 48
       }
     ]
   },
-  "vibraphone36": {
+  "vibraphone65": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:vibraphone/vibraphone36",
+        "name": "xercamusic:vibraphone/vibraphone65",
         "attenuation_distance": 48
       }
     ]
   },
-  "vibraphone42": {
+  "vibraphone71": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:vibraphone/vibraphone42",
+        "name": "xercamusic:vibraphone/vibraphone71",
         "attenuation_distance": 48
       }
     ]
   },
-  "vibraphone48": {
+  "vibraphone77": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:vibraphone/vibraphone48",
+        "name": "xercamusic:vibraphone/vibraphone77",
         "attenuation_distance": 48
       }
     ]
   },
-  "vibraphone54": {
+  "vibraphone83": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:vibraphone/vibraphone54",
+        "name": "xercamusic:vibraphone/vibraphone83",
         "attenuation_distance": 48
       }
     ]
   },
-  "vibraphone60": {
+  "vibraphone89": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:vibraphone/vibraphone60",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone66": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone66",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone72": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone72",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone78": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone78",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone84": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone84",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone90": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone90",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone96": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone96",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone102": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone102",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone108": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone108",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "vibraphone114": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:vibraphone/vibraphone114",
+        "name": "xercamusic:vibraphone/vibraphone89",
         "attenuation_distance": 48
       }
     ]
@@ -4356,6 +4275,1311 @@
     "sounds": [
       {
         "name": "xercamusic:taiko/taiko114",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp36": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp36",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp42": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp42",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp84": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp84",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harp90": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:harp/harp90",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shakuhachi55": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shakuhachi/shakuhachi55",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shakuhachi61": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shakuhachi/shakuhachi61",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shakuhachi67": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shakuhachi/shakuhachi67",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shakuhachi73": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shakuhachi/shakuhachi73",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shamisen55": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shamisen/shamisen55",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shamisen61": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shamisen/shamisen61",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shamisen67": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shamisen/shamisen67",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shamisen73": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shamisen/shamisen73",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shamisen79": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shamisen/shamisen79",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shamisen85": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shamisen/shamisen85",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shamisen91": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:shamisen/shamisen91",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tin_whistle62": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tin_whistle/tin_whistle62",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tin_whistle68": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tin_whistle/tin_whistle68",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tin_whistle74": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tin_whistle/tin_whistle74",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tin_whistle80": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tin_whistle/tin_whistle80",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tin_whistle86": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:tin_whistle/tin_whistle86",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lute38": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:lute/lute38",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lute44": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:lute/lute44",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lute50": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:lute/lute50",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lute56": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:lute/lute56",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lute62": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:lute/lute62",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lute68": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:lute/lute68",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lute74": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:lute/lute74",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos49": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos49",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos50": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos50",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos51": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos51",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos52": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos52",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos53": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos53",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos55": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos55",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos56": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos56",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos57": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos57",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos58": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos58",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos59": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos59",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos61": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos61",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos62": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos62",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos63": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos63",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos64": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos64",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos65": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos65",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos67": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos67",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos68": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos68",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos69": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos69",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos70": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos70",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos71": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos71",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos73": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos73",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos74": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos74",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos75": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos75",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos76": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos76",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos77": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos77",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos79": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos79",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos80": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos80",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos81": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos81",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos82": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos82",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos83": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos83",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani49": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani49",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani50": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani50",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani51": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani51",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani52": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani52",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani53": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani53",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani55": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani55",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani56": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani56",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani57": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani57",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani58": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani58",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani59": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani59",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani61": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani61",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani62": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani62",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani63": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani63",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani64": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani64",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani65": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani65",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani67": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani67",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani68": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani68",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani69": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani69",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani70": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani70",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani71": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani71",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani73": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani73",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani74": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani74",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani75": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani75",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani76": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani76",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani77": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani77",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani79": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani79",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani80": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani80",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani81": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani81",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani82": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani82",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani83": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani83",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani84": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani84",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani85": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani85",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani86": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani86",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani87": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani87",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani88": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani88",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani89": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani89",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani90": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani90",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani91": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani91",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani92": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani92",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani93": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani93",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani94": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani94",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "timpani95": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:timpani/timpani95",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "glockenspiel48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:glockenspiel/glockenspiel48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "glockenspiel54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:glockenspiel/glockenspiel54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "glockenspiel60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:glockenspiel/glockenspiel60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "glockenspiel66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:glockenspiel/glockenspiel66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "glockenspiel72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:glockenspiel/glockenspiel72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "glockenspiel78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:glockenspiel/glockenspiel78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "glockenspiel84": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:glockenspiel/glockenspiel84",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba41": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba41",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba47": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba47",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba53": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba53",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba59": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba59",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba65": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba65",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba71": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba71",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba77": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba77",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba83": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba83",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba89": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba89",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "marimba95": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:marimba/marimba95",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta36": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta36",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta42": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta42",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta48": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta48",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta54": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta54",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta60": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta60",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta66": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta66",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta72": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta72",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta78": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta78",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta84": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta84",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta90": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta90",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "celesta96": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:celesta/celesta96",
         "attenuation_distance": 48
       }
     ]

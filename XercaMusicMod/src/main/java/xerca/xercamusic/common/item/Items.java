@@ -57,6 +57,16 @@ public final class Items {
     public static final Item SMALL_MUSIC_BOX = new ItemInstrument(28, 0, 7, properties("small_music_box"));
     public static final Item KOTO = new ItemInstrument(29, 2, 5, properties("koto"));
     public static final Item TAIKO = new ItemInstrument(30, 0, 7, properties("taiko"));
+    public static final Item HARP = new ItemInstrument(31, 1, 6, properties("harp"));
+    public static final Item SHAKUHACHI = new ItemInstrument(32, 2, 5, properties("shakuhachi"));
+    public static final Item SHAMISEN = new ItemInstrument(33, 2, 6, properties("shamisen"));
+    public static final Item TIN_WHISTLE = new ItemInstrument(34, 3, 6, properties("tin_whistle"));
+    public static final Item LUTE = new ItemInstrument(35, 1, 5, properties("lute"));
+    public static final Item BONGOS = new ItemInstrument(36, 2, 5, properties("bongos"));
+    public static final Item TIMPANI = new ItemInstrument(37, 2, 6, properties("timpani"));
+    public static final Item GLOCKENSPIEL = new ItemInstrument(38, 2, 6, properties("glockenspiel"));
+    public static final Item MARIMBA = new ItemInstrument(39, 1, 6, properties("marimba"));
+    public static final Item CELESTA = new ItemInstrument(40, 1, 7, properties("celesta"));
     public static final Item MUSIC_SHEET = new ItemMusicSheet(properties("music_sheet"));
 
     public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
@@ -94,6 +104,16 @@ public final class Items {
                 output.accept(SMALL_MUSIC_BOX);
                 output.accept(KOTO);
                 output.accept(TAIKO);
+                output.accept(HARP);
+                output.accept(SHAKUHACHI);
+                output.accept(SHAMISEN);
+                output.accept(TIN_WHISTLE);
+                output.accept(LUTE);
+                output.accept(BONGOS);
+                output.accept(TIMPANI);
+                output.accept(GLOCKENSPIEL);
+                output.accept(MARIMBA);
+                output.accept(CELESTA);
                 output.accept(Blocks.MUSIC_BOX);
                 output.accept(Blocks.BLOCK_METRONOME);
             })
@@ -108,7 +128,10 @@ public final class Items {
             (IItemInstrument) REDSTONE_GUITAR, (IItemInstrument) FRENCH_HORN, (IItemInstrument) BASS_GUITAR,
             (IItemInstrument) TRUMPET, (IItemInstrument) REDSTONE_PIANO, (IItemInstrument) ORGAN, (IItemInstrument) HARPSICHORD, 
             (IItemInstrument) STEELPAN, (IItemInstrument) CUICA, (IItemInstrument) ACCORDION, (IItemInstrument) TENOR_SAXOPHONE,
-            (IItemInstrument) VIBRAPHONE, (IItemInstrument) SMALL_MUSIC_BOX, (IItemInstrument) KOTO, (IItemInstrument) TAIKO
+            (IItemInstrument) VIBRAPHONE, (IItemInstrument) SMALL_MUSIC_BOX, (IItemInstrument) KOTO, (IItemInstrument) TAIKO,
+            (IItemInstrument) HARP, (IItemInstrument) SHAKUHACHI, (IItemInstrument) SHAMISEN, (IItemInstrument) TIN_WHISTLE,
+            (IItemInstrument) LUTE, (IItemInstrument) BONGOS, (IItemInstrument) TIMPANI, (IItemInstrument) GLOCKENSPIEL,
+            (IItemInstrument) MARIMBA, (IItemInstrument) CELESTA
     );
 
     public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = new CustomRecipe.Serializer<>(RecipeNoteCloning::new);
@@ -186,6 +209,16 @@ public final class Items {
         registerItem("small_music_box", SMALL_MUSIC_BOX);
         registerItem("koto", KOTO);
         registerItem("taiko", TAIKO);
+        registerItem("harp", HARP);
+        registerItem("shakuhachi", SHAKUHACHI);
+        registerItem("shamisen", SHAMISEN);
+        registerItem("tin_whistle", TIN_WHISTLE);
+        registerItem("lute", LUTE);
+        registerItem("bongos", BONGOS);
+        registerItem("timpani", TIMPANI);
+        registerItem("glockenspiel", GLOCKENSPIEL);
+        registerItem("marimba", MARIMBA);
+        registerItem("celesta", CELESTA);
         registerItem("harp_mc", HARP_MC);
         registerItem("music_sheet", MUSIC_SHEET);
         registerItem("music_box", new BlockItem(Blocks.MUSIC_BOX, blockProperties("music_box")));

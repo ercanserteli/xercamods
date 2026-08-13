@@ -50,6 +50,16 @@ public class SoundEvents {
     public static final List<Pair<Integer, SoundEvent>> small_music_boxes = new ArrayList<>(16);
     public static final List<Pair<Integer, SoundEvent>> kotos = new ArrayList<>(8);
     public static final List<Pair<Integer, SoundEvent>> taikos = new ArrayList<>(16);
+    public static final List<Pair<Integer, SoundEvent>> harps = new ArrayList<>(10);
+    public static final List<Pair<Integer, SoundEvent>> shakuhachis = new ArrayList<>(4);
+    public static final List<Pair<Integer, SoundEvent>> shamisens = new ArrayList<>(7);
+    public static final List<Pair<Integer, SoundEvent>> tin_whistles = new ArrayList<>(5);
+    public static final List<Pair<Integer, SoundEvent>> lutes = new ArrayList<>(7);
+    public static final List<Pair<Integer, SoundEvent>> bongos = new ArrayList<>(36);
+    public static final List<Pair<Integer, SoundEvent>> timpanis = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> glockenspiels = new ArrayList<>(7);
+    public static final List<Pair<Integer, SoundEvent>> marimbas = new ArrayList<>(10);
+    public static final List<Pair<Integer, SoundEvent>> celestas = new ArrayList<>(11);
 
     private static final String NAME_GUITAR = "guitar";
     private static final String NAME_DRUM_KIT = "drum_kit";
@@ -83,6 +93,16 @@ public class SoundEvents {
     private static final String NAME_SMALL_MUSIC_BOX = "small_music_box";
     private static final String NAME_KOTO = "koto";
     private static final String NAME_TAIKO = "taiko";
+    private static final String NAME_HARP = "harp";
+    private static final String NAME_SHAKUHACHI = "shakuhachi";
+    private static final String NAME_SHAMISEN = "shamisen";
+    private static final String NAME_TIN_WHISTLE = "tin_whistle";
+    private static final String NAME_LUTE = "lute";
+    private static final String NAME_BONGOS = "bongos";
+    private static final String NAME_TIMPANI = "timpani";
+    private static final String NAME_GLOCKENSPIEL = "glockenspiel";
+    private static final String NAME_MARIMBA = "marimba";
+    private static final String NAME_CELESTA = "celesta";
 
     private SoundEvents() {
     }
@@ -141,6 +161,16 @@ public class SoundEvents {
         small_music_boxes.clear();
         kotos.clear();
         taikos.clear();
+        harps.clear();
+        shakuhachis.clear();
+        shamisens.clear();
+        tin_whistles.clear();
+        lutes.clear();
+        bongos.clear();
+        timpanis.clear();
+        glockenspiels.clear();
+        marimbas.clear();
+        celestas.clear();
         // ranges
         addRange(drum_kits, NAME_DRUM_KIT, 21, 116);
         addRange(harp_mcs, NAME_HARP_MC, 27, 111, 6);
@@ -216,10 +246,20 @@ public class SoundEvents {
         addFixed(cuicas, NAME_CUICA,  36, 42, 48, 54, 60, 66, 72, 78, 84, 90);
         addFixed(accordions, NAME_ACCORDION, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90);
         addFixed(tenor_saxophones, NAME_TENOR_SAXOPHONE, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78);
-        addFixed(vibraphones, NAME_VIBRAPHONE, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114);
+        addFixed(vibraphones, NAME_VIBRAPHONE, 53, 59, 65, 71, 77, 83, 89);
         addFixed(small_music_boxes, NAME_SMALL_MUSIC_BOX, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114);
         addFixed(kotos, NAME_KOTO, 48, 54, 60, 66, 72, 78, 84, 86);
         addFixed(taikos, NAME_TAIKO, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114);
+        addFixed(harps, NAME_HARP, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90);
+        addFixed(shakuhachis, NAME_SHAKUHACHI, 55, 61, 67, 73);
+        addFixed(shamisens, NAME_SHAMISEN, 55, 61, 67, 73, 79, 85, 91);
+        addFixed(tin_whistles, NAME_TIN_WHISTLE, 62, 68, 74, 80, 86);
+        addFixed(lutes, NAME_LUTE, 38, 44, 50, 56, 62, 68, 74);
+        addRange(bongos, NAME_BONGOS, 48, 83);
+        addRange(timpanis, NAME_TIMPANI, 48, 95);
+        addFixed(glockenspiels, NAME_GLOCKENSPIEL, 48, 54, 60, 66, 72, 78, 84);
+        addFixed(marimbas, NAME_MARIMBA, 41, 47, 53, 59, 65, 71, 77, 83, 89, 95);
+        addFixed(celestas, NAME_CELESTA, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96);
         // Instrument SoundEvent setting
         ((IItemInstrument) Items.CYMBAL).setSounds(cymbals);
         ((IItemInstrument) Items.DRUM_KIT).setSounds(drum_kits);
@@ -252,6 +292,16 @@ public class SoundEvents {
         ((IItemInstrument) Items.SMALL_MUSIC_BOX).setSounds(small_music_boxes);
         ((IItemInstrument) Items.KOTO).setSounds(kotos);
         ((IItemInstrument) Items.TAIKO).setSounds(taikos);
+        ((IItemInstrument) Items.HARP).setSounds(harps);
+        ((IItemInstrument) Items.SHAKUHACHI).setSounds(shakuhachis);
+        ((IItemInstrument) Items.SHAMISEN).setSounds(shamisens);
+        ((IItemInstrument) Items.TIN_WHISTLE).setSounds(tin_whistles);
+        ((IItemInstrument) Items.LUTE).setSounds(lutes);
+        ((IItemInstrument) Items.BONGOS).setSounds(bongos);
+        ((IItemInstrument) Items.TIMPANI).setSounds(timpanis);
+        ((IItemInstrument) Items.GLOCKENSPIEL).setSounds(glockenspiels);
+        ((IItemInstrument) Items.MARIMBA).setSounds(marimbas);
+        ((IItemInstrument) Items.CELESTA).setSounds(celestas);
         ((IItemInstrument) Items.HARP_MC).setSounds(harp_mcs);
     }
 
