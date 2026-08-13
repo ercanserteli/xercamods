@@ -27,7 +27,7 @@ public final class Items {
     public static final Item HARP_MC = new ItemInstrument(-1, 0, 7, properties("harp_mc"));
 
     public static final Item GUITAR = new ItemInstrument(0, 0, 6, properties("guitar"));
-    public static final Item LYRE = new ItemInstrument(1, 2, 7, properties("lyre"));
+    public static final Item LYRE = new ItemInstrument(1, 1, 7, properties("lyre"));
     public static final Item BANJO = new ItemInstrument(2, 0, 4, properties("banjo"));
     public static final Item DRUM = new ItemInstrument(3, 1, 4, properties("drum"));
     public static final Item CYMBAL = new ItemInstrument(4, 0, 4, properties("cymbal"));
@@ -53,20 +53,20 @@ public final class Items {
     public static final Item CUICA = new ItemInstrument(24, 1, 5, properties("cuica"));
     public static final Item ACCORDION = new ItemInstrument(25, 0, 5, properties("accordion"));
     public static final Item TENOR_SAXOPHONE = new ItemInstrument(26, 0, 4, properties("tenor_saxophone"));
-    public static final Item VIBRAPHONE = new ItemInstrument(27, 0, 7, properties("vibraphone"));
+    public static final Item VIBRAPHONE = new ItemInstrument(27, 2, 5, properties("vibraphone"));
     public static final Item SMALL_MUSIC_BOX = new ItemInstrument(28, 0, 7, properties("small_music_box"));
     public static final Item KOTO = new ItemInstrument(29, 2, 5, properties("koto"));
     public static final Item TAIKO = new ItemInstrument(30, 0, 7, properties("taiko"));
-    public static final Item HARP = new ItemInstrument(31, 1, 6, properties("harp"));
-    public static final Item SHAKUHACHI = new ItemInstrument(32, 2, 5, properties("shakuhachi"));
-    public static final Item SHAMISEN = new ItemInstrument(33, 2, 6, properties("shamisen"));
-    public static final Item TIN_WHISTLE = new ItemInstrument(34, 3, 6, properties("tin_whistle"));
-    public static final Item LUTE = new ItemInstrument(35, 1, 5, properties("lute"));
-    public static final Item BONGOS = new ItemInstrument(36, 2, 5, properties("bongos"));
-    public static final Item TIMPANI = new ItemInstrument(37, 2, 6, properties("timpani"));
-    public static final Item GLOCKENSPIEL = new ItemInstrument(38, 2, 6, properties("glockenspiel"));
+    public static final Item HARP = new ItemInstrument(31, 1, 5, properties("harp"));
+    public static final Item SHAKUHACHI = new ItemInstrument(32, 2, 4, properties("shakuhachi"));
+    public static final Item SHAMISEN = new ItemInstrument(33, 2, 5, properties("shamisen"));
+    public static final Item TIN_WHISTLE = new ItemInstrument(34, 3, 5, properties("tin_whistle"));
+    public static final Item LUTE = new ItemInstrument(35, 1, 4, properties("lute"));
+    public static final Item BONGOS = new ItemInstrument(36, 2, 4, properties("bongos"));
+    public static final Item TIMPANI = new ItemInstrument(37, 2, 5, properties("timpani"));
+    public static final Item GLOCKENSPIEL = new ItemInstrument(38, 2, 5, properties("glockenspiel"));
     public static final Item MARIMBA = new ItemInstrument(39, 1, 6, properties("marimba"));
-    public static final Item CELESTA = new ItemInstrument(40, 1, 7, properties("celesta"));
+    public static final Item CELESTA = new ItemInstrument(40, 1, 6, properties("celesta"));
     public static final Item MUSIC_SHEET = new ItemMusicSheet(properties("music_sheet"));
 
     public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()

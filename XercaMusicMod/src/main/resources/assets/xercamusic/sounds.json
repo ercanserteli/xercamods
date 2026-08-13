@@ -4576,6 +4576,33 @@
       }
     ]
   },
+  "bongos45": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos45",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos46": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos46",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bongos47": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:bongos/bongos47",
+        "attenuation_distance": 48
+      }
+    ]
+  },
   "bongos48": {
     "category": "player",
     "sounds": [
@@ -4873,29 +4900,29 @@
       }
     ]
   },
-  "bongos81": {
+  "timpani45": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:bongos/bongos81",
+        "name": "xercamusic:timpani/timpani45",
         "attenuation_distance": 48
       }
     ]
   },
-  "bongos82": {
+  "timpani46": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:bongos/bongos82",
+        "name": "xercamusic:timpani/timpani46",
         "attenuation_distance": 48
       }
     ]
   },
-  "bongos83": {
+  "timpani47": {
     "category": "player",
     "sounds": [
       {
-        "name": "xercamusic:bongos/bongos83",
+        "name": "xercamusic:timpani/timpani47",
         "attenuation_distance": 48
       }
     ]
@@ -5301,33 +5328,6 @@
     "sounds": [
       {
         "name": "xercamusic:timpani/timpani92",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "timpani93": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:timpani/timpani93",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "timpani94": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:timpani/timpani94",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "timpani95": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:timpani/timpani95",
         "attenuation_distance": 48
       }
     ]

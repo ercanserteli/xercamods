@@ -255,8 +255,8 @@ public class SoundEvents {
         addFixed(shamisens, NAME_SHAMISEN, 55, 61, 67, 73, 79, 85, 91);
         addFixed(tin_whistles, NAME_TIN_WHISTLE, 62, 68, 74, 80, 86);
         addFixed(lutes, NAME_LUTE, 38, 44, 50, 56, 62, 68, 74);
-        addRange(bongos, NAME_BONGOS, 48, 83);
-        addRange(timpanis, NAME_TIMPANI, 48, 95);
+        addRange(bongos, NAME_BONGOS, 45, 80);
+        addRange(timpanis, NAME_TIMPANI, 45, 92);
         addFixed(glockenspiels, NAME_GLOCKENSPIEL, 48, 54, 60, 66, 72, 78, 84);
         addFixed(marimbas, NAME_MARIMBA, 41, 47, 53, 59, 65, 71, 77, 83, 89, 95);
         addFixed(celestas, NAME_CELESTA, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96);
