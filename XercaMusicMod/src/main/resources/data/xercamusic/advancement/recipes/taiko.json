@@ -1,0 +1,9 @@
+{
+  "parent": "xercamusic:recipes/root",
+  "rewards": {"recipes": ["xercamusic:taiko"]},
+  "criteria": {
+    "has_item": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": "minecraft:leather"}]}},
+    "has_the_recipe": {"trigger": "minecraft:recipe_unlocked", "conditions": {"recipe": "xercamusic:taiko"}}
+  },
+  "requirements": [["has_item", "has_the_recipe"]]
+}

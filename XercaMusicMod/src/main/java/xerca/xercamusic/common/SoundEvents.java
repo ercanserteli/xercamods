@@ -46,6 +46,10 @@ public class SoundEvents {
     public static final List<Pair<Integer, SoundEvent>> cuicas = new ArrayList<>(11);
     public static final List<Pair<Integer, SoundEvent>> accordions = new ArrayList<>(11);
     public static final List<Pair<Integer, SoundEvent>> tenor_saxophones = new ArrayList<>(11);
+    public static final List<Pair<Integer, SoundEvent>> vibraphones = new ArrayList<>(16);
+    public static final List<Pair<Integer, SoundEvent>> small_music_boxes = new ArrayList<>(16);
+    public static final List<Pair<Integer, SoundEvent>> kotos = new ArrayList<>(8);
+    public static final List<Pair<Integer, SoundEvent>> taikos = new ArrayList<>(16);
 
     private static final String NAME_GUITAR = "guitar";
     private static final String NAME_DRUM_KIT = "drum_kit";
@@ -75,6 +79,10 @@ public class SoundEvents {
     private static final String NAME_CUICA = "cuica";
     private static final String NAME_ACCORDION = "accordion";
     private static final String NAME_TENOR_SAXOPHONE = "tenor_saxophone";
+    private static final String NAME_VIBRAPHONE = "vibraphone";
+    private static final String NAME_SMALL_MUSIC_BOX = "small_music_box";
+    private static final String NAME_KOTO = "koto";
+    private static final String NAME_TAIKO = "taiko";
 
     private SoundEvents() {
     }
@@ -129,6 +137,10 @@ public class SoundEvents {
         cuicas.clear();
         accordions.clear();
         tenor_saxophones.clear();
+        vibraphones.clear();
+        small_music_boxes.clear();
+        kotos.clear();
+        taikos.clear();
         // ranges
         addRange(drum_kits, NAME_DRUM_KIT, 21, 116);
         addRange(harp_mcs, NAME_HARP_MC, 27, 111, 6);
@@ -204,6 +216,10 @@ public class SoundEvents {
         addFixed(cuicas, NAME_CUICA,  36, 42, 48, 54, 60, 66, 72, 78, 84, 90);
         addFixed(accordions, NAME_ACCORDION, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90);
         addFixed(tenor_saxophones, NAME_TENOR_SAXOPHONE, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78);
+        addFixed(vibraphones, NAME_VIBRAPHONE, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114);
+        addFixed(small_music_boxes, NAME_SMALL_MUSIC_BOX, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114);
+        addFixed(kotos, NAME_KOTO, 48, 54, 60, 66, 72, 78, 84, 86);
+        addFixed(taikos, NAME_TAIKO, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114);
         // Instrument SoundEvent setting
         ((IItemInstrument) Items.CYMBAL).setSounds(cymbals);
         ((IItemInstrument) Items.DRUM_KIT).setSounds(drum_kits);
@@ -232,6 +248,10 @@ public class SoundEvents {
         ((IItemInstrument) Items.CUICA).setSounds(cuicas);
         ((IItemInstrument) Items.ACCORDION).setSounds(accordions);
         ((IItemInstrument) Items.TENOR_SAXOPHONE).setSounds(tenor_saxophones);
+        ((IItemInstrument) Items.VIBRAPHONE).setSounds(vibraphones);
+        ((IItemInstrument) Items.SMALL_MUSIC_BOX).setSounds(small_music_boxes);
+        ((IItemInstrument) Items.KOTO).setSounds(kotos);
+        ((IItemInstrument) Items.TAIKO).setSounds(taikos);
         ((IItemInstrument) Items.HARP_MC).setSounds(harp_mcs);
     }
 
