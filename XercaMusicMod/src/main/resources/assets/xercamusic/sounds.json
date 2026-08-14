@@ -5583,5 +5583,19 @@
         "attenuation_distance": 48
       }
     ]
-  }
+  },
+  "harmonica59": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica59", "attenuation_distance": 48 }] },
+  "harmonica65": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica65", "attenuation_distance": 48 }] },
+  "harmonica71": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica71", "attenuation_distance": 48 }] },
+  "harmonica77": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica77", "attenuation_distance": 48 }] },
+  "harmonica83": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica83", "attenuation_distance": 48 }] },
+  "harmonica89": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica89", "attenuation_distance": 48 }] },
+  "harmonica95": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica95", "attenuation_distance": 48 }] },
+  "harmonica101": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica101", "attenuation_distance": 48 }] },
+  "harmonica107": { "category": "player", "sounds": [{ "name": "xercamusic:harmonica/harmonica107", "attenuation_distance": 48 }] },
+  "low_whistle74": { "category": "player", "sounds": [{ "name": "xercamusic:low_whistle/low_whistle74", "attenuation_distance": 48 }] },
+  "low_whistle80": { "category": "player", "sounds": [{ "name": "xercamusic:low_whistle/low_whistle80", "attenuation_distance": 48 }] },
+  "low_whistle86": { "category": "player", "sounds": [{ "name": "xercamusic:low_whistle/low_whistle86", "attenuation_distance": 48 }] },
+  "low_whistle92": { "category": "player", "sounds": [{ "name": "xercamusic:low_whistle/low_whistle92", "attenuation_distance": 48 }] },
+  "low_whistle98": { "category": "player", "sounds": [{ "name": "xercamusic:low_whistle/low_whistle98", "attenuation_distance": 48 }] }
 }

@@ -67,6 +67,8 @@ public final class Items {
     public static final Item GLOCKENSPIEL = new ItemInstrument(38, 2, 5, properties("glockenspiel"));
     public static final Item MARIMBA = new ItemInstrument(39, 1, 6, properties("marimba"));
     public static final Item CELESTA = new ItemInstrument(40, 1, 6, properties("celesta"));
+    public static final Item HARMONICA = new ItemInstrument(41, 3, 7, properties("harmonica"));
+    public static final Item LOW_WHISTLE = new ItemInstrument(42, 4, 6, properties("low_whistle"));
     public static final Item MUSIC_SHEET = new ItemMusicSheet(properties("music_sheet"));
 
     public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
@@ -114,6 +116,8 @@ public final class Items {
                 output.accept(GLOCKENSPIEL);
                 output.accept(MARIMBA);
                 output.accept(CELESTA);
+                output.accept(HARMONICA);
+                output.accept(LOW_WHISTLE);
                 output.accept(Blocks.MUSIC_BOX);
                 output.accept(Blocks.BLOCK_METRONOME);
             })
@@ -131,7 +135,8 @@ public final class Items {
             (IItemInstrument) VIBRAPHONE, (IItemInstrument) SMALL_MUSIC_BOX, (IItemInstrument) KOTO, (IItemInstrument) TAIKO,
             (IItemInstrument) HARP, (IItemInstrument) SHAKUHACHI, (IItemInstrument) SHAMISEN, (IItemInstrument) TIN_WHISTLE,
             (IItemInstrument) LUTE, (IItemInstrument) BONGOS, (IItemInstrument) TIMPANI, (IItemInstrument) GLOCKENSPIEL,
-            (IItemInstrument) MARIMBA, (IItemInstrument) CELESTA
+            (IItemInstrument) MARIMBA, (IItemInstrument) CELESTA, (IItemInstrument) HARMONICA,
+            (IItemInstrument) LOW_WHISTLE
     );
 
     public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = new CustomRecipe.Serializer<>(RecipeNoteCloning::new);
@@ -219,6 +224,8 @@ public final class Items {
         registerItem("glockenspiel", GLOCKENSPIEL);
         registerItem("marimba", MARIMBA);
         registerItem("celesta", CELESTA);
+        registerItem("harmonica", HARMONICA);
+        registerItem("low_whistle", LOW_WHISTLE);
         registerItem("harp_mc", HARP_MC);
         registerItem("music_sheet", MUSIC_SHEET);
         registerItem("music_box", new BlockItem(Blocks.MUSIC_BOX, blockProperties("music_box")));

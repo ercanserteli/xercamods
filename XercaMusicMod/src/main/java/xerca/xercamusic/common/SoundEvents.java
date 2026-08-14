@@ -60,6 +60,8 @@ public class SoundEvents {
     public static final List<Pair<Integer, SoundEvent>> glockenspiels = new ArrayList<>(7);
     public static final List<Pair<Integer, SoundEvent>> marimbas = new ArrayList<>(10);
     public static final List<Pair<Integer, SoundEvent>> celestas = new ArrayList<>(11);
+    public static final List<Pair<Integer, SoundEvent>> harmonicas = new ArrayList<>(9);
+    public static final List<Pair<Integer, SoundEvent>> low_whistles = new ArrayList<>(5);
 
     private static final String NAME_GUITAR = "guitar";
     private static final String NAME_DRUM_KIT = "drum_kit";
@@ -103,6 +105,8 @@ public class SoundEvents {
     private static final String NAME_GLOCKENSPIEL = "glockenspiel";
     private static final String NAME_MARIMBA = "marimba";
     private static final String NAME_CELESTA = "celesta";
+    private static final String NAME_HARMONICA = "harmonica";
+    private static final String NAME_LOW_WHISTLE = "low_whistle";
 
     private SoundEvents() {
     }
@@ -171,6 +175,8 @@ public class SoundEvents {
         glockenspiels.clear();
         marimbas.clear();
         celestas.clear();
+        harmonicas.clear();
+        low_whistles.clear();
         // ranges
         addRange(drum_kits, NAME_DRUM_KIT, 21, 116);
         addRange(harp_mcs, NAME_HARP_MC, 27, 111, 6);
@@ -260,6 +266,8 @@ public class SoundEvents {
         addFixed(glockenspiels, NAME_GLOCKENSPIEL, 48, 54, 60, 66, 72, 78, 84);
         addFixed(marimbas, NAME_MARIMBA, 41, 47, 53, 59, 65, 71, 77, 83, 89, 95);
         addFixed(celestas, NAME_CELESTA, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96);
+        addFixed(harmonicas, NAME_HARMONICA, 59, 65, 71, 77, 83, 89, 95, 101, 107);
+        addFixed(low_whistles, NAME_LOW_WHISTLE, 74, 80, 86, 92, 98);
         // Instrument SoundEvent setting
         ((IItemInstrument) Items.CYMBAL).setSounds(cymbals);
         ((IItemInstrument) Items.DRUM_KIT).setSounds(drum_kits);
@@ -302,6 +310,8 @@ public class SoundEvents {
         ((IItemInstrument) Items.GLOCKENSPIEL).setSounds(glockenspiels);
         ((IItemInstrument) Items.MARIMBA).setSounds(marimbas);
         ((IItemInstrument) Items.CELESTA).setSounds(celestas);
+        ((IItemInstrument) Items.HARMONICA).setSounds(harmonicas);
+        ((IItemInstrument) Items.LOW_WHISTLE).setSounds(low_whistles);
         ((IItemInstrument) Items.HARP_MC).setSounds(harp_mcs);
     }
 
