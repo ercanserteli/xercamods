@@ -1273,105 +1273,13 @@
       }
     ]
   },
-  "xylophone27": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone27",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone33": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone33",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone39": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone39",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone45": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone45",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone51": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone51",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone57": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone57",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone63": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone63",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone69": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone69",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone75": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone75",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone81": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone81",
-        "attenuation_distance": 48
-      }
-    ]
-  },
-  "xylophone87": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "xercamusic:xylophone/xylophone87",
-        "attenuation_distance": 48
-      }
-    ]
-  },
+  "xylophone60": { "category": "player", "sounds": [{ "name": "xercamusic:xylophone/xylophone60", "attenuation_distance": 48 }] },
+  "xylophone66": { "category": "player", "sounds": [{ "name": "xercamusic:xylophone/xylophone66", "attenuation_distance": 48 }] },
+  "xylophone72": { "category": "player", "sounds": [{ "name": "xercamusic:xylophone/xylophone72", "attenuation_distance": 48 }] },
+  "xylophone78": { "category": "player", "sounds": [{ "name": "xercamusic:xylophone/xylophone78", "attenuation_distance": 48 }] },
+  "xylophone84": { "category": "player", "sounds": [{ "name": "xercamusic:xylophone/xylophone84", "attenuation_distance": 48 }] },
+  "xylophone90": { "category": "player", "sounds": [{ "name": "xercamusic:xylophone/xylophone90", "attenuation_distance": 48 }] },
+  "xylophone96": { "category": "player", "sounds": [{ "name": "xercamusic:xylophone/xylophone96", "attenuation_distance": 48 }] },
   "cello25": {
     "category": "player",
     "sounds": [

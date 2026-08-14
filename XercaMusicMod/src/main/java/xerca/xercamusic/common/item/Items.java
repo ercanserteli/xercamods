@@ -32,7 +32,7 @@ public final class Items {
     public static final Item DRUM = new ItemInstrument(3, 1, 4, properties("drum"));
     public static final Item CYMBAL = new ItemInstrument(4, 0, 4, properties("cymbal"));
     public static final Item DRUM_KIT = new ItemBlockInstrument(5, 0, 7, blockProperties("drum_kit"), Blocks.DRUM_KIT);
-    public static final Item XYLOPHONE = new ItemInstrument(6, 0, 5, properties("xylophone"));
+    public static final Item XYLOPHONE = new ItemInstrument(6, 3, 6, properties("xylophone"));
     public static final Item TUBULAR_BELL = new ItemInstrument(7, 1, 4, properties("tubular_bell"));
     public static final Item SANSULA = new ItemInstrument(8, 1, 5, properties("sansula"));
     public static final Item VIOLIN = new ItemInstrument(9, 1, 5, properties("violin"));

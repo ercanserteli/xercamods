@@ -31,7 +31,7 @@ public class SoundEvents {
     public static final List<Pair<Integer, SoundEvent>> sansulas = new ArrayList<>(48);
     public static final List<Pair<Integer, SoundEvent>> tubular_bells = new ArrayList<>(48);
     public static final List<Pair<Integer, SoundEvent>> violins = new ArrayList<>(48);
-    public static final List<Pair<Integer, SoundEvent>> xylophones = new ArrayList<>(48);
+    public static final List<Pair<Integer, SoundEvent>> xylophones = new ArrayList<>(7);
     public static final List<Pair<Integer, SoundEvent>> cellos = new ArrayList<>(48);
     public static final List<Pair<Integer, SoundEvent>> pianos = new ArrayList<>(48);
     public static final List<Pair<Integer, SoundEvent>> oboes = new ArrayList<>(21);
@@ -199,8 +199,7 @@ public class SoundEvents {
         addFixed(cymbals, NAME_CYMBAL,
                 27, 33, 39, 45, 51, 57, 63, 69, 75, 81);
 
-        addFixed(xylophones, NAME_XYLOPHONE,
-                27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 87);
+        addFixed(xylophones, NAME_XYLOPHONE, 60, 66, 72, 78, 84, 90, 96);
 
         addFixed(sansulas, NAME_SANSULA,
                 33, 39, 45, 51, 57, 63, 69, 75, 81, 87);
