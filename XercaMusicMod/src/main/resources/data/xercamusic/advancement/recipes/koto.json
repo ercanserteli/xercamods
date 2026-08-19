@@ -1,0 +1,9 @@
+{
+  "parent": "xercamusic:recipes/root",
+  "rewards": {"recipes": ["xercamusic:koto"]},
+  "criteria": {
+    "has_item": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": "minecraft:cherry_planks"}]}},
+    "has_the_recipe": {"trigger": "minecraft:recipe_unlocked", "conditions": {"recipe": "xercamusic:koto"}}
+  },
+  "requirements": [["has_item", "has_the_recipe"]]
+}

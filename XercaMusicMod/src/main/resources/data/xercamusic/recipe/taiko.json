@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" p ", "plp", " p "],
+  "key": {
+    "p": "#minecraft:planks",
+    "l": "minecraft:leather"
+  },
+  "result": {"id": "xercamusic:taiko"}
+}

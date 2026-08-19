@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["sss", " p "],
+  "key": {
+    "s": "minecraft:stick",
+    "p": "#minecraft:planks"
+  },
+  "result": {"id": "xercamusic:timpani"}
+}

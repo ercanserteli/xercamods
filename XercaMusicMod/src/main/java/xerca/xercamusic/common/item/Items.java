@@ -27,12 +27,12 @@ public final class Items {
     public static final Item HARP_MC = new ItemInstrument(-1, 0, 7, properties("harp_mc"));
 
     public static final Item GUITAR = new ItemInstrument(0, 0, 6, properties("guitar"));
-    public static final Item LYRE = new ItemInstrument(1, 1, 5, properties("lyre"));
+    public static final Item LYRE = new ItemInstrument(1, 1, 7, properties("lyre"));
     public static final Item BANJO = new ItemInstrument(2, 0, 4, properties("banjo"));
     public static final Item DRUM = new ItemInstrument(3, 1, 4, properties("drum"));
     public static final Item CYMBAL = new ItemInstrument(4, 0, 4, properties("cymbal"));
     public static final Item DRUM_KIT = new ItemBlockInstrument(5, 0, 7, blockProperties("drum_kit"), Blocks.DRUM_KIT);
-    public static final Item XYLOPHONE = new ItemInstrument(6, 0, 5, properties("xylophone"));
+    public static final Item XYLOPHONE = new ItemInstrument(6, 3, 6, properties("xylophone"));
     public static final Item TUBULAR_BELL = new ItemInstrument(7, 1, 4, properties("tubular_bell"));
     public static final Item SANSULA = new ItemInstrument(8, 1, 5, properties("sansula"));
     public static final Item VIOLIN = new ItemInstrument(9, 1, 5, properties("violin"));
@@ -53,6 +53,22 @@ public final class Items {
     public static final Item CUICA = new ItemInstrument(24, 1, 5, properties("cuica"));
     public static final Item ACCORDION = new ItemInstrument(25, 0, 5, properties("accordion"));
     public static final Item TENOR_SAXOPHONE = new ItemInstrument(26, 0, 4, properties("tenor_saxophone"));
+    public static final Item VIBRAPHONE = new ItemInstrument(27, 2, 5, properties("vibraphone"));
+    public static final Item SMALL_MUSIC_BOX = new ItemInstrument(28, 0, 7, properties("small_music_box"));
+    public static final Item KOTO = new ItemInstrument(29, 2, 5, properties("koto"));
+    public static final Item TAIKO = new ItemInstrument(30, 0, 7, properties("taiko"));
+    public static final Item HARP = new ItemInstrument(31, 1, 5, properties("harp"));
+    public static final Item SHAKUHACHI = new ItemInstrument(32, 2, 4, properties("shakuhachi"));
+    public static final Item SHAMISEN = new ItemInstrument(33, 2, 5, properties("shamisen"));
+    public static final Item TIN_WHISTLE = new ItemInstrument(34, 3, 5, properties("tin_whistle"));
+    public static final Item LUTE = new ItemInstrument(35, 1, 4, properties("lute"));
+    public static final Item BONGOS = new ItemInstrument(36, 2, 4, properties("bongos"));
+    public static final Item TIMPANI = new ItemInstrument(37, 2, 5, properties("timpani"));
+    public static final Item GLOCKENSPIEL = new ItemInstrument(38, 2, 5, properties("glockenspiel"));
+    public static final Item MARIMBA = new ItemInstrument(39, 1, 6, properties("marimba"));
+    public static final Item CELESTA = new ItemInstrument(40, 1, 6, properties("celesta"));
+    public static final Item HARMONICA = new ItemInstrument(41, 3, 7, properties("harmonica"));
+    public static final Item LOW_WHISTLE = new ItemInstrument(42, 4, 6, properties("low_whistle"));
     public static final Item MUSIC_SHEET = new ItemMusicSheet(properties("music_sheet"));
 
     public static final CreativeModeTab MUSIC_TAB = FabricItemGroup.builder()
@@ -86,6 +102,22 @@ public final class Items {
                 output.accept(CUICA);
                 output.accept(ACCORDION);
                 output.accept(TENOR_SAXOPHONE);
+                output.accept(VIBRAPHONE);
+                output.accept(SMALL_MUSIC_BOX);
+                output.accept(KOTO);
+                output.accept(TAIKO);
+                output.accept(HARP);
+                output.accept(SHAKUHACHI);
+                output.accept(SHAMISEN);
+                output.accept(TIN_WHISTLE);
+                output.accept(LUTE);
+                output.accept(BONGOS);
+                output.accept(TIMPANI);
+                output.accept(GLOCKENSPIEL);
+                output.accept(MARIMBA);
+                output.accept(CELESTA);
+                output.accept(HARMONICA);
+                output.accept(LOW_WHISTLE);
                 output.accept(Blocks.MUSIC_BOX);
                 output.accept(Blocks.BLOCK_METRONOME);
             })
@@ -99,7 +131,12 @@ public final class Items {
             (IItemInstrument) SAXOPHONE, (IItemInstrument) GOD, (IItemInstrument) PIANO, (IItemInstrument) OBOE,
             (IItemInstrument) REDSTONE_GUITAR, (IItemInstrument) FRENCH_HORN, (IItemInstrument) BASS_GUITAR,
             (IItemInstrument) TRUMPET, (IItemInstrument) REDSTONE_PIANO, (IItemInstrument) ORGAN, (IItemInstrument) HARPSICHORD, 
-            (IItemInstrument) STEELPAN, (IItemInstrument) CUICA, (IItemInstrument) ACCORDION, (IItemInstrument) TENOR_SAXOPHONE
+            (IItemInstrument) STEELPAN, (IItemInstrument) CUICA, (IItemInstrument) ACCORDION, (IItemInstrument) TENOR_SAXOPHONE,
+            (IItemInstrument) VIBRAPHONE, (IItemInstrument) SMALL_MUSIC_BOX, (IItemInstrument) KOTO, (IItemInstrument) TAIKO,
+            (IItemInstrument) HARP, (IItemInstrument) SHAKUHACHI, (IItemInstrument) SHAMISEN, (IItemInstrument) TIN_WHISTLE,
+            (IItemInstrument) LUTE, (IItemInstrument) BONGOS, (IItemInstrument) TIMPANI, (IItemInstrument) GLOCKENSPIEL,
+            (IItemInstrument) MARIMBA, (IItemInstrument) CELESTA, (IItemInstrument) HARMONICA,
+            (IItemInstrument) LOW_WHISTLE
     );
 
     public static final RecipeSerializer<RecipeNoteCloning> CRAFTING_SPECIAL_NOTECLONING = new CustomRecipe.Serializer<>(RecipeNoteCloning::new);
@@ -173,6 +210,22 @@ public final class Items {
         registerItem("cuica", CUICA);
         registerItem("accordion", ACCORDION);
         registerItem("tenor_saxophone", TENOR_SAXOPHONE);
+        registerItem("vibraphone", VIBRAPHONE);
+        registerItem("small_music_box", SMALL_MUSIC_BOX);
+        registerItem("koto", KOTO);
+        registerItem("taiko", TAIKO);
+        registerItem("harp", HARP);
+        registerItem("shakuhachi", SHAKUHACHI);
+        registerItem("shamisen", SHAMISEN);
+        registerItem("tin_whistle", TIN_WHISTLE);
+        registerItem("lute", LUTE);
+        registerItem("bongos", BONGOS);
+        registerItem("timpani", TIMPANI);
+        registerItem("glockenspiel", GLOCKENSPIEL);
+        registerItem("marimba", MARIMBA);
+        registerItem("celesta", CELESTA);
+        registerItem("harmonica", HARMONICA);
+        registerItem("low_whistle", LOW_WHISTLE);
         registerItem("harp_mc", HARP_MC);
         registerItem("music_sheet", MUSIC_SHEET);
         registerItem("music_box", new BlockItem(Blocks.MUSIC_BOX, blockProperties("music_box")));
