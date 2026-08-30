@@ -1,6 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": "minecraft:egg",
+  "ingredient": "#minecraft:eggs",
   "result": {
     "id": "xercafood:fried_egg"
   },
