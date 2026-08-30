@@ -21,6 +21,10 @@ import static xerca.xercafood.tests.GameTestHelpers.*;
 
 public class RecipeGameTests {
 
+    private static final net.minecraft.world.item.Item[] EGG_VARIANTS = {
+            net.minecraft.world.item.Items.EGG, net.minecraft.world.item.Items.BLUE_EGG, net.minecraft.world.item.Items.BROWN_EGG
+    };
+
     @GameTest
     public void shapedRecipeCraftsAppleCupcake(GameTestHelper helper) {
         CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("apple_cupcake"));
@@ -34,6 +38,33 @@ public class RecipeGameTests {
         ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
         assertTrue(helper, result.is(Items.APPLE_CUPCAKE), "Expected apple cupcake result item");
         assertTrue(helper, result.getCount() == 6, "Expected apple cupcake recipe to craft 6 items");
+        helper.succeed();
+    }
+
+    @GameTest
+    public void cupcakeRecipeAcceptsEveryEggVariant(GameTestHelper helper) {
+        CraftingRecipe recipe = requireCraftingRecipe(helper, recipeId("apple_cupcake"));
+        for (net.minecraft.world.item.Item egg : EGG_VARIANTS) {
+            CraftingInput grid = craftingGrid(3, 3,
+                    new ItemStack(net.minecraft.world.item.Items.SUGAR), new ItemStack(net.minecraft.world.item.Items.APPLE), new ItemStack(net.minecraft.world.item.Items.SUGAR),
+                    new ItemStack(net.minecraft.world.item.Items.MILK_BUCKET), new ItemStack(egg), new ItemStack(net.minecraft.world.item.Items.MILK_BUCKET),
+                    new ItemStack(net.minecraft.world.item.Items.WHEAT), new ItemStack(net.minecraft.world.item.Items.WHEAT), new ItemStack(net.minecraft.world.item.Items.WHEAT)
+            );
+
+            assertTrue(helper, recipe.matches(grid, helper.getLevel()), "Expected apple cupcake recipe to match egg variant " + egg);
+            assertTrue(helper, recipe.assemble(grid, helper.getLevel().registryAccess()).is(Items.APPLE_CUPCAKE), "Expected apple cupcake result for egg variant " + egg);
+        }
+        helper.succeed();
+    }
+
+    @GameTest
+    public void friedEggSmeltingAcceptsEveryEggVariant(GameTestHelper helper) {
+        SmeltingRecipe recipe = requireSmeltingRecipe(helper, recipeId("smelting_fried_egg"));
+        for (net.minecraft.world.item.Item egg : EGG_VARIANTS) {
+            SingleRecipeInput input = new SingleRecipeInput(new ItemStack(egg));
+            assertTrue(helper, recipe.matches(input, helper.getLevel()), "Expected fried egg smelting to match egg variant " + egg);
+            assertTrue(helper, recipe.assemble(input, helper.getLevel().registryAccess()).is(Items.FRIED_EGG), "Expected fried egg result for egg variant " + egg);
+        }
         helper.succeed();
     }
 
