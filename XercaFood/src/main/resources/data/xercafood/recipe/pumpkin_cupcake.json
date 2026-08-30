@@ -9,7 +9,7 @@
   "key": {
     "p": "minecraft:pumpkin",
     "s": "minecraft:sugar",
-    "e": "minecraft:egg",
+    "e": "#minecraft:eggs",
     "w": "minecraft:wheat",
     "m": "minecraft:milk_bucket"
   },
