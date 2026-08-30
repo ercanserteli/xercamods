@@ -1,6 +1,6 @@
 {
   "type": "minecraft:smoking",
-  "ingredient": "minecraft:egg",
+  "ingredient": "#minecraft:eggs",
   "result": {
     "id": "xercafood:fried_egg"
   },
