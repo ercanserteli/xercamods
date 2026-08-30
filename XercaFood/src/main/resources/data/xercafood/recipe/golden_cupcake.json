@@ -7,7 +7,7 @@
   ],
   "key": {
     "a": "minecraft:golden_apple",
-    "e": "minecraft:egg",
+    "e": "#minecraft:eggs",
     "w": "minecraft:wheat",
     "m": "minecraft:milk_bucket",
     "n": "minecraft:gold_nugget"

@@ -49,6 +49,8 @@ public class FoodTests {
             RecipeGameTests recipeGameTests = new RecipeGameTests();
             helper.register(Mod.id("shaped_recipe_crafts_apple_cupcake"), recipeGameTests::shapedRecipeCraftsAppleCupcake);
             helper.register(Mod.id("shapeless_recipe_crafts_cola_powder"), recipeGameTests::shapelessRecipeCraftsColaPowder);
+            helper.register(Mod.id("cupcake_recipe_accepts_every_egg_variant"), recipeGameTests::cupcakeRecipeAcceptsEveryEggVariant);
+            helper.register(Mod.id("fried_egg_smelting_accepts_every_egg_variant"), recipeGameTests::friedEggSmeltingAcceptsEveryEggVariant);
             helper.register(Mod.id("slicing_tomato_damages_knife"), recipeGameTests::slicingTomatoDamagesKnife);
             helper.register(Mod.id("repairing_knives_has_no_crafting_recipe"), recipeGameTests::repairingKnivesHasNoCraftingRecipe);
             helper.register(Mod.id("smelting_recipe_cooks_raw_patty"), recipeGameTests::smeltingRecipeCooksRawPatty);

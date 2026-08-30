@@ -10,7 +10,7 @@
     "B": "minecraft:sugar",
     "C": "minecraft:wheat",
     "D": "minecraft:milk_bucket",
-    "E": "minecraft:egg"
+    "E": "#minecraft:eggs"
   },
   "result": {
     "id": "xercafood:sweet_berry_pie"

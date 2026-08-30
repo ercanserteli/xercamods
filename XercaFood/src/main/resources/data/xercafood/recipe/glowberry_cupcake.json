@@ -8,7 +8,7 @@
   "key": {
     "a": "minecraft:glow_berries",
     "s": "minecraft:sugar",
-    "e": "minecraft:egg",
+    "e": "#minecraft:eggs",
     "w": "minecraft:wheat",
     "m": "minecraft:milk_bucket"
   },
