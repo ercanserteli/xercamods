@@ -83,7 +83,7 @@ class SheetInputHandler {
             int my = mouseY - gui.noteImageY;
             if (validClick(mx, my)) {
                 gui.selectionStart = gui.editCursorEnd = gui.editCursor =
-                        ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
+                        ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / gui.pixelsPerGridUnit()) + gui.sliderPosition;
                 if (isShiftHeld()) {
                     byte note = pixelToNote(my);
                     gui.rectSelection = true;
@@ -105,8 +105,8 @@ class SheetInputHandler {
                 int nrx = mx - GuiMusicSheet.NOTE_REGION_LEFT;
                 int nry = my - GuiMusicSheet.NOTE_REGION_TOP;
 
-                int time = (nrx / 3) + gui.sliderPosition;
-                int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + gui.currentOctavePos * 12;
+                int time = (nrx / gui.pixelsPerGridUnit()) + gui.sliderPosition;
+                int note = gui.noteFromPixelY(nry);
                 if (mouseButton == 0) {
                     // Check for Shift (crescendo) or Ctrl (decrescendo) modifiers
                     boolean shiftHeld = isShiftHeld();
@@ -188,9 +188,12 @@ class SheetInputHandler {
                 }
             } else {
                 // Test current octave clicks
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < gui.visibleOctaves(); i++) {
                     final int x = GuiMusicSheet.NOTE_REGION_LEFT - 24;
-                    final int y = GuiMusicSheet.NOTE_REGION_BOTTOM - 18 - i * 36;
+                    int lowerRows = i * 12;
+                    int upperRows = Math.min((i + 1) * 12, gui.visibleNoteRows());
+                    final int y = (gui.pixelFromBottomRows(lowerRows) + gui.pixelFromBottomRows(upperRows)) / 2
+                            - gui.noteImageY - 3;
                     if (mx >= x - 10 && mx <= x + 10 && my >= y - 4 && my <= y + 12) {
                         GuiMusicSheet.setCurrentOctave(gui.currentOctavePos + i);
                         gui.midiHandler.setCurrentOctave(GuiMusicSheet.getCurrentOctave());
@@ -237,7 +240,7 @@ class SheetInputHandler {
         // if right button is pressed
         if (mouseButton == 1) {
             if (validClick(mx, my)) {
-                int noteX = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
+                int noteX = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / gui.pixelsPerGridUnit()) + gui.sliderPosition;
                 if (gui.selectionStart > noteX) {
                     gui.editCursor = noteX;
                 } else {
@@ -245,7 +248,7 @@ class SheetInputHandler {
                 }
                 if (gui.rectSelection) {
                     int nry = my - GuiMusicSheet.NOTE_REGION_TOP;
-                    byte note = (byte) (47 - (nry / 3) + IItemInstrument.MIN_NOTE + gui.currentOctavePos * 12);
+                    byte note = (byte) gui.noteFromPixelY(nry);
                     gui.rectSelectNoteTop = (byte) Math.max(gui.rectSelectNoteStart, note);
                     gui.rectSelectNoteBottom = (byte) Math.min(gui.rectSelectNoteStart, note);
                 }
@@ -258,7 +261,7 @@ class SheetInputHandler {
                     gui.currentlyAddedMarker = marker;
                 }
             } else if (gui.currentlyAddedNote != null && validClick(mx, my)) {
-                int time = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / 3) + gui.sliderPosition;
+                int time = ((mx - GuiMusicSheet.NOTE_REGION_LEFT) / gui.pixelsPerGridUnit()) + gui.sliderPosition;
                 if (gui.currentlyAddedNote.time < time && time - gui.currentlyAddedNote.time <= GuiMusicSheet.MAX_NOTE_LENGTH) {
                     gui.currentlyAddedNote.length = (byte) (time - gui.currentlyAddedNote.time);
                 }
@@ -273,8 +276,8 @@ class SheetInputHandler {
 
         int nrx = mx - GuiMusicSheet.NOTE_REGION_LEFT;
         int nry = my - GuiMusicSheet.NOTE_REGION_TOP;
-        int time = (nrx / 3) + gui.sliderPosition;
-        int note = 47 - (nry / 3) + IItemInstrument.MIN_NOTE + gui.currentOctavePos * 12;
+        int time = (nrx / gui.pixelsPerGridUnit()) + gui.sliderPosition;
+        int note = gui.noteFromPixelY(nry);
 
         // Update marker bounds
         short newStartTime = (short) Math.min(gui.markerStartTime, time);
@@ -349,6 +352,10 @@ class SheetInputHandler {
             if (scrollY != 0) {
                 gui.helpScrollOffset -= (int)(scrollY * 10);
             }
+            return true;
+        }
+        if (isCtrlHeld() && scrollY != 0.d) {
+            gui.changeZoom(scrollY > 0.d ? 1 : -1);
             return true;
         }
         if (isShiftHeld() && scrollY != 0.d) {
@@ -1038,7 +1045,7 @@ class SheetInputHandler {
         if (gui.glissandoSourceNote == null || gui.glissandoSourceNote.length <= 0) {
             return 1;
         }
-        float exactTime = noteRegionX / 3.0f + gui.sliderPosition;
+        float exactTime = noteRegionX / (float) gui.pixelsPerGridUnit() + gui.sliderPosition;
         int relativeBeat = (int) Math.floor(exactTime - gui.glissandoSourceNote.time);
         int noteLength = gui.glissandoSourceNote.length & 0xFF;
         return Math.clamp(relativeBeat + 1L, 1, noteLength);
@@ -1079,6 +1086,6 @@ class SheetInputHandler {
     }
 
     private byte pixelToNote(int mouseRelY) {
-        return (byte) (47 - ((mouseRelY - GuiMusicSheet.NOTE_REGION_TOP) / 3) + IItemInstrument.MIN_NOTE + gui.currentOctavePos * 12);
+        return (byte) gui.noteFromPixelY(mouseRelY - GuiMusicSheet.NOTE_REGION_TOP);
     }
 }
