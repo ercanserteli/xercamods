@@ -1,6 +1,6 @@
 {
   "parent": "xercamusic:item/instrument",
   "textures": {
-    "layer0": "xercamusic:item/instruments/sansula"
+    "layer0": "xercamusic:item/instruments/small_music_box"
   }
 }
