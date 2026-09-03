@@ -160,26 +160,7 @@ public class SoundController extends Thread {
                             particleSpawned = true;
                         }
 
-                        // Apply glissando (smooth pitch slide)
-                        if (event.hasGlissando()) {
-                            byte[] wps = event.getEffectiveWaypoints();
-                            if (wps != null && wps.length > 0) {
-                                float[] pitchWaypoints = new float[wps.length];
-                                for (int j = 0; j < wps.length; j++) {
-                                    pitchWaypoints[j] = insSound.pitch() * (float) Math.pow(2.0, wps[j] / 12.0);
-                                }
-                                byte[] posBuf = event.getEffectivePositions();
-                                if (posBuf != null && posBuf.length == wps.length) {
-                                    float[] posFloats = new float[posBuf.length];
-                                    for (int j = 0; j < posBuf.length; j++) {
-                                        posFloats[j] = (posBuf[j] & 0xFF) / 100.0f;
-                                    }
-                                    sound.setGlissando(pitchWaypoints, posFloats, beatsToTicks(event.length));
-                                } else {
-                                    sound.setGlissando(pitchWaypoints, beatsToTicks(event.length));
-                                }
-                            }
-                        }
+                this.applyNoteEffects(sound, event, insSound.pitch(), beatsToTicks(event.length));
 
                         // Track sustained notes inside volume markers for dynamic volume
                         if (activeMarker != null && event.length > 1) {
@@ -193,6 +174,42 @@ public class SoundController extends Thread {
         }).whenComplete((v, t) -> {
             if (t != null) Mod.LOGGER.error("Failed to play notes", t);
         }).isDone();
+    }
+    
+    private void applyNoteEffects(NoteSound sound, NoteEvent event, float basePitch, int durationTicks) {
+        if (sound == null) {
+            return;
+        }
+
+        if (event.hasGlissando()) {
+            byte[] waypoints = event.getEffectiveWaypoints();
+            if (waypoints != null && waypoints.length > 0) {
+                float[] pitchWaypoints = new float[waypoints.length];
+                for (int i = 0; i < waypoints.length; i++) {
+                    pitchWaypoints[i] = basePitch * (float) Math.pow(2.0, waypoints[i] / 12.0);
+                }
+
+                byte[] encodedPositions = event.getEffectivePositions();
+                if (encodedPositions != null && encodedPositions.length == waypoints.length) {
+                    float[] positions = new float[encodedPositions.length];
+                    for (int i = 0; i < encodedPositions.length; i++) {
+                        positions[i] = (encodedPositions[i] & 0xFF) / 100.0f;
+                    }
+                    sound.setGlissando(pitchWaypoints, positions, durationTicks);
+                } else {
+                    sound.setGlissando(pitchWaypoints, durationTicks);
+                }
+            }
+        }
+
+        if (event.hasVibrato()) {
+            sound.setVibrato(
+                    event.vibratoDepthSemitones(),
+                    event.vibratoRateHz(),
+                    event.vibratoDelaySeconds(),
+                    event.vibratoFadeSeconds()
+            );
+        }
     }
 
     private void updateActiveSounds(int currentBeat) {

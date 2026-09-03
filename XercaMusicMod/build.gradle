@@ -61,9 +61,59 @@ dependencies {
     // modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 }
 
+def generatedSoundResources = layout.buildDirectory.dir("generated/sound-resources")
+def specialSoundsFile = layout.projectDirectory.file("config/sounds/special-sounds.json")
+
+tasks.register("generateSoundsJson") {
+    group = "build"
+    description = "Generates sounds.json from the instrument .ogg files and special-sound configuration."
+
+    inputs.dir(layout.projectDirectory.dir("src/main/resources/assets/xercamusic/sounds"))
+    inputs.file(specialSoundsFile)
+    outputs.file(generatedSoundResources.map { it.file("assets/xercamusic/sounds.json") })
+
+    doLast {
+        File soundsRoot = file("src/main/resources/assets/xercamusic/sounds")
+        File specialSounds = specialSoundsFile.asFile
+        File output = generatedSoundResources.get().file("assets/xercamusic/sounds.json").asFile
+        Map<String, Object> soundDefinitions = new TreeMap<>()
+
+        Map<String, Object> specialDefinitions = new groovy.json.JsonSlurper().parse(specialSounds) as Map<String, Object>
+        soundDefinitions.putAll(specialDefinitions)
+
+        fileTree(soundsRoot) {
+            include "**/*.ogg"
+        }.files.findAll { it.parentFile != soundsRoot }.sort().each { File sample ->
+            String relativePath = soundsRoot.toPath().relativize(sample.toPath()).toString().replace('\\', '/')
+            String soundPath = relativePath.substring(0, relativePath.length() - ".ogg".length())
+            String instrumentName = sample.parentFile.name
+            String noteNumber = (sample.name =~ /(\d+)\.ogg$/)[0][1]
+            String eventName = instrumentName + noteNumber
+
+            if (soundDefinitions.containsKey(eventName)) {
+                throw new GradleException("Duplicate sound event name '$eventName' from $sample")
+            }
+
+            soundDefinitions.put(eventName, [
+                    category: "player",
+                    sounds  : [[
+                            name                : "xercamusic:$soundPath",
+                            attenuation_distance: 48
+                    ]]
+            ])
+        }
+
+        output.parentFile.mkdirs()
+        output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(soundDefinitions)) + System.lineSeparator()
+    }
+}
+
 processResources {
+    dependsOn tasks.named("generateSoundsJson")
     inputs.property "version", project.version
     filteringCharset "UTF-8"
+
+    from(generatedSoundResources)
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version

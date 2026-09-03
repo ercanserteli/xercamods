@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["iii", "ppp"],
+  "key": {
+    "i": "minecraft:iron_ingot",
+    "p": "#minecraft:planks"
+  },
+  "result": {"id": "xercamusic:vibraphone"}
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["sss", "ppp"],
+  "key": {
+    "s": "minecraft:string",
+    "p": "minecraft:cherry_planks"
+  },
+  "result": {"id": "xercamusic:koto"}
+}

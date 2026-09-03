@@ -1,0 +1,9 @@
+{
+  "parent": "xercamusic:recipes/root",
+  "rewards": {"recipes": ["xercamusic:bongos"]},
+  "criteria": {
+    "has_item": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": "minecraft:stick"}]}},
+    "has_the_recipe": {"trigger": "minecraft:recipe_unlocked", "conditions": {"recipe": "xercamusic:bongos"}}
+  },
+  "requirements": [["has_item", "has_the_recipe"]]
+}

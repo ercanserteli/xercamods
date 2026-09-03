@@ -1,0 +1,43 @@
+{
+  "tick": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "xercamusic:tick"
+      }
+    ]
+  },
+  "close_scroll": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:close_scroll"
+      }
+    ]
+  },
+  "open_scroll": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "xercamusic:open_scroll"
+      }
+    ]
+  },
+  "metronome_set": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "xercamusic:metronome_set1"
+      },
+      {
+        "name": "xercamusic:metronome_set2"
+      },
+      {
+        "name": "xercamusic:metronome_set3"
+      },
+      {
+        "name": "xercamusic:metronome_set4"
+      }
+    ]
+  }
+}
