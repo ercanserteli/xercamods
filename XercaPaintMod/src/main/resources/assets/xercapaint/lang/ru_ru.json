@@ -5,6 +5,10 @@
   "item.xercapaint.item_canvas_large": "Большой холст",
   "item.xercapaint.item_canvas_long": "Широкий холст",
   "item.xercapaint.item_canvas_tall": "Высокий холст",
+  "item.xercapaint.item_canvas_glass": "Стеклянный холст",
+  "item.xercapaint.item_canvas_glass_large": "Большой стеклянный холст",
+  "item.xercapaint.item_canvas_glass_long": "Длинный стеклянный холст",
+  "item.xercapaint.item_canvas_glass_tall": "Высокий стеклянный холст",
   "item.xercapaint.item_easel": "Мольберт",
   "palette.basic_count": "%1$s основных цветов",
   "palette.custom_count": "%1$s особых цветов",
@@ -26,6 +30,7 @@
   "xercapaint.import.fail.3": "Чтобы импортировать картину, в дополнительной руке у вас должна быть палитра со всеми основными цветами",
   "xercapaint.import.fail.4": "Не удалось проанализировать команду или прочитать файл картины (%1$s)",
   "xercapaint.import.fail.5": "Файл с картинкой сломан",
+  "xercapaint.import.fail.material": "Для импорта этой картины в режиме выживания ваш холст должен быть изготовлен из соответствующего материала (%1$s)".
   "easel.deny": "Кто-то уже работает над этой картиной",
   "canvas.help.toggleHelp": "Показать/скрыть подсказки",
   "canvas.help.brushSize": "Размер кисти (%1$s)",
