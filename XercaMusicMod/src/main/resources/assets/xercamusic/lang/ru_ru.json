@@ -1,5 +1,6 @@
 {
   "itemGroup.xercamusic.music_tab": "Музыка",
+  "item.xercamusic.instrument_gui": "Инструмент",
   "item.xercamusic.music_sheet": "Нотный лист",
   "item.xercamusic.guitar": "Гитара",
   "item.xercamusic.flute": "Флейта",
@@ -42,8 +43,11 @@
   "note.generation.2": "Копия копии",
   "note.upButton": "▲",
   "note.downButton": "▼",
+  "note.leftButton": "◀",
+  "note.rightButton": "▶",
   "note.startPreviewButton": "►",
   "note.stopPreviewButton": "■",
+  "note.exitButton": "❌",
   "note.hideNeighborsButton": "N",
   "note.toggleTooltip": "Переключить отображение соседних листов",
   "note.lockTooltip": "Установить инструмент предварительного прослушивания",
